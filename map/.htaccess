@@ -1,0 +1,5 @@
+### Permet l'utilisation de PHP5 avec OVH
+SetEnv PHP_VER 5_3
+
+### Réécriture d'URL
+RewriteEngine On

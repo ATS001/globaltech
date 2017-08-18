@@ -1,0 +1,107 @@
+
+<?php
+		
+global $db;
+	$params = $columns = $totalRecords = $data = array();
+
+	$params = $_REQUEST;
+	//
+	//SELECT `fnom`, `lnom`, `servic`,`active` FROM `users_sys`
+
+
+
+	//define index of column
+	$columns = array( 
+		0 =>'id',
+		1 =>'descrip',
+		2 =>'type',
+		3 =>'etat_line',
+		4 =>'notif',
+		
+	);
+
+	//Format all variables
+
+	$colms = $tables = $joint = $where = $sqlTot = $sqlRec = "";
+    // define used table.
+	$tables .= " task_action ";
+    // define joint and rtable elation start always with 'WHERE'
+	$joint .= " ";
+	// set sherched columns.(the final colm without comma)
+	$colms .= " task_action.id, ";
+	//$colms .= " CONCAT('<div class=\"user\"><img class=\"nav-user-photo\" alt=\"\" src=\"./upload/useres/',users_sys.id,'/',MD5(users_sys.photo),'48x48.png\"></div>') as photo, ";
+	
+	$colms .= " task_action.descrip, ";
+	$colms .= " CASE task_action.type WHEN 0 THEN 'Lien' ELSE 'Autorisation' END , ";
+	$colms .= " task_action.etat_line, ";
+	$colms .= " CASE task_action.notif WHEN 0 THEN 'Non' ELSE 'OUI' END ";
+	//default where";
+	$where .= " WHERE appid = ".Mreq::tp('id');
+	
+	
+
+
+
+    
+    
+	// check search value exist
+	if( !empty($params['search']['value']) ) {
+
+		$serch_value = str_replace('+',' ',$params['search']['value']);
+        //Format where in case joint isset  
+	    $where .= $joint == ""? " WHERE " : " AND ";
+
+
+		$where .=" task_action.descrip LIKE '%".$serch_value."%' ";    
+		$where .=" OR task_action.type LIKE '%".$serch_value."%' ";
+        $where .=" OR  task_action.id LIKE '%".$serch_value."%' ";
+        $where .=" OR  task_action.code LIKE '%".$serch_value."%' ";
+        
+
+	}
+
+
+	// getting total number records without any search
+	
+	$sql = "SELECT $colms  FROM  $tables $joint ";
+	$sqlTot .= $sql;
+	$sqlRec .= $sql;
+	//concatenate search sql if value exist
+	if(isset($where) && $where != '') {
+
+		$sqlTot .= $where;
+		$sqlRec .= $where;
+	}
+
+
+ 	$sqlRec .=  " ORDER BY ". $columns[$params['order'][0]['column']]."   ".$params['order'][0]['dir']."  LIMIT ".$params['start']." ,".$params['length']." ";
+    if (!$db->Query($sqlTot)) $db->Kill($db->Error()." SQLTOT $sqlTot");
+	//
+    $totalRecords = $db->RowCount();
+
+	//
+    if (!$db->Query($sqlRec)) $db->Kill($db->Error()." SQLREC $sqlRec");
+	//
+   
+	//iterate on results row and create new index array of data
+	 while (!$db->EndOfSeek()) {
+      $row = $db->RowValue();
+	  $data[] = $row;
+	 }
+	
+	//exit($sqlRec);
+
+	$json_data = array(
+			"draw"            => intval( $params['draw'] ),   
+			"recordsTotal"    => intval( $totalRecords ),  
+			"recordsFiltered" => intval($totalRecords),
+			"data"            => $data   // total data array
+			);
+
+	echo(json_encode($json_data));  // send data as json format
+
+?>
+	
+<?php 
+//SYS MRN ERP
+// Modul: Modul MGR => Controller Liste
