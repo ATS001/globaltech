@@ -1,0 +1,16 @@
+
+#################
+## G-SAW
+#################
+
+cache/
+temp/
+mincludes/
+upload/
+
+*.txt
+*.xls
+*.xlsx
+*.pdf
+*.log
+
