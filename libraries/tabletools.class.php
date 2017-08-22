@@ -223,15 +223,28 @@ WHERE users_sys.id = $userid
 
 	static public function line_notif_new($table, $task_name)
 	{
-		$get_notif = "(SELECT 
-                        CASE
+		
+        //Check if for export result then select colonne adequat
+        if(Mreq::tp('export') == 1)
+        {
+            $message_etat = "CASE
+                          WHEN SUM(task_action.`notif`) > 0 
+                          THEN 
+                            task_action.`etat_desc`                            
+                          ELSE CONCAT(task_action.`etat_desc`,'*') 
+                        END ";
+        }else{
+        	$message_etat = " CASE
                           WHEN SUM(task_action.`notif`) > 0 
                           THEN CONCAT(
                             task_action.`message_etat`,
                             '<input type=hidden value=isnotif>'
                           ) 
                           ELSE CONCAT(task_action.`message_etat`) 
-                        END 
+                        END ";
+        }
+		$get_notif = "(SELECT 
+                         $message_etat 
                       FROM
                         task_action,
                         rules_action,
@@ -246,7 +259,20 @@ WHERE users_sys.id = $userid
         return $get_notif;
 	}
 
-	   
+	static public function order_bloc($order_column)
+	{
+		
+
+
+			if(Mreq::tp('export') == 1)
+			{
+				$order_notif = " CASE WHEN LOCATE('*', statut) = 0  THEN 0 ELSE 1 END DESC, ";
+			}else{
+				$order_notif = " CASE WHEN LOCATE('notif', statut) = 0  THEN 0 ELSE 1 END DESC, ";
+			}
+			return $order_notif;
+		
+	}   
 
 	static public function where_etat_line($table, $task_name)
 	{
@@ -260,6 +286,27 @@ WHERE users_sys.id = $userid
                                 AND task_action.id = rules_action.`action_id`
                                 AND rules_action.`userid` = ".session::get('userid').") > 0 " ;
         return $where_etat_line; 
+	}
+
+	static public function where_search_etat($table, $task_name, $search)
+	{
+		$where_search_etat = " OR (SELECT 
+                                1 
+                              FROM
+                                task_action,
+                                rules_action,
+                                task 
+                              WHERE task_action.`etat_line` = `$table`.etat 
+                                AND task_action.appid = task.id 
+                                AND task_action.etat_desc IS NOT NULL 
+                                AND task.`app` = '$task_name' 
+                                AND task_action.id = rules_action.`action_id` 
+                                AND rules_action.`userid` = ".session::get('userid')." 
+                                AND task_action.`type` = 0
+    
+                                 AND task_action.`message_etat` LIKE '%$search%')
+                                )";
+        return $where_search_etat;                        
 	}
 
     

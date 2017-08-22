@@ -73,6 +73,11 @@ if(MInit::form_verif('addtaskaction', false))
       $empty_list .= "<li>Choisir l'Etat de la ligne ".$posted_data['etat_line'].'  '.Mreq::tp('etat_line') ." value </li>";
       $checker = 1;
     }
+    if(!Mmodul::check_exist_service_etat($posted_data['services'], $posted_data['etat_line'], $posted_data['id_task'], null  )){
+
+      $empty_list .= "<li>Un service dispose d'une task_action même etat </li>";
+      $checker = 1;
+    }
     
     
     
@@ -82,7 +87,7 @@ if(MInit::form_verif('addtaskaction', false))
       exit("0#$empty_list");
     }
 
-    
+    exit('0#Test');
   
   //End check empty element
 

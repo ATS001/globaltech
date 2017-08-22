@@ -965,6 +965,25 @@ class Mmodul {
 
 	}
 
+	static public function check_exist_service_etat($services, $etat, $appid, $edit)
+	{
+		global $db;
+        $return = true;
+		foreach ($services as $service) {
+			$edit_check = $edit == null ? 0 : 1;
+			$result = $db->QuerySingleValue0("SELECT COUNT(id) FROM task_action WHERE etat_line = $etat AND service LIKE '%-$service-%' AND appid = $appid AND TYPE = 1  ");
+
+			if ($result != $edit_check) {
+
+				$return = false;
+			}
+		}
+
+		return $return;
+
+
+	}
+
 	/**
 	 * [add_default_task_action Save default Task action for new added task]
 	 * @param [int] $app_id [id of task]
