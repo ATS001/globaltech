@@ -3,16 +3,17 @@ if(MInit::form_verif('addetatrule', false))
 {
 	
   $posted_data = array(
-   'name_task'                 => Mreq::tp('name_task') ,
-   'name_checker_task'         => Mreq::tp('name_checker_task') ,
-   'id_task'                   => Mreq::tp('id_task') ,
-   'app'                       => Mreq::tp('app') ,
-   'id_checker_task'           => Mreq::tp('id_checker_task') ,
-   'description'               => Mreq::tp('description') ,
-   'mode_exec'                 => Mreq::tp('mode_exec') ,
-   'services'                  => Mreq::tp('services') ,
-   
-   'etat_line'                 => Mreq::tp('etat_line') ,
+   'name_task'         => Mreq::tp('name_task') ,
+   'name_checker_task' => Mreq::tp('name_checker_task') ,
+   'id_task'           => Mreq::tp('id_task') ,
+   'app'               => Mreq::tp('app') ,
+   'id_checker_task'   => Mreq::tp('id_checker_task') ,
+   'description'       => Mreq::tp('description') ,
+   'mode_exec'         => Mreq::tp('mode_exec') ,
+   'services'          => Mreq::tp('services') ,
+   'etat_line'         => Mreq::tp('etat_line') ,
+   'etat_desc'         => Mreq::tp('etat_desc') ,
+   'message_class'     => Mreq::tp('message_class') ,
   
   );
 
@@ -51,6 +52,16 @@ if(MInit::form_verif('addetatrule', false))
     if(!in_array($posted_data['etat_line'], array(0,1,2,3,4,5))){
 
       $empty_list .= "<li>Choisir l'Etat de la ligne ".$posted_data['etat_line'].'  '.Mreq::tp('etat_line') ." value </li>";
+      $checker = 1;
+    }
+    if($posted_data['etat_desc'] == NULL){
+
+      $empty_list .= "<li>Choisir Message à Afficher </li>";
+      $checker = 1;
+    }
+    if($posted_data['message_class'] == NULL){
+
+      $empty_list .= "<li>Choisir La couleur du message </li>";
       $checker = 1;
     }
     
