@@ -1,6 +1,6 @@
 <?php 
 //SYS GLOBAL TECH
-// Modul: clients => Controller Action
+// Modul: clients => Controller
 
 defined('_MEXEC') or die;
 if(MInit::form_verif('addcategorie_client',false))
@@ -11,16 +11,17 @@ if(MInit::form_verif('addcategorie_client',false))
    'r_commerce'     => Mreq::tp('r_commerce') ,
    'nom'            => Mreq::tp('nom') ,
    'prenom'         => Mreq::tp('prenom') ,
+   'civilite'       => Mreq::tp('civilite') ,
    'adresse'        => Mreq::tp('adresse') ,
-   'id_ville'       => Mreq::tp('id_ville') ,
    'id_pays'        => Mreq::tp('id_pays') ,
+   'id_ville'       => Mreq::tp('id_ville') ,
    'tel'            => Mreq::tp('tel') ,
    'fax'            => Mreq::tp('fax') ,
    'bp'             => Mreq::tp('bp') ,
-   'email'          => Mreq::tp('email') ,
-   'civilite'       => Mreq::tp('civilite') ,
+   'email'          => Mreq::tp('email') , 
    'id_categorie'   => Mreq::tp('id_categorie') ,
-   'pj_id'          => Mreq::tp('pj-id') 
+   'pj_id'          => Mreq::tp('pj-id'),
+   'pj_photo'       => Mreq::tp('pj_photo')
    );
 
   
@@ -162,6 +163,6 @@ $checker = null;
 
 
 } else {
-  view::load('clients/settings/categorie_client','addcategorie_client');
+  view::load('categorie_client','addcategorie_client');
 }
 ?>
