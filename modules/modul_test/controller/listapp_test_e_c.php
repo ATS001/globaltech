@@ -23,18 +23,16 @@
     // define joint and rtable elation
 	$joint .= " WHERE ref_region.id_pays = ref_pays.id ";
 	// set sherched columns.(the final colm without comma)
-	$colms .= " vsat_stations.id AS id, ";	
-	$colms .= " vsat_stations.nom_station as nom_station, ";
-	$colms .= " permissionnaires.r_social as r_social, ";
-	$colms .= " vsat_stations.utilisation as utilisation, ";
-	$colms .= " DATE_FORMAT(vsat_stations.last_visite,'%d-%m-%Y') as last_visite, ";
+	$colms .= " ref_region.id AS id_region, ";
+	$colms .= " ref_region.region as libelle, ";
+	$colms .= " ref_pays.pays as pays, ";
 
 
 	//difine if user have rule to show line depend of etat 
-	$where_etat_line = TableTools::where_etat_line('vsat_stations', 'vsat');
+	$where_etat_line = TableTools::where_etat_line('ref_region', 'app_test_e');
 	//define notif culomn to concatate with any colms.
 	//this is change style of button action to red
-	$notif_colms = TableTools::line_notif_new('vsat_stations', 'vsat');
+	$notif_colms = TableTools::line_notif_new('ref_region', 'app_test_e');
     $colms .= $notif_colms;
 	
 
@@ -48,12 +46,9 @@
 
 
 
-		$where_s .=" ( vsat_stations.nom_station LIKE '%".$serch_value."%' ";   
-		$where_s .=" OR (vsat_stations.id LIKE '%".$serch_value."%') ";
-		$where_s .=" OR (vsat_stations.utilisation LIKE '%".$serch_value."%') ";
-		$where_s .=" OR (vsat_stations.last_visite LIKE '%".$serch_value."%') ";
-        $where_s .=" OR (permissionnaires.r_social LIKE '%".$serch_value."%' ) "; 
-        $where_s .= TableTools::where_search_etat('vsat_stations', 'vsat', $serch_value);
+		$where_s .=" (ref_region.region LIKE '%".$serch_value."%' ";  
+		 
+        $where_s .= TableTools::where_search_etat('ref_region', 'app_test_e', $serch_value);
                
     }
   
@@ -96,27 +91,7 @@
 	//
     $totalRecords = $db->RowCount();
 
-    //Export data to CSV File
-    if( Mreq::tp('export')==1 )
-    {
-    	
-    	$file_name = 'vsat_list';
-    	$title     = 'Liste Station VSAT ';
-    	if(Mreq::tp('format')=='csv')
-    	{
-    		$header    = array('ID', 'Nom_station', ' Permissionnaire','Utilisation', 'Date visite' ,'Statut');
-    		Minit::Export_xls($header, $file_name, $title);
-    	}elseif(Mreq::tp('format')=='pdf'){
-    		$header    = array('ID'=>5, 'Nom_station'=>25, 'Permissionnaire'=>35,'Service'=>10, 'Date visite'=>15 ,'Statut'=>10);
-    		Minit::Export_pdf($header, $file_name, $title);
-    	}elseif(Mreq::tp('format')=='dat'){
-    		Minit::send_big_param('vsat#'.$sqlTot);
-    	}
-    	  	
-    }
-
-
-    
+        
 	//exit($sqlRec);
     if (!$db->Query($sqlRec)) $db->Kill($db->Error()." SQLREC $sqlRec");
 	//

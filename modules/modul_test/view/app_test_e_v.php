@@ -61,7 +61,7 @@ $(document).ready(function() {
 		notifcol : 3,
 		serverSide: true,
 		
-		ajax_url:"regions",
+		ajax_url:"app_test_e",
 		
 
 
@@ -90,7 +90,7 @@ $('.export_pdf').on('click', function() {
 $('#regions_grid').on('click', 'tr button', function() {
 	var $row = $(this).closest('tr')
 	//alert(table.cell($row, 0).data());
-	append_drop_menu('regions', table.cell($row, 0).data(), '.btn_action')
+	append_drop_menu('app_test_e', table.cell($row, 0).data(), '.btn_action')
 });
 
 

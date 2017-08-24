@@ -87,7 +87,7 @@ if(MInit::form_verif('addtaskaction', false))
       exit("0#$empty_list");
     }
 
-    exit('0#Test');
+   
   
   //End check empty element
 
