@@ -1,3 +1,4 @@
+<<<<<<< HEAD
  <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
 					
@@ -41,3 +42,8 @@ $form->render();
 		</div>
 	</div>
 </div>
+=======
+<?php 
+//SYS GLOBAL TECH
+// Modul: categories_produits => View
+>>>>>>> refs/remotes/origin/last

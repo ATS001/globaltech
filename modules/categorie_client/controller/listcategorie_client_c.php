@@ -1,5 +1,6 @@
-
-<?php
+<?php 
+//SYS GLOBAL TECH
+// Modul: categorie_client => Controller Liste
 	
 	global $db;
 	$params = $columns = $totalRecords = $data = array();
@@ -8,31 +9,27 @@
 
 	//define index of column
 	$columns = array( 
-		0 =>'id_region',
-		1 =>'libelle', 
-		2 =>'pays',
-		3 =>'statut',
-		
+		0 =>'id',
+		1 =>'categorie_client', 
+		2 =>'statut'		
 	);
 		
 
 
 	$colms = $tables = $joint = $where = $where_s = $sqlTot = $sqlRec = "";
     // define used table.
-	$tables .= " ref_region, ref_pays ";
-    // define joint and rtable elation
-	$joint .= " WHERE ref_region.id_pays = ref_pays.id ";
+	$tables .= " categorie_client ";
+	// define joint and rtable elation
+	$joint .=  " where 1=1  ";
 	// set sherched columns.(the final colm without comma)
-	$colms .= " ref_region.id AS id_region, ";
-	$colms .= " ref_region.region as libelle, ";
-	$colms .= " ref_pays.pays as pays, ";
-
+	$colms .= " categorie_client.id AS id, ";	
+	$colms .= " categorie_client.categorie_client as categorie_client, ";
 
 	//difine if user have rule to show line depend of etat 
-	$where_etat_line = TableTools::where_etat_line('ref_region', 'app_test_e');
+	$where_etat_line = TableTools::where_etat_line('categorie_client', 'categorie_client');
 	//define notif culomn to concatate with any colms.
 	//this is change style of button action to red
-	$notif_colms = TableTools::line_notif_new('ref_region', 'app_test_e');
+	$notif_colms = TableTools::line_notif_new('categorie_client', 'categorie_client');
     $colms .= $notif_colms;
 	
 
@@ -46,9 +43,10 @@
 
 
 
-		$where_s .=" (ref_region.region LIKE '%".$serch_value."%' ";  
-		 
-        $where_s .= TableTools::where_search_etat('ref_region', 'app_test_e', $serch_value);
+		$where_s .=" ( categorie_client.categorie_client LIKE '%".$serch_value."%' ";   
+		$where_s .=" OR (categorie_client.id LIKE '%".$serch_value."%') ";
+
+        $where_s .= TableTools::where_search_etat('categorie_client', 'categorie_client', $serch_value);
                
     }
   
@@ -91,7 +89,27 @@
 	//
     $totalRecords = $db->RowCount();
 
-        
+    //Export data to CSV File
+    if( Mreq::tp('export')==1 )
+    {
+    	
+    	$file_name = 'categorie_client_list';
+    	$title     = 'Liste Catégorie Client ';
+    	if(Mreq::tp('format')=='csv')
+    	{
+    		$header    = array('ID', 'Catégorie_Client','Statut');
+    		Minit::Export_xls($header, $file_name, $title);
+    	}elseif(Mreq::tp('format')=='pdf'){
+    		$header    = array('ID'=>10, 'Catégorie_Client'=>45,'Statut'=>45);
+    		Minit::Export_pdf($header, $file_name, $title);
+    	}elseif(Mreq::tp('format')=='dat'){
+    		Minit::send_big_param('vsat#'.$sqlTot);
+    	}
+    	  	
+    }
+
+
+    
 	//exit($sqlRec);
     if (!$db->Query($sqlRec)) $db->Kill($db->Error()." SQLREC $sqlRec");
 	//

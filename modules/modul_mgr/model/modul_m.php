@@ -55,7 +55,7 @@ class Mmodul {
 		$sql = "SELECT modul.*, task.id as id_app, task.app, task.rep as modul_rep, task.sbclass, task_action.etat_desc, task_action.message_class
 		FROM 
 		modul, task, task_action
-		WHERE  task_action.etat_line = 0 AND task_action.app = task.app AND task_action.type = 1 AND modul.app_modul = task.app AND modul.id = ".$this->id_modul;
+		WHERE  task_action.etat_line = 0 AND task_action.app = task.app AND task_action.type = 0 AND modul.app_modul = task.app AND modul.id = ".$this->id_modul;
 		//exit($sql);
 		if(!$db->Query($sql))
 		{
@@ -1012,7 +1012,7 @@ class Mmodul {
 		$values["app"]           = MySQL::SQLValue($this->_data['app']);
 		$values["idf"]           = MySQL::SQLValue(MD5($description . '1'));
 		$values["descrip"]       = MySQL::SQLValue($description);
-		$values["type"]          = MySQL::SQLValue(1);
+		$values["type"]          = MySQL::SQLValue(0);
 		$values["service"]       = MySQL::SQLValue($services);
 		$values["etat_line"]     = MySQL::SQLValue(0);
 		$values["notif"]         = MySQL::SQLValue(0);
@@ -1085,7 +1085,7 @@ class Mmodul {
 		$values["app"]           = MySQL::SQLValue($this->_data['app']);
 		$values["idf"]           = MySQL::SQLValue(MD5($description.'1'));
 		$values["descrip"]       = MySQL::SQLValue($description);
-		$values["type"]          = MySQL::SQLValue(1);
+		$values["type"]          = MySQL::SQLValue(0);
 		$values["etat_line"]     = MySQL::SQLValue(0);
 		$values["notif"]         = MySQL::SQLValue(0);
 		$wheres['appid']         = MySQL::SQLValue($app_id);

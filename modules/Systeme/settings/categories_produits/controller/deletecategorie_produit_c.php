@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <?php
 //Check if Post ID <==> Post idc or get_categorie_produit return false. 
 
@@ -18,3 +19,8 @@ if($info_categorie_produit->delete_categorie_produit())
 } 
 
 ?>
+=======
+<?php 
+//SYS GLOBAL TECH
+// Modul: categories_produits => Controller
+>>>>>>> refs/remotes/origin/last

@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 
 <?php
 defined('_MEXEC') or die;
@@ -45,3 +46,8 @@ if(MInit::form_verif('addcategorie_produit',false))
 } else {
     view::load('categories_produits', 'addcategorie_produit');
 }
+=======
+<?php 
+//SYS GLOBAL TECH
+// Modul: categories_produits => Controller
+>>>>>>> refs/remotes/origin/last
