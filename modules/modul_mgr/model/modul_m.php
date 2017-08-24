@@ -52,10 +52,10 @@ class Mmodul {
 	{
 		global $db;
 
-		$sql = "SELECT modul.*, task.id as id_app, task.app, task.rep as modul_rep, task.sbclass
+		$sql = "SELECT modul.*, task.id as id_app, task.app, task.rep as modul_rep, task.sbclass, task_action.etat_desc, task_action.message_class
 		FROM 
-		modul, task
-		WHERE  modul.app_modul = task.app AND modul.id = ".$this->id_modul;
+		modul, task, task_action
+		WHERE  task_action.etat_line = 0 AND task_action.app = task.app AND task_action.type = 1 AND modul.app_modul = task.app AND modul.id = ".$this->id_modul;
 		//exit($sql);
 		if(!$db->Query($sql))
 		{
@@ -523,7 +523,7 @@ class Mmodul {
 				
 				$this->rename_app_files($folder, $this->modul_info['app_modul'], $this->_data['app']);
 			}
-			$this->edit_default_task_action($id_task, $this->_data['description']);
+			$this->edit_default_task_action($id_task, $this->_data['description'], $this->_data['message_class'], $this->_data['etat_desc']);
 
 		}
 		//check if last error is true then return true else rturn false.
@@ -749,19 +749,21 @@ class Mmodul {
 			$modul_name = $this->modul_info['modul'];
 		    //Format Variabl for DB
 
-			$app       = $this->_data['app'];
-			$file      = $this->_data['app'];
-			$rep       = $this->modul_info['rep_modul'];
-			$modul     = $this->modul_info['modul'];
-			$dscrip    = $this->_data['description'];
-			$sbclass   = $this->_data['sbclass'];
-			$session   = 1;
-			$ajax      = 1;
-			//$app_sys   = $this->_data['app_sys'];
-			$etat      = 0;
-			$type_view = $this->_data['type_view'];
-			$app_base  = false;
-			$services  = $this->modul_info['services'];
+			$app           = $this->_data['app'];
+			$file          = $this->_data['app'];
+			$rep           = $this->modul_info['rep_modul'];
+			$modul         = $this->modul_info['modul'];
+			$dscrip        = $this->_data['description'];
+			$sbclass       = $this->_data['sbclass'];
+			$session       = 1;
+			$ajax          = 1;
+			//$app_sys     = $this->_data['app_sys'];
+			$etat          = 0;
+			$type_view     = $this->_data['type_view'];
+			$app_base      = false;
+			$services      = $this->modul_info['services'];
+			$message_class = $this->_data['message_class'];
+			$etat_desc     = $this->_data['etat_desc'];
 			
 
 
@@ -779,19 +781,21 @@ class Mmodul {
 
 		    //Format Variabl for DB
 
-			$app       = $this->_data['app'];
-			$file      = $this->_data['app'];
-			$rep       = $folder;
-			$modul     = $modul_name;
-			$dscrip    = $this->_data['description'];
-			$sbclass   = $this->_data['sbclass'];
-			$session   = 1;
-			$ajax      = 1;
-			//$app_sys   = 0;
-			$etat      = 0;
-			$type_view = 'list';
-			$app_base  = true;
-			$services  = $services;
+			$app           = $this->_data['app'];
+			$file          = $this->_data['app'];
+			$rep           = $folder;
+			$modul         = $modul_name;
+			$dscrip        = $this->_data['description'];
+			$sbclass       = $this->_data['sbclass'];
+			$session       = 1;
+			$ajax          = 1;
+			//$app_sys     = 0;
+			$etat          = 0;
+			$type_view     = 'list';
+			$app_base      = true;
+			$services      = $services;
+			$message_class = $this->_data['message_class'];
+			$etat_desc     = $this->_data['etat_desc'];
 
 		}
 		
@@ -835,7 +839,7 @@ class Mmodul {
 		    	//creat_task_files($modul_rep, $task_name, $modul_name, $type_view, $app_base)
 		    	$this->creat_task_files($rep, $app, $modul_name, $type_view, $app_base);
 		    	//Creat default task Action
-		    	if($this->error == true && $this->add_default_task_action($result, $dscrip))
+		    	if($this->error == true && $this->add_default_task_action($result, $dscrip, $message_class, $etat_desc))
 		    	{
 		    		$this->log .='</br>Enregistrement réussie';
 		    	}else{
@@ -991,7 +995,7 @@ class Mmodul {
 	 * @return [fit error]           [fit Error variable]
 	 */
 
-    public function add_default_task_action($app_id, $description)
+    public function add_default_task_action($app_id, $description, $message_class, $etat_desc)
     {
     	
 
@@ -1000,17 +1004,21 @@ class Mmodul {
         $services = json_encode($this->_data['services']);
         $services = str_replace('"', '-', $services);
         $services = str_replace('-,-', '-', $services);
+        $message = '<span class="label label-sm label-'.$this->_data['message_class'] .'">'.$this->_data['etat_desc'].'</span>';
 
 		global $db;
-		//$service           = '-'.session::get('service').'-';
-		$values["appid"]     = MySQL::SQLValue($app_id);
-		$values["app"]       = MySQL::SQLValue($this->_data['app']);
-		$values["idf"]       = MySQL::SQLValue(MD5($description . '1'));
-		$values["descrip"]   = MySQL::SQLValue($description);
-		$values["type"]      = MySQL::SQLValue(1);
-		$values["service"]   = MySQL::SQLValue($services);
-		$values["etat_line"] = MySQL::SQLValue(1);
-		$values["notif"]     = MySQL::SQLValue(0);
+		//$service               = '-'.session::get('service').'-';
+		$values["appid"]         = MySQL::SQLValue($app_id);
+		$values["app"]           = MySQL::SQLValue($this->_data['app']);
+		$values["idf"]           = MySQL::SQLValue(MD5($description . '1'));
+		$values["descrip"]       = MySQL::SQLValue($description);
+		$values["type"]          = MySQL::SQLValue(1);
+		$values["service"]       = MySQL::SQLValue($services);
+		$values["etat_line"]     = MySQL::SQLValue(0);
+		$values["notif"]         = MySQL::SQLValue(0);
+		$values["message_class"] = MySQL::SQLValue($message_class);
+		$values["etat_desc"]     = MySQL::SQLValue($etat_desc);
+		$values["message_etat"]  = MySQL::SQLValue($message);
 		
 		
 		//check if package required stop Insert
@@ -1057,39 +1065,40 @@ class Mmodul {
 	 * @return [fit error]           [fit Error variable]
 	 */
 
-    public function edit_default_task_action($app_id, $description)
+    public function edit_default_task_action($app_id, $description, $message_class, $etat_desc)
     {
     	
 
 		
        //Befor execute do the multiple check
-        
-
-
-		global $db;
-		//$service           = '-'.session::get('service').'-';
-		$values["appid"]     = MySQL::SQLValue($app_id);
-		$values["app"]       = MySQL::SQLValue($this->_data['app']);
-		$values["idf"]       = MySQL::SQLValue(MD5($description.'1'));
-		$values["descrip"]   = MySQL::SQLValue($description);
-		$values["type"]      = MySQL::SQLValue(1);
-		if($this->_data['services'] !=Null){
+        $message = '<span class="label label-sm label-'.$this->_data['message_class'] .'">'.$this->_data['etat_desc'].'</span>';
+        if($this->_data['services'] !=Null){
 			$services = json_encode($this->_data['services']);
             $services = str_replace('"', '-', $services);
             $services = str_replace('-,-', '-', $services);
 			$values["service"]   = MySQL::SQLValue($services);
 		}
+
 		
-		$values["etat_line"] = MySQL::SQLValue(1);
-		$values["notif"]     = MySQL::SQLValue(0);
-		$wheres['appid']     = MySQL::SQLValue($app_id);
-		$wheres["type"]      = MySQL::SQLValue(1);
+		//$service               = '-'.session::get('service').'-';
+		$values["appid"]         = MySQL::SQLValue($app_id);
+		$values["app"]           = MySQL::SQLValue($this->_data['app']);
+		$values["idf"]           = MySQL::SQLValue(MD5($description.'1'));
+		$values["descrip"]       = MySQL::SQLValue($description);
+		$values["type"]          = MySQL::SQLValue(1);
+		$values["etat_line"]     = MySQL::SQLValue(0);
+		$values["notif"]         = MySQL::SQLValue(0);
+		$wheres['appid']         = MySQL::SQLValue($app_id);
+		$wheres["type"]          = MySQL::SQLValue(1);
+		$values["etat_desc"]     = MySQL::SQLValue($etat_desc);
+		$values["message_class"] = MySQL::SQLValue($message_class);
+		$values["message_etat"]  = MySQL::SQLValue($etat_desc);
 		
 		//check if package required stop Insert
 		//$this->check_file('pkg', 'Le Package de module.');
 
 		
-
+        global $db;
         // If we have an error
 		if($this->error == true){
 
@@ -1400,14 +1409,17 @@ class Mmodul {
         $services = json_encode($this->_data['services']);
         $services = str_replace('"', '-', $services);
         $services = str_replace('-,-', '-', $services);
-        
+        $message = '<span class="label label-sm label-'.$this->_data['message_class'] .'">'.$this->_data['etat_desc'].'</span>';
         global $db;
-		$values["appid"]       = MySQL::SQLValue($this->_data['id_task']);
-		$values["descrip"]     = MySQL::SQLValue($this->_data['description']);
-		$values["type"]        = MySQL::SQLValue(1);
-		$values["service"]     = MySQL::SQLValue($services);
-		$values["etat_line"]   = MySQL::SQLValue($this->_data['etat_line']);
-		$values["idf"]         = MySQL::SQLValue(MD5($this->_data['description'].$this->_data['etat_line']));
+		$values["appid"]         = MySQL::SQLValue($this->_data['id_task']);
+		$values["descrip"]       = MySQL::SQLValue($this->_data['description']);
+		$values["type"]          = MySQL::SQLValue(1);
+		$values["service"]       = MySQL::SQLValue($services);
+		$values["etat_line"]     = MySQL::SQLValue($this->_data['etat_line']);
+		$values["idf"]           = MySQL::SQLValue(MD5($this->_data['description'].$this->_data['etat_line']));
+		$values["etat_desc"]     = MySQL::SQLValue($this->_data['etat_desc']);
+		$values["message_class"] = MySQL::SQLValue($this->_data['message_class']);
+		$values["message_etat"]  = MySQL::SQLValue($message);
 		
 	
 

@@ -78,6 +78,11 @@ $form->select_table('Services', 'services[]', 10, 'services','id', 'service', 's
 //$sbclass_array[]  = array('regex', 'true', 'Insérer Classe Valid' );
 $sbclass_array[]  = array('minlength', '2', 'Minimum 3 caractères' );
 $form->input('Class TDB', 'sbclass', 'text', 6 ,null , $sbclass_array);
+//Message dans la liste
+$form->input('Message à afficher', 'etat_desc', 'text' ,6 , null, $desc_array);
+//Style Message
+$message_style = array('success' => 'Vert', 'warning' => 'Orange', 'danger' => 'Rouge', 'info' => 'Bleu', 'inverse' => 'Noire' );
+$form->select('Type Message', 'message_class', 3, $message_style, $indx = NULL ,$selected = NULL );
 //Button submit 
 $form->button('Enregistrer Application');
 //Add JS function if need

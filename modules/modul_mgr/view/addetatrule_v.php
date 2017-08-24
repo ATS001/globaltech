@@ -62,7 +62,11 @@ $form->select_table('Services', 'services[]', 9, 'services','id', 'service', 'se
 //Etat de ligne
 //select_count($input_desc, $input_id, $input_class, $count, $indx = NULL ,$selected = NULL )
 $form->select_count('Etat de la ligne', 'etat_line', 2, 5, $indx = NULL ,$selected = NULL );
-
+//Message dans la liste
+$form->input('Message à afficher', 'etat_desc', 'text' ,6 , null, $desc_array);
+//Style Message
+$message_style = array('success' => 'Vert', 'warning' => 'Orange', 'danger' => 'Rouge', 'info' => 'Bleu', 'inverse' => 'Noire' );
+$form->select('Type Message', 'message_class', 3, $message_style, $indx = NULL ,$selected = NULL );
 //Button submit 
 $form->button('Enregistrer Autorisation WF');
 //Add JS function if need
