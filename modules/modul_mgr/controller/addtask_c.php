@@ -3,14 +3,16 @@ if(MInit::form_verif('addtask', false))
 {
 	
   $posted_data = array(
-   'description'               => Mreq::tp('description') ,
-   'app'                       => Mreq::tp('app') ,
+   'description'      => Mreq::tp('description') ,
+   'app'              => Mreq::tp('app') ,
   // 'app_sys'                   => Mreq::tp('app_sys') ,
-   'type_view'                 => Mreq::tp('type_view') ,
-   'id_checker_modul'          => Mreq::tp('id_checker_modul') ,
-   'id_modul'                  => Mreq::tp('id_modul') ,
-   'services'                  => Mreq::tp('services') ,
-   'sbclass'                   => Mreq::tp('sbclass') ,
+   'type_view'        => Mreq::tp('type_view') ,
+   'id_checker_modul' => Mreq::tp('id_checker_modul') ,
+   'id_modul'         => Mreq::tp('id_modul') ,
+   'services'         => Mreq::tp('services') ,
+   'sbclass'          => Mreq::tp('sbclass') ,
+   'etat_desc'        => Mreq::tp('etat_desc') ,
+   'message_class'    => Mreq::tp('message_class') ,
 
    );
 
@@ -40,6 +42,16 @@ if(MInit::form_verif('addtask', false))
   if($posted_data['description'] == NULL){
 
     $empty_list .= "<li>Déscription</li>";
+    $checker = 1;
+  }
+  if($posted_data['etat_desc'] == NULL){
+
+    $empty_list .= "<li>Choisir Message à Afficher </li>";
+    $checker = 1;
+  }
+  if($posted_data['message_class'] == NULL){
+
+    $empty_list .= "<li>Choisir La coleur du message </li>";
     $checker = 1;
   }
  /* if(!in_array($posted_data['app_sys'],  array(0,1))){
