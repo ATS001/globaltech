@@ -1,8 +1,7 @@
-<<<<<<< HEAD
  <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
 					
-		<?php TableTools::btn_add('categories','Liste des catégories', Null, $exec = NULL, 'reply'); ?>
+		<?php TableTools::btn_add('categories_produits','Liste des catégories', Null, $exec = NULL, 'reply'); ?>
 					
 	</div>
 </div>
@@ -28,12 +27,13 @@
 				
 <?php
 
-$form = new Mform('addcategorie_produit', 'addcategorie_produit', '', 'categories', '0');
+$form = new Mform('addcategorie_produit', 'addcategorie_produit', '', 'categories_produits', '0');
 
 //Catégorie de produit
 $cat_prod_array[]  = array('required', 'true', 'Insérez une catégorie' );
 $form->input('Catégorie', 'categorie_produit', 'text' ,6, null, $cat_prod_array);
 
+$form->button('Enregistrer la catégorie');
 
 //Form render
 $form->render();
@@ -42,8 +42,3 @@ $form->render();
 		</div>
 	</div>
 </div>
-=======
-<?php 
-//SYS GLOBAL TECH
-// Modul: categories_produits => View
->>>>>>> refs/remotes/origin/last

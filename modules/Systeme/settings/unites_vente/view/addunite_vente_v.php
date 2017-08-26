@@ -33,6 +33,7 @@ $form = new Mform('addunite_vente', 'addunite_vente', '', 'unites_vente', '0');
 $unite_vente_array[]  = array('required', 'true', 'Insérez une unité de vente' );
 $form->input('Unité de vente', 'unite_vente', 'text' ,6, null, $unite_vente_array);
 
+$form->button('Enregistrer unité');
 
 //Form render
 $form->render();

@@ -1,3 +1,8 @@
-<?php 
-//SYS GLOBAL TECH
-// Modul: categories_produits => Controller
+<?php
+//Call Liste societés
+
+view::load('Systeme/settings/categories_produits','categories_produits');
+
+
+?>
+
