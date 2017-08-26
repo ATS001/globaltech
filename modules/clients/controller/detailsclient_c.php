@@ -2,7 +2,4 @@
 //SYS GLOBAL TECH
 // Modul: clients => Controller
 
-
-view::load('clients','clients');
-
-?>
+view::load('clients', 'detailsclient');

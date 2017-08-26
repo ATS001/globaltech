@@ -208,6 +208,7 @@ class Mcategorie_client {
     	$this->get_categorie_client();
 
     	$this->last_id = $this->id_categorie_client;
+        //var_dump($this->id_categorie_client);
 
 		// check categorie_client
     	$this->Check_exist('categorie_client', $this->_data['categorie_client'], 'Catégorie Client', $this->id_categorie_client);

@@ -43,7 +43,7 @@ $form->step_start(1, 'Informations catégorie client');
 //Titre bloc 
 //$form->bloc_title('Informations pays');
 //pays
-$cat_array[]  = array('required', 'true', 'Insérer le pays' );
+$cat_array[]  = array('required', 'true', 'Insérer la catégorie' );
 $cat_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
 $cat_array[]  = array('remote', 'categorie_client#categorie_client#categorie_client', 'Cette catégorie existe déja' );
 $form->input('Catégorie Client', 'categorie_client', 'text' ,6 , null, $cat_array);
