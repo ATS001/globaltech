@@ -119,6 +119,7 @@ class Mmodul {
 		, `task_action`.`appid` AS app_id
 		, `task_action`.`idf` AS idf
 		, `task_action`.`type`  AS type
+		, `task_action`.`code`  AS code
 		, `task_action`.`etat_line`  AS etat_line
 		, `task_action`.`id`    AS action_id
 		,(
