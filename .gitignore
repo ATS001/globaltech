@@ -13,6 +13,3 @@ upload/
 *.xlsx
 *.pdf
 *.log
-
-*.sublime-workspace
-sql_req/import/clients_script_export.php
