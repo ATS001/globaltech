@@ -184,22 +184,24 @@ class Export_modul extends Mmodul
 				$actions_array = $db->RecordsArray();
 
 				foreach ($actions_array as $row){
-					$action_id = $row['id'];
-					$appid     = $row['appid'];
-					$idf       = MySQL::SQLValue($row['idf']);
-					$descrip   = MySQL::SQLValue($row['descrip']);
-					$code      = MySQL::SQLValue($row['code']);
-					$code      = $code == NULL ? '' : '".'.$code.'."';
-					$type      = MySQL::SQLValue($row['type']);
-					$service   = MySQL::SQLValue($row['service']);
-					$etat_line = MySQL::SQLValue($row['etat_line']);
-					$notif     = MySQL::SQLValue($row['notif']);
-					$etat_desc = MySQL::SQLValue($row['etat_desc']);
+					$action_id     = $row['id'];
+					$appid         = $row['appid'];
+					$idf           = MySQL::SQLValue($row['idf']);
+					$descrip       = MySQL::SQLValue($row['descrip']);
+					$code          = MySQL::SQLValue($row['code']);
+					$code          = $code == NULL ? '' : '".'.$code.'."';
+					$type          = MySQL::SQLValue($row['type']);
+					$service       = MySQL::SQLValue($row['service']);
+					$etat_line     = MySQL::SQLValue($row['etat_line']);
+					$notif         = MySQL::SQLValue($row['notif']);
+					$etat_desc     = MySQL::SQLValue($row['etat_desc']);
+					$message_etat  = MySQL::SQLValue($row['message_etat']);
+					$message_class = MySQL::SQLValue($row['message_class']);
 
 					
 
 					$content  .= '      // Action Task '.$appid.' - '.$descrip.PHP_EOL;
-					$content  .= '      if(!$result_action_'.$action_id.' = $db->Query("INSERT INTO task_action (appid, idf, descrip, code, type, service, etat_line, notif, etat_desc)VALUES($result_task_'.$task_id.', '.$idf.', '.$descrip.', \''.$code.'\', '.$type.', '.$service.', '.$etat_line.', '.$notif.', '.$etat_desc.')")){$this->error = false; $this->log .= "<li> Error Import task_action '.$descrip.' </li>";}'. PHP_EOL; 
+					$content  .= '      if(!$result_action_'.$action_id.' = $db->Query("INSERT INTO task_action (appid, idf, descrip, code, type, service, etat_line, notif, etat_desc, message_class, message_etat)VALUES($result_task_'.$task_id.', '.$idf.', '.$descrip.', \''.$code.'\', '.$type.', '.$service.', '.$etat_line.', '.$notif.', '.$etat_desc.','.$message_class.','.$message_etat.')")){$this->error = false; $this->log .= "<li> Error Import task_action '.$descrip.' </li>";}'. PHP_EOL; 
 				}
 				
 				$this->list_action_of_task = null;

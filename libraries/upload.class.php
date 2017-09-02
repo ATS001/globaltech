@@ -4653,18 +4653,39 @@ class Mupload {
 
     function delete_file($file) {
         global $db;
-        if(is_numeric($file))
+
+        //Get all file info from Archive Table
+        $sql_get_file_info = "SELECT * FROM archive WHERE id = $file ";
+        if(!$db->Query($sql_get_file_info))
+        {
+            exit("0#Suppression Impossible (DB)"); // Stop All
+        }else{
+            if(!$db->RowCount()) 
+            {
+                exit("0#Suppression Impossible (DB)"); // Stop All
+            }else{
+                $file_info = $db->RowArray();
+            }
+                       
+        }
+        $file_link = $file_info['doc'];
+        $table     = $file_info['table'];
+        $idm       = $file_info['idm'];
+
+
+        /*if(is_numeric($file))
         {
            $file_link =  $db->QuerySingleValue0("Select doc from archive where id = ".$file); 
        }else{
            $file_link = $file;
-       }
+       }*/
         
 
         if(file_exists($file_link) && unlink($file_link)){
 
             if($this->stop_all == true){
-                $db->Query('delete from archive where id = '.$file);
+                $db->Query("DELETE FROM archive WHERE id = $file"); // Remove from Archive Table
+                $db->Query("UPDATE $table SET pj = NULL WHERE idm = $idm");//Updt PJ into Modul Table
                 exit("1#Suppresion ok");
             }else{
                 $this->log .= '<b>Delete</b><br />';

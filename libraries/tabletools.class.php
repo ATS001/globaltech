@@ -240,6 +240,7 @@ WHERE users_sys.id = $userid
                             task_action.`message_etat`,
                             '<input type=hidden value=isnotif>'
                           ) 
+                          WHEN task_action.`message_etat` IS NULL THEN 'No ETAT'
                           ELSE CONCAT(task_action.`message_etat`) 
                         END ";
         }
