@@ -189,14 +189,14 @@ class Export_modul extends Mmodul
 					$idf                   = MySQL::SQLValue($row['idf']);
 					$descrip               = MySQL::SQLValue($row['descrip']);
 					$code                  = MySQL::SQLValue($row['code']);
-					$code                  = $code == NULL ? '' : '".'.$code.'."';
+					$code                  = $code == NULL ? ' ' : '".'.$code.'."';
 					$type                  = MySQL::SQLValue($row['type']);
 					$service               = MySQL::SQLValue($row['service']);
 					$etat_line             = MySQL::SQLValue($row['etat_line']);
 					$notif                 = MySQL::SQLValue($row['notif']);
 					$etat_desc             = MySQL::SQLValue($row['etat_desc']);
 					$message_etat          = MySQL::SQLValue($row['message_etat']);
-					$message_etat          = $message_etat == NULL ? '' : '".'.$message_etat.'."';
+					$message_etat          = $message_etat == NULL ? ' ' : '".'.$message_etat.'."';
 					$message_class         = MySQL::SQLValue($row['message_class']);
 
 					
