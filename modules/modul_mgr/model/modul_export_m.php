@@ -184,19 +184,20 @@ class Export_modul extends Mmodul
 				$actions_array = $db->RecordsArray();
 
 				foreach ($actions_array as $row){
-					$action_id     = $row['id'];
-					$appid         = $row['appid'];
-					$idf           = MySQL::SQLValue($row['idf']);
-					$descrip       = MySQL::SQLValue($row['descrip']);
-					$code          = MySQL::SQLValue($row['code']);
-					$code          = $code == NULL ? '' : '".'.$code.'."';
-					$type          = MySQL::SQLValue($row['type']);
-					$service       = MySQL::SQLValue($row['service']);
-					$etat_line     = MySQL::SQLValue($row['etat_line']);
-					$notif         = MySQL::SQLValue($row['notif']);
-					$etat_desc     = MySQL::SQLValue($row['etat_desc']);
-					$message_etat  = MySQL::SQLValue($row['message_etat']);
-					$message_class = MySQL::SQLValue($row['message_class']);
+					$action_id             = $row['id'];
+					$appid                 = $row['appid'];
+					$idf                   = MySQL::SQLValue($row['idf']);
+					$descrip               = MySQL::SQLValue($row['descrip']);
+					$code                  = MySQL::SQLValue($row['code']);
+					$code                  = $code == NULL ? '' : '".'.$code.'."';
+					$type                  = MySQL::SQLValue($row['type']);
+					$service               = MySQL::SQLValue($row['service']);
+					$etat_line             = MySQL::SQLValue($row['etat_line']);
+					$notif                 = MySQL::SQLValue($row['notif']);
+					$etat_desc             = MySQL::SQLValue($row['etat_desc']);
+					$message_etat          = MySQL::SQLValue($row['message_etat']);
+					$message_etat          = $message_etat == NULL ? '' : '".'.$message_etat.'."';
+					$message_class         = MySQL::SQLValue($row['message_class']);
 
 					
 
