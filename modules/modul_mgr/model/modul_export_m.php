@@ -201,7 +201,7 @@ class Export_modul extends Mmodul
 					
 
 					$content  .= '      // Action Task '.$appid.' - '.$descrip.PHP_EOL;
-					$content  .= '      if(!$result_action_'.$action_id.' = $db->Query("INSERT INTO task_action (appid, idf, descrip, code, type, service, etat_line, notif, etat_desc, message_class, message_etat)VALUES($result_task_'.$task_id.', '.$idf.', '.$descrip.', \''.$code.'\', '.$type.', '.$service.', '.$etat_line.', '.$notif.', '.$etat_desc.','.$message_class.','.$message_etat.')")){$this->error = false; $this->log .= "<li> Error Import task_action '.$descrip.' </li>";}'. PHP_EOL; 
+					$content  .= '      if(!$result_action_'.$action_id.' = $db->Query("INSERT INTO task_action (appid, idf, descrip, code, type, service, etat_line, notif, etat_desc, message_class, message_etat)VALUES($result_task_'.$task_id.', '.$idf.', '.$descrip.', \''.$code.'\', '.$type.', '.$service.', '.$etat_line.', '.$notif.', '.$etat_desc.','.$message_class.',\''.$message_etat.'\')")){$this->error = false; $this->log .= "<li> Error Import task_action '.$descrip.' </li>";}'. PHP_EOL; 
 				}
 				
 				$this->list_action_of_task = null;
