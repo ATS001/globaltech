@@ -188,8 +188,10 @@ class Export_modul extends Mmodul
 					$appid                 = $row['appid'];
 					$idf                   = MySQL::SQLValue($row['idf']);
 					$descrip               = MySQL::SQLValue($row['descrip']);
+					$app                   = MySQL::SQLValue($row['app']);
+					$mode_exec             = MySQL::SQLValue($row['mode_exec']);
 					$code                  = MySQL::SQLValue($row['code']);
-					$code                  = $code == NULL ? ' ' : '".'.$code.'."';
+					$code                  = $code == NULL ? '' : '".'.$code.'."';
 					$type                  = MySQL::SQLValue($row['type']);
 					$service               = MySQL::SQLValue($row['service']);
 					$etat_line             = MySQL::SQLValue($row['etat_line']);
@@ -202,7 +204,7 @@ class Export_modul extends Mmodul
 					
 
 					$content  .= '      // Action Task '.$appid.' - '.$descrip.PHP_EOL;
-					$content  .= '      if(!$result_action_'.$action_id.' = $db->Query("INSERT INTO task_action (appid, idf, descrip, code, type, service, etat_line, notif, etat_desc, message_class, message_etat)VALUES($result_task_'.$task_id.', '.$idf.', '.$descrip.', \''.$code.'\', '.$type.', '.$service.', '.$etat_line.', '.$notif.', '.$etat_desc.','.$message_class.',\''.$message_etat.'\')")){$this->error = false; $this->log .= "<li> Error Import task_action '.$descrip.' </li>";}'. PHP_EOL; 
+					$content  .= '      if(!$result_action_'.$action_id.' = $db->Query("INSERT INTO task_action (appid, idf, descrip, app, mode_exec, code, type, service, etat_line, notif, etat_desc, message_class, message_etat)VALUES($result_task_'.$task_id.', '.$idf.', '.$descrip.','.$app.', '.$mode_exec.', \''.$code.'\', '.$type.', '.$service.', '.$etat_line.', '.$notif.', '.$etat_desc.','.$message_class.',\''.$message_etat.'\')")){$this->error = false; $this->log .= "<li> Error Import task_action '.$descrip.' </li>";}'. PHP_EOL; 
 				}
 				
 				$this->list_action_of_task = null;
