@@ -14,6 +14,7 @@ $task->get_task_action();
 
 
 	echo '<li><a href="#" class="this_url"  data="'.$idc.'" rel="edittaskaction" ><i class="ace-icon fa fa-pencil bigger-100"></i> Editer Task Action </a></li>';
+	echo '<li><a href="#" class="this_url"  data="'.$idc.'" rel="dupliqtaskaction" ><i class="ace-icon fa fa-pencil bigger-100"></i> Dupliquer Task Action </a></li>';
 	echo '<li><a href="#" class="this_exec"  data="'.$idc.'" rel="deletetaskaction" ><i class="ace-icon fa fa-pencil bigger-100"></i> Supprimer Task Action </a></li>';
 
 ?>

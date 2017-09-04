@@ -10,17 +10,15 @@
 	//define index of column
 	$columns = array( 
 		0   => 'id_service',
-		//1 => 'photo',
 		1   => 'service',
 		2   => 'count_memb',
 		3   => 'sign',
-		3   => 'statut',
+		4   => 'statut',
 				
 	);
 
 	//Format all variables
-
-	$colms = $tables = $joint = $where = $sqlTot = $sqlRec = $where_etat_line = NULL;
+    $colms = $tables = $joint = $where = $where_s = $sqlTot = $sqlRec = NULL;
     // define used table.
 	$tables .= " services  ";
     // define joint and rtable elation
@@ -40,57 +38,32 @@
 	
 	//define notif culomn to concatate with any colms.
 	//this is change style of button action to red
-	$notif_colms = TableTools::line_notif('services', 'services');
-	
-	//Format this column depend of data draw export or datatable.
-	if(Mreq::tp('export')==1)
-	{
-		$colms .= " CONCAT(CASE services.etat 
-                WHEN '0' THEN 'Inactif'
-                WHEN '1' THEN 'Active'
-                ELSE ' ' END
-                ,
-                ' ') as statut ";
-	}else{
-
-		$colms .= " CONCAT(CASE services.etat 
-                WHEN '0' THEN '<span class=\"label label-sm label-warning\">Inactif</span>'
-                WHEN '1' THEN '<span class=\"label label-sm label-success\">Active</span>'
-                ELSE ' ' END
-                ,
-                $notif_colms 
-                ) as statut ";
-	}
-	
-	       
+	$notif_colms = TableTools::line_notif_new('services', 'services');
+	$colms .= $notif_colms;
+		       
 	// check search value exist
 	if( !empty($params['search']['value']) ) {
 
 		$serch_value = str_replace('+',' ',$params['search']['value']);
         //Format where in case joint isset  
-	    $where .= $joint == NULL? " WHERE " : " AND ";
+	    $where_s .= $joint == NULL? " WHERE " : " AND ";
 
-
-
-
-		//$where .=" ( CONCAT(radcheck.nom,' ',radcheck.prenom) LIKE '%".$serch_value."%' ";  
-            $where .=" (services.service LIKE '%".$serch_value."%' ";
-		//$where .=" OR services.sign LIKE '%".$serch_value."%' ";
-                 $where .=" OR services.id LIKE '%".$serch_value."%' ";
-                $where .=" OR CASE services.etat 
-                WHEN '0' THEN 'Inactif'
-                WHEN '1' THEN 'Active'
-                END LIKE '%".$serch_value."%' )";
+        $where_s      .= " (services.service LIKE '%".$serch_value."%' ";
+		
+        $where_s .= " OR services.id LIKE '%".$serch_value."%' ";
+        $where_s .= TableTools::where_search_etat('services', 'services', $serch_value);
 
 	}
+	$where = $where == NULL ? NULL : $where;
 
 	/**
 	 * Check if Query have JOINT then format WHERE puting WHERE 1=1 before where_etat_line
 	 * Check if Search active then and non JOINT format WHERE puting WHERE 1=1 before where_etat_line
 	 */
 	
-	//$where_etat_line =  $joint == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
-	$where_etat_line =  $where == NULL && $joint == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
+	$where_etat_line =  $joint == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
+	$where_etat_line =  $where_s == NULL && $joint == NULL ? "  ".$where_etat_line : $where_etat_line;
+	
 	$where .= $where_etat_line;
 
 	// getting total number records without any search
@@ -108,7 +81,7 @@
 	//if we use notification we must ordring lines by nofication rule in first
 	//Change ('notif', status) with ('notif', column where notif code is concated)
 	//on case of order by other parametre this one is disabled 
-    $order_notif = $params['order'][0]['column'] == 0 ? " CASE WHEN LOCATE('notif', statut) = 0  THEN 0 ELSE 1 END DESC ," : NULL;
+    $order_notif = TableTools::order_bloc($params['order'][0]['column']);
 
     
 
