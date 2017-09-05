@@ -36,7 +36,7 @@
 	$colms .= " modul.description, ";
 	//$colms .= " users_sys.active as statut ";
 	$colms .= " modul.app_modul, ";
-	$colms .= " CASE modul.is_setting WHEN 0 THEN 'Normal' ElSE 'Paramétrage' END as setting ,  ";
+	$colms .= " CASE modul.is_setting WHEN 0 THEN 'Base' WHEN 1 THEN 'Paramétrage' ElSE 'Sous Modul' END as setting ,  ";
 	$colms .= " modul.modul_setting ";
 
 

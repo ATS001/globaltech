@@ -15,7 +15,7 @@
 					
 					<?php 
 					TableTools::btn_add('addmodul', 'Ajouter Module');
-					TableTools::btn_add('addmodulsetting', 'Ajouter Module Paramétrage', Null, Null, 'cogs');
+					TableTools::btn_add('addmodulsetting', 'Ajouter Sous Module ', Null, Null, 'cogs');
 					TableTools::btn_add('importmodul', 'Importer Module', Null, 1, 'download');
 					TableTools::btn_csv('modul','Exporter Liste');
 					TableTools::btn_pdf('modul','Exporter Liste');

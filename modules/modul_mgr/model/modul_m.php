@@ -321,9 +321,9 @@ class Mmodul {
         $services = str_replace('-,-', '-', $services);
 
         //Format modulfolder
-        $folder = $this->_data['is_setting'] == 0 ? $this->_data['modul'] : $this->_data['modul_setting'].SLASH.'settings'.SLASH.$this->_data['modul'];
+        $folder = $this->_data['is_setting'] == 0 ? $this->_data['modul'] : $this->_data['modul_setting'].SLASH.'submodul'.SLASH.$this->_data['modul'];
         //exit($folder);
-
+        
 		global $db;
 		$values["modul"]         = MySQL::SQLValue($this->_data['modul']);
 		$values["rep_modul"]     = MySQL::SQLValue($folder);
@@ -413,7 +413,7 @@ class Mmodul {
 		}
          
 		//Format modulfolder
-        $folder = $this->_data['is_setting'] == 0 ? $this->_data['modul'] : $this->_data['modul_setting'].SLASH.'settings'.SLASH.$this->_data['modul'];
+        $folder = $this->_data['is_setting'] == 0 ? $this->_data['modul'] : $this->_data['modul_setting'].SLASH.'submodul'.SLASH.$this->_data['modul'];
 
 		global $db;
 		$values["modul"]         = MySQL::SQLValue($this->_data['modul']);
@@ -486,7 +486,7 @@ class Mmodul {
 
 	private function edit_task_from_edit_modul($id_task, $id_modul, $services)
 	{
-		$folder = $this->_data['is_setting'] == 0 ? $this->_data['modul'] : $this->_data['modul_setting'].SLASH.'settings'.SLASH.$this->_data['modul'];
+		$folder = $this->_data['is_setting'] == 0 ? $this->_data['modul'] : $this->_data['modul_setting'].SLASH.'submodul'.SLASH.$this->_data['modul'];
 
 
 
@@ -777,7 +777,7 @@ class Mmodul {
             $services = str_replace('"', '-', $services);
             $services = str_replace('-,-', '-', $services);
             //Format modulfolder
-            $folder = $this->_data['is_setting'] == 0 ? $this->_data['modul'] : $this->_data['modul_setting'].SLASH.'settings'.SLASH.$this->_data['modul'];
+            $folder = $this->_data['is_setting'] == 0 ? $this->_data['modul'] : $this->_data['modul_setting'].SLASH.'submodul'.SLASH.$this->_data['modul'];
 			
 
 		    //Format Variabl for DB

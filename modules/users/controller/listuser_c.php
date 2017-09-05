@@ -23,7 +23,7 @@
     // define used table.
 	$tables .= " users_sys, services ";
     // define joint and rtable elation
-	$joint .= " WHERE services.id = users_sys.service ";
+	$joint .= " AND services.id = users_sys.service ";
 	// set sherched columns.(the final colm without comma)
 	$colms .= " users_sys.id AS id_user, ";
 
@@ -32,24 +32,24 @@
 	$colms .= " CONCAT(users_sys.lnom,'  ',users_sys.fnom) as nom, ";
 	$colms .= " services.service as service, ";
 
-	//difine if user have rule to show line depend of etat 
-	$where_etat_line = TableTools::where_etat_line('users_sys', 'user');
+	
 	
 	//define notif culomn to concatate with any colms.
 	//this is change style of button action to red
 	$notif_colms = TableTools::line_notif_new('users_sys', 'user');
 	$colms .= $notif_colms;
-	
+	//difine if user have rule to show line depend of etat 
+	$where_etat_line = TableTools::where_etat_line('users_sys', 'user');
 	    
 	// check search value exist
 	if( !empty($params['search']['value']) ) {
 
 		$serch_value = str_replace('+',' ',$params['search']['value']);
         //Format where in case joint isset  
-	    $where_s .= $joint == NULL? " WHERE " : " AND ";
+	    //$where_s .= $joint == NULL? " WHERE " : " AND ";
 
 
-		$where_s .=" ( CONCAT(users_sys.lnom,' ',users_sys.fnom) LIKE '%".$serch_value."%' ";    
+		$where_s .=" AND ( CONCAT(users_sys.lnom,' ',users_sys.fnom) LIKE '%".$serch_value."%' ";    
 		$where_s .=" OR services.service LIKE '%".$serch_value."%' ";
         $where_s .=" OR users_sys.id LIKE '%".$serch_value."%' ";
         $where_s .= TableTools::where_search_etat('users_sys', 'user', $serch_value);
@@ -59,25 +59,27 @@
 	}
 	//var_dump($where);
 
-	$where = $where == NULL ? NULL : $where;
+	//$where = $where == NULL ? NULL : $where;
 	
 	/**
 	 * Check if Query have JOINT then format WHERE puting WHERE 1=1 before where_etat_line
 	 * Check if Search active then and non JOINT format WHERE puting WHERE 1=1 before where_etat_line
 	 */
 	
-	$where_etat_line =  $joint == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
-	$where_etat_line =  $where_s == NULL && $joint == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
+	//$where_etat_line =  $joint == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
+	//$where_etat_line =  $where_s == NULL && $joint == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
 	
 	$where .= $where_etat_line;
+	$where .= $joint;
+	$where .= $where_s == NULL ? NULL : $where_s;
 
 
 	// getting total number records without any search
-	$sql = "SELECT $colms  FROM  $tables $joint ";
+	$sql = "SELECT $colms  FROM  $tables  ";
 	$sqlTot .= $sql;
 	$sqlRec .= $sql;
 	//concatenate search sql if value exist
-	if(isset($where) && $where != '') {
+	if(isset($where) && $where != NULL) {
 
 		$sqlTot .= $where;
 		$sqlRec .= $where;
