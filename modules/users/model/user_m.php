@@ -435,7 +435,7 @@ class Musers {
         $values["fnom"]    = MySQL::SQLValue($this->_data['fnom']);
         $values["lnom"]    = MySQL::SQLValue($this->_data['lnom']);
         $values["tel"]     = MySQL::SQLValue($this->_data['tel']);
-        $values["etat"]    = MySQL::SQLValue(0);
+        $values["etat"]    = MySQL::SQLValue($this->user_info['etat']);
         $values["defapp"]  = MySQL::SQLValue(3);
         $values["updusr"]  = MySQL::SQLValue(session::get('userid'));
         $values["upddat"]  = ' CURRENT_TIMESTAMP ';
@@ -451,7 +451,7 @@ class Musers {
 
        }else{
 
-         $this->last_id = $result;
+         $this->last_id = $this->id_user;
 				
 
           $this->save_file('photo', 'Photo de profile de '.$this->_data['fnom'].'  '.$this->_data['fnom'], 'image');
@@ -466,8 +466,12 @@ class Musers {
 
         
 
-				//Insert rules for new user based on service
-        $this->auto_add_user_rules($this->last_id, $this->_data['service']);
+				//Update rules for exist user based on service
+        if($this->user_info['service'] != $this->_data['service'])
+        {
+          $this->auto_add_user_rules($this->last_id, $this->_data['service']);
+        }
+        
     			//Esspionage
         if(!$db->After_update($this->table, $this->id_user, $values, $this->user_info)){
           $this->log .= '</br>Problème Esspionage';
@@ -510,6 +514,7 @@ class Musers {
 		global $db;
 		//Delete Rules if exist for user_id
 		$where['userid'] = $this->id_user;
+    //exit($db->BuildSQLDelete('rules_action', $where));
 		if(!$db->DeleteRows('rules_action', $where))
 		{
 			$this->error = false;
