@@ -16,6 +16,7 @@ class Mprms {
     var $exige_logo; //set when logo is required must be defalut true.
     var $new_logo = ''; //new logo path
     var $exige_pj; // set when pk is required must be default true.
+    var $exige_pj_photo; // set when pk is required must be default true.
     var $new_pj= ''; //set new pj path
     var $id_prm; // User ID append when request
     var $token; //user for recovery function

@@ -44,7 +44,7 @@ global $db;
 		<!-- #section:basics/navbar.dropdown -->
 		<div class="navbar-buttons navbar-header pull-right" role="navigation">
 			<ul class="nav ace-nav">
-				<?php include 'notif_v.php'; ?>;
+				<?php include 'notif_v.php'; ?>
 				<!-- #section:basics/navbar.user_menu -->
 				<li class="light-blue">
 					<a data-toggle="dropdown" href="#" class="dropdown-toggle">

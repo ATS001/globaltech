@@ -21,6 +21,14 @@ $info_user->id_user = Mreq::tp('id');
 		<?php echo ' ('.$info_user->Shw('fnom',1).'  '.$info_user->Shw('lnom',1).' -'.$info_user->id_user.'-)' . ' Service: '.$info_user->Shw('service_user',1);?>
 	</h1>
 </div><!-- /.page-header -->
+<div class="pull-right tableTools-container">
+	<div class="btn-group btn-overlap">
+					
+		
+		<?php TableTools::btn_add('user', 'Liste Utilisateurs', Null, $exec = NULL, 'reply');   ?>
+			
+	</div>
+</div>
 <div class="row">
 	<form novalidate="novalidate" method="post" class="form-horizontal" id="addrules" action="#"> 
 	<div class="col-xs-12" id="table-permission">
@@ -34,14 +42,27 @@ $info_user->id_user = Mreq::tp('id');
 
 			<?php 
 
-			foreach ($modul_array as $row) { 
-				
 
 
-//strpos($a, 'are')
+$service_user = '-'.$info_user->Shw('service',1).'-';
+foreach($modul_array as $check) {
+   if (strpos($check['services'], $service_user)) {
+      $found_service = true;
+   }
+}
 
+if(!isset($found_service))
+{
+	MInit::big_message("Le Service de  ".$info_user->Shw('service_user',1)." ne dispose pas de module !", 'danger');
+	exit();
+	
+}
+
+
+			
+foreach ($modul_array as $row) { 			
 if(strpos($row['services'], '-'.$info_user->Shw('service',1).'-') && $row['modul'] != 'Systeme'){
-				?>
+			?>
 			<div class="col-xs-12 col-sm-6 widget-container-col">
 				<div class="widget-box widget-color-blue">
 					<!-- #section:custom/widget-box.options -->
@@ -88,7 +109,7 @@ global $db;
 if (!$db->Query($query_modul->Get_action_modul($row['id'], Mreq::tp('id')))) $db->Kill($db->Error());
 while (!$db->EndOfSeek()) {
         $row = $db->Row();
-        $type = $row->type == 0 ? ' <span class="pull-right label label-info arrowed-in-right arrowed">Lien menu</span>' : ' <span class="pull-right label label-success arrowed-in-right arrowed">Autorisation</span>'; 
+        $type = $row->code != '' ? ' <span class="pull-right label label-info arrowed-in-right arrowed">Lien menu</span>' : ' <span class="pull-right label label-success arrowed-in-right arrowed">Autorisation</span>'; 
         $etat_line = $row->type == 0 ? ' <span class="badge badge-pink">'.$row->etat_line.'</span>' : null;
 ?>
 									<tr>

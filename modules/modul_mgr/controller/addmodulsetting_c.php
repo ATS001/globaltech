@@ -4,15 +4,17 @@ if(MInit::form_verif('addmodulsetting', false))
 {
   
   $posted_data = array(
-   'modul'                     => Mreq::tp('modul') ,
-   'is_setting'                => 1 ,
-   'modul_setting'             => Mreq::tp('modul_setting') ,
-   'description'               => Mreq::tp('description') ,
-   'tables'                    => Mreq::tp('tables') ,
-   'app'                       => Mreq::tp('app') ,
-   'sbclass'                   => Mreq::tp('sbclass') ,
-   'services'                  => Mreq::tp('services') ,
-   'etat'                      => 0 ,
+   'modul'         => Mreq::tp('modul') ,
+   'is_setting'    => 1 ,
+   'modul_setting' => Mreq::tp('modul_setting') ,
+   'description'   => Mreq::tp('description') ,
+   'tables'        => Mreq::tp('tables') ,
+   'app'           => Mreq::tp('app') ,
+   'sbclass'       => Mreq::tp('sbclass') ,
+   'services'      => Mreq::tp('services') ,
+   'etat'          => 0 ,
+   'etat_desc'     => Mreq::tp('etat_desc') ,
+   'message_class' => Mreq::tp('message_class') ,
    
   );
 
@@ -62,6 +64,16 @@ if(MInit::form_verif('addmodulsetting', false))
     if(!MInit::is_regex($posted_data['app'])){
 
       $empty_list .= "<li>Nom de l'application non valid (a-z 1-9)</li>";
+      $checker = 1;
+    }
+    if($posted_data['etat_desc'] == NULL){
+
+      $empty_list .= "<li>Choisir Message à Afficher </li>";
+      $checker = 1;
+    }
+    if($posted_data['message_class'] == NULL){
+
+      $empty_list .= "<li>Choisir La couleur du message </li>";
       $checker = 1;
     }
     

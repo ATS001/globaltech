@@ -14,8 +14,8 @@
 				<div class="btn-group btn-overlap">
 					
 						<?php TableTools::btn_add('addcategorie_client','Ajouter Catégorie Client'); ?>
-						<?php TableTools::btn_csv('vsat','Exporter Liste'); ?>
-						<?php TableTools::btn_pdf('vsat','Exporter Liste'); ?>
+						<?php TableTools::btn_csv('categorie_client','Exporter Liste'); ?>
+						<?php TableTools::btn_pdf('categorie_client','Exporter Liste'); ?>
 
 			    </div>
 			</div>

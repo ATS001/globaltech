@@ -76,7 +76,11 @@ class Musers {
 		}
 		
 	}
-    //Get the list of  user activities from SYS_LOG Table
+    //
+/**
+ * [get_activities Get the list of  user activities from SYS_LOG Table]
+ * @return [Array] [fit Array user_activities]
+ */
   public function get_activities()
   {
     global $db;
@@ -110,40 +114,44 @@ class Musers {
 
   }
 
-     //Get the list of  user connexion history from SESSION Table
-public function get_connexion_history()
-{
-  global $db;
+     
+  /**
+   * [get_connexion_history Get the list of  user connexion history from SESSION Table]
+   * @return [type] [description]
+   */
+  public function get_connexion_history()
+  {
+    global $db;
 
-  $sql = "SELECT CONCAT((IF (s.`expir`IS NULL,'Session ouverte, depuis ',CONCAT('Ouverture de session, le ',DATE_FORMAT(s.`dat`,'%d-%m-%Y %H:%i'),' pendant ')))
+    $sql = "SELECT CONCAT((IF (s.`expir`IS NULL,'Session ouverte, depuis ',CONCAT('Ouverture de session, le ',DATE_FORMAT(s.`dat`,'%d-%m-%Y %H:%i'),' pendant ')))
     ,TIMESTAMPDIFF(MINUTE, s.`dat`, (IF (s.`expir`IS NULL,NOW(),s.`expir`))),' minutes') AS HISTORY FROM 
-users_sys u, SESSION s WHERE u.`id`=s.`userid` AND u.id = $this->id_user ORDER BY s.`dat` DESC LIMIT 0,6";
+    users_sys u, SESSION s WHERE u.`id`=s.`userid` AND u.id = $this->id_user ORDER BY s.`dat` DESC LIMIT 0,6";
 
-if(!$db->Query($sql))
-{
-  $this->error = false;
-  $this->log  .= $db->Error();
-}else{
-  if ($db->RowCount() == 0) {
-    $this->error = false;
-    $this->log .= 'Aucun enregistrement trouvé ';
-  } else {
-    $this->user_connexion_history = $db->RecordsSimplArray();
+    if(!$db->Query($sql))
+    {
+      $this->error = false;
+      $this->log  .= $db->Error();
+    }else{
+      if ($db->RowCount() == 0) {
+        $this->error = false;
+        $this->log .= 'Aucun enregistrement trouvé ';
+      } else {
+        $this->user_connexion_history = $db->RecordsSimplArray();
                 //var_dump( $this->user_connexion_history );
-    $this->error = true;
-  }
+        $this->error = true;
+      }
 
 
-}
+    }
         //return Array user_connexion_history
-if($this->error == false)
-{
-  return false;
-}else{
-  return true;
-}
+    if($this->error == false)
+    {
+      return false;
+    }else{
+      return true;
+    }
 
-}
+  }
 
 	/**
 	 * [Shw description]
@@ -264,26 +272,26 @@ if($this->error == false)
     	//Format all parameteres
     	$temp_file     = $this->_data[$item.'_id'];
         //If nofile uploaded return kill function
-        if($temp_file == Null){
-            return true;
-        }
+      if($temp_file == Null){
+        return true;
+      }
 
-    	$new_name_file = $item.'_'.$this->last_id;
-    	$folder        = MPATH_UPLOAD.'users'.SLASH.$this->last_id;
-    	$id_line       = $this->last_id;
-    	$title         = $titre;
-    	$table         = $this->table;
-    	$column        = $item;
-    	$type          = $type;
-        
+      $new_name_file = $item.'_'.$this->last_id;
+      $folder        = MPATH_UPLOAD.'users'.SLASH.$this->last_id;
+      $id_line       = $this->last_id;
+      $title         = $titre;
+      $table         = $this->table;
+      $column        = $item;
+      $type          = $type;
+
 
 
     	//Call save_file_upload from initial class
-    	if(!Minit::save_file_upload($temp_file, $new_name_file, $folder, $id_line, $title, 'users', $table, $column, $type, $edit = null))
-    	{
-    		$this->error = false;
-    		$this->log .='</br>Enregistrement '.$item.' dans BD non réussie';
-    	}
+      if(!Minit::save_file_upload($temp_file, $new_name_file, $folder, $id_line, $title, 'users', $table, $column, $type, $edit = null))
+      {
+        $this->error = false;
+        $this->log .='</br>Enregistrement '.$item.' dans BD non réussie';
+      }
     }
 
     /**
@@ -292,7 +300,7 @@ if($this->error == false)
 	 */
     public function save_new_user()
     {
-        
+
 
 
         //Befor execute do the multiple check
@@ -333,53 +341,53 @@ if($this->error == false)
     		$values["tel"]     = MySQL::SQLValue($this->_data['tel']);
     		$values["etat"]    = MySQL::SQLValue(0);
     		$values["defapp"]  = MySQL::SQLValue(3);
-            $values["creusr"]  = MySQL::SQLValue(session::get('userid'));
+        $values["creusr"]  = MySQL::SQLValue(session::get('userid'));
 
 
 			//If no error on Insert commande
-    		if (!$result = $db->InsertRow("users_sys", $values)) {
+        if (!$result = $db->InsertRow("users_sys", $values)) {
 
-    			$this->log .= $db->Error();
-    			$this->error = false;
-    			$this->log .='</br>Enregistrement BD non réussie'; 
+         $this->log .= $db->Error();
+         $this->error = false;
+         $this->log .='</br>Enregistrement BD non réussie'; 
 
-    		}else{
+       }else{
 
-    			$this->last_id = $result;
+         $this->last_id = $result;
 				//If Attached required Save file to Archive
-    			$this->save_file('photo', 'Photo de profile de '.$this->_data['fnom'].'  '.$this->_data['fnom'], 'image');
-    			
-    			$this->save_file('signature', 'signature  de '.$this->_data['fnom'].'  '.$this->_data['fnom'], 'image');
-    			
-    			
-    			$this->save_file('form', 'Formulaire  de '.$this->_data['fnom'].'  '.$this->_data['fnom'], 'Document');
-	
+         $this->save_file('photo', 'Photo de profile de '.$this->_data['fnom'].'  '.$this->_data['fnom'], 'image');
+
+         $this->save_file('signature', 'signature  de '.$this->_data['fnom'].'  '.$this->_data['fnom'], 'image');
+
+
+         $this->save_file('form', 'Formulaire  de '.$this->_data['fnom'].'  '.$this->_data['fnom'], 'Document');
+
 				//Insert rules for new user based on service
-    			$this->auto_add_user_rules($this->last_id, $this->_data['service']);
-    			if($this->error == true)
-    			{
-    				$this->log = '</br>Enregistrement réussie: <b>'.$this->_data['fnom'].'  '.$this->_data['lnom'].' ID: '.$this->last_id;
-            if(!Mlog::log_exec($this->table, $this->last_id, 'Création utlisateur', 'Insert'))
-            {
-              $this->log .= '</br>Un problème de log ';
-            }
-
-          }else{
-            $this->log .= '</br>Enregistrement réussie: <b>'.$this->_data['fnom'].'  '.$this->_data['lnom'];
-            $this->log .= '</br>Un problème d\'Enregistrement ';
+         $this->auto_add_user_rules($this->last_id, $this->_data['service']);
+         if($this->error == true)
+         {
+          $this->log = '</br>Enregistrement réussie: <b>'.$this->_data['fnom'].'  '.$this->_data['lnom'].' ID: '.$this->last_id;
+          if(!Mlog::log_exec($this->table, $this->last_id, 'Création utlisateur', 'Insert'))
+          {
+            $this->log .= '</br>Un problème de log ';
           }
-        }
-      }else{
-        $this->log .='</br>Enregistrement non réussie';
-      }
-        //check if last error is true then return true else rturn false.
-      if($this->error == false){
-        return false;
-      }else{
-        return true;
-      }
 
+        }else{
+          $this->log .= '</br>Enregistrement réussie: <b>'.$this->_data['fnom'].'  '.$this->_data['lnom'];
+          $this->log .= '</br>Un problème d\'Enregistrement ';
+        }
+      }
+    }else{
+      $this->log .='</br>Enregistrement non réussie';
     }
+        //check if last error is true then return true else rturn false.
+    if($this->error == false){
+      return false;
+    }else{
+      return true;
+    }
+
+  }
     /**
 	 * [save_new_user Edit existing User after check values]
 	 * @return [bol] [Send Bol value to controller]
@@ -427,7 +435,7 @@ if($this->error == false)
         $values["fnom"]    = MySQL::SQLValue($this->_data['fnom']);
         $values["lnom"]    = MySQL::SQLValue($this->_data['lnom']);
         $values["tel"]     = MySQL::SQLValue($this->_data['tel']);
-        $values["etat"]    = MySQL::SQLValue(0);
+        $values["etat"]    = MySQL::SQLValue($this->user_info['etat']);
         $values["defapp"]  = MySQL::SQLValue(3);
         $values["updusr"]  = MySQL::SQLValue(session::get('userid'));
         $values["upddat"]  = ' CURRENT_TIMESTAMP ';
@@ -443,27 +451,27 @@ if($this->error == false)
 
        }else{
 
-         $this->last_id = $result;
-				//If Attached required Save file to Archive
-         if($this->exige_photo)
-         {
+         $this->last_id = $this->id_user;
+				
 
           $this->save_file('photo', 'Photo de profile de '.$this->_data['fnom'].'  '.$this->_data['fnom'], 'image');
-        }
-        if($this->exige_signature)
-        {
+        
+        
 
           $this->save_file('signature', 'signature  de '.$this->_data['fnom'].'  '.$this->_data['fnom'], 'image');
-        }
-        if($this->exige_form)
-        {
+        
+        
 
           $this->save_file('form', 'Formulaire  de '.$this->_data['fnom'].'  '.$this->_data['fnom'], 'Document');
 
-        }
+        
 
-				//Insert rules for new user based on service
-        $this->auto_add_user_rules($this->last_id, $this->_data['service']);
+				//Update rules for exist user based on service
+        if($this->user_info['service'] != $this->_data['service'])
+        {
+          $this->auto_add_user_rules($this->last_id, $this->_data['service']);
+        }
+        
     			//Esspionage
         if(!$db->After_update($this->table, $this->id_user, $values, $this->user_info)){
           $this->log .= '</br>Problème Esspionage';
@@ -506,6 +514,7 @@ if($this->error == false)
 		global $db;
 		//Delete Rules if exist for user_id
 		$where['userid'] = $this->id_user;
+    //exit($db->BuildSQLDelete('rules_action', $where));
 		if(!$db->DeleteRows('rules_action', $where))
 		{
 			$this->error = false;
@@ -522,9 +531,9 @@ if($this->error == false)
 	private function auto_add_user_rules($userid, $service)
 	{
 		global $db; //
-        $this->id_user = $userid;
+    $this->id_user = $userid;
 		//First clear if have rules for sam user id
-		$this->clear_user_rules();
+    $this->clear_user_rules();
     //Check if service have rules
     $sql_exist_rule = "SELECT COUNT(id) FROM task_action WHERE service LIKE  '%-$service-%'";
     if($db->QuerySingleValue0($sql_exist_rule) == 0){
@@ -533,16 +542,16 @@ if($this->error == false)
       return false;
     }
 
-		$sql = "INSERT INTO rules_action (appid, idf, descrip, action_id, type, userid, service) SELECT appid, idf,  descrip, id, type, $userid, $service FROM task_action WHERE service LIKE  '%-$service-%' ";
-		if(!$db->Query($sql))
-		{
-			$this->error = false;
-			$this->log  .= '</br>Impossible d\'ajouter les rules ';
-		}  
+    $sql = "INSERT INTO rules_action (appid, idf, descrip, action_id, type, userid, service) SELECT appid, idf,  descrip, id, type, $userid, $service FROM task_action WHERE service LIKE  '%-$service-%' ";
+    if(!$db->Query($sql))
+    {
+     $this->error = false;
+     $this->log  .= '</br>Impossible d\'ajouter les rules ';
+   }  
 
 		//$this->log .= $sql;	
 
-	}
+ }
 
 	/**
 	 * [add_user_rules description]
@@ -557,28 +566,28 @@ if($this->error == false)
 		$values["descrip"]   = MySQL::SQLValue($this->app_action['app_name']);
 		$values["action_id"] = MySQL::SQLValue($this->app_action['action_id']);
     $values["idf"]       = MySQL::SQLValue($this->app_action['idf']);
-		$values["type"]      = MySQL::SQLValue($this->app_action['type']);
-		$values["userid"]    = MySQL::SQLValue($this->app_action['userid']);
+    $values["type"]      = MySQL::SQLValue($this->app_action['type']);
+    $values["userid"]    = MySQL::SQLValue($this->app_action['userid']);
     $values["service"]   = MySQL::SQLValue($this->app_action['service']);
     $values["creusr"]    = MySQL::SQLValue(session::get('userid'));
 
-		if(!$db->InsertRow("rules_action", $values))
-		{
-			$this->error = false;
-			$this->log  .= '</br>Impossible d\'ajouter les rules ';
-			return false;
-		}  
+    if(!$db->InsertRow("rules_action", $values))
+    {
+     $this->error = false;
+     $this->log  .= '</br>Impossible d\'ajouter les rules ';
+     return false;
+   }  
 
-		$this->error = true;
-		$this->log  .= '</br>Enregistrement réussie ';
-		return true;
+   $this->error = true;
+   $this->log  .= '</br>Enregistrement réussie ';
+   return true;
 
-	}
+ }
 
 
 
-	
-	
+
+
 	/**
 	 * [check_password_comp Check password compatibility]
 	 * @return [bol] [Fill LOG and $this->error]
@@ -758,56 +767,56 @@ if($this->error == false)
 
 
 
-	public function archive_user()
-	{
-        global $db;
-        
-        $user_id = $this->id_user;
+public function archive_user()
+{
+  global $db;
+
+  $user_id = $this->id_user;
             //Format value for requet
-        $value["etat"]    = MySQL::SQLValue(2);
+  $value["etat"]    = MySQL::SQLValue(2);
 
-        $where["id"]      = $user_id;
+  $where["id"]      = $user_id;
         // Execute the update and show error case error
-        if( !$result = $db->UpdateRows("users_sys", $value , $where))
-        {
-            $this->log .= '</br>Impossible d\'archiver l\'utilisateur!';
-            $this->log .= '</br>'.$db->Error();
-            $this->error = false;
-        }else{
-            $this->log .= '</br>Utilisateur Archivé! ';
-            $this->error = true;
+  if( !$result = $db->UpdateRows("users_sys", $value , $where))
+  {
+    $this->log .= '</br>Impossible d\'archiver l\'utilisateur!';
+    $this->log .= '</br>'.$db->Error();
+    $this->error = false;
+  }else{
+    $this->log .= '</br>Utilisateur Archivé! ';
+    $this->error = true;
 
-        } 
-        if($this->error == false){
-            return false;
-        }else{
-            return true;
-        }
-	
-	}
+  } 
+  if($this->error == false){
+    return false;
+  }else{
+    return true;
+  }
 
-    public function delete_user()
-    {
-        global $db;
-        $where["id"]      = $this->id_user;
+}
+
+public function delete_user()
+{
+  global $db;
+  $where["id"]      = $this->id_user;
         // Execute the update and show error case error
-        if( !$result = $db->DeleteRows("users_sys", $where))
-        {
-            $this->log .= '</br>Impossible de Supprimer l\'utilisateur!';
-            $this->log .= '</br>'.$db->Error();
-            $this->error = false;
-        }else{
-            $this->log .= '</br>Utilisateur supprimé! ';
-            $this->error = true;
+  if( !$result = $db->DeleteRows("users_sys", $where))
+  {
+    $this->log .= '</br>Impossible de Supprimer l\'utilisateur!';
+    $this->log .= '</br>'.$db->Error();
+    $this->error = false;
+  }else{
+    $this->log .= '</br>Utilisateur supprimé! ';
+    $this->error = true;
 
-        } 
-        if($this->error == false){
-            return false;
-        }else{
-            return true;
-        }
-    
-    }
+  } 
+  if($this->error == false){
+    return false;
+  }else{
+    return true;
+  }
+
+}
 
 
 }

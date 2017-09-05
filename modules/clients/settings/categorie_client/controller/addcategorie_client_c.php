@@ -50,6 +50,6 @@ $checker = null;
 
 
 } else {
-  view::load('categorie_client','addcategorie_client');
+  view::load('clients/settings/categorie_client','addcategorie_client');
 }
 ?>

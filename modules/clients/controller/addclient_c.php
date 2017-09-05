@@ -3,12 +3,16 @@
 // Modul: clients => Controller
 
 defined('_MEXEC') or die;
-if(MInit::form_verif('addcategorie_client',false))
+if(MInit::form_verif('addclient',false))
 {
 	
   $posted_data = array(
+   'code'           => Mreq::tp('code') ,
+   'denomination'   => Mreq::tp('denomination') ,
+   'id_categorie'   => Mreq::tp('id_categorie') ,
    'r_social'       => Mreq::tp('r_social') ,
    'r_commerce'     => Mreq::tp('r_commerce') ,
+   'nif'            => Mreq::tp('nif') ,
    'nom'            => Mreq::tp('nom') ,
    'prenom'         => Mreq::tp('prenom') ,
    'civilite'       => Mreq::tp('civilite') ,
@@ -19,9 +23,10 @@ if(MInit::form_verif('addcategorie_client',false))
    'fax'            => Mreq::tp('fax') ,
    'bp'             => Mreq::tp('bp') ,
    'email'          => Mreq::tp('email') , 
-   'id_categorie'   => Mreq::tp('id_categorie') ,
+   'rib'            => Mreq::tp('rib') , 
+   'devise'         => Mreq::tp('devise') , 
    'pj_id'          => Mreq::tp('pj-id'),
-   'pj_photo'       => Mreq::tp('pj_photo')
+   'pj_photo_id'    => Mreq::tp('pj_photo-id')
    );
 
   
@@ -31,70 +36,44 @@ if(MInit::form_verif('addcategorie_client',false))
   
 $checker = null;
   $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
-  if($posted_data['pj_id'] == NULL){
 
-    $empty_list .= "<li>Formulaire scanné</li>";
+  if($posted_data['code'] == NULL){
+
+    $empty_list .= "<li>Code Client</li>";
     $checker = 1;
   }
-  if($posted_data['r_social'] == NULL){
+
+  if($posted_data['denomination'] == NULL){
+
+    $empty_list .= "<li>Dénomination</li>";
+    $checker = 1;
+  }
+  /*if($posted_data['r_social'] == NULL){
 
     $empty_list .= "<li>Raison Social</li>";
     $checker = 1;
-  }
-  if($posted_data['sigle'] == NULL){
+  }*/
 
-    $empty_list .= "<li>Sigle</li>";
+  if($posted_data['id_categorie'] == NULL){
+
+    $empty_list .= "<li>Catégorie client</li>";
     $checker = 1;
   }
-  if($posted_data['categorie'] == NULL){
-
-    $empty_list .= "<li>Catégorie permissionnaire</li>";
-    $checker = 1;
-  }
-  if($posted_data['secteur_activ'] == NULL){
-
-    $empty_list .= "<li>Secteur d'Activité </li>";
-    $checker = 1;
-  }
-  if($posted_data['nif'] == NULL){
+ 
+  /*if($posted_data['nif'] == NULL){
 
     $empty_list .= "<li>N° Identification Fiscale</li>";
     $checker = 1;
   }
-  if($posted_data['rc'] == NULL){
+  if($posted_data['r_commerce'] == NULL){
 
     $empty_list .= "<li>N° Registre de commerce</li>";
     $checker = 1;
-  }
-  if($posted_data['multi_national'] == NULL){
-
-    $empty_list .= "<li>Choix de groupement </li>";
-    $checker = 1;
-  }
-  if($posted_data['pay_siege'] == NULL){
-
-    $empty_list .= "<li>Pays du siège mère </li>";
-    $checker = 1;
-  }
-    //Step 2
+  }*/
+    
   if($posted_data['adresse'] == NULL){
 
     $empty_list .= "<li>Adresse</li>";
-    $checker = 1;
-  }
-  if($posted_data['bp'] == NULL){
-
-    $empty_list .= "<li>Boite Postal</li>";
-    $checker = 1;
-  }
-  if($posted_data['ville'] == NULL){
-
-    $empty_list .= "<li>Ville</li>";
-    $checker = 1;
-  }
-  if($posted_data['email'] == NULL){
-
-    $empty_list .= "<li>Email </li>";
     $checker = 1;
   }
   if($posted_data['tel'] == NULL){
@@ -102,42 +81,28 @@ $checker = null;
     $empty_list .= "<li>Tél</li>";
     $checker = 1;
   }
-  if($posted_data['fax'] == NULL){
 
-    $empty_list .= "<li>Fax </li>";
+  /*if($posted_data['bp'] == NULL){
+
+    $empty_list .= "<li>Boite Postal</li>";
+    $checker = 1;
+  }  */
+  if($posted_data['id_pays'] == NULL){
+
+    $empty_list .= "<li>Pays</li>";
     $checker = 1;
   }
-    //Step 3 
-  if($posted_data['nom_p'] == NULL){
+  if($posted_data['id_ville'] == NULL){
 
-    $empty_list .= "<li>Nom Personne Physique </li>";
+    $empty_list .= "<li>Ville</li>";
     $checker = 1;
   }
-  if($posted_data['adresse_p'] == NULL){
+  if($posted_data['email'] == NULL){
 
-    $empty_list .= "<li>Adresse Personne Physique </li>";
+    $empty_list .= "<li>Email</li>";
     $checker = 1;
   }
-  if($posted_data['qualite_p'] == NULL){
 
-    $empty_list .= "<li>Qualite Personne Physique </li>";
-    $checker = 1;
-  }
-  if($posted_data['nation_p'] == NULL){
-
-    $empty_list .= "<li> Nationalité </li>";
-    $checker = 1;
-  }
-  if($posted_data['tel_p'] == NULL){
-
-    $empty_list .= "<li>Tél Personne Physique </li>";
-    $checker = 1;
-  }
-  if($posted_data['email_p'] == NULL){
-
-    $empty_list .= "<li>Email Personne Physique </li>";
-    $checker = 1;
-  }
 
   $empty_list.= "</ul>";
   if($checker == 1)
@@ -147,22 +112,22 @@ $checker = null;
 
   //End check empty element
 
+  $new_client = new  Mclients($posted_data);
 
- $new_categorie_client = new  Mcategorie_client($posted_data);
-  
-  
+  $new_client->exige_pj       = true;
+  $new_client->exige_pj_photo = true;
 
   //execute Insert returne false if error
-  if($new_categorie_client->save_new_categorie_client()){
+  if($new_client->save_new_client()){
 
-    echo("1#".$new_categorie_client->log);
+    echo("1#".$new_client->log);
   }else{
 
-    echo("0#".$new_categorie_client->log);
+    echo("0#".$new_client->log);
   }
 
 
 } else {
-  view::load('categorie_client','addcategorie_client');
+  view::load('clients','addclient');
 }
 ?>

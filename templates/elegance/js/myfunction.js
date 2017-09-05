@@ -268,10 +268,6 @@ $('body').on('click', '.this_exec', function() {
 	 //var $row_selected = $(this).closest('tr');
 	 
 	 exec_ajax($url, $data, $confirm = 1, '', $the_table);
-    
- 
-     
-	
 
 });
 

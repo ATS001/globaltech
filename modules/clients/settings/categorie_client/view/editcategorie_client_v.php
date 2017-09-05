@@ -7,6 +7,7 @@ defined('_MEXEC') or die;
  $info_categorie_client = new Mcategorie_client();
 //Set ID of Module with POST id
  $info_categorie_client->id_categorie_client = Mreq::tp('id');
+ //var_dump(Mreq::tp('id'));
 
 //Check if Post ID <==> Post idc or get_modul return false. 
  if(!MInit::crypt_tp('id', null, 'D')  or !$info_categorie_client->get_categorie_client())
@@ -61,7 +62,7 @@ $wizard_array[] = array(1,'Etape 1','active');
 $form->wizard_steps = $wizard_array;
 $form->step_start(1, 'Informations Catégorie Client');
 
-$form->input_hidden('id', $info_pays->Shw('id',1));
+$form->input_hidden('id', $info_categorie_client->Shw('id',1));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
 

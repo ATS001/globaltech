@@ -84,9 +84,9 @@ if($posted_data['nom'] == NULL){
 
 
     $new_user = new  Musers($posted_data);
-    $new_user->exige_photo = true;
-    $new_user->exige_form = true;
-    $new_user->exige_signature = true;
+    $new_user->exige_photo = false;
+    $new_user->exige_form = false;
+    //$new_user->exige_signature = true;
     $new_user->id_user = $posted_data['id'];
 
   //execute Insert returne false if error

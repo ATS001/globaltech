@@ -5,7 +5,6 @@
 	$params = $columns = $totalRecords = $data = array();
 
 	$params = $_REQUEST;
-	//
 	
 	//define index of column
 	$columns = array( 
@@ -19,8 +18,8 @@
 	);
 
 	//Format all variables
-
-	$colms = $tables = $joint = $where = $sqlTot = $sqlRec = $where_etat_line = NULL;
+    $colms = $tables = $joint = $where = $where_s = $sqlTot = $sqlRec = NULL;
+	
     // define used table.
 	$tables .= " users_sys, services ";
     // define joint and rtable elation
@@ -38,50 +37,22 @@
 	
 	//define notif culomn to concatate with any colms.
 	//this is change style of button action to red
-	$notif_colms = TableTools::line_notif('users_sys', 'user');
+	$notif_colms = TableTools::line_notif_new('users_sys', 'user');
+	$colms .= $notif_colms;
 	
-	//Format this column depend of data draw export or datatable.
-	if(Mreq::tp('export')==1)
-	{
-		$colms .= " CONCAT(CASE users_sys.etat 
-                WHEN '0' THEN 'Inactif'
-                WHEN '1' THEN 'Active'
-                WHEN '2' THEN 'Archivé'
-                ELSE ' ' END
-                ,
-                ' ') as statut ";
-	}else{
-
-		$colms .= " CONCAT(CASE users_sys.etat 
-                WHEN '0' THEN '<span class=\"label label-sm label-warning\">Inactif</span>'
-                WHEN '1' THEN '<span class=\"label label-sm label-success\">Active</span>'
-                WHEN '2' THEN '<span class=\"label label-sm label-blue\">Archivé</span>'
-                ELSE ' ' END
-                ,
-                $notif_colms 
-                ) as statut ";
-	}
-	
-	       
-
-
-    
-    
+	    
 	// check search value exist
 	if( !empty($params['search']['value']) ) {
 
 		$serch_value = str_replace('+',' ',$params['search']['value']);
         //Format where in case joint isset  
-	    $where .= $joint == NULL? " WHERE " : " AND ";
+	    $where_s .= $joint == NULL? " WHERE " : " AND ";
 
 
-		$where .=" ( CONCAT(users_sys.lnom,' ',users_sys.fnom) LIKE '%".$serch_value."%' ";    
-		$where .=" OR services.service LIKE '%".$serch_value."%' ";
-        $where .=" OR users_sys.id LIKE '%".$serch_value."%' ";
-        $where .=" OR CASE users_sys.etat 
-                WHEN '0' THEN 'Inactif'
-                WHEN '1' THEN 'Active'
-                END LIKE '%".$serch_value."%' )";
+		$where_s .=" ( CONCAT(users_sys.lnom,' ',users_sys.fnom) LIKE '%".$serch_value."%' ";    
+		$where_s .=" OR services.service LIKE '%".$serch_value."%' ";
+        $where_s .=" OR users_sys.id LIKE '%".$serch_value."%' ";
+        $where_s .= TableTools::where_search_etat('users_sys', 'user', $serch_value);
 
 
 
@@ -96,7 +67,8 @@
 	 */
 	
 	$where_etat_line =  $joint == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
-	$where_etat_line =  $where == NULL && $joint == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
+	$where_etat_line =  $where_s == NULL && $joint == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
+	
 	$where .= $where_etat_line;
 
 
@@ -113,8 +85,9 @@
 
 	//if we use notification we must ordring lines by nofication rule in first
 	//Change ('notif', status) with ('notif', column where notif code is concated)
-	//on case of order by other parametre this one is disabled 
-    $order_notif = $params['order'][0]['column'] == 0 ? " CASE WHEN LOCATE('notif', statut) = 0  THEN 0 ELSE 1 END DESC ," : NULL;
+	//on case of order by other parametre this one is disabled (Check Export query)
+	
+    $order_notif = TableTools::order_bloc($params['order'][0]['column']);
 
     
 
@@ -135,7 +108,7 @@
     	{
     		$header    = array('ID', 'Nom & Prénom', 'Service', 'Statut');
     		Minit::Export_xls($header, $file_name, $title);
-    	}else{
+    	}elseif(Mreq::tp('format')=='pdf'){
     		$header    = array('ID'=>10, 'Nom & Prénom'=>50, 'Service'=>20, 'Statut'=>20);
     		Minit::Export_pdf($header, $file_name, $title);
     	}

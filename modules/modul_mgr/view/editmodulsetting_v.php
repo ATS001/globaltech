@@ -81,7 +81,12 @@ $form->input('Nom Application', 'app', 'text', 6,  $info_modul->Shw('app'), $app
 $sbclass_array[]  = array('regex', 'true', 'Insérer Classe Valid' );
 $sbclass_array[]  = array('minlength', '3', 'Minimum 3 caractères' );
 $form->input('Class TDB', 'sbclass', 'text', 6, $info_modul->Shw('sbclass'), $sbclass_array);
-
+//Message dans la liste
+$desc_array[]  = array('required', 'true', 'Insérer le Message' );
+$form->input('Message à afficher', 'etat_desc', 'text' ,6 , $info_modul->Shw('etat_desc'), $desc_array);
+//Style Message
+$message_style = array('success' => 'Vert', 'warning' => 'Orange', 'danger' => 'Rouge', 'info' => 'Bleu', 'inverse' => 'Noire' );
+$form->select('Type Message', 'message_class', 3, $message_style, $indx = NULL ,$info_modul->Shw('message_class') );
 //Titre bloc default Services
 $form->bloc_title('Les Services par défault de ce module');
 //Service

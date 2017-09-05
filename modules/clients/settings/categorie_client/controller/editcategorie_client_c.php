@@ -1,7 +1,6 @@
 <?php 
 //SYS GLOBAL TECH
 // Modul: categorie_client => Controller
-<?php
 defined('_MEXEC') or die;
 if(MInit::form_verif('editcategorie_client',false))
 {
@@ -13,7 +12,7 @@ if(MInit::form_verif('editcategorie_client',false))
    }
   $posted_data = array(
    'id'                 => Mreq::tp('id') ,
-   'categorie_client'   => Mreq::tp('categorie_client') ,
+   'categorie_client'   => Mreq::tp('categorie_client') 
 
    );
 
@@ -45,7 +44,7 @@ $checker = null;
     
   
  $new_categorie_client = new  Mcategorie_client($posted_data);
-  
+ $new_categorie_client->id_categorie_client = $posted_data['id']; 
   
 
   //execute Insert returne false if error
@@ -59,6 +58,6 @@ $checker = null;
 
 
 } else {
-  view::load('categorie_client','editcategorie_client');
+  view::load('clients/settings/categorie_client','editcategorie_client');
 }
 ?>
