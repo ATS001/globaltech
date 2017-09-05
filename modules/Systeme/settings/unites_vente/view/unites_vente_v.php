@@ -1,6 +1,6 @@
 <div class="page-header">
 	<h1>
-		Gestion catégories de produits
+		Gestion unités de vente
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
 		</small>
@@ -13,19 +13,19 @@
 			<div class="pull-right tableTools-container">
 				<div class="btn-group btn-overlap">
 			
-						<?php TableTools::btn_add('addcategorie_produit','Ajouter Catégorie'); ?>
-						<?php TableTools::btn_csv('catégories_produits','Exporter Liste'); ?>
-						<?php TableTools::btn_pdf('catégories_produits','Exporter Liste'); ?>
+						<?php TableTools::btn_add('addunite_vente','Ajouter unité'); ?>
+						<?php TableTools::btn_csv('unites_vente','Exporter Liste'); ?>
+						<?php TableTools::btn_pdf('unites_vente','Exporter Liste'); ?>
 					
 			    </div>
 			</div>
 		</div>
 
 		<div class="table-header">
-			Liste "Catégories de produits" 
+			Liste "Unités de vente" 
 		</div>
 		<div>
-			<table id="categories_produits_grid" class="table table-bordered table-condensed table-hover table-striped dataTable no-footer">
+			<table id="unites_vente_grid" class="table table-bordered table-condensed table-hover table-striped dataTable no-footer">
 				<thead>
 					<tr>
 						
@@ -33,7 +33,7 @@
 							ID
 						</th>
 					    <th>
-							Catégorie
+							Unité de vente
 						</th>
 						<th>
 							Etat
@@ -52,16 +52,16 @@
 
 $(document).ready(function() {
 	
-	var table = $('#categories_produits_grid').DataTable({
+	var table = $('#unites_vente_grid').DataTable({
 		bProcessing: true,
 		notifcol : 2,
 		serverSide: true,
 		
-		ajax_url:"categories_produits",
+		ajax_url:"unites_vente",
 		
                 aoColumns: [
                     {"sClass": "center","sWidth":"5%"}, // Identifiant 
-                    {"sClass": "left","sWidth":"30%"}, // Catégorie
+                    {"sClass": "left","sWidth":"30%"}, // Unités de vente
                     {"sClass": "center","sWidth":"10%"}, // Statut
                     {"sClass": "center","sWidth":"5%"}, // Action
                     ],
@@ -80,9 +80,9 @@ $('.export_pdf').on('click', function() {
 	csv_export(table, 'pdf');
 });
 
-$('#categories_produits_grid').on('click', 'tr button', function() {
+$('#unites_vente_grid').on('click', 'tr button', function() {
 	var $row = $(this).closest('tr')
-	append_drop_menu('categories_produits', table.cell($row, 0).data(), '.btn_action')
+	append_drop_menu('unites_vente', table.cell($row, 0).data(), '.btn_action')
 });
 
 $('#id_search').on('keyup', function () {

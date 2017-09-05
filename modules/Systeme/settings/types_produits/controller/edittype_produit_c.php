@@ -1,6 +1,6 @@
 <?php
 
-if (MInit::form_verif('editcategorie_produit', false)) {//If form is Posted do Action else rend empty form
+if (MInit::form_verif('edittype_produit', false)) {//If form is Posted do Action else rend empty form
     //Check if id is been the correct id compared with idc
     if (!MInit::crypt_tp('id', null, 'D')) {
         //returne message error red to client 
@@ -9,7 +9,7 @@ if (MInit::form_verif('editcategorie_produit', false)) {//If form is Posted do A
     //Listed data from posted form
     $posted_data = array(
         'id' => Mreq::tp('id'),
-        'categorie_produit' => Mreq::tp('categorie_produit'),
+        'type_produit' => Mreq::tp('type_produit'),
        
     );
 
@@ -21,8 +21,8 @@ if (MInit::form_verif('editcategorie_produit', false)) {//If form is Posted do A
     $checker = null;
     $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
     
-    if ($posted_data['categorie_produit'] == NULL) {
-        $empty_list .= "<li>Catégorie de produit</li>";
+    if ($posted_data['type_produit'] == NULL) {
+        $empty_list .= "<li>Type_produit</li>";
      $checker = 1;
    }
       
@@ -34,17 +34,17 @@ if (MInit::form_verif('editcategorie_produit', false)) {//If form is Posted do A
 
     //End Checker
     //Call Model
-    $new_categorie_produit = new Mcategorie_produit($posted_data);
+    $new_type_produit = new Mtype_produit($posted_data);
     
-    $new_categorie_produit->id_categorie_produit = $posted_data['id'];
+    $new_type_produit->id_type_produit = $posted_data['id'];
     //execute Edit returne false if error
-    if ($new_categorie_produit->edit_categorie_produit()) {
-        exit("1#" . $new_categorie_produit->log); //Green message
+    if ($new_type_produit->edit_type_produit()) {
+        exit("1#" . $new_type_produit->log); //Green message
     } else {
-        exit("0#" . $new_categorie_produit->log); //Red message
+        exit("0#" . $new_type_produit->log); //Red message
     }
 //Call View if no POST
 } else {
-    view::load('Systeme/settings/categories_produits', 'editcategorie_produit');
+    view::load('Systeme/settings/types_produits', 'edittype_produit');
 }
 ?>

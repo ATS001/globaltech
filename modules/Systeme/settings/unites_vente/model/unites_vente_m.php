@@ -1,18 +1,18 @@
 <?php 
 /**
-* Class Gestion Catégories de produits 1.0
+* Class Gestion Unités de vente 1.0
 */
 
 
-class Mcategorie_produit {
+class Munite_vente {
 	private $_data; //data receive from form
-	var $table = 'ref_categories_produits'; //Main table of module
+	var $table = 'ref_unites_vente'; //Main table of module
 	var $last_id; //return last ID after insert command
 	var $log = NULL; //Log of all opération.
 	var $error = true; //Error bol changed when an error is occured
-        var $id_categorie_produit; // Region ID append when request
+        var $id_unite_vente; // Region ID append when request
 	var $token; //user for recovery function
-	var $categorie_produit_info; //Array stock all categorie_produit info
+	var $unite_vente_info; //Array stock all unite_vente info
 	var $app_action; //Array action for each 
 
 	public function __construct($properties = array()){
@@ -30,16 +30,16 @@ class Mcategorie_produit {
 		: null
 		;
 	}
-		//Get all info categorie_produit from database for edit form
+		//Get all info unite_vente from database for edit form
 
-	public function get_categorie_produit()
+	public function get_unite_vente()
 	{
 		global $db;
 
 		$table = $this->table;
 
 		$sql = "SELECT $table.* FROM 
-		$table WHERE  $table.id = ".$this->id_categorie_produit;
+		$table WHERE  $table.id = ".$this->id_unite_vente;
 
 		if(!$db->Query($sql))
 		{
@@ -50,13 +50,13 @@ class Mcategorie_produit {
 				$this->error = false;
 				$this->log .= 'Aucun enregistrement trouvé ';
 			} else {
-				$this->categorie_produit_info = $db->RowArray();
+				$this->unite_vente_info = $db->RowArray();
 				$this->error = true;
 			}
 			
 			
 		}
-		//return Array categorie_produit_info
+		//return Array unite_vente_info
 		if($this->error == false)
 		{
 			return false;
@@ -89,24 +89,24 @@ class Mcategorie_produit {
    
 
 
-	 //Save new categorie_produit after all check
-	public function save_new_categorie_produit(){
+	 //Save new unite_vente after all check
+	public function save_new_unite_vente(){
 
 		
        	//Before execute do the multiple check
 	// check Region
-	$this->Check_exist('categorie_produit', $this->_data['categorie_produit'], 'Catégorie de produit', null);
+	$this->Check_exist('unite_vente', $this->_data['unite_vente'], 'Unité de vente', null);
 
 	
 		global $db;
-		$values["categorie_produit"]     = MySQL::SQLValue($this->_data['categorie_produit']);
+		$values["unite_vente"]     = MySQL::SQLValue($this->_data['unite_vente']);
 		$values["creusr"]     = MySQL::SQLValue(session::get('userid'));
                  $values["credat"]     = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
         // If we have an error
 		if($this->error == true){
 
-			if (!$result = $db->InsertRow("ref_categories_produits", $values)) {
+			if (!$result = $db->InsertRow("ref_unites_vente", $values)) {
 				
 				$this->log .= $db->Error();
 				$this->error = false;
@@ -115,7 +115,7 @@ class Mcategorie_produit {
 			}else{
 
 				$this->last_id = $result;
-				$this->log .='</br>Enregistrement  réussie '. $this->_data['categorie_produit'] .' - '.$this->last_id.' -';
+				$this->log .='</br>Enregistrement  réussie '. $this->_data['unite_vente'] .' - '.$this->last_id.' -';
 			}
 
 
@@ -134,8 +134,8 @@ class Mcategorie_produit {
 
 	}
 
-    //activer ou valider une categorie_produit
-	public function valid_categorie_produit($etat = 0)
+    //activer ou valider une unite_vente
+	public function valid_unite_vente($etat = 0)
 	{
 		global $db;
 
@@ -146,7 +146,7 @@ class Mcategorie_produit {
 		$values["updusr"] = MySQL::SQLValue(session::get('userid'));
 	    $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
-		$wheres['id']     = $this->id_categorie_produit;
+		$wheres['id']     = $this->id_unite_vente;
 
 		// Execute the update and show error case error
 		if(!$result = $db->UpdateRows($this->table, $values, $wheres))
@@ -157,7 +157,7 @@ class Mcategorie_produit {
 
 		}else{
 			$this->log   .= '</br>Statut changé! ';
-			//$this->log   .= $this->table.' '.$this->id_categorie_produit.' '.$etat;
+			//$this->log   .= $this->table.' '.$this->id_unite_vente.' '.$etat;
 			$this->error  = true;
 
 		}
@@ -172,48 +172,48 @@ class Mcategorie_produit {
 
 
 
-	// afficher les infos d'une categorie_produit
+	// afficher les infos d'une unite_vente
 	public function Shw($key,$no_echo = "")
 	{
-		if($this->categorie_produit_info[$key] != null)
+		if($this->unite_vente_info[$key] != null)
 		{
 			if($no_echo != null)
 			{
-				return $this->categorie_produit_info[$key];
+				return $this->unite_vente_info[$key];
 			}
 
-			echo $this->categorie_produit_info[$key];
+			echo $this->unite_vente_info[$key];
 		}else{
 			echo "";
 		}
 		
 	}
-	//Edit categorie_produit after all check
-	public function edit_categorie_produit(){
+	//Edit unite_vente after all check
+	public function edit_unite_vente(){
 
 		
 
-		//Get existing data for categorie_produit
-		$this->get_categorie_produit();
+		//Get existing data for unite_vente
+		$this->get_unite_vente();
 		
-		$this->last_id = $this->id_categorie_produit;
+		$this->last_id = $this->id_unite_vente;
 
 		//Before execute do the multiple check
 		// check Region
-		$this->Check_exist('categorie_produit', $this->_data['categorie_produit'], 'Catégorie de produit', $this->id_categorie_produit);
+		$this->Check_exist('unite_vente', $this->_data['unite_vente'], 'Unite de vente', $this->id_unite_vente);
 
 		
     	global $db;
-		$values["categorie_produit"]        = MySQL::SQLValue($this->_data['categorie_produit']);
+		$values["unite_vente"]        = MySQL::SQLValue($this->_data['unite_vente']);
                 $values["updusr"]        = MySQL::SQLValue(session::get('userid'));
                 $values["upddat"]        = MySQL::SQLValue(date("Y-m-d H:i:s"));
-		$wheres["id"]            = $this->id_categorie_produit;
+		$wheres["id"]            = $this->id_unite_vente;
 		
 
         // If we have an error
 		if($this->error == true){
 
-			if (!$result = $db->UpdateRows("ref_categories_produits", $values, $wheres)) {
+			if (!$result = $db->UpdateRows("ref_unites_vente", $values, $wheres)) {
 				//$db->Kill();
 				$this->log .= $db->Error();
 				$this->error == false;
@@ -222,7 +222,7 @@ class Mcategorie_produit {
 			}else{
 
 				//$this->last_id = $result;
-				$this->log .='</br>Enregistrement  réussie '. $this->_data['categorie_produit'] .' - '.$this->last_id.' -';
+				$this->log .='</br>Enregistrement  réussie '. $this->_data['unite_vente'] .' - '.$this->last_id.' -';
 			}
 
 
@@ -242,13 +242,13 @@ class Mcategorie_produit {
 
 	}
 
-	 public function delete_categorie_produit()
+	 public function delete_unite_vente()
     {
     	global $db;
-    	$id_categorie_produit = $this->id_categorie_produit;
-    	$this->get_categorie_produit();
+    	$id_unite_vente = $this->id_unite_vente;
+    	$this->get_unite_vente();
     	//Format where clause
-    	$where['id'] = MySQL::SQLValue($id_categorie_produit);
+    	$where['id'] = MySQL::SQLValue($id_unite_vente);
     	//check if id on where clause isset
     	if($where['id'] == null)
     	{
@@ -256,10 +256,10 @@ class Mcategorie_produit {
 			$this->log .='</br>L\' id est vide';
     	}
     	//execute Delete Query
-    	if(!$db->DeleteRows('ref_categories_produits',$where))
+    	if(!$db->DeleteRows('ref_unites_vente',$where))
     	{
 
-    		$this->log .= $db->Error().'  '.$db->BuildSQLDelete('ref_categories_produits',$where);
+    		$this->log .= $db->Error().'  '.$db->BuildSQLDelete('ref_unites_vente',$where);
 			$this->error = false;
 			$this->log .='</br>Suppression non réussie';
 
@@ -276,5 +276,4 @@ class Mcategorie_produit {
 		}
     }
 
-    
 }

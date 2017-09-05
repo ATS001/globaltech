@@ -424,6 +424,23 @@ static public function pub_copy_file($old_file, $new_file, $path, $mode = 0777){
    }
 
    /**
+    * [big_message Show message in main page]
+    * @param  [string] $msg   [Message]
+    * @param  [string] $color [Color]
+    * @return [Print String]  [Print message box]
+    */
+   static public function big_message($msg, $color)
+   {
+    $message = '<div class="alert alert-block alert-'.$color.'">
+                  <button type="button" class="close" data-dismiss="alert">
+                    <i class="ace-icon fa fa-times"></i>
+                  </button>
+                  '.$msg.'
+    </div>';
+    return print($message);
+   }
+
+   /**
     * Function Format verif form get an set
     * using session 
     * return string true.

@@ -1,13 +1,13 @@
  <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
 					
-		<?php TableTools::btn_add('categories_produits','Liste des catégories', Null, $exec = NULL, 'reply'); ?>
+		<?php TableTools::btn_add('types_produits','Liste des types', Null, $exec = NULL, 'reply'); ?>
 					
 	</div>
 </div>
 <div class="page-header">
 	<h1>
-		Ajouter une catégorie
+		Ajouter un type
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
 		</small>
@@ -27,13 +27,13 @@
 				
 <?php
 
-$form = new Mform('addcategorie_produit', 'addcategorie_produit', '', 'categories_produits', '0');
+$form = new Mform('addtype_produit', 'addtype_produit', '', 'types_produits', '0');
 
-//Catégorie de produit
-$cat_prod_array[]  = array('required', 'true', 'Insérez une catégorie' );
-$form->input('Catégorie', 'categorie_produit', 'text' ,6, null, $cat_prod_array);
+//Type de produit
+$type_prod_array[]  = array('required', 'true', 'Insérez un type' );
+$form->input('Type', 'type_produit', 'text' ,6, null, $type_prod_array);
 
-$form->button('Enregistrer la catégorie');
+$form->button('Enregistrer le type');
 
 //Form render
 $form->render();

@@ -42,14 +42,27 @@ $info_user->id_user = Mreq::tp('id');
 
 			<?php 
 
-			foreach ($modul_array as $row) { 
-				
 
 
-//strpos($a, 'are')
+$service_user = '-'.$info_user->Shw('service',1).'-';
+foreach($modul_array as $check) {
+   if (strpos($check['services'], $service_user)) {
+      $found_service = true;
+   }
+}
 
+if(!isset($found_service))
+{
+	MInit::big_message("Le Service de  ".$info_user->Shw('service_user',1)." ne dispose pas de module !", 'danger');
+	exit();
+	
+}
+
+
+			
+foreach ($modul_array as $row) { 			
 if(strpos($row['services'], '-'.$info_user->Shw('service',1).'-') && $row['modul'] != 'Systeme'){
-				?>
+			?>
 			<div class="col-xs-12 col-sm-6 widget-container-col">
 				<div class="widget-box widget-color-blue">
 					<!-- #section:custom/widget-box.options -->
