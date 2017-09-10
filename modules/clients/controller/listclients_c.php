@@ -7,7 +7,6 @@
 
 	$params = $_REQUEST;
 
-
 	//define index of column
 	$columns = array( 
 		0 =>'id',
@@ -25,7 +24,7 @@
     // define used table.
 	$tables .= " clients clients, categorie_client cc";
     // define joint and rtable elation
-	$joint .= " WHERE clients.id_categorie = cc.id  ";
+	$joint .= " AND clients.id_categorie = cc.id  ";
 	// set sherched columns.(the final colm without comma)
 	$colms .= " clients.id AS id, ";	
 	$colms .= " clients.code as code, ";
@@ -34,13 +33,14 @@
 	$colms .= " cc.categorie_client as categorie_client, ";
 
 
-	//difine if user have rule to show line depend of etat 
-	$where_etat_line = TableTools::where_etat_line('clients', 'clients');
+	
+	
 	//define notif culomn to concatate with any colms.
 	//this is change style of button action to red
 	$notif_colms = TableTools::line_notif_new('clients', 'clients');
     $colms .= $notif_colms;
-	
+    //difine if user have rule to show line depend of etat 
+	$where_etat_line = TableTools::where_etat_line('clients', 'clients');
 
 	// check search value exist
 	if( !empty($params['search']['value']) or Mreq::tp('id_search') != NULL) 
@@ -48,11 +48,11 @@
 
 		$serch_value = str_replace('+',' ',$params['search']['value']);
         //Format where in case joint isset  
-	    $where_s .= $joint == NULL? " WHERE " : " AND ";
+	    /*$where_s .= $joint == NULL? " WHERE " : " AND ";*/
 
 
 
-		$where_s .=" ( clients.code LIKE '%".$serch_value."%' ";   
+		$where_s .=" AND ( clients.code LIKE '%".$serch_value."%' ";   
 		$where_s .=" OR (clients.denomination LIKE '%".$serch_value."%') ";
 		$where_s .=" OR (clients.r_social LIKE '%".$serch_value."%') ";
 		$where_s .=" OR (clients.id LIKE '%".$serch_value."%') ";
@@ -64,27 +64,29 @@
     
 	//var_dump($where);
 
-	$where = $where == NULL ? NULL : $where;
+	//$where = $where == NULL ? NULL : $where;
 	
 	/**
 	 * Check if Query have JOINT then format WHERE puting WHERE 1=1 before where_etat_line
 	 * Check if Search active then and non JOINT format WHERE puting WHERE 1=1 before where_etat_line
 	 */
 	
-	$where_etat_line =  $joint == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
+	/*$where_etat_line =  $joint == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
 	$where_etat_line =  $where_s == NULL && $joint == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
 
-	$where .= $where_etat_line;
-    
+	$where .= $where_etat_line;*/
+    $where .= $where_etat_line;
+	$where .= $joint;
+	$where .= $where_s == NULL ? NULL : $where_s;
 	// getting total number records without any search
-	$sql = "SELECT $colms  FROM  $tables $joint $where ";
+	$sql = "SELECT $colms  FROM  $tables  ";
 	$sqlTot .= $sql;
 	$sqlRec .= $sql;
 	//concatenate search sql if value exist
-	if(isset($where_s) && $where_s != '') {
+	if(isset($where) && $where != NULL) {
 
-		$sqlTot .= $where_s;
-		$sqlRec .= $where_s;
+		$sqlTot .= $where;
+		$sqlRec .= $where;
 	}
 
 	//if we use notification we must ordring lines by nofication rule in first
