@@ -1,7 +1,7 @@
 <?php 
- $info_produit= new Mproduit();
- $info_produit->id_produit = Mreq::tp('id');
- $info_produit->get_produit_info();
+ $info_achat= new Machat();
+ $info_achat->id_achat = Mreq::tp('id');
+ $info_achat->get_achat_produit_info();
 
 
  ?>
@@ -10,13 +10,13 @@
 					
 		
 		<?php 
-              TableTools::btn_add('produits', 'Liste des produits', Null, $exec = NULL, 'reply');      
+              TableTools::btn_add('buyproduct', 'Liste des achats', Null, $exec = NULL, 'reply');      
 		 ?>		
 	</div>
 </div>
 <div class="page-header">
 	<h1>
-		Détails du produit : <?php  $info_produit->printattribute('ref'); ?> 
+		Détails de l'achat : <?php  $info_achat->printattribute('ref'); ?> 
 
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
@@ -45,57 +45,56 @@
                         <div class="col-xs-12 col-sm-4"></div>
 
                         <div class="col-xs-12 col-sm-4">
-                            <div class="profile-produit-info">
-                                <div class="profile-info-row">
-                                    <div class="profile-info-name"> Référence </div>
-
-                                    <div class="profile-info-value">
-                                        <span><?php $info_produit->printattribute('ref'); ?></span>
-                                    </div>
-                                </div>
-
-                                <div class="profile-info-row">
-                                    <div class="profile-info-name"> Désignation </div>
-
-                                    <div class="profile-info-value">
-                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                        <span><?php $info_produit->printattribute('designation'); ?></span>
-                                    </div>
-                                </div>
+                            <div class="profile-achat-info">
                                 
-                               
-
                                 <div class="profile-info-row">
-                                    <div class="profile-info-name"> Stock minimale </div>
+                                    <div class="profile-info-name"> Produit </div>
 
                                     <div class="profile-info-value">
                                             <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                        <span><?php $info_produit->printattribute('stock_min'); ?></span>
+                                        <span><?php $info_achat->printattribute('idproduit'); ?></span>
+                                    </div>
+                                </div>
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name"> Quantité </div>
+
+                                    <div class="profile-info-value">
+                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+                                        <span><?php $info_achat->printattribute('qte'); ?></span>
                                     </div>
                                 </div>
 
                                 <div class="profile-info-row">
-                                    <div class="profile-info-name"> Catégorie du produit </div>
+                                    <div class="profile-info-name"> Prix d'achat </div>
 
                                     <div class="profile-info-value">
                                             <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                        <span><?php $info_produit->printattribute('categorie_produit'); ?></span>
+                                        <span><?php $info_achat->printattribute('prix_achat'); ?></span>
+                                    </div>
+                                </div>
+
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name"> Prix de vente </div>
+
+                                    <div class="profile-info-value">
+                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+                                        <span><?php $info_achat->printattribute('prix_vente'); ?></span>
                                     </div>
                                 </div>
                                 <div class="profile-info-row">
-                                    <div class="profile-info-name"> Unité de vente </div>
+                                    <div class="profile-info-name"> Date d'achat </div>
 
                                     <div class="profile-info-value">
                                             <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                        <span><?php $info_produit->printattribute('unite_vente'); ?></span>
+                                        <span><?php $info_achat->printattribute('date_achat'); ?></span>
                                     </div>
                                 </div>
                                 <div class="profile-info-row">
-                                    <div class="profile-info-name"> Type de produit </div>
+                                    <div class="profile-info-name"> Date de fin de validité </div>
 
                                     <div class="profile-info-value">
                                             <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                        <span><?php $info_produit->printattribute('type_produit'); ?></span>
+                                        <span><?php $info_achat->printattribute('date_validite'); ?></span>
                                     </div>
                                 </div>
 
@@ -120,4 +119,4 @@
 
 
 
-</div><!-- /.produit-profile -->
+</div><!-- /.achat-profile -->

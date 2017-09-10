@@ -1,4 +1,5 @@
 
+
 <?php
 
 global $db;
@@ -10,8 +11,8 @@ $params = $_REQUEST;
 $columns = array(
     0 => 'id',
     1 => 'ref',
-    2 => 'designation',
-    3 => 'stock_min',
+    2 => 'idproduit',
+    3 => 'qte',
     4 => 'statut'
 );
 
@@ -19,20 +20,21 @@ $columns = array(
 
 $colms = $tables = $joint = $where = $where_s = $sqlTot = $sqlRec = "";
 // define used table.
-$tables .= "produits";
+$tables .= "stock , produits";
 // define joint and rtable elation
 // set sherched columns.(the final colm without comma)
-$colms .= " produits.id AS id, ";
-$colms .= " produits.ref as ref, ";
-$colms .= " produits.designation as designation, ";
-$colms .= " produits.stock_min as stock_min, ";
+$colms .= " stock.id AS id, ";
+$colms .= " produits.ref as refp, ";
+$colms .= " stock.qte as qte, ";
+$joint .= " WHERE stock.idproduit=produits.id";
+$joint .= " AND stock.idproduit = ".Mreq::tp('id');
 
 
 //difine if user have rule to show line depend of etat 
-$where_etat_line = TableTools::where_etat_line('produits', 'produits');
+$where_etat_line = TableTools::where_etat_line('produits', 'buyproducts');
 //define notif culomn to concatate with any colms.
 //this is change style of button action to red
-$notif_colms = TableTools::line_notif_new('produits', 'produits');
+$notif_colms = TableTools::line_notif_new('produits', 'buyproducts');
 $colms .= $notif_colms;
 
 
@@ -44,11 +46,9 @@ if (!empty($params['search']['value']) or Mreq::tp('id_search') != NULL) {
     $where_s .= $joint == NULL ? " WHERE " : " AND ";
 
 
-
-    $where_s .= " ( produits.ref LIKE '%" . $serch_value . "%' ";
-    $where_s .= " OR (produits.id LIKE '%" . $serch_value . "%') ";
-    $where_s .= " OR (produits.designation LIKE '%" . $serch_value . "%') ";
-    $where_s .= " OR (produits.stock_min LIKE '%" . $serch_value . "%') ";
+    $where_s .= " OR (stock.id LIKE '%" . $serch_value . "%') ";
+    $where_s .= " OR (produit.ref LIKE '%" . $serch_value . "%') ";
+    $where_s .= " OR (stock.qte LIKE '%" . $serch_value . "%') ";
     $where_s .= TableTools::where_search_etat('produits', 'produits', $serch_value);
 }
 
@@ -60,7 +60,7 @@ $where = $where == NULL ? NULL : $where;
  * Check if Search active then and non JOINT format WHERE puting WHERE 1=1 before where_etat_line
  */
 $where_etat_line = $joint == NULL ? " WHERE 1=1 " . $where_etat_line : $where_etat_line;
-//$where_etat_line = $where_s == NULL && $joint == NULL ? " WHERE 1=1 " . $where_etat_line : $where_etat_line;
+$where_etat_line = $where_s == NULL && $joint == NULL ? " WHERE 1=1 " . $where_etat_line : $where_etat_line;
 
 $where .= $where_etat_line;
 
@@ -92,16 +92,16 @@ $totalRecords = $db->RowCount();
 //Export data to CSV File
 if (Mreq::tp('export') == 1) {
 
-    $file_name = 'produits_list';
-    $title = 'Liste des produits';
+    $file_name = 'achat_produit_list';
+    $title = 'Liste des achats';
     if (Mreq::tp('format') == 'csv') {
-        $header = array('ID', 'Référence', 'Désignation', 'Stock minimale', 'Statut');
+        $header = array('ID', 'Produit', 'Quantité','Statut');
         Minit::Export_xls($header, $file_name, $title);
     } elseif (Mreq::tp('format') == 'pdf') {
-        $header = array('ID' => 5, 'Référence' => 20, 'Désignation' => 25, 'Stock minimale' => 15, 'Statut' => 20);
+        $header = array('ID' => 5, 'Produit' => 25,'Quantité' => 15,'Statut' => 20);
         Minit::Export_pdf($header, $file_name, $title);
     } elseif (Mreq::tp('format') == 'dat') {
-        Minit::send_big_param('produits#' . $sqlTot);
+        Minit::send_big_param('buyproduct#' . $sqlTot);
     }
 }
 

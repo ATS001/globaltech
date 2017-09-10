@@ -39,11 +39,6 @@ $designation_array[]  = array('required', 'true', 'Insérez une désignation' );
 $designation_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
 $form->input('Désignation', 'designation', 'text' ,6, null, $designation_array);
 
-//Prix unitaire
-$pu_array[]  = array('required', 'true', 'Insérez le prix unitaire' );
-$pu_array[]  = array('number', 'true', 'Entrez un nombre valide' );
-$form->input('Prix unitaire', 'pu', 'text' ,6, null, $pu_array);
-
 //stock minimale
 $stock_min_array[]  = array('required', 'true', 'Insérez le stock minimale' );
 $stock_min_array[]  = array('number', 'true', 'Entrez un nombre valide' );

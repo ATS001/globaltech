@@ -1,6 +1,6 @@
 <div class="page-header">
 	<h1>
-		Gestion de produits
+		Gestion des produits
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
 		</small>
@@ -37,13 +37,12 @@
 						</th>
                                                 <th>
 							Désignation
-						</th>
-                                                <th>
-							PU
-						</th>
+						</th>                                              
+                                               
                                                 <th>
 							Stock minimale
 						</th>
+                                                
 						<th>
 							Etat
 						</th>
@@ -63,19 +62,18 @@ $(document).ready(function() {
 	
 	var table = $('#produits_grid').DataTable({
 		bProcessing: true,
-		notifcol : 5,
+		notifcol : 4,
 		serverSide: true,
 		
 		ajax_url:"produits",
 		
                 aoColumns: [
                     {"sClass": "center","sWidth":"5%"}, // Identifiant 
-                    {"sClass": "left","sWidth":"25%"}, // Catégorie
-                    {"sClass": "left","sWidth":"25%"},
-                    {"sClass": "left","sWidth":"20%"},
+                    {"sClass": "left","sWidth":"20%"}, // Catégorie
+                    {"sClass": "left","sWidth":"25%"},   
                     {"sClass": "left","sWidth":"10%"},
                     {"sClass": "center","sWidth":"10%"}, // Statut
-                    {"sClass": "center","sWidth":"5%"}, // Action
+                    {"sClass": "center","sWidth":"10%"}, // Action
                     ],
                 });
 
