@@ -114,10 +114,10 @@ if(MInit::form_verif('editmodul', false))
   // returne message error red to client 
   exit('3#'.$info_modul->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
-if($info_modul->modul_info['is_setting'] == 1){
-  view::load('modul_mgr','editmodulsetting');
-}else{
+if($info_modul->modul_info['is_setting'] == 0){
   view::load('modul_mgr','editmodul');
+}else{
+  view::load('modul_mgr','editmodulsetting');
 }
 
 }

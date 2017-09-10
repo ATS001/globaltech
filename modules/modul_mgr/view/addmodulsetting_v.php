@@ -34,7 +34,11 @@
 $form = new Mform('addmodulsetting', 'addmodulsetting','',  'modul', '');
 
 //Titre bloc Modul
-$form->bloc_title('Informations Module de paramétrage');
+$form->bloc_title('Informations Module de paramétrage / Sous-Modul');
+
+//Type Modul
+$option_type  = array('1' => 'Paramètre' , '2' => 'Sous Modul' );
+$form->select('Type module', 'type_modul', 3, $option_type, NULL ,$selected = NULL, $multi = NULL );
 //Nom Module
 $modul_array[]  = array('required', 'true', 'Insérer Nom de Module' );
 $modul_array[]  = array('minlength', '3', 'Minimum 3 caractères' );

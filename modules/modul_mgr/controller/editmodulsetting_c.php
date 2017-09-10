@@ -5,7 +5,7 @@ if(MInit::form_verif('editmodulsetting', false))
 	
   $posted_data = array(
    'modul'         => Mreq::tp('modul') ,
-   'is_setting'    => 1 ,
+   'is_setting'    => Mreq::tp('type_modul') ,
    'modul_setting' => Mreq::tp('modul_setting') ,
    'description'   => Mreq::tp('description') ,
    'tables'        => Mreq::tp('tables') ,
@@ -49,6 +49,11 @@ if(MInit::form_verif('editmodulsetting', false))
     $empty_list .= "<li>Déscription</li>";
     $checker = 1;
   }
+  if(!in_array($posted_data['is_setting'], array(1,2))){
+
+      $empty_list .= "<li>Le Type de modul est incorrect</li>";
+      $checker = 1;
+    }
   if($posted_data['tables'] == NULL){
 
     $empty_list .= "<li>Tables</li>";

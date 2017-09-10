@@ -70,20 +70,26 @@ $arr_modul = $modules->left_menu_arr;
                     	
 <?php
 //liste Modules
-foreach ($arr_modul as $row){               	
-?>   
-                    	<li>
-                    		<a href="#" left_menu="1" class="tip-right this_url" rel="<?php echo $row['app']; ?>" title="<?php echo $row['descrip']; ?>">
-                    			<i class="menu-icon fa fa-<?php echo $row['class']; ?>"></i>
-                    			<span class="menu-text"> <?php echo ' '.$row['descrip']; ?> </span>
-                    		</a>
-                    		<b class="arrow"></b>
-                    	</li>
 
+$render = '';
+foreach ($arr_modul as $row)
+{
+		
+	$check_sub_modul = $modules->get_sub_modul($row['modul'], $row['app'], $row['descrip'], $row['class']);
+	//exit($check_sub_modul);
+	if( $check_sub_modul == NULL){
+        
+		$render .='<li><a href="#" left_menu="1" class="tip-right this_url" rel="'.$row['app'].'" title="'.$row['descrip'].'"><i class="menu-icon fa fa-'.$row['class'].'"></i><span class="menu-text this_url" rel="'.$row['app'].'"> '.$row['descrip'].'</span></b></a></li>'; 
+	}else{
+		$render .='<li><a href="#" left_menu="1" class="dropdown-toggle" title="'.$row['descrip'].'"><i class="menu-icon fa fa-'.$row['class'].'"></i><span class="menu-text"> '.$row['descrip'].'</span><b class="arrow fa fa-angle-down"></b></a>';
+		$render .= $check_sub_modul .'</li>';
+	}
+    
+}
+ $render .= '';
 
+ echo $render;
 
-<?php
-} 
 ?> 
                     </ul><!-- /.nav-list -->
 

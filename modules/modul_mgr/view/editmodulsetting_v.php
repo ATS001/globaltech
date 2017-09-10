@@ -49,7 +49,11 @@ $form->input_hidden('id_checker',  MInit::cryptage($info_modul->Shw('id'), 1));
 $form->input_hidden('id_app',  $info_modul->Shw('id_app'));
 
 //Titre bloc Modul
-$form->bloc_title('Informations Module');
+$form->bloc_title('Informations Module de paramétrage / Sous-Modul');
+
+//Type Modul
+$option_type  = array('1' => 'Paramètre' , '2' => 'Sous Modul' );
+$form->select('Type module', 'type_modul', 3, $option_type, NULL ,$info_modul->Shw('is_setting'), $multi = NULL );
 //Nom Module
 $modul_array[]  = array('required', 'true', 'Insérer Nom de Module' );
 $modul_array[]  = array('minlength', '3', 'Minimum 3 caractères' );
