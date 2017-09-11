@@ -22,7 +22,7 @@
 
 	$colms = $tables = $joint = $where = $where_s=$sqlTot = $sqlRec = "";
     // define used table.
-	$tables .= " ref_ville, ref_region ";
+	$tables .= " refff_ville, ref_region ";
     // define joint and table relation
 	$joint .= "AND  ref_region.id = ref_ville.id_region ";
 	// set sherched columns.(the final colm without comma)
