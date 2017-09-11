@@ -24,7 +24,7 @@
     // define used table.
 	$tables .= " ref_ville, ref_region ";
     // define joint and table relation
-	$joint .= " AND ref_region.id = ref_ville.id_region ";
+	$joint .= "  ref_region.id = ref_ville.id_regiona AND";
 	// set sherched columns.(the final colm without comma)
 	$colms .= " ref_ville.id AS id_ville, ";	
 	$colms .= " ref_ville.ville as libelle, ";
@@ -79,7 +79,6 @@
     $order_notif = TableTools::order_bloc($params['order'][0]['column']);
 
  	$sqlRec .=  " ORDER BY $order_notif  ". $columns[$params['order'][0]['column']]."   ".$params['order'][0]['dir']."  LIMIT ".$params['start']." ,".$params['length']." ";
- 	
 
     if (!$db->Query($sqlTot)) $db->Kill($db->Error()." SQLTOT $sqlTot");
 	//
