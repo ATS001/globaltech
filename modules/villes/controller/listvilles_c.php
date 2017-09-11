@@ -24,7 +24,7 @@
     // define used table.
 	$tables .= " ref_ville, ref_region ";
     // define joint and table relation
-	$joint .= "  ref_region.id = ref_ville.id_regiona AND";
+	$joint .= " AND ref_region.id = ref_ville.id_region ";
 	// set sherched columns.(the final colm without comma)
 	$colms .= " ref_ville.id AS id_ville, ";	
 	$colms .= " ref_ville.ville as libelle, ";
