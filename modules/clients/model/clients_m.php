@@ -186,6 +186,7 @@ class Mclients {
 				//Check $this->error = false return Red message and Bol false	
 				}else{
 					$this->log .= '</br>Enregistrement réussie: <b>'.$this->_data['denomination'];
+                    
 					$this->log .= '</br>Un problème d\'Enregistrement ';
 				}
 			}

@@ -69,7 +69,7 @@
 	 * Check if Search active then and non JOINT format WHERE puting WHERE 1=1 before where_etat_line
 	 */
 	
-	$where_etat_line =  $joint == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
+	$where_etat_line =  $joint   == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
 	$where_etat_line =  $where_s == NULL && $joint == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
 
 	$where .= $where_etat_line;

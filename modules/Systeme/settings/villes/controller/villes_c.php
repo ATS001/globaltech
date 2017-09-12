@@ -1,6 +1,6 @@
 <?php
 
-view::load('villes','villes');
+view::load('Systeme/settings/villes','villes');
 
 
 ?>
