@@ -37,7 +37,7 @@
 							Ville
 						</th>
 						<th>
-							Région
+							Département
 						</th>
 						<th>
 							Latitude

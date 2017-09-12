@@ -20,7 +20,7 @@
     // define used table.
 	$tables .= " categorie_client ";
 	// define joint and rtable elation
-	$joint .=  " where 1=1  ";
+	$joint .=  " ";
 	// set sherched columns.(the final colm without comma)
 	$colms .= " categorie_client.id AS id, ";	
 	$colms .= " categorie_client.categorie_client as categorie_client, ";
