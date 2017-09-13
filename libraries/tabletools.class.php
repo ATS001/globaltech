@@ -304,8 +304,7 @@ WHERE users_sys.id = $userid
                                 AND task_action.id = rules_action.`action_id` 
                                 AND rules_action.`userid` = ".session::get('userid')." 
                                 AND task_action.`type` = 0
-    
-                                 AND task_action.`message_etat` LIKE '%$search%')
+                                AND task_action.`message_etat` LIKE '%$search%')
                                 )";
         return $where_search_etat;                        
 	}

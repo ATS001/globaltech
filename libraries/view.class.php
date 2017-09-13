@@ -15,6 +15,16 @@ class view {
 			exit('3#Le fichier View n\'exist pas ! contacter l\'administrateur sysème');
 		}
 	}
+	static public function load_view($view_file)
+	{
+		$view_file_include = APP_VIEW.$view_file.'_v.php';
+		if(file_exists($view_file_include))
+		{
+			include_once($view_file_include);
+		}else{
+			exit('3#Le fichier View n\'exist pas ! contacter l\'administrateur sysème');
+		}
+	}
 
 
 }
