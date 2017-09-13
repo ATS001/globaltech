@@ -813,10 +813,10 @@ public function select_onchange($input_id)
 
 }
 
-public function draw_datatabe_form($id_table, $columns = array(), $url_data = null, $url_addrow = null, $titr_addrow = null, $add_js_func = null)
+public function draw_datatabe_form($id_table, $verif_value, $columns = array(), $url_data = null, $url_addrow = null, $titr_addrow = null, $add_js_func = null)
 {
-  $ssid = 'f_v'.$this->_id_form;
-  $verif_value  = md5(session::get($ssid));
+  /*$ssid = 'f_v'.$this->_id_form;
+  $verif_value  = md5(session::get($ssid));*/
   $button_action = "$('#".$id_table."').on('click', 'tr button', function() {
   var row = $(this).closest('tr')
   append_drop_menu('adddevis', t.cell(row, 0).data(), '.btn_action')
