@@ -100,8 +100,8 @@ class Template {
           $render_sub_modul .= '<ul class="submenu">';
           $sub_modul         = $db->RecordsArray(MYSQL_ASSOC);
 
-          $render_sub_modul .= '<li>
-            <a href="#" class="this_url" rel="'.$app.'" title="'.$descrip.'">
+          $render_sub_modul .= '<li left_menu="1">
+            <a href="#"  class="this_url" rel="'.$app.'" title="'.$descrip.'">
             <i class="menu-icon fa fa-'.$class.'"></i>
             '.$descrip.'
             </a>
@@ -109,7 +109,7 @@ class Template {
             </b></li>';
           foreach ($sub_modul as $row_s)
           {
-            $render_sub_modul .= '<li>
+            $render_sub_modul .= '<li left_menu="1">
             <a href="#" class="this_url" rel="'.$row_s['app'].'" title="'.$row_s['descrip'].'">
             <i class="menu-icon fa fa-'.$row_s['class'].'"></i>
             '.$row_s['descrip'].'

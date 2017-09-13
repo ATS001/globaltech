@@ -15,3 +15,7 @@ upload/
 *.log
 
 *.sublime-workspace
+modules/clients/submodul/test_sub_modul/controller/listtestsou_c.php
+modules/clients/submodul/test_sub_modul/controller/testsou_c.php
+modules/clients/submodul/test_sub_modul/controller/testsou_c.php
+modules/clients/submodul/test_sub_modul/controller/listtestsou_c.php

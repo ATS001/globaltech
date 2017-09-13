@@ -1,4 +1,3 @@
-
 <?php
 	global $db;
 	
@@ -7,12 +6,14 @@
 	
 	//define index of column
 	$columns = array( 
-		0 =>'id_user',
+		0 =>'item',
 		//1 =>'photo',
-		1 =>'nom', 
-		2 =>'service',
-		3 =>'statut',
-		4 =>'notif',
+		1 =>'ref', 
+		2 =>'designation',
+		3 =>'qte',
+		4 =>'prix',
+		5 =>'remis',
+		6 =>'total',
 		
 	);
 
@@ -20,28 +21,30 @@
     $colms = $tables = $joint = $where = $where_s = $sqlTot = $sqlRec = NULL;
 	
     // define used table.
-	$tables .= " users_sys, services ";
+	$tables .= " detail_devis, produits ";
     // define joint and rtable elation
-	$joint .= " AND services.id = users_sys.service ";
+	$joint .= " WHERE produits.id = detail_devis.id_produit ";
 	// set sherched columns.(the final colm without comma)
-	$colms .= " users_sys.id AS id_user, ";
+	$colms .= " @curRank := @curRank + 1 AS item, ";
 
 	//$colms .= " CONCAT('<div class=\"user\"><img class=\"nav-user-photo\" alt=\"\" src=\"./upload/useres/',users_sys.id,'/',MD5(users_sys.photo),'48x48.png\"></div>') as photo, ";
 	
-	$colms .= " CONCAT(users_sys.lnom,'  ',users_sys.fnom) as nom, ";
-	$colms .= " services.service as service, ";
+	$colms .= " detail_devis.ref, ";
+	$colms .= " produits.designation, ";
 
-	
-	
+	$colms .= " detail_devis.qte,  ";
+	$colms .= " detail_devis.prix,  ";
+	$colms .= " detail_devis.remis,  ";
+	$colms .= " detail_devis.total  ";
 	//define notif culomn to concatate with any colms.
 	//this is change style of button action to red
-	$notif_colms = TableTools::line_notif_new('users_sys', 'user');
-	$colms .= $notif_colms;
+	//$notif_colms = TableTools::line_notif_new('users_sys', 'user');
+	//$colms .= $notif_colms;
 	//difine if user have rule to show line depend of etat 
-	$where_etat_line = TableTools::where_etat_line('users_sys', 'user');
+	//$where_etat_line = TableTools::where_etat_line('users_sys', 'user');
 	    
 	// check search value exist
-	if( !empty($params['search']['value']) ) {
+	/*if( !empty($params['search']['value']) ) {
 
 		$serch_value = str_replace('+',' ',$params['search']['value']);
         //Format where in case joint isset  
@@ -55,7 +58,7 @@
 
 
 
-	}
+	}*/
 	//var_dump($where);
 
 	//$where = $where == NULL ? NULL : $where;
@@ -68,9 +71,9 @@
 	//$where_etat_line =  $joint == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
 	//$where_etat_line =  $where_s == NULL && $joint == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
 	
-	$where .= $where_etat_line;
+	//$where .= $where_etat_line;
 	$where .= $joint;
-	$where .= $where_s == NULL ? NULL : $where_s;
+	//$where .= $where_s == NULL ? NULL : $where_s;
 
 
 	// getting total number records without any search
@@ -88,11 +91,11 @@
 	//Change ('notif', status) with ('notif', column where notif code is concated)
 	//on case of order by other parametre this one is disabled (Check Export query)
 	
-    $order_notif = TableTools::order_bloc($params['order'][0]['column']);
+    //$order_notif = TableTools::order_bloc($params['order'][0]['column']);
 
     
 
- 	$sqlRec .=  " ORDER BY $order_notif ". $columns[$params['order'][0]['column']]."   ".$params['order'][0]['dir']."  LIMIT ".$params['start']." ,".$params['length']." ";
+ 	$sqlRec .=  " ORDER BY ". $columns[$params['order'][0]['column']]."   ".$params['order'][0]['dir']."  LIMIT ".$params['start']." ,".$params['length']." ";
 
 
     if (!$db->Query($sqlTot)) $db->Kill($db->Error()." SQLTOT $sqlTot");
