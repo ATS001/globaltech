@@ -90,7 +90,7 @@ function ajax_loader($url,$data,$redirect){
 
 
 //AJAX load bootbox content
-function ajax_bbox_loader($url,$data,$titre,$width){
+function ajax_bbox_loader($url, $data, $titre, $width, $data_table){
 	//alert($url)
 	
 	$.ajax({
@@ -103,51 +103,93 @@ function ajax_bbox_loader($url,$data,$titre,$width){
 			
 			var data_arry = data.split("#");
 			if(data_arry[0]==3){
-
 				ajax_loadmessage(data_arry[1],'nok',5000)
-				
+			}else if(data_arry[0]==4){
+				bootbox.process({
+					message:'Working',
+				});
+				$('#main-container').empty();
+				$('#main-container').html('');
+				ajax_loadmessage(data_arry[1],'nok',5000)
+				window.setTimeout( function(){
+					window.location = "./";
+				}, 5000 );
 				
 
-			}else{
-				
-                	bootbox.dialog({
-                		
-                        message: data,
-                        title: $titre,
-                        size: $width !== undefined? $width : '',
-                        buttons: 			
-						{
-							
-							 
-							"click" :
-							{
-								"label" : "Click ME!",
-								"className" : "btn-sm btn-primary",
-								"callback": function(e) {
-									//if(!$('#' + $url).valid()) return false;
-									$('#' + $url).submit();
-									return false;
-								}
-							}, 
-							
+			
+		}else{
+			var dialog = bootbox.dialog({
+
+				message: data,
+				title: $titre,
+				size: $width !== undefined? $width : '',
+				buttons: 			
+				{						
+					"click" :
+					{
+						"label" : "Enregistrer",
+						"className" : "btn-sm btn-primary send_modal",
+						"callback": function(e) {
+							/*if(!$('#'+$url).valid()){
+								e.preventDefault();
+							}else{
+								$.ajax({
+									cache: false,
+									url  : '?_tsk='+$url+'&ajax=1',
+									type : 'POST',
+									data : $('#'+$url).serialize(),
+									dataType:"html",
+									success: function(data_f)
+									{
+										
+										var data_arry = data_f.split("#");
+										if(data_arry[0]==0){
+											ajax_loadmessage(data_arry[1],'nok',5000);
+										}else{ 
+											ajax_loadmessage(data_arry[1],'ok',5000);
+											var t1 = $('.dataTable').DataTable().draw();
+											dialog.modal('hide');
+										}
+									},
+									timeout: 30000,
+									error: function(){
+										ajax_loadmessage('Délai non attendue','nok',5000)
+										
+									}
+								});
+
+							}*/
+							return false;
 						}
-                    });
+					},
+					"cancel" :
+					{
+						"label" : "Annuler",
+						"className" : "btn-sm btn-inverse close_modal",
+						"callback": function (e) {
+							return true;
+						}
+					} 
 
-                    $('.bootbox-body').ace_scroll({
-					    size: 300
-	                });
-                
-			 
-			}
-		},
-		timeout: 30000,
-		error: function(){
-			ajax_loadmessage('Délai non attendue','nok',5000)
+				}
+			});
+
+			$('.bootbox-body').ace_scroll({
+				size: 300
+			});
+
+
 		}
+	},
+	timeout: 30000,
+	error: function(){
+		ajax_loadmessage('Délai non attendue','nok',5000)
+	}
 
         // will fire when timeout is reached
-     
-	});
+
+    });
+    return true;
 
 }
 
@@ -248,11 +290,15 @@ $('body').on('click', '.this_url', function() {
 	 var $data = $(this).attr('data') != ""?$(this).attr('data'):"";
 	 var $redirect = $(this).attr('redi') != ""?$(this).attr('redi'):"";
 	 ajax_loader($url,$data,$redirect);
-	 if($(this).attr('left_menu') == 1){
+	 if($(this).parent('li').attr('left_menu') == 1){
+	 	
+        //
 	 	$(".active").removeClass("active");
 	 	$(this).parent("li").addClass("active");
+        
 
 	 };
+	 
 
 });
 
@@ -335,9 +381,9 @@ function exec_ajax($url, $data, $confirm, $message_confirm , $the_table){
 // Load Message
 
 function ajax_loadmessage($core, $class, $time) {
-	//$.gritter.removeAll();
+	$.gritter.removeAll();
 	
-
+    
 	$time = typeof $time !== 'undefined' ? $time : 5000;	
 
 	$laclass = $class == 'ok'?'gritter-success':'gritter-error';
@@ -546,14 +592,27 @@ function fliupld(lechamps, asize,  type, value, edit) {
 
 // Melsiouns Function
 $(function () {
-
+  function addCommas(nStr) {
+    nStr += '';
+    var x = nStr.split('.');
+    var x1 = x[0];
+    var x2 = x.length > 1 ? '.' + x[1] : '';
+    var rgx = /(\d+)(\d{3})/;
+    while (rgx.test(x1)) {
+        x1 = x1.replace(rgx, '$1' + ',' + '$2');
+    }
+    return x1 + x2;
+}
 // Les Masque
   //called when key is pressed in textbox
-  $('body').on('keypress keyup', '.is-number', function(e) {
-  	if (e.which != 8 && e.which != 0 && (e.which < 48 || e.which > 57)) {
+  $('body').on('keypress keyup change', '.is-number', function(e) {
+
+  	if (e.which != 8 && e.which != 0  && (e.which < 48 || e.which > 57)) {
   		return false;
   	}
+  	
   });
+  	
   $("body").bind("DOMNodeInserted", function() {
    //$(this).find('.is-date').mask('99-99-9999');
 
@@ -656,9 +715,9 @@ $(document).ready(function(){
    		        });
 
    		        $('body').on('click', '.this_modal', function() {
-   		        	var $link = $(this).attr('rel');
+   		        	var $link  = $(this).attr('rel');
    		        	var $titre = $(this).attr('data_titre'); 
-   		        	var $data = $(this).attr('data'); 
+   		        	var $data  = $(this).attr('data'); 
 
 					ajax_bbox_loader($link, $data, $titre, 'large')
    		        });

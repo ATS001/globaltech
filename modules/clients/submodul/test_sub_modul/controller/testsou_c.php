@@ -1,3 +1,3 @@
 <?php 
-//SYS GLOBAL TECH
-// Modul: test_sub_modul => Controller
+//exit(APP_VIEW);
+view::load_view('testsou');

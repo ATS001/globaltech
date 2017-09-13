@@ -336,6 +336,7 @@ WHERE users_sys.id = ".$this->session_user."
 				define('ACTIV_APP', $this->app_array['dscrip']);
 			    define('MODUL_APP', $this->app_array['modul']);
 			    define('APP_TARGET', MPATH_MODULES.$this->app_array['rep'].SLASH.'controller/');
+			    define('APP_VIEW', MPATH_MODULES.$this->app_array['rep'].SLASH.'view'.SLASH);
 			    define('APP_ID', $this->app_array['id']);
 				
 

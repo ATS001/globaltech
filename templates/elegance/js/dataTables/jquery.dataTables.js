@@ -1865,7 +1865,9 @@
 		for ( i=0, ien=columns.length ; i<ien ; i++ ) {
 			column = columns[i];
 			cell = $( column.nTh ).addClass( column.sClass );
-	
+	        if(column.sClass == 'alignRight'){
+	        	$( column.nTh ).removeClass( column.sClass );
+	        }
 			if ( createHeader ) {
 				cell.appendTo( row );
 			}
@@ -2485,6 +2487,11 @@
 		// Compatibility with 1.9-, allow fnServerData and event to manipulate
 		_fnCallbackFire( oSettings, 'aoServerParams', 'serverParams', [data] );
 
+
+        if(oSettings.ajax_url == "") 
+        {
+        	return true;
+        }
 	
 		// Convert to object based for 1.10+ if using the old array scheme which can
 		// come from server-side processing or serverParams
@@ -2516,7 +2523,7 @@
 		//alert(oSettings.ajax_url);
 		var extra_data = oSettings.extra_data;
 		var and = extra_data != null ? "&" : null;
-
+        
 		var final_url = "./?_tsk="+oSettings.ajax_url+"&ajax=1"+and+extra_data;
 		ajax.url = final_url;
 		
@@ -13186,7 +13193,7 @@
 		 */
 		"aaSorting": null,
 	
-		/**
+		/*
 		 * Sorting that is always applied to the table (i.e. prefixed in front of
 		 * aaSorting).
 		 * Note that this parameter will be set by the initialisation routine. To
@@ -15229,10 +15236,7 @@
 
 }(window, document));
 
-$(document).ready(function() {
-    
-      
-});
+
 
 //Export CSV export
 function csv_export($table, $format)
@@ -15271,7 +15275,6 @@ function csv_export($table, $format)
                 }
     });
 }
-
 
 
 
