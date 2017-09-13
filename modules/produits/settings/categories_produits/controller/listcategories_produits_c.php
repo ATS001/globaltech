@@ -22,7 +22,7 @@
     // define joint and rtable elation
 	// set sherched columns.(the final colm without comma)
 	$colms .= " ref_categories_produits.id AS id, ";	
-	$colms .= " ref_categories_produits.categorie_produit as categorie_produit, ";
+	$colms .= " ref_categories_produits.categorie_produit as cat, ";
 
 
 
@@ -58,7 +58,7 @@
 	 * Check if Search active then and non JOINT format WHERE puting WHERE 1=1 before where_etat_line
 	 */
 	
-	$where_etat_line =  $joint == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
+	//$where_etat_line =  $joint == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
 	//$where_etat_line =  $where_s == NULL && $joint == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
 
 	$where .= $where_etat_line;
@@ -98,7 +98,7 @@
     		$header    = array('ID', 'Catégorie de produit','Statut');
     		Minit::Export_xls($header, $file_name, $title);
     	}elseif(Mreq::tp('format')=='pdf'){
-    		$header    = array('ID'=>5, 'Catégorie de produit'=>25,'Statut'=>20);
+    		$header    = array('ID'=>5, 'Catégorie de produit'=>25,'Statut'=>10);
     		Minit::Export_pdf($header, $file_name, $title);
     	}elseif(Mreq::tp('format')=='dat'){
     		Minit::send_big_param('categories_produits#'.$sqlTot);

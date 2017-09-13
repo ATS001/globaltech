@@ -58,7 +58,7 @@
 	 * Check if Search active then and non JOINT format WHERE puting WHERE 1=1 before where_etat_line
 	 */
 	
-	$where_etat_line =  $joint == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
+	//$where_etat_line =  $joint == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
 	//$where_etat_line =  $where_s == NULL && $joint == NULL ? " WHERE 1=1 ".$where_etat_line : $where_etat_line;
 
 	$where .= $where_etat_line;
@@ -98,7 +98,7 @@
     		$header    = array('ID', 'Type de produit','Statut');
     		Minit::Export_xls($header, $file_name, $title);
     	}elseif(Mreq::tp('format')=='pdf'){
-    		$header    = array('ID'=>5, 'Type de produit'=>25,'Statut'=>20);
+    		$header    = array('ID'=>5, 'Type de produit'=>25,'Statut'=>10);
     		Minit::Export_pdf($header, $file_name, $title);
     	}elseif(Mreq::tp('format')=='dat'){
     		Minit::send_big_param('types_produits#'.$sqlTot);
