@@ -29,9 +29,10 @@ if(MInit::form_verif('editclient',false))
    'bp'             => Mreq::tp('bp') ,
    'email'          => Mreq::tp('email') , 
    'rib'            => Mreq::tp('rib') , 
-   'devise'         => Mreq::tp('devise') , 
+   'id_devise'      => Mreq::tp('id_devise') , 
+   'taxe'           => Mreq::tp('taxe') ,
    'pj_id'          => Mreq::tp('pj-id'),
-   'pj_photo_id'       => Mreq::tp('pj_photo-id')
+   'pj_photo_id'    => Mreq::tp('pj_photo-id')
    );
 
   
@@ -121,8 +122,8 @@ $checker = null;
  $client = new  Mclients($posted_data);
  $client->id_client = $posted_data['id']; 
   
-  $client->exige_pj       = true;
-  $client->exige_pj_photo = true;
+  $client->exige_pj       = false;
+  $client->exige_pj_photo = false;
 
   //execute Insert returne false if error
   if($client->edit_client()){

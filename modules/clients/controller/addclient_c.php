@@ -24,7 +24,8 @@ if(MInit::form_verif('addclient',false))
    'bp'             => Mreq::tp('bp') ,
    'email'          => Mreq::tp('email') , 
    'rib'            => Mreq::tp('rib') , 
-   'devise'         => Mreq::tp('devise') , 
+   'id_devise'      => Mreq::tp('id_devise') ,
+   'taxe'           => Mreq::tp('taxe') , 
    'pj_id'          => Mreq::tp('pj-id'),
    'pj_photo_id'    => Mreq::tp('pj_photo-id')
    );
@@ -114,8 +115,8 @@ $checker = null;
 
   $new_client = new  Mclients($posted_data);
 
-  $new_client->exige_pj       = true;
-  $new_client->exige_pj_photo = true;
+  $new_client->exige_pj       = false;
+  $new_client->exige_pj_photo = false;
 
   //execute Insert returne false if error
   if($new_client->save_new_client()){
