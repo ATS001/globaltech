@@ -277,7 +277,7 @@ WHERE users_sys.id = $userid
 
 	static public function where_etat_line($table, $task_name)
 	{
-		$where_etat_line = " AND   (SELECT 
+		$where_etat_line = " WHERE   (SELECT 
                                 COUNT(task_action.id) 
                                 FROM
                                 task_action, rules_action , task
@@ -292,7 +292,7 @@ WHERE users_sys.id = $userid
 	static public function where_search_etat($table, $task_name, $search)
 	{
 		$where_search_etat = " OR (SELECT 
-                                1 
+                                COUNT(task_action.id) 
                               FROM
                                 task_action,
                                 rules_action,
