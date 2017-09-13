@@ -11,6 +11,7 @@ if(MInit::form_verif('editdevis', false))
 
 		'id'                => Mreq::tp('id') ,
 		'id_client'         => Mreq::tp('id_client') ,
+		'tva'               => Mreq::tp('tva') ,
 		'tkn_frm'           => Mreq::tp('tkn_frm') ,
 		'reference'         => Mreq::tp('reference') ,
 		'checker_reference' => Mreq::tp('checker_reference') ,

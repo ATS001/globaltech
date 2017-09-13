@@ -34,6 +34,9 @@ $form->input_date('Date devis', 'date_devis', 4, date('d-m-Y'), $array_date);
 //Client
 $client_array[]  = array('required', 'true', 'Choisir un Client');
 $form->select_table('Client ', 'id_client', 8, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $client_array);
+//TVA
+$tva_opt = array('O' => 'OUI' , 'N' => 'NON' );
+$form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$selected = NULL, $multi = NULL);
 //Table 
 $columns = array('id' => '1' ,'Item' => '5' , 'Réference'=>'10', 'Produit' => '30', 'P.U HT' => '10', 'T.Rem' => '5', 'V.Remise' => '10', 'Qte' => '5', 'Total HT' => '10', 'TVA' => '7', 'Total' =>'10', '#' =>'3'   );
 $js_addfunct = 'var column = t.column(0);
@@ -142,8 +145,8 @@ $(document).ready(function() {
 
     $('#id_client').on('change', function () {
         
-        var $adresse = '<div class="form-group>"><address><strong>Twitter, Inc.</strong><br>795 Folsom Ave, Suite 600<br>San Francisco, CA 94107<br><abbr title="Phone">P:</abbr>(123) 456-7890</address></div>';
-        $(this).parent('div').after($adresse);
+        //var $adresse = '<div class="form-group>"><address><strong>Twitter, Inc.</strong><br>795 Folsom Ave, Suite 600<br>San Francisco, CA 94107<br><abbr title="Phone">P:</abbr>(123) 456-7890</address></div>';
+       //$(this).parent('div').after($adresse);
 
     });
     $('#table_details_devis tbody ').on('click', 'tr .edt_det', function() {

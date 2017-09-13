@@ -188,7 +188,7 @@ class MDevis
       //Get sum of details
         	$this->Get_sum_detail($this->_data['tkn_frm']); 
       //calcul values devis
-        	$this->Calculate_devis_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], 'O');
+        	$this->Calculate_devis_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva']);
 
 
       //Check $this->error (true / false)
@@ -206,8 +206,9 @@ class MDevis
 
 
         	$values["reference"]       = MySQL::SQLValue($this->reference);
-        	$values["tkn_frm"]       = MySQL::SQLValue($this->_data['tkn_frm']);
+        	$values["tkn_frm"]         = MySQL::SQLValue($this->_data['tkn_frm']);
         	$values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
+            $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
         	$values["id_commercial"]   = MySQL::SQLValue(session::get('userid'));
         	$values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
         	$values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
@@ -264,7 +265,7 @@ class MDevis
       //Get sum of details
     	$this->Get_sum_detail($this->_data['tkn_frm']); 
       //calcul values devis
-    	$this->Calculate_devis_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], 'O');
+    	$this->Calculate_devis_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva']);
 
 
       //Check $this->error (true / false)
@@ -285,6 +286,7 @@ class MDevis
     	$values["reference"]       = MySQL::SQLValue($this->reference);
     	$values["tkn_frm"]         = MySQL::SQLValue($this->_data['tkn_frm']);
     	$values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
+        $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
     	$values["id_commercial"]   = MySQL::SQLValue(session::get('userid'));
     	$values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
     	$values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);

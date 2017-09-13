@@ -55,6 +55,9 @@ $form->input_date('Date devis', 'date_devis', 4, date('d-m-Y'), $array_date);
 //Client
 $client_array[]  = array('required', 'true', 'Choisir un Client');
 $form->select_table('Client ', 'id_client', 8, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' , $info_devis->g('id_client'),$multi=NULL, $where=NULL, $client_array);
+//TVA
+$tva_opt = array('O' => 'OUI' , 'N' => 'NON' );
+$form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$info_devis->g('tva'), $multi = NULL);
 //Table 
 $columns = array('id' => '1' ,'Item' => '5' , 'Réference'=>'10', 'Produit' => '30', 'P.U HT' => '10', 'T.Rem' => '5', 'V.Remise' => '10', 'Qte' => '5', 'Total HT' => '10', 'TVA' => '7', 'Total' =>'10', '#' =>'3'   );
 $js_addfunct = 'var column = t.column(0);

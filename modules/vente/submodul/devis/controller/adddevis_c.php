@@ -5,6 +5,7 @@ if(MInit::form_verif('adddevis', false))
   $posted_data = array(
    
    'id_client'       => Mreq::tp('id_client') ,
+   'tva'             => Mreq::tp('tva') ,
    'tkn_frm'         => Mreq::tp('tkn_frm') ,
    'date_devis'      => Mreq::tp('date_devis') ,
    'type_remise'     => Mreq::tp('type_remise') ,
