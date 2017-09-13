@@ -25,6 +25,7 @@ class Mform
     var $js_rules              = Null;
     var $js_message            = Null;
     var $js_addfunct           = Null;
+    var $js_datatable          = Null;
     var $form_fields           = Null;
     var $form_button           = Null;
     var $gallery_bloc          = Null;
@@ -33,6 +34,7 @@ class Mform
     var $wizard_steps_bloc     = Null;
     var $wizard_steps          = null;
     var $form_subbloc          = null;
+    
 
 
 	/**
@@ -68,7 +70,8 @@ class Mform
         $ssid = 'f_v'.$this->_id_form;
         session::clear($ssid);
         session::set($ssid,session::generate_sid());
-        $verif_value = session::get($ssid);
+        $verif_value  = session::get($ssid);
+        
 
         //If is Wizard start with bloc Wizard 
         if($this->_is_wizard == 1)
@@ -248,7 +251,8 @@ public function sub_bloc_start($large, $title)
     $this->form_js_bloc .= $this->input_js_autocomplete; //Bloc of Autocomplete Input
     $this->form_js_bloc .= $this->select_js_onchange; //Bloc of Autocomplete Input
     $this->form_js_bloc .= $this->input_tag; //Bloc of input Tag
-    $this->form_js_bloc .= $this->gallery_bloc_js; //Bloc of gallery_bloc JS
+    $this->form_js_bloc .= $this->gallery_bloc_js; //Bloc of gallery_bloc 
+    $this->form_js_bloc .= $this->js_datatable; //Bloc of DataTable JS
     $this->form_js_bloc .= "$('.chosen-select').chosen({allow_single_deselect:true});";
         
         //$this->form_js_bloc .= "$('.chosen-select').chosen({allow_single_deselect:true});";
@@ -410,9 +414,10 @@ $this->gallery_bloc_js .= "$('#btn_add_pic').on('click', '.this_add_pic', functi
      * 
      */
     
-    public function input($input_desc, $input_id, $input_type, $input_class, $input_value = null, $js_array = null)
+    public function input($input_desc, $input_id, $input_type, $input_class, $input_value = null, $js_array = null, $hard_code = null, $readonly = null)
     {
     	$value = $input_value == null ? null : 'value = "'.$input_value.'"';
+      $readonly_use = $readonly == null ? null : 'readonly=""';
     	$input = '<div class="space-2"></div>
     	<div class="form-group">
          <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">'.$input_desc.':</label>
@@ -424,7 +429,7 @@ $this->gallery_bloc_js .= "$('#btn_add_pic').on('click', '.this_add_pic', functi
                     $checked = $input_value == null ? null : 'checked';
                     $input .= '<div class="checkbox">
                     <label>
-                        <input '.$checked.' name="'.$input_id.'" id="'.$input_id.'" class="ace ace-checkbox-2" type="checkbox">
+                        <input '.$checked.' '.$readonly_use.' name="'.$input_id.'" id="'.$input_id.'" class="ace ace-checkbox-2" type="checkbox">
                         <span class="lbl"> '.$input_desc.'</span>
                     </label>
                 </div>
@@ -433,7 +438,8 @@ $this->gallery_bloc_js .= "$('#btn_add_pic').on('click', '.this_add_pic', functi
 
             }else{
 
-                $input .= '<input type="'.$input_type.'" name="'.$input_id.'" id="'.$input_id.'" class="col-xs-'.$input_class.' col-sm-'.$input_class.'" '.$value.' />';
+                $input .= '<input type="'.$input_type.'" name="'.$input_id.'" id="'.$input_id.'" class="col-xs-'.$input_class.' col-sm-'.$input_class.'" '.$value.' '.$readonly_use.'  />';
+                $input .= $hard_code;
             }
             $input .= '</div>
         </div>
@@ -448,7 +454,7 @@ $this->gallery_bloc_js .= "$('#btn_add_pic').on('click', '.this_add_pic', functi
 
 }
 
-public function input_date($input_desc, $input_id, $input_class, $input_value = null, $js_array = null)
+public function input_date($input_desc, $input_id, $input_class, $input_value = null, $js_array = null, $hard_code = null)
 {
     $value = $input_value == null ? null : 'value = "'.date('d-m-Y',strtotime($input_value)).'"';
     $input = '<div class="space-2"></div>
@@ -460,6 +466,7 @@ public function input_date($input_desc, $input_id, $input_class, $input_value = 
 
 
                $input .= '<input type="text" name="'.$input_id.'" id="'.$input_id.'" class="form-control col-xs-12 col-sm-'.$input_class.'" '.$value.' />';
+               $input .= $hard_code;
                $input .= '<span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span>';
 
                $input .= '</div></div></div>';
@@ -481,6 +488,7 @@ public function input_date($input_desc, $input_id, $input_class, $input_value = 
 
 
         }
+
 
         public function inline_input($main_label=null, $array_input)
         {
@@ -518,7 +526,7 @@ public function input_date($input_desc, $input_id, $input_class, $input_value = 
                     $input .= '<div class="col-sm-'.$input_class.' no-padding-left">
                     <label>
                         '.$label.'
-                        <input name="'.$input_id.'" id="'.$input_id.'" class="col-xs-12 col-sm-'.$class_first_input.' no-padding-left" '.$value.' type="'.$input_type.'">
+                        <input name="'.$input_id.'" id="'.$input_id.'" class="col-xs-12 col-sm-'.$class_first_input.'" '.$value.' type="'.$input_type.'">
 
                     </label>
                 </div>';
@@ -583,7 +591,7 @@ public function radio($radio_desc, $radio_id, $radio_value = null, $array_radio,
      * @return append string into form_fields [Input render]
      */
 
-    public function select_table($input_desc, $input_id, $input_class, $table, $id_table, $order_by , $txt_table, $indx = NULL ,$selected = NULL, $multi = NULL, $where = NULL, $js_array = null) 
+    public function select_table($input_desc, $input_id, $input_class, $table, $id_table, $order_by , $txt_table, $indx = NULL ,$selected = NULL, $multi = NULL, $where = NULL, $js_array = null, $hard_code = null ) 
     {
         $class_chosen = ($input_class * 100) / 12;
         $bloc_multipl_show = $select = $array_exist = NULL ;
@@ -638,6 +646,7 @@ public function radio($radio_desc, $radio_id, $radio_value = null, $array_radio,
                $output .= '<option '.$select.' value="'.$row->id.'">'.$row->text.'</option>';               
            }
            $output .='</select>';
+           $output .= $hard_code;
         //If select multipl selected add this bloc to show existing elements
         //<span class="help-block">Example block-level help text here.</span>
            if($multiple != NULL && $selected != NULL)
@@ -710,7 +719,7 @@ if($js_array != null)
      * @param integer count [number of option]
      * @return append html into form_fields [Input render]
      */
-    public function select($input_desc, $input_id, $input_class, $options, $indx = NULL ,$selected = NULL, $multi = NULL ) 
+    public function select($input_desc, $input_id, $input_class, $options, $indx = NULL ,$selected = NULL, $multi = NULL, $hard_code = null ) 
     {
     	$multiple = $multi == NULL ? NULL : 'multiple=""';
         //Get class for chosen plugin
@@ -742,6 +751,7 @@ if($js_array != null)
 
 
             $output .='</select>';
+            $output .= $hard_code;
             $output .='</div>
         </div>
     </div>';
@@ -749,7 +759,7 @@ if($js_array != null)
 
 }
 
-public function input_editor($input_desc, $input_id, $input_class, $input_value = null, $js_array = null)
+public function input_editor($input_desc, $input_id, $input_class, $input_value = null, $js_array = null,  $input_height = 100)
 {
   $value = $input_value == null ? 'value =""default"' : 'value = "'.$input_value.'"';
   $input = '<div class="space-2"></div>
@@ -767,7 +777,7 @@ public function input_editor($input_desc, $input_id, $input_class, $input_value 
         $input .= '</div></div></div>';
 
         $this->form_fields .= $input;
-        $this->input_js_editor .="$('#".$input_id."').summernote({height: 100});";
+        $this->input_js_editor .="$('#".$input_id."').summernote({height: $input_height});";
 
 
         if($js_array != null)
@@ -803,7 +813,34 @@ public function select_onchange($input_id)
 
 }
 
+public function draw_datatabe_form($id_table, $verif_value, $columns = array(), $url_data = null, $url_addrow = null, $titr_addrow = null, $add_js_func = null)
+{
+  /*$ssid = 'f_v'.$this->_id_form;
+  $verif_value  = md5(session::get($ssid));*/
+  $button_action = "$('#".$id_table."').on('click', 'tr button', function() {
+  var row = $(this).closest('tr')
+  append_drop_menu('adddevis', t.cell(row, 0).data(), '.btn_action')
+  });";
+  $button_add_row = '<a id="addRow" href="#" rel="'.$url_addrow.'" data="&tkn='.$verif_value.'" data_titre="'.$titr_addrow.'" class=" btn btn-white btn-info btn-bold  spaced "><span><i class="fa fa-plus"></i> Ajouter une ligne</span></a><input type="hidden" name="tkn_frm" value="'.$verif_value.'">';
+  $js_table = "var t = $('#".$id_table."').DataTable({";
+  $js_table .= "bProcessing: true, serverSide: true, notifcol : 6, ajax_url:'".$url_data."', extra_data:'tkn_frm=".$verif_value."',aoColumns: [";
+  $table = '<div class="space-2"></div>';
+  $table .= '<div class="col-xs-12">'.$button_add_row.'<table id="'.$id_table.'" class="display table table-bordered table-condensed table-hover table-striped dataTable no-footer" cellspacing="0">';
+  $table .= '<thead><tr>';
+ 
+  foreach ($columns as $column => $width) {
+    
+    $table .= '<th>'.$column.'</th>';
+    $js_table .= '{"sClass": "center","sWidth":"'.$width.'%"},';
+  }
 
+  $js_table .= ']}); '. $button_action;
+  $js_table .= $add_js_func;
+  $table .= '</tr></thead></table></div>';
+  $this->form_fields .= $table;
+  $this->js_datatable = $js_table;
+
+}
 
 
 }

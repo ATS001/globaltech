@@ -7,12 +7,14 @@
 	
 	//define index of column
 	$columns = array( 
-		0 =>'id_user',
-		//1 =>'photo',
-		1 =>'nom', 
-		2 =>'service',
-		3 =>'statut',
-		4 =>'notif',
+		0 =>'id_devi',
+		1 =>'dat',
+		2 =>'ref', 
+		3 =>'client',
+		4 =>'montantht',
+		5 =>'montantttc',
+		6 =>'statut',
+		7 =>'notif',
 		
 	);
 
@@ -20,25 +22,25 @@
     $colms = $tables = $joint = $where = $where_s = $sqlTot = $sqlRec = NULL;
 	
     // define used table.
-	$tables .= " users_sys, services ";
+	$tables .= " devis, clients ";
     // define joint and rtable elation
-	$joint .= " AND services.id = users_sys.service ";
+	$joint .= " AND clients.id = devis.id_client ";
 	// set sherched columns.(the final colm without comma)
-	$colms .= " users_sys.id AS id_user, ";
-
-	//$colms .= " CONCAT('<div class=\"user\"><img class=\"nav-user-photo\" alt=\"\" src=\"./upload/useres/',users_sys.id,'/',MD5(users_sys.photo),'48x48.png\"></div>') as photo, ";
-	
-	$colms .= " CONCAT(users_sys.lnom,'  ',users_sys.fnom) as nom, ";
-	$colms .= " services.service as service, ";
-
+	$colms .= " devis.id AS id_devi, ";
+	$colms .= " DATE_FORMAT(devis.date_devis,'%d-%m-%Y') AS dat, ";
+	$colms .= " devis.reference AS ref, ";
+	$colms .= " clients.denomination as client, ";
+	$colms .= " REPLACE(FORMAT(devis.totalht,0), ',', ' ') as montantht, ";
+	$colms .= " REPLACE(FORMAT(devis.totalttc,0), ',', ' ') as montantttc, ";
+    
 	
 	
 	//define notif culomn to concatate with any colms.
 	//this is change style of button action to red
-	$notif_colms = TableTools::line_notif_new('users_sys', 'user');
+	$notif_colms = TableTools::line_notif_new('devis', 'devis');
 	$colms .= $notif_colms;
 	//difine if user have rule to show line depend of etat 
-	$where_etat_line = TableTools::where_etat_line('users_sys', 'user');
+	$where_etat_line = TableTools::where_etat_line('devis', 'devis');
 	    
 	// check search value exist
 	if( !empty($params['search']['value']) ) {
@@ -48,10 +50,12 @@
 	    //$where_s .= $joint == NULL? " WHERE " : " AND ";
 
 
-		$where_s .=" AND ( CONCAT(users_sys.lnom,' ',users_sys.fnom) LIKE '%".$serch_value."%' ";    
-		$where_s .=" OR services.service LIKE '%".$serch_value."%' ";
-        $where_s .=" OR users_sys.id LIKE '%".$serch_value."%' ";
-        $where_s .= TableTools::where_search_etat('users_sys', 'user', $serch_value);
+		$where_s .=" AND ( devis.reference LIKE '%".$serch_value."%' "; 
+		$where_s .=" OR devis.date_devis LIKE '%".$serch_value."%' ";
+		$where_s .=" OR clients.denomination LIKE '%".$serch_value."%' ";   
+		$where_s .=" OR devis.totalttc LIKE '%".$serch_value."%' ";
+        $where_s .=" OR devis.id LIKE '%".$serch_value."%' ";
+        $where_s .= TableTools::where_search_etat('devis', 'devis', $serch_value);
 
 
 
