@@ -117,12 +117,12 @@ class Mville {
 
 		
 		//Check non exist Region
-		$this->check_non_exist('ref_region', 'id', $this->_data['id_region'], 'Région');
+		$this->check_non_exist('ref_departement', 'id', $this->_data['id_departement'], 'Département');
 
 		//Format values for Insert query 
 		global $db;
 		$values["ville"]     = MySQL::SQLValue($this->_data['ville']);
-		$values["id_region"] = MySQL::SQLValue($this->_data['id_region']);
+		$values["id_departement"] = MySQL::SQLValue($this->_data['id_departement']);
 		$values["latitude"]  = MySQL::SQLValue($this->_data['latitude']);
 		$values["longitude"] = MySQL::SQLValue($this->_data['longitude']);
 		$values["creusr"]    = MySQL::SQLValue(session::get('username'));
@@ -216,7 +216,7 @@ class Mville {
 
 		
 		//Check non exist Region
-		$this->check_non_exist('ref_region', 'id', $this->_data['id_region'], 'Région');
+		$this->check_non_exist('ref_departement', 'id', $this->_data['id_departement'], 'Département');
 
 
 		//Get existing data for ville
@@ -227,7 +227,7 @@ class Mville {
 
     	global $db;
 		$values["ville"]        = MySQL::SQLValue($this->_data['ville']);
-		$values["id_region"]    = MySQL::SQLValue($this->_data['id_region']);
+		$values["id_departement"]    = MySQL::SQLValue($this->_data['id_departement']);
 		$values["latitude"]     = MySQL::SQLValue($this->_data['latitude']);
 		$values["longitude"]    = MySQL::SQLValue($this->_data['longitude']);
 	    $values["updusr"]       = MySQL::SQLValue(session::get('username'));

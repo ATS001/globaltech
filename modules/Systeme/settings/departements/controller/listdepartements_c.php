@@ -9,12 +9,10 @@
 	
 	//define index of column
 	$columns = array( 
-		0 =>'id_ville',
+		0 =>'id_departement',
 		1 =>'libelle',
-		2 =>'departement',
-		3 =>'latitude', 
-		4 =>'longitude',
-		5 =>'statut'
+		2 =>'region',
+		3 =>'statut'
 		
 	);
 
@@ -22,40 +20,37 @@
 
 	$colms = $tables = $joint = $where = $where_s=$sqlTot = $sqlRec = "";
     // define used table.
-	$tables .= " ref_ville, ref_departement ";
+	$tables .= " ref_departement, ref_region ";
     // define joint and table relation
-	$joint .= "AND  ref_departement.id = ref_ville.id_departement ";
+	$joint .= " AND ref_region.id = ref_departement.id_region";
 	// set sherched columns.(the final colm without comma)
-	$colms .= " ref_ville.id AS id_ville, ";	
-	$colms .= " ref_ville.ville as libelle, ";
-	$colms .= " ref_departement.departement as departement, ";
-	$colms .= " ref_ville.latitude as latitude, ";
-	$colms .= " ref_ville.longitude as longitude, ";
-	
+	$colms .= " ref_departement.id AS id_departement, ";	
+	$colms .= " ref_departement.departement as libelle, ";
+	$colms .= " ref_region.region as region, ";
+
 	//define notif culomn to concatate with any colms.
 	//this is change style of button action to red
-	$notif_colms = TableTools::line_notif_new('ref_ville', 'villes');
+	$notif_colms = TableTools::line_notif_new('ref_departement', 'departements');
+
 	$colms .= $notif_colms;
+
 	//difine if user have rule to show line depend of etat 
-	$where_etat_line = TableTools::where_etat_line('ref_ville', 'villes');
-	
-	
+	$where_etat_line = TableTools::where_etat_line('ref_departement', 'departements');
+
     
+
 	// check search value exist
-	if( !empty($params['search']['value']) or Mreq::tp('id_search') != NULL) 
-	{
+	if( !empty($params['search']['value']) or Mreq::tp('id_search') != NULL)  {
 
 		$serch_value = str_replace('+',' ',$params['search']['value']);
-        //Format where in case joint isset  
-	 /*   $where_s .= $joint == NULL? " WHERE " : " AND ";*/
-
-		$where_s .="AND ( ref_ville.ville LIKE '%".$serch_value."%' ";
-		$where_s .=" OR ref_departement.departement LIKE '%".$serch_value."%' ";    
-		$where_s .=" OR ref_ville.latitude LIKE '%".$serch_value."%' ";
-		$where_s .=" OR ref_ville.longitude LIKE '%".$serch_value."%' )";
 		
-        
-        $where_s .= TableTools::where_search_etat('clients', 'clients', $serch_value);
+        //Format where in case joint isset  
+	    /*$where .= $joint == NULL? " WHERE " : " AND ";*/
+
+		$where_s .="AND ( ref_departement.departement LIKE '%".$serch_value."%' ";
+		$where_s .=" OR ref_region.region '%".$serch_value."%' )";
+
+		$where_s .= TableTools::where_search_etat('clients', 'clients', $serch_value);
 
 	}
 
@@ -80,6 +75,7 @@
 
  	$sqlRec .=  " ORDER BY $order_notif  ". $columns[$params['order'][0]['column']]."   ".$params['order'][0]['dir']."  LIMIT ".$params['start']." ,".$params['length']." ";
 
+
     if (!$db->Query($sqlTot)) $db->Kill($db->Error()." SQLTOT $sqlTot");
 	//
     $totalRecords = $db->RowCount();
@@ -88,14 +84,14 @@
     if( Mreq::tp('export')==1 )
     {
     	
-    	$file_name = 'villes_list';
-    	$title     = 'Liste des villes ';
+    	$file_name = 'departements_list';
+    	$title     = 'Liste des departements ';
     	if(Mreq::tp('format')=='csv')
     	{
-    		$header    = array('ID', 'Ville', 'Département','Latitude','Longitude', 'Statut');
+    		$header    = array('ID', 'Departement', 'Region','Statut');
     		Minit::Export_xls($header, $file_name, $title);
     	}else{
-    		$header    = array('ID'=>10, 'Ville'=>30, 'Département'=>20,'Latitude'=>15,'Longitude'=>15, 'Statut'=>10);
+    		$header    = array('ID'=>10, 'Departement'=>45, 'Region'=>35, 'Statut'=>10);
     		Minit::Export_pdf($header, $file_name, $title);
     	}
     	  	

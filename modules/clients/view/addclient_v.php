@@ -56,7 +56,6 @@ $form->input('Dénomination', 'denomination', 'text' ,6 , null, $denomination_ar
 
 //Catégorie client
 $cat_array[]  = array('required', 'true', 'Sélectionnez la catégorie' );
-$cat_array[]  = array('remote', 'clients#categorie_client#categorie_client', 'Cette catégorie existe déja' );
 $form->select_table('Catégorie Client', 'id_categorie', 6, 'categorie_client', 'id', 'categorie_client' , 'categorie_client', $indx = '*****' ,
 	$selected=NULL,$multi=NULL, $where='etat=1', $cat_array);
 
@@ -94,9 +93,9 @@ $prenom_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
 $form->input('Prénom', 'prenom', 'text', 6, null, $prenom_array);
 
 // civilite
-$civilite_array[]  = array('Femme' , '1' );
-$civilite_array[]  = array('Homme' , '2' );
-$form->radio('Civilité', 'civilite', '1', $civilite_array, '');
+$civilite_array[]  = array('Femme' , 'Femme' );
+$civilite_array[]  = array('Homme' , 'Homme' );
+$form->radio('Civilité', 'civilite', 'Femme', $civilite_array, '');
 
 //Adresse
 $adresse_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
@@ -136,7 +135,17 @@ $form->input('Email ', 'email', 'text', 6, null, $mail_array);
 $form->step_end();
 //Start Step 3
 
-$form->step_start(3, 'Documents justificatifs');
+$form->step_start(3, 'Complément Informations');
+
+// devise
+$form->select_table('Devise', 'id_devise', 6, 'ref_devise', 'id', 'devise' , 'devise', $indx = '*****' ,
+	$selected=NULL,$multi=NULL, $where='etat=1', NULL);
+
+// taxe
+$taxe_array[]  = array('Oui' , 'O' );
+$taxe_array[]  = array('Non' , 'N' );
+$form->radio('TVA', 'tva', 'O', $taxe_array, '');
+
 
 //pj_id
 $form->input('Justifications du client', 'pj', 'file', 6, null, null);

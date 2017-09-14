@@ -1,19 +1,19 @@
 <?php 
 /**
-* Class Gestion Villes 1.0
+* Class Gestion departements 1.0
 */
 
 
-class Mville {
+class Mdept {
 	private $_data; //data receive from form
 
-	var $table = 'ref_ville'; //Main table of module
+	var $table = 'ref_departement'; //Main table of module
 	var $last_id; //return last ID after insert command
 	var $log = ''; //Log of all opération.
 	var $error = true; //Error bol changed when an error is occured
-	var $id_ville; // Ville ID append when request
+	var $id_departement; // departement ID append when request
 	var $token; //user for recovery function
-	var $ville_info; //Array stock all prminfo 
+	var $departement_info; //Array stock all prminfo 
 	var $app_action; //Array action for each 
 
 
@@ -32,15 +32,15 @@ class Mville {
 		: null
 		;
 	}
-		//Get all info ville from database for edit form
+		//Get all info departement from database for edit form
 
-		public function get_ville()
+		public function get_departement()
 	{
 		global $db;
 		$table = $this->table;
 		//Format Select commande
 		$sql = "SELECT $table.* FROM 
-		$table WHERE  $table.id = ".$this->id_ville;
+		$table WHERE  $table.id = ".$this->id_departement;
 		if(!$db->Query($sql))
 		{
 			$this->error = false;
@@ -50,11 +50,11 @@ class Mville {
 				$this->error = false;
 				$this->log .= 'Aucun enregistrement trouvé ';
 			} else {
-				$this->ville_info = $db->RowArray();
+				$this->departement_info = $db->RowArray();
 				$this->error = true;
 			}	
 		}
-		//return Array ville_info
+		//return Array departement_info
 		if($this->error == false)
 		{
 			return false;
@@ -108,12 +108,12 @@ class Mville {
 
 
 
-	 //Save new ville after all check
-	public function save_new_ville(){
+	 //Save new departement after all check
+	public function save_new_departement(){
 
 		//Before execute do the multiple check
-		// check Ville
-		$this->Check_exist('ville', $this->_data['ville'], 'Ville', null);
+		// check departement
+		$this->Check_exist('departement', $this->_data['departement'], 'Departement', null);
 
 		
 		//Check non exist Region
@@ -121,17 +121,15 @@ class Mville {
 
 		//Format values for Insert query 
 		global $db;
-		$values["ville"]     = MySQL::SQLValue($this->_data['ville']);
-		$values["id_region"] = MySQL::SQLValue($this->_data['id_region']);
-		$values["latitude"]  = MySQL::SQLValue($this->_data['latitude']);
-		$values["longitude"] = MySQL::SQLValue($this->_data['longitude']);
-		$values["creusr"]    = MySQL::SQLValue(session::get('userid'));
-	    $values["credat"]    = MySQL::SQLValue(date("Y-m-d H:i:s"));
+		$values["departement"] = MySQL::SQLValue($this->_data['departement']);
+		$values["id_region"]   = MySQL::SQLValue($this->_data['id_region']);
+		$values["creusr"]      = MySQL::SQLValue(session::get('username'));
+	    $values["credat"]      = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
         // If we have an error
 		if($this->error == true){
 
-			if (!$result = $db->InsertRow('ref_ville', $values)) {
+			if (!$result = $db->InsertRow('ref_departement', $values)) {
 				
 				$this->log .= $db->Error();
 				$this->error = false;
@@ -140,7 +138,7 @@ class Mville {
 			}else{
 
 				$this->last_id = $result;
-				$this->log .='</br>Enregistrement  réussie '. $this->_data['ville'] .' - '.$this->last_id.' -';
+				$this->log .='</br>Enregistrement  réussie '. $this->_data['departement'] .' - '.$this->last_id.' -';
 			}
 
 
@@ -159,18 +157,18 @@ class Mville {
 
 	}
 
-    //activer ou valider une ville
-	public function valid_ville($etat = 0)
+    //activer ou valider une departement
+	public function valid_departement($etat = 0)
 	{
 		global $db;
 		//Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
 		$etat = $etat == 0 ? 1 : 0;
 		//Format value for requet
-		$values["etat"] 			= MySQL::SQLValue($etat);
+		$values["etat"] 	    = MySQL::SQLValue($etat);
 		$values["updusr"]       = MySQL::SQLValue(session::get('username'));
 	    $values["upddat"]       = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
-		$where["id"]   			= $this->id_ville;
+		$where["id"]   			= $this->id_departement;
         // Execute the update and show error case error
 		if( !$result = $db->UpdateRows($this->table, $values , $where))
 		{
@@ -191,69 +189,67 @@ class Mville {
 	}
 
 
-	// afficher les infos d'une ville
+	// afficher les infos d'une departement
 	public function Shw($key,$no_echo = "")
 	{
-		if($this->ville_info[$key] != null)
+		if($this->departement_info[$key] != null)
 		{
 			if($no_echo != null)
 			{
-				return $this->ville_info[$key];
+				return $this->departement_info[$key];
 			}
 
-			echo $this->ville_info[$key];
+			echo $this->departement_info[$key];
 		}else{
 			echo "";
 		}
 		
 	}
-	//Edit ville after all check
-	public function edit_ville(){
+	//Edit departement after all check
+	public function edit_departement(){
 
 		//Before execute do the multiple check
-		// check Ville
-		$this->Check_exist('ville', $this->_data['ville'], 'Ville', $this->id_id_ville);
+		// check departement
+		$this->Check_exist('departement', $this->_data['departement'], 'Departement', $this->id_departement);
 
 		
 		//Check non exist Region
 		$this->check_non_exist('ref_region', 'id', $this->_data['id_region'], 'Région');
 
 
-		//Get existing data for ville
-		$this->get_ville();
+		//Get existing data for departement
+		$this->get_departement();
 		
-		$this->last_id = $this->id_ville;
+		$this->last_id = $this->id_departement;
 
 
     	global $db;
-		$values["ville"]        = MySQL::SQLValue($this->_data['ville']);
+		$values["departement"]  = MySQL::SQLValue($this->_data['departement']);
 		$values["id_region"]    = MySQL::SQLValue($this->_data['id_region']);
-		$values["latitude"]     = MySQL::SQLValue($this->_data['latitude']);
-		$values["longitude"]    = MySQL::SQLValue($this->_data['longitude']);
-	    $values["updusr"]       = MySQL::SQLValue(session::get('userid'));
+	    $values["updusr"]       = MySQL::SQLValue(session::get('username'));
 	    $values["upddat"]       = MySQL::SQLValue(date("Y-m-d H:i:s"));
-		$wheres["id"]           = $this->id_ville;
+		$wheres["id"]           = $this->id_departement;
 		
 
         // If we have an error
 		if($this->error == true){
 
-			if (!$result = $db->UpdateRows("ref_ville", $values, $wheres)) {
+			if (!$result = $db->UpdateRows("ref_departement", $values, $wheres)) {
 				//$db->Kill();
 				$this->log .= $db->Error();
 				$this->error == false;
-				$this->log .='</br>Enregistrement BD non réussie'; 
+				$this->log .='</br>Modification BD non réussie'; 
 
 			}else{
 
 				$this->last_id = $result;
-				$this->log .='</br>Enregistrement  réussie '. $this->_data['ville'] .' - '.$this->last_id.' -';
+				$this->log .='</br>Modification  réussie '. $this->_data['departement'] .' - '.$this->last_id.' -';
 			}
 
 
 		}else{
 
-			$this->log .='</br>Enregistrement non réussie';
+			$this->log .='</br>Modification non réussie';
 
 		}
 
@@ -267,13 +263,13 @@ class Mville {
 
 	}
 
-	 public function delete_ville()
+	 public function delete_departement()
     {
     	global $db;
-    	$id_ville = $this->id_ville;
-    	$this->get_ville();
+    	$id_departement = $this->id_departement;
+    	$this->get_departement();
     	//Format where clause
-    	$where['id'] = MySQL::SQLValue($id_ville);
+    	$where['id'] = MySQL::SQLValue($id_departement);
     	//check if id on where clause isset
     	if($where['id'] == null)
     	{
@@ -281,10 +277,10 @@ class Mville {
 			$this->log .='</br>L\' id est vide';
     	}
     	//execute Delete Query
-    	if(!$db->DeleteRows('ref_ville',$where))
+    	if(!$db->DeleteRows('ref_departement',$where))
     	{
 
-    		$this->log .= $db->Error().'  '.$db->BuildSQLDelete('ref_ville',$where);
+    		$this->log .= $db->Error().'  '.$db->BuildSQLDelete('ref_departement',$where);
 			$this->error = false;
 			$this->log .='</br>Suppression non réussie';
 

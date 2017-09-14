@@ -46,13 +46,12 @@ $ville_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
 $ville_array[]  = array('remote', 'ville#ref_ville#ville', 'Cette ville existe déja' );
 $form->input('Ville', 'ville', 'text' ,6 , null, $ville_array);
 
-//Region active
+//Département actif
 //select_table($input_desc, $input_id, $input_class, $table, $id_table, $order_by , $txt_table, $indx = NULL ,$selected = NULL, $multi = NULL, $where = NULL, $js_array = null)
 
-$region_array[]  = array('required', 'true', 'Choisir la région' );
-$form->select_table('Region', 'id_region', 6, 'ref_region', 'id', 'region' , 'region', $indx = '*****' ,
-	$selected=NULL,$multi=NULL, $where='etat=1', $region_array);
-
+$departement_array[]  = array('required', 'true', 'Choisir le département' );
+$form->select_table('Département', 'id_departement', 6, 'ref_departement', 'id', 'departement' , 'departement', $indx = '*****' ,
+	$selected=NULL,$multi=NULL, $where='etat=1', $departement_array);
 
 //$form->step_end();
 //$form->step_start(2, 'Informations de connexion');
@@ -60,11 +59,13 @@ $form->select_table('Region', 'id_region', 6, 'ref_region', 'id', 'region' , 're
 //$form->bloc_title('Informations de connexion');
 //Latitude
 $latitude_array[]  = array('required', 'true', 'Insérer une latitude' );
+$latitude_array[]  = array('number', 'true', 'Entrez un Nombre valide' );
 $form->input('Latitude', 'latitude', 'text', 6, null, $latitude_array);
 
 //Longitude
-$latitude_array[]  = array('required', 'true', 'Insérer une latitude' );
-$form->input('Longitude', 'longitude', 'text', 6, null, $latitude_array);
+$longitude_array[]  = array('required', 'true', 'Insérer une latitude' );
+$longitude_array[]  = array('number', 'true', 'Entrez un Nombre valide' );
+$form->input('Longitude', 'longitude', 'text', 6, null, $longitude_array);
 
 
 $form->step_end();
