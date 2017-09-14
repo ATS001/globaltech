@@ -42,8 +42,9 @@
 
                 <div class="tab-content no-border padding-24">
                     <div id="home" class="tab-pane in active">
+                        <div class="col-xs-12 col-sm-4"></div>
 
-                        <div class="col-xs-12 col-sm-9">
+                        <div class="col-xs-12 col-sm-4">
                             <div class="profile-produit-info">
                                 <div class="profile-info-row">
                                     <div class="profile-info-name"> Référence </div>
@@ -61,14 +62,8 @@
                                         <span><?php $info_produit->printattribute('designation'); ?></span>
                                     </div>
                                 </div>
-                                <div class="profile-info-row">
-                                    <div class="profile-info-name"> Prix unitaire </div>
-
-                                    <div class="profile-info-value">
-                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                        <span><?php $info_produit->printattribute('pu'); ?></span>
-                                    </div>
-                                </div>
+                                
+                               
 
                                 <div class="profile-info-row">
                                     <div class="profile-info-name"> Stock minimale </div>
@@ -108,6 +103,10 @@
                             </div>
 
                         </div><!-- /.col -->
+                        
+                        <div class="col-xs-12 col-sm-4"></div>
+                        
+                        
                     </div><!-- /.row -->
 
                 </div><!-- /#home -->

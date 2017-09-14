@@ -101,7 +101,6 @@ class Mproduit {
 		global $db;
 		$values["ref"]     = MySQL::SQLValue($this->_data['ref']);
                 $values["designation"]     = MySQL::SQLValue($this->_data['designation']);
-                $values["pu"]     = MySQL::SQLValue($this->_data['pu']);
                 $values["stock_min"]     = MySQL::SQLValue($this->_data['stock_min']);
                 $values["idcategorie"]     = MySQL::SQLValue($this->_data['idcategorie']);
                 $values["iduv"]     = MySQL::SQLValue($this->_data['iduv']);
@@ -175,7 +174,7 @@ class Mproduit {
 
 	}
 
-       
+        
 	//Edit produit after all check
 	public function edit_produit(){
 
@@ -194,7 +193,6 @@ class Mproduit {
     	global $db;
 		$values["ref"]     = MySQL::SQLValue($this->_data['ref']);
                 $values["designation"]     = MySQL::SQLValue($this->_data['designation']);
-                $values["pu"]     = MySQL::SQLValue($this->_data['pu']);
                 $values["stock_min"]     = MySQL::SQLValue($this->_data['stock_min']);
                 $values["idcategorie"]     = MySQL::SQLValue($this->_data['idcategorie']);
                 $values["iduv"]     = MySQL::SQLValue($this->_data['iduv']);
@@ -323,5 +321,6 @@ public function get_produit_info() {
 		}
 		
 	}
-
+        
+       
 }

@@ -11,9 +11,8 @@ $columns = array(
     0 => 'id',
     1 => 'ref',
     2 => 'designation',
-    3 => 'pu',
-    4 => 'stock_min',
-    5 => 'statut'
+    3 => 'stock_min',
+    4 => 'statut'
 );
 
 
@@ -26,10 +25,7 @@ $tables .= "produits";
 $colms .= " produits.id AS id, ";
 $colms .= " produits.ref as ref, ";
 $colms .= " produits.designation as designation, ";
-$colms .= " produits.pu as pu, ";
 $colms .= " produits.stock_min as stock_min, ";
-
-
 
 
 //difine if user have rule to show line depend of etat 
@@ -52,7 +48,6 @@ if (!empty($params['search']['value']) or Mreq::tp('id_search') != NULL) {
     $where_s .= " ( produits.ref LIKE '%" . $serch_value . "%' ";
     $where_s .= " OR (produits.id LIKE '%" . $serch_value . "%') ";
     $where_s .= " OR (produits.designation LIKE '%" . $serch_value . "%') ";
-    $where_s .= " OR (produits.pu LIKE '%" . $serch_value . "%') ";
     $where_s .= " OR (produits.stock_min LIKE '%" . $serch_value . "%') ";
     $where_s .= TableTools::where_search_etat('produits', 'produits', $serch_value);
 }
@@ -100,10 +95,10 @@ if (Mreq::tp('export') == 1) {
     $file_name = 'produits_list';
     $title = 'Liste des produits';
     if (Mreq::tp('format') == 'csv') {
-        $header = array('ID', 'Référence', 'Désignation', 'Prix unitaire', 'Stock minimale', 'Statut');
+        $header = array('ID', 'Référence', 'Désignation', 'Stock minimale', 'Statut');
         Minit::Export_xls($header, $file_name, $title);
     } elseif (Mreq::tp('format') == 'pdf') {
-        $header = array('ID' => 5, 'Référence' => 20, 'Désignation' => 25,'Prix unitaire' => 15,'Stock minimale' => 15,'Statut' => 20);
+        $header = array('ID' => 5, 'Référence' => 20, 'Désignation' => 25, 'Stock minimale' => 15, 'Statut' => 20);
         Minit::Export_pdf($header, $file_name, $title);
     } elseif (Mreq::tp('format') == 'dat') {
         Minit::send_big_param('produits#' . $sqlTot);

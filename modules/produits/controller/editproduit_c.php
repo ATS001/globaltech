@@ -11,7 +11,7 @@ if (MInit::form_verif('editproduit', false)) {//If form is Posted do Action else
         'id' => Mreq::tp('id'),
         'ref' => Mreq::tp('ref'),
         'designation' => Mreq::tp('designation'),
-        'pu' => Mreq::tp('pu'),
+      
         'stock_min' => Mreq::tp('stock_min'),
         'idcategorie' => Mreq::tp('idcategorie'),
         'iduv' => Mreq::tp('iduv'),

@@ -7,7 +7,7 @@ if (MInit::form_verif('addproduit', false)) {
     $posted_data = array(
         'ref' => Mreq::tp('ref'),
         'designation' => Mreq::tp('designation'),
-        'pu' => Mreq::tp('pu'),
+       
         'stock_min' => Mreq::tp('stock_min'),
         'idcategorie' => Mreq::tp('idcategorie'),
         'iduv' => Mreq::tp('iduv'),
@@ -32,11 +32,7 @@ if (MInit::form_verif('addproduit', false)) {
         $checker = 1;
     }
 
-    if($posted_data['pu'] == NULL OR !is_numeric($posted_data['pu'])){
-
-        $empty_list .= "<li>Prix unitaire</li>";
-        $checker = 1;
-    }
+    
     
     if($posted_data['stock_min'] == NULL OR !is_numeric($posted_data['stock_min'])){
 
@@ -72,7 +68,8 @@ if (MInit::form_verif('addproduit', false)) {
     //End check empty element
 
 
-    $new_produit = new Mproduit($posted_data);
+$new_produit = new Mproduit($posted_data);
+
 
     //execute Insert returne false if error
     if ($new_produit->save_new_produit()) {
