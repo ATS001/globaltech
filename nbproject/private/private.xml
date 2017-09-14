@@ -3,8 +3,13 @@
     <editor-bookmarks xmlns="http://www.netbeans.org/ns/editor-bookmarks/2" lastBookmarkId="0"/>
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
-            <file>file:/C:/wamp/www/globaltech/modules/unites_vente/view/editunite_vente_v.php</file>
-            <file>file:/C:/wamp/www/globaltech/modules/unites_vente/view/addunite_vente_v.php</file>
+            <file>file:/C:/wamp/www/globaltech/modules/produits/view/produits_v.php</file>
+            <file>file:/C:/wamp/www/globaltech/modules/produits/view/buyproduct_v.php</file>
+            <file>file:/C:/wamp/www/globaltech/modules/produits/controller/validbuyproduct_c.php</file>
+            <file>file:/C:/wamp/www/globaltech/modules/produits/controller/editbuyproduct_c.php</file>
+            <file>file:/C:/wamp/www/globaltech/modules/produits/model/achat_m.php</file>
+            <file>file:/C:/wamp/www/globaltech/modules/produits/controller/validproduit_c.php</file>
+            <file>file:/C:/wamp/www/globaltech/modules/produits/controller/listbuyproducts_c.php</file>
         </group>
     </open-files>
 </project-private>

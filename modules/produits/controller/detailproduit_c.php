@@ -1,7 +1,7 @@
-<?php
+	<?php
 
-view::load('produits','detailproduit');
+	view::load('produits','detailproduit');
 
 
-?>
+	?>
 

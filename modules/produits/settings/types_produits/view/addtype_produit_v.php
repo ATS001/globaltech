@@ -1,45 +1,45 @@
- <div class="pull-right tableTools-container">
-	<div class="btn-group btn-overlap">
-					
-		<?php TableTools::btn_add('types_produits','Liste des types', Null, $exec = NULL, 'reply'); ?>
-					
+	 <div class="pull-right tableTools-container">
+		<div class="btn-group btn-overlap">
+						
+			<?php TableTools::btn_add('types_produits','Liste des types', Null, $exec = NULL, 'reply'); ?>
+						
+		</div>
 	</div>
-</div>
-<div class="page-header">
-	<h1>
-		Ajouter un type
-		<small>
-			<i class="ace-icon fa fa-angle-double-right"></i>
-		</small>
-	</h1>
-</div><!-- /.page-header -->
-<div class="row">
-	<div class="col-xs-12">
-		<div class="clearfix">
-			
-		</div>
-		<div class="table-header">
-			Formulaire: "<?php echo ACTIV_APP; ?>"
-
-		</div>
-		<div class="widget-content">
-			<div class="widget-box">
+	<div class="page-header">
+		<h1>
+			Ajouter un type
+			<small>
+				<i class="ace-icon fa fa-angle-double-right"></i>
+			</small>
+		</h1>
+	</div><!-- /.page-header -->
+	<div class="row">
+		<div class="col-xs-12">
+			<div class="clearfix">
 				
-<?php
+			</div>
+			<div class="table-header">
+				Formulaire: "<?php echo ACTIV_APP; ?>"
 
-$form = new Mform('addtype_produit', 'addtype_produit', '', 'types_produits', '0');
+			</div>
+			<div class="widget-content">
+				<div class="widget-box">
+					
+	<?php
 
-//Type de produit
-$type_prod_array[]  = array('required', 'true', 'Insérez un type' );
-$type_prod_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
-$form->input('Type', 'type_produit', 'text' ,6, null, $type_prod_array);
+	$form = new Mform('addtype_produit', 'addtype_produit', '', 'types_produits', '0');
 
-$form->button('Enregistrer le type');
+	//Type de produit
+	$type_prod_array[]  = array('required', 'true', 'Insérez un type' );
+	$type_prod_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
+	$form->input('Type', 'type_produit', 'text' ,6, null, $type_prod_array);
 
-//Form render
-$form->render();
-?>
+	$form->button('Enregistrer le type');
+
+	//Form render
+	$form->render();
+	?>
+				</div>
 			</div>
 		</div>
 	</div>
-</div>
