@@ -214,6 +214,26 @@
 											</div>
 										</div>
 
+										<div class="profile-info-row">
+											<div class="profile-info-name"> Devise</div>
+
+											<div class="profile-info-value">
+												<!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+												<span><?php  $client->s('devise') ?></span>
+											</div>
+										</div>
+
+
+										<div class="profile-info-row">
+											<div class="profile-info-name"> TVA</div>
+
+											<div class="profile-info-value">
+												<!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+												<span><?php  $client->s('tva') ?></span>
+											</div>
+										</div>
+
+
 
 									</div>
 
