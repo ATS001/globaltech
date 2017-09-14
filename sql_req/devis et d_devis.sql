@@ -20,16 +20,7 @@ SET time_zone = "+00:00";
 -- Base de données :  `globaltech`
 --
 
-DELIMITER $$
---
--- Procédures
---
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_count`()
-BEGIN
-        SELECT COUNT(*) as cont FROM aemploi;
-    END$$
 
-DELIMITER ;
 
 -- --------------------------------------------------------
 
