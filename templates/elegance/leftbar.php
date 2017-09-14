@@ -56,8 +56,8 @@ $arr_modul = $modules->left_menu_arr;
 				</div><!-- /.sidebar-shortcuts -->
 
 				<ul class="nav nav-list">
-					<li class="">
-							<a href="#" left_menu="1" class="tip-right this_url" rel="dbd" title="Tableau de bord">	
+					<li left_menu="1">
+							<a href="#"  class="tip-right this_url" rel="dbd" title="Tableau de bord">	
 							<i class="menu-icon fa fa-tachometer"></i>
 							<span class="menu-text"> Tableau de Bord </span>
 						</a>
@@ -79,9 +79,9 @@ foreach ($arr_modul as $row)
 	//exit($check_sub_modul);
 	if( $check_sub_modul == NULL){
         
-		$render .='<li><a href="#" left_menu="1" class="tip-right this_url" rel="'.$row['app'].'" title="'.$row['descrip'].'"><i class="menu-icon fa fa-'.$row['class'].'"></i><span class="menu-text this_url" rel="'.$row['app'].'"> '.$row['descrip'].'</span></b></a></li>'; 
+		$render .='<li left_menu="1"><a href="#"  class="tip-right this_url " rel="'.$row['app'].'" title="'.$row['descrip'].'"><i class="menu-icon fa fa-'.$row['class'].'"></i><span class="menu-text this_url" rel="'.$row['app'].'"> '.$row['descrip'].'</span></b></a></li>'; 
 	}else{
-		$render .='<li><a href="#" left_menu="1" class="dropdown-toggle" title="'.$row['descrip'].'"><i class="menu-icon fa fa-'.$row['class'].'"></i><span class="menu-text"> '.$row['descrip'].'</span><b class="arrow fa fa-angle-down"></b></a>';
+		$render .='<li left_menu="1" ><a href="#" class="dropdown-toggle" title="'.$row['descrip'].'"><i class="menu-icon fa fa-'.$row['class'].'"></i><span class="menu-text"> '.$row['descrip'].'</span><b class="arrow fa fa-angle-down"></b></a>';
 		$render .= $check_sub_modul .'</li>';
 	}
     

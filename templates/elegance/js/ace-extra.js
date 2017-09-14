@@ -487,3 +487,5 @@ ace.isHTTMlElement = function(elem) {
 
 //data_storage instance used inside ace.settings etc
 ace.data = new ace.data_storage(ace.config.storage_method);
+
+

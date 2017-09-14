@@ -10,7 +10,7 @@ class Mproduit {
 	var $last_id; //return last ID after insert command
 	var $log = NULL; //Log of all opération.
 	var $error = true; //Error bol changed when an error is occured
-        var $id_produit; // Region ID append when request
+    var $id_produit; // Region ID append when request
 	var $token; //user for recovery function
 	var $produit_info; //Array stock all produit info
 	var $app_action; //Array action for each 

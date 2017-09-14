@@ -156,7 +156,8 @@ class Mclients {
    		$values["bp"] 			 = MySQL::SQLValue($this->_data['bp']);
    		$values["email"]	     = MySQL::SQLValue($this->_data['email']);
    		$values["rib"]  		 = MySQL::SQLValue($this->_data['rib']);
-    	$values["devise"]  		 = MySQL::SQLValue($this->_data['devise']);
+    	$values["id_devise"]  	 = MySQL::SQLValue($this->_data['id_devise']);
+        $values["tva"]           = MySQL::SQLValue($this->_data['tva']);
     	$values["creusr"]      	 = MySQL::SQLValue(session::get('userid'));
     	$values["credat"]      	 = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
@@ -171,14 +172,11 @@ class Mclients {
 
 				$this->last_id = $result;
 				//If Attached required Save file to Archive
-				if($this->exige_pj)
-				{
-					$this->save_file('pj', 'Justifications du clients'.$this->_data['denomination'], 'Document');
-				}	
-				if($this->exige_pj_photo)
-				{
-					$this->save_file('pj_photo', 'Photo du client'.$this->_data['denomination'], 'Document');
-				}				
+				
+                $this->save_file('pj', 'Justifications du clients'.$this->_data['denomination'], 'Document');
+				
+				$this->save_file('pj_photo', 'Photo du client'.$this->_data['denomination'], 'Image');
+								
 				//Check $this->error = true return Green message and Bol true
 				if($this->error == true)
 				{
@@ -323,7 +321,8 @@ class Mclients {
    		$values["bp"] 			 = MySQL::SQLValue($this->_data['bp']);
    		$values["email"]	     = MySQL::SQLValue($this->_data['email']);
    		$values["rib"]  		 = MySQL::SQLValue($this->_data['rib']);
-    	$values["devise"]  		 = MySQL::SQLValue($this->_data['devise']);
+    	$values["id_devise"]     = MySQL::SQLValue($this->_data['id_devise']);
+        $values["tva"]           = MySQL::SQLValue($this->_data['tva']);
     	$values["updusr"]        = MySQL::SQLValue(session::get('userid'));
     	$values["upddat"]        = MySQL::SQLValue(date("Y-m-d H:i:s"));
     	$wheres["id"]            = $this->id_client;
@@ -337,23 +336,20 @@ class Mclients {
 
 			}else{
 
-				$this->last_id = $result;
+				$this->last_id = $this->id_client;
 				//If Attached required Save file to Archive
-				if($this->exige_pj)
-				{
-					$this->save_file('pj', 'Justifications du clients'.$this->_data['denomination'], 'Document');
-				}	
-				if($this->exige_pj_photo)
-				{
-					$this->save_file('pj_photo', 'Photo du client'.$this->_data['denomination'], 'Document');
-				}				
+				$this->save_file('pj', 'Justifications du clients'.$this->_data['denomination'], 'Document');
+					
+				
+				$this->save_file('pj_photo', 'Photo du client'.$this->_data['denomination'], 'image');
+								
 				//Check $this->error = true return Green message and Bol true
 				if($this->error == true)
 				{
-					$this->log = '</br>Enregistrement réussie: <b>'.$this->_data['denomination'].' ID: '.$this->last_id;
+					$this->log = '</br>Modification réussie: <b>'.$this->_data['denomination'].' ID: '.$this->last_id;
 				//Check $this->error = false return Red message and Bol false	
 				}else{
-					$this->log .= '</br>Enregistrement réussie: <b>'.$this->_data['denomination'];
+					$this->log .= '</br>Modification réussie: <b>'.$this->_data['denomination'];
 					$this->log .= '</br>Un problème d\'Enregistrement ';
 				}
 			}
@@ -404,7 +400,7 @@ class Mclients {
     	}
     }
 
-        /**
+/**
      * [save_file For save anattached file for entrie ]
      * @param  [string] $item  [input_name of attached file we add _id]
      * @param  [string] $titre [Title stored for file on Archive DB]
@@ -413,23 +409,31 @@ class Mclients {
      */
     private function save_file($item, $titre, $type)
     {
-    	//Format all parameteres
-    	$temp_file     = $this->_data[$item.'_id'];
-    	$new_name_file = $item.'_'.$this->last_id;
-    	$folder        = MPATH_UPLOAD.'clients'.SLASH.$this->last_id;
-    	$id_line       = $this->last_id;
-    	$title         = $titre;
-    	$table         = $this->table;
-    	$column        = $item;
-    	$type          = $type;
+        //Format all parameteres
+        $temp_file     = $this->_data[$item.'_id'];
+        //If nofile uploaded return kill function
+      if($temp_file == Null){
+        return true;
+      }
 
-    	//Call save_file_upload from initial class
-    	if(!Minit::save_file_upload($temp_file, $new_name_file, $folder, $id_line, $title,'installateurs', $table, $column, $type, $edit = null))
-    	{
-    		$this->error = false;
-    		$this->log .='</br>Enregistrement '.$item.' dans BD non réussie';
-    	}
+      $new_name_file = $item.'_'.$this->last_id;
+      $folder        = MPATH_UPLOAD.'clients'.SLASH.$this->last_id;
+      $id_line       = $this->last_id;
+      $title         = $titre;
+      $table         = $this->table;
+      $column        = $item;
+      $type          = $type;
+
+
+
+        //Call save_file_upload from initial class
+      if(!Minit::save_file_upload($temp_file, $new_name_file, $folder, $id_line, $title, 'clients', $table, $column, $type, $edit = null))
+      {
+        $this->error = false;
+        $this->log .='</br>Enregistrement '.$item.' dans BD non réussie';
+      }
     }
+
     /**
      * [check_file Check attached if required stop Insert this must be placed befor Insert commande]
      * @param  [string] $item [input_name of attached file we add _id]
@@ -440,26 +444,25 @@ class Mclients {
     Private function check_file($item, $msg = null, $edit = null)
     {
         //Format temporary file
-    	$temp_file     = $this->_data[$item.'_id'];
-    	//Check if is edit action (is numeric when called from archive DB else is retrned target upload)
-    	if($edit != null && !is_numeric($temp_file))
-    	{
-    		if(!file_exists($temp_file))
-    		{
-    			$this->log .= '</br>Il faut choisir '.$msg.' pour la mise à jour '.$edit;
-    			$this->error = false;
-    		}
-    	//When is not edit do check for existing file
-    	}else{
-    		if($edit == null && $this->exige_.$item == true && ($this->_data[$item.'_id'] == null || !file_exists($this->_data[$item.'_id'])))
-    		{
-    			$this->log .= '</br>Il faut choisir '.$msg. '  '.$edit;
-    			$this->error = false; 
-    		}
-    	}
+        $temp_file     = $this->_data[$item.'_id'];
+        //Check if is edit action (is numeric when called from archive DB else is retrned target upload)
+        if($edit != null && !is_numeric($temp_file))
+        {
+            if(!file_exists($temp_file))
+            {
+                $this->log .= '</br>Il faut choisir '.$msg.' pour la mise à jour '.$edit;
+                $this->error = false;
+            }
+        //When is not edit do check for existing file
+        }else{
+            if($edit == null && $this->exige_.$item == true && ($this->_data[$item.'_id'] == null || !file_exists($this->_data[$item.'_id'])))
+            {
+                $this->log .= '</br>Il faut choisir '.$msg. '  '.$edit;
+                $this->error = false; 
+            }
+        }
 
-    }
-    
+    }    
 
 
 }
