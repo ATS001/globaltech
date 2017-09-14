@@ -10,7 +10,7 @@ class Munite_vente {
 	var $last_id; //return last ID after insert command
 	var $log = NULL; //Log of all opération.
 	var $error = true; //Error bol changed when an error is occured
-        var $id_unite_vente; // Region ID append when request
+    var $id_unite_vente; // unite_vente ID append when request
 	var $token; //user for recovery function
 	var $unite_vente_info; //Array stock all unite_vente info
 	var $app_action; //Array action for each 
