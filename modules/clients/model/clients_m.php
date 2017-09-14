@@ -35,7 +35,7 @@ class Mclients {
 	{
 		global $db;
 
-		$sql = "SELECT  c.*,cat.categorie_client as categorie_client, p.pays as pays,v.ville as ville, d.devise as devise, , (IF(c.tva='O','OUI','NON')) AS tva FROM  clients c,categorie_client cat,ref_pays p,ref_ville v,ref_devise d WHERE  c.id_categorie=cat.id and c.id_pays=p.id and c.id_ville=v.id and c.id_devise=d.id
+		$sql = "SELECT  c.*,cat.categorie_client as categorie_client, p.pays as pays,v.ville as ville, d.devise as devise, (IF(c.tva='O','OUI','NON')) AS tva FROM  clients c,categorie_client cat,ref_pays p,ref_ville v,ref_devise d WHERE  c.id_categorie=cat.id and c.id_pays=p.id and c.id_ville=v.id and c.id_devise=d.id
 			and c.id = ".$this->id_client;
 
 		if(!$db->Query($sql))
