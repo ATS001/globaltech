@@ -183,7 +183,7 @@ WHERE users_sys.id = $userid
 				$stanadr_delete = null;
 				if($etat == 0 AND ($cre_usr == session::get('userid') OR session::get('service') == 1))
                 {
-                	$stanadr_delete = '<li class="divider"></li><li><a href="#" class="this_exec" data="'.MInit::crypt_tp('id',$id).'" rel="'.$task_exec.'"  ><i class="ace-icon fa fa-trash bigger-100"></i> Supprimer ligne</a></li>';
+                	$stanadr_delete = '<li class="divider"></li><li><a href="#" class="this_exec" data="'.MInit::crypt_tp('id',$id).'" rel="'.$task_exec.'"  ><i class="ace-icon fa fa-trash red bigger-100"></i> Supprimer ligne</a></li>';
                 }
 				
 				$retour =  str_replace('%id%', MInit::crypt_tp('id',$id), $this->app_action);
@@ -304,8 +304,7 @@ WHERE users_sys.id = $userid
                                 AND task_action.id = rules_action.`action_id` 
                                 AND rules_action.`userid` = ".session::get('userid')." 
                                 AND task_action.`type` = 0
-    
-                                 AND task_action.`message_etat` LIKE '%$search%')
+                                AND task_action.`message_etat` LIKE '%$search%')
                                 )";
         return $where_search_etat;                        
 	}

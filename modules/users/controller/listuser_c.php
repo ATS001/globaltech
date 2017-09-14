@@ -1,9 +1,8 @@
 
 <?php
-	
 	global $db;
+	
 	$params = $columns = $totalRecords = $data = array();
-
 	$params = $_REQUEST;
 	
 	//define index of column

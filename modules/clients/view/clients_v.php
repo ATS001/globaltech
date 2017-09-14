@@ -86,41 +86,7 @@ $(document).ready(function() {
 			csv_export(table, 'pdf');
 		});
 
-		$('.export_map').on('click', function() {
-			$('body').fullScreen(true);
-			var data  = table.ajax.params();
-
-			var sUrl  = table.ajax.url()
-			bootbox.process({
-				message:'Working',
-			});
-
-			$.ajax({
-				url: sUrl+'&lst=1&export=1&format=dat',
-				type: 'POST',
-				data: data,
-				dataType: 'html',
-				success: function(data) {
-
-
-					var data_arry = data.split("#");
-					if(data_arry[0] == 1) {
-						bootbox.hideAll();
-						var $data = data_arry[1];
-                        $('body').fullScreen(true);
-                        setTimeout(function() { $.colorbox({iframe:true, map:true, width:"100%", height:"100%",href:"./map/?mult="+$data }) },500)
-
-					}else{
-						ajax_loadmessage(data_arry[1],'nok',5000);
-						bootbox.hideAll();
-					}
-
-
-
-				}
-			});
-		});
-
+		
 		$('#clients_grid').on('click', 'tr button', function() {
 			var $row = $(this).closest('tr')
 	        //alert(table.cell($row, 0).data());
