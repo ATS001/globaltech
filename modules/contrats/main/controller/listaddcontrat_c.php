@@ -9,11 +9,11 @@
 
 	//define index of column
 	$columns = array( 
-		0 =>'id',
-		1 =>'code', 
-		2 =>'denomination',
-		3 =>'r_social',
-		4 =>'categorie_client',
+		0=> 'id',
+	    1=>'ref',
+		2=>'iddevis',
+		3=>'date_effet',
+		4=>'date_fin',		
 		5 =>'statut'
 		
 	);
@@ -22,7 +22,7 @@
 
 	$colms = $tables = $joint = $where = $where_s = $sqlTot = $sqlRec = "";
     // define used table.
-	$tables .= " clients clients, categorie_client cc";
+	$tables .= "contrats , devis";
     // define joint and rtable elation
 	$joint .= " WHERE clients.id_categorie = cc.id  ";
 	// set sherched columns.(the final colm without comma)
