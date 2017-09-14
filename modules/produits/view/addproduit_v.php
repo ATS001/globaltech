@@ -25,15 +25,8 @@
             <div class="widget-content">
                 <div class="widget-box">
 
-<<<<<<< HEAD
-//stock minimale
-$stock_min_array[]  = array('required', 'true', 'Insérez le stock minimale' );
-$stock_min_array[]  = array('number', 'true', 'Entrez un nombre valide' );
-$form->input('Stock minimale', 'stock_min', 'text' ,6, null, $stock_min_array);
-=======
                     <?php
                     $form = new Mform('addproduit', 'addproduit', '', 'produits', '0');
->>>>>>> refs/remotes/origin/ayoub
 
 //Type de produit
 $type_array[] = array('required', 'true', 'Choisir un type');

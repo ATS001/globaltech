@@ -1,13 +1,3 @@
-<<<<<<< HEAD
-<div class="page-header">
-	<h1>
-		Gestion des produits
-		<small>
-			<i class="ace-icon fa fa-angle-double-right"></i>
-		</small>
-	</h1>
-</div><!-- /.page-header -->
-=======
 	<div class="page-header">
 		<h1>
 			Gestion des produits
@@ -16,7 +6,6 @@
 			</small>
 		</h1>
 	</div><!-- /.page-header -->
->>>>>>> refs/remotes/origin/ayoub
 
 	<div class="row">
 		<div class="col-xs-12">
@@ -32,39 +21,6 @@
 				</div>
 			</div>
 
-<<<<<<< HEAD
-		<div class="table-header">
-			Liste "produits" 
-		</div>
-		<div>
-			<table id="produits_grid" class="table table-bordered table-condensed table-hover table-striped dataTable no-footer">
-				<thead>
-					<tr>
-						
-						<th>
-							ID
-						</th>
-                                                <th>
-							Référence
-						</th>
-                                                <th>
-							Désignation
-						</th>                                              
-                                               
-                                                <th>
-							Stock minimale
-						</th>
-                                                
-						<th>
-							Etat
-						</th>
-						<th>
-							#
-						</th>
-					</tr>
-				</thead>
-			</table>
-=======
 			<div class="table-header">
 				Liste "produits" 
 			</div>
@@ -97,32 +53,11 @@
 					</thead>
 				</table>
 			</div>
->>>>>>> refs/remotes/origin/ayoub
 		</div>
 	</div>
 	<script type="text/javascript">
 
 
-<<<<<<< HEAD
-$(document).ready(function() {
-	
-	var table = $('#produits_grid').DataTable({
-		bProcessing: true,
-		notifcol : 4,
-		serverSide: true,
-		
-		ajax_url:"produits",
-		
-                aoColumns: [
-                    {"sClass": "center","sWidth":"5%"}, // Identifiant 
-                    {"sClass": "left","sWidth":"20%"}, // Catégorie
-                    {"sClass": "left","sWidth":"25%"},   
-                    {"sClass": "left","sWidth":"10%"},
-                    {"sClass": "center","sWidth":"10%"}, // Statut
-                    {"sClass": "center","sWidth":"10%"}, // Action
-                    ],
-                });
-=======
 	$(document).ready(function() {
 		
 		var table = $('#produits_grid').DataTable({
@@ -141,7 +76,6 @@ $(document).ready(function() {
 	                    {"sClass": "center","sWidth":"10%"}, // Action
 	                    ],
 	                });
->>>>>>> refs/remotes/origin/ayoub
 
 	            
 	 
