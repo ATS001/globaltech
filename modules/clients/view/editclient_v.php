@@ -164,9 +164,9 @@ $form->select_table('Devise', 'id_devise', 6, 'ref_devise', 'id', 'devise' , 'de
 
 
 // taxe
-$taxe_array[]  = array('TVA' , 'TVA' );
-$taxe_array[]  = array('Exonéré' , 'Exonéré' );
-$form->radio('Taxe', 'taxe', $info_client->Shw('taxe',1), $taxe_array, '');
+$taxe_array[]  = array('Oui' , 'O' );
+$taxe_array[]  = array('Non' , 'N' );
+$form->radio('TVA', 'tva', $info_client->Shw('tva',1), $taxe_array, '');
 
 //pj_id
 $form->input('Justifications du client', 'pj', 'file', 6, 'Justification_client.pdf', null);

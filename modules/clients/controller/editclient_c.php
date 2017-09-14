@@ -30,7 +30,7 @@ if(MInit::form_verif('editclient',false))
    'email'          => Mreq::tp('email') , 
    'rib'            => Mreq::tp('rib') , 
    'id_devise'      => Mreq::tp('id_devise') , 
-   'taxe'           => Mreq::tp('taxe') ,
+   'tva'            => Mreq::tp('tva') ,
    'pj_id'          => Mreq::tp('pj-id'),
    'pj_photo_id'    => Mreq::tp('pj_photo-id')
    );

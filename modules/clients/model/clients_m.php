@@ -157,7 +157,7 @@ class Mclients {
    		$values["email"]	     = MySQL::SQLValue($this->_data['email']);
    		$values["rib"]  		 = MySQL::SQLValue($this->_data['rib']);
     	$values["id_devise"]  	 = MySQL::SQLValue($this->_data['id_devise']);
-        $values["taxe"]          = MySQL::SQLValue($this->_data['taxe']);
+        $values["tva"]           = MySQL::SQLValue($this->_data['tva']);
     	$values["creusr"]      	 = MySQL::SQLValue(session::get('userid'));
     	$values["credat"]      	 = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
@@ -322,7 +322,7 @@ class Mclients {
    		$values["email"]	     = MySQL::SQLValue($this->_data['email']);
    		$values["rib"]  		 = MySQL::SQLValue($this->_data['rib']);
     	$values["id_devise"]     = MySQL::SQLValue($this->_data['id_devise']);
-        $values["taxe"]          = MySQL::SQLValue($this->_data['taxe']);
+        $values["tva"]           = MySQL::SQLValue($this->_data['tva']);
     	$values["updusr"]        = MySQL::SQLValue(session::get('userid'));
     	$values["upddat"]        = MySQL::SQLValue(date("Y-m-d H:i:s"));
     	$wheres["id"]            = $this->id_client;

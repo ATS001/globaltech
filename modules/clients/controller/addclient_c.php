@@ -25,7 +25,7 @@ if(MInit::form_verif('addclient',false))
    'email'          => Mreq::tp('email') , 
    'rib'            => Mreq::tp('rib') , 
    'id_devise'      => Mreq::tp('id_devise') ,
-   'taxe'           => Mreq::tp('taxe') , 
+   'tva'            => Mreq::tp('tva') , 
    'pj_id'          => Mreq::tp('pj-id'),
    'pj_photo_id'    => Mreq::tp('pj_photo-id')
    );
@@ -35,7 +35,7 @@ if(MInit::form_verif('addclient',false))
   //for acceptable empty field do not put here
   
   
-$checker = null;
+  $checker = null;
   $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
 
   if($posted_data['code'] == NULL){
@@ -60,7 +60,7 @@ $checker = null;
     $empty_list .= "<li>Catégorie client</li>";
     $checker = 1;
   }
- 
+  
   /*if($posted_data['nif'] == NULL){
 
     $empty_list .= "<li>N° Identification Fiscale</li>";
@@ -71,7 +71,7 @@ $checker = null;
     $empty_list .= "<li>N° Registre de commerce</li>";
     $checker = 1;
   }*/
-    
+  
   if($posted_data['adresse'] == NULL){
 
     $empty_list .= "<li>Adresse</li>";
