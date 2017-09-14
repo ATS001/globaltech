@@ -18,7 +18,7 @@
 		   'date_effet'   => Mreq::tp('date_effet') ,
 		   'date_fin'       => Mreq::tp('date_fin') ,
 		   'commentaire'     => Mreq::tp('commentaire') ,
-		    'pj_id'          => Mreq::tp('pj-id'),
+		   'pj_id'          => Mreq::tp('pj-id'),
 		   'pj_photo_id'    => Mreq::tp('pj_photo-id')
 	   );
 
