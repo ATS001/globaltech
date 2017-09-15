@@ -66,8 +66,7 @@
 	$form->input_date('Date achat', 'date_achat', 4, date('d-m-Y'), $array_dachat);
 
 	//Date de fin de validité
-	$array_dfinval[]= array('required', 'true', 'Insérer la date de fin de validité');
-	$form->input_date('Date de validité', 'date_validite', 4, date('d-m-Y'), $array_dfinval);
+	$form->input_date('Date de validité', 'date_validite', 4, date('d-m-Y'), '');
 
 
 	$form->button('Enregistrer achat');

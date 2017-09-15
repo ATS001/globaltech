@@ -51,11 +51,7 @@
             $checker = 1;
         }
         
-        if ($posted_data['date_validite'] == NULL) {
-
-            $empty_list .= "<li>date fin de validité</li>";
-            $checker = 1;
-        }
+       
         
         
 
