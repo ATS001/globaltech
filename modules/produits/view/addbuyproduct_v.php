@@ -48,7 +48,6 @@
 	$form->input_hidden('idproduit',   $id_produit);
 
 	//quantité
-	$qte_array[]  = array('required', 'true', 'Insérez une quantité' );
 	$qte_array[]  = array('number', 'true', 'Entrez un nombre valide' );
 	$form->input('Quantité', 'qte', 'text' ,6, null, $qte_array);
 

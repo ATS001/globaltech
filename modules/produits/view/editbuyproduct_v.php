@@ -48,7 +48,6 @@
 
 
     //quantité
-    $qte_array[] = array('required', 'true', 'Insérez une quantité');
     $qte_array[] = array('number', 'true', 'Entrez un nombre valide');
     $form->input('Quantité', 'qte', 'text', 6, $info_achat->Shw('qte', 1), $qte_array);
 
