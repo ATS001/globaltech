@@ -49,8 +49,8 @@ $devis_array[]  = array('required', 'true', 'Choisir un devis');
 $form->select_table('Devis', 'iddevis', 8, 'devis', 'id', 'reference' , 'reference', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $devis_array);
 
 //Type échéance
-$ech_array[]  = array('required', 'true', 'Choisir une échéance');
-$form->select_table('Echéance', 'idtype_echeance', 8, 'contrats', 'id', 'type_echeance' , 'type_echeance', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $ech_array);
+//$ech_array[]  = array('required', 'true', 'Choisir une échéance');
+//$form->select_table('Echéance', 'idtype_echeance', 8, 'contrats', 'id', 'type_echeance' , 'type_echeance', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $ech_array);
 
 //Date effet
 $array_date_effet[]= array('required', 'true', 'Insérer la date effet');
