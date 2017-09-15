@@ -107,14 +107,15 @@
     if( Mreq::tp('export')==1 )
     {
     	
-    	$file_name = 'user_list';
-    	$title     = 'Liste utilisateur ';
+    	$file_name = 'devis_list';
+    	$title     = 'Liste Devis ';
     	if(Mreq::tp('format')=='csv')
     	{
     		$header    = array('ID', 'Nom & Prénom', 'Service', 'Statut');
     		Minit::Export_xls($header, $file_name, $title);
     	}elseif(Mreq::tp('format')=='pdf'){
-    		$header    = array('ID'=>10, 'Nom & Prénom'=>50, 'Service'=>20, 'Statut'=>20);
+    		
+    		$header    = array('ID'=>5, 'Date'=>5, 'Réf'=>5, 'Client'=>35, 'Montant HT'=>15, 'Montant TTC'=>15, 'Statut'=>20);
     		Minit::Export_pdf($header, $file_name, $title);
     	}
     	  	

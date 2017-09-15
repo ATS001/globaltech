@@ -82,7 +82,7 @@ $(document).ready(function() {
     	var $totalht         = parseFloat($totalht) ? parseFloat($totalht) : 0;
     	//var $type_remise    = $type_remise == null ? 'P' : $type_remise;
     	var $remise_valeur  = parseFloat($remise_valeur) ? parseFloat($remise_valeur) : 0;
-    	var $tva            = $tva == null ? 'Y' : $tva;
+    	var $tva            = $tva == null ? 'O' : $tva;
     	
     	//calculate remise
     	if($type_remise == 'P')
@@ -108,6 +108,7 @@ $(document).ready(function() {
     	$('#'+$f_total_ht).val($total_ht);
     	$('#'+$f_total_tva).val($total_tva);
     	$('#'+$f_total_ttc).val($total_ttc);  
+        
     } 
     $('#addRow').on( 'click', function () {
     	
@@ -122,13 +123,15 @@ $(document).ready(function() {
         ajax_bbox_loader($link, $data, $titre, 'large')
         
     });
+    
 
-    $('#valeur_remise').bind('input change',function() {
+    $('#valeur_remise, #tva').bind('input change',function() {
     	// Calcul values
     	var totalht       = parseInt($('#sum_table').val());
     	var type_remise   = $('#type_remise').val();
     	var remise_valeur = parseFloat($('#valeur_remise').val());
-    	var tva           = parseFloat($('#tva').val());
+    	var tva           = $('#tva').val();
+       
     	var dix_per_ht    = parseFloat((totalht * 10) / 100);
     	if((type_remise == 'P' && remise_valeur > 10) || (type_remise == 'M' && remise_valeur > dix_per_ht)){
     		ajax_loadmessage('La remise exeptionnel ne doit pas dépasser 10% du Total des articles','nok');
