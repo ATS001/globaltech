@@ -10,12 +10,12 @@
 		//define index of column
 		$columns = array( 
 			0=> 'id',
-                        1=>'ref',
+            1=>'ref',
 			2=>'iddevis',
-                        3=>'date_contrat',
-			3=>'date_effet',
-			4=>'date_fin',		
-			5 =>'statut'
+            3=>'date_contrat',
+			4=>'date_effet',
+			5=>'date_fin',		
+			6=>'statut'
 			
 		);
 			

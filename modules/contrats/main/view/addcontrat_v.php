@@ -7,7 +7,7 @@
 </div>
 <div class="page-header">
 	<h1>
-		Ajouter une contrat
+		Ajouter un contrat
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
 		</small>
