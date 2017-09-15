@@ -12,7 +12,7 @@ if(MInit::form_verif('editpays',false))
    'id'                 => Mreq::tp('id') ,
    'pays'               => Mreq::tp('pays') ,
    'nationalite'        => Mreq::tp('nationalite') ,
-   'alpha'				=>Mreq::tp('alpha'),
+   'alpha'			      	=>Mreq::tp('alpha'),
 
    );
 
@@ -34,6 +34,19 @@ $checker = null;
       $empty_list .= "<li>Pays</li>";
       $checker = 1;
     }
+
+    if($posted_data['nationalite'] == NULL){
+
+      $empty_list .= "<li>Nationalité</li>";
+      $checker = 1;
+    }
+
+    if($posted_data['alpha'] == NULL){
+
+      $empty_list .= "<li>Code du pays</li>";
+      $checker = 1;
+    }
+    
     
     $empty_list.= "</ul>";
     if($checker == 1)
