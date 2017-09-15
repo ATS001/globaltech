@@ -819,7 +819,7 @@ public function draw_datatabe_form($id_table, $verif_value, $columns = array(), 
   $verif_value  = md5(session::get($ssid));*/
   $button_action = "$('#".$id_table."').on('click', 'tr button', function() {
   var row = $(this).closest('tr')
-  append_drop_menu('adddevis', t.cell(row, 0).data(), '.btn_action')
+  append_drop_menu('".$url_data."', t.cell(row, 0).data(), '.btn_action')
   });";
   $button_add_row = '<a id="addRow" href="#" rel="'.$url_addrow.'" data="&tkn='.$verif_value.'" data_titre="'.$titr_addrow.'" class=" btn btn-white btn-info btn-bold  spaced "><span><i class="fa fa-plus"></i> Ajouter une ligne</span></a><input type="hidden" name="tkn_frm" value="'.$verif_value.'">';
   $js_table = "var t = $('#".$id_table."').DataTable({";
