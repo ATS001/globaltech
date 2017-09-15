@@ -138,6 +138,7 @@ class MDevis
 
         $tableau = $db->GetMTable($headers,  null, $style);
         
+        
         return $tableau; 
     }
 
