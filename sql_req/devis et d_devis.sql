@@ -20,17 +20,6 @@ SET time_zone = "+00:00";
 -- Base de données :  `globaltech`
 --
 
-DELIMITER $$
---
--- Procédures
---
-CREATE DEFINER=`root`@`localhost` PROCEDURE `get_count`()
-BEGIN
-        SELECT COUNT(*) as cont FROM aemploi;
-    END$$
-
-DELIMITER ;
-
 -- --------------------------------------------------------
 
 --
@@ -155,9 +144,6 @@ INSERT INTO `d_devis` (`id`, `order`, `id_devis`, `tkn_frm`, `id_produit`, `ref_
 --
 -- Contraintes pour la table `devis`
 --
-ALTER TABLE `devis`
-  ADD CONSTRAINT `fk_id_client` FOREIGN KEY (`id_client`) REFERENCES `clients` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

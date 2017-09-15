@@ -2,7 +2,7 @@
 defined('_MEXEC') or die;
 if(MInit::form_verif('editville',false))
 {
-	//Check if id is been the correct id compared with idc
+  //Check if id is been the correct id compared with idc
    if(!MInit::crypt_tp('id', null, 'D') )
    {  
    // returne message error red to client 
@@ -11,7 +11,7 @@ if(MInit::form_verif('editville',false))
   $posted_data = array(
    'id'                   => Mreq::tp('id') ,
    'ville'                => Mreq::tp('ville') ,
-   'id_region'            => Mreq::tp('id_region') ,
+   'id_departement'       => Mreq::tp('id_departement') ,
    'latitude'             => Mreq::tp('latitude') ,
    'longitude'            => Mreq::tp('longitude') ,
    );
@@ -35,9 +35,9 @@ if(MInit::form_verif('editville',false))
       $empty_list .= "<li>Ville</li>";
       $checker = 1;
     }
-     if($posted_data['id_region'] == NULL){
+     if($posted_data['id_departement'] == NULL){
 
-      $empty_list .= "<li>Région</li>";
+      $empty_list .= "<li>Département</li>";
       $checker = 1;
     }
     if($posted_data['latitude'] == NULL){
@@ -75,8 +75,8 @@ if(MInit::form_verif('editville',false))
 
 
 }else{
-  	
-  view::load('villes','editville');
+    
+  view::load('Systeme/settings/villes','editville');
 }
 
 

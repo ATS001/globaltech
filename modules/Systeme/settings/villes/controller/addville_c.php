@@ -3,12 +3,12 @@
 defined('_MEXEC') or die;
 if(MInit::form_verif('addville',false))
 {
-	
+  
   $posted_data = array(
    'ville'                => Mreq::tp('ville') ,
    'latitude'             => Mreq::tp('latitude') ,
    'longitude'            => Mreq::tp('longitude') ,
-   'id_region'            => Mreq::tp('id_region') ,
+   'id_departement'       => Mreq::tp('id_departement') ,
 
    );
 
@@ -41,9 +41,9 @@ if(MInit::form_verif('addville',false))
       $empty_list .= "<li>Longitude</li>";
       $checker = 1;
     }
-    if($posted_data['id_region'] == NULL){
+    if($posted_data['id_departement'] == NULL){
 
-      $empty_list .= "<li>Région</li>";
+      $empty_list .= "<li>Département</li>";
       $checker = 1;
     }
     
@@ -72,7 +72,7 @@ if(MInit::form_verif('addville',false))
 
 
 } else {
-  view::load('villes','addville');
+  view::load('Systeme/settings/villes','addville');
 }
 
 
