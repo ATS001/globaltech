@@ -48,7 +48,6 @@
 	$form->input_hidden('idproduit',   $id_produit);
 
 	//quantité
-	$qte_array[]  = array('required', 'true', 'Insérez une quantité' );
 	$qte_array[]  = array('number', 'true', 'Entrez un nombre valide' );
 	$form->input('Quantité', 'qte', 'text' ,6, null, $qte_array);
 
@@ -67,8 +66,7 @@
 	$form->input_date('Date achat', 'date_achat', 4, date('d-m-Y'), $array_dachat);
 
 	//Date de fin de validité
-	$array_dfinval[]= array('required', 'true', 'Insérer la date de fin de validité');
-	$form->input_date('Date de validité', 'date_validite', 4, date('d-m-Y'), $array_dfinval);
+	$form->input_date('Date de validité', 'date_validite', 4, date('d-m-Y'), '');
 
 
 	$form->button('Enregistrer achat');

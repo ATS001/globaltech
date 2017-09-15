@@ -1,5 +1,5 @@
 <?php 
-//Export Module 'types_produits' Date: 14-09-2017
+//Export Module 'types_produits' Date: 15-09-2017
 global $db;
 if(!$result_insert_modul = $db->Query("insert into modul (modul, description, rep_modul, tables, app_modul, modul_setting, is_setting, etat, services)values('types_produits', 'Gestion des types de produits','produits/settings/types_produits','ref_types_produits','types_produits','produits','1', '0', '[-1-]')")){$this->error = false; $this->log .= "<li> Error Import Modul 'types_produits' </li>";}
   //Task 'types_produits' 'Gestion des types de produits'

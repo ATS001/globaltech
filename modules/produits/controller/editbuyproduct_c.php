@@ -26,12 +26,6 @@
         $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
 
        
-        
-         if ($posted_data['qte'] == NULL OR !is_numeric($posted_data['qte'])){
-
-            $empty_list .= "<li>Quantité</li>";
-            $checker = 1;
-        }
 
         if($posted_data['prix_achat'] == NULL OR !is_numeric($posted_data['prix_achat'])){
 
@@ -57,11 +51,7 @@
             $checker = 1;
         }
         
-        if ($posted_data['date_validite'] == NULL) {
-
-            $empty_list .= "<li>date fin de validité</li>";
-            $checker = 1;
-        }
+       
         
         
 

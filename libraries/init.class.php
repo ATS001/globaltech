@@ -550,7 +550,7 @@ static public function pub_copy_file($old_file, $new_file, $path, $mode = 0777){
    $file_export = MPATH_TEMP.$file_name.'_' .date('d_m_Y_H_i_s').'.pdf';
    $html = $db->GetHTML($header, true, null, $styleHeader = null, $styleData = null);
    //Load template 
-   include_once APP_TARGET.$file_name.'_pdf.php';
+   include_once MPATH_THEMES.'pdf_template/export_list_pdf.php';
 
 
   if(file_exists($file_export))

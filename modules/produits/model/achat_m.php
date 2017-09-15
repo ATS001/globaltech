@@ -182,7 +182,7 @@
                 } else {
 
                     //$this->last_id = $result;
-                    $this->log .= '</br>Enregistrement  réussie ' . $this->_data['ref'] . ' - ' . $this->last_id . ' -';
+                    $this->log .= '</br>Enregistrement  réussie ' . ' - ' . $this->last_id . ' -';
                 }
             } else {
 

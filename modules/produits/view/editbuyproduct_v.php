@@ -15,7 +15,8 @@
     <div class="pull-right tableTools-container">
         <div class="btn-group btn-overlap">
 
-    <?php TableTools::btn_add('buyproducts', 'Liste des achats', MInit::crypt_tp('id', $info_achat->Shw('idproduit', 1)), $exec = NULL, 'reply'); ?>
+    <?php 
+            TableTools::btn_add('buyproducts', 'Liste des achats', MInit::crypt_tp('id', $info_achat->Shw('idproduit', 1)), $exec = NULL, 'reply'); ?>
 
         </div>
     </div>
@@ -48,7 +49,6 @@
 
 
     //quantité
-    $qte_array[] = array('required', 'true', 'Insérez une quantité');
     $qte_array[] = array('number', 'true', 'Entrez un nombre valide');
     $form->input('Quantité', 'qte', 'text', 6, $info_achat->Shw('qte', 1), $qte_array);
 
@@ -67,8 +67,7 @@
     $form->input_date('Date achat', 'date_achat', 4, $info_achat->Shw('date_achat', 1), $array_dachat);
 
     //Date de fin de validité
-    $array_dfinval[] = array('required', 'true', 'Insérer la date de fin de validité');
-    $form->input_date('Date fin de validité', 'date_validite', 4, $info_achat->Shw('date_validite', 1), $array_dfinval);
+    $form->input_date('Date fin de validité', 'date_validite', 4, $info_achat->Shw('date_validite', 1), '');
 
 
     $form->button('Modifier achat');

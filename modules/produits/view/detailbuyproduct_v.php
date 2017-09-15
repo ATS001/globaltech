@@ -8,10 +8,12 @@
     <div class="pull-right tableTools-container">
     	<div class="btn-group btn-overlap">
     					
-    		
-    		<?php 
-                  TableTools::btn_add('buyproduct', 'Liste des achats', Null, $exec = NULL, 'reply');      
-    		 ?>		
+    		                   
+                   
+                   <?php
+        TableTools::btn_add('buyproducts', 'Liste des achats', MInit::crypt_tp('id', $info_achat->Shw('idproduit', 1)), $exec = NULL, 'reply');
+        ?>
+    		 	
     	</div>
     </div>
     <div class="page-header">

@@ -825,7 +825,7 @@ public function draw_datatabe_form($id_table, $verif_value, $columns = array(), 
   $js_table = "var t = $('#".$id_table."').DataTable({";
   $js_table .= "bProcessing: true, serverSide: true, notifcol : 6, ajax_url:'".$url_data."', extra_data:'tkn_frm=".$verif_value."',aoColumns: [";
   $table = '<div class="space-2"></div>';
-  $table .= '<div class="col-xs-12">'.$button_add_row.'<table id="'.$id_table.'" class="display table table-bordered table-condensed table-hover table-striped dataTable no-footer" cellspacing="0">';
+  $table .= '<div class="col-xs-12 '.$id_table.'">'.$button_add_row.'<table id="'.$id_table.'" class="display table table-bordered table-condensed table-hover table-striped dataTable no-footer" cellspacing="0">';
   $table .= '<thead><tr>';
  
   foreach ($columns as $column => $width) {
