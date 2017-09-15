@@ -2,10 +2,10 @@
 -- version 4.1.14
 -- http://www.phpmyadmin.net
 --
--- Host: 127.0.0.1
--- Generation Time: Sep 15, 2017 at 10:31 PM
--- Server version: 5.6.17
--- PHP Version: 5.5.12
+-- Client :  127.0.0.1
+-- Généré le :  Sam 16 Septembre 2017 à 01:38
+-- Version du serveur :  5.6.17
+-- Version de PHP :  5.5.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,19 +17,19 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `globaltech`
+-- Base de données :  `globaltech`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `echeances_contrat`
+-- Structure de la table `echeances_contrat`
 --
 
 CREATE TABLE IF NOT EXISTS `echeances_contrat` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `tkn_frm` varchar(32) DEFAULT NULL,
-  `date_contrat` date DEFAULT NULL,
+  `date_echeance` date DEFAULT NULL,
   `commentaire` varchar(2000) DEFAULT NULL,
   `idcontrat` int(11) DEFAULT NULL,
   `etat` int(11) DEFAULT '0',
@@ -42,11 +42,11 @@ CREATE TABLE IF NOT EXISTS `echeances_contrat` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 AUTO_INCREMENT=1 ;
 
 --
--- Constraints for dumped tables
+-- Contraintes pour les tables exportées
 --
 
 --
--- Constraints for table `echeances_contrat`
+-- Contraintes pour la table `echeances_contrat`
 --
 ALTER TABLE `echeances_contrat`
   ADD CONSTRAINT `fk_contrat_echeance` FOREIGN KEY (`idcontrat`) REFERENCES `contrats` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;

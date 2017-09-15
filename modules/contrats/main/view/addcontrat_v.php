@@ -96,13 +96,13 @@ $(document).ready(function() {
         var $link  = $(this).attr('rel');
    		var $titre = $(this).attr('data_titre'); 
    		var $data  = $(this).attr('data'); 
-        ajax_bbox_loader($link, $data, $titre, 'large');
+        ajax_bbox_loader($link, $data, $titre, 'large')
         
     });
 
   
    
-/*
+
     $('#iddevis').on('change', function () {
         
         //var $adresse = '<div class="form-group>"><address><strong>Twitter, Inc.</strong><br>795 Folsom Ave, Suite 600<br>San Francisco, CA 94107<br><abbr title="Phone">P:</abbr>(123) 456-7890</address></div>';
@@ -150,7 +150,7 @@ $(document).ready(function() {
 
 
      
-*/
+
 });
 </script>	
 
