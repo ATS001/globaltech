@@ -1,5 +1,5 @@
 <?php 
-$form = new Mform('addecheance_contrat', 'addecheance_contrat', '', 'contrat', '0', 'is_modal');
+$form = new Mform('addecheance_contrat', 'addecheance_contrat', '', 'contrats', '0', 'is_modal');
 //token main form
 $form->input_hidden('tkn_frm', Mreq::tp('tkn'));
 
@@ -7,10 +7,6 @@ $form->input_hidden('tkn_frm', Mreq::tp('tkn'));
 $array_date_echeance[]= array('required', 'true', 'Insérer la date échéance');
 $form->input_date('Date échéance', 'date_echeance', 4, date('d-m-Y'), $array_date_echeance);
 
-
-
-$hard_code_pri_u_ht = '<label style="margin-left:15px;margin-right : 20px;">Prix Unité HT: </label><input id="prix_unitaire" name="prix_unitaire" value="0" class="input-large alignRight" type="text">';
-$hard_code_pri_u_ht .= '<span class="help-block returned_span">...</span>';
 
 //Commentaire
 $form->input('Commentaire', 'commentaire', 'text' ,3, null, Null,null, 1);

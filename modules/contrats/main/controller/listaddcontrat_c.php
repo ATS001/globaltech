@@ -15,9 +15,9 @@
   $colms = $tables = $joint = $where = $where_s = $sqlTot = $sqlRec = NULL;
   $main_table = 'echeances_contrat'; 
     // define used table.
-  $tables .= " $main_table, ref_type_echeance ";
+  $tables .= " $main_table ";
     // define joint and rtable elation
-  $joint .= " WHERE ref_type_echeance.id = $main_table.idtype_echeance AND $main_table.tkn_frm = '$tkn_frm'  ";
+  $joint .= " WHERE $main_table.tkn_frm = '$tkn_frm'  ";
   // set  columns.(the final colm without comma)
 
   $colms .= " $main_table.id, ";
