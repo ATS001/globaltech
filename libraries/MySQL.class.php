@@ -833,6 +833,103 @@ class MySQL
 		return $html;
 	}
 
+		/**
+	 * This function returns the last query as an HTML table
+	 *
+	 * @param boolean $showCount (Optional) TRUE if you want to show the row count,
+	 *                           FALSE if you do not want to show the count
+	 * @param string $styleTable (Optional) Style information for the table
+	 * @param string $styleHeader (Optional) Style information for the header row
+	 * @param string $styleData (Optional) Style information for the cells
+	 * @return string HTML containing a table with all records listed
+	 */
+	public function GetMTable($headers = null, $styleTable = null, $styleData) {
+		if ($styleTable === null) {
+			$tb = 'class="table table-striped table-bordered"';
+		} else {
+			$tb = 'class="'.$styleTable.'"';
+		}
+		
+
+		if ($this->last_result) {
+			if ($this->RowCount() > 0) {
+				$html = "";
+				
+				$html .= "<table $tb>\n";
+				$this->MoveFirst();
+				$header = false;
+               
+				while ($member = mysql_fetch_object($this->last_result)) {
+					$width = $class = $colum =  null;
+					
+					if (!$header) {
+						$html .= "\t<tr>\n";
+						if($headers != null){
+							foreach ($headers as $key => $titls) {
+								$class_Data = $styleData[$key];
+								
+								if(strpos($class_Data, '#')){
+									$elem  = explode("#", $class_Data);
+								    $width = 'style="width:'.$elem[0].'%;"' ;
+								    //$class = 'class="'.$elem[1].'"' ;
+								    
+
+								}
+								
+																				
+
+
+								$html .= "\t\t<th $width $class >" . htmlspecialchars($titls) . "</th>\n";
+							}
+
+						}else{
+							foreach ($member as $key => $value) {
+								$html .= "\t\t<td>" . htmlspecialchars($key) . "</td>\n";
+							}
+						}
+
+						$html .= "\t</tr>\n";
+						$header = true;
+					}
+					$html .= "\t<tr>\n";
+					
+					//
+					$member_array = get_object_vars($member);
+					$keys_member = array_keys($member_array);
+					//print_r($member);
+					
+					$array_styl_last = array_combine($keys_member, $styleData);
+					/*var_dump($array_styl_last);
+					exit();*/
+
+					foreach ($member as $key => $value) {
+						
+						$class_Data = $array_styl_last[$key];
+								
+								if(strpos($class_Data, '#')){
+									$elem  = explode("#", $class_Data);
+								    $width = 'style="width:'.$elem[0].'%;"' ;
+								    $class = 'class="'.$elem[1].'"' ;
+								}
+								
+													  
+						$html .= "\t\t<td $width $class>" . htmlspecialchars($value) . "</td>\n";
+					}
+					$html .= "\t</tr>\n";
+				}
+				$this->MoveFirst();
+				$html .= "</table>";
+			} else {
+				$html = "No records were returned.";
+			}
+		} else {
+			$this->active_row = -1;
+			$html = false;
+		}
+
+		return $html;
+	}
+
 	/**
 	* Returns the last query as a JSON document
 	*
