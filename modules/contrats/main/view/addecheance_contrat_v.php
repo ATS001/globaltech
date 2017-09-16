@@ -9,7 +9,7 @@ $form->input_date('Date échéance', 'date_echeance', 4, date('d-m-Y'), $array_d
 
 
 //Commentaire
-$form->input_editor('Commentaire', 'commentaire', 8, $clauses=NULL , $js_array = null,  $input_height = 50);
+$form->input_editor('Commentaire', 'commentaire', 8, $clauses=NULL , $js_array = null,  $input_height = 200);
 
 
 

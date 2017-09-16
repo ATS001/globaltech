@@ -10,7 +10,7 @@ if(MInit::form_verif('addecheance_contrat',false))
 
 	$checker = null;
 	$empty_list = "Les champs suivants sont obligatoires:\n<ul>";
-	if($posted_data['id_produit'] == NULL){
+	if($posted_data['date_echeance'] == NULL){
 
 		$empty_list .= "<li>Date d'échéance</li>";
 		$checker = 1;
