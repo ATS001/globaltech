@@ -72,6 +72,7 @@ $verif_value = md5(session::get('f_vaddcontrat'));
 $form->draw_datatabe_form('table_echeance', $verif_value, $columns, 'addcontrat', 'addecheance_contrat', 'Ajouter une échéance', $js_addfunct);
 
 
+
 $form->button('Enregistrer');
 //Form render
 $form->render();

@@ -19,14 +19,7 @@ $form->render();
 <script type="text/javascript">
 //On change produit get all informations.
 $(document).ready(function() {
-	 //called when key is pressed in textbox
-	 
-    
-
-    	var validator = $('#addecheance_contrat').validate();
-    	validator.resetForm();
-
-    });
+	 //called when key is pressed in textbox     	
     
     $('.send_modal').on('click', function () {
         if(!$('#addecheance_contrat').valid())
