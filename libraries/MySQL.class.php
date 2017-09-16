@@ -716,6 +716,7 @@ class MySQL
 		return $columns;
 	}
 
+
 	/**
 	 * [GetCSV description]
 	 * @param [string] $file_target [file targer created]
@@ -743,11 +744,11 @@ class MySQL
 			$entetes = $headers; //array_keys($header);
 
 			fputcsv($fp, $entetes, ';');
-
+            
 		}
 
 
-		$fp = ($fp) ? $fp : fopen($file_target, 'a');
+		$fp = fopen($file_target, 'a');
 
   // Écriture des données
 		foreach ($donnees as $donnee) {
@@ -759,6 +760,8 @@ class MySQL
 		
 		return $file_target;
 	}
+
+
 
 
 
@@ -858,7 +861,7 @@ class MySQL
 				$html .= "<table $tb>\n";
 				$this->MoveFirst();
 				$header = false;
-               
+                $i = 0;
 				while ($member = mysql_fetch_object($this->last_result)) {
 					$width = $class = $colum =  null;
 					
@@ -891,7 +894,8 @@ class MySQL
 						$html .= "\t</tr>\n";
 						$header = true;
 					}
-					$html .= "\t<tr>\n";
+
+					$html .= "\t<tr class=\"".($i++ & 1)."\">\n";
 					
 					//
 					$member_array = get_object_vars($member);

@@ -14,7 +14,7 @@ $info_client = new Mclients();
 $info_client->id_client = $info_devis->g('id_client');
 if(!$info_client->get_client())
 {
-	exit('3#'.$info_user->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+	exit('3#'.$info_client->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
 
 //var_dump($info_client->client_info);
