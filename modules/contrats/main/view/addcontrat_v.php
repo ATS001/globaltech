@@ -28,29 +28,10 @@
 <?php
 $form = new Mform('addcontrat', 'addcontrat', '', 'contrats', '0', null);
 
-
-//pj_id
-$form->input('Justifications du contrat', 'pj', 'file', 6, null, null);
-$form->file_js('pj', 1000000, 'pdf');
-
-//pj_id
-$form->input('Photo', 'pj_photo', 'file', 6, null, null);
-$form->file_js('pj_photo', 1000000, 'image');
-
-
-//Référence
-$ref_array[] = array('required', 'true', 'Insérez une référence');
-$ref_array[] = array('minlength', '2', 'Minimum 2 caractères');
-$form->input('Référence', 'ref', 'text', 6, null, $ref_array);
-
-
 //Devis
 $devis_array[]  = array('required', 'true', 'Choisir un devis');
 $form->select_table('Devis', 'iddevis', 8, 'devis', 'id', 'reference' , 'reference', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $devis_array);
 
-//Type échéance
-//$ech_array[]  = array('required', 'true', 'Choisir une échéance');
-//$form->select_table('Echéance', 'idtype_echeance', 8, 'contrats', 'id', 'type_echeance' , 'type_echeance', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $ech_array);
 
 //Date effet
 $array_date_effet[]= array('required', 'true', 'Insérer la date effet');
@@ -60,11 +41,29 @@ $form->input_date('Date effet', 'date_effet', 4, date('d-m-Y'), $array_date_effe
 $array_date_fin[]= array('required', 'true', 'Insérer la date de fin');
 $form->input_date('Date de fin', 'date_fin', 4, date('d-m-Y'), $array_date_fin);
 
+//Type échéance
+$ech_array[]  = array('required', 'true', 'Choisir un type échéance');
+$form->select_table('Type échéance', 'idtype_echeance', 8, 'ref_type_echeance', 'type_echeance', 'type_echeance' , 'type_echeance', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $ech_array);
+
+//TVA
+$tva_opt = array('O' => 'OUI' , 'N' => 'NON' );
+$form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$selected = NULL, $multi = NULL);
+
+
 $form->input_editor('Commentaire', 'commentaire', 8, $clauses=NULL , $js_array = null,  $input_height = 50);
+
+//pj_id
+$form->input('Justification du contrat', 'pj', 'file', 6, null, null);
+$form->file_js('pj', 1000000, 'pdf');
+
+//pj_id
+$form->input('Photo', 'pj_photo', 'file', 6, null, null);
+$form->file_js('pj_photo', 1000000, 'image');
+
 
 
 //Table 
-$columns = array('id' => '1', 'Date échéance' => '30', 'Commentaire' => '50', '#' =>'5'   );
+$columns = array('id' => '1','Item' => '5', 'Date échéance' => '30', 'Commentaire' => '50', '#' =>'5'   );
 $js_addfunct = 'var column = t.column(0);
      column.visible( ! column.visible() );';
    
@@ -86,6 +85,19 @@ $form->render();
 <script type="text/javascript">
 $(document).ready(function() {
     
+    $('#idtype_echeance').bind('select change',function() {
+
+        if($(this).val() == 'Autres'){
+
+            $('.table_echeance').hide();
+
+        }else{
+
+            $('.table_echeance').show();
+
+        }
+
+    });
    
     $('#addRow').on( 'click', function () {
     	
