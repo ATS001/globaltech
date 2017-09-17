@@ -43,11 +43,7 @@ $form->input_date('Date de fin', 'date_fin', 4, date('d-m-Y'), $array_date_fin);
 
 //Type échéance
 $ech_array[]  = array('required', 'true', 'Choisir un type échéance');
-$form->select_table('Type échéance', 'idtype_echeance', 8, 'ref_type_echeance', 'type_echeance', 'type_echeance' , 'type_echeance', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $ech_array);
-
-//TVA
-$tva_opt = array('O' => 'OUI' , 'N' => 'NON' );
-$form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$selected = NULL, $multi = NULL);
+$form->select_table('Type échéance', 'idtype_echeance', 8, 'ref_type_echeance', 'type_echeance', 'id' , 'type_echeance', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $ech_array);
 
 
 $form->input_editor('Commentaire', 'commentaire', 8, $clauses=NULL , $js_array = null,  $input_height = 50);
@@ -71,10 +67,10 @@ $verif_value = md5(session::get('f_vaddcontrat'));
 $form->draw_datatabe_form('table_echeance', $verif_value, $columns, 'addcontrat', 'addecheance_contrat', 'Ajouter une échéance', $js_addfunct);
 
 
-
 $form->button('Enregistrer');
 //Form render
 $form->render();
+
 ?>
 			</div>
 		</div>
@@ -84,16 +80,17 @@ $form->render();
 		
 <script type="text/javascript">
 $(document).ready(function() {
+    $('.table_echeance').hide();
     
     $('#idtype_echeance').bind('select change',function() {
 
         if($(this).val() == 'Autres'){
 
-            $('.table_echeance').hide();
+            $('.table_echeance').show();
 
         }else{
 
-            $('.table_echeance').show();
+            $('.table_echeance').hide();
 
         }
 

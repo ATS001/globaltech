@@ -6,8 +6,9 @@
   
   //define index of column
   $columns = array( 
-    0 =>'date_echeance',
-    1 =>'commentaire', 
+    0 =>'id',
+    1 =>'date_echeance',
+    2 =>'commentaire', 
   );
 
   $tkn_frm = Mreq::tp('tkn_frm');
@@ -21,8 +22,7 @@
   // set  columns.(the final colm without comma)
 
   $colms .= " $main_table.id, ";
-  $colms .= " $main_table.date_echeance, ";
-  
+  $colms .= " $main_table.date_echeance, "; 
   $colms .= " $main_table.commentaire, ";
   $colms .= " ' ' as statut";
 

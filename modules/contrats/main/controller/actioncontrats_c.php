@@ -1,7 +1,3 @@
-
-//SYS GLOBAL TECH
-// Modul: contrats => Controller Action
-
 <ul class="dropdown-menu dropdown-menu-right">
 <?php 
 

@@ -4,7 +4,7 @@ if(MInit::form_verif('addecheance_contrat',false))
 {
 	$posted_data = array(
 		'tkn_frm'         => Mreq::tp('tkn_frm') ,
-		'date_echeance'      => Mreq::tp('date_echeance') ,
+		'date_echeance'   => Mreq::tp('date_echeance') ,
 		'commentaire'     => Mreq::tp('commentaire') ,
 		);
 

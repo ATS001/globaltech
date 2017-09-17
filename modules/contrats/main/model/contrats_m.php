@@ -16,6 +16,7 @@ class Mcontrat {
     var $token; //user for recovery function
     var $contrat_info; //Array stock all contrat info
     var $echeance_contrat_info; //Array stock all echeance contrat info
+    var $type_echeance_contrat_info; //Array stock all type echeance contrat info
 
     public function __construct($properties = array()) {
         $this->_data = $properties;
@@ -76,7 +77,7 @@ class Mcontrat {
                 $this->error = false;
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
-                $this->devis_d_info = $db->RowArray();
+                $this->echeance_contrat_info = $db->RowArray();
                 $this->error = true;
             }
         }
@@ -87,6 +88,34 @@ class Mcontrat {
             return true;
         }
     }
+
+    //Get id type_echance Autres 
+    public function get_id_type_echeance($type) {
+        $table_echeance = 'ref_type_echeance';
+        global $db;
+
+        $sql = "SELECT $table_echeance.id FROM $table_echeance WHERE $table_echeance.type_echance = " . $type;
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->type_echeance_contrat_info = $db->RowArray();
+                $this->error = true;
+            }
+        }
+
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 
     public function Gettable_echeance_contrat() {
         global $db;
@@ -119,7 +148,8 @@ class Mcontrat {
             return false;
         }
         global $db;
-        $this->reference = $db->QuerySingleValue0('SELECT CONCAT("CTR-", IFNULL(( MAX(SUBSTR(ref, 5, LENGTH(SUBSTR(ref,5))-5))),0)+1 ,' / ', (SELECT  YEAR(SYSDATE())) ) AS reference FROM contrats WHERE SUBSTR(ref,LENGTH(ref)-3,4)= (SELECT  YEAR(SYSDATE()))');
+        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(ref, 5, LENGTH(SUBSTR(ref,5))-5))),0)+1  AS reference FROM contrats WHERE SUBSTR(ref,LENGTH(ref)-3,4)= (SELECT  YEAR(SYSDATE()))');
+        $this->reference = 'CTR-'.$max_id.'/'.date('Y');
     }
 
     /////////////////////////////////////////////////////////////////////////////////
@@ -164,16 +194,16 @@ class Mcontrat {
             //Format values for Insert query 
             global $db;
 
-            $values["ref"] = MySQL::SQLValue($this->reference);
-            $values["tkn_frm"] = MySQL::SQLValue($this->_data['tkn_frm']);
-            $values["iddevis"] = MySQL::SQLValue($this->_data['iddevis']);
-            $values["date_effet"] = MySQL::SQLValue($this->_data['date_effet']);
-            $values["date_fin"] = MySQL::SQLValue($this->_data['date_fin']);
-            $values["commentaire"] = MySQL::SQLValue($this->_data['commentaire']);
-            $values["idtype_echeance"] = MySQL::SQLValue($this->_data['idtype_echeance']);
-            $values["date_contrat"] = MySQL::SQLValue(date("Y-m-d"));
-            $values["creusr"] = MySQL::SQLValue(session::get('userid'));
-            $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+            $values["ref"]            = MySQL::SQLValue($this->reference);
+            $values["tkn_frm"]        = MySQL::SQLValue($this->_data['tkn_frm']);
+            $values["iddevis"]        = MySQL::SQLValue($this->_data['iddevis']);
+            $values["date_effet"]     = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_effet'])));
+            $values["date_fin"]       = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_fin'])));
+            $values["commentaire"]    = MySQL::SQLValue($this->_data['commentaire']);
+            $values["idtype_echeance"]= MySQL::SQLValue($this->_data['idtype_echeance']);
+            $values["date_contrat"]   = MySQL::SQLValue(date("Y-m-d"));
+            $values["creusr"]         = MySQL::SQLValue(session::get('userid'));
+            $values["credat"]         = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
             //Check if Insert Query been executed (False / True)
             if (!$result = $db->InsertRow($this->table, $values)) {
@@ -296,7 +326,7 @@ class Mcontrat {
 
     //Récuperer la valeur du champ Order echeance
     private function get_order_echeance($tkn_frm) {
-        $table_details = $this->table_echeance;
+        $table_echeance = $this->table_echeance;
         global $db;
         $req_sql = "SELECT IFNULL(MAX($table_echeance.order)+1,1) AS this_order FROM $table_echeance WHERE tkn_frm = '$tkn_frm'";
         $this->order_echeance = $db->QuerySingleValue0($req_sql);

@@ -4,14 +4,14 @@ defined('_MEXEC') or die;
 if (MInit::form_verif('addcontrat', false)) {
 
     $posted_data = array(
-        'tkn_frm' => Mreq::tp('tkn_frm'),
-        'iddevis' => Mreq::tp('iddevis'),
-        'date_effet' => Mreq::tp('date_effet'),
-        'date_fin' => Mreq::tp('date_fin'),
-        'idtype_echeance =>' => Mreq::tp('idtype_echeance'),
-        'commentaire' => Mreq::tp('commentaire'),
-        'pj_id' => Mreq::tp('pj-id'),
-        'pj_photo_id' => Mreq::tp('pj_photo-id')
+        'tkn_frm'         => Mreq::tp('tkn_frm'),
+        'iddevis'         => Mreq::tp('iddevis'),
+        'date_effet'      => Mreq::tp('date_effet'),
+        'date_fin'        => Mreq::tp('date_fin'),
+        'idtype_echeance' => Mreq::tp('idtype_echeance'),
+        'commentaire'     => Mreq::tp('commentaire'),
+        'pj_id'           => Mreq::tp('pj-id'),
+        'pj_photo_id'     => Mreq::tp('pj_photo-id')
     );
 
 
@@ -48,11 +48,11 @@ if (MInit::form_verif('addcontrat', false)) {
         $checker = 1;
     }
 
-    if ($posted_data['commentaire'] == NULL) {
+/*    if ($posted_data['commentaire'] == NULL) {
 
         $empty_list .= "<li>Commentaire</li>";
         $checker = 1;
-    }
+    }*/
 
 
 
@@ -65,7 +65,7 @@ if (MInit::form_verif('addcontrat', false)) {
 
     $new_contrat = new Mcontrat($posted_data);
 
-    $new_contrat->exige_pj = FALSE;
+    $new_contrat->exige_pj       = FALSE;
     $new_contrat->exige_pj_photo = FALSE;
 
     //execute Insert returne false if error
