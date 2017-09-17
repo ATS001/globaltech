@@ -84,7 +84,7 @@ $(document).ready(function() {
     
     $('#idtype_echeance').bind('select change',function() {
 
-        if($(this).text() == 'Autres'){
+        if($("#idtype_echeance option:selected").text()== 'Autres' ){
 
             $('.table_echeance').show();
 
