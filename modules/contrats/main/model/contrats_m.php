@@ -94,7 +94,7 @@ class Mcontrat {
         $table_echeance = 'ref_type_echeance';
         global $db;
 
-        $sql = "SELECT $table_echeance.id FROM $table_echeance WHERE $table_echeance.type_echance = " . $type;
+        $sql = "SELECT $table_echeance.id FROM $table_echeance WHERE $table_echeance.type_echance = '$type'";
 
         if (!$db->Query($sql)) {
             $this->error = false;

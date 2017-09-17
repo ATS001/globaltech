@@ -43,7 +43,7 @@ $form->input_date('Date de fin', 'date_fin', 4, date('d-m-Y'), $array_date_fin);
 
 //Type échéance
 $ech_array[]  = array('required', 'true', 'Choisir un type échéance');
-$form->select_table('Type échéance', 'idtype_echeance', 8, 'ref_type_echeance', 'type_echeance', 'id' , 'type_echeance', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $ech_array);
+$form->select_table('Type échéance', 'idtype_echeance', 8, 'ref_type_echeance', 'id', 'id' , 'type_echeance', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $ech_array);
 
 
 $form->input_editor('Commentaire', 'commentaire', 8, $clauses=NULL , $js_array = null,  $input_height = 50);
@@ -84,7 +84,7 @@ $(document).ready(function() {
     
     $('#idtype_echeance').bind('select change',function() {
 
-        if($(this).val() == 'Autres'){
+        if($(this).text() == 'Autres'){
 
             $('.table_echeance').show();
 
