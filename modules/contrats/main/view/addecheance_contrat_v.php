@@ -42,7 +42,10 @@ $(document).ready(function() {
                     }else{ 
 
                         ajax_loadmessage(data_arry[1],'ok',3000);
-                        var t1 = $('.dataTable').DataTable().draw();
+                        //var t1 = $('.dataTable').DataTable().draw();
+                        //$('#idtype_echeance').prop('disabled', 'disabled');
+                        $('#idtype_echeance').prop('disabled', true).trigger("chosen:updated");
+                        //$('#idtype_echeance_chosen').hide();
                         $('.close_modal').trigger('click');
                         
                         
