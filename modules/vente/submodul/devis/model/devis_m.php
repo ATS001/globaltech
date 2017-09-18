@@ -107,11 +107,61 @@ class MDevis
 
     }
 
-    public function Gettable_detail_devis()
+    public function Get_detail_devis_show()
     {
         global $db;
+        $req_sql = "SELECT
+        devis.reference
+        , devis.date_devis
+        , devis.valeur_remise
+        ,  REPLACE(FORMAT(devis.totalht,0),',',' ') as totalht
+        ,  REPLACE(FORMAT(devis.totaltva,0),',',' ') as totaltva
+        ,  REPLACE(FORMAT(devis.totalttc,0),',',' ') as totalttc
+        , devis.claus_comercial
+        , clients.code
+        , clients.denomination
+        , clients.adresse
+        , clients.bp
+        , clients.tel
+        , clients.nif
+        , clients.email
+        , ref_pays.pays
+        , ref_ville.ville
+        FROM
+        devis
+        INNER JOIN clients 
+        ON (devis.id_client = clients.id)
+        INNER JOIN ref_pays 
+        ON (clients.id_pays = ref_pays.id)
+        INNER JOIN ref_ville
+        WHERE devis.id = ".$this->id_devis;
+        if(!$db->Query($req_sql))
+        {
+            $this->error = false;
+            $this->log  .= $db->Error();
+        }else{
+            if ($db->RowCount() == 0)
+            {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->devis_info = $db->RowArray();
+                $this->error = true;
+            }
+
+
+        }
+
+    }
+
+    public function Get_detail_devis_pdf()
+    {
+        global $db;
+
         $id_devis = $this->id_devis;
         $table    = $this->table_details;
+        $this->Get_detail_devis_show();
+        $devis_info = $this->devis_info;
         $colms = null;
         $colms .= " $table.id item, ";
         $colms .= " $table.ref_produit, ";
@@ -121,8 +171,8 @@ class MDevis
         //$colms .= " $table.type_remise, ";
         $colms .= " REPLACE(FORMAT($table.remise_valeur,0),',',' '), ";
         
-        $colms .= " REPLACE(FORMAT($table.total_ht,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.total_tva,0),',',' '), ";
+       // $colms .= " REPLACE(FORMAT($table.total_ht,0),',',' '), ";
+       // $colms .= " REPLACE(FORMAT($table.total_tva,0),',',' '), ";
         $colms .= " REPLACE(FORMAT($table.total_ttc,0),',', ' ') ";
         
         $req_sql  = " SELECT $colms FROM $table WHERE id_devis = $id_devis ";
@@ -144,25 +194,38 @@ class MDevis
             'Total HT'    => '15[#]alignRight',
 
         );
-                    
+
         $tableau_head = MySQL::make_table_head($headers);
+        $tableau_body = $db->GetMTable_pdf($headers);
         $file_export = MPATH_TEMP.'Devis'.'_' .date('d_m_Y_H_i_s').'.pdf';
 
-/*   //Load template 
+   //Load template 
         include_once MPATH_THEMES.'pdf_template/devis_pdf.php';
 
 
         if(file_exists($file_export))
         {
-            exit("1#PDF#$file_export");
+              
+            if(!Minit::save_file_upload($file_export, 'Devis_'.$id_devis, 'Devis'.date('m_Y'), $id_devis, 'Devis '.$id_devis, 'devis', 'devis', 'devis_pdf', 'document', $edit = null))
+            {
+                $this->error = false;
+                $this->log .= "Erreur Archivage Devis";
+
+            }
+            
         }else{
-            exit("2#Erreur Opération !");
-        }*/
+            $this->error = false;
+            $this->log .= "Erreur création template Devis";
+        }
+
+        if($this->error == false)
+        {
+            return false;
+        }else{
+            return true ;
+        }
         
-        $tableau = $db->GetMTable_pdf($headers);
         
-        
-        return $tableau; 
     }
 
     //////////////////////////////////////////////////////////////////
@@ -289,13 +352,13 @@ class MDevis
             //Check $this->error = true return Green message and Bol true
               if($this->error == true)
               {
-                 $this->log = '</br>Enregistrement réussie: <b>Réference: '.$this->reference;
-                 $this->save_temp_detail($this->_data['tkn_frm'], $this->last_id);
+               $this->log = '</br>Enregistrement réussie: <b>Réference: '.$this->reference;
+               $this->save_temp_detail($this->_data['tkn_frm'], $this->last_id);
 				//Check $this->error = false return Red message and Bol false	
-             }else{
-                 $this->log .= '</br>Enregistrement réussie: <b>'.$this->reference;
-                 $this->log .= '</br>Un problème d\'Enregistrement ';
-             }
+           }else{
+               $this->log .= '</br>Enregistrement réussie: <b>'.$this->reference;
+               $this->log .= '</br>Un problème d\'Enregistrement ';
+           }
         }//Else Error false	
         
         //check if last error is true then return true else rturn false.
@@ -368,13 +431,13 @@ class MDevis
             //Check $this->error = true return Green message and Bol true
           if($this->error == true)
           {
-           $this->log = '</br>Modification réussie: <b>Réference: '.$this->reference;
-           $this->save_temp_detail($this->_data['tkn_frm'], $this->id_devis);
+             $this->log = '</br>Modification réussie: <b>Réference: '.$this->reference;
+             $this->save_temp_detail($this->_data['tkn_frm'], $this->id_devis);
         //Check $this->error = false return Red message and Bol false 
-       }else{
-           $this->log .= '</br>Modification réussie: <b>'.$this->reference;
-           $this->log .= '</br>Un problème d\'Modification ';
-       }
+         }else{
+             $this->log .= '</br>Modification réussie: <b>'.$this->reference;
+             $this->log .= '</br>Un problème d\'Modification ';
+         }
         }//Else Error false 
         
         //check if last error is true then return true else rturn false.
@@ -627,11 +690,11 @@ public function edit_exist_details_devis($tkn_frm)
         if(!$db->UpdateRows($this->table_details, $values, $wheres))
         {
                 //False => Set $this->log and $this->error = false
-           $this->log .= $db->Error();
-           $this->error = false;
-           $this->log .='</br>Modification BD non réussie'; 
+         $this->log .= $db->Error();
+         $this->error = false;
+         $this->log .='</br>Modification BD non réussie'; 
 
-       }else{
+     }else{
         //Check $this->error = true return Green message and Bol true
         if($this->error == true)
         {
@@ -657,9 +720,9 @@ if($this->error == false)
 }
 }
 
-public function Valid_Devis($etat)
-{
-        /*global $db;
+    public function Valid_Devis($etat)
+    {
+        global $db;
         $table = $this->table;
         $id_devis = $this->id_devis;
         $req_sql = " UPDATE $table SET etat = $etat+1 WHERE id = $id_devis ";
@@ -667,13 +730,11 @@ public function Valid_Devis($etat)
             $this->error = false;
             $this->log .= "Erreur Validation";
             return false;
-        }*/
-        $id_devis = $this->id_devis;
-        $Devis_pdf = new MDevis_PDF();
-        $Devis_pdf->id_devis = $id_devis;
-        if(!$Devis_pdf->generate_devis_pdf())
+        }
+        
+        if(!$this->Get_detail_devis_pdf())
         {
-            $this->log .= $Devis_pdf->log;
+            $this->log .= $this->log;
             return false;
 
         }else{
@@ -688,20 +749,102 @@ public function Valid_Devis($etat)
 
     public function Delete_detail_devis($id_detail)
     {
-     global $db;
-     $table_details = $this->table_details;
-     $get_tkn_frm = $db->QuerySingleValue0("SELECT tkn_frm FROM $table_details  WHERE id = $id_detail");
+       global $db;
+       $table_details = $this->table_details;
+       $get_tkn_frm = $db->QuerySingleValue0("SELECT tkn_frm FROM $table_details  WHERE id = $id_detail");
 
       //Format where clause
-     $where['id'] = MySQL::SQLValue($id_detail);
+       $where['id'] = MySQL::SQLValue($id_detail);
       //check if id on where clause isset
-     if($where['id'] == null)
-     {
+       if($where['id'] == null)
+       {
+          $this->error = false;
+          $this->log .='</br>L\' id est vide';
+      }
+      //execute Delete Query
+      if(!$db->DeleteRows($table_details ,$where))
+      {
+
+          $this->log .= $db->Error().'  '.$db->BuildSQLDelete('devis',$where);
+          $this->error = false;
+          $this->log .='</br>Suppression non réussie';
+
+      }else{
+
+          $this->error = true;
+          $this->log .='</br>Suppression réussie ';
+          $this->Get_sum_detail($get_tkn_frm);
+          $this->log .='#'.$this->sum_total_ht;
+      }
+      //check if last error is true then return true else rturn false.
+      if($this->error == false){
+          return false;
+      }else{
+          return true;
+      }
+  }
+
+    // afficher les infos d'un devis
+  public function s($key)
+  {
+   if($this->devis_info[$key] != null)
+   {
+      echo $this->devis_info[$key];
+  }else{
+      echo "";
+  }
+
+}
+  // get les infos d'un devis
+public function g($key)
+{
+   if($this->devis_info[$key] != null)
+   {
+      return $this->devis_info[$key];
+  }else{
+      return null;
+  }
+
+}
+
+    // afficher les infos d'un devis_d
+public function c($key)
+{
+   if($this->devis_d_info[$key] != null)
+   {
+      echo $this->devis_d_info[$key];
+  }else{
+      echo "";
+  }
+
+}
+    //get les infos d'un devis_d
+public function h($key)
+{
+   if($this->devis_d_info[$key] != null)
+   {
+    return $this->devis_d_info[$key];
+}else{
+    return null;
+}
+
+}
+
+public function delete_devis()
+{
+   global $db;
+   $id_devis = $this->id_devis;
+   $this->get_devis();
+    	//Format where clause
+   $where['id'] = MySQL::SQLValue($id_devis);
+    	//check if id on where clause isset
+   if($where['id'] == null)
+   {
       $this->error = false;
       $this->log .='</br>L\' id est vide';
   }
-      //execute Delete Query
-  if(!$db->DeleteRows($table_details ,$where))
+    	//execute Delete Query
+  if(!$db->DeleteRows('devis',$where))
   {
 
       $this->log .= $db->Error().'  '.$db->BuildSQLDelete('devis',$where);
@@ -712,95 +855,13 @@ public function Valid_Devis($etat)
 
       $this->error = true;
       $this->log .='</br>Suppression réussie ';
-      $this->Get_sum_detail($get_tkn_frm);
-      $this->log .='#'.$this->sum_total_ht;
   }
-      //check if last error is true then return true else rturn false.
+    	//check if last error is true then return true else rturn false.
   if($this->error == false){
       return false;
   }else{
       return true;
   }
-}
-
-    // afficher les infos d'un devis
-public function s($key)
-{
- if($this->devis_info[$key] != null)
- {
-  echo $this->devis_info[$key];
-}else{
-  echo "";
-}
-
-}
-  // get les infos d'un devis
-public function g($key)
-{
- if($this->devis_info[$key] != null)
- {
-  return $this->devis_info[$key];
-}else{
-  return null;
-}
-
-}
-
-    // afficher les infos d'un devis_d
-public function c($key)
-{
- if($this->devis_d_info[$key] != null)
- {
-  echo $this->devis_d_info[$key];
-}else{
-  echo "";
-}
-
-}
-    //get les infos d'un devis_d
-public function h($key)
-{
- if($this->devis_d_info[$key] != null)
- {
-    return $this->devis_d_info[$key];
-}else{
-    return null;
-}
-
-}
-
-public function delete_devis()
-{
- global $db;
- $id_devis = $this->id_devis;
- $this->get_devis();
-    	//Format where clause
- $where['id'] = MySQL::SQLValue($id_devis);
-    	//check if id on where clause isset
- if($where['id'] == null)
- {
-  $this->error = false;
-  $this->log .='</br>L\' id est vide';
-}
-    	//execute Delete Query
-if(!$db->DeleteRows('devis',$where))
-{
-
-  $this->log .= $db->Error().'  '.$db->BuildSQLDelete('devis',$where);
-  $this->error = false;
-  $this->log .='</br>Suppression non réussie';
-
-}else{
-
-  $this->error = true;
-  $this->log .='</br>Suppression réussie ';
-}
-    	//check if last error is true then return true else rturn false.
-if($this->error == false){
-  return false;
-}else{
-  return true;
-}
 }
 
 
