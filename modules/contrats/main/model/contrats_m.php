@@ -13,6 +13,7 @@ class Mcontrat {
     var $log = NULL; //Log of all opération.
     var $error = true; //Error bol changed when an error is occured
     var $id_contrat; // Contrat ID append when request
+    var $reference = null; // Reference contrat
     var $token; //user for recovery function
     var $contrat_info; //Array stock all contrat info
     var $echeance_contrat_info; //Array stock all echeance contrat info
@@ -116,7 +117,6 @@ class Mcontrat {
         }
     }
 
-
     public function Gettable_echeance_contrat() {
         global $db;
         $id_contrat = $this->id_contrat;
@@ -149,7 +149,7 @@ class Mcontrat {
         }
         global $db;
         $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(ref, 5, LENGTH(SUBSTR(ref,5))-5))),0)+1  AS reference FROM contrats WHERE SUBSTR(ref,LENGTH(ref)-3,4)= (SELECT  YEAR(SYSDATE()))');
-        $this->reference = 'CTR-'.$max_id.'/'.date('Y');
+        $this->reference = 'CTR-' . $max_id . '/' . date('Y');
     }
 
     /////////////////////////////////////////////////////////////////////////////////
@@ -194,16 +194,16 @@ class Mcontrat {
             //Format values for Insert query 
             global $db;
 
-            $values["ref"]            = MySQL::SQLValue($this->reference);
-            $values["tkn_frm"]        = MySQL::SQLValue($this->_data['tkn_frm']);
-            $values["iddevis"]        = MySQL::SQLValue($this->_data['iddevis']);
-            $values["date_effet"]     = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_effet'])));
-            $values["date_fin"]       = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_fin'])));
-            $values["commentaire"]    = MySQL::SQLValue($this->_data['commentaire']);
-            $values["idtype_echeance"]= MySQL::SQLValue($this->_data['idtype_echeance']);
-            $values["date_contrat"]   = MySQL::SQLValue(date("Y-m-d"));
-            $values["creusr"]         = MySQL::SQLValue(session::get('userid'));
-            $values["credat"]         = MySQL::SQLValue(date("Y-m-d H:i:s"));
+            $values["ref"] = MySQL::SQLValue($this->reference);
+            $values["tkn_frm"] = MySQL::SQLValue($this->_data['tkn_frm']);
+            $values["iddevis"] = MySQL::SQLValue($this->_data['iddevis']);
+            $values["date_effet"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_effet'])));
+            $values["date_fin"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_fin'])));
+            $values["commentaire"] = MySQL::SQLValue($this->_data['commentaire']);
+            $values["idtype_echeance"] = MySQL::SQLValue($this->_data['idtype_echeance']);
+            $values["date_contrat"] = MySQL::SQLValue(date("Y-m-d"));
+            $values["creusr"] = MySQL::SQLValue(session::get('userid'));
+            $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
             //Check if Insert Query been executed (False / True)
             if (!$result = $db->InsertRow($this->table, $values)) {
@@ -244,27 +244,28 @@ class Mcontrat {
 
     //Edit contrat after all check
     public function edit_contrat() {
-
-        //Get existing data for contrat
-        $this->get_contrat();
-
-        $this->last_id = $this->id_contrat;
-
+        $this->reference = $this->_data['ref'];
         //Check if devis exist
         $this->Check_contrat_exist($this->_data['tkn_frm'], 1);
-
+        //Check if devis have détails
+        //$this->Check_contrat_have_details($this->_data['tkn_frm']);
+        //Make reference
+        //$this->Make_devis_reference();
         //Before execute do the multiple check
-        $this->Check_exist('ref', $this->_data['ref'], 'Référence contrat', null);
+        $this->Check_exist('reference', $this->reference, 'Réference Devis', 1);
 
-        $this->check_non_exist('devis', 'id', $this->_data['iddevis'], 'Devis');
+        $this->check_non_exist('devis', 'id', $this->_data['iddevis'], 'Client');
 
-        $this->check_non_exist('ref_type_echeance', 'id', $this->_data['idtype_echeance'], 'Type Echéance');
-
+        //Check $this->error (true / false)
+        if ($this->error == false) {
+            $this->log .= '</br>Enregistrement non réussie';
+            return false;
+        }
 
 
         //Check if PJ attached required
         if ($this->exige_pj) {
-            $this->check_file('pj', 'Justifications du contrat.');
+            $this->check_file('pj', 'Justification du contrat.');
         }
         //Check if PJ attached required
         if ($this->exige_pj_photo) {
@@ -279,8 +280,8 @@ class Mcontrat {
             $values["ref"] = MySQL::SQLValue($this->_data['ref']);
             $values["tkn_frm"] = MySQL::SQLValue($this->_data['tkn_frm']);
             $values["iddevis"] = MySQL::SQLValue($this->_data['iddevis']);
-            $values["date_effet"] = MySQL::SQLValue($this->_data['date_effet']);
-            $values["date_fin"] = MySQL::SQLValue($this->_data['date_fin']);
+            $values["date_effet"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_effet'])));
+            $values["date_fin"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_fin'])));
             $values["commentaire"] = MySQL::SQLValue($this->_data['commentaire']);
             $values["date_contrat"] = MySQL::SQLValue(date("Y-m-d"));
             $values["idtype_echeance"] = MySQL::SQLValue($this->_data['idtype_echeance']);
@@ -306,7 +307,7 @@ class Mcontrat {
                 //Check $this->error = true return Green message and Bol true
                 if ($this->error == true) {
                     $this->log = '</br>Modification réussie: <b>' . $this->_data['ref'] . ' ID: ' . $this->last_id;
-                    //Check $this->error = false return Red message and Bol false 
+                    $this->save_temp_detail($this->_data['tkn_frm'], $this->id_contrat);
                 } else {
                     $this->log .= '</br>Modification réussie: <b>' . $this->_data['ref'];
                     $this->log .= '</br>Un problème d\'Enregistrement ';
@@ -321,6 +322,18 @@ class Mcontrat {
             return false;
         } else {
             return true;
+        }
+    }
+
+    private function save_temp_detail($tkn_frm, $id_devis) {
+
+        $table_echeance = $this->table_echeance;
+        global $db;
+        $req_sql = "UPDATE $table_echeance SET idcontrat = $id_devis WHERE tkn_frm = '$tkn_frm'";
+        if (!$db->Query($req_sql)) {
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .= '<br>Problème Enregistrement échéance dans le contrat';
         }
     }
 
@@ -349,10 +362,10 @@ class Mcontrat {
     }
 
     //Vérifier si les dates d'échéance sont insérés (si le type d'echeance est Autres)
-    private function Check_devis_have_details($tkn_frm) {
+    private function Check_contrat_have_details($tkn_frm) {
         $table_echeance = $this->table_echeance;
         global $db;
-        $req_sql = "SELECT COUNT($table_echeance.id) FROM $table_echeance,$table WHERE $table.id=$table_echeance.idcontrat and $table.idtype_echeance='Autres' and tkn_frm='$tkn_frm' ";
+        $req_sql = "SELECT COUNT($table_echeance.id) FROM $table_echeance,$this->table WHERE $this->table.id=$table_echeance.idcontrat and $this->table.idtype_echeance='Autres' and tkn_frm='$tkn_frm' ";
         if ($db->QuerySingleValue0($req_sql) == '0') {
             $this->error = false;
             $this->log .= '</br>Aucune date échéance enregistrée';
@@ -378,7 +391,7 @@ class Mcontrat {
 
             $values["tkn_frm"] = MySQL::SQLValue($this->_data['tkn_frm']);
             $values["order"] = MySQL::SQLValue($order_echeance);
-            $values["date_echeance"] = MySQL::SQLValue($this->_data['date_echeance']);
+            $values["date_echeance"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_echeance'])));
             $values["commentaire"] = MySQL::SQLValue($this->_data['commentaire']);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
@@ -432,7 +445,7 @@ class Mcontrat {
             global $db;
 
             $values["order"] = MySQL::SQLValue($order_echeance);
-            $values["date_echeance"] = MySQL::SQLValue($this->_data['date_echeance']);
+            $values["date_echeance"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_echeance'])));
             $values["commentaire"] = MySQL::SQLValue($this->_data['commentaire']);
             $values["updusr"] = MySQL::SQLValue(session::get('userid'));
             $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
@@ -532,6 +545,15 @@ class Mcontrat {
 
     //get les infos  contrat
     public function s($key) {
+        if ($this->contrat_info[$key] != null) {
+            return $this->contrat_info[$key];
+        } else {
+            return null;
+        }
+    }
+
+    // get les infos d'un devis
+    public function g($key) {
         if ($this->contrat_info[$key] != null) {
             return $this->contrat_info[$key];
         } else {
@@ -703,6 +725,15 @@ class Mcontrat {
                 $this->log .= '</br>Il faut choisir ' . $msg . '  ' . $edit;
                 $this->error = false;
             }
+        }
+    }
+
+    //get les infos d'une échéance
+    public function h($key) {
+        if ($this->echeance_contrat_info[$key] != null) {
+            return $this->echeance_contrat_info[$key];
+        } else {
+            return null;
         }
     }
 
