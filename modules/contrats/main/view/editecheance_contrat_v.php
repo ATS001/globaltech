@@ -5,7 +5,7 @@ $info_echeance = new Mcontrat();
 $info_echeance->id_echeance_contrat = Mreq::tp('id');
 
 //Check if Post ID <==> Post idc or get_modul return false. 
-if (!MInit::crypt_tp('id', null, 'D')){// or !$info_echeance->get_echeance_contrat()) {
+if (!MInit::crypt_tp('id', null, 'D') or !$info_echeance->get_echeance_contrat()) {
     // returne message error red to client 
     exit('3#' . $info_echeance->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur ooooooooo');
 }
