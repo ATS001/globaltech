@@ -835,6 +835,96 @@ class MySQL
 
 		return $html;
 	}
+	static public function make_table_head($headers = null)
+	{
+		
+		$html = "";
+		$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px; border:1pt solid black;\">\n";
+		
+		$html .= "\t<tr style=\"background-color: #4245f4; color: #fff; font-weight: bold;  padding:15px; \">\n";
+		foreach ($headers as $key => $value) {
+
+			//
+			if(strpos($value, '[#]')){
+				$elem  = explode("[#]", $value);
+				$align = isset($elem[1]) ? $elem[1] : '';
+				$width = isset($elem[0]) ? $elem[0] : '15';
+				$width = 'style="width:'.$width.'%;"' ;
+				$align = 'class="'.$align.'"' ;
+			}
+
+			$html .= "\t\t<td $width $align>" . htmlspecialchars($key) . "</td>\n";
+		}
+		$html .= "\t</tr>\n";
+		$html .= "</table>";
+		return $html;
+	}
+
+	private function make_table_body($data, $style)
+	{
+		$html = "";
+		
+		$keys_data  = array_keys($data);
+		$styl_array = get_object_vars($style);
+		
+					//print_r($data);
+
+		$array_styl_last = array_combine($keys_data, $styl_array);
+		$html .= "\t<tr>\n";
+		foreach ($data as $key => $value) {
+            $style = $array_styl_last[$key];
+			if(strpos($style, '[#]')){
+				$elem  = explode("[#]", $style);
+				$align = isset($elem[1]) ? $elem[1] : '';
+				$width = isset($elem[0]) ? $elem[0] : '15';
+				$width = 'style="width:'.$width.'%;"' ;
+				$align = 'class="'.$align.'"' ;
+			}
+
+			$html .= "\t\t<td $width $class>" . htmlspecialchars($value) . "</td>\n";
+		}
+		$html .= "\t</tr>\n";
+
+		return $html;
+	}
+	/**
+	 * This function returns the last query as an HTML table for pdf
+	 *
+	 * @param boolean $showCount (Optional) TRUE if you want to show the row count,
+	 *                           FALSE if you do not want to show the count
+	 * @param string $styleTable (Optional) Style information for the table
+	 * @param string $styleHeader (Optional) Style information for the header row
+	 * @param string $styleData (Optional) Style information for the cells
+	 * @return string HTML containing a table with all records listed
+	 */
+	public function GetMTable_pdf($headers) {
+		
+		if ($this->last_result) {
+			if ($this->RowCount() > 0) {
+				$html = "";
+				
+				$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px; border:1pt solid black;\">\n";
+				$this->MoveFirst();
+				                
+                //$html .= $this->make_table_head($headers, $styleData);
+				while ($member = mysql_fetch_object($this->last_result))
+				{					
+						
+					$html .= $this->make_table_body($member, $headers);
+								
+				}
+				$this->MoveFirst();
+				$html .= "</table>";
+			} else {
+				$html = "Pas de lignes.";
+			}
+		} else {
+			$this->active_row = -1;
+			$html = false;
+		}
+
+		return $html;
+	}
 
 		/**
 	 * This function returns the last query as an HTML table
