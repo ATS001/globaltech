@@ -2,15 +2,16 @@
 //Get all echance info 
 $info_echeance = new Mcontrat();
 //Set ID of Module with POST id
-$info_echeance->id_echeance = Mreq::tp('id');
+$info_echeance->id_echeance_contrat = Mreq::tp('id');
+
 //Check if Post ID <==> Post idc or get_modul return false. 
-if (!MInit::crypt_tp('id', null, 'D') or ! $info_echeance->get_echeance_contrat()) {
+if (!MInit::crypt_tp('id', null, 'D')){// or !$info_echeance->get_echeance_contrat()) {
     // returne message error red to client 
-    exit('3#' . $info_echeance->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+    exit('3#' . $info_echeance->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur ooooooooo');
 }
 $form = new Mform('editecheance_contrat', 'editecheance_contrat', '', 'contrats', '0', 'is_modal');
 //token main form
-$form->input_hidden('id', $info_echeance->h('id'));
+$form->input_hidden('id', Mreq::tp('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
 //Check tkn_frm
