@@ -159,7 +159,7 @@ class Mcontrat {
         //exit("0#".$count_id);
         if (($count_id != '0' && $edit == Null ) OR ( $count_id != '1' && $edit != null)) {
             $this->error = false;
-            $this->log .= '</br>Ce contrat est déjà enregitré ' . $count_id;
+            $this->log .= '</br>Ce contrat est déjà enregitré ' . $count_id.'tkn='.$tkn_frm;
         }
     }
 

@@ -64,6 +64,7 @@ $js_addfunct = 'var column = t.column(0);
      column.visible( ! column.visible() );';
    
 $verif_value = md5(session::get('f_vaddcontrat'));    
+var_dump($verif_value);
 $form->draw_datatabe_form('table_echeance', $verif_value, $columns, 'addcontrat', 'addecheance_contrat', 'Ajouter une échéance', $js_addfunct);
 
 
