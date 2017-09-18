@@ -14,7 +14,7 @@ if (MInit::form_verif('editecheance_contrat', false)) {
         'id' => Mreq::tp('id'),
         'tkn_frm' => Mreq::tp('tkn_frm'),
         'checker_tkn_frm' => Mreq::tp('checker_tkn_frm'),
-        'idcontrat' => Mreq::tp('idcontrat'),
+        //'idcontrat' => Mreq::tp('idcontrat'),
         'date_echeance' => Mreq::tp('date_echeance'),
         'commentaire' => Mreq::tp('commentaire'),
     );
@@ -26,11 +26,11 @@ if (MInit::form_verif('editecheance_contrat', false)) {
         $empty_list .= "<li>Le token Form est invalid</li>";
         $checker = 1;
     }
-    if ($posted_data['idcontrat'] == NULL) {
-
-        $empty_list .= "<li>Contrat</li>";
-        $checker = 1;
-    }
+//    if ($posted_data['idcontrat'] == NULL) {
+//
+//        $empty_list .= "<li>Contrat</li>";
+//        $checker = 1;
+//    }
     if ($posted_data['date_echeance'] == NULL) {
 
         $empty_list .= "<li>Date d\'échéance</li>";
@@ -48,9 +48,7 @@ if (MInit::form_verif('editecheance_contrat', false)) {
 
     $exist_echeance = new Mcontrat($posted_data);
     $exist_echeance->id_echeance_contrat = $posted_data['id'];
-    var_dump(test);
-    var_dump($posted_data['id']);
-
+    
 
     //execute Insert returne false if error
     if ($exist_echeance->edit_echeance($posted_data['tkn_frm'])) {

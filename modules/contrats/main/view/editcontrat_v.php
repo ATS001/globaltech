@@ -151,7 +151,7 @@ $form->render();
 
         });
 
-        $('#table_echeance tbody ').on('click', 'tr .edt_det', function () {
+        $('#table_echeance tbody ').on('click', 'tr .edt_ctr', function () {
 
             if ($('#iddevis').val() == '') {
 
@@ -164,7 +164,7 @@ $form->render();
             ajax_bbox_loader($link, $data, $titre, 'large')
 
         });
-        $('#table_echeance tbody ').on('click', 'tr .del_det', function () {
+        $('#table_echeance tbody ').on('click', 'tr .del_ctr', function () {
             var $idecheance = $(this).attr('data');
             $.ajax({
 

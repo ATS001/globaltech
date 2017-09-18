@@ -54,11 +54,11 @@ if (MInit::form_verif('editcontrat', false)) {
         $empty_list .= "<li>Date fin</li>";
         $checker = 1;
     }
-    if ($posted_data['commentaire'] == NULL) {
-
-        $empty_list .= "<li>Commentaire</li>";
-        $checker = 1;
-    }
+//    if ($posted_data['commentaire'] == NULL) {
+//
+//        $empty_list .= "<li>Commentaire</li>";
+//        $checker = 1;
+//    }
     
     if ($posted_data['idtype_echeance'] == NULL) {
 

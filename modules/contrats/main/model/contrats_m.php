@@ -67,7 +67,7 @@ class Mcontrat {
     public function get_echeance_contrat() {
         $table_echeance = $this->table_echeance;
         global $db;
-      
+
         $sql = "SELECT $table_echeance.* FROM $table_echeance WHERE $table_echeance.id = " . $this->id_echeance_contrat;
 
         if (!$db->Query($sql)) {
@@ -159,7 +159,7 @@ class Mcontrat {
         //exit("0#".$count_id);
         if (($count_id != '0' && $edit == Null ) OR ( $count_id != '1' && $edit != null)) {
             $this->error = false;
-            $this->log .= '</br>Ce contrat est déjà enregitré ' . $count_id.'tkn='.$tkn_frm;
+            $this->log .= '</br>Ce contrat est déjà enregitré ' . $count_id . 'tkn=' . $tkn_frm;
         }
     }
 
@@ -434,8 +434,8 @@ class Mcontrat {
     public function edit_echeance($tkn_frm) {
         $table_echeance = $this->table_echeance;
         $this->get_echeance_contrat();
-        
-        var_dump(($this->echeance_contrat_info));
+
+
         if ($this->s_echeance('date_echeance') != $this->_data['date_echeance']) {
             $this->check_date_exist_in_echeance($tkn_frm, $this->_data['date_echeance'], 1);
         }
@@ -446,7 +446,7 @@ class Mcontrat {
             //Format values for Insert query 
             global $db;
 
-            $values["order"] = MySQL::SQLValue($order_echeance);
+
             $values["date_echeance"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_echeance'])));
             $values["commentaire"] = MySQL::SQLValue($this->_data['commentaire']);
             $values["updusr"] = MySQL::SQLValue(session::get('userid'));
