@@ -103,6 +103,15 @@ $form->render();
 
 <script type="text/javascript">
     $(document).ready(function () {
+        
+        if ($("#idtype_echeance option:selected").text() == 'Autres') {
+
+                $('.table_echeance').show();
+
+            } else {
+
+                $('.table_echeance').hide();
+            }    
 
         $('#idtype_echeance').bind('select change', function () {
 
