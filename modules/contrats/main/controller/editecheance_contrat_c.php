@@ -1,15 +1,11 @@
 <?php
-  
+
 defined('_MEXEC') or die;
-
 if (MInit::form_verif('editecheance_contrat', false)) {
-
     if (!MInit::crypt_tp('id', null, 'D')) {
         // returne message error red to client 
         exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
     }
-      
-  
     $posted_data = array(
         'id' => Mreq::tp('id'),
         'tkn_frm' => Mreq::tp('tkn_frm'),
@@ -48,8 +44,6 @@ if (MInit::form_verif('editecheance_contrat', false)) {
 
     $exist_echeance = new Mcontrat($posted_data);
     $exist_echeance->id_echeance_contrat = $posted_data['id'];
-    var_dump(test);
-    var_dump($posted_data['id']);
 
 
     //execute Insert returne false if error
@@ -62,5 +56,4 @@ if (MInit::form_verif('editecheance_contrat', false)) {
     }
 }
 
-    view::load_view('editecheance_contrat');
-
+view::load_view('editecheance_contrat');

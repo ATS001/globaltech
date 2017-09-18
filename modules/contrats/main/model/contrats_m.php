@@ -67,7 +67,7 @@ class Mcontrat {
     public function get_echeance_contrat() {
         $table_echeance = $this->table_echeance;
         global $db;
-      
+
         $sql = "SELECT $table_echeance.* FROM $table_echeance WHERE $table_echeance.id = " . $this->id_echeance_contrat;
 
         if (!$db->Query($sql)) {
@@ -277,8 +277,8 @@ class Mcontrat {
             //Format values for Insert query 
             global $db;
 
-            //$values["ref"] = MySQL::SQLValue($this->_data['ref']);
-            //$values["tkn_frm"] = MySQL::SQLValue($this->_data['tkn_frm']);
+            $values["ref"] = MySQL::SQLValue($this->_data['ref']);
+            $values["tkn_frm"] = MySQL::SQLValue($this->_data['tkn_frm']);
             $values["iddevis"] = MySQL::SQLValue($this->_data['iddevis']);
             $values["date_effet"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_effet'])));
             $values["date_fin"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_fin'])));
@@ -434,8 +434,6 @@ class Mcontrat {
     public function edit_echeance($tkn_frm) {
         $table_echeance = $this->table_echeance;
         $this->get_echeance_contrat();
-        
-        var_dump(($this->echeance_contrat_info));
         if ($this->s_echeance('date_echeance') != $this->_data['date_echeance']) {
             $this->check_date_exist_in_echeance($tkn_frm, $this->_data['date_echeance'], 1);
         }

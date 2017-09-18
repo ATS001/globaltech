@@ -4,7 +4,7 @@ if(!MInit::crypt_tp('exec', null, 'D'))
 { 	
 	$id     = Mreq::tp('exec');
 	$idc    = MInit::crypt_tp('exec',$id);
-	exit('0#<br>L\'action exécutée invalid contactez l\'administrateur yyyyyyy '.$id.'  '.$idc);
+	exit('0#<br>L\'action exécutée invalid contactez l\'administrateur '.$id.'  '.$idc);
 }
 //Action called from all button of this modul
 $action = Mreq::tp('exec');
@@ -15,7 +15,7 @@ if($action == 'delete')
 {
 	if(!MInit::crypt_tp('id', null, 'D'))
 	{ 	
-		exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur zzzzzzzz');
+		exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 	}
 //Initialise
 	$id     = Mreq::tp('id');
