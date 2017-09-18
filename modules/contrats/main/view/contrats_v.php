@@ -92,7 +92,7 @@ $('.export_pdf').on('click', function() {
 	csv_export(table, 'pdf');
 });
 
-$('#devis_grid').on('click', 'tr button', function() {
+$('#contrats_grid').on('click', 'tr button', function() {
 	var $row = $(this).closest('tr')
 	//alert(table.cell($row, 0).data());
 	append_drop_menu('contrats', table.cell($row, 0).data(), '.btn_action')
