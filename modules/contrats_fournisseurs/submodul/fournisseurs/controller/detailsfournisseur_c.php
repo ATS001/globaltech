@@ -3,4 +3,4 @@
 // Modul: fournisseurs => Controller
 
 
-view::load('clients', 'detailsfournisseur');
+view::load_view('detailsfournisseur');

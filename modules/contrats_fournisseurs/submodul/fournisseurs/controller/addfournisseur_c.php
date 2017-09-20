@@ -86,21 +86,21 @@ if(MInit::form_verif('addfournisseur',false))
     $empty_list .= "<li>Pays</li>";
     $checker = 1;
   }
-  if($posted_data['id_ville'] == NULL){
+ /* if($posted_data['id_ville'] == NULL){
 
     $empty_list .= "<li>Ville</li>";
     $checker = 1;
-  }
+  }*/
   if($posted_data['email'] == NULL){
 
     $empty_list .= "<li>Email</li>";
     $checker = 1;
   }
-  if($posted_data['id_devise'] == NULL){
+  /*if($posted_data['id_devise'] == NULL){
 
     $empty_list .= "<li>Devise</li>";
     $checker = 1;
-  }
+  }*/
 
 
   $empty_list.= "</ul>";
@@ -127,6 +127,6 @@ if(MInit::form_verif('addfournisseur',false))
 
 
 } else {
-  view::load('fournisseurs','addfournisseur');
+  view::load_view('addfournisseur');
 }
 ?>

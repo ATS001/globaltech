@@ -110,6 +110,11 @@ class Mclients {
 
 
         //Before execute do the multiple check
+
+        $this->Check_exist('denomination', $this->_data['denomination'], 'Dénomination', null);
+
+        $this->Check_exist('code', $this->_data['code'], 'Code Fournisseur', null);
+
         $this->Check_exist('r_social', $this->_data['r_social'], 'Raison Sociale', null);
              
         $this->Check_exist('r_commerce', $this->_data['r_commerce'], 'N° de registre', null);           
@@ -274,6 +279,10 @@ class Mclients {
     	$this->get_client();
 
     	$this->last_id = $this->id_client;
+        
+        $this->Check_exist('denomination', $this->_data['denomination'], 'Dénomination', null);
+
+        $this->Check_exist('code', $this->_data['code'], 'Code Fournisseur', null);
 
         $this->Check_exist('r_social', $this->_data['r_social'], 'Raison Sociale', $this->id_client);
              
@@ -305,7 +314,7 @@ class Mclients {
     	global $db;
 
     	global $db;
-    	$values["code"]  		 = MySQL::SQLValue($this->_data['code']);
+    	//$values["code"]  		 = MySQL::SQLValue($this->_data['code']);
    		$values["denomination"]  = MySQL::SQLValue($this->_data['denomination']);
    		$values["id_categorie"]  = MySQL::SQLValue($this->_data['id_categorie']);
    		$values["r_social"] 	 = MySQL::SQLValue($this->_data['r_social']);

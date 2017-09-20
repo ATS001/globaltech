@@ -34,8 +34,11 @@ class Mfournisseurs {
 	{
 		global $db;
 
-		$sql = "SELECT  f.*, p.pays as pays,v.ville as ville, d.devise as devise FROM  fournisseurs f, ref_pays p,ref_ville v,ref_devise d WHERE  f.id_pays=p.id and f.id_ville=v.id and f.id_devise=d.id
-			and f.id = ".$this->id_fournisseur;
+		$sql = "SELECT  f.*,p.pays AS pays,v.ville AS ville, d.devise AS devise FROM fournisseurs f
+                LEFT JOIN ref_devise d ON f.id_devise=d.id
+                LEFT JOIN ref_pays p ON f.id_pays=p.id
+                LEFT JOIN ref_ville v ON  f.id_ville=v.id 
+                WHERE f.id = ".$this->id_fournisseur;
 
 		if(!$db->Query($sql))
 		{
@@ -109,6 +112,10 @@ class Mfournisseurs {
 
 
         //Before execute do the multiple check
+        $this->Check_exist('denomination', $this->_data['denomination'], 'Dénomination', null);
+
+        $this->Check_exist('code', $this->_data['code'], 'Code Fournisseur', null);
+
         $this->Check_exist('r_social', $this->_data['r_social'], 'Raison Sociale', null);
              
         $this->Check_exist('r_commerce', $this->_data['r_commerce'], 'N° de registre', null);           
@@ -119,7 +126,13 @@ class Mfournisseurs {
 
     	$this->check_non_exist('ref_pays','id', $this->_data['id_pays'], 'Pays');
 
+        if($this->_data['id_ville'] = '------')
+        {
+            null;
+        }    
+        else{
     	$this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
+        }
 
     	  //Check if PJ attached required
         if($this->exige_pj)
@@ -281,7 +294,16 @@ class Mfournisseurs {
 
     	$this->check_non_exist('fournisseurs','id_pays', $this->_data['id_pays'], 'Pays');
 
-    	$this->check_non_exist('fournisseurs','id_ville', $this->_data['id_ville'], 'Ville');
+    	$this->check_non_exist('ref_pays','id', $this->_data['id_pays'], 'Pays');
+
+        if($this->_data['id_ville'] = '------')
+        {
+            null;
+        }    
+        else{
+        $this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
+        }
+
 
     	  //Check if PJ attached required
         if($this->exige_pj)
