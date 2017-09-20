@@ -1,6 +1,6 @@
 <?php
 // ---------------------------------------------------
-//  Informations de Projet
+//  Informations de Projet proud version
 // ---------------------------------------------------
 /**
  * @package    MRN_ERP
