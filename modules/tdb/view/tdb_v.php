@@ -18,7 +18,7 @@
 			<div class="widget-box">
 				
 <?php
-$table = 'd_devis_temp';
+$table = 'ste_info';
 $sql = "SHOW FULL COLUMNS FROM $table";
 global $db;
 $arr_fields = array();

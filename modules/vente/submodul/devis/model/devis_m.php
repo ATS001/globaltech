@@ -9,23 +9,26 @@ class MDevis
 	//Declared Private
 	private $_data; //data receive from form
     //Declared Variable
-    var $table         = 'devis'; //Main table of module
-    var $table_details = 'd_devis'; //Tables détails devis
-    var $last_id      = null; //return last ID after insert command
-	var $log          = null; //Log of all opération.
-    var $id_devis     = null; // Devis ID append when request
-	var $token        = null; //user for recovery function
-	var $devis_info   = null; //Array stock all ville info
-	var $devis_d_info = null;
-    var $reference    = null; // Reference Devis
-    var $error        = true; //Error bol changed when an error is occured
-    var $total_ht_d   = null; 
-    var $total_tva_d  = null;
-    var $total_ttc_d  = null;
-    var $total_ht_t   = null; 
-    var $total_tva_t  = null;
-    var $order_detail = null; 
-    var $sum_total_ht = null;
+    var $table          = 'devis'; //Main table of module
+    var $table_details  = 'd_devis'; //Tables détails devis
+    var $last_id        = null; //return last ID after insert command
+    var $log            = null; //Log of all opération.
+    var $id_devis       = null; // Devis ID append when request
+    var $token          = null; //user for recovery function
+    var $devis_info     = null; //Array stock all ville info
+    var $devis_d_info   = null;//
+    var $reference      = null; // Reference Devis
+    var $error          = true; //Error bol changed when an error is occured
+    var $valeur_remis_d = null;//
+    var $total_ht_d     = null; //
+    var $total_tva_d    = null;//
+    var $total_ttc_d    = null;//
+    var $valeur_remis_t = null;//
+    var $total_ht_t     = null;// 
+    var $total_tva_t    = null;//
+    var $order_detail   = null; //
+    var $sum_total_ht   = null;//
+
 
     public function __construct($properties = array()){
     	$this->_data = $properties;
@@ -107,6 +110,128 @@ class MDevis
 
     }
 
+
+    public function Get_detail_devis_show()
+    {
+        global $db;
+        $req_sql = "SELECT
+        devis.reference
+        , devis.date_devis
+        , devis.valeur_remise
+        ,  REPLACE(FORMAT(devis.totalht,0),',',' ') as totalht
+        ,  REPLACE(FORMAT(devis.totaltva,0),',',' ') as totaltva
+        ,  REPLACE(FORMAT(devis.totalttc,0),',',' ') as totalttc
+        , devis.claus_comercial
+        , clients.code
+        , clients.denomination
+        , clients.adresse
+        , clients.bp
+        , clients.tel
+        , clients.nif
+        , clients.email
+        , ref_pays.pays
+        , ref_ville.ville
+        FROM
+        devis
+        INNER JOIN clients 
+        ON (devis.id_client = clients.id)
+        INNER JOIN ref_pays 
+        ON (clients.id_pays = ref_pays.id)
+        INNER JOIN ref_ville
+        WHERE devis.id = ".$this->id_devis;
+        if(!$db->Query($req_sql))
+        {
+            $this->error = false;
+            $this->log  .= $db->Error();
+        }else{
+            if ($db->RowCount() == 0)
+            {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->devis_info = $db->RowArray();
+                $this->error = true;
+            }
+
+
+        }
+
+    }
+
+    public function Get_detail_devis_pdf()
+    {
+        global $db;
+
+        $id_devis = $this->id_devis;
+        $table    = $this->table_details;
+        $this->Get_detail_devis_show();
+        $devis_info = $this->devis_info;
+        $colms = null;
+        $colms .= " $table.id item, ";
+        $colms .= " $table.ref_produit, ";
+        $colms .= " $table.designation, ";
+        $colms .= " REPLACE(FORMAT($table.qte,0),',',' '), ";
+        $colms .= " REPLACE(FORMAT($table.prix_unitaire,0),',',' '), ";
+        //$colms .= " $table.type_remise, ";
+        $colms .= " REPLACE(FORMAT($table.remise_valeur,0),',',' '), ";
+        
+       // $colms .= " REPLACE(FORMAT($table.total_ht,0),',',' '), ";
+       // $colms .= " REPLACE(FORMAT($table.total_tva,0),',',' '), ";
+        $colms .= " REPLACE(FORMAT($table.total_ttc,0),',', ' ') ";
+        
+        $req_sql  = " SELECT $colms FROM $table WHERE id_devis = $id_devis ";
+        if(!$db->Query($req_sql))
+        {
+            $this->error = false;
+            $this->log  .= $db->Error().' '.$req_sql;
+            exit($this->log);
+        }
+        
+        
+        $headers = array(
+            'Item'        => '5[#]center',
+            'Réf'         => '10[#]center',
+            'Description' => '45[#]', 
+            'Qte'         => '5[#]center', 
+            'P.U'         => '10[#]alignRight', 
+            'Re'          => '5[#]center',
+            'Total HT'    => '15[#]alignRight',
+
+        );
+
+        $tableau_head = MySQL::make_table_head($headers);
+        $tableau_body = $db->GetMTable_pdf($headers);
+        $file_export = MPATH_TEMP.'Devis'.'_' .date('d_m_Y_H_i_s').'.pdf';
+
+   //Load template 
+        include_once MPATH_THEMES.'pdf_template/devis_pdf.php';
+        $new_file_target = MPATH_UPLOAD.'Devis'.date('m_Y');
+
+        if(file_exists($file_export))
+        {
+              
+            if(!Minit::save_file_upload($file_export, 'Devis_'.$id_devis, $new_file_target, $id_devis, 'Devis '.$id_devis, 'devis', 'devis', 'devis_pdf', 'document', $edit = null))
+            {
+                $this->error = false;
+                $this->log .= "Erreur Archivage Devis";
+
+            }
+            
+        }else{
+            $this->error = false;
+            $this->log .= "Erreur création template Devis";
+        }
+
+        if($this->error == false)
+        {
+            return false;
+        }else{
+            return true ;
+        }
+        
+        
+    }
+
     public function Gettable_detail_devis()
     {
         global $db;
@@ -137,29 +262,18 @@ class MDevis
         $headers = array(
             'Item'        => '5[#]center',
             'Réf'         => '10[#]center',
-            'Description' => '45[#]', 
+            'Description' => '30[#]', 
             'Qte'         => '5[#]center', 
             'P.U'         => '10[#]alignRight', 
             'Re'          => '5[#]center',
-            'Total HT'    => '15[#]alignRight',
+            'Total HT'    => '10[#]alignRight',
+            'TVA'         => '10[#]alignRight',
+            'Total TTC'   => '15[#]alignRight',
 
         );
-                    
-        $tableau_head = MySQL::make_table_head($headers);
-        $file_export = MPATH_TEMP.'Devis'.'_' .date('d_m_Y_H_i_s').'.pdf';
-
-/*   //Load template 
-        include_once MPATH_THEMES.'pdf_template/devis_pdf.php';
-
-
-        if(file_exists($file_export))
-        {
-            exit("1#PDF#$file_export");
-        }else{
-            exit("2#Erreur Opération !");
-        }*/
-        
-        $tableau = $db->GetMTable_pdf($headers);
+                 
+                
+        $tableau = $db->GetMTable($headers);
         
         
         return $tableau; 
@@ -258,9 +372,10 @@ class MDevis
 
 		//Format values for Insert query 
         	global $db;
-        	$totalht   = $this->total_ht_t;
-        	$totaltva  = $this->total_tva_t;
+        	$totalht  = $this->total_ht_t;
+        	$totaltva = $this->total_tva_t;
         	$totalttc = $this->total_ttc_t;
+            $valeur_remise = $this->valeur_remis_t;
 
 
         	$values["reference"]       = MySQL::SQLValue($this->reference);
@@ -270,7 +385,7 @@ class MDevis
             $values["id_commercial"]   = MySQL::SQLValue(session::get('userid'));
             $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
             $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
-            $values["valeur_remise"]   = MySQL::SQLValue($this->_data['valeur_remise']);
+            $values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
             $values["claus_comercial"] = MySQL::SQLValue($this->_data['claus_comercial']);
             $values["totalht"]         = MySQL::SQLValue($totalht);
             $values["totalttc"]        = MySQL::SQLValue($totalttc);
@@ -289,13 +404,13 @@ class MDevis
             //Check $this->error = true return Green message and Bol true
               if($this->error == true)
               {
-                 $this->log = '</br>Enregistrement réussie: <b>Réference: '.$this->reference;
-                 $this->save_temp_detail($this->_data['tkn_frm'], $this->last_id);
+               $this->log = '</br>Enregistrement réussie: <b>Réference: '.$this->reference;
+               $this->save_temp_detail($this->_data['tkn_frm'], $this->last_id);
 				//Check $this->error = false return Red message and Bol false	
-             }else{
-                 $this->log .= '</br>Enregistrement réussie: <b>'.$this->reference;
-                 $this->log .= '</br>Un problème d\'Enregistrement ';
-             }
+           }else{
+               $this->log .= '</br>Enregistrement réussie: <b>'.$this->reference;
+               $this->log .= '</br>Un problème d\'Enregistrement ';
+           }
         }//Else Error false	
         
         //check if last error is true then return true else rturn false.
@@ -335,9 +450,10 @@ class MDevis
 
     //Format values for Insert query 
     	global $db;
-    	$totalht   = $this->total_ht_t;
-    	$totaltva  = $this->total_tva_t;
+    	$totalht  = $this->total_ht_t;
+    	$totaltva = $this->total_tva_t;
     	$totalttc = $this->total_ttc_t;
+        $valeur_remise = $this->valeur_remis_t;
     	$this->reference = $this->_data['reference'];
 
 
@@ -348,7 +464,7 @@ class MDevis
         $values["id_commercial"]   = MySQL::SQLValue(session::get('userid'));
         $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
         $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
-        $values["valeur_remise"]   = MySQL::SQLValue($this->_data['valeur_remise']);
+        $values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
         $values["claus_comercial"] = MySQL::SQLValue($this->_data['claus_comercial']);
         $values["totalht"]         = MySQL::SQLValue($totalht);
         $values["totalttc"]        = MySQL::SQLValue($totalttc);
@@ -368,13 +484,13 @@ class MDevis
             //Check $this->error = true return Green message and Bol true
           if($this->error == true)
           {
-           $this->log = '</br>Modification réussie: <b>Réference: '.$this->reference;
-           $this->save_temp_detail($this->_data['tkn_frm'], $this->id_devis);
+             $this->log = '</br>Modification réussie: <b>Réference: '.$this->reference;
+             $this->save_temp_detail($this->_data['tkn_frm'], $this->id_devis);
         //Check $this->error = false return Red message and Bol false 
-       }else{
-           $this->log .= '</br>Modification réussie: <b>'.$this->reference;
-           $this->log .= '</br>Un problème d\'Modification ';
-       }
+         }else{
+             $this->log .= '</br>Modification réussie: <b>'.$this->reference;
+             $this->log .= '</br>Un problème d\'Modification ';
+         }
         }//Else Error false 
         
         //check if last error is true then return true else rturn false.
@@ -391,9 +507,11 @@ class MDevis
     	if($type_remise == 'P')
     	{
     		$prix_u_remised = $prix_u - ($prix_u * $value_remise) / 100;
+            $this->valeur_remis_d = $value_remise;
 
     	}else if($type_remise == 'M'){
     		$prix_u_remised = $prix_u - $value_remise;
+            $this->valeur_remis_d = ($value_remise * 100) / $prix_u;
     	}else{
     		$prix_u_remised = $prix_u;
     	}
@@ -417,13 +535,18 @@ class MDevis
     	if($type_remise == 'P')
     	{
     		$totalht_remised = $totalht - ($totalht * $value_remise) / 100;
+            $this->valeur_remis_t = $value_remise;
 
     	}else if($type_remise == 'M'){
     		$totalht_remised = $totalht - $value_remise;
+            $this->valeur_remis_t = ($value_remise * 100) / $totalht;
+
     	}else{
     		$totalht_remised = $totalht;
     	}
 
+      //Valeur remised en percentage
+      
       //Total HT 
     	$this->total_ht_t = $totalht_remised;
       //Calculate TVA
@@ -520,6 +643,7 @@ public function save_new_details_devis($tkn_frm)
       $total_ht            = $this->total_ht_d;
       $total_tva           = $this->total_tva_d;
       $total_ttc           = $this->total_ttc_d;
+      $valeur_remis_d      = $this->valeur_remis_d;
           //Get order line into devis
       $this->get_order_detail($tkn_frm);
       $order_detail = $this->order_detail;
@@ -535,7 +659,7 @@ public function save_new_details_devis($tkn_frm)
       $values["qte"]           = MySQL::SQLValue($this->_data['qte']);
       $values["prix_unitaire"] = MySQL::SQLValue($this->_data['prix_unitaire']);
       $values["type_remise"]   = MySQL::SQLValue($this->_data['type_remise_d']);
-      $values["remise_valeur"] = MySQL::SQLValue($this->_data['remise_valeur_d']);
+      $values["remise_valeur"] = MySQL::SQLValue($valeur_remis_d);
       $values["tva"]           = MySQL::SQLValue($this->_data['tva']);
       $values["total_ht"]      = MySQL::SQLValue($this->total_ht);
       $values["total_ttc"]     = MySQL::SQLValue($this->total_ttc);
@@ -606,6 +730,7 @@ public function edit_exist_details_devis($tkn_frm)
         $total_ht            = $this->total_ht_d;
         $total_tva           = $this->total_tva_d;
         $total_ttc           = $this->total_ttc_d;
+        $valeur_remis_d      = $this->valeur_remis_d;
         //Format values for Insert query 
         global $db;
 
@@ -615,7 +740,7 @@ public function edit_exist_details_devis($tkn_frm)
         $values["qte"]           = MySQL::SQLValue($this->_data['qte']);
         $values["prix_unitaire"] = MySQL::SQLValue($this->_data['prix_unitaire']);
         $values["type_remise"]   = MySQL::SQLValue($this->_data['type_remise_d']);
-        $values["remise_valeur"] = MySQL::SQLValue($this->_data['remise_valeur_d']);
+        $values["remise_valeur"] = MySQL::SQLValue($this->valeur_remis_d);
         $values["tva"]           = MySQL::SQLValue($this->_data['tva']);
         $values["total_ht"]      = MySQL::SQLValue($this->total_ht);
         $values["total_ttc"]     = MySQL::SQLValue($this->total_ttc);
@@ -627,11 +752,11 @@ public function edit_exist_details_devis($tkn_frm)
         if(!$db->UpdateRows($this->table_details, $values, $wheres))
         {
                 //False => Set $this->log and $this->error = false
-           $this->log .= $db->Error();
-           $this->error = false;
-           $this->log .='</br>Modification BD non réussie'; 
+         $this->log .= $db->Error();
+         $this->error = false;
+         $this->log .='</br>Modification BD non réussie'; 
 
-       }else{
+     }else{
         //Check $this->error = true return Green message and Bol true
         if($this->error == true)
         {
@@ -657,9 +782,9 @@ if($this->error == false)
 }
 }
 
-public function Valid_Devis($etat)
-{
-        /*global $db;
+    public function Valid_Devis($etat)
+    {
+        global $db;
         $table = $this->table;
         $id_devis = $this->id_devis;
         $req_sql = " UPDATE $table SET etat = $etat+1 WHERE id = $id_devis ";
@@ -667,13 +792,11 @@ public function Valid_Devis($etat)
             $this->error = false;
             $this->log .= "Erreur Validation";
             return false;
-        }*/
-        $id_devis = $this->id_devis;
-        $Devis_pdf = new MDevis_PDF();
-        $Devis_pdf->id_devis = $id_devis;
-        if(!$Devis_pdf->generate_devis_pdf())
+        }
+        
+        if(!$this->Get_detail_devis_pdf())
         {
-            $this->log .= $Devis_pdf->log;
+            $this->log .= $this->log;
             return false;
 
         }else{
@@ -688,20 +811,102 @@ public function Valid_Devis($etat)
 
     public function Delete_detail_devis($id_detail)
     {
-     global $db;
-     $table_details = $this->table_details;
-     $get_tkn_frm = $db->QuerySingleValue0("SELECT tkn_frm FROM $table_details  WHERE id = $id_detail");
+       global $db;
+       $table_details = $this->table_details;
+       $get_tkn_frm = $db->QuerySingleValue0("SELECT tkn_frm FROM $table_details  WHERE id = $id_detail");
 
       //Format where clause
-     $where['id'] = MySQL::SQLValue($id_detail);
+       $where['id'] = MySQL::SQLValue($id_detail);
       //check if id on where clause isset
-     if($where['id'] == null)
-     {
+       if($where['id'] == null)
+       {
+          $this->error = false;
+          $this->log .='</br>L\' id est vide';
+      }
+      //execute Delete Query
+      if(!$db->DeleteRows($table_details ,$where))
+      {
+
+          $this->log .= $db->Error().'  '.$db->BuildSQLDelete('devis',$where);
+          $this->error = false;
+          $this->log .='</br>Suppression non réussie';
+
+      }else{
+
+          $this->error = true;
+          $this->log .='</br>Suppression réussie ';
+          $this->Get_sum_detail($get_tkn_frm);
+          $this->log .='#'.$this->sum_total_ht;
+      }
+      //check if last error is true then return true else rturn false.
+      if($this->error == false){
+          return false;
+      }else{
+          return true;
+      }
+  }
+
+    // afficher les infos d'un devis
+  public function s($key)
+  {
+   if($this->devis_info[$key] != null)
+   {
+      echo $this->devis_info[$key];
+  }else{
+      echo "";
+  }
+
+}
+  // get les infos d'un devis
+public function g($key)
+{
+   if($this->devis_info[$key] != null)
+   {
+      return $this->devis_info[$key];
+  }else{
+      return null;
+  }
+
+}
+
+    // afficher les infos d'un devis_d
+public function c($key)
+{
+   if($this->devis_d_info[$key] != null)
+   {
+      echo $this->devis_d_info[$key];
+  }else{
+      echo "";
+  }
+
+}
+    //get les infos d'un devis_d
+public function h($key)
+{
+   if($this->devis_d_info[$key] != null)
+   {
+    return $this->devis_d_info[$key];
+}else{
+    return null;
+}
+
+}
+
+public function delete_devis()
+{
+   global $db;
+   $id_devis = $this->id_devis;
+   $this->get_devis();
+    	//Format where clause
+   $where['id'] = MySQL::SQLValue($id_devis);
+    	//check if id on where clause isset
+   if($where['id'] == null)
+   {
       $this->error = false;
       $this->log .='</br>L\' id est vide';
   }
-      //execute Delete Query
-  if(!$db->DeleteRows($table_details ,$where))
+    	//execute Delete Query
+  if(!$db->DeleteRows('devis',$where))
   {
 
       $this->log .= $db->Error().'  '.$db->BuildSQLDelete('devis',$where);
@@ -712,95 +917,13 @@ public function Valid_Devis($etat)
 
       $this->error = true;
       $this->log .='</br>Suppression réussie ';
-      $this->Get_sum_detail($get_tkn_frm);
-      $this->log .='#'.$this->sum_total_ht;
   }
-      //check if last error is true then return true else rturn false.
+    	//check if last error is true then return true else rturn false.
   if($this->error == false){
       return false;
   }else{
       return true;
   }
-}
-
-    // afficher les infos d'un devis
-public function s($key)
-{
- if($this->devis_info[$key] != null)
- {
-  echo $this->devis_info[$key];
-}else{
-  echo "";
-}
-
-}
-  // get les infos d'un devis
-public function g($key)
-{
- if($this->devis_info[$key] != null)
- {
-  return $this->devis_info[$key];
-}else{
-  return null;
-}
-
-}
-
-    // afficher les infos d'un devis_d
-public function c($key)
-{
- if($this->devis_d_info[$key] != null)
- {
-  echo $this->devis_d_info[$key];
-}else{
-  echo "";
-}
-
-}
-    //get les infos d'un devis_d
-public function h($key)
-{
- if($this->devis_d_info[$key] != null)
- {
-    return $this->devis_d_info[$key];
-}else{
-    return null;
-}
-
-}
-
-public function delete_devis()
-{
- global $db;
- $id_devis = $this->id_devis;
- $this->get_devis();
-    	//Format where clause
- $where['id'] = MySQL::SQLValue($id_devis);
-    	//check if id on where clause isset
- if($where['id'] == null)
- {
-  $this->error = false;
-  $this->log .='</br>L\' id est vide';
-}
-    	//execute Delete Query
-if(!$db->DeleteRows('devis',$where))
-{
-
-  $this->log .= $db->Error().'  '.$db->BuildSQLDelete('devis',$where);
-  $this->error = false;
-  $this->log .='</br>Suppression non réussie';
-
-}else{
-
-  $this->error = true;
-  $this->log .='</br>Suppression réussie ';
-}
-    	//check if last error is true then return true else rturn false.
-if($this->error == false){
-  return false;
-}else{
-  return true;
-}
 }
 
 

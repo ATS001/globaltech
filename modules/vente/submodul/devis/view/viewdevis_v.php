@@ -61,11 +61,14 @@ if(!$info_client->get_client())
 							<span class="blue"><?php $info_devis->s('date_devis') ?></span>
 						</div>
 
-						<div class="widget-toolbar hidden-480">
-							<a href="#" class="iframe_pdf" rel="1">
+                        <?php if($info_devis->g('devis_pdf') != null){?>
+                         <div class="widget-toolbar hidden-480">
+							<a href="#" class="iframe_pdf" rel="<?php $info_devis->s('devis_pdf') ?>">
 								<i class="ace-icon fa fa-print"></i>
 							</a>
-						</div>
+						</div>       
+                       <?php } ?>
+						
 
 						<!-- /section:pages/invoice.info -->
 					</div>
