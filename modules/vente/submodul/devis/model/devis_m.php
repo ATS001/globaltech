@@ -9,23 +9,26 @@ class MDevis
 	//Declared Private
 	private $_data; //data receive from form
     //Declared Variable
-    var $table         = 'devis'; //Main table of module
-    var $table_details = 'd_devis'; //Tables détails devis
-    var $last_id      = null; //return last ID after insert command
-	var $log          = null; //Log of all opération.
-    var $id_devis     = null; // Devis ID append when request
-	var $token        = null; //user for recovery function
-	var $devis_info   = null; //Array stock all ville info
-	var $devis_d_info = null;
-    var $reference    = null; // Reference Devis
-    var $error        = true; //Error bol changed when an error is occured
-    var $total_ht_d   = null; 
-    var $total_tva_d  = null;
-    var $total_ttc_d  = null;
-    var $total_ht_t   = null; 
-    var $total_tva_t  = null;
-    var $order_detail = null; 
-    var $sum_total_ht = null;
+    var $table          = 'devis'; //Main table of module
+    var $table_details  = 'd_devis'; //Tables détails devis
+    var $last_id        = null; //return last ID after insert command
+    var $log            = null; //Log of all opération.
+    var $id_devis       = null; // Devis ID append when request
+    var $token          = null; //user for recovery function
+    var $devis_info     = null; //Array stock all ville info
+    var $devis_d_info   = null;//
+    var $reference      = null; // Reference Devis
+    var $error          = true; //Error bol changed when an error is occured
+    var $valeur_remis_d = null;//
+    var $total_ht_d     = null; //
+    var $total_tva_d    = null;//
+    var $total_ttc_d    = null;//
+    var $valeur_remis_t = null;//
+    var $total_ht_t     = null;// 
+    var $total_tva_t    = null;//
+    var $order_detail   = null; //
+    var $sum_total_ht   = null;//
+
 
     public function __construct($properties = array()){
     	$this->_data = $properties;
@@ -106,6 +109,7 @@ class MDevis
     	}
 
     }
+
 
     public function Get_detail_devis_show()
     {
@@ -201,12 +205,12 @@ class MDevis
 
    //Load template 
         include_once MPATH_THEMES.'pdf_template/devis_pdf.php';
-
+        $new_file_target = MPATH_UPLOAD.'Devis'.date('m_Y');
 
         if(file_exists($file_export))
         {
               
-            if(!Minit::save_file_upload($file_export, 'Devis_'.$id_devis, 'Devis'.date('m_Y'), $id_devis, 'Devis '.$id_devis, 'devis', 'devis', 'devis_pdf', 'document', $edit = null))
+            if(!Minit::save_file_upload($file_export, 'Devis_'.$id_devis, $new_file_target, $id_devis, 'Devis '.$id_devis, 'devis', 'devis', 'devis_pdf', 'document', $edit = null))
             {
                 $this->error = false;
                 $this->log .= "Erreur Archivage Devis";
@@ -226,6 +230,53 @@ class MDevis
         }
         
         
+    }
+
+    public function Gettable_detail_devis()
+    {
+        global $db;
+        $id_devis = $this->id_devis;
+        $table    = $this->table_details;
+        $colms = null;
+        $colms .= " $table.id item, ";
+        $colms .= " $table.ref_produit, ";
+        $colms .= " $table.designation, ";
+        $colms .= " REPLACE(FORMAT($table.qte,0),',',' '), ";
+        $colms .= " REPLACE(FORMAT($table.prix_unitaire,0),',',' '), ";
+        //$colms .= " $table.type_remise, ";
+        $colms .= " REPLACE(FORMAT($table.remise_valeur,0),',',' '), ";
+        
+        $colms .= " REPLACE(FORMAT($table.total_ht,0),',',' '), ";
+        $colms .= " REPLACE(FORMAT($table.total_tva,0),',',' '), ";
+        $colms .= " REPLACE(FORMAT($table.total_ttc,0),',', ' ') ";
+        
+        $req_sql  = " SELECT $colms FROM $table WHERE id_devis = $id_devis ";
+        if(!$db->Query($req_sql))
+        {
+            $this->error = false;
+            $this->log  .= $db->Error().' '.$req_sql;
+            exit($this->log);
+        }
+        
+        
+        $headers = array(
+            'Item'        => '5[#]center',
+            'Réf'         => '10[#]center',
+            'Description' => '30[#]', 
+            'Qte'         => '5[#]center', 
+            'P.U'         => '10[#]alignRight', 
+            'Re'          => '5[#]center',
+            'Total HT'    => '10[#]alignRight',
+            'TVA'         => '10[#]alignRight',
+            'Total TTC'   => '15[#]alignRight',
+
+        );
+                 
+                
+        $tableau = $db->GetMTable($headers);
+        
+        
+        return $tableau; 
     }
 
     //////////////////////////////////////////////////////////////////
@@ -321,9 +372,10 @@ class MDevis
 
 		//Format values for Insert query 
         	global $db;
-        	$totalht   = $this->total_ht_t;
-        	$totaltva  = $this->total_tva_t;
+        	$totalht  = $this->total_ht_t;
+        	$totaltva = $this->total_tva_t;
         	$totalttc = $this->total_ttc_t;
+            $valeur_remise = $this->valeur_remis_t;
 
 
         	$values["reference"]       = MySQL::SQLValue($this->reference);
@@ -333,7 +385,7 @@ class MDevis
             $values["id_commercial"]   = MySQL::SQLValue(session::get('userid'));
             $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
             $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
-            $values["valeur_remise"]   = MySQL::SQLValue($this->_data['valeur_remise']);
+            $values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
             $values["claus_comercial"] = MySQL::SQLValue($this->_data['claus_comercial']);
             $values["totalht"]         = MySQL::SQLValue($totalht);
             $values["totalttc"]        = MySQL::SQLValue($totalttc);
@@ -398,9 +450,10 @@ class MDevis
 
     //Format values for Insert query 
     	global $db;
-    	$totalht   = $this->total_ht_t;
-    	$totaltva  = $this->total_tva_t;
+    	$totalht  = $this->total_ht_t;
+    	$totaltva = $this->total_tva_t;
     	$totalttc = $this->total_ttc_t;
+        $valeur_remise = $this->valeur_remis_t;
     	$this->reference = $this->_data['reference'];
 
 
@@ -411,7 +464,7 @@ class MDevis
         $values["id_commercial"]   = MySQL::SQLValue(session::get('userid'));
         $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
         $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
-        $values["valeur_remise"]   = MySQL::SQLValue($this->_data['valeur_remise']);
+        $values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
         $values["claus_comercial"] = MySQL::SQLValue($this->_data['claus_comercial']);
         $values["totalht"]         = MySQL::SQLValue($totalht);
         $values["totalttc"]        = MySQL::SQLValue($totalttc);
@@ -454,9 +507,11 @@ class MDevis
     	if($type_remise == 'P')
     	{
     		$prix_u_remised = $prix_u - ($prix_u * $value_remise) / 100;
+            $this->valeur_remis_d = $value_remise;
 
     	}else if($type_remise == 'M'){
     		$prix_u_remised = $prix_u - $value_remise;
+            $this->valeur_remis_d = ($value_remise * 100) / $prix_u;
     	}else{
     		$prix_u_remised = $prix_u;
     	}
@@ -480,13 +535,18 @@ class MDevis
     	if($type_remise == 'P')
     	{
     		$totalht_remised = $totalht - ($totalht * $value_remise) / 100;
+            $this->valeur_remis_t = $value_remise;
 
     	}else if($type_remise == 'M'){
     		$totalht_remised = $totalht - $value_remise;
+            $this->valeur_remis_t = ($value_remise * 100) / $totalht;
+
     	}else{
     		$totalht_remised = $totalht;
     	}
 
+      //Valeur remised en percentage
+      
       //Total HT 
     	$this->total_ht_t = $totalht_remised;
       //Calculate TVA
@@ -583,6 +643,7 @@ public function save_new_details_devis($tkn_frm)
       $total_ht            = $this->total_ht_d;
       $total_tva           = $this->total_tva_d;
       $total_ttc           = $this->total_ttc_d;
+      $valeur_remis_d      = $this->valeur_remis_d;
           //Get order line into devis
       $this->get_order_detail($tkn_frm);
       $order_detail = $this->order_detail;
@@ -598,7 +659,7 @@ public function save_new_details_devis($tkn_frm)
       $values["qte"]           = MySQL::SQLValue($this->_data['qte']);
       $values["prix_unitaire"] = MySQL::SQLValue($this->_data['prix_unitaire']);
       $values["type_remise"]   = MySQL::SQLValue($this->_data['type_remise_d']);
-      $values["remise_valeur"] = MySQL::SQLValue($this->_data['remise_valeur_d']);
+      $values["remise_valeur"] = MySQL::SQLValue($valeur_remis_d);
       $values["tva"]           = MySQL::SQLValue($this->_data['tva']);
       $values["total_ht"]      = MySQL::SQLValue($this->total_ht);
       $values["total_ttc"]     = MySQL::SQLValue($this->total_ttc);
@@ -669,6 +730,7 @@ public function edit_exist_details_devis($tkn_frm)
         $total_ht            = $this->total_ht_d;
         $total_tva           = $this->total_tva_d;
         $total_ttc           = $this->total_ttc_d;
+        $valeur_remis_d      = $this->valeur_remis_d;
         //Format values for Insert query 
         global $db;
 
@@ -678,7 +740,7 @@ public function edit_exist_details_devis($tkn_frm)
         $values["qte"]           = MySQL::SQLValue($this->_data['qte']);
         $values["prix_unitaire"] = MySQL::SQLValue($this->_data['prix_unitaire']);
         $values["type_remise"]   = MySQL::SQLValue($this->_data['type_remise_d']);
-        $values["remise_valeur"] = MySQL::SQLValue($this->_data['remise_valeur_d']);
+        $values["remise_valeur"] = MySQL::SQLValue($this->valeur_remis_d);
         $values["tva"]           = MySQL::SQLValue($this->_data['tva']);
         $values["total_ht"]      = MySQL::SQLValue($this->total_ht);
         $values["total_ttc"]     = MySQL::SQLValue($this->total_ttc);

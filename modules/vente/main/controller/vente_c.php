@@ -3,6 +3,6 @@
 $info_devis = new Mdevis();
 //Set ID of Module with POST id
 $info_devis->id_devis = 22;
-print $info_devis->Get_detail_devis_pdf();
+ print $info_devis->Gettable_detail_devis();
 
 ?>

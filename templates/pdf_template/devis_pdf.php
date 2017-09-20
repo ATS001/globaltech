@@ -184,7 +184,7 @@ $block_sum = '<div></div>
                 <tr>
                     <td style="width:35%;"><strong>Remise:</strong></td>
                     <td style="width:5%;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$remise_valeur.'</strong></td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$remise_valeur.' %</strong></td>
                 </tr>
                 <tr>
                     <td style="width:35%;"><strong>TVA 18%</strong></td>

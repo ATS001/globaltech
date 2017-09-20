@@ -950,13 +950,26 @@ class MySQL
 	 * @param string $styleData (Optional) Style information for the cells
 	 * @return string HTML containing a table with all records listed
 	 */
-		public function GetMTable($headers = null, $styleTable = null, $styleData) {
-			if ($styleTable === null) {
-				$tb = 'class="table table-striped table-bordered"';
-			} else {
-				$tb = 'class="'.$styleTable.'"';
-			}
+		public function GetMTable($headers = null) {
+			
+			$tb = 'class="table table-striped table-bordered"';
+			
+			$array_width = array();
+			$array_align = array();
+			$styleData   = array_values($headers);
+			$array_titl  = array_keys($headers);
 
+			foreach ($styleData as $key => $value) {
+				if(strpos($value, '[#]')){
+					$elem  = explode("[#]", $value);
+					$align = isset($elem[1]) ? $elem[1] : '';
+					$width = isset($elem[0]) ? $elem[0] : '15';
+					array_push($array_width, $width);
+					array_push($array_align, $align);
+				}
+			}
+			
+			//$array_header = array_combine($array_titl, $array_width);
 
 			if ($this->last_result) {
 				if ($this->RowCount() > 0) {
@@ -972,21 +985,17 @@ class MySQL
 						if (!$header) {
 							$html .= "\t<tr>\n";
 							if($headers != null){
-								foreach ($headers as $key => $titls) {
-									$class_Data = $styleData[$key];
+								foreach ($array_titl as $key => $titls) {
+									
+									
+									$width = $array_width[$key];
+									$align = $array_align[$key];
 
-									if(strpos($class_Data, '#')){
-										$elem  = explode("#", $class_Data);
-										$width = 'style="width:'.$elem[0].'%;"' ;
-								    //$class = 'class="'.$elem[1].'"' ;
-
-
-									}
+									$width = 'style="width:'.$width.'%;"' ;
+									$align = 'class="'.$align.'"' ;
 
 
-
-
-									$html .= "\t\t<th $width $class >" . htmlspecialchars($titls) . "</th>\n";
+									$html .= "\t\t<td $width $align>" . htmlspecialchars($titls) . "</td>\n";
 								}
 
 							}else{
@@ -1006,37 +1015,36 @@ class MySQL
 						$keys_member = array_keys($member_array);
 					//print_r($member);
 
-						$array_styl_last = array_combine($keys_member, $styleData);
-					/*var_dump($array_styl_last);
-					exit();*/
+						$array_last_width = array_combine($keys_member, $array_width);
+						$array_last_align = array_combine($keys_member, $array_align);
 
-					foreach ($member as $key => $value) {
 						
-						$class_Data = $array_styl_last[$key];
 
-						if(strpos($class_Data, '#')){
-							$elem  = explode("#", $class_Data);
-							$width = 'style="width:'.$elem[0].'%;"' ;
-							$class = 'class="'.$elem[1].'"' ;
+						foreach ($member as $key => $value) {
+
+							$width = $array_last_width[$key];
+							$align = $array_last_align[$key];
+
+							$width = 'style="width:'.$width.'%;"' ;
+							$align = 'class="'.$align.'"' ;
+
+
+							$html .= "\t\t<td $width $align>" . htmlspecialchars($value) . "</td>\n";
 						}
-
-
-						$html .= "\t\t<td $width $class>" . htmlspecialchars($value) . "</td>\n";
+						$html .= "\t</tr>\n";
 					}
-					$html .= "\t</tr>\n";
+					$this->MoveFirst();
+					$html .= "</table>";
+				} else {
+					$html = "No records were returned.";
 				}
-				$this->MoveFirst();
-				$html .= "</table>";
 			} else {
-				$html = "No records were returned.";
+				$this->active_row = -1;
+				$html = false;
 			}
-		} else {
-			$this->active_row = -1;
-			$html = false;
-		}
 
-		return $html;
-	}
+			return $html;
+		}
 
 	/**
 	* Returns the last query as a JSON document
