@@ -1,15 +1,20 @@
 <?php 
 //SYS GLOBAL TECH
-// Modul: clients => Controller
+// Modul: fournisseurs => Controller
 
 defined('_MEXEC') or die;
-if(MInit::form_verif('addclient',false))
+if(MInit::form_verif('editfournisseur',false))
 {
-	
+	//Check if id is been the correct id compared with idc
+   if(!MInit::crypt_tp('id', null, 'D'))
+   {  
+   // returne message error red to fournisseur 
+   exit('3#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+   }
   $posted_data = array(
-   'code'           => Mreq::tp('code') ,
+   'id'             => Mreq::tp('id') ,
+   //'code'           => Mreq::tp('code') ,
    'denomination'   => Mreq::tp('denomination') ,
-   'id_categorie'   => Mreq::tp('id_categorie') ,
    'r_social'       => Mreq::tp('r_social') ,
    'r_commerce'     => Mreq::tp('r_commerce') ,
    'nif'            => Mreq::tp('nif') ,
@@ -24,8 +29,7 @@ if(MInit::form_verif('addclient',false))
    'bp'             => Mreq::tp('bp') ,
    'email'          => Mreq::tp('email') , 
    'rib'            => Mreq::tp('rib') , 
-   'id_devise'      => Mreq::tp('id_devise') ,
-   'tva'            => Mreq::tp('tva') , 
+   'id_devise'      => Mreq::tp('id_devise') , 
    'pj_id'          => Mreq::tp('pj-id'),
    'pj_photo_id'    => Mreq::tp('pj_photo-id')
    );
@@ -34,16 +38,16 @@ if(MInit::form_verif('addclient',false))
   //Check if array have empty element return list
   //for acceptable empty field do not put here
   
-  
-  $checker = null;
+
+$checker = null;
   $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
 
-  if($posted_data['code'] == NULL){
+ /* if($posted_data['code'] == NULL){
 
-    $empty_list .= "<li>Code Client</li>";
+    $empty_list .= "<li>Code Fournisseur</li>";
     $checker = 1;
   }
-
+*/
   if($posted_data['denomination'] == NULL){
 
     $empty_list .= "<li>Dénomination</li>";
@@ -54,13 +58,7 @@ if(MInit::form_verif('addclient',false))
     $empty_list .= "<li>Raison Social</li>";
     $checker = 1;
   }*/
-
-  if($posted_data['id_categorie'] == NULL){
-
-    $empty_list .= "<li>Catégorie client</li>";
-    $checker = 1;
-  }
-  
+ 
   /*if($posted_data['nif'] == NULL){
 
     $empty_list .= "<li>N° Identification Fiscale</li>";
@@ -71,7 +69,7 @@ if(MInit::form_verif('addclient',false))
     $empty_list .= "<li>N° Registre de commerce</li>";
     $checker = 1;
   }*/
-  
+    
   if($posted_data['adresse'] == NULL){
 
     $empty_list .= "<li>Adresse</li>";
@@ -103,11 +101,6 @@ if(MInit::form_verif('addclient',false))
     $empty_list .= "<li>Email</li>";
     $checker = 1;
   }
-   if($posted_data['id_devise'] == NULL){
-
-    $empty_list .= "<li>Devise</li>";
-    $checker = 1;
-  }
 
 
   $empty_list.= "</ul>";
@@ -117,23 +110,25 @@ if(MInit::form_verif('addclient',false))
   }
 
   //End check empty element
-
-  $new_client = new  Mclients($posted_data);
-
-  $new_client->exige_pj       = false;
-  $new_client->exige_pj_photo = false;
+    
+  
+ $fournisseur = new  Mfournisseurs($posted_data);
+ $fournisseur->id_fournisseur = $posted_data['id']; 
+  
+  $fournisseur->exige_pj       = false;
+  $fournisseur->exige_pj_photo = false;
 
   //execute Insert returne false if error
-  if($new_client->save_new_client()){
+  if($fournisseur->edit_fournisseur()){
 
-    echo("1#".$new_client->log);
+    echo("1#".$fournisseur->log);
   }else{
 
-    echo("0#".$new_client->log);
+    echo("0#".$fournisseur->log);
   }
 
 
 } else {
-  view::load('clients','addclient');
+  view::load_view('editfournisseur');
 }
 ?>
