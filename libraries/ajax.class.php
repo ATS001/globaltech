@@ -6,15 +6,16 @@
 class MAjax 
 {
 	
-	Var $error = true;
-	var $is_appli = false;
+	Var $error       = true;
+	var $is_appli    = false;
 	var $default_app = null;
-	var $log = '';
-	var $app_id;
-	var $app_array = array();
+	var $log         = null;	
+	var $app_id      = null;
+	var $app_array   = array();
 	var $session_user;
 	var $session_id; 
-	var $msg_ajax = "Vous n'êtes pas autorisé(e) à accéder à cette application , redirection vers acceuil";
+	var $app_sys       = null;
+	var $msg_ajax      = "Vous n'êtes pas autorisé(e) à accéder à cette application , redirection vers acceuil";
 	var $degre_message = '3#';
 
 
@@ -247,17 +248,21 @@ WHERE users_sys.id = ".$this->session_user."
             $new_logout->token = session::get('ssid');
             $new_logout->logout();
 
-		}else{
-			//Update lastactive into users_sys
-		    $val_time['lastactive'] = 'CURRENT_TIMESTAMP';
-		    $whr_user['id']         = MySQL::SQLValue(session::get('userid'));
-		    if (!$db->UpdateRows('users_sys', $val_time, $whr_user))
-		    {
-			    $this->log .= $db->Error();
-			    $this->error = false;
-			    $this->log .='</br>Problème MAJ dérnière activité'; 
-		    }
-		} 
+        }else{
+			//Update lastactive into users_sys case no app sys
+        	if($this->app_array['app_sys'] == 0)
+        	{
+        		$val_time['lastactive'] = 'CURRENT_TIMESTAMP';
+        		$whr_user['id']         = MySQL::SQLValue(session::get('userid'));
+        		if (!$db->UpdateRows('users_sys', $val_time, $whr_user))
+        		{
+        			$this->log .= $db->Error();
+        			$this->error = false;
+        			$this->log .='</br>Problème MAJ dérnière activité'; 
+        		}
+        	}
+        	
+        } 
 		
 		
 	}

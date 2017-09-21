@@ -26,18 +26,18 @@ class TableTools
 		global $db;
 		$userid = session::get('userid');
 		$sql = "SELECT
-                1
-                FROM
-                `rules_action`
-                INNER JOIN `task` 
-                    ON (`rules_action`.`appid` = `task`.`id`)
-                INNER JOIN `task_action` 
-                    ON (`task_action`.`appid` = `task`.`id`) AND (`rules_action`.`action_id` = `task_action`.`id`)
-                INNER JOIN `users_sys` 
-                    ON (`rules_action`.`userid` = `users_sys`.`id`)
-                WHERE users_sys.id = $userid 
+		1
+		FROM
+		`rules_action`
+		INNER JOIN `task` 
+		ON (`rules_action`.`appid` = `task`.`id`)
+		INNER JOIN `task_action` 
+		ON (`task_action`.`appid` = `task`.`id`) AND (`rules_action`.`action_id` = `task_action`.`id`)
+		INNER JOIN `users_sys` 
+		ON (`rules_action`.`userid` = `users_sys`.`id`)
+		WHERE users_sys.id = $userid 
 
-                AND task.app =  ".MySQL::SQLValue($app)." ";
+		AND task.app =  ".MySQL::SQLValue($app)." ";
 
 		$permission = $db->QuerySingleValue0($sql);
 
@@ -45,62 +45,80 @@ class TableTools
 		$icon_class = $icon == NULL ? 'plus' : $icon;
 
 		$output = $permission == "0"?"":'<a href="#" rel="'.$app.'&'.$add_set.'" class=" btn btn-white btn-info btn-bold '.$exec_class.' spaced"><span><i class="fa fa-'.$icon_class.'"></i> '.$text.'</span></a>';
-        
-        $render = print ($output);
-		    
+
+		$render = print ($output);
+
 
 		return $render ;
 
 	}
-		// ---------------------------------------------------
-// ADD ButounBack for Modul
-// ---------------------------------------------------
+    /**
+     * [btn_back description]
+     * @param  [type] $app     [description]
+     * @param  [type] $text    [description]
+     * @param  [type] $id      [description]
+     * @param  [type] $add_set [description]
+     * @return [type]          [description]
+     */
 	static public function btn_back($app, $text=NULL, $id, $add_set=NULL){
-      global $db;
+		global $db;
 		$userid = session::get('userid');
 		$sql = "SELECT
-    1
-FROM
-    `rules_action`
-    INNER JOIN `task` 
-        ON (`rules_action`.`appid` = `task`.`id`)
-    INNER JOIN `task_action` 
-        ON (`task_action`.`appid` = `task`.`id`) AND (`rules_action`.`action_id` = `task_action`.`id`)
-    INNER JOIN `users_sys` 
-        ON (`rules_action`.`userid` = `users_sys`.`id`)
-WHERE users_sys.id = $userid 
+		1
+		FROM
+		`rules_action`
+		INNER JOIN `task` 
+		ON (`rules_action`.`appid` = `task`.`id`)
+		INNER JOIN `task_action` 
+		ON (`task_action`.`appid` = `task`.`id`) AND (`rules_action`.`action_id` = `task_action`.`id`)
+		INNER JOIN `users_sys` 
+		ON (`rules_action`.`userid` = `users_sys`.`id`)
+		WHERE users_sys.id = $userid 
 
-    AND task.app =  ".MySQL::SQLValue($app)." ";
+		AND task.app =  ".MySQL::SQLValue($app)." ";
 
-    $id_format = '&id='.$id.'&idc='.md5(Minit::cryptage($id,1));
-    
+		$id_format = '&id='.$id.'&idc='.md5(Minit::cryptage($id,1));
+
 		$permission = $db->QuerySingleValue0($sql);
 		$output = $permission == "0"?"":'<a href="#" rel="'.$app.$id_format.$add_set.'" class="ColVis_Button ColVis_MasterButton btn btn-red btn-info btn-bold this_url"><span><i class="fa fa-reply"></i> '.$text.'</span></a>';
-        
-        $render = print ($output);
-		    
+
+		$render = print ($output);
+
 
 		return $render ;
 
 	}
-
+    /**
+     * [btn_csv description]
+     * @param  [type] $app  [description]
+     * @param  [type] $text [description]
+     * @return [type]       [description]
+     */
 	static public function btn_csv($app, $text)
 	{
 		$output = '<a title="Export XLS" href="#"  class="ColVis_Button ColVis_MasterButton btn btn-white btn-info btn-bold export_csv"><span><i class="fa fa-file-excel-o fa-lg" style="color:green"></i></span></a>';
 
-        
-        $render = print ($output);
-		    
+
+		$render = print ($output);
+
 
 		return $render ;
 	}
+
+
+	/**
+	 * [btn_pdf description]
+	 * @param  [type] $app  [description]
+	 * @param  [type] $text [description]
+	 * @return [type]       [description]
+	 */
 	static public function btn_pdf($app, $text)
 	{
 		$output = '<a title="Export PDF" href="#"  class="ColVis_Button ColVis_MasterButton btn btn-white btn-info btn-bold export_pdf"><span><i class="fa fa-file-pdf-o fa-lg" style="color:red"></i></span></a>';
 
-        
-        $render = print ($output);
-		    
+
+		$render = print ($output);
+
 
 		return $render ;
 	}
@@ -108,9 +126,9 @@ WHERE users_sys.id = $userid
 	{
 		$output = '<a title="Export MAP" href="#"  class="ColVis_Button ColVis_MasterButton btn btn-white btn-info btn-bold export_map"><span><i class="fa fa-map-o fa-lg" style="color:red"></i></span></a>';
 
-        
-        $render = print ($output);
-		    
+
+		$render = print ($output);
+
 
 		return $render ;
 	}
@@ -134,7 +152,7 @@ WHERE users_sys.id = $userid
 
 		$table_from = $table_modul == 'task' ? NULL : ', '.$table_modul;
 		$and_task = $table_modul == 'task' ? NULL : ' AND task.app ="'.$app.'"';
-		 
+
 
 		$etat          = $this->line_data['etat'];
 		$id_this_modul = APP_ID;
@@ -182,16 +200,16 @@ WHERE users_sys.id = $userid
 				}
 				$stanadr_delete = null;
 				if($etat == 0 AND ($cre_usr == session::get('userid') OR session::get('service') == 1))
-                {
-                	$stanadr_delete = '<li class="divider"></li><li><a href="#" class="this_exec" data="'.MInit::crypt_tp('id',$id).'" rel="'.$task_exec.'"  ><i class="ace-icon fa fa-trash red bigger-100"></i> Supprimer ligne</a></li>';
-                }
-				
-				$retour =  str_replace('%id%', MInit::crypt_tp('id',$id), $this->app_action);
-				return print($retour.$stanadr_delete);
+				{
+						$stanadr_delete = '<li class="divider"></li><li><a href="#" class="this_exec" data="'.MInit::crypt_tp('id',$id).'" rel="'.$task_exec.'"  ><i class="ace-icon fa fa-trash red bigger-100"></i> Supprimer ligne</a></li>';
+				}
+
+					$retour =  str_replace('%id%', MInit::crypt_tp('id',$id), $this->app_action);
+					return print($retour.$stanadr_delete);
 
 			}
-			
-			
+
+
 		}
 		//return true;
 	}
@@ -202,142 +220,133 @@ WHERE users_sys.id = $userid
      * @param  [String] $task_name [task name calling this liste]
      * @return [String] [return Sql code to concate with any culomn (input hidden or null)]
      */
-	static public function line_notif($table, $task_name)
-	{
-		$get_notif = "CASE 1
-                        WHEN (SELECT 
-                                COUNT(task_action.notif) 
-                                FROM
-                                task_action, rules_action , task
-                                WHERE task_action.`etat_line` = `$table`.etat
-                                AND task_action.appid = task.id 
-                                AND task_action.`notif` = 1 
-                                AND task.`app` = '$task_name'  
-                                AND task_action.id = rules_action.`action_id`
-                                AND rules_action.`userid` = ".session::get('userid')."  
-                                AND task_action.`type` = 0) > 0
-                        THEN '<input type=hidden value=isnotif>'
-                        ELSE ' ' END";
-        return $get_notif;
-	}
+    static public function line_notif($table, $task_name)
+    {
+    	$get_notif = "CASE 1
+    	WHEN (SELECT 
+    		COUNT(task_action.notif) 
+    		FROM
+    		task_action, rules_action , task
+    		WHERE task_action.`etat_line` = `$table`.etat
+    		AND task_action.appid = task.id 
+    		AND task_action.`notif` = 1 
+    		AND task.`app` = '$task_name'  
+    		AND task_action.id = rules_action.`action_id`
+    		AND rules_action.`userid` = ".session::get('userid')."  
+    		AND task_action.`type` = 0) > 0
+    		THEN '<input type=hidden value=isnotif>'
+    		ELSE ' ' END";
+    	return $get_notif;
+    }
+    /**
+     * [line_notif_new description]
+     * @param  [type] $table     [description]
+     * @param  [type] $task_name [description]
+     * @return [type]            [description]
+     */
+    static public function line_notif_new($table, $task_name)
+    {
 
-	static public function line_notif_new($table, $task_name)
-	{
-		
         //Check if for export result then select colonne adequat
-        if(Mreq::tp('export') == 1)
-        {
-            $message_etat = "CASE
-                          WHEN SUM(task_action.`notif`) > 0 
-                          THEN 
-                            task_action.`etat_desc`                            
-                          ELSE CONCAT(task_action.`etat_desc`,'*') 
-                        END ";
-        }else{
-        	$message_etat = " CASE
-                          WHEN SUM(task_action.`notif`) > 0 
-                          THEN CONCAT(
-                            task_action.`message_etat`,
-                            '<input type=hidden value=isnotif>'
-                          ) 
-                          WHEN task_action.`message_etat` IS NULL THEN 'No ETAT'
-                          ELSE CONCAT(task_action.`message_etat`) 
-                        END ";
-        }
-		$get_notif = "(SELECT 
-                         $message_etat 
-                      FROM
-                        task_action,
-                        rules_action,
-                        task 
-                      WHERE task_action.`etat_line` = `$table`.etat 
-                        AND task_action.appid = task.id 
-                        AND task_action.etat_desc IS NOT NULL
-                        AND task.`app` = '$task_name' 
-                        AND task_action.id = rules_action.`action_id` 
-                        AND rules_action.`userid` = ".session::get('userid')."  
-                        AND task_action.`type` = 0) AS statut";
-        return $get_notif;
-	}
-
-	static public function order_bloc($order_column)
-	{
-		
-
-
-			if(Mreq::tp('export') == 1)
-			{
-				$order_notif = " CASE WHEN LOCATE('*', statut) = 0  THEN 0 ELSE 1 END DESC, ";
-			}else{
-				$order_notif = " CASE WHEN LOCATE('notif', statut) = 0  THEN 0 ELSE 1 END DESC, ";
-			}
-			return $order_notif;
-		
-	}   
-
-	static public function where_etat_line($table, $task_name)
-	{
-		$where_etat_line = " WHERE   (SELECT 
-                                COUNT(task_action.id) 
-                                FROM
-                                task_action, rules_action , task
-                                WHERE task_action.`etat_line` = `$table`.etat
-                                AND task_action.appid = task.id 
-                                AND task.`app` = '$task_name'  
-                                AND task_action.id = rules_action.`action_id`
-                                AND rules_action.`userid` = ".session::get('userid').") > 0 " ;
-        return $where_etat_line; 
-	}
-
-	static public function where_search_etat($table, $task_name, $search)
-	{
-		$where_search_etat = " OR (SELECT 
-                                COUNT(task_action.id) 
-                              FROM
-                                task_action,
-                                rules_action,
-                                task 
-                              WHERE task_action.`etat_line` = `$table`.etat 
-                                AND task_action.appid = task.id 
-                                AND task_action.etat_desc IS NOT NULL 
-                                AND task.`app` = '$task_name' 
-                                AND task_action.id = rules_action.`action_id` 
-                                AND rules_action.`userid` = ".session::get('userid')." 
-                                AND task_action.`type` = 0
-                                AND task_action.`message_etat` LIKE '%$search%')
-                                )";
-        return $where_search_etat;                        
-	}
-
-    
-    static	public function count_notif($table, $app)
-	{
-		global $db;
-		$user = session::get('userid');
-	    $sql =	" SELECT 
-        COUNT(task_action.notif) AS count_notif
-      FROM
-        task_action,
-        rules_action,
-        task,
-        $table 
-      WHERE 
-      task_action.etat_line = $table.etat 
-        AND task_action.appid = task.id 
-        AND task_action.notif = 1 
-        AND task.app = '$app' 
-        AND task_action.id = rules_action.action_id 
-        AND rules_action.userid = $user
-        AND task_action.type = 0 ";
-
-       
-        $count = $db->QuerySingleValue0($sql).'  '.$db->Error();
+    	if(Mreq::tp('export') == 1)
+    	{
+    			$message_etat = "CASE
+    			WHEN SUM(task_action.`notif`) > 0 
+    			THEN 
+    			task_action.`etat_desc`                            
+    			ELSE CONCAT(task_action.`etat_desc`,'*') 
+    			END ";
+    	}else{
+    			$message_etat = " CASE
+    			WHEN SUM(task_action.`notif`) > 0 
+    			THEN CONCAT(
+    				task_action.`message_etat`,
+    				'<input type=hidden value=isnotif>'
+    			) 
+    			WHEN task_action.`message_etat` IS NULL THEN 'No ETAT'
+    			ELSE CONCAT(task_action.`message_etat`) 
+    			END ";
+    	}
+    		$get_notif = "(SELECT 
+    			$message_etat 
+    			FROM
+    			task_action,
+    			rules_action,
+    			task 
+    			WHERE task_action.`etat_line` = `$table`.etat 
+    			AND task_action.appid = task.id 
+    			AND task_action.etat_desc IS NOT NULL
+    			AND task.`app` = '$task_name' 
+    			AND task_action.id = rules_action.`action_id` 
+    			AND rules_action.`userid` = ".session::get('userid')."  
+    			AND task_action.`type` = 0) AS statut";
+    			return $get_notif;
+    }
+    /**
+     * [order_bloc description]
+     * @param  [type] $order_column [description]
+     * @return [type]               [description]
+     */
+    static public function order_bloc($order_column)
+    {
 
 
-        return $count;
 
+    	if(Mreq::tp('export') == 1)
+    	{
+    		$order_notif = " CASE WHEN LOCATE('*', statut) = 0  THEN 0 ELSE 1 END DESC, ";
+    	}else{
+    		$order_notif = " CASE WHEN LOCATE('notif', statut) = 0  THEN 0 ELSE 1 END DESC, ";
+    	}
+    	return $order_notif;
 
-	}
+    }   
+    /**
+     * [where_etat_line description]
+     * @param  [type] $table     [description]
+     * @param  [type] $task_name [description]
+     * @return [type]            [description]
+     */
+    static public function where_etat_line($table, $task_name)
+    {
+    	$where_etat_line = " WHERE   (SELECT 
+    		COUNT(task_action.id) 
+    		FROM
+    		task_action, rules_action , task
+    		WHERE task_action.`etat_line` = `$table`.etat
+    		AND task_action.appid = task.id 
+    		AND task.`app` = '$task_name'  
+    		AND task_action.id = rules_action.`action_id`
+    		AND rules_action.`userid` = ".session::get('userid').") > 0 " ;
+    	return $where_etat_line; 
+    }
+    /**
+     * [where_search_etat description]
+     * @param  [type] $table     [description]
+     * @param  [type] $task_name [description]
+     * @param  [type] $search    [description]
+     * @return [type]            [description]
+     */
+    static public function where_search_etat($table, $task_name, $search)
+    {
+    	$where_search_etat = " OR (SELECT 
+    		COUNT(task_action.id) 
+    		FROM
+    		task_action,
+    		rules_action,
+    		task 
+    		WHERE task_action.`etat_line` = `$table`.etat 
+    		AND task_action.appid = task.id 
+    		AND task_action.etat_desc IS NOT NULL 
+    		AND task.`app` = '$task_name' 
+    		AND task_action.id = rules_action.`action_id` 
+    		AND rules_action.`userid` = ".session::get('userid')." 
+    		AND task_action.`type` = 0
+    		AND task_action.`message_etat` LIKE '%$search%')
+    	)";
+    	return $where_search_etat;                        
+    }
+
 
 
 
