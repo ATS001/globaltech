@@ -3,4 +3,4 @@
 // Modul: contrats => Controller
 
 
-view::load('contrats', 'detailcontrat');
+view::load_view('detailcontrat');
