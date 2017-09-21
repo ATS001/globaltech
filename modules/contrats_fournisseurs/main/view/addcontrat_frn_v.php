@@ -34,7 +34,7 @@
 			<div class="widget-box">
 				
 <?php
-//
+
 $form = new Mform('addcontrat_frn', 'addcontrat_frn','',  'contrats_frn', null);//Si on veut un wizzad on saisie 1, sinon null pour afficher un formulaire normal
 
 //Step Wizard
@@ -63,12 +63,9 @@ $form->input_editor('Commentaire', 'commentaire', 8, $clauses=NULL , $js_array =
 
 
 //pj_id
-$form->input('Justifications du fournisseur', 'pj', 'file', 6, null, null);
+$form->input('Contrat fournisseur', 'pj', 'file', 6, null, null);
 $form->file_js('pj', 1000000, 'pdf');
 
-//pj_id
-$form->input('Photo du fournisseur', 'pj_photo', 'file', 6, null, null);
-$form->file_js('pj_photo', 1000000, 'image');
 
 
 $form->step_end();
@@ -82,3 +79,39 @@ $form->render();
 		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+ajax_loadmessage('La date de fin doit être supérieur de la date d\'effet','nok');
+
+	$('#date_fin').on('change',function() {
+		
+
+    if( $('#date_fin').val() <= $('#date_effet').val() )
+    	{
+			//alert('test');
+    		ajax_loadmessage('La date de fin doit être supérieur de la date d\'effet','nok');
+    		return false;
+    	}
+
+    });
+
+
+	$('#date_effet').on('change',function() {
+		
+
+    if( $('#date_effet').val() >= $('#date_fin').val() )
+    	{
+			//alert('test');
+    		ajax_loadmessage('La date d\'effet  doit être inférieur de la date fin','nok');
+    		return false;
+    	}
+
+    });
+
+
+
+});   
+
+</script>	

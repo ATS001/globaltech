@@ -244,15 +244,12 @@ class Mcontrat {
 
     //Edit contrat after all check
     public function edit_contrat() {
-        $this->reference = $this->_data['ref'];
+        
         //Check if devis exist
         $this->Check_contrat_exist($this->_data['tkn_frm'], 1);
-        //Check if devis have détails
-        //$this->Check_contrat_have_details($this->_data['tkn_frm']);
-        //Make reference
-        //$this->Make_devis_reference();
+   
+
         //Before execute do the multiple check
-        $this->Check_exist('reference', $this->reference, 'Réference Devis', 1);
 
         $this->check_non_exist('devis', 'id', $this->_data['iddevis'], 'Client');
 
@@ -277,8 +274,6 @@ class Mcontrat {
             //Format values for Insert query 
             global $db;
 
-            //$values["ref"] = MySQL::SQLValue($this->_data['ref']);
-            //$values["tkn_frm"] = MySQL::SQLValue($this->_data['tkn_frm']);
             $values["iddevis"] = MySQL::SQLValue($this->_data['iddevis']);
             $values["date_effet"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_effet'])));
             $values["date_fin"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_fin'])));

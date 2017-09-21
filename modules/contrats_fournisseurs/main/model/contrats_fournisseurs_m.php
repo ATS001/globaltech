@@ -9,9 +9,10 @@ class Mcontrats_fournisseurs {
 	var $last_id; //return last ID after insert command
 	var $log = NULL; //Log of all opération.
 	var $error = true; //Error bol changed when an error is occured
-    var $id_contrats_frn; // Ville ID append when request
+  var $id_contrats_frn; // Ville ID append when request
 	var $token; //user for recovery function
 	var $contrats_frn_info; //Array stock all ville info
+  var $reference = null; // Reference contrat
 
 
 	public function __construct($properties = array()){
@@ -105,17 +106,27 @@ class Mcontrats_fournisseurs {
     	}
     }
 
+    //Generate contrat reference
+    private function Generate_contrat_reference() {
+        if ($this->error == false) {
+            return false;
+        }
+        global $db;
+        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(reference, 9, LENGTH(SUBSTR(reference,9))-5))),0)+1  AS reference  FROM contrats_frn WHERE SUBSTR(reference,LENGTH(reference)-3,4)= (SELECT  YEAR(SYSDATE()));
+ ');
+        $this->reference = 'CTR-FRN' . $max_id . '/' . date('Y');
+    }
 
 	 //Save new contrats_frn after all check
     public function save_new_contrats_frn(){
 
+      //Generate reference
+      $this->Generate_contrat_reference();
 
-        //Before execute do the multiple check
-        $this->Check_exist('reference', $this->_data['reference'], 'Réference Contrat', null);
+      //Before execute do the multiple check
+      $this->Check_exist('reference', $this->reference, 'Référence contrat', null);
 
-		
-
-    	$this->check_non_exist('fournisseurs','id', $this->_data['id_fournisseur'], 'Fournisseur');
+		  $this->check_non_exist('fournisseurs','id', $this->_data['id_fournisseur'], 'Fournisseur');
 
        
 
@@ -124,18 +135,14 @@ class Mcontrats_fournisseurs {
         {
             $this->check_file('pj', 'Justifications du contrats_frn.');
         }
-          //Check if PJ attached required
-        if($this->exige_pj_photo)
-        {
-            $this->check_file('pj_photo', 'La photo du contrats_frn.');
-        }
+     
 
         //Check $this->error (true / false)
 		if($this->error == true){
 			//Format values for Insert query 
     	global $db;
 
-   		$values["reference"]  	 = MySQL::SQLValue($this->_data['reference']);
+   		$values["reference"]  	 = MySQL::SQLValue($this->reference);
    		$values["id_fournisseur"]= MySQL::SQLValue($this->_data['id_fournisseur']);
    		$values["date_effet"] 	 = MySQL::SQLValue($this->_data['date_effet']);
    		$values["date_fin"]      = MySQL::SQLValue($this->_data['date_fin']);
@@ -155,17 +162,15 @@ class Mcontrats_fournisseurs {
 				$this->last_id = $result;
 				//If Attached required Save file to Archive
 				
-                $this->save_file('pj', 'Justifications du contrats_frns'.$this->_data['denomination'], 'Document');
-				
-				$this->save_file('pj_photo', 'Photo du contrats_frn'.$this->_data['denomination'], 'Image');
-								
+        $this->save_file('pj', 'Copie Contrat fournisseur'.$this->reference, 'Document');
+					
 				//Check $this->error = true return Green message and Bol true
 				if($this->error == true)
 				{
-					$this->log = '</br>Enregistrement réussie: <b>'.$this->_data['denomination'].' ID: '.$this->last_id;
+					$this->log = '</br>Enregistrement réussie: <b>'.$this->reference.' ID: '.$this->last_id;
 				//Check $this->error = false return Red message and Bol false	
 				}else{
-					$this->log .= '</br>Enregistrement réussie: <b>'.$this->_data['denomination'];
+					$this->log .= '</br>Enregistrement réussie: <b>'.$this->reference;
                     
 					$this->log .= '</br>Un problème d\'Enregistrement ';
 				}
@@ -257,11 +262,11 @@ class Mcontrats_fournisseurs {
 
     	$this->last_id = $this->id_contrats_frn;
 
-        $this->Check_exist('r_social', $this->_data['r_social'], 'Raison Sociale', $this->id_contrats_frn);
+      $this->Check_exist('r_social', $this->_data['r_social'], 'Raison Sociale', $this->id_contrats_frn);
              
-        $this->Check_exist('r_commerce', $this->_data['r_commerce'], 'N° de registre', $this->id_contrats_frn);           
+      $this->Check_exist('r_commerce', $this->_data['r_commerce'], 'N° de registre', $this->id_contrats_frn);           
        
-        $this->Check_exist('nif', $this->_data['nif'], 'N° de NIF', $this->id_contrats_frn);
+      $this->Check_exist('nif', $this->_data['nif'], 'N° de NIF', $this->id_contrats_frn);
 
 
 
@@ -404,7 +409,7 @@ class Mcontrats_fournisseurs {
       }
 
       $new_name_file = $item.'_'.$this->last_id;
-      $folder        = MPATH_UPLOAD.'contrats_frns'.SLASH.$this->last_id;
+      $folder        = MPATH_UPLOAD.'contrats_fournisseurs'.SLASH.$this->last_id;
       $id_line       = $this->last_id;
       $title         = $titre;
       $table         = $this->table;
@@ -414,7 +419,7 @@ class Mcontrats_fournisseurs {
 
 
         //Call save_file_upload from initial class
-      if(!Minit::save_file_upload($temp_file, $new_name_file, $folder, $id_line, $title, 'contrats_frns', $table, $column, $type, $edit = null))
+      if(!Minit::save_file_upload($temp_file, $new_name_file, $folder, $id_line, $title, 'contrats_fournisseurs', $table, $column, $type, $edit = null))
       {
         $this->error = false;
         $this->log .='</br>Enregistrement '.$item.' dans BD non réussie';

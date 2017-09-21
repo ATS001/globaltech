@@ -14,8 +14,8 @@ if(MInit::form_verif('addcontrat_frn',false))
    'date_effet'       => Mreq::tp('date_effet') ,
    'date_fin'    	  => Mreq::tp('date_fin') ,
    'commentaire'      => Mreq::tp('commentaire') ,
-   'pj_id'            => Mreq::tp('pj-id'),
-   'pj_photo_id'      => Mreq::tp('pj_photo-id')
+   'pj_id'            => Mreq::tp('pj-id')
+  
    );
 
   
@@ -26,11 +26,6 @@ if(MInit::form_verif('addcontrat_frn',false))
   $checker = null;
   $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
 
-  if($posted_data['reference'] == NULL){
-
-    $empty_list .= "<li>Réference</li>";
-    $checker = 1;
-  }
 
   if($posted_data['id_fournisseur'] == NULL){
 
@@ -72,8 +67,7 @@ if(MInit::form_verif('addcontrat_frn',false))
 
   $new_contrats_frn = new  Mcontrats_fournisseurs($posted_data);
 
-  $new_contrats_frn->exige_pj       = false;
-  $new_contrats_frn->exige_pj_photo = false;
+  $new_contrats_frn->exige_pj       = True;
 
   //execute Insert returne false if error
   if($new_contrats_frn->save_new_contrats_frn()){
