@@ -121,7 +121,7 @@ class Mfournisseurs {
     public function save_new_fournisseur(){
 
         //Generate reference
-        $this->Generate_contrat_reference();
+        $this->Generate_fournisseur_reference();
 
         //Before execute do the multiple check
         $this->Check_exist('denomination', $this->_data['denomination'], 'Dénomination', null);
