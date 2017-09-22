@@ -11,9 +11,9 @@ $info_contrats_frn->id_contrats_frn = Mreq::tp('id');
 if(!MInit::crypt_tp('id', null, 'D') or !$info_contrats_frn->get_contrats_frn())
 { 	
  	// returne message error red to client 
-	exit('3#'.$info_contrats_frn->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur XXXXXX');
+	exit('3#'.$info_contrats_frn->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
-
+$pj     = $info_contrats_frn->contrats_frn_info['pj'];
 ?>
 <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
@@ -44,30 +44,21 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_contrats_frn->get_contrats_frn())
 					<div class="widget-header widget-header-large">
 						<h3 class="widget-title grey lighter">
 							<i class="ace-icon fa fa-adress-card-o green"></i>
-							Devis: <?php echo $info_contrats_frn->g('reference')?>
+							Contrat: <?php echo $info_contrats_frn->s('reference')?>
 						</h3>
 
-						<!-- #section:pages/invoice.info -->
-						<div class="widget-toolbar no-border invoice-info">
-							<span class="invoice-info-label">contrats_frn:</span>
-                                                        <span class="red"><?php echo $info_contrats_frn->s('ref');
-                                                                        
-                                                          ?></span>
+					
 
-							<br />
-							<span class="invoice-info-label">Date:</span>
-							<span class="blue"><?php echo $info_contrats_frn->s('date_contrats_frn'); 
-                                                       
-                                                        ?></span>
-						</div>
-
-                        <?php if($info_contrats_frn->s('pj') != null){?>
+                        <?php if( $pj != null){
+                        ?>
                          <div class="widget-toolbar hidden-480">
-							<a href="#" class="iframe_pdf" rel="<?php $info_contrats_frn->s('pj') ?>">
+							<a href="#" class="iframe_pdf" rel=<?php echo $pj; ?>>
 								<i class="ace-icon fa fa-print"></i>
 							</a>
 						</div>       
-                       <?php } ?>
+                       <?php 
+                   							    } 
+                   	   ?>
 						
 
 						<!-- /section:pages/invoice.info -->
@@ -79,34 +70,34 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_contrats_frn->get_contrats_frn())
 								<div class="col-sm-6">
 									<div class="row">
 										<div class="col-xs-11 label label-lg label-info arrowed-in arrowed-right">
-											<b>contrats_frn Info</b>
+											<b>Informations Contrat</b>
 										</div>
 									</div>
 
 									<div>
 										<ul class="list-unstyled spaced">
 											<li>
+												<i class="ace-icon fa fa-caret-right blue"></i> Référence                                                                                               
+                                                  <b style="color:blue"> <?php echo $info_contrats_frn->s('reference');?> </b>                                        
+									
+											</li>
+
+											<li>
 												<i class="ace-icon fa fa-caret-right blue"></i> Date d'effet                                                                                               
-                                                                                                <b style="color:blue"> <?php echo $info_contrats_frn->s('date_effet');?> </b>                                                                                                          
-                                            
+                                                  <b style="color:blue"> <?php echo $info_contrats_frn->s('date_effet');?> </b>                                        
 									
 											</li>
 
 											<li>
 												<i class="ace-icon fa fa-caret-right blue"></i> Date de fin
-                                                                                                <b style="color:blue"><?php echo $info_contrats_frn->s('date_fin');?>  </b>                                                                                                              
+                                                   <b style="color:blue"><?php echo $info_contrats_frn->s('date_fin');?>  </b>                                      
                                                                                                     
-											</li>
+											</li>										
 
 											<li>
-												<i class="ace-icon fa fa-caret-right blue"></i> Type échéance
-                                                                                                <b style="color:blue"><?php echo $info_contrats_frn->s('type_echeance');?></b> 
-											</li>											
+												<i class="ace-icon fa fa-caret-right blue"></i> Commentaire
 
-											<li>
-												<i class="ace-icon fa fa-caret-right blue"></i>
-												Commentaire
-                                                                                                <b style="color:blue"><?php echo $info_contrats_frn->s('commentaire');?></b>
+                                                    <b style="color:blue"><?php echo $info_contrats_frn->s('commentaire');?></b>
 											</li>
 										</ul>
 									</div>
@@ -115,7 +106,7 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_contrats_frn->get_contrats_frn())
 								<div class="col-sm-6">
 									<div class="row">
 										<div class="col-xs-11 label label-lg label-success arrowed-in arrowed-right">
-											<b>Devis Info</b>
+											<b>Informations Fournisseur </b>
 										</div>
 									</div>
 
@@ -123,23 +114,24 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_contrats_frn->get_contrats_frn())
 										<ul class="list-unstyled  spaced">
 											<li>
 												<i class="ace-icon fa fa-caret-right green"></i> Référence
-                                                                                                <b style="color:green"><?php echo $info_contrats_frn->g('reference');?></b>
+                                                   <b style="color:green"><?php echo $info_contrats_frn->s('code');?></b>
 											</li>
 
 											<li>
-												<i class="ace-icon fa fa-caret-right green"></i> Date devis
-                                                                                                <b style="color:green"><?php echo $info_contrats_frn->g('date_devis');?></b>
+												<i class="ace-icon fa fa-caret-right green"></i> Dénomination
+                                                   <b style="color:green"><?php echo $info_contrats_frn->s('denomination');?></b>
 											</li>
 
-											<li>
-												<i class="ace-icon fa fa-caret-right green"></i>Client
-                                                                                                <b style="color:green"><?php echo $info_contrats_frn->g('client');?></b>
-											</li>
 
 											<li>
 												<i class="ace-icon fa fa-caret-right green"></i>
-												Tél Client
-                                                                                                <b style="color:green"><?php echo $info_contrats_frn->g('tel');?></b>
+												Pays 
+                                                    <b style="color:green"><?php echo $info_contrats_frn->s('pays');?></b>
+											</li>
+											<li>
+												<i class="ace-icon fa fa-caret-right green"></i>
+												Tél 
+                                                    <b style="color:green"><?php echo $info_contrats_frn->s('tel');?></b>
 											</li>
 										</ul>
 									</div>
@@ -148,11 +140,7 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_contrats_frn->get_contrats_frn())
 
 							<div class="space"></div>
 
-							<div>
-							<?php print $info_contrats_frn->Gettable_echeance_contrats_frn();?>
-
-								
-							</div>
+							
 
 							<div class="hr hr8 hr-double hr-dotted"></div>
 
