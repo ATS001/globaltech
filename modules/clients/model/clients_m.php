@@ -108,16 +108,28 @@ class Mclients {
     	}
     }
 
+    //Generate refrence client
+    private function Generate_client_reference() {
+        if ($this->error == false) {
+            return false;
+        }
+        global $db;
+          global $db;
+        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(CODE, 5, LENGTH(SUBSTR(CODE,5))-5))),0)+1  AS reference FROM clients WHERE SUBSTR(CODE,LENGTH(CODE)-3,4)= (SELECT  YEAR(SYSDATE()))');
+        $this->reference = 'CLT-' . $max_id . '/' . date('Y');
+    }
 
 	 //Save new client after all check
     public function save_new_client(){
 
+        //Generate reference
+        $this->Generate_client_reference();
 
         //Before execute do the multiple check
 
         $this->Check_exist('denomination', $this->_data['denomination'], 'Dénomination', null);
 
-        $this->Check_exist('code', $this->_data['code'], 'Code Fournisseur', null);
+        $this->Check_exist('code', $this->reference, 'Code Fournisseur', null);
 
         $this->Check_exist('r_social', $this->_data['r_social'], 'Raison Sociale', null);
              
@@ -148,7 +160,7 @@ class Mclients {
 			//Format values for Insert query 
     	global $db;
 
-   		$values["code"]  		 = MySQL::SQLValue($this->_data['code']);
+   		$values["code"]  		 = MySQL::SQLValue($this->reference);
    		$values["denomination"]  = MySQL::SQLValue($this->_data['denomination']);
    		$values["id_categorie"]  = MySQL::SQLValue($this->_data['id_categorie']);
    		$values["r_social"] 	 = MySQL::SQLValue($this->_data['r_social']);
@@ -284,9 +296,9 @@ class Mclients {
 
     	$this->last_id = $this->id_client;
         
-        $this->Check_exist('denomination', $this->_data['denomination'], 'Dénomination', null);
+        $this->Check_exist('denomination', $this->_data['denomination'], 'Dénomination', $this->id_client);
 
-        $this->Check_exist('code', $this->_data['code'], 'Code Fournisseur', null);
+        //$this->Check_exist('code', $this->_data['code'], 'Code Fournisseur', null);
 
         $this->Check_exist('r_social', $this->_data['r_social'], 'Raison Sociale', $this->id_client);
              
