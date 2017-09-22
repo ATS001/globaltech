@@ -810,7 +810,7 @@ class Mcontrat {
         $id_contrat = $this->id_contrat;
         $table = $this->table;
         $this->get_contrat();
-        $info_contrat=$this->contrat_info;      
+        $contrat_info=$this->contrat_info;      
         $file_export = MPATH_TEMP.'contrats'.'_' .date('d_m_Y_H_i_s').'.pdf';
 
    //Load template 
