@@ -35,6 +35,7 @@ $(document).ready(function(){
 			dataType :'JSON',
 			timeout: 3000,
 			success: function(result) {
+
 				if(result != null){
 					read_notif_arr(result['arr']);
 					//alert(result['sum']);
@@ -50,8 +51,15 @@ $(document).ready(function(){
 				}
 			},
 			error: function() {
-				ajax_loadmessage('Affichage Impossible #AJAX','nok',3000);
-				return false;
+				bootbox.process({
+	    		    message:'Working',
+	            });
+	            $('#main-container').empty();
+	            $('#main-container').html('');
+				ajax_loadmessage('Déconnexion automatique','nok',5000)
+				window.setTimeout( function(){
+					    window.location = "./";
+				        }, 1000 );
 			}
 		});
 	}
