@@ -1,10 +1,13 @@
 <?php 
- $client= new Mclients();
- $client->id_client = Mreq::tp('id');
- $client->get_client();
+//SYS GLOBAL TECH
+// Modul: fournisseurs => View
 
- $justif     = $client->client_info['pj'];
- $photo      = Minit::get_file_archive($client->client_info['pj_photo']);
+ $fournisseur= new Mfournisseurs();
+ $fournisseur->id_fournisseur = Mreq::tp('id');
+ $fournisseur->get_fournisseur();
+
+ $justif     = $fournisseur->fournisseur_info['pj'];
+ $photo      = Minit::get_file_archive($fournisseur->fournisseur_info['pj_photo']);
 
 ?>
 <div class="pull-right tableTools-container">
@@ -12,13 +15,13 @@
 					
 		
 		<?php 
-              TableTools::btn_add('clients', 'Liste Clients', Null, $exec = NULL, 'reply');      
+              TableTools::btn_add('fournisseurs', 'Liste fournisseurs', Null, $exec = NULL, 'reply');      
 		 ?>		
 	</div>
 </div>
 <div class="page-header">
 	<h1>
-		Détails du client: <?php $client->s('code')?>    <?php $client->s('denomination'); ?> 
+		Détails du fournisseur: <?php $fournisseur->s('code')?>   <?php $fournisseur->s('denomination'); ?> 
 
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
@@ -38,7 +41,7 @@
 						<li class="active">
 							<a data-toggle="tab" href="#home">
 								<i class="green ace-icon fa fa-installer bigger-120"></i>
-								Client 
+								Fournisseur 
 							</a>
 						</li>
 
@@ -53,7 +56,7 @@
 
 								<div class="col-xs-12 col-sm-6">
 									<h4 class="blue">
-										<span class="middle">Renseignements Client</span>
+										<span class="middle">Renseignements Fournisseur</span>
 										
 									</h4>
 
@@ -62,7 +65,7 @@
 											<div class="profile-info-name"> Code</div>
 
 											<div class="profile-info-value">
-												<span><?php  $client->s('code')  ?></span>
+												<span><?php  $fournisseur->s('code')  ?></span>
 											</div>
 										</div>
 
@@ -72,24 +75,17 @@
 
 											<div class="profile-info-value">
 												<!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-												<span><?php  $client->s('denomination') ?></span>
+												<span><?php  $fournisseur->s('denomination') ?></span>
 											</div>
 										</div>
-										<div class="profile-info-row">
-											<div class="profile-info-name"> Catégorie</div>
-
-											<div class="profile-info-value">
-												<!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-												<span><?php  $client->s('categorie_client') ?></span>
-											</div>
-										</div>
+										
 
 										<div class="profile-info-row">
 											<div class="profile-info-name"> Raison Sociale</div>
 
 											<div class="profile-info-value">
 												<!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-												<span><?php  $client->s('r_social') ?></span>
+												<span><?php  $fournisseur->s('r_social') ?></span>
 											</div>
 										</div>
 
@@ -98,7 +94,7 @@
 
 											<div class="profile-info-value">
 												<!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-												<span><?php  $client->s('r_commerce') ?></span>
+												<span><?php  $fournisseur->s('r_commerce') ?></span>
 											</div>
 										</div>
 										
@@ -107,7 +103,7 @@
 
 											<div class="profile-info-value">
 												<!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-												<span><?php  $client->s('nif') ?></span>
+												<span><?php  $fournisseur->s('nif') ?></span>
 											</div>
 										</div>
 
@@ -116,7 +112,7 @@
 
 											<div class="profile-info-value">
 												<!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-												<span><?php  $client->s('pays') ?></span>
+												<span><?php  $fournisseur->s('pays') ?></span>
 											</div>
 										</div>
 
@@ -125,7 +121,7 @@
 
 											<div class="profile-info-value">
 												<!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-												<span><?php  $client->s('ville') ?></span>
+												<span><?php  $fournisseur->s('ville') ?></span>
 											</div>
 										</div>
 
@@ -145,7 +141,7 @@
 											<div class="profile-info-name"> Nom</div>
 
 											<div class="profile-info-value">
-												<span><?php $client->s('nom');?></span>
+												<span><?php $fournisseur->s('nom');?></span>
 											</div>
 										</div>
 
@@ -153,7 +149,7 @@
 											<div class="profile-info-name"> Prénom</div>
 
 											<div class="profile-info-value">
-												<span><?php $client->s('prenom') ;?></span>
+												<span><?php $fournisseur->s('prenom') ;?></span>
 											</div>
 										</div>
 
@@ -164,7 +160,7 @@
 
 											<div class="profile-info-value">
 												<!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-												<span><?php  $client->s('civilite') ?></span>
+												<span><?php  $fournisseur->s('civilite') ?></span>
 											</div>
 										</div>
 
@@ -174,7 +170,7 @@
 
 											<div class="profile-info-value">
 												<!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-												<span><?php  $client->s('adresse') ?></span>
+												<span><?php  $fournisseur->s('adresse') ?></span>
 											</div>
 										</div>
 
@@ -183,7 +179,7 @@
 
 											<div class="profile-info-value">
 												<!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-												<span><?php  $client->s('tel') ?></span>
+												<span><?php  $fournisseur->s('tel') ?></span>
 											</div>
 										</div>
 
@@ -192,7 +188,7 @@
 
 											<div class="profile-info-value">
 												<!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-												<span><?php  $client->s('fax') ?></span>
+												<span><?php  $fournisseur->s('fax') ?></span>
 											</div>
 										</div>
 
@@ -201,7 +197,7 @@
 
 											<div class="profile-info-value">
 												<!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-												<span><?php  $client->s('bp') ?></span>
+												<span><?php  $fournisseur->s('bp') ?></span>
 											</div>
 										</div>
 
@@ -210,7 +206,7 @@
 
 											<div class="profile-info-value">
 												<!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-												<span><?php  $client->s('email') ?></span>
+												<span><?php  $fournisseur->s('email') ?></span>
 											</div>
 										</div>
 
@@ -219,20 +215,9 @@
 
 											<div class="profile-info-value">
 												<!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-												<span><?php  $client->s('devise') ?></span>
+												<span><?php  $fournisseur->s('devise') ?></span>
 											</div>
 										</div>
-
-
-										<div class="profile-info-row">
-											<div class="profile-info-name"> TVA</div>
-
-											<div class="profile-info-value">
-												<!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-												<span><?php  $client->s('tva') ?></span>
-											</div>
-										</div>
-
 
 
 									</div>
@@ -246,7 +231,7 @@
 							{ 
 							?>
 							<div class="center">
-								<a class="iframe_pdf" rel=<?php echo $justif; ?>><p class="lead"><i class="ace-icon fa fa-file-pdf-o red"></i>Justifications du client: <?php  $client->s('denomination')  ?> </p></a>							
+								<a class="iframe_pdf" rel=<?php echo $justif; ?>><p class="lead"><i class="ace-icon fa fa-file-pdf-o red"></i>Justifications du fournisseur: <?php  $fournisseur->s('denomination')  ?> </p></a>							
 							</div>
 							<?php 
 						    }
@@ -255,18 +240,16 @@
 							<?php if ($photo != null)
 							{ 
 							?>
-
 							<div class="center">
 							
 											<span class="profile-picture">
-										    	<img width="180" height="200" class="editable img-responsive" alt=<?php $client->s('denomination')   ?> id="avatar2" src="<?php echo $photo ?>" />
+										    	<img width="180" height="200" class="editable img-responsive" alt=<?php $fournisseur->s('denomination')   ?> id="avatar2" src="<?php echo $photo ?>" />
 									        </span>	
 
 							</div>
 							<?php 
 						    }
-							?>			
-
+							?>
 
 									
 						</div><!-- /#home -->

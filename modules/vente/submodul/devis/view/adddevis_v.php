@@ -165,6 +165,21 @@ $(document).ready(function() {
         ajax_bbox_loader($link, $data, $titre, 'large')
         
     });
+    
+    $('#tva').bind('input change',function() {
+
+        if($(this).val() == 'N'){
+
+            $('.table_details_devis').hide();
+
+        }else{
+
+            $('.table_details_devis').show();
+
+        }
+
+    });
+    
     $('#table_details_devis tbody ').on('click', 'tr .del_det', function() {
         var $id_detail = $(this).attr('data');
         $.ajax({

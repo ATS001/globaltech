@@ -103,6 +103,11 @@ if(MInit::form_verif('addclient',false))
     $empty_list .= "<li>Email</li>";
     $checker = 1;
   }
+   if($posted_data['id_devise'] == NULL){
+
+    $empty_list .= "<li>Devise</li>";
+    $checker = 1;
+  }
 
 
   $empty_list.= "</ul>";

@@ -1,17 +1,18 @@
 <?php 
 //SYS GLOBAL TECH
-// Modul: clients => Model
+// Modul: contrats_fournisseurs => Model
 
 
-class Mclients {
+class Mcontrats_fournisseurs {
 	private $_data; //data receive from form
-	var $table = 'clients'; //Main table of module
+	var $table = 'contrats_frn'; //Main table of module
 	var $last_id; //return last ID after insert command
 	var $log = NULL; //Log of all opération.
 	var $error = true; //Error bol changed when an error is occured
-    var $id_client; // Ville ID append when request
+  var $id_contrats_frn; // Ville ID append when request
 	var $token; //user for recovery function
-	var $client_info; //Array stock all ville info
+	var $contrats_frn_info; //Array stock all ville info
+  var $reference = null; // Reference contrat
 
 
 	public function __construct($properties = array()){
@@ -29,15 +30,14 @@ class Mclients {
 		: null
 		;
 	}
-		//Get all info categorie_client from database for edit form
+		//Get all info categorie_contrats_frn from database for edit form
 
-	public function get_client()
+	public function get_contrats_frn()
 	{
 		global $db;
+    $table = $this->table;
 
-		$sql = "SELECT  c.*,cat.categorie_client as categorie_client, p.pays as pays,v.ville as ville, d.devise as devise, 
-                    (IF(c.tva='O','OUI','NON')) AS tva FROM  clients c,categorie_client cat,ref_pays p,ref_ville v,ref_devise d WHERE  c.id_categorie=cat.id and c.id_pays=p.id and c.id_ville=v.id and c.id_devise=d.id
-			and c.id = ".$this->id_client;
+		$sql = "SELECT  c.*, f.denomination AS fournisseur FROM $table c, fournisseurs f WHERE c.id_fournisseur=f.id and c.id = ".$this->id_contrats_frn;
 
 		if(!$db->Query($sql))
 		{
@@ -48,13 +48,13 @@ class Mclients {
 				$this->error = false;
 				$this->log .= 'Aucun enregistrement trouvé ';
 			} else {
-				$this->client_info = $db->RowArray();
+				$this->contrats_frn_info = $db->RowArray();
 				$this->error = true;
 			}
 			
 			
 		}
-		//return Array client_info
+		//return Array contrats_frn_info
 		if($this->error == false)
 		{
 			return false;
@@ -105,65 +105,47 @@ class Mclients {
     	}
     }
 
+    //Generate contrat reference
+    private function Generate_contrat_reference() {
+        if ($this->error == false) {
+            return false;
+        }
+        global $db;
+        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(reference, 9, LENGTH(SUBSTR(reference,9))-5))),0)+1  AS reference  FROM contrats_frn WHERE SUBSTR(reference,LENGTH(reference)-3,4)= (SELECT  YEAR(SYSDATE()));
+ ');
+        $this->reference = 'CTR-FRN-' . $max_id . '/' . date('Y');
+    }
 
-	 //Save new client after all check
-    public function save_new_client(){
+	 //Save new contrats_frn after all check
+    public function save_new_contrats_frn(){
 
+      //Generate reference
+      $this->Generate_contrat_reference();
 
-        //Before execute do the multiple check
+      //Before execute do the multiple check
+      $this->Check_exist('reference', $this->reference, 'Référence contrat', null);
 
-        $this->Check_exist('denomination', $this->_data['denomination'], 'Dénomination', null);
+		  $this->check_non_exist('fournisseurs','id', $this->_data['id_fournisseur'], 'Fournisseur');
 
-        $this->Check_exist('code', $this->_data['code'], 'Code Fournisseur', null);
-
-        $this->Check_exist('r_social', $this->_data['r_social'], 'Raison Sociale', null);
-             
-        $this->Check_exist('r_commerce', $this->_data['r_commerce'], 'N° de registre', null);           
        
-        $this->Check_exist('nif', $this->_data['nif'], 'N° de NIF', null);
-
-		
-    	$this->check_non_exist('categorie_client','id',$this->_data['id_categorie'] ,'Catégorie' );
-
-    	$this->check_non_exist('ref_pays','id', $this->_data['id_pays'], 'Pays');
-
-    	$this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
 
     	  //Check if PJ attached required
         if($this->exige_pj)
         {
-            $this->check_file('pj', 'Justifications du client.');
+            $this->check_file('pj', 'Justifications du contrats_frn.');
         }
-          //Check if PJ attached required
-        if($this->exige_pj_photo)
-        {
-            $this->check_file('pj_photo', 'La photo du client.');
-        }
+     
 
         //Check $this->error (true / false)
 		if($this->error == true){
 			//Format values for Insert query 
     	global $db;
 
-   		$values["code"]  		 = MySQL::SQLValue($this->_data['code']);
-   		$values["denomination"]  = MySQL::SQLValue($this->_data['denomination']);
-   		$values["id_categorie"]  = MySQL::SQLValue($this->_data['id_categorie']);
-   		$values["r_social"] 	 = MySQL::SQLValue($this->_data['r_social']);
-   		$values["r_commerce"]    = MySQL::SQLValue($this->_data['r_commerce']);
-   		$values["nif"]   		 = MySQL::SQLValue($this->_data['nif']);
-   		$values["nom"]  		 = MySQL::SQLValue($this->_data['nom']);
-   		$values["prenom"]	     = MySQL::SQLValue($this->_data['prenom']);
-   		$values["civilite"]      = MySQL::SQLValue($this->_data['civilite']);
-   		$values["adresse"] 		 = MySQL::SQLValue($this->_data['adresse']);
-    	$values["id_pays"]  	 = MySQL::SQLValue($this->_data['id_pays']);
-   		$values["id_ville"] 	 = MySQL::SQLValue($this->_data['id_ville']);
-    	$values["tel"] 		 	 = MySQL::SQLValue($this->_data['tel']);
-    	$values["fax"] 			 = MySQL::SQLValue($this->_data['fax']);
-   		$values["bp"] 			 = MySQL::SQLValue($this->_data['bp']);
-   		$values["email"]	     = MySQL::SQLValue($this->_data['email']);
-   		$values["rib"]  		 = MySQL::SQLValue($this->_data['rib']);
-    	$values["id_devise"]  	 = MySQL::SQLValue($this->_data['id_devise']);
-        $values["tva"]           = MySQL::SQLValue($this->_data['tva']);
+   		$values["reference"]  	 = MySQL::SQLValue($this->reference);
+   		$values["id_fournisseur"]= MySQL::SQLValue($this->_data['id_fournisseur']);
+      $values["date_effet"]    = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_effet'])));
+      $values["date_fin"]      = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_fin'])));
+   		$values["commentaire"]   = MySQL::SQLValue($this->_data['commentaire']);
     	$values["creusr"]      	 = MySQL::SQLValue(session::get('userid'));
     	$values["credat"]      	 = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
@@ -179,17 +161,15 @@ class Mclients {
 				$this->last_id = $result;
 				//If Attached required Save file to Archive
 				
-                $this->save_file('pj', 'Justifications du clients'.$this->_data['denomination'], 'Document');
-				
-				$this->save_file('pj_photo', 'Photo du client'.$this->_data['denomination'], 'Image');
-								
+        $this->save_file('pj', 'Copie Contrat fournisseur.'.$this->reference, 'Document');
+					
 				//Check $this->error = true return Green message and Bol true
 				if($this->error == true)
 				{
-					$this->log = '</br>Enregistrement réussie: <b>'.$this->_data['denomination'].' ID: '.$this->last_id;
+					$this->log = '</br>Enregistrement réussie: <b>'.$this->reference.' ID: '.$this->last_id;
 				//Check $this->error = false return Red message and Bol false	
 				}else{
-					$this->log .= '</br>Enregistrement réussie: <b>'.$this->_data['denomination'];
+					$this->log .= '</br>Enregistrement réussie: <b>'.$this->reference;
                     
 					$this->log .= '</br>Un problème d\'Enregistrement ';
 				}
@@ -207,19 +187,19 @@ class Mclients {
 	}
 	
 
-    //activer ou desactiver un client
-    public function valid_client($etat = 0)
+    //activer ou desactiver un contrats_frn
+    public function valid_contrats_frn($etat = 0)
     {
     	
     	global $db;
 		//Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
 		$etat = $etat == 0 ? 1 : 0;
 		//Format value for requet
-		$values["etat"] 		= MySQL::SQLValue($etat);
+		$values["etat"] 		    = MySQL::SQLValue($etat);
 		$values["updusr"]       = MySQL::SQLValue(session::get('userid'));
-	    $values["upddat"]       = MySQL::SQLValue(date("Y-m-d H:i:s"));
+	  $values["upddat"]       = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
-		$where["id"]   			= $this->id_client;
+		$where["id"]   			= $this->id_contrats_frn;
 
         // Execute the update and show error case error
 		if( !$result = $db->UpdateRows($this->table, $values , $where))
@@ -244,70 +224,52 @@ class Mclients {
 
 
 
-	// afficher les infos d'un client
+	// afficher les infos d'un contrats_frn
     public function s($key)
     {
-    	if($this->client_info[$key] != null)
+    	if($this->contrats_frn_info[$key] != null)
     	{
-    		echo $this->client_info[$key];
+    		echo $this->contrats_frn_info[$key];
     	}else{
     		echo "";
     	}
 
     }
   
-    // afficher les infos d'un client
+    // afficher les infos d'un contrats_frn
     public function Shw($key,$no_echo = "")
     {
-    	if($this->client_info[$key] != null)
+    	if($this->contrats_frn_info[$key] != null)
     	{
     		if($no_echo != null)
     		{
-    			return $this->client_info[$key];
+    			return $this->contrats_frn_info[$key];
     		}
 
-    		echo $this->client_info[$key];
+    		echo $this->contrats_frn_info[$key];
     	}else{
     		echo "";
     	}
 
     }
 
-	//Edit categorie_client after all check
-    public function edit_client(){
+	//Edit categorie_contrats_frn after all check
+    public function edit_contrats_frn(){
 
-		//Get existing data for categorie_client
-    	$this->get_client();
+		//Get existing data for categorie_contrats_frn
+    	$this->get_contrats_frn();
 
-    	$this->last_id = $this->id_client;
-        
-        $this->Check_exist('denomination', $this->_data['denomination'], 'Dénomination', null);
+    	$this->last_id = $this->id_contrats_frn;
 
-        $this->Check_exist('code', $this->_data['code'], 'Code Fournisseur', null);
-
-        $this->Check_exist('r_social', $this->_data['r_social'], 'Raison Sociale', $this->id_client);
-             
-        $this->Check_exist('r_commerce', $this->_data['r_commerce'], 'N° de registre', $this->id_client);           
-       
-        $this->Check_exist('nif', $this->_data['nif'], 'N° de NIF', $this->id_client);
-
-
-        $this->check_non_exist('clients','id_categorie',$this->_data['id_categorie'] ,'Catégorie' );
-
-    	$this->check_non_exist('clients','id_pays', $this->_data['id_pays'], 'Pays');
-
-    	$this->check_non_exist('clients','id_ville', $this->_data['id_ville'], 'Ville');
-
+      
+      $this->check_non_exist('fournisseurs','id', $this->_data['id_fournisseur'], 'Fournisseur');
+      
     	  //Check if PJ attached required
         if($this->exige_pj)
         {
-            $this->check_file('pj', 'Justifications du client.', $this->_data['pj_id']);
+            $this->check_file('pj', 'Copie Contrat fournisseur.', $this->_data['pj_id']);
         }
-          //Check if PJ attached required
-        if($this->exige_pj_photo)
-        {
-            $this->check_file('pj_photo', 'La photo du client.', $this->_data['pj_photo_id']);
-        }
+    
 
         //Check $this->error (true / false)
 		if($this->error == true){
@@ -315,27 +277,13 @@ class Mclients {
     	global $db;
 
     	global $db;
-    	//$values["code"]  		 = MySQL::SQLValue($this->_data['code']);
-   		$values["denomination"]  = MySQL::SQLValue($this->_data['denomination']);
-   		$values["id_categorie"]  = MySQL::SQLValue($this->_data['id_categorie']);
-   		$values["r_social"] 	 = MySQL::SQLValue($this->_data['r_social']);
-   		$values["r_commerce"]    = MySQL::SQLValue($this->_data['r_commerce']);
-   		$values["nom"]  		 = MySQL::SQLValue($this->_data['nom']);
-   		$values["prenom"]	     = MySQL::SQLValue($this->_data['prenom']);
-   		$values["civilite"]      = MySQL::SQLValue($this->_data['civilite']);
-   		$values["adresse"] 		 = MySQL::SQLValue($this->_data['adresse']);
-    	$values["id_pays"]  	 = MySQL::SQLValue($this->_data['id_pays']);
-   		$values["id_ville"] 	 = MySQL::SQLValue($this->_data['id_ville']);
-    	$values["tel"] 		 	 = MySQL::SQLValue($this->_data['tel']);
-    	$values["fax"] 			 = MySQL::SQLValue($this->_data['fax']);
-   		$values["bp"] 			 = MySQL::SQLValue($this->_data['bp']);
-   		$values["email"]	     = MySQL::SQLValue($this->_data['email']);
-   		$values["rib"]  		 = MySQL::SQLValue($this->_data['rib']);
-    	$values["id_devise"]     = MySQL::SQLValue($this->_data['id_devise']);
-        $values["tva"]           = MySQL::SQLValue($this->_data['tva']);
+   		$values["id_fournisseur"]= MySQL::SQLValue($this->_data['id_fournisseur']);
+      $values["date_effet"]    = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_effet'])));
+      $values["date_fin"]      = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_fin'])));
+      $values["commentaire"]   = MySQL::SQLValue($this->_data['commentaire']);
     	$values["updusr"]        = MySQL::SQLValue(session::get('userid'));
     	$values["upddat"]        = MySQL::SQLValue(date("Y-m-d H:i:s"));
-    	$wheres["id"]            = $this->id_client;
+    	$wheres["id"]            = $this->id_contrats_frn;
 
     	//Check if Insert Query been executed (False / True)
 			if (!$result = $db->UpdateRows($this->table, $values,$wheres)){
@@ -346,20 +294,18 @@ class Mclients {
 
 			}else{
 
-				$this->last_id = $this->id_client;
+				$this->last_id = $this->id_contrats_frn;
 				//If Attached required Save file to Archive
-				$this->save_file('pj', 'Justifications du clients'.$this->_data['denomination'], 'Document');
+				$this->save_file('pj', 'Copie Contrat fournisseur.'.$this->_data['reference'], 'Document');
 					
-				
-				$this->save_file('pj_photo', 'Photo du client'.$this->_data['denomination'], 'image');
 								
 				//Check $this->error = true return Green message and Bol true
 				if($this->error == true)
 				{
-					$this->log = '</br>Modification réussie: <b>'.$this->_data['denomination'].' ID: '.$this->last_id;
+					$this->log = '</br>Modification réussie: <b>'.$this->_data['reference'].' ID: '.$this->last_id;
 				//Check $this->error = false return Red message and Bol false	
 				}else{
-					$this->log .= '</br>Modification réussie: <b>'.$this->_data['denomination'];
+					$this->log .= '</br>Modification réussie: <b>'.$this->_data['reference'];
 					$this->log .= '</br>Un problème d\'Enregistrement ';
 				}
 			}
@@ -376,13 +322,13 @@ class Mclients {
 	}
 
 
-    public function delete_client()
+    public function delete_contrats_frn()
     {
     	global $db;
-    	$id_client = $this->id_client;
-    	$this->get_client();
+    	$id_contrats_frn = $this->id_contrats_frn;
+    	$this->get_contrats_frn();
     	//Format where clause
-    	$where['id'] = MySQL::SQLValue($id_client);
+    	$where['id'] = MySQL::SQLValue($id_contrats_frn);
     	//check if id on where clause isset
     	if($where['id'] == null)
     	{
@@ -390,10 +336,10 @@ class Mclients {
     		$this->log .='</br>L\' id est vide';
     	}
     	//execute Delete Query
-    	if(!$db->DeleteRows('clients',$where))
+    	if(!$db->DeleteRows('contrats_frn',$where))
     	{
 
-    		$this->log .= $db->Error().'  '.$db->BuildSQLDelete('clients',$where);
+    		$this->log .= $db->Error().'  '.$db->BuildSQLDelete('contrats_frn',$where);
     		$this->error = false;
     		$this->log .='</br>Suppression non réussie';
 
@@ -427,7 +373,7 @@ class Mclients {
       }
 
       $new_name_file = $item.'_'.$this->last_id;
-      $folder        = MPATH_UPLOAD.'clients'.SLASH.$this->last_id;
+      $folder        = MPATH_UPLOAD.'contrats_fournisseurs'.SLASH.$this->last_id;
       $id_line       = $this->last_id;
       $title         = $titre;
       $table         = $this->table;
@@ -437,7 +383,7 @@ class Mclients {
 
 
         //Call save_file_upload from initial class
-      if(!Minit::save_file_upload($temp_file, $new_name_file, $folder, $id_line, $title, 'clients', $table, $column, $type, $edit = null))
+      if(!Minit::save_file_upload($temp_file, $new_name_file, $folder, $id_line, $title, 'contrats_fournisseurs', $table, $column, $type, $edit = null))
       {
         $this->error = false;
         $this->log .='</br>Enregistrement '.$item.' dans BD non réussie';

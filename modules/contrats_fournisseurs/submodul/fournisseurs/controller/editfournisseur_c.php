@@ -1,20 +1,20 @@
 <?php 
 //SYS GLOBAL TECH
-// Modul: client => Controller
+// Modul: fournisseurs => Controller
+
 defined('_MEXEC') or die;
-if(MInit::form_verif('editclient',false))
+if(MInit::form_verif('editfournisseur',false))
 {
 	//Check if id is been the correct id compared with idc
    if(!MInit::crypt_tp('id', null, 'D'))
    {  
-   // returne message error red to client 
+   // returne message error red to fournisseur 
    exit('3#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
    }
   $posted_data = array(
    'id'             => Mreq::tp('id') ,
-  // 'code'           => Mreq::tp('code') ,
+   //'code'           => Mreq::tp('code') ,
    'denomination'   => Mreq::tp('denomination') ,
-   'id_categorie'   => Mreq::tp('id_categorie') ,
    'r_social'       => Mreq::tp('r_social') ,
    'r_commerce'     => Mreq::tp('r_commerce') ,
    'nif'            => Mreq::tp('nif') ,
@@ -30,7 +30,6 @@ if(MInit::form_verif('editclient',false))
    'email'          => Mreq::tp('email') , 
    'rib'            => Mreq::tp('rib') , 
    'id_devise'      => Mreq::tp('id_devise') , 
-   'tva'            => Mreq::tp('tva') ,
    'pj_id'          => Mreq::tp('pj-id'),
    'pj_photo_id'    => Mreq::tp('pj_photo-id')
    );
@@ -45,10 +44,10 @@ $checker = null;
 
  /* if($posted_data['code'] == NULL){
 
-    $empty_list .= "<li>Code Client</li>";
+    $empty_list .= "<li>Code Fournisseur</li>";
     $checker = 1;
-  }*/
-
+  }
+*/
   if($posted_data['denomination'] == NULL){
 
     $empty_list .= "<li>Dénomination</li>";
@@ -59,12 +58,6 @@ $checker = null;
     $empty_list .= "<li>Raison Social</li>";
     $checker = 1;
   }*/
-
-  if($posted_data['id_categorie'] == NULL){
-
-    $empty_list .= "<li>Catégorie client</li>";
-    $checker = 1;
-  }
  
   /*if($posted_data['nif'] == NULL){
 
@@ -98,19 +91,14 @@ $checker = null;
     $empty_list .= "<li>Pays</li>";
     $checker = 1;
   }
-  if($posted_data['id_ville'] == NULL){
+  /*if($posted_data['id_ville'] == NULL){
 
     $empty_list .= "<li>Ville</li>";
     $checker = 1;
-  }
+  }*/
   if($posted_data['email'] == NULL){
 
     $empty_list .= "<li>Email</li>";
-    $checker = 1;
-  }
-  if($posted_data['id_devise'] == NULL){
-
-    $empty_list .= "<li>Devise</li>";
     $checker = 1;
   }
 
@@ -124,23 +112,23 @@ $checker = null;
   //End check empty element
     
   
- $client = new  Mclients($posted_data);
- $client->id_client = $posted_data['id']; 
+ $fournisseur = new  Mfournisseurs($posted_data);
+ $fournisseur->id_fournisseur = $posted_data['id']; 
   
-  $client->exige_pj       = false;
-  $client->exige_pj_photo = false;
+  $fournisseur->exige_pj       = false;
+  $fournisseur->exige_pj_photo = false;
 
   //execute Insert returne false if error
-  if($client->edit_client()){
+  if($fournisseur->edit_fournisseur()){
 
-    echo("1#".$client->log);
+    echo("1#".$fournisseur->log);
   }else{
 
-    echo("0#".$client->log);
+    echo("0#".$fournisseur->log);
   }
 
 
 } else {
-  view::load('clients','editclient');
+  view::load_view('editfournisseur');
 }
 ?>

@@ -1,17 +1,16 @@
 <?php 
 //SYS GLOBAL TECH
-// Modul: clients => Model
+// Modul: fournisseurs => Model
 
-
-class Mclients {
+class Mfournisseurs {
 	private $_data; //data receive from form
-	var $table = 'clients'; //Main table of module
+	var $table = 'fournisseurs'; //Main table of module
 	var $last_id; //return last ID after insert command
 	var $log = NULL; //Log of all opération.
 	var $error = true; //Error bol changed when an error is occured
-    var $id_client; // Ville ID append when request
+    var $id_fournisseur; // Ville ID append when request
 	var $token; //user for recovery function
-	var $client_info; //Array stock all ville info
+	var $fournisseur_info; //Array stock all ville info
 
 
 	public function __construct($properties = array()){
@@ -29,15 +28,17 @@ class Mclients {
 		: null
 		;
 	}
-		//Get all info categorie_client from database for edit form
+		//Get all info categorie_fournisseur from database for edit form
 
-	public function get_client()
+	public function get_fournisseur()
 	{
 		global $db;
 
-		$sql = "SELECT  c.*,cat.categorie_client as categorie_client, p.pays as pays,v.ville as ville, d.devise as devise, 
-                    (IF(c.tva='O','OUI','NON')) AS tva FROM  clients c,categorie_client cat,ref_pays p,ref_ville v,ref_devise d WHERE  c.id_categorie=cat.id and c.id_pays=p.id and c.id_ville=v.id and c.id_devise=d.id
-			and c.id = ".$this->id_client;
+		$sql = "SELECT  f.*,p.pays AS pays,v.ville AS ville, d.devise AS devise FROM fournisseurs f
+                LEFT JOIN ref_devise d ON f.id_devise=d.id
+                LEFT JOIN ref_pays p ON f.id_pays=p.id
+                LEFT JOIN ref_ville v ON  f.id_ville=v.id 
+                WHERE f.id = ".$this->id_fournisseur;
 
 		if(!$db->Query($sql))
 		{
@@ -48,13 +49,13 @@ class Mclients {
 				$this->error = false;
 				$this->log .= 'Aucun enregistrement trouvé ';
 			} else {
-				$this->client_info = $db->RowArray();
+				$this->fournisseur_info = $db->RowArray();
 				$this->error = true;
 			}
 			
 			
 		}
-		//return Array client_info
+		//return Array fournisseur_info
 		if($this->error == false)
 		{
 			return false;
@@ -106,12 +107,11 @@ class Mclients {
     }
 
 
-	 //Save new client after all check
-    public function save_new_client(){
+	 //Save new fournisseur after all check
+    public function save_new_fournisseur(){
 
 
         //Before execute do the multiple check
-
         $this->Check_exist('denomination', $this->_data['denomination'], 'Dénomination', null);
 
         $this->Check_exist('code', $this->_data['code'], 'Code Fournisseur', null);
@@ -123,21 +123,26 @@ class Mclients {
         $this->Check_exist('nif', $this->_data['nif'], 'N° de NIF', null);
 
 		
-    	$this->check_non_exist('categorie_client','id',$this->_data['id_categorie'] ,'Catégorie' );
 
     	$this->check_non_exist('ref_pays','id', $this->_data['id_pays'], 'Pays');
 
+        if($this->_data['id_ville'] = '------')
+        {
+            null;
+        }    
+        else{
     	$this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
+        }
 
     	  //Check if PJ attached required
         if($this->exige_pj)
         {
-            $this->check_file('pj', 'Justifications du client.');
+            $this->check_file('pj', 'Justifications du fournisseur.');
         }
           //Check if PJ attached required
         if($this->exige_pj_photo)
         {
-            $this->check_file('pj_photo', 'La photo du client.');
+            $this->check_file('pj_photo', 'La photo du fournisseur.');
         }
 
         //Check $this->error (true / false)
@@ -147,7 +152,6 @@ class Mclients {
 
    		$values["code"]  		 = MySQL::SQLValue($this->_data['code']);
    		$values["denomination"]  = MySQL::SQLValue($this->_data['denomination']);
-   		$values["id_categorie"]  = MySQL::SQLValue($this->_data['id_categorie']);
    		$values["r_social"] 	 = MySQL::SQLValue($this->_data['r_social']);
    		$values["r_commerce"]    = MySQL::SQLValue($this->_data['r_commerce']);
    		$values["nif"]   		 = MySQL::SQLValue($this->_data['nif']);
@@ -163,7 +167,6 @@ class Mclients {
    		$values["email"]	     = MySQL::SQLValue($this->_data['email']);
    		$values["rib"]  		 = MySQL::SQLValue($this->_data['rib']);
     	$values["id_devise"]  	 = MySQL::SQLValue($this->_data['id_devise']);
-        $values["tva"]           = MySQL::SQLValue($this->_data['tva']);
     	$values["creusr"]      	 = MySQL::SQLValue(session::get('userid'));
     	$values["credat"]      	 = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
@@ -179,9 +182,9 @@ class Mclients {
 				$this->last_id = $result;
 				//If Attached required Save file to Archive
 				
-                $this->save_file('pj', 'Justifications du clients'.$this->_data['denomination'], 'Document');
+                $this->save_file('pj', 'Justifications du fournisseurs'.$this->_data['denomination'], 'Document');
 				
-				$this->save_file('pj_photo', 'Photo du client'.$this->_data['denomination'], 'Image');
+				$this->save_file('pj_photo', 'Photo du fournisseur'.$this->_data['denomination'], 'Image');
 								
 				//Check $this->error = true return Green message and Bol true
 				if($this->error == true)
@@ -207,8 +210,8 @@ class Mclients {
 	}
 	
 
-    //activer ou desactiver un client
-    public function valid_client($etat = 0)
+    //activer ou desactiver un fournisseur
+    public function valid_fournisseur($etat = 0)
     {
     	
     	global $db;
@@ -219,7 +222,7 @@ class Mclients {
 		$values["updusr"]       = MySQL::SQLValue(session::get('userid'));
 	    $values["upddat"]       = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
-		$where["id"]   			= $this->id_client;
+		$where["id"]   			= $this->id_fournisseur;
 
         // Execute the update and show error case error
 		if( !$result = $db->UpdateRows($this->table, $values , $where))
@@ -244,69 +247,73 @@ class Mclients {
 
 
 
-	// afficher les infos d'un client
+	// afficher les infos d'un fournisseur
     public function s($key)
     {
-    	if($this->client_info[$key] != null)
+    	if($this->fournisseur_info[$key] != null)
     	{
-    		echo $this->client_info[$key];
+    		echo $this->fournisseur_info[$key];
     	}else{
     		echo "";
     	}
 
     }
   
-    // afficher les infos d'un client
+    // afficher les infos d'un fournisseur
     public function Shw($key,$no_echo = "")
     {
-    	if($this->client_info[$key] != null)
+    	if($this->fournisseur_info[$key] != null)
     	{
     		if($no_echo != null)
     		{
-    			return $this->client_info[$key];
+    			return $this->fournisseur_info[$key];
     		}
 
-    		echo $this->client_info[$key];
+    		echo $this->fournisseur_info[$key];
     	}else{
     		echo "";
     	}
 
     }
 
-	//Edit categorie_client after all check
-    public function edit_client(){
+	//Edit categorie_fournisseur after all check
+    public function edit_fournisseur(){
 
-		//Get existing data for categorie_client
-    	$this->get_client();
+		//Get existing data for categorie_fournisseur
+    	$this->get_fournisseur();
 
-    	$this->last_id = $this->id_client;
-        
-        $this->Check_exist('denomination', $this->_data['denomination'], 'Dénomination', null);
+    	$this->last_id = $this->id_fournisseur;
 
-        $this->Check_exist('code', $this->_data['code'], 'Code Fournisseur', null);
-
-        $this->Check_exist('r_social', $this->_data['r_social'], 'Raison Sociale', $this->id_client);
+        $this->Check_exist('r_social', $this->_data['r_social'], 'Raison Sociale', $this->id_fournisseur);
              
-        $this->Check_exist('r_commerce', $this->_data['r_commerce'], 'N° de registre', $this->id_client);           
+        $this->Check_exist('r_commerce', $this->_data['r_commerce'], 'N° de registre', $this->id_fournisseur);           
        
-        $this->Check_exist('nif', $this->_data['nif'], 'N° de NIF', $this->id_client);
+        $this->Check_exist('nif', $this->_data['nif'], 'N° de NIF', $this->id_fournisseur);
 
 
-        $this->check_non_exist('clients','id_categorie',$this->_data['id_categorie'] ,'Catégorie' );
 
-    	$this->check_non_exist('clients','id_pays', $this->_data['id_pays'], 'Pays');
+    	$this->check_non_exist('fournisseurs','id_pays', $this->_data['id_pays'], 'Pays');
 
-    	$this->check_non_exist('clients','id_ville', $this->_data['id_ville'], 'Ville');
+    	$this->check_non_exist('ref_pays','id', $this->_data['id_pays'], 'Pays');
+
+        if($this->_data['id_ville'] = '------')
+        {
+            null;
+        }    
+        else{
+        $this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
+        }
+
 
     	  //Check if PJ attached required
         if($this->exige_pj)
         {
-            $this->check_file('pj', 'Justifications du client.', $this->_data['pj_id']);
+            $this->check_file('pj', 'Justifications du fournisseur.', $this->_data['pj_id']);
         }
           //Check if PJ attached required
         if($this->exige_pj_photo)
         {
-            $this->check_file('pj_photo', 'La photo du client.', $this->_data['pj_photo_id']);
+            $this->check_file('pj_photo', 'La photo du fournisseur.', $this->_data['pj_photo_id']);
         }
 
         //Check $this->error (true / false)
@@ -315,9 +322,7 @@ class Mclients {
     	global $db;
 
     	global $db;
-    	//$values["code"]  		 = MySQL::SQLValue($this->_data['code']);
    		$values["denomination"]  = MySQL::SQLValue($this->_data['denomination']);
-   		$values["id_categorie"]  = MySQL::SQLValue($this->_data['id_categorie']);
    		$values["r_social"] 	 = MySQL::SQLValue($this->_data['r_social']);
    		$values["r_commerce"]    = MySQL::SQLValue($this->_data['r_commerce']);
    		$values["nom"]  		 = MySQL::SQLValue($this->_data['nom']);
@@ -332,10 +337,9 @@ class Mclients {
    		$values["email"]	     = MySQL::SQLValue($this->_data['email']);
    		$values["rib"]  		 = MySQL::SQLValue($this->_data['rib']);
     	$values["id_devise"]     = MySQL::SQLValue($this->_data['id_devise']);
-        $values["tva"]           = MySQL::SQLValue($this->_data['tva']);
     	$values["updusr"]        = MySQL::SQLValue(session::get('userid'));
     	$values["upddat"]        = MySQL::SQLValue(date("Y-m-d H:i:s"));
-    	$wheres["id"]            = $this->id_client;
+    	$wheres["id"]            = $this->id_fournisseur;
 
     	//Check if Insert Query been executed (False / True)
 			if (!$result = $db->UpdateRows($this->table, $values,$wheres)){
@@ -346,12 +350,12 @@ class Mclients {
 
 			}else{
 
-				$this->last_id = $this->id_client;
+				$this->last_id = $this->id_fournisseur;
 				//If Attached required Save file to Archive
-				$this->save_file('pj', 'Justifications du clients'.$this->_data['denomination'], 'Document');
+				$this->save_file('pj', 'Justifications du fournisseurs'.$this->_data['denomination'], 'Document');
 					
 				
-				$this->save_file('pj_photo', 'Photo du client'.$this->_data['denomination'], 'image');
+				$this->save_file('pj_photo', 'Photo du fournisseur'.$this->_data['denomination'], 'image');
 								
 				//Check $this->error = true return Green message and Bol true
 				if($this->error == true)
@@ -376,13 +380,13 @@ class Mclients {
 	}
 
 
-    public function delete_client()
+    public function delete_fournisseur()
     {
     	global $db;
-    	$id_client = $this->id_client;
-    	$this->get_client();
+    	$id_fournisseur = $this->id_fournisseur;
+    	$this->get_fournisseur();
     	//Format where clause
-    	$where['id'] = MySQL::SQLValue($id_client);
+    	$where['id'] = MySQL::SQLValue($id_fournisseur);
     	//check if id on where clause isset
     	if($where['id'] == null)
     	{
@@ -390,10 +394,10 @@ class Mclients {
     		$this->log .='</br>L\' id est vide';
     	}
     	//execute Delete Query
-    	if(!$db->DeleteRows('clients',$where))
+    	if(!$db->DeleteRows('fournisseurs',$where))
     	{
 
-    		$this->log .= $db->Error().'  '.$db->BuildSQLDelete('clients',$where);
+    		$this->log .= $db->Error().'  '.$db->BuildSQLDelete('fournisseurs',$where);
     		$this->error = false;
     		$this->log .='</br>Suppression non réussie';
 
@@ -427,7 +431,7 @@ class Mclients {
       }
 
       $new_name_file = $item.'_'.$this->last_id;
-      $folder        = MPATH_UPLOAD.'clients'.SLASH.$this->last_id;
+      $folder        = MPATH_UPLOAD.'fournisseurs'.SLASH.$this->last_id;
       $id_line       = $this->last_id;
       $title         = $titre;
       $table         = $this->table;
@@ -437,7 +441,7 @@ class Mclients {
 
 
         //Call save_file_upload from initial class
-      if(!Minit::save_file_upload($temp_file, $new_name_file, $folder, $id_line, $title, 'clients', $table, $column, $type, $edit = null))
+      if(!Minit::save_file_upload($temp_file, $new_name_file, $folder, $id_line, $title, 'fournisseurs', $table, $column, $type, $edit = null))
       {
         $this->error = false;
         $this->log .='</br>Enregistrement '.$item.' dans BD non réussie';

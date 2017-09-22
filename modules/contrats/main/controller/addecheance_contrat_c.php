@@ -4,13 +4,13 @@ if(MInit::form_verif('addecheance_contrat',false))
 {
 	$posted_data = array(
 		'tkn_frm'         => Mreq::tp('tkn_frm') ,
-		'date_echeance'      => Mreq::tp('date_echeance') ,
+		'date_echeance'   => Mreq::tp('date_echeance') ,
 		'commentaire'     => Mreq::tp('commentaire') ,
 		);
 
 	$checker = null;
 	$empty_list = "Les champs suivants sont obligatoires:\n<ul>";
-	if($posted_data['id_produit'] == NULL){
+	if($posted_data['date_echeance'] == NULL){
 
 		$empty_list .= "<li>Date d'échéance</li>";
 		$checker = 1;

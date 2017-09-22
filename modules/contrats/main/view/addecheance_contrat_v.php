@@ -9,7 +9,8 @@ $form->input_date('Date échéance', 'date_echeance', 4, date('d-m-Y'), $array_d
 
 
 //Commentaire
-$form->input('Commentaire', 'commentaire', 'text' ,3, null, Null,null, 1);
+$form->input_editor('Commentaire', 'commentaire', 8, $clauses=NULL , $js_array = null,  $input_height = 200);
+
 
 
 //Form render
@@ -42,6 +43,9 @@ $(document).ready(function() {
 
                         ajax_loadmessage(data_arry[1],'ok',3000);
                         var t1 = $('.dataTable').DataTable().draw();
+                        //$('#idtype_echeance').prop('disabled', 'disabled');
+                        //$('#idtype_echeance').prop('disabled', true).trigger("chosen:updated");
+                        //$('#idtype_echeance_chosen').hide();
                         $('.close_modal').trigger('click');
                         
                         
