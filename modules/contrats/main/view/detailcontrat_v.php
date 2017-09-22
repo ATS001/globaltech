@@ -8,15 +8,17 @@ $info_contrat->id_contrat = Mreq::tp('id');
 if(!MInit::crypt_tp('id', null, 'D') or !$info_contrat->get_contrat_info())
 { 	
  	// returne message error red to client 
-	exit('3#'.$info_contrat->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+	exit('3#'.$info_contrat->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur XXXXXX');
 }
 //Get all client info
-$info_devis = new MDevis();
-$info_devis->id_devis = $info_contrat->g('iddevis');
+//$info_devis = new MDevis();
+//$info_devis->id_devis = $info_contrat->g('iddevis');
+$info_contrat->id_devis = $info_contrat->s('iddevis');
 
-if(!$info_devis->get_devis_info())
+//if(!$info_devis->get_devis_info())
+if(!$info_contrat->get_devis_info())
 {
-	exit('3#'.$info_devis->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+	exit('3#'.$info_contrat->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur YYYYY');
 }
 
 ?>
@@ -49,7 +51,7 @@ if(!$info_devis->get_devis_info())
 					<div class="widget-header widget-header-large">
 						<h3 class="widget-title grey lighter">
 							<i class="ace-icon fa fa-adress-card-o green"></i>
-							Devis: <?php $info_devis->s('reference')?>
+							Devis: <?php echo $info_contrat->g('reference')?>
 						</h3>
 
 						<!-- #section:pages/invoice.info -->
@@ -66,7 +68,7 @@ if(!$info_devis->get_devis_info())
                                                         ?></span>
 						</div>
 
-                        <?php if($info_contrat->g('pj') != null){?>
+                        <?php if($info_contrat->s('pj') != null){?>
                          <div class="widget-toolbar hidden-480">
 							<a href="#" class="iframe_pdf" rel="<?php $info_contrat->s('pj') ?>">
 								<i class="ace-icon fa fa-print"></i>
@@ -128,23 +130,23 @@ if(!$info_devis->get_devis_info())
 										<ul class="list-unstyled  spaced">
 											<li>
 												<i class="ace-icon fa fa-caret-right green"></i> Référence
-                                                                                                <b style="color:green"><?php echo $info_devis->s('reference');?></b>
+                                                                                                <b style="color:green"><?php echo $info_contrat->g('reference');?></b>
 											</li>
 
 											<li>
 												<i class="ace-icon fa fa-caret-right green"></i> Date devis
-                                                                                                <b style="color:green"><?php echo $info_devis->s('date_devis');?></b>
+                                                                                                <b style="color:green"><?php echo $info_contrat->g('date_devis');?></b>
 											</li>
 
 											<li>
 												<i class="ace-icon fa fa-caret-right green"></i>Client
-                                                                                                <b style="color:green"><?php echo $info_devis->s('client');?></b>
+                                                                                                <b style="color:green"><?php echo $info_contrat->g('client');?></b>
 											</li>
 
 											<li>
 												<i class="ace-icon fa fa-caret-right green"></i>
 												Tél Client
-                                                                                                <b style="color:green"><?php echo $info_devis->s('tel');?></b>
+                                                                                                <b style="color:green"><?php echo $info_contrat->g('tel');?></b>
 											</li>
 										</ul>
 									</div>

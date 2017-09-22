@@ -16,6 +16,7 @@ class Mcontrat {
     var $reference = null; // Reference contrat
     var $token; //user for recovery function
     var $contrat_info; //Array stock all contrat info
+    var $devis_info; //Array stock devis info by id contrat
     var $echeance_contrat_info; //Array stock all echeance contrat info
     var $type_echeance_contrat_info; //Array stock all type echeance contrat info
 
@@ -133,10 +134,11 @@ class Mcontrat {
             exit($this->log);
         }
 
-        $style = array('5#center', '25#center', '70#alignLeft');
-        $headers = array('Item', 'Date Echéance', 'Commentaire');
+        //$style = array('5[#]center', '25[#]center', '70[#]alignLeft');
+        $headers = array('Item'  => '5[#]center', 'Date Echéance'  => '15[#]center','Commentaire' => '30[#]',);
 
-        $tableau = $db->GetMTable($headers, null, $style);
+        //$tableau = $db->GetMTable($headers, null, $style);
+        $tableau = $db->GetMTable($headers);
 
 
         return $tableau;
@@ -244,12 +246,15 @@ class Mcontrat {
 
     //Edit contrat after all check
     public function edit_contrat() {
-        
+        $this->reference = $this->_data['ref'];
         //Check if devis exist
         $this->Check_contrat_exist($this->_data['tkn_frm'], 1);
-   
-
+        //Check if devis have détails
+        //$this->Check_contrat_have_details($this->_data['tkn_frm']);
+        //Make reference
+        //$this->Make_devis_reference();
         //Before execute do the multiple check
+        $this->Check_exist('reference', $this->reference, 'Réference Devis', 1);
 
         $this->check_non_exist('devis', 'id', $this->_data['iddevis'], 'Client');
 
@@ -274,6 +279,8 @@ class Mcontrat {
             //Format values for Insert query 
             global $db;
 
+            //$values["ref"] = MySQL::SQLValue($this->_data['ref']);
+            //$values["tkn_frm"] = MySQL::SQLValue($this->_data['tkn_frm']);
             $values["iddevis"] = MySQL::SQLValue($this->_data['iddevis']);
             $values["date_effet"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_effet'])));
             $values["date_fin"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_fin'])));
@@ -478,7 +485,7 @@ class Mcontrat {
     }
 
     //activer ou desactiver un contrat
-    public function valid_contrat($etat = 0) {
+   /* public function valid_contrat($etat = 0) {
 
         global $db;
         //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
@@ -504,6 +511,8 @@ class Mcontrat {
             return true;
         }
     }
+    
+    */
 
     // afficher les infos d'un contrat
     public function printattribute($attibute) {
@@ -551,8 +560,8 @@ class Mcontrat {
 
     // get les infos d'un devis
     public function g($key) {
-        if ($this->contrat_info[$key] != null) {
-            return $this->contrat_info[$key];
+        if ($this->devis_info[$key] != null) {
+            return $this->devis_info[$key];
         } else {
             return null;
         }
@@ -734,4 +743,139 @@ class Mcontrat {
         }
     }
 
+     public function get_contrat_info() {
+        global $db;
+
+        $table = $this->table;
+
+        $sql = "SELECT $table.* , ref_type_echeance.type_echeance AS type_echeance "
+                . "FROM $table,ref_type_echeance "
+                . "WHERE  $table.idtype_echeance=ref_type_echeance.id AND $table.id = " . $this->id_contrat;
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->contrat_info = $db->RowArray();
+                $this->error = true;
+            }
+        }
+        //return Array produit_info
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
+  
+    //////////////////////////////////////////////////////////////////////////////
+  
+     public function Valid_contrat($etat)
+    {
+        global $db;
+        $table = $this->table;
+        $id_contrat = $this->id_contrat;
+        $req_sql = " UPDATE $table SET etat = $etat+1 WHERE id = $id_contrat ";
+        if (!$db->Query($req_sql)) {
+            $this->error = false;
+            $this->log .= "Erreur Validation";
+            return false;
+        }
+        
+        if(!$this->Get_detail_contrat_pdf())
+        {
+            $this->log .= $this->log;
+            return false;
+
+        }else{
+            $this->log .= "Validation réussie";
+            return true;
+        }        
+    }
+   
+  
+  
+///////////////////////////////////////////////////////////////////////////
+    
+    public function Get_detail_contrat_pdf()
+    {
+        global $db;
+
+        $id_contrat = $this->id_contrat;
+        $table = $this->table;
+        $this->get_contrat();
+        $info_contrat=$this->contrat_info;      
+        $file_export = MPATH_TEMP.'contrats'.'_' .date('d_m_Y_H_i_s').'.pdf';
+
+   //Load template 
+        include_once MPATH_THEMES.'pdf_template/contrats_pdf.php';
+        $new_file_target = MPATH_UPLOAD.'contrats'.date('m_Y');
+
+        if(file_exists($file_export))
+        {
+              
+            if(!Minit::save_file_upload($file_export, 'contrats_'.$id_contrat, $new_file_target, $id_contrat, 'contrats '.$id_contrat, 'contrats', 'contrats', 'contrats_pdf', 'document', $edit = null))
+            {
+                $this->error = false;
+                $this->log .= "Erreur Archivage contrat";
+
+            }
+            
+        }else{
+            $this->error = false;
+            $this->log .= "Erreur création template contrat";
+        }
+
+        if($this->error == false)
+        {
+            return false;
+        }else{
+            return true ;
+        }
+                
+    }
+    
+    public function get_devis_info()
+    {
+    	$table = "devis";
+    	global $db;
+
+    	$sql = "SELECT $table.*,
+		clients.denomination AS client , 
+		clients.tel as tel , DATE_FORMAT($table.date_devis,'%d-%m-%Y') AS date_devis "
+                . "FROM $table,clients "
+                . "WHERE $table.id_client=clients.id  AND $table.id = ".$this->id_devis;
+
+    	if(!$db->Query($sql))
+    	{
+    		$this->error = false;
+    		$this->log  .= $db->Error();
+    	}else{
+    		if ($db->RowCount() == 0)
+    		{
+    			$this->error = false;
+    			$this->log .= 'Aucun enregistrement trouvé ';
+    		} else {
+    			$this->devis_info = $db->RowArray();
+    			$this->error = true;
+    		}
+
+
+    	}
+    	//return Array
+    	if($this->error == false)
+    	{
+    		return false;
+    	}else{
+    		return true ;
+    	}
+    }
+    
 }
+    
