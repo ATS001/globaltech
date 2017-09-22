@@ -111,8 +111,7 @@ class Mcontrats_fournisseurs {
             return false;
         }
         global $db;
-        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(reference, 9, LENGTH(SUBSTR(reference,9))-5))),0)+1  AS reference  FROM contrats_frn WHERE SUBSTR(reference,LENGTH(reference)-3,4)= (SELECT  YEAR(SYSDATE()));
- ');
+        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(reference, 9, LENGTH(SUBSTR(reference,9))-5))),0)+1  AS reference  FROM contrats_frn WHERE SUBSTR(reference,LENGTH(reference)-3,4)= (SELECT  YEAR(SYSDATE()))');
         $this->reference = 'CTR-FRN-' . $max_id . '/' . date('Y');
     }
 

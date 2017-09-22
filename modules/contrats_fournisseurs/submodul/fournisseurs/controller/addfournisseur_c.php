@@ -37,11 +37,11 @@ if(MInit::form_verif('addfournisseur',false))
   $checker = null;
   $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
 
-  if($posted_data['code'] == NULL){
+  /*if($posted_data['code'] == NULL){
 
     $empty_list .= "<li>Code Fournisseur</li>";
     $checker = 1;
-  }
+  }*/
 
   if($posted_data['denomination'] == NULL){
 
