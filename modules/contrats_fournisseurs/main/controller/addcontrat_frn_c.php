@@ -56,12 +56,24 @@ if(MInit::form_verif('addcontrat_frn',false))
   }
 
 
-
-  $empty_list.= "</ul>";
+  $empty_list.= "</ul>"; 
   if($checker == 1)
   {
     exit("0#$empty_list");
   }
+
+
+  if($posted_data['date_fin'] <= $posted_data['date_effet']){
+
+    $control_date = "<ul>La date de fin doit être supérieur de la date d'effet !!!</ul>";
+    $checker = 2;
+  }
+
+   if($checker == 2)
+  {
+    exit("0#$control_date");
+  }
+ 
 
   //End check empty element
 

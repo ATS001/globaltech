@@ -35,7 +35,7 @@
 				
 <?php
 
-$form = new Mform('addcontrat_frn', 'addcontrat_frn','',  'contrats_frn', null);//Si on veut un wizzad on saisie 1, sinon null pour afficher un formulaire normal
+$form = new Mform('addcontrat_frn', 'addcontrat_frn','',  'contrats_fournisseurs', null);//Si on veut un wizzad on saisie 1, sinon null pour afficher un formulaire normal
 
 //Step Wizard
 $wizard_array[] = array(1,'Etape 1','active');
@@ -46,7 +46,7 @@ $form->wizard_steps = $wizard_array;
 //Start Step 1
 $form->step_start(1, 'Renseignements Contrat');
 
-//Devis
+//Fournisseur
 $devis_array[]  = array('required', 'true', 'Choisir un fournisseur');
 $form->select_table('Fournisseur', 'id_fournisseur', 8, 'fournisseurs', 'id', 'denomination' , 'denomination', $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat=1', $devis_array);
 
@@ -83,16 +83,15 @@ $form->render();
 <script type="text/javascript">
 $(document).ready(function() {
 
-ajax_loadmessage('La date de fin doit être supérieur de la date d\'effet','nok');
 
-	$('#date_fin').on('change',function() {
+	/*$('#date_fin').on('change',function() {
 		
 
     if( $('#date_fin').val() <= $('#date_effet').val() )
     	{
 			//alert('test');
     		ajax_loadmessage('La date de fin doit être supérieur de la date d\'effet','nok');
-    		return false;
+    		//return false;
     	}
 
     });
@@ -105,10 +104,10 @@ ajax_loadmessage('La date de fin doit être supérieur de la date d\'effet','nok
     	{
 			//alert('test');
     		ajax_loadmessage('La date d\'effet  doit être inférieur de la date fin','nok');
-    		return false;
+    		//return false;
     	}
 
-    });
+    });*/
 
 
 

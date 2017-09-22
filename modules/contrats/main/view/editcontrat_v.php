@@ -6,7 +6,7 @@ $info_contrat->id_contrat = Mreq::tp('id');
 //Check if Post ID <==> Post idc or get_modul return false. 
 if (!MInit::crypt_tp('id', null, 'D') or ! $info_contrat->get_contrat()) {
     // returne message error red to client 
-    exit('3#' . $info_user->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+    exit('3#' . $info_contrat->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
   $ref=$info_contrat->s('ref');
 ?>

@@ -35,10 +35,9 @@ class Mcontrats_fournisseurs {
 	public function get_contrats_frn()
 	{
 		global $db;
+    $table = $this->table;
 
-		$sql = "SELECT  c.*, denomination AS fournisseur FROM $table c, fournisseurs f
-                
-                WHERE c.id_fournisseur=f.id and c.id_fournisseur = ".$this->id_contrats_frn;
+		$sql = "SELECT  c.*, f.denomination AS fournisseur FROM $table c, fournisseurs f WHERE c.id_fournisseur=f.id and c.id = ".$this->id_contrats_frn;
 
 		if(!$db->Query($sql))
 		{
@@ -114,7 +113,7 @@ class Mcontrats_fournisseurs {
         global $db;
         $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(reference, 9, LENGTH(SUBSTR(reference,9))-5))),0)+1  AS reference  FROM contrats_frn WHERE SUBSTR(reference,LENGTH(reference)-3,4)= (SELECT  YEAR(SYSDATE()));
  ');
-        $this->reference = 'CTR-FRN' . $max_id . '/' . date('Y');
+        $this->reference = 'CTR-FRN-' . $max_id . '/' . date('Y');
     }
 
 	 //Save new contrats_frn after all check
@@ -144,8 +143,8 @@ class Mcontrats_fournisseurs {
 
    		$values["reference"]  	 = MySQL::SQLValue($this->reference);
    		$values["id_fournisseur"]= MySQL::SQLValue($this->_data['id_fournisseur']);
-   		$values["date_effet"] 	 = MySQL::SQLValue($this->_data['date_effet']);
-   		$values["date_fin"]      = MySQL::SQLValue($this->_data['date_fin']);
+      $values["date_effet"]    = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_effet'])));
+      $values["date_fin"]      = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_fin'])));
    		$values["commentaire"]   = MySQL::SQLValue($this->_data['commentaire']);
     	$values["creusr"]      	 = MySQL::SQLValue(session::get('userid'));
     	$values["credat"]      	 = MySQL::SQLValue(date("Y-m-d H:i:s"));
@@ -162,7 +161,7 @@ class Mcontrats_fournisseurs {
 				$this->last_id = $result;
 				//If Attached required Save file to Archive
 				
-        $this->save_file('pj', 'Copie Contrat fournisseur'.$this->reference, 'Document');
+        $this->save_file('pj', 'Copie Contrat fournisseur.'.$this->reference, 'Document');
 					
 				//Check $this->error = true return Green message and Bol true
 				if($this->error == true)
@@ -196,9 +195,9 @@ class Mcontrats_fournisseurs {
 		//Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
 		$etat = $etat == 0 ? 1 : 0;
 		//Format value for requet
-		$values["etat"] 		= MySQL::SQLValue($etat);
+		$values["etat"] 		    = MySQL::SQLValue($etat);
 		$values["updusr"]       = MySQL::SQLValue(session::get('userid'));
-	    $values["upddat"]       = MySQL::SQLValue(date("Y-m-d H:i:s"));
+	  $values["upddat"]       = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
 		$where["id"]   			= $this->id_contrats_frn;
 
@@ -262,37 +261,15 @@ class Mcontrats_fournisseurs {
 
     	$this->last_id = $this->id_contrats_frn;
 
-      $this->Check_exist('r_social', $this->_data['r_social'], 'Raison Sociale', $this->id_contrats_frn);
-             
-      $this->Check_exist('r_commerce', $this->_data['r_commerce'], 'N° de registre', $this->id_contrats_frn);           
-       
-      $this->Check_exist('nif', $this->_data['nif'], 'N° de NIF', $this->id_contrats_frn);
-
-
-
-    	$this->check_non_exist('contrats_frns','id_pays', $this->_data['id_pays'], 'Pays');
-
-    	$this->check_non_exist('ref_pays','id', $this->_data['id_pays'], 'Pays');
-
-        if($this->_data['id_ville'] = '------')
-        {
-            null;
-        }    
-        else{
-        $this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
-        }
-
-
+      
+      $this->check_non_exist('fournisseurs','id', $this->_data['id_fournisseur'], 'Fournisseur');
+      
     	  //Check if PJ attached required
         if($this->exige_pj)
         {
-            $this->check_file('pj', 'Justifications du contrats_frn.', $this->_data['pj_id']);
+            $this->check_file('pj', 'Copie Contrat fournisseur.', $this->_data['pj_id']);
         }
-          //Check if PJ attached required
-        if($this->exige_pj_photo)
-        {
-            $this->check_file('pj_photo', 'La photo du contrats_frn.', $this->_data['pj_photo_id']);
-        }
+    
 
         //Check $this->error (true / false)
 		if($this->error == true){
@@ -300,21 +277,10 @@ class Mcontrats_fournisseurs {
     	global $db;
 
     	global $db;
-   		$values["denomination"]  = MySQL::SQLValue($this->_data['denomination']);
-   		$values["r_social"] 	 = MySQL::SQLValue($this->_data['r_social']);
-   		$values["r_commerce"]    = MySQL::SQLValue($this->_data['r_commerce']);
-   		$values["nom"]  		 = MySQL::SQLValue($this->_data['nom']);
-   		$values["prenom"]	     = MySQL::SQLValue($this->_data['prenom']);
-   		$values["civilite"]      = MySQL::SQLValue($this->_data['civilite']);
-   		$values["adresse"] 		 = MySQL::SQLValue($this->_data['adresse']);
-    	$values["id_pays"]  	 = MySQL::SQLValue($this->_data['id_pays']);
-   		$values["id_ville"] 	 = MySQL::SQLValue($this->_data['id_ville']);
-    	$values["tel"] 		 	 = MySQL::SQLValue($this->_data['tel']);
-    	$values["fax"] 			 = MySQL::SQLValue($this->_data['fax']);
-   		$values["bp"] 			 = MySQL::SQLValue($this->_data['bp']);
-   		$values["email"]	     = MySQL::SQLValue($this->_data['email']);
-   		$values["rib"]  		 = MySQL::SQLValue($this->_data['rib']);
-    	$values["id_devise"]     = MySQL::SQLValue($this->_data['id_devise']);
+   		$values["id_fournisseur"]= MySQL::SQLValue($this->_data['id_fournisseur']);
+      $values["date_effet"]    = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_effet'])));
+      $values["date_fin"]      = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_fin'])));
+      $values["commentaire"]   = MySQL::SQLValue($this->_data['commentaire']);
     	$values["updusr"]        = MySQL::SQLValue(session::get('userid'));
     	$values["upddat"]        = MySQL::SQLValue(date("Y-m-d H:i:s"));
     	$wheres["id"]            = $this->id_contrats_frn;
@@ -330,18 +296,16 @@ class Mcontrats_fournisseurs {
 
 				$this->last_id = $this->id_contrats_frn;
 				//If Attached required Save file to Archive
-				$this->save_file('pj', 'Justifications du contrats_frns'.$this->_data['denomination'], 'Document');
+				$this->save_file('pj', 'Copie Contrat fournisseur.'.$this->_data['reference'], 'Document');
 					
-				
-				$this->save_file('pj_photo', 'Photo du contrats_frn'.$this->_data['denomination'], 'image');
 								
 				//Check $this->error = true return Green message and Bol true
 				if($this->error == true)
 				{
-					$this->log = '</br>Modification réussie: <b>'.$this->_data['denomination'].' ID: '.$this->last_id;
+					$this->log = '</br>Modification réussie: <b>'.$this->_data['reference'].' ID: '.$this->last_id;
 				//Check $this->error = false return Red message and Bol false	
 				}else{
-					$this->log .= '</br>Modification réussie: <b>'.$this->_data['denomination'];
+					$this->log .= '</br>Modification réussie: <b>'.$this->_data['reference'];
 					$this->log .= '</br>Un problème d\'Enregistrement ';
 				}
 			}
@@ -372,10 +336,10 @@ class Mcontrats_fournisseurs {
     		$this->log .='</br>L\' id est vide';
     	}
     	//execute Delete Query
-    	if(!$db->DeleteRows('contrats_frns',$where))
+    	if(!$db->DeleteRows('contrats_frn',$where))
     	{
 
-    		$this->log .= $db->Error().'  '.$db->BuildSQLDelete('contrats_frns',$where);
+    		$this->log .= $db->Error().'  '.$db->BuildSQLDelete('contrats_frn',$where);
     		$this->error = false;
     		$this->log .='</br>Suppression non réussie';
 

@@ -22,10 +22,10 @@
 		</div>
 
 		<div class="table-header">
-			Liste "Contrats" 
+			Liste "Contrats Fournisseurs" 
 		</div>
 		<div>
-			<table id="contrats_grid" class="table table-bordered table-condensed table-hover table-striped dataTable no-footer">
+			<table id="contrats_frn_grid" class="table table-bordered table-condensed table-hover table-striped dataTable no-footer">
 				<thead>
 					<tr>						
 						<th>
@@ -66,7 +66,7 @@ $(document).ready(function() {
 		bProcessing: true,
 		notifcol : 5,
 		serverSide: true,
-		ajax_url:"contrats",
+		ajax_url:"contrats_fournisseurs",
 		
                 aoColumns: [
                     {"sClass": "center","sWidth":"5%"}, 
@@ -92,7 +92,7 @@ $('.export_pdf').on('click', function() {
 $('#contrats_frn_grid').on('click', 'tr button', function() {
 	var $row = $(this).closest('tr')
 	//alert(table.cell($row, 0).data());
-	append_drop_menu('contrats_frn', table.cell($row, 0).data(), '.btn_action')
+	append_drop_menu('contrats_fournisseurs', table.cell($row, 0).data(), '.btn_action')
 });
 
 $('#contrats_frn_grid tbody ').on('click', 'tr .this_del', function() {
