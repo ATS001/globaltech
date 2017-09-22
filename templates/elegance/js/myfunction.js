@@ -396,7 +396,7 @@ function ajax_loadmessage($core, $class, $time) {
 		class_name: $laclass + '  gritter-center gritter-light',
 		time:  $time,
 	});
-
+     
 	return false;
 
 

@@ -73,8 +73,13 @@
 		<script src="<?php echo THEME_PATH ;?>/js/ace/ace.settings-rtl.js"></script>
 		<script src="<?php echo THEME_PATH ;?>/js/ace/ace.settings-skin.js"></script>
 		<script src="<?php echo THEME_PATH ;?>/js/jquery.colorbox.js"></script>
+		<?php if(session::get('userid')){?>
+		<script src="<?php echo THEME_PATH ;?>/js/notify.js"></script>	
+		<?php } ?>
+		
 		<script src="<?php echo THEME_PATH ;?>/js/ace/ace.widget-on-reload.js"></script>
 		<script src="<?php echo THEME_PATH ;?>/js/ace/ace.searchbox-autocomplete.js"></script>
+
 		<script src="<?php echo THEME_PATH ;?>/js/jquery.fullscreen-min.js"></script>
  <?php $mrn_js = Mcfg::get('deploy') == true ?'mrn-function.js' : 'myfunction.js';?>
         <script src="<?php echo THEME_PATH .'/js/'. $mrn_js ?>"></script>

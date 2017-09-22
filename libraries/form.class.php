@@ -34,6 +34,7 @@ class Mform
     var $wizard_steps_bloc     = Null;
     var $wizard_steps          = null;
     var $form_subbloc          = null;
+    var $verif_value           = null;
     
 
 
@@ -70,7 +71,8 @@ class Mform
         $ssid = 'f_v'.$this->_id_form;
         session::clear($ssid);
         session::set($ssid,session::generate_sid());
-        $verif_value  = session::get($ssid);
+        $verif_value       = session::get($ssid);
+        $this->verif_value = $verif_value;
         
 
         //If is Wizard start with bloc Wizard 
@@ -817,6 +819,10 @@ public function draw_datatabe_form($id_table, $verif_value, $columns = array(), 
 {
   /*$ssid = 'f_v'.$this->_id_form;
   $verif_value  = md5(session::get($ssid));*/
+  $ssid = 'f_v'.$this->_id_form;
+  session::clear($ssid);
+  session::set($ssid,session::generate_sid());
+  $verif_value       = md5(session::get($ssid));
   $button_action = "$('#".$id_table."').on('click', 'tr button', function() {
   var row = $(this).closest('tr')
   append_drop_menu('".$url_data."', t.cell(row, 0).data(), '.btn_action')
