@@ -26,11 +26,11 @@
         $checker = null;
         $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
 
-        if ($posted_data['ref'] == NULL) {
+        /*if ($posted_data['ref'] == NULL) {
 
             $empty_list .= "<li>Référence</li>";
             $checker = 1;
-        }
+        }*/
         
          if ($posted_data['designation'] == NULL) {
 

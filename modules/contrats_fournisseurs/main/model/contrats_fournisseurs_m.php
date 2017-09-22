@@ -37,7 +37,7 @@ class Mcontrats_fournisseurs {
 		global $db;
     $table = $this->table;
 
-		$sql = "SELECT  c.*, f.denomination AS fournisseur FROM $table c, fournisseurs f WHERE c.id_fournisseur=f.id and c.id = ".$this->id_contrats_frn;
+		$sql = "SELECT  c.*, f.code ,f.denomination ,f.r_social ,f.tel, f.fax, f.email,p.pays FROM $table c, fournisseurs f, ref_pays p  WHERE c.id_fournisseur=f.id and f.id_pays=p.id and  c.id = ".$this->id_contrats_frn;
 
 		if(!$db->Query($sql))
 		{
@@ -111,8 +111,7 @@ class Mcontrats_fournisseurs {
             return false;
         }
         global $db;
-        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(reference, 9, LENGTH(SUBSTR(reference,9))-5))),0)+1  AS reference  FROM contrats_frn WHERE SUBSTR(reference,LENGTH(reference)-3,4)= (SELECT  YEAR(SYSDATE()));
- ');
+        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(reference, 9, LENGTH(SUBSTR(reference,9))-5))),0)+1  AS reference  FROM contrats_frn WHERE SUBSTR(reference,LENGTH(reference)-3,4)= (SELECT  YEAR(SYSDATE()))');
         $this->reference = 'CTR-FRN-' . $max_id . '/' . date('Y');
     }
 

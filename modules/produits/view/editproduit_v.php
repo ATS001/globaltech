@@ -60,9 +60,9 @@
     $form->select_table('Unité de vente', 'iduv', 6, 'ref_unites_vente', 'id', 'unite_vente', 'unite_vente', $indx = '------', $info_produit->Shw('iduv', 1), $multi = NULL, $where = NULL, $uv_array);
 
     //Référence
-    $ref_array[] = array('required', 'true', 'Insérez une référence');
+    /*$ref_array[] = array('required', 'true', 'Insérez une référence');
     $ref_array[] = array('minlength', '2', 'Minimum 2 caractères');
-    $form->input('Référence', 'ref', 'text', 6, $info_produit->Shw('ref', 1), $ref_array);
+    $form->input('Référence', 'ref', 'text', 6, $info_produit->Shw('ref', 1), $ref_array);*/
 
     //Désignation
     $designation_array[] = array('required', 'true', 'Insérez une désignation');

@@ -51,3 +51,16 @@ if($action == 'produit_info')
 echo json_encode($array_product_out);  // send data as json format
 }
 
+if($action == 'info_client')
+{
+	$info_client = new Mclients();
+	$info_client->id_client = MReq::tp('id');
+	if($info_client->get_client())
+	{
+		$result = json_encode($info_client->client_info);
+        echo $result;
+	}else{
+		exit('Error');
+	} 
+}
+

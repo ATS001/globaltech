@@ -45,10 +45,10 @@ $form->wizard_steps = $wizard_array;
 
 //Start Step 1
 $form->step_start(1, 'Renseignements fournisseur');
-//Code
+/*//Code
 $code_array[]  = array('required', 'true', 'Insérer le code ' );
 $code_array[]  = array('remote', 'code#fournisseurs#code', 'Ce Code fournisseur existe déja' );
-$form->input('Code fournisseur', 'code', 'text' ,6 , null, $code_array);
+$form->input('Code fournisseur', 'code', 'text' ,6 , null, $code_array);*/
 
 //Denomination
 $denomination_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
@@ -105,7 +105,7 @@ $form->select_table('Pays', 'id_pays', 6, 'ref_pays', 'id', 'pays' , 'pays', $in
 
 //ville
 $ville_array[]  = array('required', 'true', 'Choisir la Ville' );
-$form->select_table('Ville', 'id_ville', 6, 'ref_ville', 'id', 'ville' , 'ville', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $ville_array);
+$form->select_table('Ville', 'id_ville', 6, 'ref_ville', 'id', 'ville' , 'ville', $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat=1', $ville_array);
 
 // Tél
 $tel_array[]  = array('required', 'true', 'Insérer N° de téléphone' );

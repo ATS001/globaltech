@@ -45,9 +45,9 @@ $form->wizard_steps = $wizard_array;
 //Start Step 1
 $form->step_start(1, 'Renseignements client');
 //Code
-$code_array[]  = array('required', 'true', 'Insérer le code ' );
+/*$code_array[]  = array('required', 'true', 'Insérer le code ' );
 $code_array[]  = array('remote', 'code#clients#code', 'Ce Code Client existe déja' );
-$form->input('Code Client', 'code', 'text' ,6 , null, $code_array);
+$form->input('Code Client', 'code', 'text' ,6 , null, $code_array);*/
 
 //Denomination
 $denomination_array[]  = array('minlength', '2', 'Minimum 2 caractères' );

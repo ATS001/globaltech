@@ -106,15 +106,27 @@ class Mfournisseurs {
     	}
     }
 
+    //Generate refrence fournisseur
+    private function Generate_fournisseur_reference() {
+        if ($this->error == false) {
+            return false;
+        }
+        global $db;
+          global $db;
+        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(CODE, 5, LENGTH(SUBSTR(CODE,5))-5))),0)+1  AS reference FROM fournisseurs WHERE SUBSTR(CODE,LENGTH(CODE)-3,4)= (SELECT  YEAR(SYSDATE()))');
+        $this->reference = 'FRN-' . $max_id . '/' . date('Y');
+    }
 
 	 //Save new fournisseur after all check
     public function save_new_fournisseur(){
 
+        //Generate reference
+        $this->Generate_fournisseur_reference();
 
         //Before execute do the multiple check
         $this->Check_exist('denomination', $this->_data['denomination'], 'Dénomination', null);
 
-        $this->Check_exist('code', $this->_data['code'], 'Code Fournisseur', null);
+        $this->Check_exist('code', $this->reference, 'Code Fournisseur', null);
 
         $this->Check_exist('r_social', $this->_data['r_social'], 'Raison Sociale', null);
              
@@ -150,7 +162,7 @@ class Mfournisseurs {
 			//Format values for Insert query 
     	global $db;
 
-   		$values["code"]  		 = MySQL::SQLValue($this->_data['code']);
+   		$values["code"]  		 = MySQL::SQLValue($this->reference);
    		$values["denomination"]  = MySQL::SQLValue($this->_data['denomination']);
    		$values["r_social"] 	 = MySQL::SQLValue($this->_data['r_social']);
    		$values["r_commerce"]    = MySQL::SQLValue($this->_data['r_commerce']);
