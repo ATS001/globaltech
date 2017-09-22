@@ -37,16 +37,16 @@ class MYPDF extends TCPDF {
 		//Ste
 		
 		// Title
-		$titre_doc = '<h1 style="letter-spacing: 10px;">CONTRAT DE FOURNITURE DES BANDES PASSANTES '
-                        . 'Ref :</h1>';
-		$this->writeHTMLCell(0, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'C', true);
+		$titre_doc = 'CONTRAT DE FOURNITURE DES BANDES PASSANTES - Ref '.$this->info_contrat['ref'].'';
+		$this->writeHTMLCell(0, 0, 100, 50, $titre_doc , 'B', 0, 0, true, 'C', true);
 		$this->SetTextColor(0, 0, 0);
 		$this->SetFont('helvetica', '', 9);
 	
+                
 		//Info général
-		$tableau_head = $this->Table_head;
-		$this->writeHTMLCell('', '', 15, 83, $tableau_head, 0, 0, 0, true, 'L', true);
-		//$pdf->writeHTMLCell('', '','' , '', $html , 0, 0, 0, true, 'L', true);
+		//$tableau_head = $this->Table_head;
+		//$this->writeHTMLCell('', '', 15, 83, $tableau_head, 0, 0, 0, true, 'L', true);
+		//$pdf->writeHTMLCell('', '','' , '', $html , 0, 0, 0, true, 'L', true);*/
 
 	}
 
@@ -69,6 +69,8 @@ $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8',
 
 //$pdf->Table_head = $tableau_head;
 //$pdf->info_devis = $devis_info;
+$pdf->info_contrat=$contrat_info;
+//var_dump($contrat_info);
 // set document information
 $pdf->SetCreator(MCfg::get('sys_titre'));
 $pdf->SetAuthor(session::get('username'));
@@ -88,7 +90,7 @@ $pdf->setFooterFont(Array(PDF_FONT_NAME_DATA, '', PDF_FONT_SIZE_DATA));
 $pdf->SetDefaultMonospacedFont(PDF_FONT_MONOSPACED);
 
 // set margins
-$pdf->SetMargins(PDF_MARGIN_LEFT, 90, PDF_MARGIN_RIGHT);
+$pdf->SetMargins(PDF_MARGIN_LEFT, 20, PDF_MARGIN_RIGHT);
 $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
 
 $pdf->SetFooterMargin(30);
@@ -119,18 +121,9 @@ $pdf->AddPage();
 
 //$pdf->writeHTMLCell('', '','' , '', $html , 0, 0, 0, true, 'L', true);
 $html=NULL;
+$content = file_get_contents(MPATH_THEMES.'pdf_template/contrat_html.php');
 $pdf->lastPage();
-$block_init = '<div>'
-        . ' ENTRE D’UNE PART : Le Responsable de '.$this->info_devis['denomination'].''
-        . ' '.$this->info_devis['adresse'].' 
-            ET D’AUTRE PART : 
-            La Société GLOBAL TECH, représenté par son Directeur Général. 
-            M. MAHAMAT ALI MAHAMOUD
-            N’Djamena – Tchad,
-            Agissant au nom et pour le compte de son entreprise comme « Fournisseur » 
-            </div>';
-
-$html .= $block_init;
+$html = $content;
 $pdf->writeHTML($html, true, false, true, false, '');
 // Close and output PDF document
 // This method has several options, check the source code documentation for more information.
