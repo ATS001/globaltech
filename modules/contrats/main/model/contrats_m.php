@@ -13,6 +13,7 @@ class Mcontrat {
     var $log = NULL; //Log of all opération.
     var $error = true; //Error bol changed when an error is occured
     var $id_contrat; // Contrat ID append when request
+    var $id_devis; // Devis ID
     var $reference = null; // Reference contrat
     var $token; //user for recovery function
     var $contrat_info; //Array stock all contrat info
@@ -558,8 +559,26 @@ class Mcontrat {
         }
     }
 
+    //get les infos  contrat
+    public function v($key) {
+        if ($this->contrat_info[$key] != null) {
+            return $this->contrat_info[$key];
+        } else {
+            return null;
+        }
+    }
+
     // get les infos d'un devis
     public function g($key) {
+        if ($this->devis_info[$key] != null) {
+            return print($this->devis_info[$key]);
+        } else {
+            return null;
+        }
+    }
+
+    // get les infos d'un devis
+    public function j($key) {
         if ($this->devis_info[$key] != null) {
             return $this->devis_info[$key];
         } else {
@@ -806,14 +825,16 @@ class Mcontrat {
     public function Get_detail_contrat_pdf()
     {
         global $db;
-
+        
+        
         $id_contrat = $this->id_contrat;
         $table = $this->table;
         $this->get_contrat();
-        $contrat_info=$this->contrat_info;      
+        $contrat_info=$this->contrat_info;  
+              
         $file_export = MPATH_TEMP.'contrats'.'_' .date('d_m_Y_H_i_s').'.pdf';
 
-   //Load template 
+        //Load template 
         include_once MPATH_THEMES.'pdf_template/contrats_pdf.php';
         $new_file_target = MPATH_UPLOAD.'contrats'.date('m_Y');
 
