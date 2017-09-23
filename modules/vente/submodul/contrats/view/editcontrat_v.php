@@ -39,7 +39,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_contrat->get_contrat()) {
             <div class="widget-box">
 
 <?php
-$form = new Mform('editcontrat', 'editcontrat', '', 'contrats', '0', null);
+$form = new Mform('editcontrat', 'editcontrat', 1 , 'contrats', '0', null);
 $form->input_hidden('id', Mreq::tp('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
