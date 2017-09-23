@@ -41,7 +41,7 @@
 			<div class="widget-box">
 				
 <?php
-$form = new Mform('editdevis', 'editdevis', '', 'devis', '0', null);
+$form = new Mform('editdevis', 'editdevis', '1', 'devis', '0', null);
 $form->input_hidden('id', $info_devis->g('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));

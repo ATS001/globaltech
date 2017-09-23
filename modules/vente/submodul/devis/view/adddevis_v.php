@@ -26,13 +26,14 @@
 			<div class="widget-box">
 				
 <?php
+$tva  = Mcfg::get('tva'); 
 $form = new Mform('adddevis', 'adddevis', '', 'devis', '0', null);
 
 //Date devis
 $array_date[]= array('required', 'true', 'Insérer la date de devis');
 $form->input_date('Date devis', 'date_devis', 4, date('d-m-Y'), $array_date);
 //Client
-$hard_code_client = '<label style="margin-left:15px;margin-right : 20px;">...</label>';
+$hard_code_client = '<span class="help-block returned_span">...</span>';
 $client_array[]  = array('required', 'true', 'Choisir un Client');
 $form->select_table('Client ', 'id_client', 8, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $client_array, $hard_code_client);
 //TVA
@@ -84,7 +85,7 @@ $(document).ready(function() {
     	//var $type_remise    = $type_remise == null ? 'P' : $type_remise;
     	var $remise_valeur  = parseFloat($remise_valeur) ? parseFloat($remise_valeur) : 0;
     	var $tva            = $tva == null ? 'O' : $tva;
-    	
+    	var $val_tva = <?php echo Mcfg::get('tva')?>
     	//calculate remise
     	if($type_remise == 'P')
     	{
@@ -103,7 +104,7 @@ $(document).ready(function() {
     	{
     		var $total_tva = 0;
     	}else{
-    		var $total_tva = ($total_ht * 20) / 100; //TVA value get from app setting
+    		var $total_tva = ($total_ht * $val_tva) / 100; //TVA value get from app setting
     	}
     	var $total_ttc = $total_ht + $total_tva ;
     	$('#'+$f_total_ht).val($total_ht);
@@ -158,16 +159,9 @@ $(document).ready(function() {
             data : '&act=1&<?php echo MInit::crypt_tp('exec', 'info_client') ?>&id='+$id_client,
             dataType:"JSON",
             success: function(data){
-                /*if(data['']==0){
-                    ajax_loadmessage(data_arry[1],'nok',5000)
-                }else{
-                    ajax_loadmessage(data_arry[1],'ok',3000);
-                    var t1 = $('.dataTable').DataTable().draw();
-                    $('#sum_table').val(data_arry[2]);
-                    $('#valeur_remise').trigger('change'); 
-                }*/
-                $('#tva option[value='+data['tva']+']').attr('selected','selected');
-                $('#tva').chosen();
+                //info client après               
+                $('#tva').val(data['tva_brut']);
+                $('#tva').trigger("chosen:updated");
 
             }
         });
