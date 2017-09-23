@@ -817,12 +817,15 @@ public function select_onchange($input_id)
 
 public function draw_datatabe_form($id_table, $verif_value, $columns = array(), $url_data = null, $url_addrow = null, $titr_addrow = null, $add_js_func = null)
 {
-  /*$ssid = 'f_v'.$this->_id_form;
-  $verif_value  = md5(session::get($ssid));*/
-  $ssid = 'f_v'.$this->_id_form;
-  session::clear($ssid);
-  session::set($ssid,session::generate_sid());
-  $verif_value       = md5(session::get($ssid));
+  if($this->_is_edit != null){
+    $verif_value;
+  }else{
+    $ssid = 'f_v'.$this->_id_form;
+    session::clear($ssid);
+    session::set($ssid,session::generate_sid());
+    $verif_value       = md5(session::get($ssid));
+  }
+  
   $button_action = "$('#".$id_table."').on('click', 'tr button', function() {
   var row = $(this).closest('tr')
   append_drop_menu('".$url_data."', t.cell(row, 0).data(), '.btn_action')
