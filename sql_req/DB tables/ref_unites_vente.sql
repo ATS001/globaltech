@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Sam 09 Septembre 2017 à 01:50
+-- Généré le :  Sam 23 Septembre 2017 à 03:34
 -- Version du serveur :  5.6.17
 -- Version de PHP :  5.5.12
 
@@ -23,28 +23,26 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Structure de la table `devis`
+-- Structure de la table `ref_unites_vente`
 --
 
-CREATE TABLE IF NOT EXISTS `devis` (
-  `id` int(11) NOT NULL,
-  `reference` varchar(50) DEFAULT NULL,
-  `id_client` int(11) DEFAULT NULL,
-  `id_commercial` int(11) DEFAULT NULL COMMENT 'commercial chargé du suivi',
-  `date_devis` date DEFAULT NULL,
-  `type_remise` varchar(10) DEFAULT NULL COMMENT 'type de remise',
-  `remise_montant` double DEFAULT NULL COMMENT 'remise exceptionnelle en montant',
-  `remise_pourcentage` double DEFAULT NULL COMMENT 'remise exceptionnelle en pourcentage',
-  `totalht` double DEFAULT NULL COMMENT 'total ht des articles',
-  `totalttc` double DEFAULT NULL COMMENT 'total ttc des articles',
-  `totaltva` double DEFAULT NULL COMMENT 'total tva des articles',
-  `etat` int(11) DEFAULT NULL,
+CREATE TABLE IF NOT EXISTS `ref_unites_vente` (
+  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
+  `unite_vente` varchar(50) NOT NULL COMMENT 'UnitÃ© de vente des produits(Kg,m...)',
+  `etat` int(11) DEFAULT '0',
   `creusr` int(11) DEFAULT NULL,
-  `credat` datetime DEFAULT NULL,
+  `credat` datetime DEFAULT CURRENT_TIMESTAMP,
   `updusr` int(11) DEFAULT NULL,
   `upddat` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
+
+--
+-- Contenu de la table `ref_unites_vente`
+--
+
+INSERT INTO `ref_unites_vente` (`id`, `unite_vente`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
+(2, 'FTFT', 0, 1, '2017-08-26 18:24:08', NULL, NULL);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

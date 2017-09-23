@@ -1,5 +1,5 @@
 <?php 
-//Export Module 'fournisseurs' Date: 22-09-2017
+//Export Module 'fournisseurs' Date: 23-09-2017
 global $db;
 if(!$result_insert_modul = $db->Query("insert into modul (modul, description, rep_modul, tables, app_modul, modul_setting, is_setting, etat, services)values('fournisseurs', 'Gestion Fournisseurs','contrats_fournisseurs/submodul/fournisseurs','fournisseurs','fournisseurs','contrats_fournisseurs','2', '0', '[-1-]')")){$this->error = false; $this->log .= "<li> Error Import Modul 'fournisseurs' </li>";}
   //Task 'fournisseurs' 'Gestion Fournisseurs'

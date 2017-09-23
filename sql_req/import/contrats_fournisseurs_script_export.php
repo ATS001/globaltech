@@ -1,7 +1,7 @@
 <?php 
-//Export Module 'contrats_fournisseurs' Date: 22-09-2017
+//Export Module 'contrats_fournisseurs' Date: 23-09-2017
 global $db;
-if(!$result_insert_modul = $db->Query("insert into modul (modul, description, rep_modul, tables, app_modul, modul_setting, is_setting, etat, services)values('contrats_fournisseurs', 'Gestion Contrats Fournisseurs','contrats_fournisseurs/main','contrats_frn','contrats_fournisseurs',NULL,'0', '0', '[-1-]')")){$this->error = false; $this->log .= "<li> Error Import Modul 'contrats_fournisseurs' </li>";}
+if(!$result_insert_modul = $db->Query("insert into modul (modul, description, rep_modul, tables, app_modul, modul_setting, is_setting, etat, services)values('contrats_fournisseurs', 'Contrats Fournisseur','contrats_fournisseurs/main','contrats_frn','contrats_fournisseurs',NULL,'0', '0', '[-1-]')")){$this->error = false; $this->log .= "<li> Error Import Modul 'contrats_fournisseurs' </li>";}
   //Task 'contrats_fournisseurs' 'Gestion Contrats Fournisseurs'
   if(!$result_task_501 = $db->Query("INSERT INTO task (app, modul, file, rep, session, dscrip, sbclass, ajax, app_sys, etat, type_view, services)VALUES('contrats_fournisseurs', $result_insert_modul, 'contrats_fournisseurs','contrats_fournisseurs/main', '1', 'Gestion Contrats Fournisseurs', 'book', '1', '0', '0','list', '[-1-]')")){$this->error = false; $this->log .= "<li> Error Import task 'Gestion Contrats Fournisseurs' </li>";}
       // Action Task 501 - 'Gestion Contrats Fournisseurs'

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Ven 15 Septembre 2017 à 21:46
+-- Généré le :  Sam 23 Septembre 2017 à 03:33
 -- Version du serveur :  5.6.17
 -- Version de PHP :  5.5.12
 
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `ref_pays` (
   `updusr` varchar(60) DEFAULT NULL COMMENT 'Derniere modif par',
   `upddat` datetime DEFAULT NULL COMMENT 'Date derniere modif',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=247 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=245 ;
 
 --
 -- Contenu de la table `ref_pays`

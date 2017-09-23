@@ -8,7 +8,7 @@ $info_contrat->id_contrat = Mreq::tp('id');
 if(!MInit::crypt_tp('id', null, 'D') or !$info_contrat->get_contrat_info())
 { 	
  	// returne message error red to client 
-	exit('3#'.$info_contrat->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur XXXXXX');
+	exit('3#'.$info_contrat->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur ');
 }
 //Get all client info
 //$info_devis = new MDevis();
@@ -18,7 +18,7 @@ $info_contrat->id_devis = $info_contrat->s('iddevis');
 //if(!$info_devis->get_devis_info())
 if(!$info_contrat->get_devis_info())
 {
-	exit('3#'.$info_contrat->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur YYYYY');
+	exit('3#'.$info_contrat->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur ');
 }
 
 ?>
@@ -68,9 +68,9 @@ if(!$info_contrat->get_devis_info())
                                                         ?></span>
 						</div>
 
-                        <?php if($info_contrat->s('pj') != null){?>
+                        <?php if($info_contrat->s('contrats_pdf') != null){?>
                          <div class="widget-toolbar hidden-480">
-							<a href="#" class="iframe_pdf" rel="<?php $info_contrat->s('pj') ?>">
+							<a href="#" class="iframe_pdf" rel="<?php echo $info_contrat->s('contrats_pdf') ?>">
 								<i class="ace-icon fa fa-print"></i>
 							</a>
 						</div>       

@@ -2,10 +2,10 @@
 -- version 4.1.14
 -- http://www.phpmyadmin.net
 --
--- Host: 127.0.0.1
--- Generation Time: Sep 17, 2017 at 12:10 AM
--- Server version: 5.6.17
--- PHP Version: 5.5.12
+-- Client :  127.0.0.1
+-- Généré le :  Sam 23 Septembre 2017 à 03:32
+-- Version du serveur :  5.6.17
+-- Version de PHP :  5.5.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,18 +17,18 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Database: `globaltech`
+-- Base de données :  `globaltech`
 --
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `contrats`
+-- Structure de la table `contrats`
 --
 
 CREATE TABLE IF NOT EXISTS `contrats` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `tkn_frm` int(32) DEFAULT NULL,
+  `tkn_frm` varchar(32) DEFAULT NULL,
   `ref` varchar(100) NOT NULL COMMENT 'Reference',
   `iddevis` int(11) DEFAULT NULL,
   `date_effet` date DEFAULT NULL,
@@ -38,6 +38,7 @@ CREATE TABLE IF NOT EXISTS `contrats` (
   `idtype_echeance` int(11) DEFAULT NULL,
   `pj` int(11) DEFAULT NULL,
   `pj_photo` int(11) DEFAULT NULL,
+  `contrats_pdf` int(11) DEFAULT NULL,
   `etat` int(11) DEFAULT '0',
   `creusr` int(11) DEFAULT NULL,
   `credat` datetime DEFAULT CURRENT_TIMESTAMP,
@@ -45,21 +46,24 @@ CREATE TABLE IF NOT EXISTS `contrats` (
   `upddat` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_devis_contrat` (`iddevis`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
 
 --
--- Dumping data for table `contrats`
+-- Contenu de la table `contrats`
 --
 
-INSERT INTO `contrats` (`id`, `tkn_frm`, `ref`, `iddevis`, `date_effet`, `date_fin`, `commentaire`, `date_contrat`, `idtype_echeance`, `pj`, `pj_photo`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
-(1, NULL, 'C1', 23, '2017-09-30', '2017-10-29', 'RAS', '2017-09-15', NULL, NULL, NULL, 0, 1, '2017-09-15 17:36:36', NULL, NULL);
+INSERT INTO `contrats` (`id`, `tkn_frm`, `ref`, `iddevis`, `date_effet`, `date_fin`, `commentaire`, `date_contrat`, `idtype_echeance`, `pj`, `pj_photo`, `contrats_pdf`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
+(12, 'c144d6e7fd09b05f1c96b5671054507a', 'CTR-1/2017', 13, '2017-09-22', '2017-09-23', '<p>okk<br></p>', '2017-09-18', 4, NULL, NULL, 450, 1, 1, '2017-09-18 20:03:39', 1, '2017-09-18 20:04:04'),
+(13, 'cfe9bcccd33ba972448fbe5a7728314c', 'CTR-2/2017', 13, '2017-09-22', '2017-09-22', '<p>ok<br></p>', '2017-09-23', 2, NULL, NULL, NULL, 0, 1, '2017-09-22 21:54:15', 1, '2017-09-23 03:19:22'),
+(14, 'ea64f87a579739b60cf41d628eda4260', 'CTR-3/2017', 22, '2017-09-23', '2017-09-29', '<p>okkk<br></p>', '2017-09-23', 1, NULL, NULL, 449, 0, 1, '2017-09-23 01:29:54', NULL, NULL),
+(15, '13486b070fa62a4458ee104ec54198c6', 'CTR-4/2017', 21, '2017-09-24', '2017-09-28', '<p>okk<br></p>', '2017-09-23', 4, NULL, NULL, NULL, 0, 1, '2017-09-23 01:33:40', 1, '2017-09-23 02:23:34');
 
 --
--- Constraints for dumped tables
+-- Contraintes pour les tables exportées
 --
 
 --
--- Constraints for table `contrats`
+-- Contraintes pour la table `contrats`
 --
 ALTER TABLE `contrats`
   ADD CONSTRAINT `fk_devis_contrat` FOREIGN KEY (`iddevis`) REFERENCES `devis` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;

@@ -13,6 +13,7 @@ class Mcontrat {
     var $log = NULL; //Log of all opération.
     var $error = true; //Error bol changed when an error is occured
     var $id_contrat; // Contrat ID append when request
+    var $id_devis; // Devis ID
     var $reference = null; // Reference contrat
     var $token; //user for recovery function
     var $contrat_info; //Array stock all contrat info
@@ -161,7 +162,7 @@ class Mcontrat {
         //exit("0#".$count_id);
         if (($count_id != '0' && $edit == Null ) OR ( $count_id != '1' && $edit != null)) {
             $this->error = false;
-            $this->log .= '</br>Ce contrat est déjà enregitré ' . $count_id . 'tkn=' . $tkn_frm;
+            $this->log .= '</br>Ce contrat est déjà enregitré ' . $count_id . ' tkn= ' . $tkn_frm;
         }
     }
 
@@ -174,7 +175,7 @@ class Mcontrat {
         //Before execute do the multiple check
         $this->Check_exist('ref', $this->reference, 'Référence contrat', null);
 
-        //Check if devis exist
+        //Check if contrat exist
         $this->Check_contrat_exist($this->_data['tkn_frm'], null);
 
 
@@ -247,6 +248,7 @@ class Mcontrat {
     //Edit contrat after all check
     public function edit_contrat() {
         $this->reference = $this->_data['ref'];
+        //var_dump($this->_data['tkn_frm']);
         //Check if devis exist
         $this->Check_contrat_exist($this->_data['tkn_frm'], 1);
         //Check if devis have détails
@@ -806,14 +808,16 @@ class Mcontrat {
     public function Get_detail_contrat_pdf()
     {
         global $db;
-
+        
+        
         $id_contrat = $this->id_contrat;
         $table = $this->table;
         $this->get_contrat();
-        $contrat_info=$this->contrat_info;      
+        $contrat_info=$this->contrat_info;  
+              
         $file_export = MPATH_TEMP.'contrats'.'_' .date('d_m_Y_H_i_s').'.pdf';
 
-   //Load template 
+        //Load template 
         include_once MPATH_THEMES.'pdf_template/contrats_pdf.php';
         $new_file_target = MPATH_UPLOAD.'contrats'.date('m_Y');
 

@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Ven 22 Septembre 2017 à 03:41
+-- Généré le :  Sam 23 Septembre 2017 à 03:32
 -- Version du serveur :  5.6.17
 -- Version de PHP :  5.5.12
 
@@ -41,16 +41,17 @@ CREATE TABLE IF NOT EXISTS `contrats_frn` (
   `updusr` int(11) DEFAULT NULL,
   `upddat` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=17 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=18 ;
 
 --
 -- Contenu de la table `contrats_frn`
 --
 
 INSERT INTO `contrats_frn` (`id`, `reference`, `id_fournisseur`, `date_effet`, `date_fin`, `commentaire`, `pj`, `pj_photo`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
-(12, 'CTR-FRN-1/2017', 2, '2017-09-22', '2017-09-23', '<p>okk<br></p>', 445, NULL, 0, 1, '2017-09-18 20:03:39', 1, '2017-09-22 03:40:20'),
+(12, 'CTR-FRN-1/2017', 2, '2017-09-22', '2017-09-23', '<p>okk<br></p>', NULL, NULL, 0, 1, '2017-09-18 20:03:39', 1, '2017-09-22 03:40:20'),
 (13, 'CTR-FRN-2/2017', 2, '1970-01-01', '1970-01-23', '<p>okk<br></p>', 441, NULL, 0, 1, '2017-09-21 13:26:03', 1, '2017-09-22 03:40:31'),
-(14, 'CTR-FRN-3/2017', 2, '1970-01-01', '1970-07-30', '<p>ok<br></p>', 446, NULL, 0, 1, '2017-09-21 16:41:03', 1, '2017-09-22 03:33:08');
+(14, 'CTR-FRN-3/2017', 2, '1970-01-01', '1970-07-30', '<p>okjoefzjofzelfklzejfolzekjfloezrjkfop </p><p>^ùlerùsdvmlùemrfglvmerf<br></p>', 446, NULL, 0, 1, '2017-09-21 16:41:03', 1, '2017-09-22 20:37:17'),
+(17, 'CTR-FRN-4/2017', 15, '2017-09-22', '2017-09-29', '<p>ok<br></p>', 447, NULL, 0, 1, '2017-09-22 21:55:06', NULL, NULL);
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;

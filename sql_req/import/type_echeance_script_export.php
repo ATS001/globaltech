@@ -1,5 +1,5 @@
 <?php 
-//Export Module 'type_echeance' Date: 15-09-2017
+//Export Module 'type_echeance' Date: 23-09-2017
 global $db;
 if(!$result_insert_modul = $db->Query("insert into modul (modul, description, rep_modul, tables, app_modul, modul_setting, is_setting, etat, services)values('type_echeance', 'Gestion Type Echeance','contrats/settings/type_echeance','ref_type_echeance','type_echeance','contrats','1', '0', '[-1-]')")){$this->error = false; $this->log .= "<li> Error Import Modul 'type_echeance' </li>";}
   //Task 'type_echeance' 'Gestion Type Echeance'
