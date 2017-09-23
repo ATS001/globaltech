@@ -39,11 +39,11 @@ $(document).ready(function() {
 	 function calculat_devis($prix_u, $qte, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc)
 	 {
     	//var $prix_u_remised = $total_ht = $total_ttc = $total_tva = null;
-    	var $prix_u         = parseFloat($prix_u) ? parseFloat($prix_u) : 0;
-    	var $qte            = parseInt($qte) ? parseInt($qte) : 0;
+    	var $prix_u           = parseFloat($prix_u) ? parseFloat($prix_u) : 0;
+    	var $qte              = parseInt($qte) ? parseInt($qte) : 0;
     	//var $type_remise    = $type_remise == null ? 'P' : $type_remise;
-    	var $remise_valeur  = parseFloat($remise_valeur) ? parseFloat($remise_valeur) : 0;
-    	var $tva            = $tva == null ? 'Y' : $tva;
+    	var $remise_valeur    = parseFloat($remise_valeur) ? parseFloat($remise_valeur) : 0;
+    	var $val_tva          = <?php echo Mcfg::get('tva')?>
     	
     	//calculate remise
     	if($type_remise == 'P')
@@ -55,6 +55,7 @@ $(document).ready(function() {
     	}else{
     		var $prix_u_remised = $prix_u;
     	}
+        alert($tva);
     	//Total HT 
     	var $total_ht = $prix_u_remised * $qte;
     	//Calculate TVA
@@ -62,7 +63,7 @@ $(document).ready(function() {
     	{
     		var $total_tva = 0;
     	}else{
-    		var $total_tva = ($total_ht * 20) / 100; //TVA value get from app setting
+    		var $total_tva = ($total_ht * $val_tva) / 100; //TVA value get from app setting
     	}
     	var $total_ttc = $total_ht + $total_tva ;
     	$('#'+$f_total_ht).val($total_ht);
@@ -109,9 +110,9 @@ $(document).ready(function() {
     	var qte           = parseFloat($('#qte').val());
     	var type_remise   = $('#type_remise_d').val();
     	var remise_valeur = parseFloat($('#remise_valeur_d').val());
-    	var tva           = parseFloat($('#tva').val());
+    	var tva           = $('#tva').val();
 
-    	calculat_devis(prix_unitaire, qte, type_remise, remise_valeur, null, 'total_ht', 'total_tva', 'total_ttc');
+    	calculat_devis(prix_unitaire, qte, type_remise, remise_valeur, tva, 'total_ht', 'total_tva', 'total_ttc');
     });
     $('.send_modal').on('click', function () {
         if(!$('#add_detaildevis').valid())

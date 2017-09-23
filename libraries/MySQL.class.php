@@ -744,7 +744,7 @@ class MySQL
 			$entetes = $headers; //array_keys($header);
 
 			fputcsv($fp, $entetes, ';');
-            
+
 		}
 
 
@@ -797,36 +797,140 @@ class MySQL
 			if ($this->RowCount() > 0) {
 				$html = "";
 				if ($showCount) $html = "Total lignes: " . $this->RowCount() . "<br />\n";
-				$html .= "<table style=\"$tb\">\n";
-				$this->MoveFirst();
-				$header = false;
-				while ($member = mysql_fetch_object($this->last_result)) {
-					if (!$header) {
-						$html .= "\t<tr>\n";
-						if($headers != null){
-							foreach ($headers as $key => $width) {
-								$html .= "\t\t<td style=\"$th; width:$width %\"><strong>" . htmlspecialchars($key) . "</strong></td>\n";
+					$html .= "<table style=\"$tb\">\n";
+					$this->MoveFirst();
+					$header = false;
+					while ($member = mysql_fetch_object($this->last_result)) {
+						if (!$header) {
+							$html .= "\t<tr>\n";
+							if($headers != null){
+								foreach ($headers as $key => $width) {
+									$html .= "\t\t<td style=\"$th; width:$width %\"><strong>" . htmlspecialchars($key) . "</strong></td>\n";
+								}
+
+							}else{
+								foreach ($member as $key => $value) {
+									$html .= "\t\t<td style=\"$th\"><strong>" . htmlspecialchars($key) . "</strong></td>\n";
+								}
 							}
 
-						}else{
-							foreach ($member as $key => $value) {
-								$html .= "\t\t<td style=\"$th\"><strong>" . htmlspecialchars($key) . "</strong></td>\n";
-							}
+							$html .= "\t</tr>\n";
+							$header = true;
 						}
-						
+						$html .= "\t<tr>\n";
+						foreach ($member as $key => $value) {
+							$html .= "\t\t<td style=\"$td\">" . htmlspecialchars($value) . "</td>\n";
+						}
 						$html .= "\t</tr>\n";
-						$header = true;
 					}
-					$html .= "\t<tr>\n";
-					foreach ($member as $key => $value) {
-						$html .= "\t\t<td style=\"$td\">" . htmlspecialchars($value) . "</td>\n";
-					}
+					$this->MoveFirst();
+					$html .= "</table>";
+				} else {
+					$html = "No records were returned.";
+				}
+			} else {
+				$this->active_row = -1;
+				$html = false;
+			}
+
+			return $html;
+		}
+		static public function make_table_head($headers = null)
+		{
+
+			$html = "";
+			$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px; border:1pt solid black;\">\n";
+
+			$html .= "\t<tr style=\"background-color: #4245f4; color: #fff; font-weight: bold;  padding:15px; \">\n";
+			foreach ($headers as $key => $value) {
+
+			//
+				if(strpos($value, '[#]')){
+					$elem  = explode("[#]", $value);
+					$align = isset($elem[1]) ? $elem[1] : '';
+					$width = isset($elem[0]) ? $elem[0] : '15';
+					$width = 'style="width:'.$width.'%;"' ;
+					$align = 'class="'.$align.'"' ;
+				}
+
+				$html .= "\t\t<td $width $align>" . htmlspecialchars($key) . "</td>\n";
+			}
+			$html .= "\t</tr>\n";
+			$html .= "</table>";
+			return $html;
+		}
+
+		private function make_table_body($data, $style)
+		{
+			$html = "";
+			$member_array = get_object_vars($data);
+			$keys_data  = array_keys($member_array);
+			$styl_array = array_values($style);
+
+					//print_r($data);
+
+			$array_styl_last = array_combine($keys_data, $styl_array);
+
+			foreach ($data as $key => $value) {
+				$style = $array_styl_last[$key];
+				if(strpos($style, '[#]')){
+					$elem  = explode("[#]", $style);
+					$align = isset($elem[1]) ? $elem[1] : '';
+					$width = isset($elem[0]) ? $elem[0] : '15';
+					$width = 'style="width:'.$width.'%;"' ;
+					$align = 'class="'.$align.'"' ;
+				}
+
+				$html .= "\t\t<td $width $align>" . htmlspecialchars($value) . "</td>\n";
+			}
+
+
+			return $html;
+		}
+	/**
+	 * This function returns the last query as an HTML table for pdf
+	 *
+	 * @param boolean $showCount (Optional) TRUE if you want to show the row count,
+	 *                           FALSE if you do not want to show the count
+	 * @param string $styleTable (Optional) Style information for the table
+	 * @param string $styleHeader (Optional) Style information for the header row
+	 * @param string $styleData (Optional) Style information for the cells
+	 * @return string HTML containing a table with all records listed
+	 */
+	public function GetMTable_pdf($headers) {
+		
+		if ($this->last_result) {
+			if ($this->RowCount() > 0) {
+				$html = "";
+				$style = '<style type="text/css">
+				.row0
+				{
+					background-color: #eaebed;
+					border:1pt solid black;
+				}
+				.row1{
+					border:1px solid black;
+				}
+				.alignRight { text-align: right; }
+				.center{ text-align: center; }
+				</style>';
+				$html .= $style;
+				$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px; border:1pt solid black;\">\n";
+				$this->MoveFirst();
+
+                //$html .= $this->make_table_head($headers, $styleData);
+				$i = 0;
+				while ($member = mysql_fetch_object($this->last_result))
+				{					
+					$html .= "\t<tr class=\"row".($i++ & 1)."\">\n";	
+					$html .= $this->make_table_body($member, $headers);
 					$html .= "\t</tr>\n";
+
 				}
 				$this->MoveFirst();
 				$html .= "</table>";
 			} else {
-				$html = "No records were returned.";
+				$html = "Pas de lignes.";
 			}
 		} else {
 			$this->active_row = -1;
@@ -846,93 +950,101 @@ class MySQL
 	 * @param string $styleData (Optional) Style information for the cells
 	 * @return string HTML containing a table with all records listed
 	 */
-	public function GetMTable($headers = null, $styleTable = null, $styleData) {
-		if ($styleTable === null) {
+		public function GetMTable($headers = null) {
+			
 			$tb = 'class="table table-striped table-bordered"';
-		} else {
-			$tb = 'class="'.$styleTable.'"';
-		}
-		
+			
+			$array_width = array();
+			$array_align = array();
+			$styleData   = array_values($headers);
+			$array_titl  = array_keys($headers);
 
-		if ($this->last_result) {
-			if ($this->RowCount() > 0) {
-				$html = "";
-				
-				$html .= "<table $tb>\n";
-				$this->MoveFirst();
-				$header = false;
-                $i = 0;
-				while ($member = mysql_fetch_object($this->last_result)) {
-					$width = $class = $colum =  null;
-					
-					if (!$header) {
-						$html .= "\t<tr>\n";
-						if($headers != null){
-							foreach ($headers as $key => $titls) {
-								$class_Data = $styleData[$key];
-								
-								if(strpos($class_Data, '#')){
-									$elem  = explode("#", $class_Data);
-								    $width = 'style="width:'.$elem[0].'%;"' ;
-								    //$class = 'class="'.$elem[1].'"' ;
-								    
+			foreach ($styleData as $key => $value) {
+				if(strpos($value, '[#]')){
+					$elem  = explode("[#]", $value);
+					$align = isset($elem[1]) ? $elem[1] : '';
+					$width = isset($elem[0]) ? $elem[0] : '15';
+					array_push($array_width, $width);
+					array_push($array_align, $align);
+				}
+			}
+			
+			//$array_header = array_combine($array_titl, $array_width);
 
+			if ($this->last_result) {
+				if ($this->RowCount() > 0) {
+					$html = "";
+
+					$html .= "<table $tb>\n";
+					$this->MoveFirst();
+					$header = false;
+					$i = 0;
+					while ($member = mysql_fetch_object($this->last_result)) {
+						$width = $class = $colum =  null;
+
+						if (!$header) {
+							$html .= "\t<tr>\n";
+							if($headers != null){
+								foreach ($array_titl as $key => $titls) {
+									
+									
+									$width = $array_width[$key];
+									$align = $array_align[$key];
+
+									$width = 'style="width:'.$width.'%;"' ;
+									$align = 'class="'.$align.'"' ;
+
+
+									$html .= "\t\t<td $width $align>" . htmlspecialchars($titls) . "</td>\n";
 								}
-								
-																				
 
-
-								$html .= "\t\t<th $width $class >" . htmlspecialchars($titls) . "</th>\n";
+							}else{
+								foreach ($member as $key => $value) {
+									$html .= "\t\t<td>" . htmlspecialchars($key) . "</td>\n";
+								}
 							}
 
-						}else{
-							foreach ($member as $key => $value) {
-								$html .= "\t\t<td>" . htmlspecialchars($key) . "</td>\n";
-							}
+							$html .= "\t</tr>\n";
+							$header = true;
 						}
 
-						$html .= "\t</tr>\n";
-						$header = true;
-					}
+						$html .= "\t<tr class=\"".($i++ & 1)."\">\n";
 
-					$html .= "\t<tr class=\"".($i++ & 1)."\">\n";
-					
 					//
-					$member_array = get_object_vars($member);
-					$keys_member = array_keys($member_array);
+						$member_array = get_object_vars($member);
+						$keys_member = array_keys($member_array);
 					//print_r($member);
-					
-					$array_styl_last = array_combine($keys_member, $styleData);
-					/*var_dump($array_styl_last);
-					exit();*/
 
-					foreach ($member as $key => $value) {
+						$array_last_width = array_combine($keys_member, $array_width);
+						$array_last_align = array_combine($keys_member, $array_align);
+
 						
-						$class_Data = $array_styl_last[$key];
-								
-								if(strpos($class_Data, '#')){
-									$elem  = explode("#", $class_Data);
-								    $width = 'style="width:'.$elem[0].'%;"' ;
-								    $class = 'class="'.$elem[1].'"' ;
-								}
-								
-													  
-						$html .= "\t\t<td $width $class>" . htmlspecialchars($value) . "</td>\n";
-					}
-					$html .= "\t</tr>\n";
-				}
-				$this->MoveFirst();
-				$html .= "</table>";
-			} else {
-				$html = "No records were returned.";
-			}
-		} else {
-			$this->active_row = -1;
-			$html = false;
-		}
 
-		return $html;
-	}
+						foreach ($member as $key => $value) {
+
+							$width = $array_last_width[$key];
+							$align = $array_last_align[$key];
+
+							$width = 'style="width:'.$width.'%;"' ;
+							$align = 'class="'.$align.'"' ;
+
+
+							$html .= "\t\t<td $width $align>" . htmlspecialchars($value) . "</td>\n";
+						}
+						$html .= "\t</tr>\n";
+					}
+					$this->MoveFirst();
+					$html .= "</table>";
+				} else {
+					$html = "No records were returned.";
+				}
+			} else {
+				$this->active_row = -1;
+				$html = false;
+			}
+
+			return $html;
+		}
 
 	/**
 	* Returns the last query as a JSON document
@@ -1244,15 +1356,15 @@ class MySQL
 					if (! $this->SelectDatabase(
 						$this->db_dbname, $this->db_charset)) {
 						return false;
-				} else {
-					return true;
+					} else {
+						return true;
+					}
 				}
+			} else {
+				return true;
 			}
-		} else {
-			return true;
 		}
 	}
-}
 
 	/**
 	 * Executes the given SQL query and returns the records
@@ -1493,18 +1605,18 @@ class MySQL
 				while ($member = mysql_fetch_array($this->last_result, $resultType)){
 					
 					if(!array_key_exists('val', $member) OR !array_key_exists('txt', $member)){
-					    $this->SetError("Query must have val - txt key only", -1);
-			            return array();
-				    }
-				    $members[] = $member;
+						$this->SetError("Query must have val - txt key only", -1);
+						return array();
+					}
+					$members[] = $member;
 				}
 				mysql_data_seek($this->last_result, 0);
 				$this->active_row = 0;
 				//Check if have Key val && txt
 				/**/
 				$val = array_column($members, 'val');
-                $txt = array_column($members, 'txt');
-                $fin_arr = array_combine($val, $txt);
+				$txt = array_column($members, 'txt');
+				$fin_arr = array_combine($val, $txt);
 				return $fin_arr;
 			}
 		} else {
@@ -2169,7 +2281,7 @@ class MySQL
 		}else{
 			return false;
 		}
-  	}
+	}
 
 	/*
 	Update single ROW used for archive and Insert form

@@ -4,7 +4,7 @@ if(!MInit::crypt_tp('exec', null, 'D'))
 { 	
 	$id     = Mreq::tp('exec');
 	$idc    = MInit::crypt_tp('exec',$id);
-	exit('0#<br>L\'action exécutée invalid contactez l\'administrateur '.$id.'  '.$idc);
+	exit('0#<br>L\'action exécutée invalid contactez l\'administrateur yyyyyyy '.$id.'  '.$idc);
 }
 //Action called from all button of this modul
 $action = Mreq::tp('exec');
@@ -15,7 +15,7 @@ if($action == 'delete')
 {
 	if(!MInit::crypt_tp('id', null, 'D'))
 	{ 	
-		exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+		exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur zzzzzzzz');
 	}
 //Initialise
 	$id     = Mreq::tp('id');
@@ -49,5 +49,18 @@ if($action == 'produit_info')
 		);
 
 echo json_encode($array_product_out);  // send data as json format
+}
+
+if($action == 'info_client')
+{
+	$info_client = new Mclients();
+	$info_client->id_client = MReq::tp('id');
+	if($info_client->get_client())
+	{
+		$result = json_encode($info_client->client_info);
+        echo $result;
+	}else{
+		exit('Error');
+	} 
 }
 

@@ -35,8 +35,12 @@ class Mclients {
 	{
 		global $db;
 
-		$sql = "SELECT  c.*,cat.categorie_client as categorie_client, p.pays as pays,v.ville as ville, d.devise as devise, (IF(c.tva='O','OUI','NON')) AS tva FROM  clients c,categorie_client cat,ref_pays p,ref_ville v,ref_devise d WHERE  c.id_categorie=cat.id and c.id_pays=p.id and c.id_ville=v.id and c.id_devise=d.id
-			and c.id = ".$this->id_client;
+		$sql = "SELECT  c.*,cat.categorie_client as categorie_client, p.pays as pays,v.ville as ville, d.devise as devise, (IF(c.tva='O','OUI','NON')) AS tva,c.tva as tva_brut FROM  clients c
+             LEFT JOIN categorie_client cat on c.id_categorie=cat.id 
+             LEFT JOIN ref_pays p on c.id_pays=p.id 
+             LEFT JOIN ref_ville v on c.id_ville=v.id
+             LEFT JOIN ref_devise d on c.id_devise=d.id
+             WHERE c.id = ".$this->id_client;
 
 		if(!$db->Query($sql))
 		{
@@ -104,12 +108,29 @@ class Mclients {
     	}
     }
 
+    //Generate refrence client
+    private function Generate_client_reference() {
+        if ($this->error == false) {
+            return false;
+        }
+        global $db;
+          global $db;
+        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(CODE, 5, LENGTH(SUBSTR(CODE,5))-5))),0)+1  AS reference FROM clients WHERE SUBSTR(CODE,LENGTH(CODE)-3,4)= (SELECT  YEAR(SYSDATE()))');
+        $this->reference = 'CLT-' . $max_id . '/' . date('Y');
+    }
 
 	 //Save new client after all check
     public function save_new_client(){
 
+        //Generate reference
+        $this->Generate_client_reference();
 
         //Before execute do the multiple check
+
+        $this->Check_exist('denomination', $this->_data['denomination'], 'Dénomination', null);
+
+        $this->Check_exist('code', $this->reference, 'Code Fournisseur', null);
+
         $this->Check_exist('r_social', $this->_data['r_social'], 'Raison Sociale', null);
              
         $this->Check_exist('r_commerce', $this->_data['r_commerce'], 'N° de registre', null);           
@@ -139,7 +160,7 @@ class Mclients {
 			//Format values for Insert query 
     	global $db;
 
-   		$values["code"]  		 = MySQL::SQLValue($this->_data['code']);
+   		$values["code"]  		 = MySQL::SQLValue($this->reference);
    		$values["denomination"]  = MySQL::SQLValue($this->_data['denomination']);
    		$values["id_categorie"]  = MySQL::SQLValue($this->_data['id_categorie']);
    		$values["r_social"] 	 = MySQL::SQLValue($this->_data['r_social']);
@@ -274,6 +295,10 @@ class Mclients {
     	$this->get_client();
 
     	$this->last_id = $this->id_client;
+        
+        $this->Check_exist('denomination', $this->_data['denomination'], 'Dénomination', $this->id_client);
+
+        //$this->Check_exist('code', $this->_data['code'], 'Code Fournisseur', null);
 
         $this->Check_exist('r_social', $this->_data['r_social'], 'Raison Sociale', $this->id_client);
              
@@ -305,7 +330,7 @@ class Mclients {
     	global $db;
 
     	global $db;
-    	$values["code"]  		 = MySQL::SQLValue($this->_data['code']);
+    	//$values["code"]  		 = MySQL::SQLValue($this->_data['code']);
    		$values["denomination"]  = MySQL::SQLValue($this->_data['denomination']);
    		$values["id_categorie"]  = MySQL::SQLValue($this->_data['id_categorie']);
    		$values["r_social"] 	 = MySQL::SQLValue($this->_data['r_social']);

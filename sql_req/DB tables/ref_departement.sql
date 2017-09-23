@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Ven 15 Septembre 2017 à 21:46
+-- Généré le :  Sam 23 Septembre 2017 à 03:33
 -- Version du serveur :  5.6.17
 -- Version de PHP :  5.5.12
 
@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS `ref_departement` (
   `upddat` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `region_depart` (`id_region`)
-) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=3 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=latin1 AUTO_INCREMENT=2 ;
 
 --
 -- Contenu de la table `ref_departement`

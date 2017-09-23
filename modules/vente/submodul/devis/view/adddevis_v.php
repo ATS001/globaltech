@@ -26,14 +26,16 @@
 			<div class="widget-box">
 				
 <?php
+$tva  = Mcfg::get('tva'); 
 $form = new Mform('adddevis', 'adddevis', '', 'devis', '0', null);
 
 //Date devis
 $array_date[]= array('required', 'true', 'Insérer la date de devis');
 $form->input_date('Date devis', 'date_devis', 4, date('d-m-Y'), $array_date);
 //Client
+$hard_code_client = '<span class="help-block returned_span">...</span>';
 $client_array[]  = array('required', 'true', 'Choisir un Client');
-$form->select_table('Client ', 'id_client', 8, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $client_array);
+$form->select_table('Client ', 'id_client', 8, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $client_array, $hard_code_client);
 //TVA
 $tva_opt = array('O' => 'OUI' , 'N' => 'NON' );
 $form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$selected = NULL, $multi = NULL);
@@ -83,7 +85,7 @@ $(document).ready(function() {
     	//var $type_remise    = $type_remise == null ? 'P' : $type_remise;
     	var $remise_valeur  = parseFloat($remise_valeur) ? parseFloat($remise_valeur) : 0;
     	var $tva            = $tva == null ? 'O' : $tva;
-    	
+    	var $val_tva = <?php echo Mcfg::get('tva')?>
     	//calculate remise
     	if($type_remise == 'P')
     	{
@@ -102,7 +104,7 @@ $(document).ready(function() {
     	{
     		var $total_tva = 0;
     	}else{
-    		var $total_tva = ($total_ht * 20) / 100; //TVA value get from app setting
+    		var $total_tva = ($total_ht * $val_tva) / 100; //TVA value get from app setting
     	}
     	var $total_ttc = $total_ht + $total_tva ;
     	$('#'+$f_total_ht).val($total_ht);
@@ -148,8 +150,21 @@ $(document).ready(function() {
 
     $('#id_client').on('change', function () {
         
-        //var $adresse = '<div class="form-group>"><address><strong>Twitter, Inc.</strong><br>795 Folsom Ave, Suite 600<br>San Francisco, CA 94107<br><abbr title="Phone">P:</abbr>(123) 456-7890</address></div>';
-       //$(this).parent('div').after($adresse);
+        var $id_client = $(this).val();
+        $.ajax({
+
+            cache: false,
+            url  : '?_tsk=add_detaildevis&ajax=1',
+            type : 'POST',
+            data : '&act=1&<?php echo MInit::crypt_tp('exec', 'info_client') ?>&id='+$id_client,
+            dataType:"JSON",
+            success: function(data){
+                //info client après               
+                $('#tva').val(data['tva_brut']);
+                $('#tva').trigger("chosen:updated");
+
+            }
+        });
 
     });
     $('#table_details_devis tbody ').on('click', 'tr .edt_det', function() {
@@ -165,6 +180,21 @@ $(document).ready(function() {
         ajax_bbox_loader($link, $data, $titre, 'large')
         
     });
+    
+    /*$('#tva').bind('input change',function() {
+
+        if($(this).val() == 'N'){
+
+            $('.table_details_devis').hide();
+
+        }else{
+
+            $('.table_details_devis').show();
+
+        }
+
+    });*/
+    
     $('#table_details_devis tbody ').on('click', 'tr .del_det', function() {
         var $id_detail = $(this).attr('data');
         $.ajax({

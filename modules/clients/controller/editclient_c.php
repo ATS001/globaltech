@@ -12,7 +12,7 @@ if(MInit::form_verif('editclient',false))
    }
   $posted_data = array(
    'id'             => Mreq::tp('id') ,
-   'code'           => Mreq::tp('code') ,
+  // 'code'           => Mreq::tp('code') ,
    'denomination'   => Mreq::tp('denomination') ,
    'id_categorie'   => Mreq::tp('id_categorie') ,
    'r_social'       => Mreq::tp('r_social') ,
@@ -43,11 +43,11 @@ if(MInit::form_verif('editclient',false))
 $checker = null;
   $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
 
-  if($posted_data['code'] == NULL){
+ /* if($posted_data['code'] == NULL){
 
     $empty_list .= "<li>Code Client</li>";
     $checker = 1;
-  }
+  }*/
 
   if($posted_data['denomination'] == NULL){
 
@@ -106,6 +106,11 @@ $checker = null;
   if($posted_data['email'] == NULL){
 
     $empty_list .= "<li>Email</li>";
+    $checker = 1;
+  }
+  if($posted_data['id_devise'] == NULL){
+
+    $empty_list .= "<li>Devise</li>";
     $checker = 1;
   }
 

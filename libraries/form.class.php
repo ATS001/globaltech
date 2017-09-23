@@ -34,6 +34,7 @@ class Mform
     var $wizard_steps_bloc     = Null;
     var $wizard_steps          = null;
     var $form_subbloc          = null;
+    var $verif_value           = null;
     
 
 
@@ -70,7 +71,8 @@ class Mform
         $ssid = 'f_v'.$this->_id_form;
         session::clear($ssid);
         session::set($ssid,session::generate_sid());
-        $verif_value  = session::get($ssid);
+        $verif_value       = session::get($ssid);
+        $this->verif_value = $verif_value;
         
 
         //If is Wizard start with bloc Wizard 
@@ -815,15 +817,22 @@ public function select_onchange($input_id)
 
 public function draw_datatabe_form($id_table, $verif_value, $columns = array(), $url_data = null, $url_addrow = null, $titr_addrow = null, $add_js_func = null)
 {
-  /*$ssid = 'f_v'.$this->_id_form;
-  $verif_value  = md5(session::get($ssid));*/
+  if($this->_is_edit != null){
+    $verif_value;
+  }else{
+    $ssid = 'f_v'.$this->_id_form;
+    session::clear($ssid);
+    session::set($ssid,session::generate_sid());
+    $verif_value       = md5(session::get($ssid));
+  }
+  
   $button_action = "$('#".$id_table."').on('click', 'tr button', function() {
   var row = $(this).closest('tr')
   append_drop_menu('".$url_data."', t.cell(row, 0).data(), '.btn_action')
   });";
   $button_add_row = '<a id="addRow" href="#" rel="'.$url_addrow.'" data="&tkn='.$verif_value.'" data_titre="'.$titr_addrow.'" class=" btn btn-white btn-info btn-bold  spaced "><span><i class="fa fa-plus"></i> Ajouter une ligne</span></a><input type="hidden" name="tkn_frm" value="'.$verif_value.'">';
   $js_table = "var t = $('#".$id_table."').DataTable({";
-  $js_table .= "bProcessing: true, serverSide: true, notifcol : 6, ajax_url:'".$url_data."', extra_data:'tkn_frm=".$verif_value."',aoColumns: [";
+  $js_table .= "bProcessing: true, serverSide: true, ajax_url:'".$url_data."', extra_data:'tkn_frm=".$verif_value."',aoColumns: [";
   $table = '<div class="space-2"></div>';
   $table .= '<div class="col-xs-12 '.$id_table.'">'.$button_add_row.'<table id="'.$id_table.'" class="display table table-bordered table-condensed table-hover table-striped dataTable no-footer" cellspacing="0">';
   $table .= '<thead><tr>';
