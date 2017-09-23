@@ -161,7 +161,7 @@ class Mcontrat {
         //exit("0#".$count_id);
         if (($count_id != '0' && $edit == Null ) OR ( $count_id != '1' && $edit != null)) {
             $this->error = false;
-            $this->log .= '</br>Ce contrat est déjà enregitré ' . $count_id . 'tkn=' . $tkn_frm;
+            $this->log .= '</br>Ce contrat est déjà enregitré ' . $count_id . ' tkn= ' . $tkn_frm;
         }
     }
 
@@ -174,7 +174,7 @@ class Mcontrat {
         //Before execute do the multiple check
         $this->Check_exist('ref', $this->reference, 'Référence contrat', null);
 
-        //Check if devis exist
+        //Check if contrat exist
         $this->Check_contrat_exist($this->_data['tkn_frm'], null);
 
 
@@ -247,6 +247,7 @@ class Mcontrat {
     //Edit contrat after all check
     public function edit_contrat() {
         $this->reference = $this->_data['ref'];
+        //var_dump($this->_data['tkn_frm']);
         //Check if devis exist
         $this->Check_contrat_exist($this->_data['tkn_frm'], 1);
         //Check if devis have détails

@@ -40,21 +40,22 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_contrat->get_contrat()) {
 
 <?php
 $form = new Mform('editcontrat', 'editcontrat', '', 'contrats', '0', null);
-$form->input_hidden('id', $info_contrat->g('id'));
+$form->input_hidden('id', Mreq::tp('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
 
 //Reference
-$form->input_hidden('checker_reference', MInit::cryptage($info_contrat->g('ref'), 1));
-$form->input_hidden('ref', $info_contrat->g('ref'));
+$form->input_hidden('checker_reference', MInit::cryptage($info_contrat->s('ref'), 1));
+$form->input_hidden('ref', $info_contrat->s('ref'));
 //var_dump($info_contrat->g('ref').''.$info_contrat->s('ref').''.$info_contrat->g('date_fin'));
+//var_dump(Mreq::tp('id'));
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //
 
 //Devis
 $devis_array[]  = array('required', 'true', 'Choisir un devis');
-$form->select_table('Devis ', 'iddevis', 8, 'devis', 'id', 'reference' , 'reference', $indx = '------' , $info_contrat->g('iddevis'),$multi=NULL, $where=NULL, $devis_array);
+$form->select_table('Devis ', 'iddevis', 8, 'devis', 'id', 'reference' , 'reference', $indx = '------' , $info_contrat->s('iddevis'),$multi=NULL, $where=NULL, $devis_array);
 
 //Date effet
 $array_date_effet[] = array('required', 'true', 'Insérer la date effet');
@@ -62,29 +63,29 @@ $form->input_date('Date effet', 'date_effet', 4, $info_contrat->s('date_effet'),
 
 //Date fin
 $array_date_fin[] = array('required', 'true', 'Insérer la date de fin');
-$form->input_date('Date de fin', 'date_fin', 4, $info_contrat->g('date_fin'), $array_date_fin);
+$form->input_date('Date de fin', 'date_fin', 4, $info_contrat->s('date_fin'), $array_date_fin);
 
 //Type échéance
 $ech_array[] = array('required', 'true', 'Choisir un type échéance');
-$form->select_table('Type échéance', 'idtype_echeance', 8, 'ref_type_echeance', 'id', 'id', 'type_echeance', $indx = '------', $info_contrat->g('idtype_echeance'), $multi = NULL, $where = NULL, $ech_array);
+$form->select_table('Type échéance', 'idtype_echeance', 8, 'ref_type_echeance', 'id', 'id', 'type_echeance', $indx = '------', $info_contrat->s('idtype_echeance'), $multi = NULL, $where = NULL, $ech_array);
 
 
-$form->input_editor('Commentaire', 'commentaire', 8, $info_contrat->g('commentaire'), $js_array = null, $input_height = 50);
+$form->input_editor('Commentaire', 'commentaire', 8, $info_contrat->s('commentaire'), $js_array = null, $input_height = 50);
 
 //pj_id
 $form->input('Justification du contrat', 'pj', 'file', 6, 'Justification_client.pdf', null);
-$form->file_js('pj', 1000000, 'pdf', $info_contrat->g('pj'), 1);
+$form->file_js('pj', 1000000, 'pdf', $info_contrat->s('pj'), 1);
 
 //pj_id
 $form->input('Photo', 'pj_photo', 'file', 6, 'Photo_client.jpeg', null);
-$form->file_js('pj_photo', 1000000, 'image', $info_contrat->g('pj_photo'), 1);
+$form->file_js('pj_photo', 1000000, 'image', $info_contrat->s('pj_photo'), 1);
 
 //Table 
 $columns = array('id' => '1', 'Item' => '5', 'Date échéance' => '30', 'Commentaire' => '50', '#' => '5');
 $js_addfunct = 'var column = t.column(0);
      column.visible( ! column.visible() );';
 
-$verif_value = $info_contrat->g('tkn_frm');
+$verif_value = $info_contrat->s('tkn_frm');
 $form->draw_datatabe_form('table_echeance', $verif_value, $columns, 'addcontrat', 'addecheance_contrat', 'Ajouter une échéance', $js_addfunct);
 
 //
