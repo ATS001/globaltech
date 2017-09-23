@@ -5,7 +5,7 @@ $form->input_hidden('tkn_frm', Mreq::tp('tkn'));
 //Produit
 $produit_array[]  = array('required', 'true', 'Choisir un Produit / Service');
 $form->select_table('Produit / Service', 'id_produit', 8, 'produits', 'id', 'designation' , 'designation', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $produit_array);
-$hard_code_pri_u_ht = '<label style="margin-left:15px;margin-right : 20px;">Prix Unité HT: </label><input id="prix_unitaire" name="prix_unitaire" value="0" class="input-large alignRight" type="text">';
+$hard_code_pri_u_ht = '<label style="margin-left:15px;margin-right : 20px;">Prix Unité HT: </label><input id="prix_unitaire" name="prix_unitaire" value="0" class="input-large alignRight" readonly="" type="text">';
 $hard_code_pri_u_ht .= '<span class="help-block returned_span">...</span>';
 //Réference
 $form->input('Réference', 'ref_produit', 'text' ,3, null, Null, $hard_code_pri_u_ht, 1);
@@ -55,7 +55,7 @@ $(document).ready(function() {
     	}else{
     		var $prix_u_remised = $prix_u;
     	}
-        alert($tva);
+        
     	//Total HT 
     	var $total_ht = $prix_u_remised * $qte;
     	//Calculate TVA

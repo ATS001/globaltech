@@ -133,7 +133,7 @@ $(document).ready(function() {
     	var type_remise   = $('#type_remise').val();
     	var remise_valeur = parseFloat($('#valeur_remise').val());
     	var tva           = $('#tva').val();
-       
+
     	var dix_per_ht    = parseFloat((totalht * 10) / 100);
     	if((type_remise == 'P' && remise_valeur > 10) || (type_remise == 'M' && remise_valeur > dix_per_ht)){
     		ajax_loadmessage('La remise exeptionnel ne doit pas dépasser 10% du Total des articles','nok');
@@ -143,7 +143,17 @@ $(document).ready(function() {
     		return false;
     	}
     	calculat_devis(totalht, type_remise, remise_valeur, tva, 'totalht', 'totaltva', 'totalttc');
+        
     })
+
+    $('#tva').on('change', function () {
+        var table = $('#table_details_devis').DataTable();
+
+        if (table.data().count() && $(this).val() == 'O' ) {
+            ajax_loadmessage('La TVA sera appliquée sur l\'ensemble des lignes ddétails', 'nok');
+        }
+    });
+
     $('#type_remise').on('change', function () {
         $('#valeur_remise').trigger('input');
     });

@@ -58,7 +58,8 @@ $(document).ready(function() {
     	var $qte            = parseInt($qte) ? parseInt($qte) : 0;
     	//var $type_remise    = $type_remise == null ? 'P' : $type_remise;
     	var $remise_valeur  = parseFloat($remise_valeur) ? parseFloat($remise_valeur) : 0;
-    	var $tva            = $tva == null ? 'Y' : $tva;
+    	var $tva            = $tva == null ? 'O' : $tva;
+        var $val_tva = <?php echo Mcfg::get('tva')?>
     	
     	//calculate remise
     	if($type_remise == 'P')
@@ -77,7 +78,7 @@ $(document).ready(function() {
     	{
     		var $total_tva = 0;
     	}else{
-    		var $total_tva = ($total_ht * 20) / 100; //TVA value get from app setting
+    		var $total_tva = ($total_ht * $val_tva) / 100; //TVA value get from app setting
     	}
     	var $total_ttc = $total_ht + $total_tva ;
     	$('#'+$f_total_ht).val($total_ht);
@@ -124,7 +125,7 @@ $(document).ready(function() {
     	var qte           = parseFloat($('#qte').val());
     	var type_remise   = $('#type_remise_d').val();
     	var remise_valeur = parseFloat($('#remise_valeur_d').val());
-    	var tva           = parseFloat($('#tva').val());
+    	var tva           = $('#tva').val();
 
     	calculat_devis(prix_unitaire, qte, type_remise, remise_valeur, null, 'total_ht', 'total_tva', 'total_ttc');
     });
