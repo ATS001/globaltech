@@ -25,8 +25,7 @@ class MYPDF extends TCPDF {
      
 	//Page header
 	public function Header() {
-		//writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
-		
+			
 		// Logo
 		$image_file = MPATH_IMG.MCfg::get('logo');
 		$this->writeHTMLCell(50, 25, '', '', '' , 1, 0, 0, true, 'C', true);
@@ -34,20 +33,7 @@ class MYPDF extends TCPDF {
 		
 		// Set font
 		$this->SetFont('helvetica', 'B', 22);
-		//Ste
 		
-		// Title
-		$titre_doc = 'CONTRAT DE FOURNITURE DES BANDES PASSANTES - Ref '.$this->info_contrat['ref'].'';
-		$this->writeHTMLCell(0, 0, 100, 50, $titre_doc , 'B', 0, 0, true, 'C', true);
-		$this->SetTextColor(0, 0, 0);
-		$this->SetFont('helvetica', '', 9);
-	
-                
-		//Info général
-		//$tableau_head = $this->Table_head;
-		//$this->writeHTMLCell('', '', 15, 83, $tableau_head, 0, 0, 0, true, 'L', true);
-		//$pdf->writeHTMLCell('', '','' , '', $html , 0, 0, 0, true, 'L', true);*/
-
 	}
 
 	// Page footer
@@ -68,8 +54,9 @@ class MYPDF extends TCPDF {
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
 //$pdf->Table_head = $tableau_head;
-//$pdf->info_devis = $devis_info;
+//$pdf->Table_body = $tableau_body;
 $pdf->info_contrat=$contrat_info;
+//$pdf->info_devis=$devis_info;
 //var_dump($contrat_info);
 // set document information
 $pdf->SetCreator(MCfg::get('sys_titre'));
@@ -121,9 +108,24 @@ $pdf->AddPage();
 
 //$pdf->writeHTMLCell('', '','' , '', $html , 0, 0, 0, true, 'L', true);
 $html=NULL;
-$content = file_get_contents(MPATH_THEMES.'pdf_template/contrat_html.php');
+//$content = file_get_contents(MPATH_THEMES.'pdf_template/contrat_html.php');
 $pdf->lastPage();
-$html = $content;
+//$html = $content;
+$html=' <!DOCTYPE html>
+<html>
+<head>
+</head>
+<body>
+<p style="text-align: left;"><strong><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;</span></strong></p>
+<p style="text-align: left;">&nbsp;</p>
+<p style="text-align: left;"><strong><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">Ref:&nbsp; </span></strong><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">'.$pdf->info_contrat['ref'].'</span></p>
+<p style="text-align: left;"><strong><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">&nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp;&nbsp;&nbsp; </span></strong><span style="text-decoration: underline;"><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000; text-decoration: underline;">CONTRAT DE FOURNITURE DES BANDES PASSANTES</span></span><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">ENTRE D&rsquo;UNE PART : 
+</span><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">Le Responsable de&nbsp;</span><strong><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">  HELP Tchad</span></strong><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;"> &laquo; Client. &raquo;</span><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">ET D&rsquo;AUTRE PART :</span><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">La Soci&eacute;t&eacute;<strong> GLOBAL TECH</strong>, repr&eacute;sent&eacute; par son Directeur G&eacute;n&eacute;ral. M. <strong>MAHAMAT ALI MAHAMOUD</strong></span><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">N&rsquo;Djamena &ndash; Tchad,</span><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">Agissant au nom et pour le compte de son entreprise comme &laquo; Fournisseur &raquo; ;</span><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">Il a &eacute;t&eacute; convenu comme suit :</span><br /><strong><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">Article 1 : Objet du contrat</span></strong><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">Le pr&eacute;sent contrat a pour objet la fourniture des produit list&eacute;s le devis<strong>.</strong></span></p>
+<p style="text-align: left;"><strong><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">Article 2 : Conditions d&rsquo;ex&eacute;cution</span></strong><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">Le fournisseur s&rsquo;engage &agrave; fournir ce service &agrave; 99% et assure une maintenance pr&eacute;ventive et r&eacute;guli&egrave;re du mat&eacute;riel durant le</span><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">contrat.</span><br /><strong><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">Article 3 : Le montant du contrat</span></strong><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">Le montant de ce contrat est de deux millions cinq cent vingt milles FCFA (2 520 000F) soit deux cent dix milles FCFA (210</span><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">000F) par mois.</span><br /><strong><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">Article 4 : modalit&eacute; de paiement</span></strong><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">La modalit&eacute; de paiement se fera en avance trimestrielle apr&egrave;s l&rsquo;approbation par les deux partis comme suit :</span><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">630 000F CFA comme avance le 01.07.2016</span><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">630 000F CFA comme avance le 01.10.2016</span><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">630 000F CFA comme avance le 01.01.2017</span><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">630 000F CFA comme avance le 01.04.2017</span><br /><strong><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">Article 5 : P&eacute;nalit&eacute; de retard</span></strong><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">En cas de retard non justifi&eacute; et ce pour des raisons imputables au seul fournisseur, une p&eacute;nalit&eacute; de retard de 1/100 sera</span><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">appliqu&eacute;e quotidiennement &agrave; compter du premier jour suivant la date d&rsquo;expiration du d&eacute;lai contractuel.</span><br /><strong><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">Article 6 : Attribution de juridiction</span></strong><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">Les parties conviennent que tout litige relatif &agrave; l&rsquo;application et/ou l&rsquo;interpr&eacute;tation du pr&eacute;sent contrat sera r&eacute;gl&eacute; &agrave; l&rsquo;amiable. A</span><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">d&eacute;faut d&rsquo;accord, les tribunaux de N&rsquo;Djamena seront comp&eacute;tents.</span><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">Lu et approuv&eacute;, le</span><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">Dont acte sur deux (02) pages en deux (02) exemplaires originaux.</span></p>
+<p style="text-align: left;"><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">Pour le Fournisseur &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; Pour le Client</span><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">MAHAMAT ALI MAHAMOUD</span><br /><span style="font-family: times new roman,times,serif; font-size: 12pt; color: #000000;">Directeur General</span></p>
+</body>
+</html> ';
+
 $pdf->writeHTML($html, true, false, true, false, '');
 // Close and output PDF document
 // This method has several options, check the source code documentation for more information.
