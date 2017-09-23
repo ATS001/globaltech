@@ -1,5 +1,5 @@
 <?php 
-//Export Module 'contrats' Date: 15-09-2017
+//Export Module 'contrats' Date: 23-09-2017
 global $db;
 if(!$result_insert_modul = $db->Query("insert into modul (modul, description, rep_modul, tables, app_modul, modul_setting, is_setting, etat, services)values('contrats', 'Gestion des contrats','contrats/main','contrats','contrats',NULL,'0', '0', '[-1-]')")){$this->error = false; $this->log .= "<li> Error Import Modul 'contrats' </li>";}
   //Task 'contrats' 'Gestion des contrats'
@@ -14,6 +14,8 @@ if(!$result_insert_modul = $db->Query("insert into modul (modul, description, re
       if(!$result_action_625 = $db->Query("INSERT INTO task_action (appid, idf, descrip, app, mode_exec, code, type, service, etat_line, notif, etat_desc, message_class, message_etat)VALUES($result_task_413, 'e970c1414507e5b83ae39e7ddedbf15e', 'Valider contrat','validcontrat', 'this_exec', '".'<li><a href="#" class="this_exec" data="%id%" rel="validcontrat"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Valider contrat</a></li>'."', '0', '[-1-]', '0', '1', 'Attente de validation','warning','".'<span class="label label-sm label-warning">Attente de validation</span>'."')")){$this->error = false; $this->log .= "<li> Error Import task_action 'Valider contrat' </li>";}
       // Action Task 413 - 'Désactiver contrat'
       if(!$result_action_626 = $db->Query("INSERT INTO task_action (appid, idf, descrip, app, mode_exec, code, type, service, etat_line, notif, etat_desc, message_class, message_etat)VALUES($result_task_413, '6908357258099272b60018c0f6fb1078', 'Désactiver contrat','validcontrat', 'this_exec', '".'<li><a href="#" class="this_exec" data="%id%" rel="validcontrat"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Désactiver contrat</a></li>'."', '0', '[-1-]', '1', '0', 'Contrat validé','success','".'<span class="label label-sm label-success">Contrat validé</span>'."')")){$this->error = false; $this->log .= "<li> Error Import task_action 'Désactiver contrat' </li>";}
+      // Action Task 413 - 'Voir détail'
+      if(!$result_action_701 = $db->Query("INSERT INTO task_action (appid, idf, descrip, app, mode_exec, code, type, service, etat_line, notif, etat_desc, message_class, message_etat)VALUES($result_task_413, 'a51e48b7f888da1f3bd8f06c0269bf81', 'Voir détail','detailcontrat', 'this_url', '".'<li><a href="#" class="this_url" data="%id%" rel="detailcontrat"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Voir détail</a></li>'."', '0', '[-1-]', '1', '0', 'Contrat validé','success','".'<span class="label label-sm label-success">Contrat validé</span>'."')")){$this->error = false; $this->log .= "<li> Error Import task_action 'Voir détail' </li>";}
   //Task 'addcontrat' 'Ajouter contrat'
   if(!$result_task_414 = $db->Query("INSERT INTO task (app, modul, file, rep, session, dscrip, sbclass, ajax, app_sys, etat, type_view, services)VALUES('addcontrat', $result_insert_modul, 'addcontrat','contrats/main', '1', 'Ajouter contrat', 'cogs', '1', '0', '0','form', '[-1-]')")){$this->error = false; $this->log .= "<li> Error Import task 'Ajouter contrat' </li>";}
       // Action Task 414 - 'Ajouter contrat'
