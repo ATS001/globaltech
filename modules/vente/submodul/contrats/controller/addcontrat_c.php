@@ -10,6 +10,7 @@ if (MInit::form_verif('addcontrat', false)) {
         'date_fin'        => Mreq::tp('date_fin'),
         'idtype_echeance' => Mreq::tp('idtype_echeance'),
         'commentaire'     => Mreq::tp('commentaire'),
+        'periode_fact'    => Mreq::tp('periode_fact'),
         'pj_id'           => Mreq::tp('pj-id'),
         'pj_photo_id'     => Mreq::tp('pj_photo-id')
     );
@@ -53,7 +54,11 @@ if (MInit::form_verif('addcontrat', false)) {
         $empty_list .= "<li>Commentaire</li>";
         $checker = 1;
     }*/
+     if ($posted_data['periode_fact'] == NULL) {
 
+        $empty_list .= "<li>Période de facturation</li>";
+        $checker = 1;
+    }
 
 
     $empty_list .= "</ul>";

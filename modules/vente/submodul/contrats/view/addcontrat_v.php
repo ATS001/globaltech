@@ -45,7 +45,16 @@ $form->input_date('Date de fin', 'date_fin', 4, date('d-m-Y'), $array_date_fin);
 $ech_array[]  = array('required', 'true', 'Choisir un type échéance');
 $form->select_table('Type échéance', 'idtype_echeance', 8, 'ref_type_echeance', 'id', 'id' , 'type_echeance', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $ech_array);
 
+// Facturation
+$facturation_array[]  = array('Début du mois' , 'D' );
+$facturation_array[]  = array('Fin du fin' , 'F' );
+$form->radio('Facturation', 'periode_fact', 'D', $facturation_array, '');
 
+//Adresse
+$adresse_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
+$adresse_array[]  = array('required', 'true', 'Insérer Adresse' );
+$form->input('Adresse', 'adresse', 'text', 6, null, $adresse_array);
+//commentaire
 $form->input_editor('Commentaire', 'commentaire', 8, $clauses=NULL , $js_array = null,  $input_height = 50);
 
 //pj_id

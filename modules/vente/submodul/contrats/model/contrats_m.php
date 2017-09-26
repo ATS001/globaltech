@@ -205,6 +205,7 @@ class Mcontrat {
             $values["commentaire"] = MySQL::SQLValue($this->_data['commentaire']);
             $values["idtype_echeance"] = MySQL::SQLValue($this->_data['idtype_echeance']);
             $values["date_contrat"] = MySQL::SQLValue(date("Y-m-d"));
+            $values["periode_fact"] = MySQL::SQLValue($this->_data['periode_fact']);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
@@ -289,6 +290,7 @@ class Mcontrat {
             $values["commentaire"] = MySQL::SQLValue($this->_data['commentaire']);
             $values["date_contrat"] = MySQL::SQLValue(date("Y-m-d"));
             $values["idtype_echeance"] = MySQL::SQLValue($this->_data['idtype_echeance']);
+            $values["periode_fact"] = MySQL::SQLValue($this->_data['periode_fact']);
             $values["updusr"] = MySQL::SQLValue(session::get('userid'));
             $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
             $wheres["id"] = $this->id_contrat;

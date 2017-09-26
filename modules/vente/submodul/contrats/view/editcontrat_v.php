@@ -69,7 +69,12 @@ $form->input_date('Date de fin', 'date_fin', 4, $info_contrat->s('date_fin'), $a
 $ech_array[] = array('required', 'true', 'Choisir un type échéance');
 $form->select_table('Type échéance', 'idtype_echeance', 8, 'ref_type_echeance', 'id', 'id', 'type_echeance', $indx = '------', $info_contrat->s('idtype_echeance'), $multi = NULL, $where = NULL, $ech_array);
 
+// Facturation
+$facturation_array[]  = array('Début du mois' , 'D' );
+$facturation_array[]  = array('Fin du fin' , 'F' );
+$form->radio('Facturation', 'periode_fact', $info_contrat->s('periode_fact'), $facturation_array, '');
 
+//Commentaire
 $form->input_editor('Commentaire', 'commentaire', 8, $info_contrat->s('commentaire'), $js_array = null, $input_height = 50);
 
 //pj_id
