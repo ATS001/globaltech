@@ -230,27 +230,54 @@ class Mfacture {
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
-            if (!$result = ($db->InsertRow("encaissements", $values))) {
-
+            
+            //Check if Insert Query been executed (False / True)
+            if (!$result = $db->InsertRow('encaissements', $values)) {
+                //False => Set $this->log and $this->error = false
                 $this->log .= $db->Error();
                 $this->error = false;
                 $this->log .= '</br>Enregistrement BD non réussie';
             } else {
 
                 $this->last_id = $result;
-                $this->log .= '</br>Enregistrement  réussie ' . ' - ' . $this->last_id . ' -';
-            }
-        } else {
+                //If Attached required Save file to Archive
 
+                $this->save_file('pj', 'Justifications de l\'encaissement'. $this->reference, 'Document');
+
+                             //Check $this->error = true return Green message and Bol true
+                if ($this->error == true) {
+                    $this->log = '</br>Enregistrement réussie: <b>' . $this->reference . ' ID: ' . $this->last_id;
+                    $this->maj_reste($this->_data['idfacture'],$this->_data['montant']);
+                    //Check $this->error = false return Red message and Bol false	
+                } else {
+                    $this->log .= '</br>Enregistrement réussie: <b>' . $this->reference;
+
+                    $this->log .= '</br>Un problème d\'Enregistrement ';
+                }
+            }
+            //Else Error false	
+        } else {
             $this->log .= '</br>Enregistrement non réussie';
         }
-
         //check if last error is true then return true else rturn false.
         if ($this->error == false) {
             return false;
         } else {
             return true;
         }
+    }
+
+    public function maj_reste($id_facture,$montant)
+    {
+   
+    global $db;
+    $req_sql = "UPDATE factures SET reste = reste - $montant WHERE id = '$id_facture'";
+    if(!$db->Query($req_sql))
+    {
+        $this->log .= $db->Error();
+        $this->error = false;
+        $this->log .= '<br>Problème de mise à jour du reste ';
+    }
     }
 
     //activer ou desactiver un contrats_frn

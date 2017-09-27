@@ -37,9 +37,9 @@
             <div class="clearfix">
                 <div class="pull-right tableTools-container">
                     <div class="btn-group btn-overlap">
-                        <?php {
+                        <?php if($info_facture->facture_info['reste'] != 0)
                             TableTools::btn_add('addencaissement', 'Ajouter encaissement', MInit::crypt_tp('id', Mreq::tp('id')));
-                        }
+                        
                         ?>  
                         <?php TableTools::btn_csv('encaissements', 'Exporter Liste'); ?>
                         <?php TableTools::btn_pdf('encaissements', 'Exporter Liste'); ?>
