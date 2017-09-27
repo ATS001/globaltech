@@ -10,7 +10,7 @@ $facture->get_facture();
 $action = new TableTools();
 $action->line_data = $facture->facture_info;
 
-//$action->action_line_table('factures', 'factures',$facture->facture_info['creusr'],'deletefacture');
+$action->action_line_table('factures', 'factures',$facture->facture_info['creusr'],'deletefacture');
 ?>
 
 </ul>

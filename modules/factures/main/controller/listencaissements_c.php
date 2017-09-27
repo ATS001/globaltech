@@ -11,11 +11,11 @@ $params = $_REQUEST;
 //define index of column
 $columns = array(
     0 => 'id',
-    1 => 'designation',
-    2 => 'idfacture',
-    3 => 'montant',
-    4 => 'type',
-    5 => 'date_complement',
+    1 => 'ref',
+    2 => 'designation',
+    3 => 'idfacture',
+    4 => 'montant',
+    5 => 'date_encaissement',
     6 => 'statut'
 );
 
@@ -23,22 +23,22 @@ $columns = array(
 
 $colms = $tables = $joint = $where = $where_s = $sqlTot = $sqlRec = "";
 // define used table.
-$tables .= "complement_facture,factures";
+$tables .= " encaissements,factures";
 // set sherched columns.(the final colm without comma)
-$colms .= " complement_facture.id AS id, ";
-$colms .= " complement_facture.designation AS des, ";
+$colms .= " encaissements.id AS id, ";
+$colms .= " encaissements.ref AS ref, ";
+$colms .= " encaissements.designation AS des, ";
 $colms .= " factures.ref as ref, ";
-$colms .= " complement_facture.montant as mt, ";
-$colms .= " complement_facture.type as type, ";
-$colms .= " complement_facture.date_complement as dc, ";
-$joint .= " AND complement_facture.idfacture=factures.id AND complement_facture.idfacture = ".Mreq::tp('id');
+$colms .= " encaissements.montant as mt, ";
+$colms .= " encaissements.date_encaissement as de, ";
+$joint .= " AND encaissements.idfacture=factures.id AND encaissements.idfacture = ".Mreq::tp('id');
 
 
 //difine if user have rule to show line depend of etat 
-$where_etat_line = TableTools::where_etat_line('complement_facture', 'complements');
+$where_etat_line = TableTools::where_etat_line('encaissements', 'encaissements');
 //define notif culomn to concatate with any colms.
 //this is change style of button action to red
-$notif_colms = TableTools::line_notif_new('complement_facture', 'complements');
+$notif_colms = TableTools::line_notif_new('encaissements', 'encaissements');
 $colms .= $notif_colms;
 
 
@@ -51,13 +51,14 @@ if (!empty($params['search']['value']) or Mreq::tp('id_search') != NULL) {
 
 
 
-    $where_s .= " AND ( complement_facture.id LIKE '%" . $serch_value . "%' ";
-    $where_s .= " OR (complement_facture.designation LIKE '%" . $serch_value . "%') ";
+    $where_s .= " AND ( encaissements.id LIKE '%" . $serch_value . "%' ";
+    $where_s .= " OR (encaissements.ref LIKE '%" . $serch_value . "%') ";
+    $where_s .= " OR (encaissements.designation LIKE '%" . $serch_value . "%') ";
     $where_s .= " OR (factures.ref LIKE '%" . $serch_value . "%') ";
-    $where_s .= " OR (complement_facture.montant LIKE '%" . $serch_value . "%') ";
-    $where_s .= " OR (complement_facture.type LIKE '%" . $serch_value . "%') ";
-       $where_s .= " OR (complement_facture.date_complement LIKE '%" . $serch_value . "%') ";
-    $where_s .= TableTools::where_search_etat('complement_facture', 'complements', $serch_value);
+    $where_s .= " OR (encaissements.montant LIKE '%" . $serch_value . "%') ";
+    $where_s .= " OR (encaissements.type LIKE '%" . $serch_value . "%') ";
+       $where_s .= " OR (encaissements.date_encaissement LIKE '%" . $serch_value . "%') ";
+    $where_s .= TableTools::where_search_etat('encaissements', 'encaissements', $serch_value);
 }
 
 
@@ -94,16 +95,16 @@ $totalRecords = $db->RowCount();
 //Export data to CSV File
 if (Mreq::tp('export') == 1) {
 
-    $file_name = 'complements_list';
-    $title = 'Liste des complements';
+    $file_name = 'encaissement_list';
+    $title = 'Liste des encaissements';
     if (Mreq::tp('format') == 'csv') {
-        $header = array('ID', 'Désignation', 'Facture', 'Montant', 'Type','Date', 'Statut');
+        $header = array('ID', 'Référence', 'Désignation', 'Facture', 'Montant','Date', 'Statut');
         Minit::Export_xls($header, $file_name, $title);
     } elseif (Mreq::tp('format') == 'pdf') {
-        $header = array('ID' => 10, 'Désignation' => 20, 'Facture' => 20, 'Montant' => 15, 'Type' => 15,'Date'=>10, 'Statut' => 20);
+        $header = array('ID' => 10, 'Référence' => 20, 'Désignation' => 20, 'Facture' => 15, 'Montant' => 15,'Date'=>10, 'Statut' => 20);
         Minit::Export_pdf($header, $file_name, $title);
     } elseif (Mreq::tp('format') == 'dat') {
-        Minit::send_big_param('complements#' . $sqlTot);
+        Minit::send_big_param('encaissements#' . $sqlTot);
     }
 }
 

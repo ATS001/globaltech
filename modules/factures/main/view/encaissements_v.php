@@ -25,7 +25,7 @@
 
     <div class="page-header">
         <h1>
-            Gestion des compléments
+            Gestion des encaissements
             <small>
                 <i class="ace-icon fa fa-angle-double-right"></i>
             </small>
@@ -38,26 +38,29 @@
                 <div class="pull-right tableTools-container">
                     <div class="btn-group btn-overlap">
                         <?php {
-                            TableTools::btn_add('addcomplement', 'Ajouter complément', MInit::crypt_tp('id', Mreq::tp('id')));
+                            TableTools::btn_add('addencaissement', 'Ajouter encaissement', MInit::crypt_tp('id', Mreq::tp('id')));
                         }
                         ?>  
-                        <?php TableTools::btn_csv('complements', 'Exporter Liste'); ?>
-                        <?php TableTools::btn_pdf('complements', 'Exporter Liste'); ?>
+                        <?php TableTools::btn_csv('encaissements', 'Exporter Liste'); ?>
+                        <?php TableTools::btn_pdf('encaissements', 'Exporter Liste'); ?>
 
                     </div>
                 </div>
             </div>
 
             <div class="table-header">
-                Liste "complément" 
+                Liste "encaissement" 
             </div>
             <div>
-                <table id="cmpl_grid" class="table table-bordered table-condensed table-hover table-striped dataTable no-footer">
+                <table id="encs_grid" class="table table-bordered table-condensed table-hover table-striped dataTable no-footer">
                     <thead>
                         <tr>
 
                             <th>
                                 ID
+                            </th>
+                             <th>
+                                Référence
                             </th>
                             <th>
                                 Désignation
@@ -69,9 +72,6 @@
                                 Montant
                             </th>
                             <th>
-                                Type
-                            </th>
-                             <th>
                                 Date
                             </th>
                             <th>
@@ -91,12 +91,12 @@
 
         $(document).ready(function () {
 
-            var table = $('#cmpl_grid').DataTable({
+            var table = $('#encs_grid').DataTable({
                 bProcessing: true,
                 notifcol: 5,
                 serverSide: true,
 
-                ajax_url: "complements",
+                ajax_url: "encaissements",
                 extra_data: "id=<?php echo Mreq::tp('id'); ?>",
 
                 aoColumns: [
@@ -124,9 +124,9 @@
                 csv_export(table, 'pdf');
             });
 
-            $('#cmpl_grid').on('click', 'tr button', function () {
+            $('#encs_grid').on('click', 'tr button', function () {
                 var $row = $(this).closest('tr')
-                append_drop_menu('complements', table.cell($row, 0).data(), '.btn_action')
+                append_drop_menu('encaissements', table.cell($row, 0).data(), '.btn_action')
             });
 
             $('#id_search').on('keyup', function () {

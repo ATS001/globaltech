@@ -3,14 +3,14 @@
 
 $complement = new Mfacture();
 $complement->id_complement= Mreq::tp('id');
-$facture->get_complement();
+$complement->get_complement();
 
 
 
 $action = new TableTools();
 $action->line_data = $complement->complement_info;
 
-//$action->action_line_table('factures', 'factures',$facture->facture_info['creusr'],'deletefacture');
+$action->action_line_table('complements', 'complement_facture',$complement->complement_info['creusr'],'deletecomplement');
 ?>
 
 </ul>

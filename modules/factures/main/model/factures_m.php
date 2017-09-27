@@ -8,15 +8,18 @@ class Mfacture {
 
     private $_data; //data receive from form
     var $table = 'factures'; //Main table of module
+    var $table_complement = 'complement_facture'; // Complement facture table
     var $last_id; //return last ID after insert command
     var $log = NULL; //Log of all opération.
     var $error = true; //Error bol changed when an error is occured
     var $id_facture; // Facture ID append when request
     var $id_complement; // Complement ID
+    var $id_encaissement; //Encaissement ID
     var $token; //user for recovery function
     var $facture_info; //Array Facture all info
     var $complement_info; // Array Complement info
-    var $reference = null; // Reference contrat
+    var $encaissement_info; // Array encaissement info
+    var $reference = null; // Reference 
 
     public function __construct($properties = array()) {
         $this->_data = $properties;
@@ -52,6 +55,64 @@ class Mfacture {
             }
         }
         //return Array contrats_frn_info
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    //Get all info complement from database for edit form
+    public function get_complement() {
+        global $db;
+
+        $table_complement = $this->table_complement;
+
+        $sql = "SELECT $table_complement.* FROM 
+    		$table_complement WHERE  $table_complement.id = " . $this->id_complement;
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->complement_info = $db->RowArray();
+                $this->error = true;
+            }
+        }
+        //return Array produit_info
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    //Get all info encaissement from database for edit form
+    public function get_encaissement() {
+        global $db;
+
+        $table_encaissement = $this->table_encaissement;
+
+        $sql = "SELECT $table_encaissement.* FROM 
+    		$table_encaissement WHERE  $table_encaissement.id = " . $this->id_encaissement;
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->encaissement_info = $db->RowArray();
+                $this->error = true;
+            }
+        }
+        //return Array produit_info
         if ($this->error == false) {
             return false;
         } else {
@@ -100,74 +161,90 @@ class Mfacture {
     }
 
     //Generate contrat reference
-    private function Generate_contrat_reference() {
+    private function Generate_encaissement_reference() {
         if ($this->error == false) {
             return false;
         }
         global $db;
-        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(reference, 9, LENGTH(SUBSTR(reference,9))-5))),0)+1  AS reference  FROM contrats_frn WHERE SUBSTR(reference,LENGTH(reference)-3,4)= (SELECT  YEAR(SYSDATE()))');
-        $this->reference = 'CTR-FRN-' . $max_id . '/' . date('Y');
+        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(ref, 9, LENGTH(SUBSTR(ref,9))-5))),0)+1  AS ref  FROM encaissements'
+                . ' WHERE SUBSTR(ref,LENGTH(ref)-3,4)= (SELECT  YEAR(SYSDATE()))');
+        $this->reference = 'GT-ENC-' . $max_id . '/' . date('Y');
     }
 
-    //Save new contrats_frn after all check
-    public function save_new_contrats_frn() {
-
-        //Generate reference
-        $this->Generate_contrat_reference();
-
-        //Before execute do the multiple check
-        $this->Check_exist('reference', $this->reference, 'Référence contrat', null);
-
-        $this->check_non_exist('fournisseurs', 'id', $this->_data['id_fournisseur'], 'Fournisseur');
+    //Save new complement after all check
+    public function save_new_complement() {
 
 
+        global $db;
+        $values["designation"] = MySQL::SQLValue($this->_data['designation']);
+        $values["idfacture"] = MySQL::SQLValue($this->_data['idfacture']);
+        $values["montant"] = MySQL::SQLValue($this->_data['montant']);
+        $values["type"] = MySQL::SQLValue($this->_data['type']);
+        $values["date_complement"] = MySQL::SQLValue(date("Y-m-d"));
+        $values["creusr"] = MySQL::SQLValue(session::get('userid'));
+        $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
-        //Check if PJ attached required
-        if ($this->exige_pj) {
-            $this->check_file('pj', 'Justifications du contrats_frn.');
-        }
-
-
-        //Check $this->error (true / false)
+        // If we have an error
         if ($this->error == true) {
-            //Format values for Insert query 
-            global $db;
 
-            $values["reference"] = MySQL::SQLValue($this->reference);
-            $values["id_fournisseur"] = MySQL::SQLValue($this->_data['id_fournisseur']);
-            $values["date_effet"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_effet'])));
-            $values["date_fin"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_fin'])));
-            $values["commentaire"] = MySQL::SQLValue($this->_data['commentaire']);
-            $values["creusr"] = MySQL::SQLValue(session::get('userid'));
-            $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+            if (!$result = ($db->InsertRow("complement_facture", $values))) {
 
-            //Check if Insert Query been executed (False / True)
-            if (!$result = $db->InsertRow($this->table, $values)) {
-                //False => Set $this->log and $this->error = false
                 $this->log .= $db->Error();
                 $this->error = false;
                 $this->log .= '</br>Enregistrement BD non réussie';
             } else {
 
                 $this->last_id = $result;
-                //If Attached required Save file to Archive
-
-                $this->save_file('pj', 'Copie Contrat fournisseur.' . $this->reference, 'Document');
-
-                //Check $this->error = true return Green message and Bol true
-                if ($this->error == true) {
-                    $this->log = '</br>Enregistrement réussie: <b>' . $this->reference . ' ID: ' . $this->last_id;
-                    //Check $this->error = false return Red message and Bol false	
-                } else {
-                    $this->log .= '</br>Enregistrement réussie: <b>' . $this->reference;
-
-                    $this->log .= '</br>Un problème d\'Enregistrement ';
-                }
+                $this->log .= '</br>Enregistrement  réussie ' . ' - ' . $this->last_id . ' -';
             }
-            //Else Error false	
         } else {
+
             $this->log .= '</br>Enregistrement non réussie';
         }
+
+        //check if last error is true then return true else rturn false.
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    //Save new encaissement after all check
+    public function save_new_encaissement() {
+
+        $this->Generate_encaissement_reference();
+        //Check if PJ attached required
+        if ($this->exige_pj) {
+            $this->check_file('pj', 'Justifications du contrat.');
+        }
+
+        if ($this->error == true) {
+
+            global $db;
+            $values["ref"] = MySQL::SQLValue($this->reference);
+            $values["designation"] = MySQL::SQLValue($this->_data['designation']);
+            $values["idfacture"] = MySQL::SQLValue($this->_data['idfacture']);
+            $values["montant"] = MySQL::SQLValue($this->_data['montant']);
+            $values["date_encaissement"] = MySQL::SQLValue(date("Y-m-d"));
+            $values["creusr"] = MySQL::SQLValue(session::get('userid'));
+            $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+
+            if (!$result = ($db->InsertRow("encaissements", $values))) {
+
+                $this->log .= $db->Error();
+                $this->error = false;
+                $this->log .= '</br>Enregistrement BD non réussie';
+            } else {
+
+                $this->last_id = $result;
+                $this->log .= '</br>Enregistrement  réussie ' . ' - ' . $this->last_id . ' -';
+            }
+        } else {
+
+            $this->log .= '</br>Enregistrement non réussie';
+        }
+
         //check if last error is true then return true else rturn false.
         if ($this->error == false) {
             return false;
@@ -224,101 +301,6 @@ class Mfacture {
             echo $this->contrats_frn_info[$key];
         } else {
             echo "";
-        }
-    }
-
-    //Edit categorie_contrats_frn after all check
-    public function edit_contrats_frn() {
-
-        //Get existing data for categorie_contrats_frn
-        $this->get_contrats_frn();
-
-        $this->last_id = $this->id_contrats_frn;
-
-
-        $this->check_non_exist('fournisseurs', 'id', $this->_data['id_fournisseur'], 'Fournisseur');
-
-        //Check if PJ attached required
-        if ($this->exige_pj) {
-            $this->check_file('pj', 'Copie Contrat fournisseur.', $this->_data['pj_id']);
-        }
-
-
-        //Check $this->error (true / false)
-        if ($this->error == true) {
-            //Format values for Insert query 
-            global $db;
-
-            global $db;
-            $values["id_fournisseur"] = MySQL::SQLValue($this->_data['id_fournisseur']);
-            $values["date_effet"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_effet'])));
-            $values["date_fin"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_fin'])));
-            $values["commentaire"] = MySQL::SQLValue($this->_data['commentaire']);
-            $values["updusr"] = MySQL::SQLValue(session::get('userid'));
-            $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
-            $wheres["id"] = $this->id_contrats_frn;
-
-            //Check if Insert Query been executed (False / True)
-            if (!$result = $db->UpdateRows($this->table, $values, $wheres)) {
-                //False => Set $this->log and $this->error = false
-                $this->log .= $db->Error();
-                $this->error = false;
-                $this->log .= '</br>Enregistrement BD non réussie';
-            } else {
-
-                $this->last_id = $this->id_contrats_frn;
-                //If Attached required Save file to Archive
-                $this->save_file('pj', 'Copie Contrat fournisseur.' . $this->_data['reference'], 'Document');
-
-
-                //Check $this->error = true return Green message and Bol true
-                if ($this->error == true) {
-                    $this->log = '</br>Modification réussie: <b>' . $this->_data['reference'] . ' ID: ' . $this->last_id;
-                    //Check $this->error = false return Red message and Bol false	
-                } else {
-                    $this->log .= '</br>Modification réussie: <b>' . $this->_data['reference'];
-                    $this->log .= '</br>Un problème d\'Enregistrement ';
-                }
-            }
-            //Else Error false	
-        } else {
-            $this->log .= '</br>Enregistrement non réussie';
-        }
-        //check if last error is true then return true else rturn false.
-        if ($this->error == false) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
-    public function delete_contrats_frn() {
-        global $db;
-        $id_contrats_frn = $this->id_contrats_frn;
-        $this->get_contrats_frn();
-        //Format where clause
-        $where['id'] = MySQL::SQLValue($id_contrats_frn);
-        //check if id on where clause isset
-        if ($where['id'] == null) {
-            $this->error = false;
-            $this->log .= '</br>L\' id est vide';
-        }
-        //execute Delete Query
-        if (!$db->DeleteRows('contrats_frn', $where)) {
-
-            $this->log .= $db->Error() . '  ' . $db->BuildSQLDelete('contrats_frn', $where);
-            $this->error = false;
-            $this->log .= '</br>Suppression non réussie';
-        } else {
-
-            $this->error = true;
-            $this->log .= '</br>Suppression réussie ';
-        }
-        //check if last error is true then return true else rturn false.
-        if ($this->error == false) {
-            return false;
-        } else {
-            return true;
         }
     }
 

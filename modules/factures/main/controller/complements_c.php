@@ -1,3 +1,6 @@
 <?php 
 //SYS GLOBAL TECH
-// Modul: factures => Controller
+// Modul: complements => Controller
+view::load_view('complements');
+
+?>
