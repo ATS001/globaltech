@@ -1,6 +1,6 @@
 <?php 
 defined('_MEXEC') or die;
-if(MInit::form_verif('edit_detaildevis',false))
+if(MInit::form_verif('edit_detailproforma',false))
 {
 	if(!MInit::crypt_tp('id', null, 'D'))
 	{  
@@ -67,19 +67,19 @@ if(MInit::form_verif('edit_detaildevis',false))
 	  //End check empty element
 
 
-	$exist_devis_d = new  Mdevis($posted_data);
-    $exist_devis_d->id_devis_d = $posted_data['id'];
+	$exist_proforma_d = new  Mproforma($posted_data);
+    $exist_proforma_d->id_proforma_d = $posted_data['id'];
 
 
   //execute Insert returne false if error
-	if($exist_devis_d->edit_exist_details_devis($posted_data['tkn_frm'])){
+	if($exist_proforma_d->edit_exist_details_proforma($posted_data['tkn_frm'])){
 
-		exit("1#".$exist_devis_d->log."#".$exist_devis_d->sum_total_ht);
+		exit("1#".$exist_proforma_d->log."#".$exist_proforma_d->sum_total_ht);
 	}else{
 
-		exit("0#".$exist_devis_d->log);
+		exit("0#".$exist_proforma_d->log);
 	}
 	
 }
 
-view::load_view('edit_detaildevis');
+view::load_view('edit_detailproforma');

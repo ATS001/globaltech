@@ -146,6 +146,7 @@ class MLogin
 				$salt = MD5($_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT'].$this->token);
 				$session = new session();
 
+                
 				$session->clear('Captcha');//Clear Captcha Session
 
 				$session->set('username',$this->user_info['nom']);
@@ -158,6 +159,9 @@ class MLogin
 				$session->set('defapp',$this->user_info['defapp']);
 				$session->set('key',$this->user_info['pass']);
 				$session->set('secur_ss',$salt );
+				
+				
+				//exit($session->get_cookie('alg'));
 				
 				$this->photo_file = MInit::get_file_archive($this->user_info['photo']);
 				$x                = $y = 36;
@@ -322,7 +326,7 @@ Vous serez rédiriger dans qulques instants*/
 
 	}
 
-	public function logout()
+	public function logout($auto = null)
 	{
 		global $db;
 		//Expire opened Session for this user
@@ -343,6 +347,8 @@ Vous serez rédiriger dans qulques instants*/
 		{
 			return false;
 		}
+		
+				
 		return true;
 	}
 
@@ -415,6 +421,19 @@ Vous serez rédiriger dans qulques instants*/
 		} else {
 			$this->log .= "Un Message avec la procédure de recupération de mot de passe est envoyé à ".$mail->hide_mail($this->user_info['mail']);
 		}
+	}
+
+	public static function get_ses_time_autologout($param)
+	{
+		$time = null;
+		$file = MPATH_TEMP.SLASH.$param.'.ses';
+		if(file_exists($file)){
+			$time = file_get_contents($file);
+			unlink($file);
+		}else{
+			$time = Mcfg::get('auto_logout').' Min';
+		}
+		return $time;
 	}
 
 

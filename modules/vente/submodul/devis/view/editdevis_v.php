@@ -176,6 +176,16 @@ $(document).ready(function() {
     $('#type_remise').on('change', function () {
         $('#valeur_remise').trigger('input');
     });
+    $('#tva').on('change', function () {
+        var table = $('#table_details_devis').DataTable();
+
+        if (table.data().count() && $(this).val() == 'O' ) {
+            window.setTimeout( function(){
+                        ajax_loadmessage('La TVA sera appliquée sur l\'ensemble des lignes détails', 'nok');
+                        }, 10 );
+            
+        }
+    });
 
     $('#id_client').on('change', function () {
         

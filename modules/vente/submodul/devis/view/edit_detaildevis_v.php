@@ -17,10 +17,11 @@ $form->input_hidden('idh', Mreq::tp('idh'));
 //Check tkn_frm
 $form->input_hidden('checker_tkn_frm',  MInit::cryptage($info_devis_d->h('tkn_frm'), 1));
 $form->input_hidden('tkn_frm', $info_devis_d->h('tkn_frm'));
+$form->input_hidden('tva_d', 'O');
 //Produit
 $produit_array[]  = array('required', 'true', 'Choisir un Produit / Service');
 $form->select_table('Produit / Service', 'id_produit', 8, 'produits', 'id', 'designation' , 'designation', $indx = '------', $info_devis_d->h('id_produit'),$multi=NULL, $where=NULL, $produit_array);
-$hard_code_pri_u_ht = '<label style="margin-left:15px;margin-right : 20px;">Prix Unité HT: </label><input id="prix_unitaire" name="prix_unitaire" class="input-large alignRight" type="text" value="'.$info_devis_d->h('prix_unitaire').'">';
+$hard_code_pri_u_ht = '<label style="margin-left:15px;margin-right : 20px;">Prix Unité HT: </label><input id="prix_unitaire" name="prix_unitaire" class="input-large alignRight" type="text" readonly="" value="'.$info_devis_d->h('prix_unitaire').'">';
 $hard_code_pri_u_ht .= '<span class="help-block returned_span">...</span>';
 //Réference
 $form->input('Réference', 'ref_produit', 'text' ,3, $info_devis_d->h('ref_produit'), Null, $hard_code_pri_u_ht, 1);
@@ -50,6 +51,8 @@ $form->render();
 <script type="text/javascript">
 //On change produit get all informations.
 $(document).ready(function() {
+    //Get TVA value from main TVA select 
+    $('#tva_d').val($('#tva').val());
 	 //called when key is pressed in textbox
 	 function calculat_devis($prix_u, $qte, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc)
 	 {
@@ -73,6 +76,7 @@ $(document).ready(function() {
     	}
     	//Total HT 
     	var $total_ht = $prix_u_remised * $qte;
+        
     	//Calculate TVA
     	if($tva == 'N')
     	{
@@ -127,7 +131,7 @@ $(document).ready(function() {
     	var remise_valeur = parseFloat($('#remise_valeur_d').val());
     	var tva           = $('#tva').val();
 
-    	calculat_devis(prix_unitaire, qte, type_remise, remise_valeur, null, 'total_ht', 'total_tva', 'total_ttc');
+    	calculat_devis(prix_unitaire, qte, type_remise, remise_valeur, tva, 'total_ht', 'total_tva', 'total_ttc');
     });
     $('.send_modal').on('click', function () {
         if(!$('#edit_detaildevis').valid())

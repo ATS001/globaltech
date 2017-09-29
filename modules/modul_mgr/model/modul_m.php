@@ -747,9 +747,9 @@ class Mmodul {
     {
     	global $db;
 
-    	$sql = "SELECT task.*
-    	FROM task
-    	WHERE  task.id = ".$this->id_task;
+    	$sql = "SELECT task.*, task_action.message_class, task_action.etat_desc
+    	FROM task, task_action
+    	WHERE task_action.appid = task.id AND  task.id = ".$this->id_task;
     	if(!$db->Query($sql))
     	{
     		$this->error = false;
@@ -976,7 +976,7 @@ class Mmodul {
 		
 		$values["app"]         = MySQL::SQLValue($app);
 		$values["file"]        = MySQL::SQLValue($file);
-		$values["rep"]         = MySQL::SQLValue($rep);
+		$values["rep"]         = MySQL::SQLValue($this->modul_info['rep_modul']);
 		$values["modul"]       = MySQL::SQLValue($modul_id);
 		$values["dscrip"]      = MySQL::SQLValue($dscrip);
 		$values["session"]     = MySQL::SQLValue($session);
@@ -1008,6 +1008,7 @@ class Mmodul {
 				    //rename_app_files($modul_rep, $old_task_name, $new_task_name )
 				    $this->rename_app_files($rep, $this->task_info['app'], $this->_data['app']);
 			    }
+			    $this->edit_default_task_action($this->_data['id_app'], $this->_data['description'], $this->_data['message_class'], $this->_data['etat_desc']);
 			    $this->error = true;
 				$this->log .='</br>Modification réussie';
 			}
@@ -1068,7 +1069,8 @@ class Mmodul {
 		//$service               = '-'.session::get('service').'-';
 		$values["appid"]         = MySQL::SQLValue($app_id);
 		$values["app"]           = MySQL::SQLValue($this->_data['app']);
-		$values["idf"]           = MySQL::SQLValue(MD5($description . '1'));
+		//to difference of next task action we use 0def
+		$values["idf"]           = MySQL::SQLValue(MD5($description . '0def'));
 		$values["descrip"]       = MySQL::SQLValue($description);
 		$values["type"]          = MySQL::SQLValue(0);
 		$values["service"]       = MySQL::SQLValue($services);
@@ -1077,6 +1079,7 @@ class Mmodul {
 		$values["message_class"] = MySQL::SQLValue($message_class);
 		$values["etat_desc"]     = MySQL::SQLValue($etat_desc);
 		$values["message_etat"]  = MySQL::SQLValue($message);
+		$values["class"]         = MySQL::SQLValue($app_id);//used to edit from edit task
 		
 		
 		//check if package required stop Insert
@@ -1137,24 +1140,22 @@ class Mmodul {
 			$values["service"]   = MySQL::SQLValue($services);
 		}
 
-		
+				
 		//$service               = '-'.session::get('service').'-';
 		$values["appid"]         = MySQL::SQLValue($app_id);
 		$values["app"]           = MySQL::SQLValue($this->_data['app']);
-		$values["idf"]           = MySQL::SQLValue(MD5($description.'1'));
+		$values["idf"]           = MySQL::SQLValue(MD5($description.'0def'));
 		$values["descrip"]       = MySQL::SQLValue($description);
 		$values["type"]          = MySQL::SQLValue(0);
 		$values["etat_line"]     = MySQL::SQLValue(0);
 		$values["notif"]         = MySQL::SQLValue(0);
-		$wheres['appid']         = MySQL::SQLValue($app_id);
-		$wheres["type"]          = MySQL::SQLValue(1);
 		$values["etat_desc"]     = MySQL::SQLValue($etat_desc);
 		$values["message_class"] = MySQL::SQLValue($message_class);
 		$values["message_etat"]  = MySQL::SQLValue($etat_desc);
+		$values["class"]         = MySQL::SQLValue($app_id);
+		$wheres['class']         = MySQL::SQLValue($app_id);
 		
-		//check if package required stop Insert
-		//$this->check_file('pkg', 'Le Package de module.');
-
+		
 		
         global $db;
         // If we have an error
@@ -1169,7 +1170,7 @@ class Mmodul {
 
 			}else{
 				$this->error == true;
-				$this->log = '</br>Enregistrement réussie: <b>';
+				$this->log = '</br>Enregistrement TA réussie ';
 
 			}
 
