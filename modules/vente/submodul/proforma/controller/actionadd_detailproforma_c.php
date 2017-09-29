@@ -10,7 +10,7 @@ if(!MInit::crypt_tp('exec', null, 'D'))
 $action = Mreq::tp('exec');
 
 
-//Delete line detail_devis
+//Delete line detail_proforma
 if($action == 'delete')
 {
 	if(!MInit::crypt_tp('id', null, 'D'))
@@ -20,8 +20,8 @@ if($action == 'delete')
 //Initialise
 	$id     = Mreq::tp('id');
 	$idc    = MInit::crypt_tp('id',$id);
-	$del_detail = new Mdevis();
-	if(!$del_detail->Delete_detail_devis($id))
+	$del_detail = new Mproforma();
+	if(!$del_detail->Delete_detail_proforma($id))
 	{
 		exit('0#'.$del_detail->log);
 	}else{
@@ -68,7 +68,7 @@ if($action == 'info_client')
 
 if($action == 'set_tva')
 {
-	$set_tva = new Mdevis();
+	$set_tva = new Mproforma();
 	$arr_return = $set_tva->set_tva_for_detail_on_change_main_tva(MReq::tp('tkn_frm'), MReq::tp('tva'));
 	if($set_tva->error == true)
 	{

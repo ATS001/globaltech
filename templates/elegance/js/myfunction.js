@@ -383,20 +383,22 @@ function exec_ajax($url, $data, $confirm, $message_confirm , $the_table){
 function ajax_loadmessage($core, $class, $time) {
 	$.gritter.removeAll();
 	
-    
+	
 	$time = typeof $time !== 'undefined' ? $time : 5000;	
 
 	$laclass = $class == 'ok'?'gritter-success':'gritter-error';
 	$titre = $class == 'ok'?'Opération  réussie':'Erreur Opération';
 	
-
-	$.gritter.add({
-		title: $titre,
-		text:  $core,
-		class_name: $laclass + '  gritter-center gritter-light',
-		time:  $time,
-	});
-     
+	window.setTimeout( function(){
+		$.gritter.add({
+			title: $titre,
+			text:  $core,
+			class_name: $laclass + '  gritter-center gritter-light',
+			time:  $time,
+		});
+	}, 10 );
+	
+	
 	return false;
 
 

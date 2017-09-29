@@ -1,21 +1,14 @@
 <?php 
 defined('_MEXEC') or die;
-if(MInit::form_verif('edit_detaildevis',false))
+if(MInit::form_verif('add_detailproforma',false))
 {
-	if(!MInit::crypt_tp('id', null, 'D'))
-	{  
-   // returne message error red to client 
-		exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
-	}
 	$posted_data = array(
-		'id'              => Mreq::tp('id') ,
 		'tkn_frm'         => Mreq::tp('tkn_frm') ,
-		'checker_tkn_frm' => Mreq::tp('checker_tkn_frm') ,
 		'id_produit'      => Mreq::tp('id_produit') ,
 		'ref_produit'     => Mreq::tp('ref_produit') ,
 		'qte'             => Mreq::tp('qte') ,
 		'prix_unitaire'   => Mreq::tp('prix_unitaire') ,
-		'tva_d'           => Mreq::tp('tva_d') , 
+		'tva_d'           => Mreq::tp('tva_d') ,
 		'type_remise_d'   => Mreq::tp('type_remise_d') ,
 		'remise_valeur_d' => Mreq::tp('remise_valeur_d') ,
 		'total_ht'        => Mreq::tp('total_ht') ,
@@ -25,11 +18,6 @@ if(MInit::form_verif('edit_detaildevis',false))
 
 	$checker = null;
 	$empty_list = "Les champs suivants sont obligatoires:\n<ul>";
-	if($posted_data['checker_tkn_frm'] != MInit::cryptage($posted_data['tkn_frm'],1)){
-
-		$empty_list .= "<li>Le token Form est invalid</li>";
-		$checker = 1;
-	}
 	if($posted_data['id_produit'] == NULL){
 
 		$empty_list .= "<li>Produit / Service</li>";
@@ -67,19 +55,19 @@ if(MInit::form_verif('edit_detaildevis',false))
 	  //End check empty element
 
 
-	$exist_devis_d = new  Mdevis($posted_data);
-    $exist_devis_d->id_devis_d = $posted_data['id'];
+	$new_proforma_d = new  Mproforma($posted_data);
+
 
 
   //execute Insert returne false if error
-	if($exist_devis_d->edit_exist_details_devis($posted_data['tkn_frm'])){
+	if($new_proforma_d->save_new_details_proforma($posted_data['tkn_frm'])){
 
-		exit("1#".$exist_devis_d->log."#".$exist_devis_d->sum_total_ht);
+		exit("1#".$new_proforma_d->log."#".$new_proforma_d->sum_total_ht);
 	}else{
 
-		exit("0#".$exist_devis_d->log);
+		exit("0#".$new_proforma_d->log);
 	}
 	
 }
 
-view::load_view('edit_detaildevis');
+view::load_view('add_detailproforma');

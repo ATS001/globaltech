@@ -4,16 +4,18 @@ if(MInit::form_verif('edittask', false))
 {
 	
   $posted_data = array(
-   'description'               => Mreq::tp('description') ,
-   'app'                       => Mreq::tp('app') ,
-   //'app_sys'                   => Mreq::tp('app_sys') ,
-   'type_view'                 => Mreq::tp('type_view') ,
-   'sbclass'                   => Mreq::tp('sbclass') ,
-   'id_checker_modul'          => Mreq::tp('id_checker_modul') ,
-   'id_modul'                  => Mreq::tp('id_modul') ,
-   'services'                  => Mreq::tp('services') ,
-   'id_checker'                => Mreq::tp('id_checker') ,
-   'id_app'                    => Mreq::tp('id_app') ,
+   'description'      => Mreq::tp('description') ,
+   'app'              => Mreq::tp('app') ,
+   //'app_sys'        => Mreq::tp('app_sys') ,
+   'type_view'        => Mreq::tp('type_view') ,
+   'sbclass'          => Mreq::tp('sbclass') ,
+   'id_checker_modul' => Mreq::tp('id_checker_modul') ,
+   'id_modul'         => Mreq::tp('id_modul') ,
+   'services'         => Mreq::tp('services') ,
+   'id_checker'       => Mreq::tp('id_checker') ,
+   'message_class'    => Mreq::tp('message_class') ,
+   'etat_desc'        => Mreq::tp('etat_desc') ,
+   'id_app'           => Mreq::tp('id_app') ,
    
   );
 

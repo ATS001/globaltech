@@ -104,6 +104,8 @@ class session
 
 	}
 
+
+
 	static public function clear( $var )
 	{
 		unset( $_SESSION[$var] );
@@ -113,4 +115,21 @@ class session
 	{
 		return ( isset( $_SESSION[$var] ) ? MInit::cryptage($_SESSION[$var],0) : FALSE );
 	}
+
+	static public function set_cookie($cok, $val, $time = 3600)
+	{
+		setcookie($cok, MInit::cryptage($val,1), time()+$time);
+	}
+
+	static public  function get_cookie( $cok )
+	{
+		return (isset( $_COOKIE[$cok]) ? MInit::cryptage( $_COOKIE[$cok],0) : FALSE );
+	}
+
+	static public  function clear_cookie( $cok )
+	{
+		unset($_COOKIE[$cok]);
+	}
+
+
 }

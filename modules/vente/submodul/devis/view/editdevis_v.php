@@ -102,6 +102,7 @@ $(document).ready(function() {
     	//var $type_remise    = $type_remise == null ? 'P' : $type_remise;
     	var $remise_valeur  = parseFloat($remise_valeur) ? parseFloat($remise_valeur) : 0;
     	var $tva            = $tva == null ? 'O' : $tva;
+        var $val_tva = <?php echo Mcfg::get('tva')?>
     	
     	//calculate remise
     	if($type_remise == 'P')
@@ -121,7 +122,7 @@ $(document).ready(function() {
     	{
     		var $total_tva = 0;
     	}else{
-    		var $total_tva = ($total_ht * 20) / 100; //TVA value get from app setting
+    		var $total_tva = ($total_ht * $val_tva) / 100; //TVA value get from app setting
     	}
     	var $total_ttc = $total_ht + $total_tva ;
     	$('#'+$f_total_ht).val($total_ht);
@@ -174,6 +175,16 @@ $(document).ready(function() {
     })
     $('#type_remise').on('change', function () {
         $('#valeur_remise').trigger('input');
+    });
+    $('#tva').on('change', function () {
+        var table = $('#table_details_devis').DataTable();
+
+        if (table.data().count() && $(this).val() == 'O' ) {
+            window.setTimeout( function(){
+                        ajax_loadmessage('La TVA sera appliquée sur l\'ensemble des lignes détails', 'nok');
+                        }, 10 );
+            
+        }
     });
 
     $('#id_client').on('change', function () {
