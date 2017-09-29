@@ -145,6 +145,7 @@ class Mcontrats_fournisseurs {
       $values["date_effet"]    = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_effet'])));
       $values["date_fin"]      = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_fin'])));
    		$values["commentaire"]   = MySQL::SQLValue($this->_data['commentaire']);
+      $values["date_notif"]      = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_notif'])));
     	$values["creusr"]      	 = MySQL::SQLValue(session::get('userid'));
     	$values["credat"]      	 = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
@@ -280,6 +281,7 @@ class Mcontrats_fournisseurs {
       $values["date_effet"]    = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_effet'])));
       $values["date_fin"]      = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_fin'])));
       $values["commentaire"]   = MySQL::SQLValue($this->_data['commentaire']);
+      $values["date_notif"]    = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_notif'])));
     	$values["updusr"]        = MySQL::SQLValue(session::get('userid'));
     	$values["upddat"]        = MySQL::SQLValue(date("Y-m-d H:i:s"));
     	$wheres["id"]            = $this->id_contrats_frn;

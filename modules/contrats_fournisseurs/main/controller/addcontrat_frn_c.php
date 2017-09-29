@@ -12,8 +12,9 @@ if(MInit::form_verif('addcontrat_frn',false))
    'reference'        => Mreq::tp('reference') ,
    'id_fournisseur'   => Mreq::tp('id_fournisseur') ,
    'date_effet'       => Mreq::tp('date_effet') ,
-   'date_fin'    	  => Mreq::tp('date_fin') ,
+   'date_fin'    	    => Mreq::tp('date_fin') ,
    'commentaire'      => Mreq::tp('commentaire') ,
+   'date_notif'       => Mreq::tp('date_notif') ,
    'pj_id'            => Mreq::tp('pj-id')
   
    );
@@ -48,6 +49,14 @@ if(MInit::form_verif('addcontrat_frn',false))
     $empty_list .= "<li>Commentaire</li>";
     $checker = 1;
   }
+
+  if($posted_data['date_notif'] == NULL){
+
+    $empty_list .= "<li>Date de notification</li>";
+    $checker = 1;
+  }
+  
+  
 
   if($posted_data['pj_id'] == NULL){
 
