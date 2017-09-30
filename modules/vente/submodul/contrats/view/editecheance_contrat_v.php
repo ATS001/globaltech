@@ -26,7 +26,7 @@ $form->input_date('Date échéance', 'date_echeance', 4, $info_echeance->h('date
 //Montant
 $array_montant[]= array('required', 'true', 'Insérer le montant à facturer');
 $array_montant[]= array('number', 'true', 'Montant invalid' );
-$form->input('Montant', 'montant', 'number' ,'3 is-number alignRight',  $info_echeance->h('montant'), $array_montant);
+$form->input('Montant HT', 'montant', 'number' ,'3 is-number alignRight',  $info_echeance->h('montant'), $array_montant);
 
 //Commentaire
 $form->input_editor('Commentaire', 'commentaire', 8, $info_echeance->h('commentaire'), $js_array = null, $input_height = 200);
