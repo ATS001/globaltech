@@ -16,9 +16,9 @@ if(MInit::form_verif('addecheance_contrat',false))
 		$empty_list .= "<li>Date d'échéance</li>";
 		$checker = 1;
 	}
-	if($posted_data['montant'] == NULL){
+	if($posted_data['montant'] == NULL OR $posted_data['montant'] == '0'){
 
-		$empty_list .= "<li>Montant à payer</li>";
+		$empty_list .= "<li>Montant à facturer</li>";
 		$checker = 1;
 	}
 

@@ -138,9 +138,9 @@ class Mcontrat {
 
         //$style = array('5[#]center', '25[#
         //$tableau = $db->GetMTable($headers, null, $style);
-        $tableau = $db->GetMTable($headers);]center', '70[#]alignLeft');
+        //]center', '70[#]alignLeft');
         $headers = array('Item'  => '15[#]center', 'Date Echéance'  => '25[#]center','Montant'  => '30[#]center','Commentaire' => '30[#]',);
-
+        $tableau = $db->GetMTable($headers);
 
 
         return $tableau;
