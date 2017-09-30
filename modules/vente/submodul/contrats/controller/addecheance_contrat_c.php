@@ -5,6 +5,7 @@ if(MInit::form_verif('addecheance_contrat',false))
 	$posted_data = array(
 		'tkn_frm'         => Mreq::tp('tkn_frm') ,
 		'date_echeance'   => Mreq::tp('date_echeance') ,
+		'montant'  		  => Mreq::tp('montant') ,
 		'commentaire'     => Mreq::tp('commentaire') ,
 		);
 
@@ -15,7 +16,11 @@ if(MInit::form_verif('addecheance_contrat',false))
 		$empty_list .= "<li>Date d'échéance</li>";
 		$checker = 1;
 	}
-	
+	if($posted_data['montant'] == NULL){
+
+		$empty_list .= "<li>Montant à payer</li>";
+		$checker = 1;
+	}
 
 	$empty_list.= "</ul>";
 	if($checker == 1)

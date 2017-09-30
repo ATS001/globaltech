@@ -126,6 +126,7 @@ class Mcontrat {
         $colms = null;
         $colms .= " $table.order item, ";
         $colms .= " $table.date_echeance, ";
+        $colms .= " $table.montant, ";
         $colms .= " $table.commentaire ";
 
         $req_sql = " SELECT $colms FROM $table WHERE idcontrat = $id_contrat ";
@@ -135,11 +136,11 @@ class Mcontrat {
             exit($this->log);
         }
 
-        //$style = array('5[#]center', '25[#]center', '70[#]alignLeft');
-        $headers = array('Item'  => '5[#]center', 'Date Echéance'  => '15[#]center','Commentaire' => '30[#]',);
-
+        //$style = array('5[#]center', '25[#
         //$tableau = $db->GetMTable($headers, null, $style);
-        $tableau = $db->GetMTable($headers);
+        $tableau = $db->GetMTable($headers);]center', '70[#]alignLeft');
+        $headers = array('Item'  => '15[#]center', 'Date Echéance'  => '25[#]center','Montant'  => '30[#]center','Commentaire' => '30[#]',);
+
 
 
         return $tableau;
@@ -398,6 +399,7 @@ class Mcontrat {
             $values["tkn_frm"] = MySQL::SQLValue($this->_data['tkn_frm']);
             $values["order"] = MySQL::SQLValue($order_echeance);
             $values["date_echeance"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_echeance'])));
+            $values["montant"] = MySQL::SQLValue($this->_data['montant']);
             $values["commentaire"] = MySQL::SQLValue($this->_data['commentaire']);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
@@ -454,6 +456,7 @@ class Mcontrat {
 
 
             $values["date_echeance"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_echeance'])));
+            $values["montant"] = MySQL::SQLValue($this->_data['montant']);
             $values["commentaire"] = MySQL::SQLValue($this->_data['commentaire']);
             $values["updusr"] = MySQL::SQLValue(session::get('userid'));
             $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));

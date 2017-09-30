@@ -8,7 +8,8 @@
   $columns = array( 
     0 =>'item',
     1 =>'date_echeance',
-    2 =>'commentaire', 
+    2 =>'montant',
+    3 =>'commentaire', 
   );
 
   $tkn_frm = Mreq::tp('tkn_frm');
@@ -24,6 +25,7 @@
   $colms .= " $main_table.id, ";
   $colms .= " $main_table.order item, ";
   $colms .= " $main_table.date_echeance, "; 
+  $colms .= " $main_table.montant, ";
   $colms .= " $main_table.commentaire, ";
   $colms .= " ' ' as statut";
 
@@ -45,6 +47,7 @@
 
     $where_s .=" AND $main_table.order LIKE '%".$serch_value."%' "; 
     $where_s .=" OR( main_table.date_echeance LIKE '%".$serch_value."%' ";
+    $where_s .=" OR( main_table.montant LIKE '%".$serch_value."%' ";
     $where_s .=" OR $main_table.commentaire LIKE '%".$serch_value."%' )";
     
   }
