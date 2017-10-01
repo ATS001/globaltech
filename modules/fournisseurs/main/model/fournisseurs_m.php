@@ -146,6 +146,15 @@ class Mfournisseurs {
     	$this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
         }
 
+        if($this->_data['id_devise'] = '------')
+        {
+            null;
+        }    
+        else{
+      $this->check_non_exist('ref_devise','id', $this->_data['id_devise'], 'Devise');
+        }
+
+
     	  //Check if PJ attached required
         if($this->exige_pj)
         {
@@ -172,13 +181,28 @@ class Mfournisseurs {
    		$values["civilite"]      = MySQL::SQLValue($this->_data['civilite']);
    		$values["adresse"] 		 = MySQL::SQLValue($this->_data['adresse']);
     	$values["id_pays"]  	 = MySQL::SQLValue($this->_data['id_pays']);
-   		$values["id_ville"] 	 = MySQL::SQLValue($this->_data['id_ville']);
+      
+      if($this->_data['id_ville'] = '------')
+      {
+            null;
+      }    
+      else{
+            $values["id_ville"]    = MySQL::SQLValue($this->_data['id_ville']);
+      }
+   		
     	$values["tel"] 		 	 = MySQL::SQLValue($this->_data['tel']);
     	$values["fax"] 			 = MySQL::SQLValue($this->_data['fax']);
    		$values["bp"] 			 = MySQL::SQLValue($this->_data['bp']);
    		$values["email"]	     = MySQL::SQLValue($this->_data['email']);
    		$values["rib"]  		 = MySQL::SQLValue($this->_data['rib']);
-    	$values["id_devise"]  	 = MySQL::SQLValue($this->_data['id_devise']);
+       if($this->_data['id_devise'] = '------')
+        {
+            null;
+        }    
+        else{
+      $values["id_devise"]     = MySQL::SQLValue($this->_data['id_devise']);
+        }
+    	
     	$values["creusr"]      	 = MySQL::SQLValue(session::get('userid'));
     	$values["credat"]      	 = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
@@ -316,6 +340,14 @@ class Mfournisseurs {
         $this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
         }
 
+         if($this->_data['id_devise'] = '------')
+        {
+            null;
+        }    
+        else{
+      $this->check_non_exist('ref_devise','id', $this->_data['id_devise'], 'Devise');
+        }
+
 
     	  //Check if PJ attached required
         if($this->exige_pj)
@@ -342,13 +374,25 @@ class Mfournisseurs {
    		$values["civilite"]      = MySQL::SQLValue($this->_data['civilite']);
    		$values["adresse"] 		 = MySQL::SQLValue($this->_data['adresse']);
     	$values["id_pays"]  	 = MySQL::SQLValue($this->_data['id_pays']);
-   		$values["id_ville"] 	 = MySQL::SQLValue($this->_data['id_ville']);
+   		if($this->_data['id_ville'] = '------')
+      {
+            null;
+      }    
+      else{
+            $values["id_ville"]    = MySQL::SQLValue($this->_data['id_ville']);
+      }
     	$values["tel"] 		 	 = MySQL::SQLValue($this->_data['tel']);
     	$values["fax"] 			 = MySQL::SQLValue($this->_data['fax']);
    		$values["bp"] 			 = MySQL::SQLValue($this->_data['bp']);
    		$values["email"]	     = MySQL::SQLValue($this->_data['email']);
    		$values["rib"]  		 = MySQL::SQLValue($this->_data['rib']);
-    	$values["id_devise"]     = MySQL::SQLValue($this->_data['id_devise']);
+    	 if($this->_data['id_devise'] = '------')
+        {
+            null;
+        }    
+        else{
+      $values["id_devise"]     = MySQL::SQLValue($this->_data['id_devise']);
+        }
     	$values["updusr"]        = MySQL::SQLValue(session::get('userid'));
     	$values["upddat"]        = MySQL::SQLValue(date("Y-m-d H:i:s"));
     	$wheres["id"]            = $this->id_fournisseur;
