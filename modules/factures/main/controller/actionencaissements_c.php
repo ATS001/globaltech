@@ -10,7 +10,7 @@ $encaissement->get_encaissement();
 $action = new TableTools();
 $action->line_data = $encaissement->encaissement_info;
 
-$action->action_line_table('encaissements', 'encaissement_facture',$encaissement->encaissement_info['creusr'],'deleteencaissement');
+$action->action_line_table('encaissements', 'encaissements',$encaissement->encaissement_info['creusr'],'deleteencaissement');
 ?>
 
 </ul>

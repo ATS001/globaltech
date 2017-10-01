@@ -42,14 +42,7 @@ if (MInit::form_verif('editencaissement', false)) {//If form is Posted do Action
             $checker = 1;
         }
 
-    if ($posted_data['type'] == NULL) {
-
-        $empty_list .= "<li>Type</li>";
-        $checker = 1;
-    }
-
-
-
+    
     $empty_list .= "</ul>";
     if ($checker == 1) {
         exit("0#$empty_list");

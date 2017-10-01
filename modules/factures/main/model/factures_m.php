@@ -9,6 +9,7 @@ class Mfacture {
     private $_data; //data receive from form
     var $table = 'factures'; //Main table of module
     var $table_complement = 'complement_facture'; // Complement facture table
+    var $table_encaissement = 'encaissements';
     var $last_id; //return last ID after insert command
     var $log = NULL; //Log of all opération.
     var $error = true; //Error bol changed when an error is occured
@@ -166,7 +167,7 @@ class Mfacture {
             return false;
         }
         global $db;
-        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(ref, 9, LENGTH(SUBSTR(ref,9))-5))),0)+1  AS ref  FROM encaissements'
+        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(ref, 9, LENGTH(SUBSTR(ref,9))-5))),0)+1  AS reference  FROM encaissements'
                 . ' WHERE SUBSTR(ref,LENGTH(ref)-3,4)= (SELECT  YEAR(SYSDATE()))');
         $this->reference = 'GT-ENC-' . $max_id . '/' . date('Y');
     }
@@ -318,12 +319,12 @@ class Mfacture {
 
     // afficher les infos d'un contrats_frn
     public function Shw($key, $no_echo = "") {
-        if ($this->contrats_frn_info[$key] != null) {
+        if ($this->encaissement_info[$key] != null) {
             if ($no_echo != null) {
-                return $this->contrats_frn_info[$key];
+                return $this->encaissement_info[$key];
             }
 
-            echo $this->contrats_frn_info[$key];
+            echo $this->encaissement_info[$key];
         } else {
             echo "";
         }
@@ -345,17 +346,17 @@ class Mfacture {
         }
 
         $new_name_file = $item . '_' . $this->last_id;
-        $folder = MPATH_UPLOAD . 'contrats_fournisseurs' . SLASH . $this->last_id;
+        $folder = MPATH_UPLOAD . 'encaissements' . SLASH . $this->last_id;
         $id_line = $this->last_id;
         $title = $titre;
-        $table = $this->table;
+        $table = $this->table_encaissement;
         $column = $item;
         $type = $type;
 
 
 
         //Call save_file_upload from initial class
-        if (!Minit::save_file_upload($temp_file, $new_name_file, $folder, $id_line, $title, 'contrats_fournisseurs', $table, $column, $type, $edit = null)) {
+        if (!Minit::save_file_upload($temp_file, $new_name_file, $folder, $id_line, $title, 'encaissements', $table, $column, $type, $edit = null)) {
             $this->error = false;
             $this->log .= '</br>Enregistrement ' . $item . ' dans BD non réussie';
         }
@@ -489,14 +490,20 @@ class Mfacture {
         }
     }
 
+    
     public function edit_encaissement() {
 
         //Get existing data for complement
         $this->get_encaissement();
         $this->last_id = $this->id_encaissement;
+        
+        //Check if PJ attached required
+        if($this->exige_pj)
+        {
+            $this->check_file('pj', 'Justifications du client.', $this->_data['pj_id']);
+        }
 
         global $db;
-        $values["ref"] = MySQL::SQLValue($this->reference);
         $values["designation"] = MySQL::SQLValue($this->_data['designation']);
         $values["idfacture"] = MySQL::SQLValue($this->_data['idfacture']);
         $values["montant"] = MySQL::SQLValue($this->_data['montant']);
@@ -514,23 +521,34 @@ class Mfacture {
                 $this->log .= $db->Error();
                 $this->error == false;
                 $this->log .= '</br>Enregistrement BD non réussie';
-            } else {
+           }else{
 
-                //$this->last_id = $result;
-                $this->log .= '</br>Enregistrement  réussie ' . ' - ' . $this->last_id . ' -';
-            }
-        } else {
+				$this->last_id = $this->id_encaissement;
+				//If Attached required Save file to Archive
+				$this->save_file('pj', 'Justifications encaissement'.$this->_data['id'], 'Document');
 
-            $this->log .= '</br>Enregistrement non réussie';
-        }
-
+								
+				//Check $this->error = true return Green message and Bol true
+				if($this->error == true)
+				{
+					$this->log = '</br>Modification réussie: <b>'.$this->_data['id'].' ID: '.$this->last_id;
+				//Check $this->error = false return Red message and Bol false	
+				}else{
+					$this->log .= '</br>Modification non réussie: <b>'.$this->_data['id'];
+					$this->log .= '</br>Un problème d\'Enregistrement ';
+				}
+			}
+		//Else Error false	
+		}else{
+			$this->log .='</br>Enregistrement non réussie';
+		}
         //check if last error is true then return true else rturn false.
-        if ($this->error == false) {
-            return false;
-        } else {
-            return true;
-        }
-    }
+		if($this->error == false){
+			return false;
+		}else{
+			return true;
+		}
+	}
 
     //activer ou valider une facture
         public function valid_facture($etat = 0) {

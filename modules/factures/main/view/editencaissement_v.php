@@ -48,7 +48,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_encaissement->get_encaissement(
 
 
                 //Justification
-                $form->input('Justification', 'pj', 'file', 6, null, null);
+                $form->input('Justification', 'pj', 'file', 6, 'Justif_enc.pdf', null);
                 $form->file_js('pj', 1000000, 'pdf',$info_encaissement->Shw('pj',1),1);
 
 //Désignation
