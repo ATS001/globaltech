@@ -44,11 +44,11 @@ if(MInit::form_verif('addcontrat_frn',false))
     $checker = 1;
   }
 
-  if($posted_data['commentaire'] == NULL){
+/*  if($posted_data['commentaire'] == NULL){
 
     $empty_list .= "<li>Commentaire</li>";
     $checker = 1;
-  }
+  }*/
 
   if($posted_data['date_notif'] == NULL){
 
