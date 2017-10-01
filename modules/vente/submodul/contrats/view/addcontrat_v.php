@@ -68,7 +68,7 @@ $form->file_js('pj_photo', 1000000, 'image');
 
 
 //Table 
-$columns = array('id' => '1','Item' => '5', 'Date échéance' => '14','Montant HT' => '30', 'Commentaire' => '40', '#' =>'5'   );
+$columns = array('id' => '1','Item' => '5', 'Date échéance' => '14','Montant TTC' => '30', 'Commentaire' => '40', '#' =>'5'   );
 $js_addfunct = 'var column = t.column(0);
      column.visible( ! column.visible() );';
    

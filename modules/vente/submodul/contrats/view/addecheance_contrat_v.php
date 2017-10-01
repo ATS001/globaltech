@@ -10,7 +10,7 @@ $form->input_date('Date échéance', 'date_echeance', 6, date('d-m-Y'), $array_d
 //Montant
 $array_montant[]= array('required', 'true', 'Insérer le montant à facturer');
 $array_montant[]= array('number', 'true', 'Montant invalid' );
-$form->input('Montant HT', 'montant', 'number' ,'3 is-number alignRight', '10000', $array_montant);
+$form->input('Montant TTC', 'montant', 'number' ,'3 is-number alignRight', '10000', $array_montant);
 
 //Commentaire
 $form->input_editor('Commentaire', 'commentaire', 6, $clauses=NULL , $js_array = null,  $input_height = 200);
