@@ -278,6 +278,17 @@ class Mfacture {
             $this->log .= '<br>Problème de mise à jour du reste ';
         }
     }
+    
+    public function update_reste($id_facture, $montant_init,$montant_modif) {
+
+        global $db;
+        $req_sql = "UPDATE factures SET reste = reste + $montant_init - $montant_modif , total_paye = total_paye - $montant_init + $montant_modif WHERE id = '$id_facture'";
+        if (!$db->Query($req_sql)) {
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .= '<br>Problème de mise à jour du reste ';
+        }
+    }
 
     //activer ou desactiver un contrats_frn
     public function valid_contrats_frn($etat = 0) {
@@ -495,6 +506,7 @@ class Mfacture {
 
         //Get existing data for complement
         $this->get_encaissement();
+        $mt_init=encaissement_info[''];
         $this->last_id = $this->id_encaissement;
         
         //Check if PJ attached required
@@ -532,6 +544,7 @@ class Mfacture {
 				if($this->error == true)
 				{
 					$this->log = '</br>Modification réussie: <b>'.$this->_data['id'].' ID: '.$this->last_id;
+                                         update_reste($id_facture, $montant_init,$montant_modif);
 				//Check $this->error = false return Red message and Bol false	
 				}else{
 					$this->log .= '</br>Modification non réussie: <b>'.$this->_data['id'];
