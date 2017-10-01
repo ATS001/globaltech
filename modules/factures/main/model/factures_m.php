@@ -271,7 +271,7 @@ class Mfacture {
     public function maj_reste($id_facture, $montant) {
 
         global $db;
-        $req_sql = "UPDATE factures SET reste = reste - $montant WHERE id = '$id_facture'";
+        $req_sql = "UPDATE factures SET reste = reste - $montant , total_paye = total_paye + $montant WHERE id = '$id_facture'";
         if (!$db->Query($req_sql)) {
             $this->log .= $db->Error();
             $this->error = false;
