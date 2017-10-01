@@ -66,7 +66,7 @@ $form->input_editor('Commentaire', 'commentaire', 8, $info_contrats_frn->Shw('co
 
 //Date notif
 $array_date_notif[] = array('required', 'true', 'Insérer la date de notification');
-$form->input_date('Date notification', 'date_notif', 4, $info_contrat->s('date_notif'), $array_date_notif);
+$form->input_date('Date notification', 'date_notif', 4, $info_contrats_frn->Shw('date_notif',1), $array_date_notif);
 
 
 //pj_id
