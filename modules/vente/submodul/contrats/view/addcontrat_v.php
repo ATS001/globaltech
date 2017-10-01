@@ -63,8 +63,8 @@ $form->input('Justification du contrat', 'pj', 'file', 6, null, null);
 $form->file_js('pj', 1000000, 'pdf');
 
 //pj_id
-$form->input('Photo', 'pj_photo', 'file', 6, null, null);
-$form->file_js('pj_photo', 1000000, 'image');
+/*$form->input('Photo', 'pj_photo', 'file', 6, null, null);
+$form->file_js('pj_photo', 1000000, 'image');*/
 
 
 
