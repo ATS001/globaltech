@@ -82,6 +82,16 @@ if(MInit::form_verif('addcontrat_frn',false))
   {
     exit("0#$control_date");
   }
+
+   if($posted_data['date_notif'] >= $posted_data['date_fin']  or $posted_data['date_notif'] <= $posted_data['date_effet'] ){
+
+    $control_notif = "<ul>La date de notification doit être supérieur de la date d'effet et  inférieur de la date de fin !!!</ul>";
+    $checker = 3;
+   }
+  if($checker == 3)
+  {
+    exit("0#$control_notif");
+  }
  
 
   //End check empty element
