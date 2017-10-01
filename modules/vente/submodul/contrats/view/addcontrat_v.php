@@ -58,6 +58,10 @@ $form->input('Adresse', 'adresse', 'text', 6, null, $adresse_array);
 //commentaire
 $form->input_editor('Commentaire', 'commentaire', 8, $clauses=NULL , $js_array = null,  $input_height = 50);
 
+//Date notif
+$array_date_notif[] = array('required', 'true', 'Insérer la date de notification');
+$form->input_date('Date notification', 'date_notif', 4, date('d-m-Y'), $array_date_notif);
+
 //pj_id
 $form->input('Justification du contrat', 'pj', 'file', 6, null, null);
 $form->file_js('pj', 1000000, 'pdf');

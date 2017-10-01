@@ -11,6 +11,7 @@ if (MInit::form_verif('addcontrat', false)) {
         'idtype_echeance' => Mreq::tp('idtype_echeance'),
         'commentaire'     => Mreq::tp('commentaire'),
         'periode_fact'    => Mreq::tp('periode_fact'),
+        'date_notif'      => Mreq::tp('date_notif') ,
         'pj_id'           => Mreq::tp('pj-id'),
         'pj_photo_id'     => Mreq::tp('pj_photo-id')
     );
@@ -59,6 +60,11 @@ if (MInit::form_verif('addcontrat', false)) {
         $empty_list .= "<li>Période de facturation</li>";
         $checker = 1;
     }
+    if($posted_data['date_notif'] == NULL){
+
+        $empty_list .= "<li>Date de notification</li>";
+        $checker = 1;
+    }
 
 
     $empty_list .= "</ul>";
@@ -66,6 +72,26 @@ if (MInit::form_verif('addcontrat', false)) {
         exit("0#$empty_list");
     }
 
+    if($posted_data['date_fin'] <= $posted_data['date_effet']){
+
+    $control_date = "<ul>La date de fin doit être supérieur de la date d'effet !!!</ul>";
+    $checker = 2;
+    }
+
+    if($checker == 2)
+    {
+    exit("0#$control_date");
+    }
+
+    if($posted_data['date_notif'] >= $posted_data['date_fin']  or $posted_data['date_notif'] <= $posted_data['date_effet'] ){
+
+     $control_notif = "<ul>La date de notification doit être supérieur de la date d'effet et  inférieur de la date de fin !!!</ul>";
+     $checker = 3;
+     }
+    if($checker == 3)
+    {
+      exit("0#$control_notif");
+    }
     //End check empty element
 
     $new_contrat = new Mcontrat($posted_data);
