@@ -30,7 +30,8 @@ $form = new Mform('addcontrat', 'addcontrat', '', 'contrats', '0', null);
 
 //Devis
 $devis_array[]  = array('required', 'true', 'Choisir un devis');
-$form->select_table('Devis', 'iddevis', 8, 'devis', 'id', 'reference' , 'reference', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $devis_array);
+$form->select_table('Devis', 'iddevis', 8, 'devis', 'id', 'reference' , 'reference', $indx = '------' ,$selected=NULL,$multi=NULL,
+        $where="devis.etat=0 AND  devis.`id` NOT IN (SELECT iddevis FROM contrats c WHERE devis.id=c.iddevis)", $devis_array);
 
 
 //Date effet

@@ -9,21 +9,24 @@
 		$columns = array(
 	    0 => 'id',
 	    1 => 'ref',
-	    2 => 'designation',
-	    3 => 'stock_min',
-	    4 => 'statut'
+            2 => 'type',        
+	    3 => 'designation',
+	    4 => 'stock_min',
+	    5 => 'statut'
 	);
 			
 
 	$colms = $tables = $joint = $where = $where_s = $sqlTot = $sqlRec = "";
 	// define used table.
-	$tables .= "produits";
+	$tables .= "produits,ref_types_produits";
 	// define joint and rtable elation
 	// set sherched columns.(the final colm without comma)
 	$colms .= " produits.id AS id, ";
 	$colms .= " produits.ref as ref, ";
+        $colms .= " ref_types_produits.type_produit as type, ";
 	$colms .= " produits.designation as designation, ";
 	$colms .= " produits.stock_min as stock_min, ";
+        $joint .="AND produits.idtype=ref_types_produits.id";
 
 		
 		
@@ -45,6 +48,7 @@
 	    $where_s .= " AND( produits.ref LIKE '%" . $serch_value . "%' ";
 	    $where_s .= " OR (produits.id LIKE '%" . $serch_value . "%') ";
 	    $where_s .= " OR (produits.designation LIKE '%" . $serch_value . "%') ";
+            $where_s .= " OR (ref_types_produits.type_produit LIKE '%" . $serch_value . "%') ";
 	    $where_s .= " OR (produits.stock_min LIKE '%" . $serch_value . "%') ";
 	    $where_s .= TableTools::where_search_etat('produits', 'produits', $serch_value);
 	}
