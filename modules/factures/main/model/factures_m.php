@@ -167,8 +167,7 @@ class Mfacture {
             return false;
         }
         global $db;
-        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(ref, 9, LENGTH(SUBSTR(ref,9))-5))),0)+1  AS reference  FROM encaissements'
-                . ' WHERE SUBSTR(ref,LENGTH(ref)-3,4)= (SELECT  YEAR(SYSDATE()))');
+        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(ref, 8, LENGTH(SUBSTR(ref,8))-5))),0)+1  AS reference  FROM encaissements WHERE SUBSTR(ref,LENGTH(ref)-3,4)= (SELECT  YEAR(SYSDATE()))');
         $this->reference = 'GT-ENC-' . $max_id . '/' . date('Y');
     }
 
