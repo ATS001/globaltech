@@ -2,10 +2,10 @@
 -- version 4.1.14
 -- http://www.phpmyadmin.net
 --
--- Client :  127.0.0.1
--- Généré le :  Lun 02 Octobre 2017 à 23:28
--- Version du serveur :  5.6.17
--- Version de PHP :  5.5.12
+-- Host: 127.0.0.1
+-- Generation Time: Oct 03, 2017 at 12:50 AM
+-- Server version: 5.6.17
+-- PHP Version: 5.5.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
@@ -17,12 +17,12 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8 */;
 
 --
--- Base de données :  `globaltech`
+-- Database: `globaltech`
 --
 
 DELIMITER $$
 --
--- Procédures
+-- Procedures
 --
 CREATE DEFINER=`root`@`localhost` PROCEDURE `generate_fact`(in tva INT)
 BEGIN
@@ -73,7 +73,6 @@ if(ech.type_echeance='Annuelle',(d.totalht/dd.qte)* 12,
  WHERE d.id_client=c.id and ctr.iddevis=d.id AND  ctr.idtype_echeance=ech.id
  and ctr.idtype_echeance=ech.id and d.id=dd.id_devis
  and  (SELECT date(NOW())) between ctr.date_effet and ctr.date_fin
- and ctr.etat=1
  AND (SELECT date(NOW()) FROM DUAL)= (case 
 	when ech.type_echeance='Annuelle'       then 
 	(IF ((select count(*) from factures f where f.idcontrat=ctr.id)>0, 
@@ -125,24 +124,12 @@ CLOSE cur1;
  
     END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `notify_contrat`()
-BEGIN
-update contrats c set c.`etat`= 2 where (SELECT date(NOW()) FROM DUAL)=c.`date_notif` and c.etat=1 ;
- 
-    END$$
-
-CREATE DEFINER=`root`@`localhost` PROCEDURE `notify_contrat_frn`()
-BEGIN
-    
-update contrats_frn c set c.`etat`= 2 where (SELECT date(NOW()) FROM DUAL)=c.`date_notif` and c.etat=1 ;
-    END$$
-
 DELIMITER ;
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `archive`
+-- Table structure for table `archive`
 --
 
 CREATE TABLE IF NOT EXISTS `archive` (
@@ -157,10 +144,10 @@ CREATE TABLE IF NOT EXISTS `archive` (
   `creusr` int(11) NOT NULL COMMENT 'Add by',
   `credat` datetime DEFAULT CURRENT_TIMESTAMP COMMENT 'Dat insert',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Table Archives' AUTO_INCREMENT=488 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Table Archives' AUTO_INCREMENT=456 ;
 
 --
--- Contenu de la table `archive`
+-- Dumping data for table `archive`
 --
 
 INSERT INTO `archive` (`id`, `doc`, `titr`, `modul`, `table`, `idm`, `service`, `type`, `creusr`, `credat`) VALUES
@@ -501,36 +488,12 @@ INSERT INTO `archive` (`id`, `doc`, `titr`, `modul`, `table`, `idm`, `service`, 
 (452, './upload/contrats/16/pj_16.pdf', 'Justifications du contratCTR-5/2017', 'contrats', 'contrats', 16, 1, 'Document', 1, '2017-09-26 01:13:19'),
 (453, './upload/contrats/16/pj_photo_16.png', 'PhotoCTR-5/2017', 'contrats', 'contrats', 16, 1, 'Document', 1, '2017-09-26 01:13:19'),
 (454, './upload/contrats/17/pj_17.pdf', 'Justifications du contratCTR-6/2017', 'contrats', 'contrats', 17, 1, 'Document', 1, '2017-09-27 22:32:12'),
-(455, './upload/contrats/17/pj_photo_17.png', 'PhotoCTR-6/2017', 'contrats', 'contrats', 17, 1, 'Document', 1, '2017-09-27 22:32:12'),
-(457, './upload/contrats_fournisseurs/18/pj_18.pdf', 'Copie Contrat fournisseur.', 'contrats_fournisseurs', 'contrats_frn', 18, 1, 'Document', 1, '2017-10-01 16:50:56'),
-(458, './upload/contrats_fournisseurs/20/pj_20.pdf', 'Copie Contrat fournisseur.CTR-FRN-2/2017', 'contrats_fournisseurs', 'contrats_frn', 20, 1, 'Document', 1, '2017-10-01 17:52:26'),
-(459, './upload/contrats_fournisseurs/21/pj_21.pdf', 'Copie Contrat fournisseur.CTR-FRN-2/2017', 'contrats_fournisseurs', 'contrats_frn', 21, 1, 'Document', 1, '2017-10-01 17:59:04'),
-(460, './upload/contrats_fournisseurs/22/pj_22.pdf', 'Copie Contrat fournisseur.CTR-FRN-2/2017', 'contrats_fournisseurs', 'contrats_frn', 22, 1, 'Document', 1, '2017-10-01 18:00:57'),
-(461, './upload/contrats_fournisseurs/23/pj_23.pdf', 'Copie Contrat fournisseur.CTR-FRN-2/2017', 'contrats_fournisseurs', 'contrats_frn', 23, 1, 'Document', 1, '2017-10-01 18:03:49'),
-(462, './upload/contrats_fournisseurs/25/pj_25.pdf', 'Copie Contrat fournisseur.CTR-FRN-3/2017', 'contrats_fournisseurs', 'contrats_frn', 25, 1, 'Document', 1, '2017-10-01 18:19:12'),
-(463, './upload/contrats_fournisseurs/26/pj_26.pdf', 'Copie Contrat fournisseur.CTR-FRN-3/2017', 'contrats_fournisseurs', 'contrats_frn', 26, 1, 'Document', 1, '2017-10-01 18:22:16'),
-(464, './upload/contrats_fournisseurs/27/pj_27.pdf', 'Copie Contrat fournisseur.CTR-FRN-3/2017', 'contrats_fournisseurs', 'contrats_frn', 27, 1, 'Document', 1, '2017-10-01 18:32:07'),
-(465, './upload/contrats_fournisseurs/28/pj_28.pdf', 'Copie Contrat fournisseur.CTR-FRN-2/2017', 'contrats_fournisseurs', 'contrats_frn', 28, 1, 'Document', 1, '2017-10-01 18:40:09'),
-(466, './upload/contrats_fournisseurs/29/pj_29.pdf', 'Copie Contrat fournisseur.CTR-FRN-2/2017', 'contrats_fournisseurs', 'contrats_frn', 29, 1, 'Document', 1, '2017-10-01 18:41:29'),
-(467, './upload/contrats_fournisseurs/30/pj_30.pdf', 'Copie Contrat fournisseur.CTR-FRN-2/2017', 'contrats_fournisseurs', 'contrats_frn', 30, 1, 'Document', 1, '2017-10-01 18:43:35'),
-(468, './upload/contrats_fournisseurs/31/pj_31.pdf', 'Copie Contrat fournisseur.CTR-FRN-2/2017', 'contrats_fournisseurs', 'contrats_frn', 31, 1, 'Document', 1, '2017-10-01 18:47:21'),
-(469, './upload/contrats_fournisseurs/32/pj_32.pdf', 'Copie Contrat fournisseur.CTR-FRN-2/2017', 'contrats_fournisseurs', 'contrats_frn', 32, 1, 'Document', 1, '2017-10-01 18:49:28'),
-(470, './upload/contrats_fournisseurs/33/pj_33.pdf', 'Copie Contrat fournisseur.CTR-FRN-2/2017', 'contrats_fournisseurs', 'contrats_frn', 33, 1, 'Document', 1, '2017-10-01 19:08:16'),
-(471, './upload/contrats_fournisseurs/34/pj_34.pdf', 'Copie Contrat fournisseur.CTR-FRN-2/2017', 'contrats_fournisseurs', 'contrats_frn', 34, 1, 'Document', 1, '2017-10-01 19:09:51'),
-(472, './upload/contrats_fournisseurs/35/pj_35.pdf', 'Copie Contrat fournisseur.CTR-FRN-2/2017', 'contrats_fournisseurs', 'contrats_frn', 35, 1, 'Document', 1, '2017-10-01 19:12:52'),
-(473, './upload/contrats_fournisseurs/36/pj_36.pdf', 'Copie Contrat fournisseur.CTR-FRN-2/2017', 'contrats_fournisseurs', 'contrats_frn', 36, 1, 'Document', 1, '2017-10-01 19:18:34'),
-(474, './upload/contrats_fournisseurs/37/pj_37.pdf', 'Copie Contrat fournisseur.CTR-FRN-2/2017', 'contrats_fournisseurs', 'contrats_frn', 37, 1, 'Document', 1, '2017-10-01 20:23:32'),
-(476, './upload/Devis10_2017/Devis_11.pdf', 'Devis 11', 'devis', 'devis', 11, 1, 'Document', 1, '2017-10-01 21:58:47'),
-(477, './upload/contrats_fournisseurs/38/pj_38.pdf', 'Copie Contrat fournisseur.CTR-FRN-3/2017', 'contrats_fournisseurs', 'contrats_frn', 38, 1, 'Document', 1, '2017-10-02 01:42:16'),
-(481, './upload/contrats/23/pj_23.pdf', 'Justifications du contratCTR-8/2017', 'contrats', 'contrats', 23, 1, 'Document', 1, '2017-10-02 04:29:37'),
-(485, './upload/contrats10_2017/contrats_22.pdf', 'contrats 22', 'contrats', 'contrats', 22, 1, 'Document', 1, '2017-10-02 16:55:09'),
-(486, './upload/contrats10_2017/contrats_15.pdf', 'contrats 15', 'contrats', 'contrats', 15, 1, 'Document', 1, '2017-10-02 22:16:41'),
-(487, './upload/contrats_fournisseurs/39/pj_39.pdf', 'Copie Contrat fournisseur.GT-CTR-FRN-1/2017', 'contrats_fournisseurs', 'contrats_frn', 39, 1, 'Document', 1, '2017-10-02 22:20:25');
+(455, './upload/contrats/17/pj_photo_17.png', 'PhotoCTR-6/2017', 'contrats', 'contrats', 17, 1, 'Document', 1, '2017-09-27 22:32:12');
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `categorie_client`
+-- Table structure for table `categorie_client`
 --
 
 CREATE TABLE IF NOT EXISTS `categorie_client` (
@@ -545,7 +508,7 @@ CREATE TABLE IF NOT EXISTS `categorie_client` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
--- Contenu de la table `categorie_client`
+-- Dumping data for table `categorie_client`
 --
 
 INSERT INTO `categorie_client` (`id`, `categorie_client`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
@@ -554,7 +517,7 @@ INSERT INTO `categorie_client` (`id`, `categorie_client`, `etat`, `creusr`, `cre
 -- --------------------------------------------------------
 
 --
--- Structure de la table `clients`
+-- Table structure for table `clients`
 --
 
 CREATE TABLE IF NOT EXISTS `clients` (
@@ -594,7 +557,7 @@ CREATE TABLE IF NOT EXISTS `clients` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=18 ;
 
 --
--- Contenu de la table `clients`
+-- Dumping data for table `clients`
 --
 
 INSERT INTO `clients` (`id`, `code`, `denomination`, `id_categorie`, `r_social`, `r_commerce`, `nif`, `nom`, `prenom`, `civilite`, `adresse`, `id_pays`, `id_ville`, `tel`, `fax`, `bp`, `email`, `rib`, `id_devise`, `tva`, `pj`, `pj_photo`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
@@ -608,7 +571,7 @@ INSERT INTO `clients` (`id`, `code`, `denomination`, `id_categorie`, `r_social`,
 -- --------------------------------------------------------
 
 --
--- Structure de la table `complement_facture`
+-- Table structure for table `complement_facture`
 --
 
 CREATE TABLE IF NOT EXISTS `complement_facture` (
@@ -630,7 +593,7 @@ CREATE TABLE IF NOT EXISTS `complement_facture` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `contrats`
+-- Table structure for table `contrats`
 --
 
 CREATE TABLE IF NOT EXISTS `contrats` (
@@ -644,7 +607,6 @@ CREATE TABLE IF NOT EXISTS `contrats` (
   `date_contrat` date DEFAULT NULL,
   `idtype_echeance` int(11) DEFAULT NULL,
   `periode_fact` varchar(50) DEFAULT NULL COMMENT 'periode de facturation Debut ou fin du mois',
-  `date_notif` date DEFAULT NULL,
   `pj` int(11) DEFAULT NULL,
   `pj_photo` int(11) DEFAULT NULL,
   `contrats_pdf` int(11) DEFAULT NULL,
@@ -654,26 +616,22 @@ CREATE TABLE IF NOT EXISTS `contrats` (
   `updusr` int(11) DEFAULT NULL,
   `upddat` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `fk_devis_contrat` (`iddevis`),
-  KEY `fk_type_echeance` (`idtype_echeance`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=30 ;
+  KEY `fk_devis_contrat` (`iddevis`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=18 ;
 
 --
--- Contenu de la table `contrats`
+-- Dumping data for table `contrats`
 --
 
-INSERT INTO `contrats` (`id`, `tkn_frm`, `ref`, `iddevis`, `date_effet`, `date_fin`, `commentaire`, `date_contrat`, `idtype_echeance`, `periode_fact`, `date_notif`, `pj`, `pj_photo`, `contrats_pdf`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
-(15, '13486b070fa62a4458ee104ec54198c6', 'CTR-4/2017', 21, '2017-09-24', '2017-10-28', '<p>okk  ooooo<br></p>', '2017-10-02', 4, 'D', '2017-10-18', NULL, NULL, 486, 1, 1, '2017-09-23 01:33:40', 1, '2017-10-02 23:16:40'),
-(16, '257b3ae275ebda0beb5db36c01004269', 'CTR-5/2017', 24, '2017-09-26', '2017-10-31', '<p>ookkkkkkkkk<br></p>', '2017-09-26', 2, 'F', NULL, 452, 453, NULL, 1, 1, '2017-09-26 02:13:19', 1, '2017-09-26 02:16:58'),
-(17, '95ae7c1c9b0b2710d1497bbb390552b7', 'CTR-6/2017', 25, '2017-10-01', '2018-01-31', '<p>ookk<br></p>', '2017-09-27', 1, 'D', NULL, 454, 455, NULL, 1, 1, '2017-09-27 23:32:12', 1, '2017-09-27 23:33:34'),
-(22, '73b0d35a7a15c91b7504bb1c016c86eb', 'CTR-7/2017', 11, '2017-10-02', '2017-12-29', '<p>okk<br></p>', '2017-10-02', 2, 'D', '2017-10-02', NULL, NULL, 485, 2, 1, '2017-10-02 02:37:13', 1, '2017-10-02 17:55:08'),
-(28, 'b7b6ab986aeebd74a0625f143e085e49', 'CTR-8/2017', 12, '2017-12-01', '2018-03-30', '<p>ok<br></p>', '2017-10-02', 4, 'D', '2018-02-28', NULL, NULL, NULL, 0, 1, '2017-10-02 19:26:35', NULL, NULL),
-(29, '5996d4723b3525a00ab3202946b9dbe8', 'GT-CTR-1/2017', 23, '2017-10-02', '2018-01-12', NULL, '2017-10-02', 4, 'D', '2017-10-19', NULL, NULL, NULL, 0, 1, '2017-10-02 23:16:08', NULL, NULL);
+INSERT INTO `contrats` (`id`, `tkn_frm`, `ref`, `iddevis`, `date_effet`, `date_fin`, `commentaire`, `date_contrat`, `idtype_echeance`, `periode_fact`, `pj`, `pj_photo`, `contrats_pdf`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
+(15, '13486b070fa62a4458ee104ec54198c6', 'CTR-4/2017', 21, '2017-09-24', '2017-10-28', '<p>okk  ooooo<br></p>', '2017-09-30', 4, 'D', NULL, NULL, NULL, 0, 1, '2017-09-23 01:33:40', 1, '2017-09-30 17:12:01'),
+(16, '257b3ae275ebda0beb5db36c01004269', 'CTR-5/2017', 24, '2017-09-26', '2017-10-31', '<p>ookkkkkkkkk<br></p>', '2017-09-26', 2, 'F', 452, 453, NULL, 0, 1, '2017-09-26 02:13:19', 1, '2017-09-26 02:16:58'),
+(17, '95ae7c1c9b0b2710d1497bbb390552b7', 'CTR-6/2017', 25, '2017-10-01', '2018-01-31', '<p>ookk<br></p>', '2017-09-27', 1, 'D', 454, 455, NULL, 0, 1, '2017-09-27 23:32:12', 1, '2017-09-27 23:33:34');
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `contrats_frn`
+-- Table structure for table `contrats_frn`
 --
 
 CREATE TABLE IF NOT EXISTS `contrats_frn` (
@@ -691,24 +649,23 @@ CREATE TABLE IF NOT EXISTS `contrats_frn` (
   `credat` datetime DEFAULT CURRENT_TIMESTAMP,
   `updusr` int(11) DEFAULT NULL,
   `upddat` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_fournisseur` (`id_fournisseur`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=40 ;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=18 ;
 
 --
--- Contenu de la table `contrats_frn`
+-- Dumping data for table `contrats_frn`
 --
 
 INSERT INTO `contrats_frn` (`id`, `reference`, `id_fournisseur`, `date_effet`, `date_fin`, `commentaire`, `date_notif`, `pj`, `pj_photo`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
-(18, 'CTR-FRN-1/2017', 29, '2017-09-01', '2017-10-31', '<p>okk<br></p>', '2017-10-01', 457, NULL, 3, 1, '2017-10-01 16:26:34', 1, '2017-10-01 21:23:32'),
-(37, 'CTR-FRN-2/2017', 29, '2017-11-01', '2017-12-31', '<p>ok<br></p>', '2017-12-10', 474, NULL, 0, 1, '2017-10-01 21:23:32', NULL, NULL),
-(38, 'CTR-FRN-3/2017', 29, '2017-10-02', '2018-01-01', '<p>okk<br></p>', '2017-10-18', 477, NULL, 2, 1, '2017-10-02 02:42:16', 1, '2017-10-02 02:58:23'),
-(39, 'GT-CTR-FRN-1/2017', 29, '2017-10-02', '2017-10-28', '<p>ok<br></p>', '2017-10-18', 487, NULL, 0, 1, '2017-10-02 23:20:25', NULL, NULL);
+(12, 'CTR-FRN-1/2017', 2, '2017-09-22', '2017-09-23', '<p>okk<br></p>', NULL, 451, NULL, 0, 1, '2017-09-18 20:03:39', 1, '2017-09-23 03:39:50'),
+(13, 'CTR-FRN-2/2017', 2, '1970-01-01', '1970-01-23', '<p>okk<br></p>', NULL, 441, NULL, 0, 1, '2017-09-21 13:26:03', 1, '2017-09-22 03:40:31'),
+(14, 'CTR-FRN-3/2017', 2, '1970-01-01', '1970-07-30', '<p>okjoefzjofzelfklzejfolzekjfloezrjkfop </p><p>^ùlerùsdvmlùemrfglvmerf<br></p>', NULL, 446, NULL, 0, 1, '2017-09-21 16:41:03', 1, '2017-09-22 20:37:17'),
+(17, 'CTR-FRN-4/2017', 15, '2017-09-22', '2017-09-29', '<p>ok<br></p>', NULL, 447, NULL, 0, 1, '2017-09-22 21:55:06', 1, '2017-09-23 03:39:56');
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `devis`
+-- Table structure for table `devis`
 --
 
 CREATE TABLE IF NOT EXISTS `devis` (
@@ -736,21 +693,21 @@ CREATE TABLE IF NOT EXISTS `devis` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=26 ;
 
 --
--- Contenu de la table `devis`
+-- Dumping data for table `devis`
 --
 
 INSERT INTO `devis` (`id`, `tkn_frm`, `reference`, `id_client`, `tva`, `id_commercial`, `date_devis`, `type_remise`, `valeur_remise`, `totalht`, `totalttc`, `totaltva`, `claus_comercial`, `devis_pdf`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
-(11, NULL, 'DEV_0_2017', 1, NULL, 1, '2017-09-13', 'P', NULL, 1455454, 1746544.8, 291090.8, 'Paiement 100% àla commande pour', 476, 1, 1, '2017-09-13 01:50:08', NULL, NULL),
-(12, NULL, 'DEV_12_2017', 8, NULL, 1, '2017-09-13', 'P', NULL, 7277270, 8732724, 1455454, 'Paiement 100% à la commande pour', NULL, 1, 1, '2017-09-13 01:55:43', NULL, NULL),
-(21, 'ef4c85458e75208c1f1028d733ef3450', 'DEV_21_2017', 8, 'O', 1, '2017-09-05', 'P', NULL, 1455466, 1746559, 291093.2, 'Paiement 100% à la commande pour', NULL, 1, 1, '2017-09-13 13:12:27', 1, '2017-09-13 16:35:45'),
-(23, '93a0f6bc29f45532f90f93e38c386447', 'DEV_23_2017', 1, 'O', 1, '2017-09-14', 'P', NULL, 1455454, 1455454, 0, 'Paiement 100% à la commande pour', NULL, 1, 1, '2017-09-14 00:10:33', 1, '2017-09-14 00:11:59'),
+(11, NULL, 'DEV_0_2017', 1, NULL, 1, '2017-09-13', 'P', NULL, 1455454, 1746544.8, 291090.8, 'Paiement 100% àla commande pour', NULL, 0, 1, '2017-09-13 01:50:08', NULL, NULL),
+(12, NULL, 'DEV_12_2017', 8, NULL, 1, '2017-09-13', 'P', NULL, 7277270, 8732724, 1455454, 'Paiement 100% à la commande pour', NULL, 0, 1, '2017-09-13 01:55:43', NULL, NULL),
+(21, 'ef4c85458e75208c1f1028d733ef3450', 'DEV_21_2017', 8, 'O', 1, '2017-09-05', 'P', NULL, 1455466, 1746559.2, 291093.2, 'Paiement 100% à la commande pour', NULL, 0, 1, '2017-09-13 13:12:27', 1, '2017-09-13 16:35:45'),
+(23, '93a0f6bc29f45532f90f93e38c386447', 'DEV_23_2017', 1, 'O', 1, '2017-09-14', 'P', NULL, 1455454, 1455454, 0, 'Paiement 100% à la commande pour', NULL, 0, 1, '2017-09-14 00:10:33', 1, '2017-09-14 00:11:59'),
 (24, 'ea302005ed0aecdd4d0c2eaf2122829e', 'DEV_24_2017', 1, 'N', 1, '2017-09-16', 'P', NULL, 10, 10, 0, 'Paiement 100% à la commande pour', NULL, 0, 1, '2017-09-16 14:26:13', NULL, NULL),
 (25, '82618ea283a75a6bba5b8611a3f94557', 'DEV_25_2017', 16, 'N', 1, '2017-09-23', 'P', NULL, 20, 20, 0, 'Paiement 100% à la commande pour', NULL, 0, 1, '2017-09-16 17:37:17', 1, '2017-09-23 01:24:14');
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `d_devis`
+-- Table structure for table `d_devis`
 --
 
 CREATE TABLE IF NOT EXISTS `d_devis` (
@@ -781,7 +738,7 @@ CREATE TABLE IF NOT EXISTS `d_devis` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=148 ;
 
 --
--- Contenu de la table `d_devis`
+-- Dumping data for table `d_devis`
 --
 
 INSERT INTO `d_devis` (`id`, `order`, `id_devis`, `tkn_frm`, `id_produit`, `ref_produit`, `designation`, `qte`, `prix_unitaire`, `type_remise`, `remise_valeur`, `tva`, `prix_ht`, `prix_ttc`, `total_ht`, `total_ttc`, `total_tva`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
@@ -801,7 +758,7 @@ INSERT INTO `d_devis` (`id`, `order`, `id_devis`, `tkn_frm`, `id_produit`, `ref_
 -- --------------------------------------------------------
 
 --
--- Structure de la table `d_proforma`
+-- Table structure for table `d_proforma`
 --
 
 CREATE TABLE IF NOT EXISTS `d_proforma` (
@@ -832,7 +789,7 @@ CREATE TABLE IF NOT EXISTS `d_proforma` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=194 ;
 
 --
--- Contenu de la table `d_proforma`
+-- Dumping data for table `d_proforma`
 --
 
 INSERT INTO `d_proforma` (`id`, `order`, `id_proforma`, `tkn_frm`, `id_produit`, `ref_produit`, `designation`, `qte`, `prix_unitaire`, `type_remise`, `remise_valeur`, `tva`, `prix_ht`, `prix_ttc`, `total_ht`, `total_ttc`, `total_tva`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
@@ -925,7 +882,7 @@ INSERT INTO `d_proforma` (`id`, `order`, `id_proforma`, `tkn_frm`, `id_produit`,
 -- --------------------------------------------------------
 
 --
--- Structure de la table `echeances_contrat`
+-- Table structure for table `echeances_contrat`
 --
 
 CREATE TABLE IF NOT EXISTS `echeances_contrat` (
@@ -943,10 +900,10 @@ CREATE TABLE IF NOT EXISTS `echeances_contrat` (
   `upddat` datetime DEFAULT NULL,
   PRIMARY KEY (`id`,`date_echeance`,`montant`),
   KEY `fk_contrat_echeance` (`idcontrat`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=37 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=19 ;
 
 --
--- Contenu de la table `echeances_contrat`
+-- Dumping data for table `echeances_contrat`
 --
 
 INSERT INTO `echeances_contrat` (`id`, `tkn_frm`, `order`, `date_echeance`, `montant`, `commentaire`, `idcontrat`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
@@ -963,28 +920,14 @@ INSERT INTO `echeances_contrat` (`id`, `tkn_frm`, `order`, `date_echeance`, `mon
 (11, '179584f02af18c2cfa9ba061ef666c48', 1, '0000-00-00', 0, 'ddd', NULL, 0, 1, '2017-09-17 13:59:36', NULL, NULL),
 (12, '179584f02af18c2cfa9ba061ef666c48', 2, '0000-00-00', 0, 'ddd', NULL, 0, 1, '2017-09-17 14:00:08', NULL, NULL),
 (13, 'a7aadf89c66c3431c0bf86f9d89c3275', 1, '0000-00-00', 0, 'ccc', NULL, 0, 1, '2017-09-17 14:02:19', NULL, NULL),
-(16, '13486b070fa62a4458ee104ec54198c6', 1, '2017-10-01', 1000000, 'waaak', 15, 0, 1, '2017-09-23 01:33:36', 1, '2017-10-02 23:11:06'),
+(16, '13486b070fa62a4458ee104ec54198c6', 1, '2017-10-01', 1000000, 'waaak', 15, 0, 1, '2017-09-23 01:33:36', 1, '2017-09-30 17:11:17'),
 (17, '7a11fcb558cde5ab934960aabdf15fa7', 1, '2017-09-23', 0, 'waawaaaw', NULL, 0, 1, '2017-09-23 02:06:40', 1, '2017-09-23 02:06:48'),
-(18, '13486b070fa62a4458ee104ec54198c6', 2, '2017-10-17', 746559, 'okk', 15, 0, 1, '2017-09-30 17:11:58', 1, '2017-10-02 23:10:54'),
-(19, '22ba166b45210254b0e9ac86e717c291', 1, '2018-02-06', 1005000, 'okk', NULL, 0, 1, '2017-10-02 05:32:44', NULL, NULL),
-(20, '992a6545ed6ec78772de332482c473c4', 1, '2018-01-03', 25000, 'ok', NULL, 0, 1, '2017-10-02 05:44:45', NULL, NULL),
-(21, 'eeca6f2c133d556003f82b3322d98994', 1, '2017-10-02', 16000, 'okk', NULL, 0, 1, '2017-10-02 12:08:32', NULL, NULL),
-(22, 'eeca6f2c133d556003f82b3322d98994', 2, '2017-10-02', 10000, 'ok', NULL, 0, 1, '2017-10-02 12:37:32', NULL, NULL),
-(23, 'ebeceb99f4b2a4de16402c92e7e65e50', 1, '2017-10-02', 110000, 'ppp', NULL, 0, 1, '2017-10-02 17:15:39', NULL, NULL),
-(24, '432399ada7787e6bf03f7affe91369bc', 1, '2017-10-02', 1330000, 'ppp', NULL, 0, 1, '2017-10-02 17:19:34', NULL, NULL),
-(25, '1a9923629229eee357f639a8b5f4dadc', 1, '2017-10-02', 1099100, 'en fin', NULL, 0, 1, '2017-10-02 17:51:32', 1, '2017-10-02 17:51:40'),
-(26, '25132dbec947fb31edeb70ff8a675365', 1, '2017-10-02', 10000, 'ok', NULL, 0, 1, '2017-10-02 18:25:41', NULL, NULL),
-(28, 'a262ebb33a6df52e76bf683651f844c9', 1, '2017-10-02', 1200000, 'ok', NULL, 0, 1, '2017-10-02 19:06:11', NULL, NULL),
-(30, 'b7b6ab986aeebd74a0625f143e085e49', 1, '2017-12-06', 2732724, 'ok', NULL, 0, 1, '2017-10-02 19:24:03', NULL, NULL),
-(31, 'b7b6ab986aeebd74a0625f143e085e49', 2, '2017-12-21', 6000000, 'okk', NULL, 0, 1, '2017-10-02 19:24:32', NULL, NULL),
-(34, '4e78415e121a3b49f7cfcdb75a851916', 1, '2018-02-13', 10000, NULL, NULL, 0, 1, '2017-10-02 23:02:28', NULL, NULL),
-(35, '871075f2510fa2e637427588dfed0761', 1, '2017-10-12', 10000, NULL, NULL, 0, 1, '2017-10-02 23:09:14', NULL, NULL),
-(36, '5996d4723b3525a00ab3202946b9dbe8', 1, '2018-01-04', 1455454, NULL, NULL, 0, 1, '2017-10-02 23:13:47', 1, '2017-10-02 23:15:51');
+(18, '13486b070fa62a4458ee104ec54198c6', 2, '2017-11-17', 2000000, 'okk', 15, 0, 1, '2017-09-30 17:11:58', NULL, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `encaissements`
+-- Table structure for table `encaissements`
 --
 
 CREATE TABLE IF NOT EXISTS `encaissements` (
@@ -1000,14 +943,27 @@ CREATE TABLE IF NOT EXISTS `encaissements` (
   `credat` datetime DEFAULT CURRENT_TIMESTAMP,
   `updusr` int(11) DEFAULT NULL,
   `upddat` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_facture` (`idfacture`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=9 ;
+
+--
+-- Dumping data for table `encaissements`
+--
+
+INSERT INTO `encaissements` (`id`, `ref`, `designation`, `idfacture`, `montant`, `pj`, `date_encaissement`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
+(1, NULL, 'W', 1, 100, NULL, '2017-09-27', 0, 1, '2017-09-27 20:08:53', NULL, NULL),
+(2, 'GT-ENC-1/2017', 'Des1', 1, 3000, NULL, '2017-09-27', 0, 1, '2017-09-27 20:42:24', NULL, NULL),
+(3, 'GT-ENC-1/2017', 'CCC', 1, 100, NULL, '2017-09-27', 0, 1, '2017-09-27 21:52:35', NULL, NULL),
+(4, 'GT-ENC-1/2017', 'CCC', 1, 400, NULL, '2017-09-27', 0, 1, '2017-09-27 22:00:58', NULL, NULL),
+(5, 'GT-ENC-1/2017', 'OOOO', 1, 10, NULL, '2017-09-27', 0, 1, '2017-09-27 22:01:41', NULL, NULL),
+(6, 'GT-ENC-1/2017', 'TTT', 1, 20, NULL, '2017-09-27', 0, 1, '2017-09-27 22:04:11', NULL, NULL),
+(7, 'GT-ENC-1/2017', 'Final Enc', 1, 60, NULL, '2017-09-27', 0, 1, '2017-09-27 22:08:26', NULL, NULL),
+(8, 'GT-ENC-2/2017', 'C', 3, 100, NULL, '2017-10-02', 0, 1, '2017-10-02 23:36:11', NULL, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `espionnage_update`
+-- Table structure for table `espionnage_update`
 --
 
 CREATE TABLE IF NOT EXISTS `espionnage_update` (
@@ -1025,7 +981,7 @@ CREATE TABLE IF NOT EXISTS `espionnage_update` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
--- Contenu de la table `espionnage_update`
+-- Dumping data for table `espionnage_update`
 --
 
 INSERT INTO `espionnage_update` (`id`, `updt_id`, `table`, `id_item`, `column`, `val_old`, `val_new`, `user`, `updtdat`) VALUES
@@ -1035,7 +991,7 @@ INSERT INTO `espionnage_update` (`id`, `updt_id`, `table`, `id_item`, `column`, 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `factures`
+-- Table structure for table `factures`
 --
 
 CREATE TABLE IF NOT EXISTS `factures` (
@@ -1058,25 +1014,24 @@ CREATE TABLE IF NOT EXISTS `factures` (
   `credat` datetime DEFAULT CURRENT_TIMESTAMP,
   `updusr` int(11) DEFAULT NULL,
   `upddat` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `fk_contrat` (`idcontrat`),
-  KEY `fk_devis` (`iddevis`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=36 ;
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=32 ;
 
 --
--- Contenu de la table `factures`
+-- Dumping data for table `factures`
 --
 
 INSERT INTO `factures` (`id`, `ref`, `base_fact`, `total_ht`, `total_tva`, `total_ttc`, `total_paye`, `reste`, `client`, `tva`, `idcontrat`, `iddevis`, `idbl`, `date_facture`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
-(3, 'reef', 'C', 10, 0, 10, 0, 10, '1', NULL, 16, NULL, NULL, '2017-09-01', 0, 1, '2017-09-29 20:07:16', NULL, NULL),
-(33, 'GT-FCT-1/2017', 'C', 820000, 180000, 1000000, 0, 1000000, 'DENOMI9', NULL, 15, NULL, NULL, '2017-10-01', 0, 1, '2017-10-01 19:37:53', NULL, NULL),
-(34, 'GT-FCT-2/2017', 'C', 10, 0, 10, 0, 10, 'DE111', NULL, 16, NULL, NULL, '2017-10-01', 0, 1, '2017-10-01 19:37:53', NULL, NULL),
-(35, 'GT-FCT-3/2017', 'C', 48, 0, 48, 0, 48, 'den', NULL, 17, NULL, NULL, '2017-10-01', 0, 1, '2017-10-01 19:37:53', NULL, NULL);
+(1, 'GT-FACT-1', 'C', 1000, 200, 1200, 100, NULL, 'DCT', 20, 1, NULL, NULL, '2017-09-25', 0, NULL, '2017-09-25 20:49:32', NULL, NULL),
+(3, 'reef', 'C', 10, 0, 10, 100, -90, '1', NULL, 16, NULL, NULL, '2017-09-29', 0, 1, '2017-09-29 20:07:16', NULL, NULL),
+(4, 'reef', 'C', 10, 0, 10, 0, 10, NULL, NULL, 16, NULL, NULL, '2017-09-29', 0, 1, '2017-09-29 20:08:48', NULL, NULL),
+(5, 'reef', 'C', 10, 0, 10, 0, 10, 'DE111', NULL, 16, NULL, NULL, '2017-09-29', 0, 1, '2017-09-29 20:09:27', NULL, NULL),
+(6, '0', 'C', 10, 0, 10, 0, 10, 'DE111', NULL, 16, NULL, NULL, '2017-09-29', 0, 1, '2017-09-29 20:47:08', NULL, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `forgot`
+-- Table structure for table `forgot`
 --
 
 CREATE TABLE IF NOT EXISTS `forgot` (
@@ -1093,7 +1048,7 @@ CREATE TABLE IF NOT EXISTS `forgot` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `fournisseurs`
+-- Table structure for table `fournisseurs`
 --
 
 CREATE TABLE IF NOT EXISTS `fournisseurs` (
@@ -1108,7 +1063,7 @@ CREATE TABLE IF NOT EXISTS `fournisseurs` (
   `civilite` varchar(10) DEFAULT NULL COMMENT 'Sexe',
   `adresse` varchar(200) NOT NULL COMMENT 'Adresse',
   `id_pays` int(11) NOT NULL COMMENT 'Pays',
-  `id_ville` int(11) DEFAULT NULL COMMENT 'Ville',
+  `id_ville` int(11) NOT NULL COMMENT 'Ville',
   `tel` varchar(80) NOT NULL COMMENT 'Telephone',
   `fax` varchar(80) DEFAULT NULL COMMENT 'Fax',
   `bp` varchar(80) DEFAULT NULL COMMENT 'Boite postale',
@@ -1124,24 +1079,27 @@ CREATE TABLE IF NOT EXISTS `fournisseurs` (
   `upddat` datetime DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `unique_code` (`code`),
-  UNIQUE KEY `unique_denomination` (`denomination`),
+  KEY `fk_client_ville` (`id_ville`),
   KEY `fk_client_pays` (`id_pays`),
-  KEY `fk_client_devise` (`id_devise`),
-  KEY `fk_ville` (`id_ville`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=31 ;
+  KEY `fk_client_devise` (`id_devise`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=20 ;
 
 --
--- Contenu de la table `fournisseurs`
+-- Dumping data for table `fournisseurs`
 --
 
 INSERT INTO `fournisseurs` (`id`, `code`, `denomination`, `r_social`, `r_commerce`, `nif`, `nom`, `prenom`, `civilite`, `adresse`, `id_pays`, `id_ville`, `tel`, `fax`, `bp`, `email`, `rib`, `id_devise`, `pj`, `pj_photo`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
-(29, 'FRN-1/2017', 'jkj', ',l,', NULL, NULL, NULL, NULL, 'Femme', 'adr', 242, NULL, '04444444444444444444444', NULL, NULL, 'em@em', NULL, NULL, NULL, NULL, 1, 1, '2017-10-01 15:43:08', 1, '2017-10-01 16:33:08'),
-(30, 'FRN-2/2017', 'jkje', ',l,', NULL, NULL, NULL, NULL, 'Femme', 'adr', 242, NULL, '04444444444444444444444', NULL, NULL, 'em@em', NULL, NULL, NULL, NULL, 1, 1, '2017-10-01 15:43:08', 1, '2017-10-01 16:33:08');
+(1, 'CP122', 'frn1', NULL, NULL, NULL, NULL, NULL, 'Femme', 'adr12', 242, 0, '064333333333333333333333', '033333333333333333333333', NULL, 'em@em', NULL, 1, 425, 426, 0, 1, '2017-08-26 12:59:00', 1, '2017-09-23 03:40:15'),
+(2, 'CP123', 'frn2', NULL, NULL, NULL, NULL, NULL, 'Homme', 'adress', 242, 43, '0444444444444444444444444444', NULL, NULL, 'em@em', NULL, 2, 428, 429, 1, 1, '2017-08-26 13:51:29', 1, '2017-09-20 17:27:57'),
+(8, 'CP444', 'DENOMI9', 'RS', NULL, NULL, NULL, NULL, 'Femme', 'adr1', 242, 2, '0444444444444444444444444', NULL, NULL, 'em@em', NULL, 1, 430, 408, 0, 1, '2017-08-26 15:29:40', 1, '2017-09-20 17:45:36'),
+(15, 'PRFF', 'fefeg', 'lmlgrl,rleg', NULL, NULL, NULL, NULL, 'Femme', 'grdgdr', 242, 0, '04555555555555555', NULL, NULL, 'em@em', NULL, 1, 412, 413, 1, 1, '2017-08-26 18:05:06', 1, '2017-09-20 17:46:09'),
+(17, 'NJKL', 'den', 'rf', NULL, NULL, NULL, NULL, 'Femme', 'paris', 75, 0, '044444444444444', NULL, 'bpppp', 'em@em', NULL, 1, NULL, NULL, 0, 1, '2017-09-20 18:12:54', 1, '2017-09-20 21:22:57'),
+(19, 'FRN-1/2017', 'frns test', NULL, NULL, NULL, NULL, NULL, 'Femme', 'dlajoljda', 242, 0, '089999933333333', NULL, NULL, 'em@em', NULL, 1, NULL, NULL, 0, 1, '2017-09-22 22:54:24', 1, '2017-09-22 22:55:25');
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `modul`
+-- Table structure for table `modul`
 --
 
 CREATE TABLE IF NOT EXISTS `modul` (
@@ -1160,7 +1118,7 @@ CREATE TABLE IF NOT EXISTS `modul` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Table Systeme Modules' AUTO_INCREMENT=111 ;
 
 --
--- Contenu de la table `modul`
+-- Dumping data for table `modul`
 --
 
 INSERT INTO `modul` (`id`, `modul`, `description`, `rep_modul`, `tables`, `app_modul`, `modul_setting`, `is_setting`, `etat`, `services`) VALUES
@@ -1183,14 +1141,14 @@ INSERT INTO `modul` (`id`, `modul`, `description`, `rep_modul`, `tables`, `app_m
 (104, 'contrats', 'Abonnements', 'vente/submodul/contrats', 'contrats', 'contrats', 'vente', 2, 0, '[-1-]'),
 (105, 'devis', 'Gestion Devis', 'vente/submodul/devis', 'devis', 'devis', 'vente', 2, 0, '[-1-2-]'),
 (106, 'contrats_fournisseurs', 'Contrats Fournisseur', 'contrats_fournisseurs/main', 'contrats_frn', 'contrats_fournisseurs', NULL, 0, 0, '[-1-]'),
-(107, 'fournisseurs', 'Gestion Fournisseurs', 'fournisseurs/main', 'fournisseurs', 'fournisseurs', NULL, 0, 0, '[-1-]'),
+(107, 'fournisseurs', 'Gestion Fournisseurs', 'contrats_fournisseurs/submodul/fournisseurs', 'fournisseurs', 'fournisseurs', 'contrats_fournisseurs', 2, 0, '[-1-]'),
 (109, 'proforma', 'Gestion Proforma', 'vente/submodul/proforma', 'proforma', 'proforma', 'vente', 2, 0, '[-1-2-3-5-4-]'),
 (110, 'factures', 'Gestion des factures', 'factures/main', 'factures', 'factures', NULL, 0, 0, '[-1-]');
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `produits`
+-- Table structure for table `produits`
 --
 
 CREATE TABLE IF NOT EXISTS `produits` (
@@ -1201,7 +1159,6 @@ CREATE TABLE IF NOT EXISTS `produits` (
   `idcategorie` int(11) DEFAULT NULL COMMENT 'CatÃ©gorie',
   `iduv` int(11) DEFAULT NULL COMMENT 'UnitÃ© de vente',
   `idtype` int(11) DEFAULT NULL COMMENT 'Type produit',
-  `prix_vente` double DEFAULT NULL COMMENT 'Prix si type produit= prestation ou abonnement',
   `etat` int(11) DEFAULT '0',
   `creusr` int(11) DEFAULT NULL,
   `credat` datetime DEFAULT CURRENT_TIMESTAMP,
@@ -1214,18 +1171,18 @@ CREATE TABLE IF NOT EXISTS `produits` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=21 ;
 
 --
--- Contenu de la table `produits`
+-- Dumping data for table `produits`
 --
 
-INSERT INTO `produits` (`id`, `ref`, `designation`, `stock_min`, `idcategorie`, `iduv`, `idtype`, `prix_vente`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
-(17, 'LNB_ku-band_high_pll', 'LNB PLL bande Ku', 5, 7, 2, 2, NULL, 1, 1, '2017-09-09 11:21:12', 1, '2017-09-14 11:44:15'),
-(19, 'a_skyware_1.2m Ku-Band_122', 'Antenne VSAT 1.2m bande Ku Skyware Global', 3, 6, 2, 2, NULL, 0, 1, '2017-09-09 11:28:54', 1, '2017-09-23 03:39:35'),
-(20, 'PRD-1/2017', 'STYLO', 100, 3, 2, 2, NULL, 0, 1, '2017-09-23 01:09:31', 1, '2017-09-23 03:44:09');
+INSERT INTO `produits` (`id`, `ref`, `designation`, `stock_min`, `idcategorie`, `iduv`, `idtype`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
+(17, 'LNB_ku-band_high_pll', 'LNB PLL bande Ku', 5, 7, 2, 2, 1, 1, '2017-09-09 11:21:12', 1, '2017-09-14 11:44:15'),
+(19, 'a_skyware_1.2m Ku-Band_122', 'Antenne VSAT 1.2m bande Ku Skyware Global', 3, 6, 2, 2, 0, 1, '2017-09-09 11:28:54', 1, '2017-09-23 03:39:35'),
+(20, 'PRD-1/2017', 'STYLO', 100, 3, 2, 2, 0, 1, '2017-09-23 01:09:31', 1, '2017-09-23 03:44:09');
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `proforma`
+-- Table structure for table `proforma`
 --
 
 CREATE TABLE IF NOT EXISTS `proforma` (
@@ -1253,7 +1210,7 @@ CREATE TABLE IF NOT EXISTS `proforma` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=27 ;
 
 --
--- Contenu de la table `proforma`
+-- Dumping data for table `proforma`
 --
 
 INSERT INTO `proforma` (`id`, `tkn_frm`, `reference`, `id_client`, `tva`, `id_commercial`, `date_proforma`, `type_remise`, `valeur_remise`, `totalht`, `totalttc`, `totaltva`, `claus_comercial`, `etat`, `proforma_pdf`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
@@ -1268,7 +1225,7 @@ INSERT INTO `proforma` (`id`, `tkn_frm`, `reference`, `id_client`, `tva`, `id_co
 -- --------------------------------------------------------
 
 --
--- Structure de la table `ref_categories_produits`
+-- Table structure for table `ref_categories_produits`
 --
 
 CREATE TABLE IF NOT EXISTS `ref_categories_produits` (
@@ -1283,7 +1240,7 @@ CREATE TABLE IF NOT EXISTS `ref_categories_produits` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=8 ;
 
 --
--- Contenu de la table `ref_categories_produits`
+-- Dumping data for table `ref_categories_produits`
 --
 
 INSERT INTO `ref_categories_produits` (`id`, `categorie_produit`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
@@ -1298,7 +1255,7 @@ INSERT INTO `ref_categories_produits` (`id`, `categorie_produit`, `etat`, `creus
 -- --------------------------------------------------------
 
 --
--- Structure de la table `ref_categ_prm`
+-- Table structure for table `ref_categ_prm`
 --
 
 CREATE TABLE IF NOT EXISTS `ref_categ_prm` (
@@ -1309,7 +1266,7 @@ CREATE TABLE IF NOT EXISTS `ref_categ_prm` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 
 --
--- Contenu de la table `ref_categ_prm`
+-- Dumping data for table `ref_categ_prm`
 --
 
 INSERT INTO `ref_categ_prm` (`id`, `categorie`, `abriv`) VALUES
@@ -1322,7 +1279,7 @@ INSERT INTO `ref_categ_prm` (`id`, `categorie`, `abriv`) VALUES
 -- --------------------------------------------------------
 
 --
--- Structure de la table `ref_departement`
+-- Table structure for table `ref_departement`
 --
 
 CREATE TABLE IF NOT EXISTS `ref_departement` (
@@ -1339,7 +1296,7 @@ CREATE TABLE IF NOT EXISTS `ref_departement` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
--- Contenu de la table `ref_departement`
+-- Dumping data for table `ref_departement`
 --
 
 INSERT INTO `ref_departement` (`id`, `departement`, `id_region`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
@@ -1348,7 +1305,7 @@ INSERT INTO `ref_departement` (`id`, `departement`, `id_region`, `etat`, `creusr
 -- --------------------------------------------------------
 
 --
--- Structure de la table `ref_devise`
+-- Table structure for table `ref_devise`
 --
 
 CREATE TABLE IF NOT EXISTS `ref_devise` (
@@ -1364,7 +1321,7 @@ CREATE TABLE IF NOT EXISTS `ref_devise` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
--- Contenu de la table `ref_devise`
+-- Dumping data for table `ref_devise`
 --
 
 INSERT INTO `ref_devise` (`id`, `devise`, `abreviation`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
@@ -1374,7 +1331,7 @@ INSERT INTO `ref_devise` (`id`, `devise`, `abreviation`, `etat`, `creusr`, `cred
 -- --------------------------------------------------------
 
 --
--- Structure de la table `ref_pays`
+-- Table structure for table `ref_pays`
 --
 
 CREATE TABLE IF NOT EXISTS `ref_pays` (
@@ -1391,7 +1348,7 @@ CREATE TABLE IF NOT EXISTS `ref_pays` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=245 ;
 
 --
--- Contenu de la table `ref_pays`
+-- Dumping data for table `ref_pays`
 --
 
 INSERT INTO `ref_pays` (`id`, `pays`, `nationalite`, `alpha`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
@@ -1642,7 +1599,7 @@ INSERT INTO `ref_pays` (`id`, `pays`, `nationalite`, `alpha`, `etat`, `creusr`, 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `ref_region`
+-- Table structure for table `ref_region`
 --
 
 CREATE TABLE IF NOT EXISTS `ref_region` (
@@ -1659,7 +1616,7 @@ CREATE TABLE IF NOT EXISTS `ref_region` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=31 ;
 
 --
--- Contenu de la table `ref_region`
+-- Dumping data for table `ref_region`
 --
 
 INSERT INTO `ref_region` (`id`, `id_pays`, `region`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
@@ -1691,7 +1648,7 @@ INSERT INTO `ref_region` (`id`, `id_pays`, `region`, `etat`, `creusr`, `credat`,
 -- --------------------------------------------------------
 
 --
--- Structure de la table `ref_types_produits`
+-- Table structure for table `ref_types_produits`
 --
 
 CREATE TABLE IF NOT EXISTS `ref_types_produits` (
@@ -1703,21 +1660,19 @@ CREATE TABLE IF NOT EXISTS `ref_types_produits` (
   `updusr` int(11) DEFAULT NULL,
   `upddat` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=4 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
--- Contenu de la table `ref_types_produits`
+-- Dumping data for table `ref_types_produits`
 --
 
 INSERT INTO `ref_types_produits` (`id`, `type_produit`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
-(1, 'Produit', 1, NULL, '2017-10-01 16:41:22', 1, '2017-10-01 18:41:53'),
-(2, 'Prestation', 1, 1, '2017-08-26 19:21:11', 1, '2017-10-01 18:42:02'),
-(3, 'Abonnement', 1, NULL, '2017-10-01 16:41:33', 1, '2017-10-01 18:41:58');
+(2, 'MMMM', 0, 1, '2017-08-26 19:21:11', NULL, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `ref_type_echeance`
+-- Table structure for table `ref_type_echeance`
 --
 
 CREATE TABLE IF NOT EXISTS `ref_type_echeance` (
@@ -1732,7 +1687,7 @@ CREATE TABLE IF NOT EXISTS `ref_type_echeance` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 
 --
--- Contenu de la table `ref_type_echeance`
+-- Dumping data for table `ref_type_echeance`
 --
 
 INSERT INTO `ref_type_echeance` (`id`, `type_echeance`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
@@ -1745,7 +1700,7 @@ INSERT INTO `ref_type_echeance` (`id`, `type_echeance`, `etat`, `creusr`, `creda
 -- --------------------------------------------------------
 
 --
--- Structure de la table `ref_unites_vente`
+-- Table structure for table `ref_unites_vente`
 --
 
 CREATE TABLE IF NOT EXISTS `ref_unites_vente` (
@@ -1760,7 +1715,7 @@ CREATE TABLE IF NOT EXISTS `ref_unites_vente` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=3 ;
 
 --
--- Contenu de la table `ref_unites_vente`
+-- Dumping data for table `ref_unites_vente`
 --
 
 INSERT INTO `ref_unites_vente` (`id`, `unite_vente`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
@@ -1769,7 +1724,7 @@ INSERT INTO `ref_unites_vente` (`id`, `unite_vente`, `etat`, `creusr`, `credat`,
 -- --------------------------------------------------------
 
 --
--- Structure de la table `ref_ville`
+-- Table structure for table `ref_ville`
 --
 
 CREATE TABLE IF NOT EXISTS `ref_ville` (
@@ -1788,7 +1743,7 @@ CREATE TABLE IF NOT EXISTS `ref_ville` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=44 ;
 
 --
--- Contenu de la table `ref_ville`
+-- Dumping data for table `ref_ville`
 --
 
 INSERT INTO `ref_ville` (`id`, `id_departement`, `ville`, `latitude`, `longitude`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
@@ -1839,7 +1794,7 @@ INSERT INTO `ref_ville` (`id`, `id_departement`, `ville`, `latitude`, `longitude
 -- --------------------------------------------------------
 
 --
--- Structure de la table `rules_action`
+-- Table structure for table `rules_action`
 --
 
 CREATE TABLE IF NOT EXISTS `rules_action` (
@@ -1859,260 +1814,252 @@ CREATE TABLE IF NOT EXISTS `rules_action` (
   KEY `rules_action_user_sys` (`userid`),
   KEY `rule_action_task_action` (`action_id`),
   KEY `rule_action_service_id` (`service`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Table store rules for each user for each App and action' AUTO_INCREMENT=23887 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Table store rules for each user for each App and action' AUTO_INCREMENT=18474 ;
 
 --
--- Contenu de la table `rules_action`
+-- Dumping data for table `rules_action`
 --
 
 INSERT INTO `rules_action` (`id`, `appid`, `idf`, `service`, `userid`, `action_id`, `descrip`, `type`, `creusr`, `credat`) VALUES
-(23645, 455, 'e69f84a801ee1525f20f34e684688a9b', 1, 1, 652, 'Gestion des catégories de produits', 0, '1', '2017-10-02 22:26:33'),
-(23646, 455, '90f6eba3e0ed223e73d250278cb445d5', 1, 1, 653, 'Modifier catégorie', 0, '1', '2017-10-02 22:26:33'),
-(23647, 455, 'c62968a45ae9cfa8b127ac1b5573988a', 1, 1, 654, 'Valider catégorie', 0, '1', '2017-10-02 22:26:33'),
-(23648, 455, '6f43a6bcbd293f958aff51953559104e', 1, 1, 655, 'Désactiver catégorie', 0, '1', '2017-10-02 22:26:33'),
-(23649, 456, 'd26f5940e88a494c0eb65047aab9a17b', 1, 1, 656, 'Ajouter une catégorie', 0, '1', '2017-10-02 22:26:33'),
-(23650, 457, '27957c6d0f6869d4d90287cd50b6dde9', 1, 1, 657, 'Modifier une catégorie', 0, '1', '2017-10-02 22:26:33'),
-(23651, 458, '41b48dd567e4f79e35261a47b7bad751', 1, 1, 658, 'Valider une catégorie', 0, '1', '2017-10-02 22:26:33'),
-(23652, 459, '90dc20c4d1ad7be7fac8ec34d5ac26b3', 1, 1, 659, 'Supprimer une catégorie', 0, '1', '2017-10-02 22:26:33'),
-(23653, 333, '6edc543080c65eca3993445c295ff94b', 1, 1, 497, 'Gestion Catégorie Client', 0, '1', '2017-10-02 22:26:33'),
-(23654, 333, '142a68a109abd0462ea44fcadffe56de', 1, 1, 506, 'Editer Catégorie Client', 0, '1', '2017-10-02 22:26:33'),
-(23655, 333, '70df89fa2654d8b10d7fc7e75e178b7e', 1, 1, 507, 'Activer Catégorie Client', 0, '1', '2017-10-02 22:26:33'),
-(23656, 333, '109e82d6db5721f63cd827e9fd224216', 1, 1, 508, 'Désactiver Catégorie Client', 0, '1', '2017-10-02 22:26:33'),
-(23657, 334, 'a5c1bd0dfd87824ff0f57c6b1e1d2c3f', 1, 1, 498, 'Ajouter Catégorie Client', 1, '1', '2017-10-02 22:26:33'),
-(23658, 335, '8d901f74dfd6ee3a8f44ebd0b83fbfae', 1, 1, 499, 'Editer Catégorie Client', 1, '1', '2017-10-02 22:26:33'),
-(23659, 336, 'e87327563ce6b659780d6b2c9bf8ac77', 1, 1, 500, 'Supprimer Catégorie Client', 1, '1', '2017-10-02 22:26:33'),
-(23660, 337, 'c955da8d244aac06ee7595d08de7d009', 1, 1, 501, 'Valider Catégorie Client', 1, '1', '2017-10-02 22:26:33'),
-(23661, 394, 'f12fb1c50aedc49c3fa3dfa2bd297bd3', 1, 1, 553, 'Gestion Clients', 0, '1', '2017-10-02 22:26:33'),
-(23662, 394, 'dd3d5980299911ea854af4fa6f2e7309', 1, 1, 554, 'Editer Client', 0, '1', '2017-10-02 22:26:33'),
-(23663, 394, '3c5c04a20d49ad010557a64c8cdac1ce', 1, 1, 555, 'Valider Client', 0, '1', '2017-10-02 22:26:33'),
-(23664, 394, '18ace52052f2551099ecaabf049ffaec', 1, 1, 556, 'Désactiver Client', 0, '1', '2017-10-02 22:26:33'),
-(23665, 394, '493f9e55fc0340763e07514c1900685a', 1, 1, 557, 'Détails Client', 0, '1', '2017-10-02 22:26:33'),
-(23666, 394, '03b4f949b088e41fc9a1f3f23b7906a8', 1, 1, 558, 'Détails  Client', 0, '1', '2017-10-02 22:26:33'),
-(23667, 395, '2b9d8bb8f752d1c35fb681c33e38b42b', 1, 1, 559, 'Ajouter Client', 1, '1', '2017-10-02 22:26:33'),
-(23668, 396, '54aa9121e05f5e698d354022a8eab71d', 1, 1, 560, 'Editer Client', 1, '1', '2017-10-02 22:26:33'),
-(23669, 397, '4eaf650e8c2221d590fac5a6a6952231', 1, 1, 561, 'Supprimer Client', 1, '1', '2017-10-02 22:26:33'),
-(23670, 398, '534cd4b17fb8a371d3a20565ab8fd96e', 1, 1, 562, 'Valider Client', 1, '1', '2017-10-02 22:26:33'),
-(23671, 399, '95bb6aa696ef630a335aa84e1e425e2c', 1, 1, 563, 'Détails Client', 0, '1', '2017-10-02 22:26:33'),
-(23672, 485, '899d40c8f22d4f7a6f048366f1829787', 1, 1, 700, 'Gestion des contrats', 0, '1', '2017-10-02 22:26:33'),
-(23673, 485, 'a20f4c5b9c9ebaa238757d6f9f9cb6fb', 1, 1, 701, 'Modifier contrat', 0, '1', '2017-10-02 22:26:33'),
-(23674, 485, 'fbb243d2c2fa4200c40993e527b3a339', 1, 1, 702, 'Détail contrat', 0, '1', '2017-10-02 22:26:33'),
-(23675, 485, 'e970c1414507e5b83ae39e7ddedbf15e', 1, 1, 703, 'Valider contrat', 0, '1', '2017-10-02 22:26:33'),
-(23676, 485, '6908357258099272b60018c0f6fb1078', 1, 1, 704, 'Désactiver contrat', 0, '1', '2017-10-02 22:26:33'),
-(23677, 485, '11cabf03a954a5476cc78cf221f04d78', 1, 1, 750, 'Détails Contrat', 0, '1', '2017-10-02 22:26:33'),
-(23678, 485, '74710492392c157c6fe6d7e79ddc95fa', 1, 1, 784, 'Renouveler Contrat', 0, '1', '2017-10-02 22:26:33'),
-(23679, 485, 'a717e1a94a251fd4316f34aba679c0c1', 1, 1, 788, 'Détails   Contrat ', 0, '1', '2017-10-02 22:26:33'),
-(23680, 485, 'cd25d6f0f7f68e3dc35714df632e58df', 1, 1, 789, ' Détails   Contrat', 0, '1', '2017-10-02 22:26:33'),
-(23681, 486, '87f4c3ed4713c3bc9e3fef60a6649055', 1, 1, 705, 'Ajouter contrat', 0, '1', '2017-10-02 22:26:33'),
-(23682, 487, '9e49a431d9637544cefa2869fd7278b9', 1, 1, 706, 'Modifier contrat', 0, '1', '2017-10-02 22:26:33'),
-(23683, 488, '1e9395a182a44787e493bc038cd80bbf', 1, 1, 707, 'Supprimer contrat', 0, '1', '2017-10-02 22:26:33'),
-(23684, 489, '460d92834715b149c4db28e1643bd932', 1, 1, 708, 'Valider contrat', 0, '1', '2017-10-02 22:26:33'),
-(23685, 490, 'bbcf2879c2f8f60cfa55fa97c6e79268', 1, 1, 709, 'Détail contrat', 0, '1', '2017-10-02 22:26:33'),
-(23686, 491, 'fe058ccb890b25a54866be7f24a40363', 1, 1, 710, 'Ajouter échéance ', 0, '1', '2017-10-02 22:26:33'),
-(23687, 492, '36a248f56a6a80977e5c90a5c59f39d3', 1, 1, 711, 'Modifier échéance contrat', 0, '1', '2017-10-02 22:26:33'),
-(23688, 528, 'f0567980556249721f24f2fc88ebfed5', 1, 1, 783, 'Renouveler Contrat', 0, '1', '2017-10-02 22:26:33'),
-(23689, 501, 'ec45512f34613446e7a2e367d4b4cfbd', 1, 1, 724, 'Gestion Contrats Fournisseurs', 0, '1', '2017-10-02 22:26:33'),
-(23690, 501, 'e3c0d7e92dad7f8794b2415c334ec3ff', 1, 1, 744, 'Editer Contrat', 0, '1', '2017-10-02 22:26:33'),
-(23691, 501, '9dfff1c8dcb804837200f38e95381420', 1, 1, 745, 'Valider Contrat', 0, '1', '2017-10-02 22:26:33'),
-(23692, 501, '9fe39b496077065105a57ccd9ed05863', 1, 1, 746, 'Désactiver Contrat', 0, '1', '2017-10-02 22:26:33'),
-(23693, 501, 'faee342ff51dbe9f835529ae5b9b2a0b', 1, 1, 779, 'Détails  Contrat ', 0, '1', '2017-10-02 22:26:33'),
-(23694, 501, '83406b6b206ed08878f2b2e854932ae5', 1, 1, 780, 'Détails   Contrat  ', 0, '1', '2017-10-02 22:26:33'),
-(23695, 501, '8447888bef30fb983477cc1357ff7e6f', 1, 1, 781, 'Détails    Contrat ', 0, '1', '2017-10-02 22:26:33'),
-(23696, 501, 'b5455ddf628f5bf0dcb61016556da698', 1, 1, 787, ' Renouveler   Contrat ', 0, '1', '2017-10-02 22:26:33'),
-(23697, 509, 'ded24eb817021c5a666a677b1565bc5e', 1, 1, 739, 'Ajouter Contrat', 0, '1', '2017-10-02 22:26:33'),
-(23698, 510, 'ed6b8695494bf4ed86d5fb18690b3a59', 1, 1, 740, 'Editer Contrat', 0, '1', '2017-10-02 22:26:33'),
-(23699, 511, 'b8a40913b5955209994aaa26d0e8c3d4', 1, 1, 741, 'Supprimer Contrat', 0, '1', '2017-10-02 22:26:33'),
-(23700, 512, '5efb874e7d73ccd722df806e8275770f', 1, 1, 742, 'Valider Contrat', 0, '1', '2017-10-02 22:26:33'),
-(23701, 527, '64a5f976687a8c5f7cd3d672cc5d9c8c', 1, 1, 778, 'Détails Contrat', 0, '1', '2017-10-02 22:26:33'),
-(23702, 529, '2cc55c65e79534161108288adb00472b', 1, 1, 786, 'Renouveler  Contrat', 0, '1', '2017-10-02 22:26:33'),
-(23703, 432, 'f320732af279d6f2f8ae9c98cd0216de', 1, 1, 613, 'Gestion Départements', 0, '1', '2017-10-02 22:26:33'),
-(23704, 432, '96516cd0c72d814d5dcb1d86eacd29ab', 1, 1, 617, 'Editer Département', 0, '1', '2017-10-02 22:26:33'),
-(23705, 432, 'ef27a63534fa9fc3bd4b5086a92db546', 1, 1, 619, 'Valider Département', 0, '1', '2017-10-02 22:26:33'),
-(23706, 432, '9aed965af4c4b89a5a23c41bf685d403', 1, 1, 620, 'Désactiver Département', 0, '1', '2017-10-02 22:26:33'),
-(23707, 433, '722b3ba1c7fe735e87aa7415e5502a4c', 1, 1, 614, 'Ajouter Département', 0, '1', '2017-10-02 22:26:33'),
-(23708, 434, 'daeb31006124e562d284aff67360ee19', 1, 1, 615, 'Editer Département', 0, '1', '2017-10-02 22:26:33'),
-(23709, 435, 'a775da608fe55c53211d4f1c6e493251', 1, 1, 616, 'Supprimer Département', 0, '1', '2017-10-02 22:26:33'),
-(23710, 436, 'bbb96ec910c5000a2006db2f6e8af10a', 1, 1, 618, 'Valider Département', 0, '1', '2017-10-02 22:26:33'),
-(23711, 493, '0e79510db7f03b9b6266fc7b4a612153', 1, 1, 712, 'Gestion Devis', 0, '1', '2017-10-02 22:26:33'),
-(23712, 493, 'c15b00a1e37657336df8b6aa0eea2db5', 1, 1, 713, 'Modifier Devis', 0, '1', '2017-10-02 22:26:33'),
-(23713, 493, 'd34b07afd92adad84e1c4c2ebd92ba95', 1, 1, 714, 'Voir détails', 0, '1', '2017-10-02 22:26:33'),
-(23714, 493, '5a05eba5be17eba1f35ef8927bfa16d2', 1, 1, 715, 'Valider Devis', 0, '1', '2017-10-02 22:26:33'),
-(23715, 493, '28e267a2a0647d4cb37b18abb1e7d051', 1, 1, 716, 'Voir détails', 0, '1', '2017-10-02 22:26:33'),
-(23716, 494, 'd9eeb330625c1b87e0df00986a47be01', 1, 1, 717, 'Ajouter Devis', 0, '1', '2017-10-02 22:26:33'),
-(23717, 495, 'da93cdb05137e15aed9c4c18bddd746a', 1, 1, 718, 'Ajouter détail devis', 0, '1', '2017-10-02 22:26:33'),
-(23718, 496, 'f9f3c299f9bd0fec014f6bd3f0e06adb', 1, 1, 719, 'Modifier Devis', 0, '1', '2017-10-02 22:26:33'),
-(23719, 497, 'e14cce6f1faf7784adb327581c516b90', 1, 1, 720, 'Supprimer Devis', 0, '1', '2017-10-02 22:26:33'),
-(23720, 498, '38f10871792c133ebcc6040e9a11cde8', 1, 1, 721, 'Modifier détail Devis', 0, '1', '2017-10-02 22:26:33'),
-(23721, 499, '8def42e75fd4aee61c378d9fb303850d', 1, 1, 722, 'Afficher détail devis', 0, '1', '2017-10-02 22:26:33'),
-(23722, 500, '7666e87783b0f5a7eec1eea7593f7dfe', 1, 1, 723, 'Valider Devis', 0, '1', '2017-10-02 22:26:33'),
-(23723, 530, 'd76c286028993aff54af01da5dc4b233', 1, 1, 790, 'Gestion des factures', 0, '1', '2017-10-02 22:26:33'),
-(23724, 530, '98a697ec628778765b25e02ba2929d38', 1, 1, 791, 'Liste complément', 0, '1', '2017-10-02 22:26:33'),
-(23725, 530, '3b6d1456980ea86c0f44c16c464ca790', 1, 1, 792, 'Liste encaissements', 0, '1', '2017-10-02 22:26:33'),
-(23726, 530, '9a51fb5298e39a28af3ad6272fc51177', 1, 1, 793, 'Valider facture', 0, '1', '2017-10-02 22:26:33'),
-(23727, 530, '851f1d4c13f6025f69f5b9315321d350', 1, 1, 794, 'Désactiver facture', 0, '1', '2017-10-02 22:26:33'),
-(23728, 530, '5c79105956d28b5cac52f85784039919', 1, 1, 795, 'Détail facture', 0, '1', '2017-10-02 22:26:33'),
-(23729, 531, '55c3c5d2d93143b315513b7401043c8b', 1, 1, 796, 'complements', 0, '1', '2017-10-02 22:26:33'),
-(23730, 531, 'dfc4772cc03cf0b92a47f54fc6a2326e', 1, 1, 797, 'Modifier complément', 0, '1', '2017-10-02 22:26:33'),
-(23731, 532, '03a18bdd5201e433a3c523a2b34d059a', 1, 1, 798, 'Ajouter complément', 0, '1', '2017-10-02 22:26:33'),
-(23732, 533, '88d9bc979cd1102eb8196e7f5e6042ca', 1, 1, 799, 'Encaissement', 0, '1', '2017-10-02 22:26:33'),
-(23733, 533, 'c690cc68f5257c0c225b8b8e6126ea56', 1, 1, 800, 'Modifier encaissement', 0, '1', '2017-10-02 22:26:33'),
-(23734, 533, '1dc06f602e8630f273d44aa2751b2127', 1, 1, 801, 'Détails encaissement', 0, '1', '2017-10-02 22:26:33'),
-(23735, 534, 'e4866b292dbc3c9c5d9cc37273a5b498', 1, 1, 802, 'Ajouter encaissement', 0, '1', '2017-10-02 22:26:33'),
-(23736, 535, '8665be10959f39df4f149962eb70041f', 1, 1, 803, 'Modifier complément', 0, '1', '2017-10-02 22:26:33'),
-(23737, 536, '585d411904bf7d9e83d21b2810ff1d6c', 1, 1, 804, 'Modifier encaissement', 0, '1', '2017-10-02 22:26:33'),
-(23738, 537, '8c8b058a4d030cdc8b49c9008abb2e92', 1, 1, 805, 'Supprimer complément', 0, '1', '2017-10-02 22:26:33'),
-(23739, 538, '6bf7d5180940f03567a5d711e8563ba4', 1, 1, 806, 'Supprimer encaissement', 0, '1', '2017-10-02 22:26:33'),
-(23740, 539, '256abad0ec8e3bc8ed1c0653ff177255', 1, 1, 807, 'Valider facture', 0, '1', '2017-10-02 22:26:33'),
-(23741, 540, 'b5dc5719c1f96df7334f371dcf51a5b6', 1, 1, 808, 'Détail encaissement', 0, '1', '2017-10-02 22:26:33'),
-(23742, 541, '16fbf6fdcbb72f863bcf7e4ef28d8e75', 1, 1, 809, 'Détails facture', 0, '1', '2017-10-02 22:26:33'),
-(23743, 502, '6beb279abea6434e3b73229aebadc081', 1, 1, 725, 'Gestion Fournisseurs', 0, '1', '2017-10-02 22:26:33'),
-(23744, 502, 'ff95747f3a590b6539803f2a9a394cd5', 1, 1, 730, 'Editer Fournisseur', 0, '1', '2017-10-02 22:26:33'),
-(23745, 502, 'fea982f5074995d4ccd6211a71ab2680', 1, 1, 731, 'Valider Fournisseur', 0, '1', '2017-10-02 22:26:33'),
-(23746, 502, '1d0411a0dec15fc28f054f1a79d95618', 1, 1, 732, 'Désactiver Fournisseur', 0, '1', '2017-10-02 22:26:33'),
-(23747, 502, 'a52affdd109b9362ce47ff18aad53e2a', 1, 1, 737, 'Détails Fournisseur', 0, '1', '2017-10-02 22:26:33'),
-(23748, 502, 'c6fe5f222dd563204188e8bf0d69bd9e', 1, 1, 738, 'Détails  Fournisseur', 0, '1', '2017-10-02 22:26:33'),
-(23749, 503, 'd644015625a9603adb2fcc36167aeb73', 1, 1, 726, 'Ajouter Fournisseur', 0, '1', '2017-10-02 22:26:33'),
-(23750, 504, '58c6694abfd3228d927a5d5a06d40b94', 1, 1, 727, 'Editer Fournisseur', 0, '1', '2017-10-02 22:26:33'),
-(23751, 505, 'd072f81cd779e4b0152953241d713ca3', 1, 1, 728, 'Supprimer Fournisseur', 0, '1', '2017-10-02 22:26:33'),
-(23752, 506, '657351ce5aa227513e3b50dea77db918', 1, 1, 729, 'Valider Fournisseur', 0, '1', '2017-10-02 22:26:33'),
-(23753, 508, '83b693fe35a1be29edafe4f6170641aa', 1, 1, 736, 'Détails Fournisseur', 0, '1', '2017-10-02 22:26:33'),
-(23754, 21, 'b8e62907d367fb44d644a5189cd07f42', 1, 1, 9, 'Modules', 1, '1', '2017-10-02 22:26:33'),
-(23755, 21, '05ce9e55686161d99e0714bb86243e5b', 1, 1, 11, 'Editer Module', 0, '1', '2017-10-02 22:26:33'),
-(23756, 21, '819cf9c18a44cb80771a066768d585f2', 1, 1, 12, 'Exporter Module', 0, '1', '2017-10-02 22:26:33'),
-(23757, 21, 'd2fc3ee15cee5208a8b9c70f1e53c196', 1, 1, 13, 'Liste task modul', 0, '1', '2017-10-02 22:26:33'),
-(23758, 21, 'ad75e6b877f20e3d6fc1789da4dcb3e6', 1, 1, 75, 'Editer Module', 0, '1', '2017-10-02 22:26:33'),
-(23759, 21, '064a9b0eff1006fd4f25cb4eaf894ca1', 1, 1, 77, 'Liste task modul Setting', 0, '1', '2017-10-02 22:26:33'),
-(23760, 21, 'ac4eb0c94da00a48ad5d995f5e9e9366', 1, 1, 232, 'MAJ Module', 0, '1', '2017-10-02 22:26:33'),
-(23761, 22, '44bd5341b0ab41ced21db8b3e92cf5aa', 1, 1, 10, 'Ajouter un Modul', 1, '1', '2017-10-02 22:26:33'),
-(23762, 24, '8653b156f1a4160a12e5a94b211e59a2', 1, 1, 16, 'Liste Action Task', 0, '1', '2017-10-02 22:26:33'),
-(23763, 24, '86aced763bc02e1957a5c740fb37b4f7', 1, 1, 22, 'Supprimer Application', 0, '1', '2017-10-02 22:26:33'),
-(23764, 24, 'f07352e32fe86da1483c6ab071b7e7a9', 1, 1, 99, 'Ajout Affichage WF', 0, '1', '2017-10-02 22:26:33'),
-(23765, 25, '1c452aff8f1551b3574e15b74147ea56', 1, 1, 14, 'Ajouter Task Modul', 1, '1', '2017-10-02 22:26:34'),
-(23766, 26, 'f085fe4610576987db963501297e4d91', 1, 1, 15, 'Editer Task Modul', 1, '1', '2017-10-02 22:26:34'),
-(23767, 26, '38702c272a6f4d334c2f4c3684c8b163', 1, 1, 18, 'Ajouter action modul', 1, '1', '2017-10-02 22:26:34'),
-(23768, 27, 'cbae1ebe850f6dd8841426c6fedf1785', 1, 1, 20, 'Liste Action Task', 1, '1', '2017-10-02 22:26:34'),
-(23769, 27, 'e30471396f9b86ccdcc94943d80b679a', 1, 1, 147, 'Editer Task Action', 0, '1', '2017-10-02 22:26:34'),
-(23770, 28, '502460cd9327b46ee7af0a258ebf8c80', 1, 1, 19, 'Ajouter Action Task', 1, '1', '2017-10-02 22:26:34'),
-(23771, 29, '13c107211904d4a2e65dd65c60ec7272', 1, 1, 21, 'Supprimer Application', 1, '1', '2017-10-02 22:26:34'),
-(23772, 33, '8c8acf9cf3790b16b1fae26823f45eab', 1, 1, 24, 'Importer des modules', 1, '1', '2017-10-02 22:26:34'),
-(23773, 55, '2f4518dab90b706e2f4acd737a0425d8', 1, 1, 70, 'Ajouter Module paramétrage', 1, '1', '2017-10-02 22:26:34'),
-(23774, 62, '8e0c0212d8337956ac2f4d6eb180d74b', 1, 1, 74, 'Editer Module paramètrage', 1, '1', '2017-10-02 22:26:34'),
-(23775, 79, 'fc54953b47b7fcb11cc14c0c2e2125f0', 1, 1, 98, 'Ajouter Autorisation Etat', 1, '1', '2017-10-02 22:26:34'),
-(23776, 108, '966ec2dd83e6006c2d0ff1d1a5f12e33', 1, 1, 146, 'Editer Task Action', 1, '1', '2017-10-02 22:26:34'),
-(23777, 167, '3473119f6683893a3f1372dbf7d811e1', 1, 1, 231, 'MAJ Module', 1, '1', '2017-10-02 22:26:34'),
-(23778, 475, '605450f3d7c84701b986fa31e1e9fa43', 1, 1, 684, 'Gestion Pays', 0, '1', '2017-10-02 22:26:34'),
-(23779, 475, '29ba6cc689eca63dbafb109ec58bc4d6', 1, 1, 689, 'Editer Pays', 0, '1', '2017-10-02 22:26:34'),
-(23780, 475, '763fe13212b4324590518773cd9a36fa', 1, 1, 690, 'Valider Pays', 0, '1', '2017-10-02 22:26:34'),
-(23781, 475, '3c8427c7313d35219b17572efd380b17', 1, 1, 691, 'Désactiver Pays', 0, '1', '2017-10-02 22:26:34'),
-(23782, 476, '3cd55a55307615d72aae84c6b5cf99bc', 1, 1, 685, 'Ajouter Pays', 0, '1', '2017-10-02 22:26:34'),
-(23783, 477, 'cfe617d7bc6a9c7d8b86c468f21396f2', 1, 1, 686, 'Editer Pays', 0, '1', '2017-10-02 22:26:34'),
-(23784, 478, 'b768486aeb655c48cc411c11fa60e150', 1, 1, 687, 'Supprimer Pays', 0, '1', '2017-10-02 22:26:34'),
-(23785, 479, '15e4e24f320daa9d563ae62acff9e586', 1, 1, 688, 'Valider Pays', 0, '1', '2017-10-02 22:26:34'),
-(23786, 443, '192715027870a4a612fd44d562e2752f', 1, 1, 631, 'Gestion des produits', 0, '1', '2017-10-02 22:26:34'),
-(23787, 443, 'ed13b17897a396c0633d7989f2bc644f', 1, 1, 632, 'Modifier produit', 0, '1', '2017-10-02 22:26:34'),
-(23788, 443, '96df3c4057988c54a7d468e5664dba10', 1, 1, 633, 'Détail produit', 0, '1', '2017-10-02 22:26:34'),
-(23789, 443, 'eb5b51394e164f00ce8c998310e3a8ba', 1, 1, 634, 'Valider produit', 0, '1', '2017-10-02 22:26:34'),
-(23790, 443, '6b087b20929483bb07f8862b39e41f07', 1, 1, 635, 'Désactiver produit', 0, '1', '2017-10-02 22:26:34'),
-(23791, 443, '3fe9362cc0a931940b8d5dd40338c9c8', 1, 1, 636, 'Achat produit', 0, '1', '2017-10-02 22:26:34'),
-(23792, 444, '93e893c307a6fa63e392f78751ec70ce', 1, 1, 637, 'Ajouter produit', 0, '1', '2017-10-02 22:26:34'),
-(23793, 445, 'bcf3beada4a98e8145af2d4fbb744f01', 1, 1, 638, 'Modifier produit', 0, '1', '2017-10-02 22:26:34'),
-(23794, 446, '796427ec57f7c13d6b737055ae686b34', 1, 1, 639, 'Detail produit', 0, '1', '2017-10-02 22:26:34'),
-(23795, 447, '1fb8cd1a179be07586fa7db05013dd37', 1, 1, 640, 'Valider produit', 0, '1', '2017-10-02 22:26:34'),
-(23796, 448, '7779e98d2111faedf458f7aeb548294e', 1, 1, 641, 'Supprimer produit', 0, '1', '2017-10-02 22:26:34'),
-(23797, 449, '8da585a04e918c256bd26f0c03f1390d', 1, 1, 642, 'Achat produit', 0, '1', '2017-10-02 22:26:34'),
-(23798, 449, 'f8c9a7413089566d1db20dcc5ca17e03', 1, 1, 643, 'Modifier achat', 0, '1', '2017-10-02 22:26:34'),
-(23799, 449, '682b4328ee832101a44dac86b22d5757', 1, 1, 644, 'Détail achat', 0, '1', '2017-10-02 22:26:34'),
-(23800, 449, 'd1ebf1c5482ddf06721b11ec64afb744', 1, 1, 645, 'Valider achat', 0, '1', '2017-10-02 22:26:34'),
-(23801, 449, '368a1e91fc63e263eb01d85a34ecd89b', 1, 1, 646, 'Désactiver achat', 0, '1', '2017-10-02 22:26:34'),
-(23802, 450, '659be5cd86a12eba7e59c52d60198a36', 1, 1, 647, 'Ajoute achat', 0, '1', '2017-10-02 22:26:34'),
-(23803, 451, '8415336a17e8ca26f3eca5741863f3b2', 1, 1, 648, 'Modifier achat', 0, '1', '2017-10-02 22:26:34'),
-(23804, 452, '2c3b4875b72f7da6a87b5c0d7e85f51d', 1, 1, 649, 'Supprimer achat', 0, '1', '2017-10-02 22:26:34'),
-(23805, 453, 'd4180eb7a4ff86c598f441ffd4543f36', 1, 1, 650, 'Détail achat', 0, '1', '2017-10-02 22:26:34'),
-(23806, 454, '4a4c9b096bad58a96d5ea6f93d66e81c', 1, 1, 651, 'Valider achat', 0, '1', '2017-10-02 22:26:34'),
-(23807, 519, '1eb847d87adcad78d5e951e6110061e5', 1, 1, 758, 'Gestion Proforma', 0, '1', '2017-10-02 22:26:34'),
-(23808, 519, '44ef6849d8d5d17d8e0535187e923d32', 1, 1, 759, 'Editer proforma', 0, '1', '2017-10-02 22:26:34'),
-(23809, 519, 'b7ce06be726011362a271678547a803c', 1, 1, 760, 'Valider Proforma', 0, '1', '2017-10-02 22:26:34'),
-(23810, 519, 'abd8c50f1d2ef4beeeddb68a72973587', 1, 1, 761, 'Détail Proforma', 0, '1', '2017-10-02 22:26:34'),
-(23811, 519, 'e20d83df90355eca2a65f56a2556601f', 1, 1, 762, 'Détail Proforma', 0, '1', '2017-10-02 22:26:34'),
-(23812, 520, 'd5a6338765b9eab63104b59f01c06114', 1, 1, 763, 'Ajouter pro-forma', 0, '1', '2017-10-02 22:26:34'),
-(23813, 521, '95831bde77bc886d6ab4dd5e734de743', 1, 1, 764, 'Editer proforma', 0, '1', '2017-10-02 22:26:34'),
-(23814, 522, 'cbb4e1efa1c05b42d25a3a6bcab038a2', 1, 1, 765, 'Ajouter détail proforma', 0, '1', '2017-10-02 22:26:34'),
-(23815, 523, 'e9f745054778257a255452c6609461a0', 1, 1, 766, 'valider Proforma', 0, '1', '2017-10-02 22:26:34'),
-(23816, 524, 'defef148c404c7e6ac79e4783e0a7ab7', 1, 1, 767, 'Détail Pro-forma', 0, '1', '2017-10-02 22:26:34'),
-(23817, 525, '53008d64edf241c937a06f03eff139aa', 1, 1, 768, 'Editer détail proforma', 0, '1', '2017-10-02 22:26:34'),
-(23818, 470, 'd57b16b3aad4ce59f909609246c4fd36', 1, 1, 676, 'Gestion des régions', 0, '1', '2017-10-02 22:26:34'),
-(23819, 470, 'd2e007184668dd70b9bae44d46d28ded', 1, 1, 677, 'Modifier région', 0, '1', '2017-10-02 22:26:34'),
-(23820, 470, 'e74403c99ac8325b78735c531a20442f', 1, 1, 678, 'Valider région', 0, '1', '2017-10-02 22:26:34'),
-(23821, 470, '7397a0fab078728bd5c53be61022d5ce', 1, 1, 679, 'Désactiver région', 0, '1', '2017-10-02 22:26:34'),
-(23822, 471, '0237bd41cf70c3529681b4ccb041f1fd', 1, 1, 680, 'Ajouter région', 0, '1', '2017-10-02 22:26:34'),
-(23823, 472, '6d290f454da473cb8a557829a410c3f1', 1, 1, 681, 'Modifier région', 0, '1', '2017-10-02 22:26:34'),
-(23824, 473, '008cd9ea5767c739675fef4e1261cfe8', 1, 1, 682, 'Valider région', 0, '1', '2017-10-02 22:26:34'),
-(23825, 474, 'fc477e6a4c90cd427ae81e555c11d6a9', 1, 1, 683, 'Supprimer région', 0, '1', '2017-10-02 22:26:34'),
-(23826, 34, '83b9fa44466da4bcd7f8304185bfeac8', 1, 1, 28, 'Services', 1, '1', '2017-10-02 22:26:34'),
-(23827, 34, '99aea4598ccc18d4c12ae091c8967d13', 1, 1, 33, 'Valider Service', 0, '1', '2017-10-02 22:26:34'),
-(23828, 34, 'bb66cf787052616ea3dd02b0b5199b26', 1, 1, 34, 'Supprimer Service', 0, '1', '2017-10-02 22:26:34'),
-(23829, 34, '47c552dce8b761ae2e2a44387a93432b', 1, 1, 144, 'Modifier Service Validé', 0, '1', '2017-10-02 22:26:34'),
-(23830, 35, '55043bc4207521e3010e91d6267f5302', 1, 1, 29, 'Ajouter Service', 1, '1', '2017-10-02 22:26:34'),
-(23831, 36, '2fea3d893f6b6e81467ddd2a744e4a76', 1, 1, 30, 'Modifier Service', 1, '1', '2017-10-02 22:26:34'),
-(23832, 37, '1a0d5897d31b4d5e29022671c1112f59', 1, 1, 31, 'Valider Service', 1, '1', '2017-10-02 22:26:34'),
-(23833, 38, '42083d4e159baf7c2ace2bb977e2b0a0', 1, 1, 32, 'Supprimer Service', 1, '1', '2017-10-02 22:26:34'),
-(23834, 460, 'b6b6bfbd070b5b3dd84acedae7b854e9', 1, 1, 660, 'Gestion des types de produits', 0, '1', '2017-10-02 22:26:34'),
-(23835, 460, '3c5400b775264499825a039d66aa9c90', 1, 1, 661, 'Modifier type', 0, '1', '2017-10-02 22:26:34'),
-(23836, 460, 'dcf55bc300d690af4c81e4d2335e60e5', 1, 1, 662, 'Valider type', 0, '1', '2017-10-02 22:26:34'),
-(23837, 460, '230b9554d37da1c71986af94962cb340', 1, 1, 663, 'Désactiver type', 0, '1', '2017-10-02 22:26:34'),
-(23838, 461, 'e0d163499b4ba11d6d7a648bc6fc6de6', 1, 1, 664, 'Ajouter un type', 0, '1', '2017-10-02 22:26:34'),
-(23839, 462, 'ac5a6d087b3c8db7501fa5137a47773e', 1, 1, 665, 'Modifier type', 0, '1', '2017-10-02 22:26:34'),
-(23840, 463, '2e8242a93a62a264ad7cfc953967f575', 1, 1, 666, 'Valider type', 0, '1', '2017-10-02 22:26:34'),
-(23841, 464, 'e3725ba15ca483b9278f68553eca5918', 1, 1, 667, 'Supprimer type', 0, '1', '2017-10-02 22:26:34'),
-(23842, 480, '312fd18860781a7b1b7e33587fa423d4', 1, 1, 692, 'Gestion Type Echeance', 0, '1', '2017-10-02 22:26:34'),
-(23843, 480, '46ad76148075d6b458f43e84ddf00791', 1, 1, 697, 'Editer Type Echéance', 0, '1', '2017-10-02 22:26:34'),
-(23844, 480, 'add2bf057924e606653fbf5bbd65ca09', 1, 1, 698, 'Valider Type Echéance', 0, '1', '2017-10-02 22:26:34'),
-(23845, 480, '463d9e1e8367736b958f0dd84b4e36d5', 1, 1, 699, 'Désactiver Type Echéance', 0, '1', '2017-10-02 22:26:34'),
-(23846, 481, '76170b14c7b6f1f7058d079fe24f739b', 1, 1, 693, 'Ajouter Type Echéance', 0, '1', '2017-10-02 22:26:34'),
-(23847, 482, 'decc5ed58c4d91e6967c9c67e0975cf0', 1, 1, 694, 'Editer Type Echéance', 0, '1', '2017-10-02 22:26:34'),
-(23848, 483, '89db6f23dd8e96a69c6a97f556c44e14', 1, 1, 695, 'Supprimer Type Echéance', 0, '1', '2017-10-02 22:26:34'),
-(23849, 484, '7527021168823e0118d44297c7684d44', 1, 1, 696, 'Valider Type Echéance', 0, '1', '2017-10-02 22:26:34'),
-(23850, 465, '55ecbb545a49c70c0b728bb0c7951077', 1, 1, 668, 'Gestion des unités de vente', 0, '1', '2017-10-02 22:26:34'),
-(23851, 465, '67acd70eb04242b7091d9dcbb08295d7', 1, 1, 669, 'Modifier unité ', 0, '1', '2017-10-02 22:26:34'),
-(23852, 465, '7363022ed5ad047bfe86d3de4b75b1f4', 1, 1, 670, 'Valider unité', 0, '1', '2017-10-02 22:26:34'),
-(23853, 465, 'ec77eb95736c27bfc269cbffc8e113f1', 1, 1, 671, 'Désactiver unité', 0, '1', '2017-10-02 22:26:34'),
-(23854, 466, '3a5e8dfe211121eda706f8b6d548d111', 1, 1, 672, 'ajouter une unité', 0, '1', '2017-10-02 22:26:34'),
-(23855, 467, '9b7a578981de699286376903e96bc3c7', 1, 1, 673, 'Modifier une unité', 0, '1', '2017-10-02 22:26:34'),
-(23856, 468, '62355588366c13ddbadc7a7ca1d226ad', 1, 1, 674, 'Valider une unité', 0, '1', '2017-10-02 22:26:34'),
-(23857, 469, 'e5f53a3aaa324415d781156396938101', 1, 1, 675, 'Supprimer une unité', 0, '1', '2017-10-02 22:26:34'),
-(23858, 14, '56de23d30d6c54297c8d9772cd3c7f57', 1, 1, 1, 'Utilisateurs', 1, '1', '2017-10-02 22:26:34'),
-(23859, 14, 'e656756fb7b39a4e6ddcabca75ff2970', 1, 1, 3, 'Editer Utilisateur', 0, '1', '2017-10-02 22:26:34'),
-(23860, 14, 'c073a277957ca1b9f318ac3902555708', 1, 1, 6, 'Permissions', 0, '1', '2017-10-02 22:26:34'),
-(23861, 14, 'c51499ddf7007787c4434661c658bbd1', 1, 1, 8, 'Désactiver compte', 0, '1', '2017-10-02 22:26:34'),
-(23862, 14, '10096b6f54456bcfc85081523ee64cf6', 1, 1, 23, 'Supprimer utilisateur', 0, '1', '2017-10-02 22:26:34'),
-(23863, 14, 'a0999cbed820aff775adf27276ee54a4', 1, 1, 25, 'Editer Utilisateur', 0, '1', '2017-10-02 22:26:34'),
-(23864, 14, '9aa6877656339ddff2478b20449a924b', 1, 1, 27, 'Activer compte', 0, '1', '2017-10-02 22:26:34'),
-(23865, 14, 'f4c79bb797b92dfa826b51a44e3171af', 1, 1, 112, 'Utilisateurs', 1, '1', '2017-10-02 22:26:34'),
-(23866, 14, 'd7f7afd70a297e5c239f6cf271138390', 1, 1, 143, 'Utilisateur Archivé', 1, '1', '2017-10-02 22:26:34'),
-(23867, 15, 'df91a8e6f8ee2cde64495fc0cc7d6c6f', 1, 1, 2, 'Ajouter Utilisateurs', 1, '1', '2017-10-02 22:26:34'),
-(23868, 16, '2bb46b52eab9eecbdbba35605da07234', 1, 1, 4, 'Editer Utilisateurs', 1, '1', '2017-10-02 22:26:34'),
-(23869, 17, '3f59a1326df27378304e142ab3bec090', 1, 1, 5, 'Permission', 1, '1', '2017-10-02 22:26:34'),
-(23870, 18, 'b919571c88d036f8889742a81a4f41fd', 1, 1, 7, 'Supprimer utilisateur', 1, '1', '2017-10-02 22:26:34'),
-(23871, 19, '38f89764a26e39ce029cd3132c12b2a5', 1, 1, 45, 'Compte utilisateur', 1, '1', '2017-10-02 22:26:34'),
-(23872, 20, 'f988a608f35a0bc551cb038b1706d207', 1, 1, 26, 'Activer utilisateur', 1, '1', '2017-10-02 22:26:34'),
-(23873, 107, 'b7b3a09fdd73a5b0a3e5ed8a2828f548', 1, 1, 145, 'Désactiver l''utilisateur', 1, '1', '2017-10-02 22:26:34'),
-(23874, 161, '0d374b7e2fe21a2e2641c092a3c7f2e9', 1, 1, 222, 'Changer le mot de passe', 1, '1', '2017-10-02 22:26:34'),
-(23875, 162, '6f642ee30722158f0318653b9113b887', 1, 1, 224, 'History', 1, '1', '2017-10-02 22:26:34'),
-(23876, 163, 'cc907fac13631903d129c137d671d718', 1, 1, 225, 'Activities', 1, '1', '2017-10-02 22:26:34'),
-(23877, 430, '3d4eaa53061f51b0c4435bd8e4b89c17', 1, 1, 611, 'Gestion Vente', 0, '1', '2017-10-02 22:26:34'),
-(23878, 89, '2c3b01c696ff401a2ac9ffedb7a06e4a', 1, 1, 114, 'Gestion Villes', 1, '1', '2017-10-02 22:26:34'),
-(23879, 89, 'b9649163b368f863a0e8036f11cd81ae', 1, 1, 119, 'Editer Ville', 0, '1', '2017-10-02 22:26:34'),
-(23880, 89, '89dec6dabcb210cdb9dd28bbef90d43e', 1, 1, 121, 'Editer Ville', 0, '1', '2017-10-02 22:26:34'),
-(23881, 89, '4a2edbdcbda34c9d3d1e6abe73643b37', 1, 1, 602, 'Valider Ville', 0, '1', '2017-10-02 22:26:34'),
-(23882, 89, '0c8ad6595a4516be83ba5a9cdb7ea9a1', 1, 1, 603, 'Désactiver Ville', 0, '1', '2017-10-02 22:26:34'),
-(23883, 90, 'e152b9052d3dcfcac593489dbdc0f61c', 1, 1, 115, 'Ajouter ville', 1, '1', '2017-10-02 22:26:34'),
-(23884, 91, '3107e0cd0e0df14c4e94aa088e4457d7', 1, 1, 116, 'Editer Ville', 1, '1', '2017-10-02 22:26:34'),
-(23885, 92, 'da79d9214ed5819d7f4f1e3070629a3d', 1, 1, 117, 'Supprimer Ville', 1, '1', '2017-10-02 22:26:34'),
-(23886, 423, 'fe03a68d17c62ff2c27329573a1b3550', 1, 1, 601, 'Valider Ville', 0, '1', '2017-10-02 22:26:34');
+(18240, 455, 'e69f84a801ee1525f20f34e684688a9b', 1, 1, 652, 'Gestion des catégories de produits', 0, '1', '2017-10-02 23:36:32'),
+(18241, 455, '90f6eba3e0ed223e73d250278cb445d5', 1, 1, 653, 'Modifier catégorie', 0, '1', '2017-10-02 23:36:32'),
+(18242, 455, 'c62968a45ae9cfa8b127ac1b5573988a', 1, 1, 654, 'Valider catégorie', 0, '1', '2017-10-02 23:36:32'),
+(18243, 455, '6f43a6bcbd293f958aff51953559104e', 1, 1, 655, 'Désactiver catégorie', 0, '1', '2017-10-02 23:36:32'),
+(18244, 456, 'd26f5940e88a494c0eb65047aab9a17b', 1, 1, 656, 'Ajouter une catégorie', 0, '1', '2017-10-02 23:36:32'),
+(18245, 457, '27957c6d0f6869d4d90287cd50b6dde9', 1, 1, 657, 'Modifier une catégorie', 0, '1', '2017-10-02 23:36:32'),
+(18246, 458, '41b48dd567e4f79e35261a47b7bad751', 1, 1, 658, 'Valider une catégorie', 0, '1', '2017-10-02 23:36:32'),
+(18247, 459, '90dc20c4d1ad7be7fac8ec34d5ac26b3', 1, 1, 659, 'Supprimer une catégorie', 0, '1', '2017-10-02 23:36:32'),
+(18248, 333, '6edc543080c65eca3993445c295ff94b', 1, 1, 497, 'Gestion Catégorie Client', 0, '1', '2017-10-02 23:36:32'),
+(18249, 333, '142a68a109abd0462ea44fcadffe56de', 1, 1, 506, 'Editer Catégorie Client', 0, '1', '2017-10-02 23:36:32'),
+(18250, 333, '70df89fa2654d8b10d7fc7e75e178b7e', 1, 1, 507, 'Activer Catégorie Client', 0, '1', '2017-10-02 23:36:32'),
+(18251, 333, '109e82d6db5721f63cd827e9fd224216', 1, 1, 508, 'Désactiver Catégorie Client', 0, '1', '2017-10-02 23:36:32'),
+(18252, 334, 'a5c1bd0dfd87824ff0f57c6b1e1d2c3f', 1, 1, 498, 'Ajouter Catégorie Client', 1, '1', '2017-10-02 23:36:32'),
+(18253, 335, '8d901f74dfd6ee3a8f44ebd0b83fbfae', 1, 1, 499, 'Editer Catégorie Client', 1, '1', '2017-10-02 23:36:32'),
+(18254, 336, 'e87327563ce6b659780d6b2c9bf8ac77', 1, 1, 500, 'Supprimer Catégorie Client', 1, '1', '2017-10-02 23:36:32'),
+(18255, 337, 'c955da8d244aac06ee7595d08de7d009', 1, 1, 501, 'Valider Catégorie Client', 1, '1', '2017-10-02 23:36:32'),
+(18256, 394, 'f12fb1c50aedc49c3fa3dfa2bd297bd3', 1, 1, 553, 'Gestion Clients', 0, '1', '2017-10-02 23:36:32'),
+(18257, 394, 'dd3d5980299911ea854af4fa6f2e7309', 1, 1, 554, 'Editer Client', 0, '1', '2017-10-02 23:36:32'),
+(18258, 394, '3c5c04a20d49ad010557a64c8cdac1ce', 1, 1, 555, 'Valider Client', 0, '1', '2017-10-02 23:36:32'),
+(18259, 394, '18ace52052f2551099ecaabf049ffaec', 1, 1, 556, 'Désactiver Client', 0, '1', '2017-10-02 23:36:32'),
+(18260, 394, '493f9e55fc0340763e07514c1900685a', 1, 1, 557, 'Détails Client', 0, '1', '2017-10-02 23:36:32'),
+(18261, 394, '03b4f949b088e41fc9a1f3f23b7906a8', 1, 1, 558, 'Détails  Client', 0, '1', '2017-10-02 23:36:32'),
+(18262, 395, '2b9d8bb8f752d1c35fb681c33e38b42b', 1, 1, 559, 'Ajouter Client', 1, '1', '2017-10-02 23:36:32'),
+(18263, 396, '54aa9121e05f5e698d354022a8eab71d', 1, 1, 560, 'Editer Client', 1, '1', '2017-10-02 23:36:32'),
+(18264, 397, '4eaf650e8c2221d590fac5a6a6952231', 1, 1, 561, 'Supprimer Client', 1, '1', '2017-10-02 23:36:32'),
+(18265, 398, '534cd4b17fb8a371d3a20565ab8fd96e', 1, 1, 562, 'Valider Client', 1, '1', '2017-10-02 23:36:32'),
+(18266, 399, '95bb6aa696ef630a335aa84e1e425e2c', 1, 1, 563, 'Détails Client', 0, '1', '2017-10-02 23:36:32'),
+(18267, 485, '899d40c8f22d4f7a6f048366f1829787', 1, 1, 700, 'Gestion des contrats', 0, '1', '2017-10-02 23:36:32'),
+(18268, 485, 'a20f4c5b9c9ebaa238757d6f9f9cb6fb', 1, 1, 701, 'Modifier contrat', 0, '1', '2017-10-02 23:36:32'),
+(18269, 485, 'fbb243d2c2fa4200c40993e527b3a339', 1, 1, 702, 'Détail contrat', 0, '1', '2017-10-02 23:36:32'),
+(18270, 485, 'e970c1414507e5b83ae39e7ddedbf15e', 1, 1, 703, 'Valider contrat', 0, '1', '2017-10-02 23:36:32'),
+(18271, 485, '6908357258099272b60018c0f6fb1078', 1, 1, 704, 'Désactiver contrat', 0, '1', '2017-10-02 23:36:32'),
+(18272, 485, '11cabf03a954a5476cc78cf221f04d78', 1, 1, 750, 'Détails Contrat', 0, '1', '2017-10-02 23:36:32'),
+(18273, 486, '87f4c3ed4713c3bc9e3fef60a6649055', 1, 1, 705, 'Ajouter contrat', 0, '1', '2017-10-02 23:36:32'),
+(18274, 487, '9e49a431d9637544cefa2869fd7278b9', 1, 1, 706, 'Modifier contrat', 0, '1', '2017-10-02 23:36:32'),
+(18275, 488, '1e9395a182a44787e493bc038cd80bbf', 1, 1, 707, 'Supprimer contrat', 0, '1', '2017-10-02 23:36:32'),
+(18276, 489, '460d92834715b149c4db28e1643bd932', 1, 1, 708, 'Valider contrat', 0, '1', '2017-10-02 23:36:32'),
+(18277, 490, 'bbcf2879c2f8f60cfa55fa97c6e79268', 1, 1, 709, 'Détail contrat', 0, '1', '2017-10-02 23:36:32'),
+(18278, 491, 'fe058ccb890b25a54866be7f24a40363', 1, 1, 710, 'Ajouter échéance ', 0, '1', '2017-10-02 23:36:32'),
+(18279, 492, '36a248f56a6a80977e5c90a5c59f39d3', 1, 1, 711, 'Modifier échéance contrat', 0, '1', '2017-10-02 23:36:32'),
+(18280, 501, 'ec45512f34613446e7a2e367d4b4cfbd', 1, 1, 724, 'Gestion Contrats Fournisseurs', 0, '1', '2017-10-02 23:36:32'),
+(18281, 501, 'e3c0d7e92dad7f8794b2415c334ec3ff', 1, 1, 744, 'Editer Contrat', 0, '1', '2017-10-02 23:36:32'),
+(18282, 501, '9dfff1c8dcb804837200f38e95381420', 1, 1, 745, 'Valider Contrat', 0, '1', '2017-10-02 23:36:32'),
+(18283, 501, '9fe39b496077065105a57ccd9ed05863', 1, 1, 746, 'Désactiver Contrat', 0, '1', '2017-10-02 23:36:32'),
+(18284, 501, '0092ad9ef69b6420a611df6859a43cda', 1, 1, 747, 'Détails Contrat', 0, '1', '2017-10-02 23:36:32'),
+(18285, 501, '6ca83d9c6c0b229446da30b60b74031a', 1, 1, 748, 'Détails  Contrat', 0, '1', '2017-10-02 23:36:32'),
+(18286, 509, 'ded24eb817021c5a666a677b1565bc5e', 1, 1, 739, 'Ajouter Contrat', 0, '1', '2017-10-02 23:36:32'),
+(18287, 510, 'ed6b8695494bf4ed86d5fb18690b3a59', 1, 1, 740, 'Editer Contrat', 0, '1', '2017-10-02 23:36:32'),
+(18288, 511, 'b8a40913b5955209994aaa26d0e8c3d4', 1, 1, 741, 'Supprimer Contrat', 0, '1', '2017-10-02 23:36:32'),
+(18289, 512, '5efb874e7d73ccd722df806e8275770f', 1, 1, 742, 'Valider Contrat', 0, '1', '2017-10-02 23:36:32'),
+(18290, 432, 'f320732af279d6f2f8ae9c98cd0216de', 1, 1, 613, 'Gestion Départements', 0, '1', '2017-10-02 23:36:32'),
+(18291, 432, '96516cd0c72d814d5dcb1d86eacd29ab', 1, 1, 617, 'Editer Département', 0, '1', '2017-10-02 23:36:32'),
+(18292, 432, 'ef27a63534fa9fc3bd4b5086a92db546', 1, 1, 619, 'Valider Département', 0, '1', '2017-10-02 23:36:32'),
+(18293, 432, '9aed965af4c4b89a5a23c41bf685d403', 1, 1, 620, 'Désactiver Département', 0, '1', '2017-10-02 23:36:32'),
+(18294, 433, '722b3ba1c7fe735e87aa7415e5502a4c', 1, 1, 614, 'Ajouter Département', 0, '1', '2017-10-02 23:36:32'),
+(18295, 434, 'daeb31006124e562d284aff67360ee19', 1, 1, 615, 'Editer Département', 0, '1', '2017-10-02 23:36:32'),
+(18296, 435, 'a775da608fe55c53211d4f1c6e493251', 1, 1, 616, 'Supprimer Département', 0, '1', '2017-10-02 23:36:32'),
+(18297, 436, 'bbb96ec910c5000a2006db2f6e8af10a', 1, 1, 618, 'Valider Département', 0, '1', '2017-10-02 23:36:32'),
+(18298, 493, '0e79510db7f03b9b6266fc7b4a612153', 1, 1, 712, 'Gestion Devis', 0, '1', '2017-10-02 23:36:32'),
+(18299, 493, 'c15b00a1e37657336df8b6aa0eea2db5', 1, 1, 713, 'Modifier Devis', 0, '1', '2017-10-02 23:36:32'),
+(18300, 493, 'd34b07afd92adad84e1c4c2ebd92ba95', 1, 1, 714, 'Voir détails', 0, '1', '2017-10-02 23:36:32'),
+(18301, 493, '5a05eba5be17eba1f35ef8927bfa16d2', 1, 1, 715, 'Valider Devis', 0, '1', '2017-10-02 23:36:32'),
+(18302, 493, '28e267a2a0647d4cb37b18abb1e7d051', 1, 1, 716, 'Voir détails', 0, '1', '2017-10-02 23:36:32'),
+(18303, 494, 'd9eeb330625c1b87e0df00986a47be01', 1, 1, 717, 'Ajouter Devis', 0, '1', '2017-10-02 23:36:32'),
+(18304, 495, 'da93cdb05137e15aed9c4c18bddd746a', 1, 1, 718, 'Ajouter détail devis', 0, '1', '2017-10-02 23:36:32'),
+(18305, 496, 'f9f3c299f9bd0fec014f6bd3f0e06adb', 1, 1, 719, 'Modifier Devis', 0, '1', '2017-10-02 23:36:32'),
+(18306, 497, 'e14cce6f1faf7784adb327581c516b90', 1, 1, 720, 'Supprimer Devis', 0, '1', '2017-10-02 23:36:32'),
+(18307, 498, '38f10871792c133ebcc6040e9a11cde8', 1, 1, 721, 'Modifier détail Devis', 0, '1', '2017-10-02 23:36:32'),
+(18308, 499, '8def42e75fd4aee61c378d9fb303850d', 1, 1, 722, 'Afficher détail devis', 0, '1', '2017-10-02 23:36:32'),
+(18309, 500, '7666e87783b0f5a7eec1eea7593f7dfe', 1, 1, 723, 'Valider Devis', 0, '1', '2017-10-02 23:36:32'),
+(18310, 526, 'd76c286028993aff54af01da5dc4b233', 1, 1, 769, 'Gestion des factures', 0, '1', '2017-10-02 23:36:32'),
+(18311, 526, '98a697ec628778765b25e02ba2929d38', 1, 1, 770, 'Liste complément', 0, '1', '2017-10-02 23:36:32'),
+(18312, 526, '3b6d1456980ea86c0f44c16c464ca790', 1, 1, 771, 'Liste encaissements', 0, '1', '2017-10-02 23:36:32'),
+(18313, 526, '9a51fb5298e39a28af3ad6272fc51177', 1, 1, 772, 'Valider facture', 0, '1', '2017-10-02 23:36:32'),
+(18314, 526, '851f1d4c13f6025f69f5b9315321d350', 1, 1, 773, 'Désactiver facture', 0, '1', '2017-10-02 23:36:32'),
+(18315, 526, '5c79105956d28b5cac52f85784039919', 1, 1, 774, 'Détail facture', 0, '1', '2017-10-02 23:36:32'),
+(18316, 527, '55c3c5d2d93143b315513b7401043c8b', 1, 1, 775, 'complements', 0, '1', '2017-10-02 23:36:32'),
+(18317, 527, 'dfc4772cc03cf0b92a47f54fc6a2326e', 1, 1, 776, 'Modifier complément', 0, '1', '2017-10-02 23:36:32'),
+(18318, 528, '03a18bdd5201e433a3c523a2b34d059a', 1, 1, 777, 'Ajouter complément', 0, '1', '2017-10-02 23:36:32'),
+(18319, 529, '88d9bc979cd1102eb8196e7f5e6042ca', 1, 1, 778, 'Encaissement', 0, '1', '2017-10-02 23:36:32'),
+(18320, 529, 'c690cc68f5257c0c225b8b8e6126ea56', 1, 1, 779, 'Modifier encaissement', 0, '1', '2017-10-02 23:36:32'),
+(18321, 529, '1dc06f602e8630f273d44aa2751b2127', 1, 1, 780, 'Détails encaissement', 0, '1', '2017-10-02 23:36:32'),
+(18322, 530, 'e4866b292dbc3c9c5d9cc37273a5b498', 1, 1, 781, 'Ajouter encaissement', 0, '1', '2017-10-02 23:36:32'),
+(18323, 531, '8665be10959f39df4f149962eb70041f', 1, 1, 782, 'Modifier complément', 0, '1', '2017-10-02 23:36:32'),
+(18324, 532, '585d411904bf7d9e83d21b2810ff1d6c', 1, 1, 783, 'Modifier encaissement', 0, '1', '2017-10-02 23:36:32'),
+(18325, 533, '8c8b058a4d030cdc8b49c9008abb2e92', 1, 1, 784, 'Supprimer complément', 0, '1', '2017-10-02 23:36:32'),
+(18326, 534, '6bf7d5180940f03567a5d711e8563ba4', 1, 1, 785, 'Supprimer encaissement', 0, '1', '2017-10-02 23:36:32'),
+(18327, 535, '256abad0ec8e3bc8ed1c0653ff177255', 1, 1, 786, 'Valider facture', 0, '1', '2017-10-02 23:36:32'),
+(18328, 536, 'b5dc5719c1f96df7334f371dcf51a5b6', 1, 1, 787, 'Détail encaissement', 0, '1', '2017-10-02 23:36:32'),
+(18329, 537, '16fbf6fdcbb72f863bcf7e4ef28d8e75', 1, 1, 788, 'Détails facture', 0, '1', '2017-10-02 23:36:32'),
+(18330, 502, '6beb279abea6434e3b73229aebadc081', 1, 1, 725, 'Gestion Fournisseurs', 0, '1', '2017-10-02 23:36:32'),
+(18331, 502, 'ff95747f3a590b6539803f2a9a394cd5', 1, 1, 730, 'Editer Fournisseur', 0, '1', '2017-10-02 23:36:32'),
+(18332, 502, 'fea982f5074995d4ccd6211a71ab2680', 1, 1, 731, 'Valider Fournisseur', 0, '1', '2017-10-02 23:36:32'),
+(18333, 502, '1d0411a0dec15fc28f054f1a79d95618', 1, 1, 732, 'Désactiver Fournisseur', 0, '1', '2017-10-02 23:36:32'),
+(18334, 502, 'a52affdd109b9362ce47ff18aad53e2a', 1, 1, 737, 'Détails Fournisseur', 0, '1', '2017-10-02 23:36:32'),
+(18335, 502, 'c6fe5f222dd563204188e8bf0d69bd9e', 1, 1, 738, 'Détails  Fournisseur', 0, '1', '2017-10-02 23:36:32'),
+(18336, 503, 'd644015625a9603adb2fcc36167aeb73', 1, 1, 726, 'Ajouter Fournisseur', 0, '1', '2017-10-02 23:36:32'),
+(18337, 504, '58c6694abfd3228d927a5d5a06d40b94', 1, 1, 727, 'Editer Fournisseur', 0, '1', '2017-10-02 23:36:32'),
+(18338, 505, 'd072f81cd779e4b0152953241d713ca3', 1, 1, 728, 'Supprimer Fournisseur', 0, '1', '2017-10-02 23:36:32'),
+(18339, 506, '657351ce5aa227513e3b50dea77db918', 1, 1, 729, 'Valider Fournisseur', 0, '1', '2017-10-02 23:36:32'),
+(18340, 508, '83b693fe35a1be29edafe4f6170641aa', 1, 1, 736, 'Détails Fournisseur', 0, '1', '2017-10-02 23:36:32'),
+(18341, 21, 'b8e62907d367fb44d644a5189cd07f42', 1, 1, 9, 'Modules', 1, '1', '2017-10-02 23:36:32'),
+(18342, 21, '05ce9e55686161d99e0714bb86243e5b', 1, 1, 11, 'Editer Module', 0, '1', '2017-10-02 23:36:32'),
+(18343, 21, '819cf9c18a44cb80771a066768d585f2', 1, 1, 12, 'Exporter Module', 0, '1', '2017-10-02 23:36:32'),
+(18344, 21, 'd2fc3ee15cee5208a8b9c70f1e53c196', 1, 1, 13, 'Liste task modul', 0, '1', '2017-10-02 23:36:32'),
+(18345, 21, 'ad75e6b877f20e3d6fc1789da4dcb3e6', 1, 1, 75, 'Editer Module', 0, '1', '2017-10-02 23:36:32'),
+(18346, 21, '064a9b0eff1006fd4f25cb4eaf894ca1', 1, 1, 77, 'Liste task modul Setting', 0, '1', '2017-10-02 23:36:32'),
+(18347, 21, 'ac4eb0c94da00a48ad5d995f5e9e9366', 1, 1, 232, 'MAJ Module', 0, '1', '2017-10-02 23:36:32'),
+(18348, 22, '44bd5341b0ab41ced21db8b3e92cf5aa', 1, 1, 10, 'Ajouter un Modul', 1, '1', '2017-10-02 23:36:32'),
+(18349, 24, '8653b156f1a4160a12e5a94b211e59a2', 1, 1, 16, 'Liste Action Task', 0, '1', '2017-10-02 23:36:32'),
+(18350, 24, '86aced763bc02e1957a5c740fb37b4f7', 1, 1, 22, 'Supprimer Application', 0, '1', '2017-10-02 23:36:32'),
+(18351, 24, 'f07352e32fe86da1483c6ab071b7e7a9', 1, 1, 99, 'Ajout Affichage WF', 0, '1', '2017-10-02 23:36:32'),
+(18352, 25, '1c452aff8f1551b3574e15b74147ea56', 1, 1, 14, 'Ajouter Task Modul', 1, '1', '2017-10-02 23:36:32'),
+(18353, 26, 'f085fe4610576987db963501297e4d91', 1, 1, 15, 'Editer Task Modul', 1, '1', '2017-10-02 23:36:32'),
+(18354, 26, '38702c272a6f4d334c2f4c3684c8b163', 1, 1, 18, 'Ajouter action modul', 1, '1', '2017-10-02 23:36:32'),
+(18355, 27, 'cbae1ebe850f6dd8841426c6fedf1785', 1, 1, 20, 'Liste Action Task', 1, '1', '2017-10-02 23:36:32'),
+(18356, 27, 'e30471396f9b86ccdcc94943d80b679a', 1, 1, 147, 'Editer Task Action', 0, '1', '2017-10-02 23:36:32'),
+(18357, 28, '502460cd9327b46ee7af0a258ebf8c80', 1, 1, 19, 'Ajouter Action Task', 1, '1', '2017-10-02 23:36:32'),
+(18358, 29, '13c107211904d4a2e65dd65c60ec7272', 1, 1, 21, 'Supprimer Application', 1, '1', '2017-10-02 23:36:32'),
+(18359, 33, '8c8acf9cf3790b16b1fae26823f45eab', 1, 1, 24, 'Importer des modules', 1, '1', '2017-10-02 23:36:32'),
+(18360, 55, '2f4518dab90b706e2f4acd737a0425d8', 1, 1, 70, 'Ajouter Module paramétrage', 1, '1', '2017-10-02 23:36:32'),
+(18361, 62, '8e0c0212d8337956ac2f4d6eb180d74b', 1, 1, 74, 'Editer Module paramètrage', 1, '1', '2017-10-02 23:36:32'),
+(18362, 79, 'fc54953b47b7fcb11cc14c0c2e2125f0', 1, 1, 98, 'Ajouter Autorisation Etat', 1, '1', '2017-10-02 23:36:32'),
+(18363, 108, '966ec2dd83e6006c2d0ff1d1a5f12e33', 1, 1, 146, 'Editer Task Action', 1, '1', '2017-10-02 23:36:32'),
+(18364, 167, '3473119f6683893a3f1372dbf7d811e1', 1, 1, 231, 'MAJ Module', 1, '1', '2017-10-02 23:36:32'),
+(18365, 475, '605450f3d7c84701b986fa31e1e9fa43', 1, 1, 684, 'Gestion Pays', 0, '1', '2017-10-02 23:36:32'),
+(18366, 475, '29ba6cc689eca63dbafb109ec58bc4d6', 1, 1, 689, 'Editer Pays', 0, '1', '2017-10-02 23:36:32'),
+(18367, 475, '763fe13212b4324590518773cd9a36fa', 1, 1, 690, 'Valider Pays', 0, '1', '2017-10-02 23:36:32'),
+(18368, 475, '3c8427c7313d35219b17572efd380b17', 1, 1, 691, 'Désactiver Pays', 0, '1', '2017-10-02 23:36:33'),
+(18369, 476, '3cd55a55307615d72aae84c6b5cf99bc', 1, 1, 685, 'Ajouter Pays', 0, '1', '2017-10-02 23:36:33'),
+(18370, 477, 'cfe617d7bc6a9c7d8b86c468f21396f2', 1, 1, 686, 'Editer Pays', 0, '1', '2017-10-02 23:36:33'),
+(18371, 478, 'b768486aeb655c48cc411c11fa60e150', 1, 1, 687, 'Supprimer Pays', 0, '1', '2017-10-02 23:36:33'),
+(18372, 479, '15e4e24f320daa9d563ae62acff9e586', 1, 1, 688, 'Valider Pays', 0, '1', '2017-10-02 23:36:33'),
+(18373, 443, '192715027870a4a612fd44d562e2752f', 1, 1, 631, 'Gestion des produits', 0, '1', '2017-10-02 23:36:33'),
+(18374, 443, 'ed13b17897a396c0633d7989f2bc644f', 1, 1, 632, 'Modifier produit', 0, '1', '2017-10-02 23:36:33'),
+(18375, 443, '96df3c4057988c54a7d468e5664dba10', 1, 1, 633, 'Détail produit', 0, '1', '2017-10-02 23:36:33'),
+(18376, 443, 'eb5b51394e164f00ce8c998310e3a8ba', 1, 1, 634, 'Valider produit', 0, '1', '2017-10-02 23:36:33'),
+(18377, 443, '6b087b20929483bb07f8862b39e41f07', 1, 1, 635, 'Désactiver produit', 0, '1', '2017-10-02 23:36:33'),
+(18378, 443, '3fe9362cc0a931940b8d5dd40338c9c8', 1, 1, 636, 'Achat produit', 0, '1', '2017-10-02 23:36:33'),
+(18379, 444, '93e893c307a6fa63e392f78751ec70ce', 1, 1, 637, 'Ajouter produit', 0, '1', '2017-10-02 23:36:33'),
+(18380, 445, 'bcf3beada4a98e8145af2d4fbb744f01', 1, 1, 638, 'Modifier produit', 0, '1', '2017-10-02 23:36:33'),
+(18381, 446, '796427ec57f7c13d6b737055ae686b34', 1, 1, 639, 'Detail produit', 0, '1', '2017-10-02 23:36:33'),
+(18382, 447, '1fb8cd1a179be07586fa7db05013dd37', 1, 1, 640, 'Valider produit', 0, '1', '2017-10-02 23:36:33'),
+(18383, 448, '7779e98d2111faedf458f7aeb548294e', 1, 1, 641, 'Supprimer produit', 0, '1', '2017-10-02 23:36:33'),
+(18384, 449, '8da585a04e918c256bd26f0c03f1390d', 1, 1, 642, 'Achat produit', 0, '1', '2017-10-02 23:36:33'),
+(18385, 449, 'f8c9a7413089566d1db20dcc5ca17e03', 1, 1, 643, 'Modifier achat', 0, '1', '2017-10-02 23:36:33'),
+(18386, 449, '682b4328ee832101a44dac86b22d5757', 1, 1, 644, 'Détail achat', 0, '1', '2017-10-02 23:36:33'),
+(18387, 449, 'd1ebf1c5482ddf06721b11ec64afb744', 1, 1, 645, 'Valider achat', 0, '1', '2017-10-02 23:36:33'),
+(18388, 449, '368a1e91fc63e263eb01d85a34ecd89b', 1, 1, 646, 'Désactiver achat', 0, '1', '2017-10-02 23:36:33'),
+(18389, 450, '659be5cd86a12eba7e59c52d60198a36', 1, 1, 647, 'Ajoute achat', 0, '1', '2017-10-02 23:36:33'),
+(18390, 451, '8415336a17e8ca26f3eca5741863f3b2', 1, 1, 648, 'Modifier achat', 0, '1', '2017-10-02 23:36:33'),
+(18391, 452, '2c3b4875b72f7da6a87b5c0d7e85f51d', 1, 1, 649, 'Supprimer achat', 0, '1', '2017-10-02 23:36:33'),
+(18392, 453, 'd4180eb7a4ff86c598f441ffd4543f36', 1, 1, 650, 'Détail achat', 0, '1', '2017-10-02 23:36:33'),
+(18393, 454, '4a4c9b096bad58a96d5ea6f93d66e81c', 1, 1, 651, 'Valider achat', 0, '1', '2017-10-02 23:36:33'),
+(18394, 519, '1eb847d87adcad78d5e951e6110061e5', 1, 1, 758, 'Gestion Proforma', 0, '1', '2017-10-02 23:36:33'),
+(18395, 519, '44ef6849d8d5d17d8e0535187e923d32', 1, 1, 759, 'Editer proforma', 0, '1', '2017-10-02 23:36:33'),
+(18396, 519, 'b7ce06be726011362a271678547a803c', 1, 1, 760, 'Valider Proforma', 0, '1', '2017-10-02 23:36:33'),
+(18397, 519, 'abd8c50f1d2ef4beeeddb68a72973587', 1, 1, 761, 'Détail Proforma', 0, '1', '2017-10-02 23:36:33'),
+(18398, 519, 'e20d83df90355eca2a65f56a2556601f', 1, 1, 762, 'Détail Proforma', 0, '1', '2017-10-02 23:36:33'),
+(18399, 520, 'd5a6338765b9eab63104b59f01c06114', 1, 1, 763, 'Ajouter pro-forma', 0, '1', '2017-10-02 23:36:33'),
+(18400, 521, '95831bde77bc886d6ab4dd5e734de743', 1, 1, 764, 'Editer proforma', 0, '1', '2017-10-02 23:36:33'),
+(18401, 522, 'cbb4e1efa1c05b42d25a3a6bcab038a2', 1, 1, 765, 'Ajouter détail proforma', 0, '1', '2017-10-02 23:36:33'),
+(18402, 523, 'e9f745054778257a255452c6609461a0', 1, 1, 766, 'valider Proforma', 0, '1', '2017-10-02 23:36:33'),
+(18403, 524, 'defef148c404c7e6ac79e4783e0a7ab7', 1, 1, 767, 'Détail Pro-forma', 0, '1', '2017-10-02 23:36:33'),
+(18404, 525, '53008d64edf241c937a06f03eff139aa', 1, 1, 768, 'Editer détail proforma', 0, '1', '2017-10-02 23:36:33'),
+(18405, 470, 'd57b16b3aad4ce59f909609246c4fd36', 1, 1, 676, 'Gestion des régions', 0, '1', '2017-10-02 23:36:33'),
+(18406, 470, 'd2e007184668dd70b9bae44d46d28ded', 1, 1, 677, 'Modifier région', 0, '1', '2017-10-02 23:36:33'),
+(18407, 470, 'e74403c99ac8325b78735c531a20442f', 1, 1, 678, 'Valider région', 0, '1', '2017-10-02 23:36:33'),
+(18408, 470, '7397a0fab078728bd5c53be61022d5ce', 1, 1, 679, 'Désactiver région', 0, '1', '2017-10-02 23:36:33'),
+(18409, 471, '0237bd41cf70c3529681b4ccb041f1fd', 1, 1, 680, 'Ajouter région', 0, '1', '2017-10-02 23:36:33'),
+(18410, 472, '6d290f454da473cb8a557829a410c3f1', 1, 1, 681, 'Modifier région', 0, '1', '2017-10-02 23:36:33'),
+(18411, 473, '008cd9ea5767c739675fef4e1261cfe8', 1, 1, 682, 'Valider région', 0, '1', '2017-10-02 23:36:33'),
+(18412, 474, 'fc477e6a4c90cd427ae81e555c11d6a9', 1, 1, 683, 'Supprimer région', 0, '1', '2017-10-02 23:36:33'),
+(18413, 34, '83b9fa44466da4bcd7f8304185bfeac8', 1, 1, 28, 'Services', 1, '1', '2017-10-02 23:36:33'),
+(18414, 34, '99aea4598ccc18d4c12ae091c8967d13', 1, 1, 33, 'Valider Service', 0, '1', '2017-10-02 23:36:33'),
+(18415, 34, 'bb66cf787052616ea3dd02b0b5199b26', 1, 1, 34, 'Supprimer Service', 0, '1', '2017-10-02 23:36:33'),
+(18416, 34, '47c552dce8b761ae2e2a44387a93432b', 1, 1, 144, 'Modifier Service Validé', 0, '1', '2017-10-02 23:36:33'),
+(18417, 35, '55043bc4207521e3010e91d6267f5302', 1, 1, 29, 'Ajouter Service', 1, '1', '2017-10-02 23:36:33'),
+(18418, 36, '2fea3d893f6b6e81467ddd2a744e4a76', 1, 1, 30, 'Modifier Service', 1, '1', '2017-10-02 23:36:33'),
+(18419, 37, '1a0d5897d31b4d5e29022671c1112f59', 1, 1, 31, 'Valider Service', 1, '1', '2017-10-02 23:36:33'),
+(18420, 38, '42083d4e159baf7c2ace2bb977e2b0a0', 1, 1, 32, 'Supprimer Service', 1, '1', '2017-10-02 23:36:33'),
+(18421, 460, 'b6b6bfbd070b5b3dd84acedae7b854e9', 1, 1, 660, 'Gestion des types de produits', 0, '1', '2017-10-02 23:36:33'),
+(18422, 460, '3c5400b775264499825a039d66aa9c90', 1, 1, 661, 'Modifier type', 0, '1', '2017-10-02 23:36:33'),
+(18423, 460, 'dcf55bc300d690af4c81e4d2335e60e5', 1, 1, 662, 'Valider type', 0, '1', '2017-10-02 23:36:33'),
+(18424, 460, '230b9554d37da1c71986af94962cb340', 1, 1, 663, 'Désactiver type', 0, '1', '2017-10-02 23:36:33'),
+(18425, 461, 'e0d163499b4ba11d6d7a648bc6fc6de6', 1, 1, 664, 'Ajouter un type', 0, '1', '2017-10-02 23:36:33'),
+(18426, 462, 'ac5a6d087b3c8db7501fa5137a47773e', 1, 1, 665, 'Modifier type', 0, '1', '2017-10-02 23:36:33'),
+(18427, 463, '2e8242a93a62a264ad7cfc953967f575', 1, 1, 666, 'Valider type', 0, '1', '2017-10-02 23:36:33'),
+(18428, 464, 'e3725ba15ca483b9278f68553eca5918', 1, 1, 667, 'Supprimer type', 0, '1', '2017-10-02 23:36:33'),
+(18429, 480, '312fd18860781a7b1b7e33587fa423d4', 1, 1, 692, 'Gestion Type Echeance', 0, '1', '2017-10-02 23:36:33'),
+(18430, 480, '46ad76148075d6b458f43e84ddf00791', 1, 1, 697, 'Editer Type Echéance', 0, '1', '2017-10-02 23:36:33'),
+(18431, 480, 'add2bf057924e606653fbf5bbd65ca09', 1, 1, 698, 'Valider Type Echéance', 0, '1', '2017-10-02 23:36:33'),
+(18432, 480, '463d9e1e8367736b958f0dd84b4e36d5', 1, 1, 699, 'Désactiver Type Echéance', 0, '1', '2017-10-02 23:36:33'),
+(18433, 481, '76170b14c7b6f1f7058d079fe24f739b', 1, 1, 693, 'Ajouter Type Echéance', 0, '1', '2017-10-02 23:36:33'),
+(18434, 482, 'decc5ed58c4d91e6967c9c67e0975cf0', 1, 1, 694, 'Editer Type Echéance', 0, '1', '2017-10-02 23:36:33'),
+(18435, 483, '89db6f23dd8e96a69c6a97f556c44e14', 1, 1, 695, 'Supprimer Type Echéance', 0, '1', '2017-10-02 23:36:33'),
+(18436, 484, '7527021168823e0118d44297c7684d44', 1, 1, 696, 'Valider Type Echéance', 0, '1', '2017-10-02 23:36:33'),
+(18437, 465, '55ecbb545a49c70c0b728bb0c7951077', 1, 1, 668, 'Gestion des unités de vente', 0, '1', '2017-10-02 23:36:33'),
+(18438, 465, '67acd70eb04242b7091d9dcbb08295d7', 1, 1, 669, 'Modifier unité ', 0, '1', '2017-10-02 23:36:33'),
+(18439, 465, '7363022ed5ad047bfe86d3de4b75b1f4', 1, 1, 670, 'Valider unité', 0, '1', '2017-10-02 23:36:33'),
+(18440, 465, 'ec77eb95736c27bfc269cbffc8e113f1', 1, 1, 671, 'Désactiver unité', 0, '1', '2017-10-02 23:36:33'),
+(18441, 466, '3a5e8dfe211121eda706f8b6d548d111', 1, 1, 672, 'ajouter une unité', 0, '1', '2017-10-02 23:36:33'),
+(18442, 467, '9b7a578981de699286376903e96bc3c7', 1, 1, 673, 'Modifier une unité', 0, '1', '2017-10-02 23:36:33'),
+(18443, 468, '62355588366c13ddbadc7a7ca1d226ad', 1, 1, 674, 'Valider une unité', 0, '1', '2017-10-02 23:36:33'),
+(18444, 469, 'e5f53a3aaa324415d781156396938101', 1, 1, 675, 'Supprimer une unité', 0, '1', '2017-10-02 23:36:33'),
+(18445, 14, '56de23d30d6c54297c8d9772cd3c7f57', 1, 1, 1, 'Utilisateurs', 1, '1', '2017-10-02 23:36:33'),
+(18446, 14, 'e656756fb7b39a4e6ddcabca75ff2970', 1, 1, 3, 'Editer Utilisateur', 0, '1', '2017-10-02 23:36:33'),
+(18447, 14, 'c073a277957ca1b9f318ac3902555708', 1, 1, 6, 'Permissions', 0, '1', '2017-10-02 23:36:33'),
+(18448, 14, 'c51499ddf7007787c4434661c658bbd1', 1, 1, 8, 'Désactiver compte', 0, '1', '2017-10-02 23:36:33'),
+(18449, 14, '10096b6f54456bcfc85081523ee64cf6', 1, 1, 23, 'Supprimer utilisateur', 0, '1', '2017-10-02 23:36:33'),
+(18450, 14, 'a0999cbed820aff775adf27276ee54a4', 1, 1, 25, 'Editer Utilisateur', 0, '1', '2017-10-02 23:36:33'),
+(18451, 14, '9aa6877656339ddff2478b20449a924b', 1, 1, 27, 'Activer compte', 0, '1', '2017-10-02 23:36:33'),
+(18452, 14, 'f4c79bb797b92dfa826b51a44e3171af', 1, 1, 112, 'Utilisateurs', 1, '1', '2017-10-02 23:36:33'),
+(18453, 14, 'd7f7afd70a297e5c239f6cf271138390', 1, 1, 143, 'Utilisateur Archivé', 1, '1', '2017-10-02 23:36:33'),
+(18454, 15, 'df91a8e6f8ee2cde64495fc0cc7d6c6f', 1, 1, 2, 'Ajouter Utilisateurs', 1, '1', '2017-10-02 23:36:33'),
+(18455, 16, '2bb46b52eab9eecbdbba35605da07234', 1, 1, 4, 'Editer Utilisateurs', 1, '1', '2017-10-02 23:36:33'),
+(18456, 17, '3f59a1326df27378304e142ab3bec090', 1, 1, 5, 'Permission', 1, '1', '2017-10-02 23:36:33'),
+(18457, 18, 'b919571c88d036f8889742a81a4f41fd', 1, 1, 7, 'Supprimer utilisateur', 1, '1', '2017-10-02 23:36:33'),
+(18458, 19, '38f89764a26e39ce029cd3132c12b2a5', 1, 1, 45, 'Compte utilisateur', 1, '1', '2017-10-02 23:36:33'),
+(18459, 20, 'f988a608f35a0bc551cb038b1706d207', 1, 1, 26, 'Activer utilisateur', 1, '1', '2017-10-02 23:36:33'),
+(18460, 107, 'b7b3a09fdd73a5b0a3e5ed8a2828f548', 1, 1, 145, 'Désactiver l''utilisateur', 1, '1', '2017-10-02 23:36:33'),
+(18461, 161, '0d374b7e2fe21a2e2641c092a3c7f2e9', 1, 1, 222, 'Changer le mot de passe', 1, '1', '2017-10-02 23:36:33'),
+(18462, 162, '6f642ee30722158f0318653b9113b887', 1, 1, 224, 'History', 1, '1', '2017-10-02 23:36:33'),
+(18463, 163, 'cc907fac13631903d129c137d671d718', 1, 1, 225, 'Activities', 1, '1', '2017-10-02 23:36:33'),
+(18464, 430, '3d4eaa53061f51b0c4435bd8e4b89c17', 1, 1, 611, 'Gestion Vente', 0, '1', '2017-10-02 23:36:33'),
+(18465, 89, '2c3b01c696ff401a2ac9ffedb7a06e4a', 1, 1, 114, 'Gestion Villes', 1, '1', '2017-10-02 23:36:33'),
+(18466, 89, 'b9649163b368f863a0e8036f11cd81ae', 1, 1, 119, 'Editer Ville', 0, '1', '2017-10-02 23:36:33'),
+(18467, 89, '89dec6dabcb210cdb9dd28bbef90d43e', 1, 1, 121, 'Editer Ville', 0, '1', '2017-10-02 23:36:33'),
+(18468, 89, '4a2edbdcbda34c9d3d1e6abe73643b37', 1, 1, 602, 'Valider Ville', 0, '1', '2017-10-02 23:36:33'),
+(18469, 89, '0c8ad6595a4516be83ba5a9cdb7ea9a1', 1, 1, 603, 'Désactiver Ville', 0, '1', '2017-10-02 23:36:33'),
+(18470, 90, 'e152b9052d3dcfcac593489dbdc0f61c', 1, 1, 115, 'Ajouter ville', 1, '1', '2017-10-02 23:36:33'),
+(18471, 91, '3107e0cd0e0df14c4e94aa088e4457d7', 1, 1, 116, 'Editer Ville', 1, '1', '2017-10-02 23:36:33'),
+(18472, 92, 'da79d9214ed5819d7f4f1e3070629a3d', 1, 1, 117, 'Supprimer Ville', 1, '1', '2017-10-02 23:36:33'),
+(18473, 423, 'fe03a68d17c62ff2c27329573a1b3550', 1, 1, 601, 'Valider Ville', 0, '1', '2017-10-02 23:36:33');
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `rules_action_temp`
+-- Table structure for table `rules_action_temp`
 --
 
 CREATE TABLE IF NOT EXISTS `rules_action_temp` (
@@ -2130,7 +2077,7 @@ CREATE TABLE IF NOT EXISTS `rules_action_temp` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `services`
+-- Table structure for table `services`
 --
 
 CREATE TABLE IF NOT EXISTS `services` (
@@ -2146,7 +2093,7 @@ CREATE TABLE IF NOT EXISTS `services` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=19 ;
 
 --
--- Contenu de la table `services`
+-- Dumping data for table `services`
 --
 
 INSERT INTO `services` (`id`, `service`, `sign`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
@@ -2161,7 +2108,7 @@ INSERT INTO `services` (`id`, `service`, `sign`, `etat`, `creusr`, `credat`, `up
 -- --------------------------------------------------------
 
 --
--- Structure de la table `session`
+-- Table structure for table `session`
 --
 
 CREATE TABLE IF NOT EXISTS `session` (
@@ -2176,10 +2123,10 @@ CREATE TABLE IF NOT EXISTS `session` (
   PRIMARY KEY (`id_sys`),
   UNIQUE KEY `id` (`id`),
   KEY `session_user_id` (`userid`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=90 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=85 ;
 
 --
--- Contenu de la table `session`
+-- Dumping data for table `session`
 --
 
 INSERT INTO `session` (`id_sys`, `id`, `user`, `dat`, `expir`, `ip`, `browser`, `userid`) VALUES
@@ -2265,18 +2212,13 @@ INSERT INTO `session` (`id_sys`, `id`, `user`, `dat`, `expir`, `ip`, `browser`, 
 (80, '5fced9c3a65b9cba28c98bfbf5c7b13b', 'admin', '2017-09-30 12:51:26', '2017-09-30 14:28:33', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0', 1),
 (81, '48bad7f3314fc0e1b068eb5460b5b7a3', 'admin', '2017-09-30 15:16:44', '2017-09-30 19:52:01', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0', 1),
 (82, 'e28f22812a7441d562217aad09715ccd', 'admin', '2017-10-01 01:22:54', '2017-10-01 10:45:07', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0', 1),
-(83, 'be194acd810ea09649150584e46dd99b', 'admin', '2017-10-01 11:33:35', '2017-10-01 15:22:38', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0', 1),
-(84, '13cba7ec2bb407b05dc9ce94c6cb54ea', 'admin', '2017-10-01 15:22:38', '2017-10-01 20:19:38', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0', 1),
-(85, '763fb383338ffa438c659e4b9d272b07', 'admin', '2017-10-01 20:20:09', '2017-10-01 20:26:01', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0', 1),
-(86, '87e39e33c02cf6c61e5eeaf76c4cf6ba', 'admin', '2017-10-01 20:26:01', '2017-10-02 10:53:29', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0', 1),
-(87, '44215c028be6f89c8c8aeec77ad788b9', 'admin', '2017-10-02 11:06:56', '2017-10-02 12:43:22', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0', 1),
-(88, '61ac9da34a32a8e131354a81abb7e2c4', 'admin', '2017-10-02 16:04:44', '2017-10-02 21:07:49', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0', 1),
-(89, '075251aa6f5582a39cf5d68e1eb430aa', 'admin', '2017-10-02 21:18:57', NULL, '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0', 1);
+(83, 'be194acd810ea09649150584e46dd99b', 'admin', '2017-10-01 11:33:35', '2017-10-02 21:52:26', '127.0.0.1', 'Mozilla/5.0 (Windows NT 6.1; WOW64; rv:55.0) Gecko/20100101 Firefox/55.0', 1),
+(84, 'e183f944207d838e6f0f3763fe7963fe', 'admin', '2017-10-02 21:52:26', NULL, '::1', 'Mozilla/5.0 (Windows NT 6.2; WOW64; rv:49.0) Gecko/20100101 Firefox/49.0', 1);
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `ste_bank`
+-- Table structure for table `ste_bank`
 --
 
 CREATE TABLE IF NOT EXISTS `ste_bank` (
@@ -2290,7 +2232,7 @@ CREATE TABLE IF NOT EXISTS `ste_bank` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `ste_info`
+-- Table structure for table `ste_info`
 --
 
 CREATE TABLE IF NOT EXISTS `ste_info` (
@@ -2315,7 +2257,7 @@ CREATE TABLE IF NOT EXISTS `ste_info` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
 
 --
--- Contenu de la table `ste_info`
+-- Dumping data for table `ste_info`
 --
 
 INSERT INTO `ste_info` (`id`, `ste_name`, `ste_bp`, `ste_adresse`, `ste_ville`, `ste_pays`, `ste_tel`, `ste_fax`, `ste_email`, `ste_if`, `ste_rc`, `ste_website`, `updusr`, `creusr`, `credat`, `upddat`) VALUES
@@ -2324,7 +2266,7 @@ INSERT INTO `ste_info` (`id`, `ste_name`, `ste_bp`, `ste_adresse`, `ste_ville`, 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `stock`
+-- Table structure for table `stock`
 --
 
 CREATE TABLE IF NOT EXISTS `stock` (
@@ -2346,7 +2288,7 @@ CREATE TABLE IF NOT EXISTS `stock` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=51 ;
 
 --
--- Contenu de la table `stock`
+-- Dumping data for table `stock`
 --
 
 INSERT INTO `stock` (`id`, `idproduit`, `qte`, `prix_achat`, `prix_vente`, `date_achat`, `date_validite`, `mouvement`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
@@ -2365,7 +2307,7 @@ INSERT INTO `stock` (`id`, `idproduit`, `qte`, `prix_achat`, `prix_vente`, `date
 -- --------------------------------------------------------
 
 --
--- Structure de la table `sys_log`
+-- Table structure for table `sys_log`
 --
 
 CREATE TABLE IF NOT EXISTS `sys_log` (
@@ -2380,7 +2322,7 @@ CREATE TABLE IF NOT EXISTS `sys_log` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=6 ;
 
 --
--- Contenu de la table `sys_log`
+-- Dumping data for table `sys_log`
 --
 
 INSERT INTO `sys_log` (`id`, `message`, `type_log`, `table_use`, `idm`, `user_exec`, `datlog`) VALUES
@@ -2393,7 +2335,7 @@ INSERT INTO `sys_log` (`id`, `message`, `type_log`, `table_use`, `idm`, `user_ex
 -- --------------------------------------------------------
 
 --
--- Structure de la table `sys_notifier`
+-- Table structure for table `sys_notifier`
 --
 
 CREATE TABLE IF NOT EXISTS `sys_notifier` (
@@ -2402,10 +2344,10 @@ CREATE TABLE IF NOT EXISTS `sys_notifier` (
   `table` varchar(25) DEFAULT NULL COMMENT 'table of app',
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQUE` (`app`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Table des notification app' AUTO_INCREMENT=16 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Table des notification app' AUTO_INCREMENT=14 ;
 
 --
--- Contenu de la table `sys_notifier`
+-- Dumping data for table `sys_notifier`
 --
 
 INSERT INTO `sys_notifier` (`id`, `app`, `table`) VALUES
@@ -2413,14 +2355,12 @@ INSERT INTO `sys_notifier` (`id`, `app`, `table`) VALUES
 (9, 'clients', 'clients'),
 (10, 'devis', 'devis'),
 (11, 'proforma', 'proforma'),
-(13, 'contrats', 'contrats'),
-(14, 'fournisseurs', 'fournisseurs'),
-(15, 'contrats_fournisseurs', 'contrats_frn');
+(13, 'contrats', 'contrats');
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `task`
+-- Table structure for table `task`
 --
 
 CREATE TABLE IF NOT EXISTS `task` (
@@ -2440,10 +2380,10 @@ CREATE TABLE IF NOT EXISTS `task` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQUE` (`app`),
   KEY `task_ibfk_1` (`modul`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Table Task of modules' AUTO_INCREMENT=542 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Table Task of modules' AUTO_INCREMENT=538 ;
 
 --
--- Contenu de la table `task`
+-- Dumping data for table `task`
 --
 
 INSERT INTO `task` (`id`, `app`, `modul`, `file`, `rep`, `session`, `dscrip`, `sbclass`, `ajax`, `app_sys`, `etat`, `type_view`, `services`) VALUES
@@ -2576,16 +2516,17 @@ INSERT INTO `task` (`id`, `app`, `modul`, `file`, `rep`, `session`, `dscrip`, `s
 (499, 'viewdevis', 105, 'viewdevis', 'vente/submodul/devis', 1, 'Afficher détail devis', 'eye', 1, 0, 0, 'profil', '[-1-2-]'),
 (500, 'validdevis', 105, 'validdevis', 'vente/submodul/devis', 1, 'Valider Devis', NULL, 1, 0, 0, 'exec', '[-1-2-]'),
 (501, 'contrats_fournisseurs', 106, 'contrats_fournisseurs', 'contrats_fournisseurs/main', 1, 'Gestion Contrats Fournisseurs', 'book', 1, 0, 0, 'list', '[-1-]'),
-(502, 'fournisseurs', 107, 'fournisseurs', 'fournisseurs/main', 1, 'Gestion Fournisseurs', 'users', 1, 0, 0, 'list', '[-1-]'),
-(503, 'addfournisseur', 107, 'addfournisseur', 'fournisseurs/main', 1, 'Ajouter Fournisseur', 'user', 1, 0, 0, 'form', '[-1-]'),
-(504, 'editfournisseur', 107, 'editfournisseur', 'fournisseurs/main', 1, 'Editer Fournisseur', 'cogs', 1, 0, 0, 'form', '[-1-]'),
-(505, 'deletefournisseur', 107, 'deletefournisseur', 'fournisseurs/main', 1, 'Supprimer Fournisseur', 'trash', 1, 0, 0, 'exec', '[-1-]'),
-(506, 'validfournisseur', 107, 'validfournisseur', 'fournisseurs/main', 1, 'Valider Fournisseur', 'lock', 1, 0, 0, 'exec', '[-1-]'),
-(508, 'detailsfournisseur', 107, 'detailsfournisseur', 'fournisseurs/main', 1, 'Détails Fournisseur', 'eye', 1, 0, 0, 'profil', '[-1-]'),
+(502, 'fournisseurs', 107, 'fournisseurs', 'contrats_fournisseurs/submodul/fournisseurs', 1, 'Gestion Fournisseurs', 'users', 1, 0, 0, 'list', '[-1-]'),
+(503, 'addfournisseur', 107, 'addfournisseur', 'contrats_fournisseurs/submodul/fournisseurs', 1, 'Ajouter Fournisseur', 'user', 1, 0, 0, 'form', '[-1-]'),
+(504, 'editfournisseur', 107, 'editfournisseur', 'contrats_fournisseurs/submodul/fournisseurs', 1, 'Editer Fournisseur', 'cogs', 1, 0, 0, 'form', '[-1-]'),
+(505, 'deletefournisseur', 107, 'deletefournisseur', 'contrats_fournisseurs/submodul/fournisseurs', 1, 'Supprimer Fournisseur', 'trash', 1, 0, 0, 'exec', '[-1-]'),
+(506, 'validfournisseur', 107, 'validfournisseur', 'contrats_fournisseurs/submodul/fournisseurs', 1, 'Valider Fournisseur', 'lock', 1, 0, 0, 'exec', '[-1-]'),
+(508, 'detailsfournisseur', 107, 'detailsfournisseur', 'contrats_fournisseurs/submodul/fournisseurs', 1, 'Détails Fournisseur', 'eye', 1, 0, 0, 'profil', '[-1-]'),
 (509, 'addcontrat_frn', 106, 'addcontrat_frn', 'contrats_fournisseurs/main', 1, 'Ajouter Contrat', 'book', 1, 0, 0, 'form', '[-1-]'),
 (510, 'editcontrat_frn', 106, 'editcontrat_frn', 'contrats_fournisseurs/main', 1, 'Editer Contrat', 'cogs', 1, 0, 0, 'form', '[-1-]'),
 (511, 'deletecontrat_frn', 106, 'deletecontrat_frn', 'contrats_fournisseurs/main', 1, 'Supprimer Contrat', 'trash', 1, 0, 0, 'exec', '[-1-]'),
 (512, 'validcontrat_frn', 106, 'validcontrat_frn', 'contrats_fournisseurs/main', 1, 'Valider Contrat', 'lock', 1, 0, 0, 'exec', '[-1-]'),
+(513, 'detailscontrat_frn', 106, 'detailscontrat_frn', 'contrats_fournisseurs/main', 1, 'Détails Contrat', 'eye', 1, 0, 0, 'profil', '[-1-]'),
 (519, 'proforma', 109, 'proforma', 'vente/submodul/proforma', 1, 'Gestion Proforma', 'book', 1, 0, 0, 'list', '[-1-2-3-5-4-]'),
 (520, 'addproforma', 109, 'addproforma', 'vente/submodul/proforma', 1, 'Ajouter pro-forma', 'plus', 1, 0, 0, 'form', '[-1-2-3-5-4-]'),
 (521, 'editproforma', 109, 'editproforma', 'vente/submodul/proforma', 1, 'Editer proforma', 'pen', 1, 0, 0, 'form', '[-1-2-3-5-4-]'),
@@ -2593,26 +2534,23 @@ INSERT INTO `task` (`id`, `app`, `modul`, `file`, `rep`, `session`, `dscrip`, `s
 (523, 'validproforma', 109, 'validproforma', 'vente/submodul/proforma', 1, 'valider Proforma', 'check', 1, 0, 0, 'exec', '[-1-2-3-5-4-]'),
 (524, 'viewproforma', 109, 'viewproforma', 'vente/submodul/proforma', 1, 'Détail Pro-forma', 'eye', 1, 0, 0, 'profil', '[-1-2-3-5-4-]'),
 (525, 'edit_detailproforma', 109, 'edit_detailproforma', 'vente/submodul/proforma', 1, 'Editer détail proforma', 'pen', 1, 0, 0, 'form', '[-1-2-3-5-4-]'),
-(527, 'detailscontrat_frn', 106, 'detailscontrat_frn', 'contrats_fournisseurs/main', 1, 'Détails Contrat', 'eye', 1, 0, 0, 'profil', '[-1-]'),
-(528, 'renouvelercontrat', 104, 'renouvelercontrat', 'vente/submodul/contrats', 1, 'Renouveler Contrat', 'exchange', 1, 0, 0, 'form', '[-1-]'),
-(529, 'renouveler_contrat', 106, 'renouveler_contrat', 'contrats_fournisseurs/main', 1, 'Renouveler  Contrat', 'exchange', 1, 0, 0, 'form', '[-1-]'),
-(530, 'factures', 110, 'factures', 'factures/main', 1, 'Gestion des factures', 'cogs', 1, 0, 0, 'list', '[-1-]'),
-(531, 'complements', 110, 'complements', 'factures/main', 1, 'complements', 'cogs', 1, 0, 0, 'list', '[-1-]'),
-(532, 'addcomplement', 110, 'addcomplement', 'factures/main', 1, 'Ajouter complément', 'cogs', 1, 0, 0, 'form', '[-1-]'),
-(533, 'encaissements', 110, 'encaissements', 'factures/main', 1, 'Encaissement', 'cogs', 1, 0, 0, 'list', '[-1-]'),
-(534, 'addencaissement', 110, 'addencaissement', 'factures/main', 1, 'Ajouter encaissement', 'cogs', 1, 0, 0, 'form', '[-1-]'),
-(535, 'editcomplement', 110, 'editcomplement', 'factures/main', 1, 'Modifier complément', 'cogs', 1, 0, 0, 'form', '[-1-]'),
-(536, 'editencaissement', 110, 'editencaissement', 'factures/main', 1, 'Modifier encaissement', 'cogs', 1, 0, 0, 'form', '[-1-]'),
-(537, 'deletecomplement', 110, 'deletecomplement', 'factures/main', 1, 'Supprimer complément', 'cogs', 1, 0, 0, 'exec', '[-1-]'),
-(538, 'deleteencaissement', 110, 'deleteencaissement', 'factures/main', 1, 'Supprimer encaissement', 'cogs', 1, 0, 0, 'exec', '[-1-]'),
-(539, 'validfacture', 110, 'validfacture', 'factures/main', 1, 'Valider facture', 'cogs', 1, 0, 0, 'exec', '[-1-]'),
-(540, 'detailsencaissement', 110, 'detailsencaissement', 'factures/main', 1, 'Détail encaissement', 'eye', 1, 0, 0, 'profil', '[-1-]'),
-(541, 'detailsfacture', 110, 'detailsfacture', 'factures/main', 1, 'Détails facture', 'eye', 1, 0, 0, 'profil', '[-1-]');
+(526, 'factures', 110, 'factures', 'factures/main', 1, 'Gestion des factures', 'file', 1, 0, 0, 'list', '[-1-]'),
+(527, 'complements', 110, 'complements', 'factures/main', 1, 'complements', 'cogs', 1, 0, 0, 'list', '[-1-]'),
+(528, 'addcomplement', 110, 'addcomplement', 'factures/main', 1, 'Ajouter complément', 'cogs', 1, 0, 0, 'form', '[-1-]'),
+(529, 'encaissements', 110, 'encaissements', 'factures/main', 1, 'Encaissement', 'cogs', 1, 0, 0, 'list', '[-1-]'),
+(530, 'addencaissement', 110, 'addencaissement', 'factures/main', 1, 'Ajouter encaissement', 'cogs', 1, 0, 0, 'form', '[-1-]'),
+(531, 'editcomplement', 110, 'editcomplement', 'factures/main', 1, 'Modifier complément', 'cogs', 1, 0, 0, 'form', '[-1-]'),
+(532, 'editencaissement', 110, 'editencaissement', 'factures/main', 1, 'Modifier encaissement', 'cogs', 1, 0, 0, 'form', '[-1-]'),
+(533, 'deletecomplement', 110, 'deletecomplement', 'factures/main', 1, 'Supprimer complément', 'cogs', 1, 0, 0, 'exec', '[-1-]'),
+(534, 'deleteencaissement', 110, 'deleteencaissement', 'factures/main', 1, 'Supprimer encaissement', 'cogs', 1, 0, 0, 'exec', '[-1-]'),
+(535, 'validfacture', 110, 'validfacture', 'factures/main', 1, 'Valider facture', 'cogs', 1, 0, 0, 'exec', '[-1-]'),
+(536, 'detailsencaissement', 110, 'detailsencaissement', 'factures/main', 1, 'Détail encaissement', 'eye', 1, 0, 0, 'profil', '[-1-]'),
+(537, 'detailsfacture', 110, 'detailsfacture', 'factures/main', 1, 'Détails facture', 'eye', 1, 0, 0, 'profil', '[-1-]');
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `task_action`
+-- Table structure for table `task_action`
 --
 
 CREATE TABLE IF NOT EXISTS `task_action` (
@@ -2638,10 +2576,10 @@ CREATE TABLE IF NOT EXISTS `task_action` (
   PRIMARY KEY (`id`),
   KEY `task_action_task` (`appid`),
   KEY `task_action_descrip` (`descrip`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Table of Task_Action and Permission of Task' AUTO_INCREMENT=810 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Table of Task_Action and Permission of Task' AUTO_INCREMENT=789 ;
 
 --
--- Contenu de la table `task_action`
+-- Dumping data for table `task_action`
 --
 
 INSERT INTO `task_action` (`id`, `appid`, `idf`, `descrip`, `mode_exec`, `app`, `class`, `code`, `type`, `service`, `etat_line`, `notif`, `etat_desc`, `message_class`, `message_etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
@@ -2734,10 +2672,10 @@ INSERT INTO `task_action` (`id`, `appid`, `idf`, `descrip`, `mode_exec`, `app`, 
 (619, 432, 'ef27a63534fa9fc3bd4b5086a92db546', 'Valider Département', 'this_exec', 'validdepartement', 'lock', '<li><a href="#" class="this_exec" data="%id%" rel="validdepartement"  ><i class="ace-icon fa fa-lock bigger-100"></i> Valider Département</a></li>', 0, '[-1-]', 0, 1, 'Attente Validation', 'warning', '<span class="label label-sm label-warning">Attente Validation</span>', NULL, NULL, NULL, NULL),
 (620, 432, '9aed965af4c4b89a5a23c41bf685d403', 'Désactiver Département', 'this_exec', 'validdepartement', 'unlock', '<li><a href="#" class="this_exec" data="%id%" rel="validdepartement"  ><i class="ace-icon fa fa-unlock bigger-100"></i> Désactiver Département</a></li>', 0, '[-1-]', 1, 0, 'Département Validé', 'success', '<span class="label label-sm label-success">Département Validé</span>', NULL, NULL, NULL, NULL),
 (631, 443, '192715027870a4a612fd44d562e2752f', 'Gestion des produits', NULL, 'produits', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(632, 443, 'ed13b17897a396c0633d7989f2bc644f', 'Modifier produit', 'this_url', 'editproduit', NULL, '<li><a href="#" class="this_url" data="%id%" rel="editproduit"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Modifier produit</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(633, 443, '96df3c4057988c54a7d468e5664dba10', 'Détail produit', 'this_url', 'detailproduit', NULL, '<li><a href="#" class="this_url" data="%id%" rel="detailproduit"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Détail produit</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(634, 443, 'eb5b51394e164f00ce8c998310e3a8ba', 'Valider produit', 'this_exec', 'validproduit', NULL, '<li><a href="#" class="this_exec" data="%id%" rel="validproduit"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Valider produit</a></li>', 0, '[-1-]', 0, 1, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(635, 443, '6b087b20929483bb07f8862b39e41f07', 'Désactiver produit', 'this_exec', 'validproduit', NULL, '<li><a href="#" class="this_exec" data="%id%" rel="validproduit"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Désactiver produit</a></li>', 0, '[-1-]', 1, 0, 'Produit validé', 'success', '<span class="label label-sm label-success">Produit validé</span>', NULL, NULL, NULL, NULL),
+(632, 443, 'ed13b17897a396c0633d7989f2bc644f', 'Modifier produit', 'this_url', 'editproduit', 'pencil-square-o', '<li><a href="#" class="this_url" data="%id%" rel="editproduit"  ><i class="ace-icon fa fa-pencil-square-o bigger-100"></i> Modifier produit</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(633, 443, '96df3c4057988c54a7d468e5664dba10', 'Détail produit', 'this_url', 'detailproduit', 'eye', '<li><a href="#" class="this_url" data="%id%" rel="detailproduit"  ><i class="ace-icon fa fa-eye bigger-100"></i> Détail produit</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(634, 443, 'eb5b51394e164f00ce8c998310e3a8ba', 'Valider produit', 'this_exec', 'validproduit', 'check-square-o', '<li><a href="#" class="this_exec" data="%id%" rel="validproduit"  ><i class="ace-icon fa fa-check-square-o bigger-100"></i> Valider produit</a></li>', 0, '[-1-]', 0, 1, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(635, 443, '6b087b20929483bb07f8862b39e41f07', 'Désactiver produit', 'this_exec', 'validproduit', 'arrow-circle-o-down', '<li><a href="#" class="this_exec" data="%id%" rel="validproduit"  ><i class="ace-icon fa fa-arrow-circle-o-down bigger-100"></i> Désactiver produit</a></li>', 0, '[-1-]', 1, 0, 'Produit validé', 'success', '<span class="label label-sm label-success">Produit validé</span>', NULL, NULL, NULL, NULL),
 (636, 443, '3fe9362cc0a931940b8d5dd40338c9c8', 'Achat produit', 'this_url', 'buyproducts', NULL, '<li><a href="#" class="this_url" data="%id%" rel="buyproducts"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Achat produit</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
 (637, 444, '93e893c307a6fa63e392f78751ec70ce', 'Ajouter produit', NULL, 'addproduit', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
 (638, 445, 'bcf3beada4a98e8145af2d4fbb744f01', 'Modifier produit', NULL, 'editproduit', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
@@ -2745,10 +2683,10 @@ INSERT INTO `task_action` (`id`, `appid`, `idf`, `descrip`, `mode_exec`, `app`, 
 (640, 447, '1fb8cd1a179be07586fa7db05013dd37', 'Valider produit', NULL, 'validproduit', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
 (641, 448, '7779e98d2111faedf458f7aeb548294e', 'Supprimer produit', NULL, 'deleteproduit', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
 (642, 449, '8da585a04e918c256bd26f0c03f1390d', 'Achat produit', NULL, 'buyproducts', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(643, 449, 'f8c9a7413089566d1db20dcc5ca17e03', 'Modifier achat', 'this_url', 'editbuyproduct', NULL, '<li><a href="#" class="this_url" data="%id%" rel="editbuyproduct"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Modifier achat</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(644, 449, '682b4328ee832101a44dac86b22d5757', 'Détail achat', 'this_url', 'detailbuyproduct', NULL, '<li><a href="#" class="this_url" data="%id%" rel="detailbuyproduct"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Détail achat</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(645, 449, 'd1ebf1c5482ddf06721b11ec64afb744', 'Valider achat', 'this_exec', 'validbuyproduct', NULL, '<li><a href="#" class="this_exec" data="%id%" rel="validbuyproduct"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Valider achat</a></li>', 0, '[-1-]', 0, 1, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(646, 449, '368a1e91fc63e263eb01d85a34ecd89b', 'Désactiver achat', 'this_exec', 'validbuyproduct', NULL, '<li><a href="#" class="this_exec" data="%id%" rel="validbuyproduct"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Désactiver achat</a></li>', 0, '[-1-]', 1, 0, 'Achat validé', 'success', '<span class="label label-sm label-success">Achat validé</span>', NULL, NULL, NULL, NULL),
+(643, 449, 'f8c9a7413089566d1db20dcc5ca17e03', 'Modifier achat', 'this_url', 'editbuyproduct', 'pencil-square-o', '<li><a href="#" class="this_url" data="%id%" rel="editbuyproduct"  ><i class="ace-icon fa fa-pencil-square-o bigger-100"></i> Modifier achat</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(644, 449, '682b4328ee832101a44dac86b22d5757', 'Détail achat', 'this_url', 'detailbuyproduct', 'eye', '<li><a href="#" class="this_url" data="%id%" rel="detailbuyproduct"  ><i class="ace-icon fa fa-eye bigger-100"></i> Détail achat</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(645, 449, 'd1ebf1c5482ddf06721b11ec64afb744', 'Valider achat', 'this_exec', 'validbuyproduct', 'check-square-o', '<li><a href="#" class="this_exec" data="%id%" rel="validbuyproduct"  ><i class="ace-icon fa fa-check-square-o bigger-100"></i> Valider achat</a></li>', 0, '[-1-]', 0, 1, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(646, 449, '368a1e91fc63e263eb01d85a34ecd89b', 'Désactiver achat', 'this_exec', 'validbuyproduct', 'arrow-circle-o-down', '<li><a href="#" class="this_exec" data="%id%" rel="validbuyproduct"  ><i class="ace-icon fa fa-arrow-circle-o-down bigger-100"></i> Désactiver achat</a></li>', 0, '[-1-]', 1, 0, 'Achat validé', 'success', '<span class="label label-sm label-success">Achat validé</span>', NULL, NULL, NULL, NULL),
 (647, 450, '659be5cd86a12eba7e59c52d60198a36', 'Ajoute achat', NULL, 'addbuyproduct', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
 (648, 451, '8415336a17e8ca26f3eca5741863f3b2', 'Modifier achat', NULL, 'editbuproduct', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
 (649, 452, '2c3b4875b72f7da6a87b5c0d7e85f51d', 'Supprimer achat', NULL, 'deletebuyproduct', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
@@ -2803,10 +2741,10 @@ INSERT INTO `task_action` (`id`, `appid`, `idf`, `descrip`, `mode_exec`, `app`, 
 (698, 480, 'add2bf057924e606653fbf5bbd65ca09', 'Valider Type Echéance', 'this_exec', 'validtype_echeance', 'lock', '<li><a href="#" class="this_exec" data="%id%" rel="validtype_echeance"  ><i class="ace-icon fa fa-lock bigger-100"></i> Valider Type Echéance</a></li>', 0, '[-1-]', 0, 1, 'Attente Validation', 'warning', '<span class="label label-sm label-warning">Attente Validation</span>', NULL, NULL, NULL, NULL),
 (699, 480, '463d9e1e8367736b958f0dd84b4e36d5', 'Désactiver Type Echéance', 'this_exec', 'validtype_echeance', 'unlock', '<li><a href="#" class="this_exec" data="%id%" rel="validtype_echeance"  ><i class="ace-icon fa fa-unlock bigger-100"></i> Désactiver Type Echéance</a></li>', 0, '[-1-]', 1, 0, 'Type Echéance Validé', 'success', '<span class="label label-sm label-success">Type Echéance Validé</span>', NULL, NULL, NULL, NULL),
 (700, 485, '899d40c8f22d4f7a6f048366f1829787', 'Gestion des contrats', NULL, 'contrats', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(701, 485, 'a20f4c5b9c9ebaa238757d6f9f9cb6fb', 'Modifier contrat', 'this_url', 'editcontrat', NULL, '<li><a href="#" class="this_url" data="%id%" rel="editcontrat"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Modifier contrat</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(702, 485, 'fbb243d2c2fa4200c40993e527b3a339', 'Détail contrat', 'this_url', 'detailcontrat', NULL, '<li><a href="#" class="this_url" data="%id%" rel="detailcontrat"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Détail contrat</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(703, 485, 'e970c1414507e5b83ae39e7ddedbf15e', 'Valider contrat', 'this_exec', 'validcontrat', NULL, '<li><a href="#" class="this_exec" data="%id%" rel="validcontrat"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Valider contrat</a></li>', 0, '[-1-]', 0, 1, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(704, 485, '6908357258099272b60018c0f6fb1078', 'Désactiver contrat', 'this_exec', 'validcontrat', NULL, '<li><a href="#" class="this_exec" data="%id%" rel="validcontrat"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Désactiver contrat</a></li>', 0, '[-1-]', 1, 0, 'Contrat validé', 'success', '<span class="label label-sm label-success">Contrat validé</span>', NULL, NULL, NULL, NULL),
+(701, 485, 'a20f4c5b9c9ebaa238757d6f9f9cb6fb', 'Modifier contrat', 'this_url', 'editcontrat', 'pencil-square-o', '<li><a href="#" class="this_url" data="%id%" rel="editcontrat"  ><i class="ace-icon fa fa-pencil-square-o bigger-100"></i> Modifier contrat</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(702, 485, 'fbb243d2c2fa4200c40993e527b3a339', 'Détail contrat', 'this_url', 'detailcontrat', 'eye', '<li><a href="#" class="this_url" data="%id%" rel="detailcontrat"  ><i class="ace-icon fa fa-eye bigger-100"></i> Détail contrat</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(703, 485, 'e970c1414507e5b83ae39e7ddedbf15e', 'Valider contrat', 'this_exec', 'validcontrat', 'check-square-o', '<li><a href="#" class="this_exec" data="%id%" rel="validcontrat"  ><i class="ace-icon fa fa-check-square-o bigger-100"></i> Valider contrat</a></li>', 0, '[-1-]', 0, 1, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(704, 485, '6908357258099272b60018c0f6fb1078', 'Désactiver contrat', 'this_exec', 'validcontrat', 'arrow-circle-o-down', '<li><a href="#" class="this_exec" data="%id%" rel="validcontrat"  ><i class="ace-icon fa fa-arrow-circle-o-down bigger-100"></i> Désactiver contrat</a></li>', 0, '[-1-]', 1, 0, 'Contrat validé', 'success', '<span class="label label-sm label-success">Contrat validé</span>', NULL, NULL, NULL, NULL),
 (705, 486, '87f4c3ed4713c3bc9e3fef60a6649055', 'Ajouter contrat', NULL, 'addcontrat', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
 (706, 487, '9e49a431d9637544cefa2869fd7278b9', 'Modifier contrat', NULL, 'editcontrat', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
 (707, 488, '1e9395a182a44787e493bc038cd80bbf', 'Supprimer contrat', NULL, 'deletecontrat', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
@@ -2822,9 +2760,9 @@ INSERT INTO `task_action` (`id`, `appid`, `idf`, `descrip`, `mode_exec`, `app`, 
 (717, 494, 'd9eeb330625c1b87e0df00986a47be01', 'Ajouter Devis', NULL, 'adddevis', NULL, '', 0, '[-1-2-]', 0, 0, 'Brouillon', 'success', '<span class="label label-sm label-success">Brouillon</span>', NULL, NULL, NULL, NULL),
 (718, 495, 'da93cdb05137e15aed9c4c18bddd746a', 'Ajouter détail devis', NULL, 'add_detaildevis', NULL, '', 0, '[-1-2-]', 0, 0, 'Attente validation', 'success', '<span class="label label-sm label-success">Attente validation</span>', NULL, NULL, NULL, NULL),
 (719, 496, 'f9f3c299f9bd0fec014f6bd3f0e06adb', 'Modifier Devis', NULL, 'editdevis', NULL, '', 0, '[-1-2-]', 0, 0, 'Attente validation', 'warning', '<span class="label label-sm label-warning">Attente validation</span>', NULL, NULL, NULL, NULL),
-(720, 497, 'e14cce6f1faf7784adb327581c516b90', 'Supprimer Devis', NULL, 'deletedevis', NULL, '', 0, '[-1-3-]', 0, 0, 'Attente validation', 'warning', '<span class="label label-sm label-warning">Attente validation</span>', NULL, NULL, NULL, NULL),
-(721, 498, '38f10871792c133ebcc6040e9a11cde8', 'Modifier détail Devis', NULL, 'edit_detaildevis', NULL, '', 0, '[-1-2-3-]', 0, 0, 'Attente validation', 'warning', '<span class="label label-sm label-warning">Attente validation</span>', NULL, NULL, NULL, NULL);
+(720, 497, 'e14cce6f1faf7784adb327581c516b90', 'Supprimer Devis', NULL, 'deletedevis', NULL, '', 0, '[-1-3-]', 0, 0, 'Attente validation', 'warning', '<span class="label label-sm label-warning">Attente validation</span>', NULL, NULL, NULL, NULL);
 INSERT INTO `task_action` (`id`, `appid`, `idf`, `descrip`, `mode_exec`, `app`, `class`, `code`, `type`, `service`, `etat_line`, `notif`, `etat_desc`, `message_class`, `message_etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
+(721, 498, '38f10871792c133ebcc6040e9a11cde8', 'Modifier détail Devis', NULL, 'edit_detaildevis', NULL, '', 0, '[-1-2-3-]', 0, 0, 'Attente validation', 'warning', '<span class="label label-sm label-warning">Attente validation</span>', NULL, NULL, NULL, NULL),
 (722, 499, '8def42e75fd4aee61c378d9fb303850d', 'Afficher détail devis', NULL, 'viewdevis', NULL, '', 0, '[-1-2-3-4-18-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
 (723, 500, '7666e87783b0f5a7eec1eea7593f7dfe', 'Valider Devis', NULL, 'validdevis', NULL, '', 0, '[-1-2-3-5-4-]', 0, 0, 'Attente validation', 'success', '<span class="label label-sm label-success">Attente validation</span>', NULL, NULL, NULL, NULL),
 (724, 501, 'ec45512f34613446e7a2e367d4b4cfbd', 'Gestion Contrats Fournisseurs', NULL, 'contrats_fournisseurs', NULL, '', 0, '[-1-]', 0, 0, 'Attente Validation', 'warning', '<span class="label label-sm label-warning">Attente Validation</span>', NULL, NULL, NULL, NULL),
@@ -2843,9 +2781,12 @@ INSERT INTO `task_action` (`id`, `appid`, `idf`, `descrip`, `mode_exec`, `app`, 
 (740, 510, 'ed6b8695494bf4ed86d5fb18690b3a59', 'Editer Contrat', NULL, 'editcontrat_frn', NULL, '', 0, '[-1-]', 0, 0, 'Attente Validation', 'warning', '<span class="label label-sm label-warning">Attente Validation</span>', NULL, NULL, NULL, NULL),
 (741, 511, 'b8a40913b5955209994aaa26d0e8c3d4', 'Supprimer Contrat', NULL, 'deletecontrat_frn', NULL, '', 0, '[-1-]', 0, 0, 'Attente Validation', 'warning', '<span class="label label-sm label-warning">Attente Validation</span>', NULL, NULL, NULL, NULL),
 (742, 512, '5efb874e7d73ccd722df806e8275770f', 'Valider Contrat', NULL, 'validcontrat_frn', NULL, '', 0, '[-1-]', 0, 0, 'Attente Validation', 'warning', '<span class="label label-sm label-warning">Attente Validation</span>', NULL, NULL, NULL, NULL),
+(743, 513, '11cabf03a954a5476cc78cf221f04d78', 'Détails Contrat', NULL, 'detailscontrat_frn', NULL, '', 0, '[-1-]', 0, 0, 'Attente Validation', 'warning', '<span class="label label-sm label-warning">Attente Validation</span>', NULL, NULL, NULL, NULL),
 (744, 501, 'e3c0d7e92dad7f8794b2415c334ec3ff', 'Editer Contrat', 'this_url', 'editcontrat_frn', 'cogs', '<li><a href="#" class="this_url" data="%id%" rel="editcontrat_frn"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Editer Contrat</a></li>', 0, '[-1-]', 0, 0, 'Attente Validation', 'warning', '<span class="label label-sm label-warning">Attente Validation</span>', NULL, NULL, NULL, NULL),
 (745, 501, '9dfff1c8dcb804837200f38e95381420', 'Valider Contrat', 'this_exec', 'validcontrat_frn', 'lock', '<li><a href="#" class="this_exec" data="%id%" rel="validcontrat_frn"  ><i class="ace-icon fa fa-lock bigger-100"></i> Valider Contrat</a></li>', 0, '[-1-]', 0, 1, 'Attente Validation', 'warning', '<span class="label label-sm label-warning">Attente Validation</span>', NULL, NULL, NULL, NULL),
 (746, 501, '9fe39b496077065105a57ccd9ed05863', 'Désactiver Contrat', 'this_exec', 'validcontrat_frn', 'unlock', '<li><a href="#" class="this_exec" data="%id%" rel="validcontrat_frn"  ><i class="ace-icon fa fa-unlock bigger-100"></i> Désactiver Contrat</a></li>', 0, '[-1-]', 1, 0, 'Contrat Validé', 'success', '<span class="label label-sm label-success">Contrat Validé</span>', NULL, NULL, NULL, NULL),
+(747, 501, '0092ad9ef69b6420a611df6859a43cda', 'Détails Contrat', 'this_url', 'detailscontrat_frn', 'eye', '<li><a href="#" class="this_url" data="%id%" rel="detailscontrat_frn"  ><i class="ace-icon fa fa-eye bigger-100"></i> Détails Contrat</a></li>', 0, '[-1-]', 0, 0, 'Attente Validation', 'warning', '<span class="label label-sm label-warning">Attente Validation</span>', NULL, NULL, NULL, NULL),
+(748, 501, '6ca83d9c6c0b229446da30b60b74031a', 'Détails  Contrat', 'this_url', 'detailscontrat_frn', 'eye', '<li><a href="#" class="this_url" data="%id%" rel="detailscontrat_frn"  ><i class="ace-icon fa fa-eye bigger-100"></i> Détails  Contrat</a></li>', 0, '[-1-]', 1, 0, 'Contrat Validé', 'success', '<span class="label label-sm label-success">Contrat Validé</span>', NULL, NULL, NULL, NULL),
 (750, 485, '11cabf03a954a5476cc78cf221f04d78', 'Détails Contrat', 'this_url', 'detailcontrat', 'eye', '<li><a href="#" class="this_url" data="%id%" rel="detailcontrat"  ><i class="ace-icon fa fa-eye bigger-100"></i> Détails Contrat</a></li>', 0, '[-1-]', 1, 0, 'Contrat Validé', 'success', '<span class="label label-sm label-success">Contrat Validé</span>', NULL, NULL, NULL, NULL),
 (758, 519, '1eb847d87adcad78d5e951e6110061e5', 'Gestion Proforma', NULL, 'proforma', NULL, '', 0, '[-1-2-3-5-4-]', 0, 0, 'Attente validation', 'success', '<span class="label label-sm label-warning">Attente validation</span>', NULL, NULL, NULL, NULL),
 (759, 519, '44ef6849d8d5d17d8e0535187e923d32', 'Editer proforma', 'this_url', 'editproforma', NULL, '<li><a href="#" class="this_url" data="%id%" rel="editproforma"  ><i class="ace-icon fa fa-pen blue bigger-100"></i> Editer proforma</a></li>', 0, '[-1-2-3-5-]', 0, 1, 'Attente validation', 'warning', '<span class="label label-sm label-warning">Attente validation</span>', NULL, NULL, NULL, NULL),
@@ -2858,42 +2799,31 @@ INSERT INTO `task_action` (`id`, `appid`, `idf`, `descrip`, `mode_exec`, `app`, 
 (766, 523, 'e9f745054778257a255452c6609461a0', 'valider Proforma', NULL, 'validproforma', NULL, '', 0, '[-1-2-3-5-]', 0, 0, 'Attente validation', 'warning', '<span class="label label-sm label-warning">Attente validation</span>', NULL, NULL, NULL, NULL),
 (767, 524, 'defef148c404c7e6ac79e4783e0a7ab7', 'Détail Pro-forma', NULL, 'viewproforma', NULL, '', 0, '[-1-2-3-5-]', 0, 0, 'Attente validation', 'warning', 'Attente validation', NULL, NULL, NULL, NULL),
 (768, 525, '53008d64edf241c937a06f03eff139aa', 'Editer détail proforma', NULL, 'edit_detailproforma', NULL, '', 0, '[-1-2-3-5-]', 0, 0, 'Attente validation', 'warning', '<span class="label label-sm label-warning">Attente validation</span>', NULL, NULL, NULL, NULL),
-(778, 527, '64a5f976687a8c5f7cd3d672cc5d9c8c', 'Détails Contrat', NULL, 'detailscontrat_frn', '527', '', 0, '[-1-]', 0, 0, 'Attente Validation', 'warning', '<span class="label label-sm label-warning">Attente Validation</span>', NULL, NULL, NULL, NULL),
-(779, 501, 'faee342ff51dbe9f835529ae5b9b2a0b', 'Détails  Contrat ', 'this_url', 'detailscontrat_frn', 'eye', '<li><a href="#" class="this_url" data="%id%" rel="detailscontrat_frn"  ><i class="ace-icon fa fa-eye bigger-100"></i> Détails  Contrat </a></li>', 0, '[-1-]', 0, 0, 'Attente Validation', 'warning', '<span class="label label-sm label-warning">Attente Validation</span>', NULL, NULL, NULL, NULL),
-(780, 501, '83406b6b206ed08878f2b2e854932ae5', 'Détails   Contrat  ', 'this_url', 'detailscontrat_frn', 'eye', '<li><a href="#" class="this_url" data="%id%" rel="detailscontrat_frn"  ><i class="ace-icon fa fa-eye bigger-100"></i> Détails   Contrat  </a></li>', 0, '[-1-]', 1, 0, 'Client Validé', 'success', '<span class="label label-sm label-success">Client Validé</span>', NULL, NULL, NULL, NULL),
-(781, 501, '8447888bef30fb983477cc1357ff7e6f', 'Détails    Contrat ', 'this_url', 'detailscontrat_frn', 'eye', '<li><a href="#" class="this_url" data="%id%" rel="detailscontrat_frn"  ><i class="ace-icon fa fa-eye bigger-100"></i> Détails    Contrat </a></li>', 0, '[-1-]', 3, 0, 'Contrat Expiré', 'inverse', '<span class="label label-sm label-inverse">Contrat Expiré</span>', NULL, NULL, NULL, NULL),
-(782, 501, 'cd25d6f0f7f68e3dc35714df632e58df', ' Détails   Contrat', 'this_url', 'detailscontrat_frn', 'eye', '<li><a href="#" class="this_url" data="%id%" rel="detailscontrat_frn"  ><i class="ace-icon fa fa-eye bigger-100"></i>  Détails   Contrat</a></li>', 0, '[-1-]', 2, 0, 'Attente Renouvelement', 'danger', '<span class="label label-sm label-danger">Attente Renouvelement</span>', NULL, NULL, NULL, NULL),
-(783, 528, 'f0567980556249721f24f2fc88ebfed5', 'Renouveler Contrat', NULL, 'renouvelercontrat', '528', '', 0, '[-1-]', 0, 0, 'Attente Renouvelement', 'danger', '<span class="label label-sm label-danger">Attente Renouvelement</span>', NULL, NULL, NULL, NULL),
-(784, 485, '74710492392c157c6fe6d7e79ddc95fa', 'Renouveler Contrat', 'this_url', 'renouvelercontrat', 'exchange', '<li><a href="#" class="this_url" data="%id%" rel="renouvelercontrat"  ><i class="ace-icon fa fa-exchange bigger-100"></i> Renouveler Contrat</a></li>', 0, '[-1-]', 2, 1, 'Attente Renouvelement', 'danger', '<span class="label label-sm label-danger">Attente Renouvelement</span>', NULL, NULL, NULL, NULL),
-(786, 529, '2cc55c65e79534161108288adb00472b', 'Renouveler  Contrat', NULL, 'renouveler_contrat', '529', '', 0, '[-1-]', 0, 0, 'Attente Renouvelement', 'danger', '<span class="label label-sm label-danger">Attente Renouvelement</span>', NULL, NULL, NULL, NULL),
-(787, 501, 'b5455ddf628f5bf0dcb61016556da698', ' Renouveler   Contrat ', 'this_url', 'renouveler_contrat', 'exchange', '<li><a href="#" class="this_url" data="%id%" rel="renouveler_contrat"  ><i class="ace-icon fa fa-exchange bigger-100"></i>  Renouveler   Contrat </a></li>', 0, '[-1-]', 2, 1, 'Attente Renouvelement', 'danger', '<span class="label label-sm label-danger">Attente Renouvelement</span>', NULL, NULL, NULL, NULL),
-(788, 485, 'a717e1a94a251fd4316f34aba679c0c1', 'Détails   Contrat ', 'this_url', 'detailcontrat', 'eye', '<li><a href="#" class="this_url" data="%id%" rel="detailcontrat"  ><i class="ace-icon fa fa-eye bigger-100"></i> Détails   Contrat </a></li>', 0, '[-1-]', 3, 0, 'Contrat Expiré', 'inverse', '<span class="label label-sm label-inverse">Contrat Expiré</span>', NULL, NULL, NULL, NULL),
-(789, 485, 'cd25d6f0f7f68e3dc35714df632e58df', ' Détails   Contrat', 'this_url', 'detailcontrat', 'eye', '<li><a href="#" class="this_url" data="%id%" rel="detailcontrat"  ><i class="ace-icon fa fa-eye bigger-100"></i>  Détails   Contrat</a></li>', 0, '[-1-]', 2, 0, 'Attente Renouvelement', 'danger', '<span class="label label-sm label-danger">Attente Renouvelement</span>', NULL, NULL, NULL, NULL),
-(790, 530, 'd76c286028993aff54af01da5dc4b233', 'Gestion des factures', NULL, 'factures', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(791, 530, '98a697ec628778765b25e02ba2929d38', 'Liste complément', 'this_url', 'complements', NULL, '<li><a href="#" class="this_url" data="%id%" rel="complements"  ><i class="ace-icon fa fa-circle bigger-100"></i> Liste complément</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(792, 530, '3b6d1456980ea86c0f44c16c464ca790', 'Liste encaissements', 'this_url', 'encaissements', NULL, '<li><a href="#" class="this_url" data="%id%" rel="encaissements"  ><i class="ace-icon fa fa-euro bigger-100"></i> Liste encaissements</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(793, 530, '9a51fb5298e39a28af3ad6272fc51177', 'Valider facture', 'this_exec', 'validfacture', NULL, '<li><a href="#" class="this_exec" data="%id%" rel="validfacture"  ><i class="ace-icon fa fa-check  bigger-100"></i> Valider facture</a></li>', 0, '[-1-]', 0, 1, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(794, 530, '851f1d4c13f6025f69f5b9315321d350', 'Désactiver facture', 'this_exec', 'validfacture', NULL, '<li><a href="#" class="this_exec" data="%id%" rel="validfacture"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Désactiver facture</a></li>', 0, '[-1-]', 1, 0, 'Facture validée', 'success', '<span class="label label-sm label-success">Facture validée</span>', NULL, NULL, NULL, NULL),
-(795, 530, '5c79105956d28b5cac52f85784039919', 'Détail facture', 'this_url', 'detailsfacture', NULL, '<li><a href="#" class="this_url" data="%id%" rel="detailsfacture"  ><i class="ace-icon fa fa-eye bigger-100"></i> Détail facture</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(796, 531, '55c3c5d2d93143b315513b7401043c8b', 'complements', NULL, 'complements', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(797, 531, 'dfc4772cc03cf0b92a47f54fc6a2326e', 'Modifier complément', 'this_url', 'editcomplement', NULL, '<li><a href="#" class="this_url" data="%id%" rel="editcomplement"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Modifier complément</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(798, 532, '03a18bdd5201e433a3c523a2b34d059a', 'Ajouter complément', NULL, 'addcomplement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(799, 533, '88d9bc979cd1102eb8196e7f5e6042ca', 'Encaissement', NULL, 'encaissements', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(800, 533, 'c690cc68f5257c0c225b8b8e6126ea56', 'Modifier encaissement', 'this_url', 'editencaissement', NULL, '<li><a href="#" class="this_url" data="%id%" rel="editencaissement"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Modifier encaissement</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(801, 533, '1dc06f602e8630f273d44aa2751b2127', 'Détails encaissement', 'this_url', 'detailsencaissement', NULL, '<li><a href="#" class="this_url" data="%id%" rel="detailsencaissement"  ><i class="ace-icon fa fa-eye bigger-100"></i> Détails encaissement</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(802, 534, 'e4866b292dbc3c9c5d9cc37273a5b498', 'Ajouter encaissement', NULL, 'addencaissement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(803, 535, '8665be10959f39df4f149962eb70041f', 'Modifier complément', NULL, 'editcomplement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(804, 536, '585d411904bf7d9e83d21b2810ff1d6c', 'Modifier encaissement', NULL, 'editencaissement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(805, 537, '8c8b058a4d030cdc8b49c9008abb2e92', 'Supprimer complément', NULL, 'deletecomplement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', 'Attente de validation', NULL, NULL, NULL, NULL),
-(806, 538, '6bf7d5180940f03567a5d711e8563ba4', 'Supprimer encaissement', NULL, 'deleteencaissement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(807, 539, '256abad0ec8e3bc8ed1c0653ff177255', 'Valider facture', NULL, 'validfacture', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(808, 540, 'b5dc5719c1f96df7334f371dcf51a5b6', 'Détail encaissement', NULL, 'detailsencaissement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(809, 541, '16fbf6fdcbb72f863bcf7e4ef28d8e75', 'Détails facture', NULL, 'detailsfacture', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL);
+(769, 526, 'd76c286028993aff54af01da5dc4b233', 'Gestion des factures', NULL, 'factures', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(770, 526, '98a697ec628778765b25e02ba2929d38', 'Liste complément', 'this_url', 'complements', NULL, '<li><a href="#" class="this_url" data="%id%" rel="complements"  ><i class="ace-icon fa fa-circle bigger-100"></i> Liste complément</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(771, 526, '3b6d1456980ea86c0f44c16c464ca790', 'Liste encaissements', 'this_url', 'encaissements', NULL, '<li><a href="#" class="this_url" data="%id%" rel="encaissements"  ><i class="ace-icon fa fa-euro bigger-100"></i> Liste encaissements</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(772, 526, '9a51fb5298e39a28af3ad6272fc51177', 'Valider facture', 'this_exec', 'validfacture', NULL, '<li><a href="#" class="this_exec" data="%id%" rel="validfacture"  ><i class="ace-icon fa fa-check  bigger-100"></i> Valider facture</a></li>', 0, '[-1-]', 0, 1, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(773, 526, '851f1d4c13f6025f69f5b9315321d350', 'Désactiver facture', 'this_exec', 'validfacture', NULL, '<li><a href="#" class="this_exec" data="%id%" rel="validfacture"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Désactiver facture</a></li>', 0, '[-1-]', 1, 0, 'Facture validée', 'success', '<span class="label label-sm label-success">Facture validée</span>', NULL, NULL, NULL, NULL),
+(774, 526, '5c79105956d28b5cac52f85784039919', 'Détail facture', 'this_url', 'detailsfacture', NULL, '<li><a href="#" class="this_url" data="%id%" rel="detailsfacture"  ><i class="ace-icon fa fa-eye bigger-100"></i> Détail facture</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(775, 527, '55c3c5d2d93143b315513b7401043c8b', 'complements', NULL, 'complements', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(776, 527, 'dfc4772cc03cf0b92a47f54fc6a2326e', 'Modifier complément', 'this_url', 'editcomplement', NULL, '<li><a href="#" class="this_url" data="%id%" rel="editcomplement"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Modifier complément</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(777, 528, '03a18bdd5201e433a3c523a2b34d059a', 'Ajouter complément', NULL, 'addcomplement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(778, 529, '88d9bc979cd1102eb8196e7f5e6042ca', 'Encaissement', NULL, 'encaissements', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(779, 529, 'c690cc68f5257c0c225b8b8e6126ea56', 'Modifier encaissement', 'this_url', 'editencaissement', NULL, '<li><a href="#" class="this_url" data="%id%" rel="editencaissement"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Modifier encaissement</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(780, 529, '1dc06f602e8630f273d44aa2751b2127', 'Détails encaissement', 'this_url', 'detailsencaissement', NULL, '<li><a href="#" class="this_url" data="%id%" rel="detailsencaissement"  ><i class="ace-icon fa fa-eye bigger-100"></i> Détails encaissement</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(781, 530, 'e4866b292dbc3c9c5d9cc37273a5b498', 'Ajouter encaissement', NULL, 'addencaissement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(782, 531, '8665be10959f39df4f149962eb70041f', 'Modifier complément', NULL, 'editcomplement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(783, 532, '585d411904bf7d9e83d21b2810ff1d6c', 'Modifier encaissement', NULL, 'editencaissement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(784, 533, '8c8b058a4d030cdc8b49c9008abb2e92', 'Supprimer complément', NULL, 'deletecomplement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', 'Attente de validation', NULL, NULL, NULL, NULL),
+(785, 534, '6bf7d5180940f03567a5d711e8563ba4', 'Supprimer encaissement', NULL, 'deleteencaissement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(786, 535, '256abad0ec8e3bc8ed1c0653ff177255', 'Valider facture', NULL, 'validfacture', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(787, 536, 'b5dc5719c1f96df7334f371dcf51a5b6', 'Détail encaissement', NULL, 'detailsencaissement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(788, 537, '16fbf6fdcbb72f863bcf7e4ef28d8e75', 'Détails facture', NULL, 'detailsfacture', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
 --
--- Structure de la table `token`
+-- Table structure for table `token`
 --
 
 CREATE TABLE IF NOT EXISTS `token` (
@@ -2906,7 +2836,7 @@ CREATE TABLE IF NOT EXISTS `token` (
 -- --------------------------------------------------------
 
 --
--- Structure de la table `users_sys`
+-- Table structure for table `users_sys`
 --
 
 CREATE TABLE IF NOT EXISTS `users_sys` (
@@ -2936,21 +2866,21 @@ CREATE TABLE IF NOT EXISTS `users_sys` (
 ) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Table users Systeme' AUTO_INCREMENT=19 ;
 
 --
--- Contenu de la table `users_sys`
+-- Dumping data for table `users_sys`
 --
 
 INSERT INTO `users_sys` (`id`, `nom`, `fnom`, `lnom`, `pass`, `mail`, `service`, `tel`, `etat`, `defapp`, `agence`, `ctc`, `lastactive`, `photo`, `signature`, `form`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
-(1, 'admin', 'Administrateur', 'Systeme', '5a05679021426829ab75ac9fa6655947', 'rachid@atelsolution.com', 1, '6544545454', 1, 0, 1, 0, '2017-10-02 22:27:20', 1, 2, 9, NULL, '2017-01-13 13:52:42', '1', '2017-06-06 19:22:54'),
+(1, 'admin', 'Administrateur', 'Systeme', '5a05679021426829ab75ac9fa6655947', 'rachid@atelsolution.com', 1, '6544545454', 1, 0, 1, 0, '2017-10-02 23:49:49', 1, 2, 9, NULL, '2017-01-13 13:52:42', '1', '2017-06-06 19:22:54'),
 (2, 'rachid', 'Rachid', 'Kada', '5a05679021426829ab75ac9fa6655947', 'rachid@bdctchad.com', 2, '0612668698', 1, 3, NULL, 0, '2017-01-19 22:29:53', 4, 5, 6, NULL, '2017-01-19 21:59:10', NULL, '2017-01-19 21:59:10'),
 (17, 'tester', 'tester', 'tester', '5a05679021426829ab75ac9fa6655947', 'test@test', 2, '00000000', 1, 3, NULL, 0, '2017-06-14 23:49:21', 376, 377, 378, '1', '2017-06-13 10:02:41', NULL, NULL),
 (18, 'test1', 'test1', 'test1', 'd41d8cd98f00b204e9800998ecf8427e', 'test@tests', 2, '000000000', 0, 3, NULL, 0, NULL, 422, 380, 381, '1', '2017-06-13 10:08:34', '1', '2017-09-13 16:28:38');
 
 --
--- Contraintes pour les tables exportées
+-- Constraints for dumped tables
 --
 
 --
--- Contraintes pour la table `clients`
+-- Constraints for table `clients`
 --
 ALTER TABLE `clients`
   ADD CONSTRAINT `fk_client_categorie` FOREIGN KEY (`id_categorie`) REFERENCES `categorie_client` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -2959,59 +2889,31 @@ ALTER TABLE `clients`
   ADD CONSTRAINT `fk_client_ville` FOREIGN KEY (`id_ville`) REFERENCES `ref_ville` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `complement_facture`
+-- Constraints for table `complement_facture`
 --
 ALTER TABLE `complement_facture`
   ADD CONSTRAINT `fk_facture_complement` FOREIGN KEY (`idfacture`) REFERENCES `factures` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `contrats`
+-- Constraints for table `contrats`
 --
 ALTER TABLE `contrats`
-  ADD CONSTRAINT `fk_devis_contrat` FOREIGN KEY (`iddevis`) REFERENCES `devis` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_type_echeance` FOREIGN KEY (`idtype_echeance`) REFERENCES `ref_type_echeance` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `fk_devis_contrat` FOREIGN KEY (`iddevis`) REFERENCES `devis` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `contrats_frn`
---
-ALTER TABLE `contrats_frn`
-  ADD CONSTRAINT `fk_fournisseur` FOREIGN KEY (`id_fournisseur`) REFERENCES `fournisseurs` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Contraintes pour la table `devis`
+-- Constraints for table `devis`
 --
 ALTER TABLE `devis`
   ADD CONSTRAINT `fk_id_client` FOREIGN KEY (`id_client`) REFERENCES `clients` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `echeances_contrat`
+-- Constraints for table `echeances_contrat`
 --
 ALTER TABLE `echeances_contrat`
   ADD CONSTRAINT `fk_contrat_echeance` FOREIGN KEY (`idcontrat`) REFERENCES `contrats` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `encaissements`
---
-ALTER TABLE `encaissements`
-  ADD CONSTRAINT `fk_facture` FOREIGN KEY (`idfacture`) REFERENCES `factures` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Contraintes pour la table `factures`
---
-ALTER TABLE `factures`
-  ADD CONSTRAINT `fk_devis` FOREIGN KEY (`iddevis`) REFERENCES `devis` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_contrat` FOREIGN KEY (`idcontrat`) REFERENCES `contrats` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Contraintes pour la table `fournisseurs`
---
-ALTER TABLE `fournisseurs`
-  ADD CONSTRAINT `fk_ville` FOREIGN KEY (`id_ville`) REFERENCES `ref_ville` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_devise` FOREIGN KEY (`id_devise`) REFERENCES `ref_devise` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `fk_pays` FOREIGN KEY (`id_pays`) REFERENCES `ref_pays` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Contraintes pour la table `produits`
+-- Constraints for table `produits`
 --
 ALTER TABLE `produits`
   ADD CONSTRAINT `fk_produit_categorie` FOREIGN KEY (`idcategorie`) REFERENCES `ref_categories_produits` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -3019,25 +2921,25 @@ ALTER TABLE `produits`
   ADD CONSTRAINT `fk_produit_uv` FOREIGN KEY (`iduv`) REFERENCES `ref_unites_vente` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `ref_departement`
+-- Constraints for table `ref_departement`
 --
 ALTER TABLE `ref_departement`
   ADD CONSTRAINT `region_depart` FOREIGN KEY (`id_region`) REFERENCES `ref_region` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `ref_region`
+-- Constraints for table `ref_region`
 --
 ALTER TABLE `ref_region`
   ADD CONSTRAINT `pays_region` FOREIGN KEY (`id_pays`) REFERENCES `ref_pays` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `ref_ville`
+-- Constraints for table `ref_ville`
 --
 ALTER TABLE `ref_ville`
   ADD CONSTRAINT `ville_dept` FOREIGN KEY (`id_departement`) REFERENCES `ref_departement` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `rules_action`
+-- Constraints for table `rules_action`
 --
 ALTER TABLE `rules_action`
   ADD CONSTRAINT `rules_action_user_sys` FOREIGN KEY (`userid`) REFERENCES `users_sys` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -3046,37 +2948,37 @@ ALTER TABLE `rules_action`
   ADD CONSTRAINT `rule_action_task_id` FOREIGN KEY (`appid`) REFERENCES `task` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `session`
+-- Constraints for table `session`
 --
 ALTER TABLE `session`
   ADD CONSTRAINT `session_user_id` FOREIGN KEY (`userid`) REFERENCES `users_sys` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `stock`
+-- Constraints for table `stock`
 --
 ALTER TABLE `stock`
   ADD CONSTRAINT `fk_achat_produit` FOREIGN KEY (`idproduit`) REFERENCES `produits` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `sys_notifier`
+-- Constraints for table `sys_notifier`
 --
 ALTER TABLE `sys_notifier`
   ADD CONSTRAINT `fk_app_task` FOREIGN KEY (`app`) REFERENCES `task` (`app`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `task`
+-- Constraints for table `task`
 --
 ALTER TABLE `task`
   ADD CONSTRAINT `task_ibfk_1` FOREIGN KEY (`modul`) REFERENCES `modul` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `task_action`
+-- Constraints for table `task_action`
 --
 ALTER TABLE `task_action`
   ADD CONSTRAINT `task_action_task` FOREIGN KEY (`appid`) REFERENCES `task` (`id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Contraintes pour la table `users_sys`
+-- Constraints for table `users_sys`
 --
 ALTER TABLE `users_sys`
   ADD CONSTRAINT `user_service_id` FOREIGN KEY (`service`) REFERENCES `services` (`id`) ON UPDATE CASCADE;
