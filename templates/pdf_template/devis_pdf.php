@@ -31,8 +31,10 @@ class MYPDF extends TCPDF {
 		$image_file = MPATH_IMG.MCfg::get('logo');
 		$this->writeHTMLCell(50, 25, '', '', '' , 1, 0, 0, true, 'C', true);
 		$this->Image($image_file, 22, 6, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
-		
-		$ste = '<div class="form-group>"><address><strong>Data Connect Tchad SARL</strong><br>795 Folsom Ave, Suite 600<br>San Francisco, CA 94107<br><abbr title="Phone">Tél:</abbr>(123) 456-7890<br>Email: contact@dctchad.com</address></div>';
+		//Get info ste from DB
+		$ste_c = new MSte_info();
+        
+		$ste = $ste_c->get_ste_info_report_head(1);
 		$this->writeHTMLCell(0, 0, '', 30, $ste , '', 0, 0, true, 'L', true);
 		$this->SetTextColor(0, 50, 127);
 		// Set font
@@ -95,12 +97,16 @@ class MYPDF extends TCPDF {
 
 	// Page footer
 	public function Footer() {
+		$ste_c = new MSte_info();
+        $this->SetY(-30);
+		$ste = $ste_c->get_ste_info_report_footer(1);
+		$this->writeHTMLCell(0, 0, '', '', $ste , '', 0, 0, true, 'C', true);
 		// Position at 15 mm from bottom
 		$this->SetY(-15);
 		// Set font
 		$this->SetFont('helvetica', 'I', 8);
 		// Page number
-		$this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+		//$this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
 	}
 
 	

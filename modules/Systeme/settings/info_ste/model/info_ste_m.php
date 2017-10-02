@@ -5,7 +5,7 @@
 class MSte_info 
 {
 	
-		private $_data; //data receive from form
+	private $_data; //data receive from form
 
 	var $table    = 'ste_info'; //Main table of module
 	var $last_id  = null; //return last ID after insert command
@@ -66,6 +66,54 @@ class MSte_info
 		
 	}
 
+	public function edit_info_ste()
+	{
+
+		global $db;
+		$values["ste_name"]    = MySQL::SQLValue($this->_data['ste_name']);
+		$values["ste_bp"]      = MySQL::SQLValue($this->_data['ste_bp']);
+		$values["ste_adresse"] = MySQL::SQLValue($this->_data['ste_adresse']);
+		$values["ste_tel"]     = MySQL::SQLValue($this->_data['ste_tel']);
+		$values["ste_fax"]     = MySQL::SQLValue($this->_data['ste_fax']);
+		$values["ste_email"]   = MySQL::SQLValue($this->_data['ste_email']);
+		$values["ste_if"]      = MySQL::SQLValue($this->_data['ste_if']);
+		$values["ste_rc"]      = MySQL::SQLValue($this->_data['ste_rc']);
+		$values["ste_website"] = MySQL::SQLValue($this->_data['ste_website']);
+		$values["updusr"]      = MySQL::SQLValue(session::get('userid'));
+		$values["upddat"]      = MySQL::SQLValue(date("Y-m-d H:i:s"));
+		$wheres["id"]          = $this->id_ste;
+		
+
+        // If we have an error
+		if($this->error == true){
+
+			if (!$result = $db->UpdateRows($this->table, $values, $wheres)) {
+				//$db->Kill();
+				$this->log .= $db->Error();
+				$this->error == false;
+				$this->log .='</br>Enregistrement BD non réussie'; 
+
+			}else{
+
+				//$this->last_id = $result;
+				$this->log .='</br>Enregistrement  réussie '. $this->_data['ste_name'];
+			}
+
+
+		}else{
+
+			$this->log .='</br>Enregistrement non réussie';
+
+		}
+
+        //check if last error is true then return true else rturn false.
+		if($this->error == false){
+			return false;
+		}else{
+			return true;
+		}
+	}
+
 
 	/**
 	 * [s Echo value from ste_info array]
@@ -87,16 +135,40 @@ class MSte_info
 	 * @param  [string] $key [key ste_info array]
 	 * @return [string]      [use into code]
 	 */
-	public function g($key)
-	{
-		if($this->ste_info[$key] != null)
-		{
-			return $this->ste_info[$key];
-		}else{
-			return null;
-		}
+    public function g($key)
+    {
+    	if($this->ste_info[$key] != null)
+    	{
+    		return $this->ste_info[$key];
+    	}else{
+    		return null;
+    	}
 
-	}
+    }
+
+    public  function get_ste_info_report_head($id_ste)
+    {
+    	$this->id_ste = $id_ste;
+    	$this->get_ste_info();
+    	
+    	
+
+    	$head = '<div class="form-group>"><address><strong>'.$this->ste_info['ste_name'].'</strong><br>'.$this->ste_info['ste_bp'].' '.$this->ste_info['ste_adresse'].'<br>'.$this->ste_info['ste_ville'].' '.$this->ste_info['ste_pays'].'<br><abbr title="Phone">Tél:</abbr>'.$this->ste_info['ste_tel'].'<br>@: '.$this->ste_info['ste_email'].'<br>'.$this->ste_info['ste_website'].'</address></div>';
+    	return $head;
+    }
+
+    public  function get_ste_info_report_footer($id_ste)
+    {
+    	$this->id_ste = $id_ste;
+    	$this->get_ste_info();
+    	
+    	$footer = '<h1>'.$this->ste_info['ste_name'].'</h1><p>RCCM : '.$this->ste_info['ste_rc'].'  Numéro d’Identification Fiscale : '.$this->ste_info['ste_if'].'<br/>'.$this->ste_info['ste_adresse'].', '.$this->ste_info['ste_ville'].' ; Tél. : '.$this->ste_info['ste_tel'].'<br/>Site web: <a href="http://'.$this->ste_info['ste_website'].'/">'.$this->ste_info['ste_website'].'</a><span style=" color: #00F; font-family: sans-serif; font-style: italic; font-weight: normal; font-size: 7pt;"> </span>– Email: <a href="mailto:'.$this->ste_info['ste_email'].'" class="s1"> '.$this->ste_info['ste_email'].'</a></p>';
+
+    	
+    	return $footer;
+    }
+
+    
 
 
 

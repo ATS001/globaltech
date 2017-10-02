@@ -41,19 +41,19 @@ class MYPDF extends TCPDF {
 		
 		// Title
 		$titre_doc = '<h1 style="letter-spacing: 10px;">proforma</h1>';
-		$this->writeHTMLCell(0, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'C', true);
+		$this->writeHTMLCell(0, 0, 100, 10, $titre_doc , 'B', 0, 0, true, 'C', true);
 		$this->SetTextColor(0, 0, 0);
 		$this->SetFont('helvetica', '', 9);
 		$detail_proforma = '<table cellspacing="3" cellpadding="2" border="0">
 		<tr>
-		<td style="width:35%;"><strong>Réf proforma</strong></td>
+		<td style="width:45%;"><strong>Réf proforma</strong></td>
 		<td style="width:5%;">:</td>
-		<td style="width:60%; background-color: #eeecec;">'.$this->info_proforma['reference'].'</td>
+		<td style="width:50%; background-color: #eeecec;">'.$this->info_proforma['reference'].'</td>
 		</tr> 
 		<tr>
-		<td style="width:35%;"><strong>Date</strong></td>
+		<td style="width:45%;"><strong>Date</strong></td>
 		<td style="width:5%;">:</td>
-		<td style="width:60%; background-color: #eeecec; ">'.$this->info_proforma['date_proforma'].'</td>
+		<td style="width:50%; background-color: #eeecec; ">'.$this->info_proforma['date_proforma'].'</td>
 		</tr>
 		</table>';
 		$this->writeHTMLCell(0, 0, 140, 23, $detail_proforma, '', 0, 0, true, 'L', true);
@@ -163,44 +163,18 @@ $html = $pdf->Table_body;
 //$pdf->writeHTMLCell('', '','' , '', $html , 0, 0, 0, true, 'L', true);
 
 $pdf->lastPage();
-$obj = new nuts($pdf->info_proforma['totalttc'], "FCFA");
-$ttc_lettre = $obj->convert("fr-FR");
-$remise_valeur = $pdf->info_proforma['valeur_remise'] == null ? '-' : $pdf->info_proforma['valeur_remise'];
-$block_sum = '<div></div>
+
+$block_last_bloc ='<div></div>
 <table style="width: 685px;" cellpadding="2">
     <tr align="right">
-        <td width="50%" align="left" style="background-color: #eeecec;">
-            Arrêté le présent proforma à la somme de :<br>
-            <strong>'.$ttc_lettre.' </strong>
+        <td width="50%" align="left">
+            
         </td>
         <td width="50%">
-           <table class="table" cellspacing="2" cellpadding="2"  style="width: 300px; border:1pt solid black;" >
-            <tbody>
-                <tr>
-                    <td style="width:35%;"><strong>Total HT</strong></td>
-                    <td style="width:5%;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_proforma['totalht'].'</strong></td>
-                </tr>
-                <tr>
-                    <td style="width:35%;"><strong>Remise:</strong></td>
-                    <td style="width:5%;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$remise_valeur.' %</strong></td>
-                </tr>
-                <tr>
-                    <td style="width:35%;"><strong>TVA 18%</strong></td>
-                    <td style="width:5%;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_proforma['totaltva'].'</strong></td>
-                </tr>
-                <tr>
-                    <td style="width:35%;"><strong>Total TTC</strong></td>
-                    <td style="width:5%;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_proforma['totalttc'].'</strong></td>
-                </tr>
-            </tbody>
-        </table> 
-    </td>
-</tr>
-<tr>
+           
+        </td>
+    </tr>
+    <tr>
     <td colspan="2">
         
         <strong>Conditions générales:</strong>
@@ -222,7 +196,8 @@ $block_sum = '<div></div>
     </td>
 </tr>
 </table>';
-$html .= $block_sum;
+$html .= $block_last_bloc;
+
 $pdf->writeHTML($html, true, false, true, false, '');
 // Close and output PDF document
 // This method has several options, check the source code documentation for more information.

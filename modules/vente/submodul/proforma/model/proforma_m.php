@@ -352,7 +352,7 @@ class Mproforma
       //Check if proforma have détails
             $this->Check_proforma_have_details($this->_data['tkn_frm']);
       //Make reference
-            $this->Make_proforma_reference();
+            //$this->Make_proforma_reference();
         //Before execute do the multiple check
             $this->Check_exist('reference', $this->reference, 'Réference proforma', null);
 
@@ -377,8 +377,10 @@ class Mproforma
             $totalttc = $this->total_ttc_t;
             $valeur_remise = $this->valeur_remis_t;
 
+            
 
-            $values["reference"]       = MySQL::SQLValue($this->reference);
+
+            //$values["reference"]       = MySQL::SQLValue($this->reference);
             $values["tkn_frm"]         = MySQL::SQLValue($this->_data['tkn_frm']);
             $values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
             $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
@@ -818,7 +820,12 @@ class Mproforma
         global $db;
         $table = $this->table;
         $id_proforma = $this->id_proforma;
-        $req_sql = " UPDATE $table SET etat = $etat+1 WHERE id = $id_proforma ";
+        if(!$reference = $db->Generate_reference($table, 'PROF'))
+        {
+            $this->log .= '</br>Problème Réference';
+            return false;
+        }
+        $req_sql = " UPDATE $table SET etat = $etat+1, reference = '$reference'  WHERE id = $id_proforma ";
         if (!$db->Query($req_sql)) {
             $this->error = false;
             $this->log .= "Erreur Validation";
