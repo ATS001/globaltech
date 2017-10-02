@@ -3,17 +3,15 @@ $info_encaissement = new Mfacture();
 $info_encaissement->id_encaissement = Mreq::tp('id');
 $info_encaissement->get_encaissement_info();
 
-var_dump($info_encaissement);
 ?>
 <div class="pull-right tableTools-container">
     <div class="btn-group btn-overlap">
 
-
-
 <?php
-TableTools::btn_add('encaissements', 'Liste des encaissements', MInit::crypt_tp('id', $info_encaissement->Shw('idfacture', 1)), $exec = NULL, 'reply'); ?>
-
+TableTools::btn_add('encaissements', 'Liste des encaissements', MInit::crypt_tp('id', $info_encaissement->Shw('idfacture', 1)), $exec = NULL, 'reply'); 
 ?>
+
+        
 
     </div>
 </div>
@@ -81,7 +79,7 @@ TableTools::btn_add('encaissements', 'Liste des encaissements', MInit::crypt_tp(
 
                                     <div class="profile-info-value">
                                             <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                        <span><?php $info_encaissement->printattribute('monant'); ?></span>
+                                        <span><?php $info_encaissement->printattribute('montant'); ?></span>
                                     </div>
                                 </div>
                                 <div class="profile-info-row">
@@ -92,13 +90,12 @@ TableTools::btn_add('encaissements', 'Liste des encaissements', MInit::crypt_tp(
                                         <span><?php $info_encaissement->printattribute('date_encaissement'); ?></span>
                                     </div>
                                 </div>
-<?php if ($info_encaissement->s('pj') != null) { ?>
-                                    <div class="widget-toolbar hidden-480">
-                                        <a href="#" class="iframe_pdf" rel="<?php echo $info_encaissement->printattribute('pj') ?>">
-                                            <i class="ace-icon fa fa-print"></i>
-                                        </a>
-                                    </div>       
-<?php } ?>
+
+                                  <div class="center">
+                                <a class="iframe_pdf" rel="<?php $info_encaissement->printattribute('pj') ?>">
+                                    <p class="lead"><i class="ace-icon fa fa-file-pdf-o red"></i>Justification de l'encaissement : <?php $info_encaissement->printattribute('ref') ?> </p>
+                                </a>							
+                            </div>  
 
                             </div>
 
