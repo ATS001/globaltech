@@ -15,7 +15,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_complement->get_complement()) {
 <div class="pull-right tableTools-container">
     <div class="btn-group btn-overlap">
 
-        <?php TableTools::btn_add('complements', 'Liste des complements', MInit::crypt_tp('id', $info_complement->Shw('idfacture', 1)), $exec = NULL, 'reply'); ?>
+        <?php TableTools::btn_add('complements', 'Liste des complements', MInit::crypt_tp('id', $info_complement->Shw2('idfacture', 1)), $exec = NULL, 'reply'); ?>
 
     </div>
 </div>
@@ -40,25 +40,25 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_complement->get_complement()) {
             <div class="widget-box">
 
                 <?php
-                $form = new Mform('editcomplement', 'editcomplement', $info_complement->Shw('id', 1), 'complements&' . MInit::crypt_tp('id', $info_complement->Shw('idfacture', 1)), '0');
-                $form->input_hidden('idfacture', $info_complement->Shw('idfacture', 1));
-                $form->input_hidden('id', $info_complement->Shw('id', 1));
+                $form = new Mform('editcomplement', 'editcomplement', $info_complement->Shw2('id', 1), 'complements&' . MInit::crypt_tp('id', $info_complement->Shw2('idfacture', 1)), '0');
+                $form->input_hidden('idfacture', $info_complement->Shw2('idfacture', 1));
+                $form->input_hidden('id', $info_complement->Shw2('id', 1));
                 $form->input_hidden('idc', Mreq::tp('idc'));
                 $form->input_hidden('idh', Mreq::tp('idh'));
 
 //Désignation
                 $des_array[] = array('required', 'true', 'Insérez la désignation');
-                $form->input('Désignation', 'designation', 'text', 6, $info_complement->Shw('designation', 1), $des_array);
+                $form->input('Désignation', 'designation', 'text', 6, $info_complement->Shw2('designation', 1), $des_array);
 
 //Type de station
                 $type_array = array('Réduction' => 'Réduction', 'Pénalité' => 'Pénalité');
-                $form->select('Type', 'type', 3, $type_array, Null, $info_complement->Shw('type', 1), $multi = NULL);
+                $form->select('Type', 'type', 3, $type_array, Null, $info_complement->Shw2('type', 1), $multi = NULL);
 
 
 //Montant
                 $mt_array[] = array('required', 'true', 'Insérez le montant');
                 $mt_array[] = array('number', 'true', 'Entrez un montant valide');
-                $form->input('Montant', 'montant', 'text', 6, $info_complement->Shw('montant', 1), $mt_array);
+                $form->input('Montant', 'montant', 'text', 6, $info_complement->Shw2('montant', 1), $mt_array);
 
 
                 $form->button('Modifier complément');

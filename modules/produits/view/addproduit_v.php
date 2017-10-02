@@ -67,17 +67,18 @@ $form->button('Enregistrer le produit');
   <script type="text/javascript">
 $(document).ready(function() {
        
-    $('#idtype').bind('select change',function() {
+    $('#idtype').on('change',function() {
 
         if($("#idtype option:selected").text()== 'Prestation'){
 
-            $('.prix_vente').attr(disabled,disabled);
+            $('#prix_vente').attr('readonly', false);
             
         }else{
 
-            $('.prix_vente').attr(disabled,disabled);
+            $('#prix_vente').attr('readonly', true).val('');
            
         }
 
     });
+});
    </script>  

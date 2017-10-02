@@ -175,12 +175,14 @@ class Mfacture {
     //Save new complement after all check
     public function save_new_complement() {
 
-
+    if($this->_data['type'] == "Réduction")
+    $this->_data['montant']=-$this->_data['montant'];
+    
         global $db;
         $values["designation"] = MySQL::SQLValue($this->_data['designation']);
         $values["idfacture"] = MySQL::SQLValue($this->_data['idfacture']);
-        $values["montant"] = MySQL::SQLValue($this->_data['montant']);
         $values["type"] = MySQL::SQLValue($this->_data['type']);
+        $values["montant"] = MySQL::SQLValue($this->_data['montant']);
         $values["date_complement"] = MySQL::SQLValue(date("Y-m-d"));
         $values["creusr"] = MySQL::SQLValue(session::get('userid'));
         $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
@@ -279,10 +281,17 @@ class Mfacture {
         }
     }
     
-    public function update_reste($id_facture, $montant_init,$montant_modif) {
+    
 
+    public function update_reste($id_facture, $montant_init, $montant_modif) {
+        $this->id_facture=$id_facture;
+        $this->get_facture();
+        $reste= ($this->facture_info['reste'] + $montant_init) - $montant_modif;
+        $total_paye= ($this->facture_info['total_paye']- $montant_init) + $montant_modif;
+                  
         global $db;
-        $req_sql = "UPDATE factures SET reste = reste + $montant_init - $montant_modif , total_paye = total_paye - $montant_init + $montant_modif WHERE id = '$id_facture'";
+        //$req_sql = "UPDATE factures SET reste = (reste + $montant_init) - $montant_modif , total_paye = (total_paye - $montant_init) + $montant_modif WHERE id = '$id_facture'";
+        $req_sql = "UPDATE factures SET reste = $reste , total_paye = $total_paye WHERE id = '$id_facture'";
         if (!$db->Query($req_sql)) {
             $this->log .= $db->Error();
             $this->error = false;
@@ -336,6 +345,19 @@ class Mfacture {
             }
 
             echo $this->encaissement_info[$key];
+        } else {
+            echo "";
+        }
+    }
+
+    // afficher les infos d'un contrats_frn
+    public function Shw2($key, $no_echo = "") {
+        if ($this->complement_info[$key] != null) {
+            if ($no_echo != null) {
+                return $this->complement_info[$key];
+            }
+
+            echo $this->complement_info[$key];
         } else {
             echo "";
         }
@@ -440,7 +462,7 @@ class Mfacture {
             $this->log .= '</br>L\' id est vide';
         }
         //execute Delete Query
-        if (!$db->DeleteRows('enncaissements', $where)) {
+        if (!$db->DeleteRows('encaissements', $where)) {
 
             $this->log .= $db->Error() . '  ' . $db->BuildSQLDelete('encaissements', $where);
             $this->error = false;
@@ -463,6 +485,10 @@ class Mfacture {
         //Get existing data for complement
         $this->get_complement();
         $this->last_id = $this->id_complement;
+        
+        if($this->_data['type'] == "Réduction")
+        $this->_data['montant']=-$this->_data['montant'];
+    
 
         global $db;
         $values["designation"] = MySQL::SQLValue($this->_data['designation']);
@@ -501,17 +527,15 @@ class Mfacture {
         }
     }
 
-    
     public function edit_encaissement() {
 
         //Get existing data for complement
         $this->get_encaissement();
-        $mt_init=encaissement_info[''];
+        $mt_init = $this->encaissement_info['montant'];
         $this->last_id = $this->id_encaissement;
-        
+
         //Check if PJ attached required
-        if($this->exige_pj)
-        {
+        if ($this->exige_pj) {
             $this->check_file('pj', 'Justifications du client.', $this->_data['pj_id']);
         }
 
@@ -533,62 +557,63 @@ class Mfacture {
                 $this->log .= $db->Error();
                 $this->error == false;
                 $this->log .= '</br>Enregistrement BD non réussie';
-           }else{
+            } else {
 
-				$this->last_id = $this->id_encaissement;
-				//If Attached required Save file to Archive
-				$this->save_file('pj', 'Justifications encaissement'.$this->_data['id'], 'Document');
+                $this->last_id = $this->id_encaissement;
+                //If Attached required Save file to Archive
+                $this->save_file('pj', 'Justifications encaissement' . $this->_data['id'], 'Document');
 
-								
-				//Check $this->error = true return Green message and Bol true
-				if($this->error == true)
-				{
-					$this->log = '</br>Modification réussie: <b>'.$this->_data['id'].' ID: '.$this->last_id;
-                                         update_reste($id_facture, $montant_init,$montant_modif);
-				//Check $this->error = false return Red message and Bol false	
-				}else{
-					$this->log .= '</br>Modification non réussie: <b>'.$this->_data['id'];
-					$this->log .= '</br>Un problème d\'Enregistrement ';
-				}
-			}
-		//Else Error false	
-		}else{
-			$this->log .='</br>Enregistrement non réussie';
-		}
+
+                //Check $this->error = true return Green message and Bol true
+                if ($this->error == true) {
+                    $this->log = '</br>Modification réussie: <b>' . $this->_data['id'] . ' ID: ' . $this->last_id;
+                    $this->update_reste($this->_data['idfacture'], $mt_init, $this->_data['montant']);
+                    
+                    //Check $this->error = false return Red message and Bol false	
+                } else {
+                    $this->log .= '</br>Modification non réussie: <b>' . $this->_data['id'];
+                    $this->log .= '</br>Un problème d\'Enregistrement ';
+                }
+            }
+            //Else Error false	
+        } else {
+            $this->log .= '</br>Enregistrement non réussie';
+        }
         //check if last error is true then return true else rturn false.
-		if($this->error == false){
-			return false;
-		}else{
-			return true;
-		}
-	}
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     //activer ou valider une facture
-        public function valid_facture($etat = 0) {
-            global $db;
+    public function valid_facture($etat = 0) {
+        global $db;
 
-            //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
-            $etat = $etat == 0 ? 1 : 0;
+        //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
+        $etat = $etat == 0 ? 1 : 0;
 
-            $values["etat"] = MySQL::SQLValue($etat);
-            $values["updusr"] = MySQL::SQLValue(session::get('userid'));
-            $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
-            $wheres['id'] = $this->id_facture;
+        $values["etat"] = MySQL::SQLValue($etat);
+        $values["updusr"] = MySQL::SQLValue(session::get('userid'));
+        $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+        $wheres['id'] = $this->id_facture;
 
-            // Execute the update and show error case error
-            if (!$result = $db->UpdateRows($this->table, $values, $wheres)) {
-                $this->log .= '</br>Impossible de changer le statut!';
-                $this->log .= '</br>' . $db->Error();
-                $this->error = false;
-            } else {
-                $this->log .= '</br>Statut changé! ';
-                //$this->log   .= $this->table.' '.$this->id_produit.' '.$etat;
-                $this->error = true;
-            }
-            if ($this->error == false) {
-                return false;
-            } else {
-                return true;
-            }
+        // Execute the update and show error case error
+        if (!$result = $db->UpdateRows($this->table, $values, $wheres)) {
+            $this->log .= '</br>Impossible de changer le statut!';
+            $this->log .= '</br>' . $db->Error();
+            $this->error = false;
+        } else {
+            $this->log .= '</br>Statut changé! ';
+            //$this->log   .= $this->table.' '.$this->id_produit.' '.$etat;
+            $this->error = true;
         }
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 }

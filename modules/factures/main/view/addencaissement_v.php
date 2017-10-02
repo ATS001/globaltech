@@ -14,7 +14,7 @@ $id_facture = Mreq::tp('id');
 <div class="pull-right tableTools-container">
     <div class="btn-group btn-overlap">
 
-<?php TableTools::btn_add('encaissement', 'Liste des encaissements', MInit::crypt_tp('id', $id_facture), $exec = NULL, 'reply'); ?>
+<?php TableTools::btn_add('encaissements', 'Liste des encaissements', MInit::crypt_tp('id', $id_facture), $exec = NULL, 'reply'); ?>
 
     </div>
 </div>
