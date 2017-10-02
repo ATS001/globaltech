@@ -172,7 +172,7 @@ $form->render();
             }
             var $link = $(this).attr('rel');
             var $titre = 'Modifier détail contrat';
-            var $data = $(this).attr('data');
+            var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val();
             ajax_bbox_loader($link, $data, $titre, 'large')
 
         });

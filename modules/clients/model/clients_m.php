@@ -115,8 +115,8 @@ class Mclients {
         }
         global $db;
           global $db;
-        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(CODE, 5, LENGTH(SUBSTR(CODE,5))-5))),0)+1  AS reference FROM clients WHERE SUBSTR(CODE,LENGTH(CODE)-3,4)= (SELECT  YEAR(SYSDATE()))');
-        $this->reference = 'CLT-' . $max_id . '/' . date('Y');
+        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(CODE, 8, LENGTH(SUBSTR(CODE,8))-5))),0)+1  AS reference FROM clients WHERE SUBSTR(CODE,LENGTH(CODE)-3,4)= (SELECT  YEAR(SYSDATE()))');
+        $this->reference = 'GT-CLT-' . $max_id . '/' . date('Y');
     }
 
 	 //Save new client after all check

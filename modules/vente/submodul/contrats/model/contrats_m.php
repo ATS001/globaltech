@@ -220,8 +220,8 @@ class Mcontrat {
             return false;
         }
         global $db;
-        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(ref, 5, LENGTH(SUBSTR(ref,5))-5))),0)+1  AS reference FROM contrats WHERE SUBSTR(ref,LENGTH(ref)-3,4)= (SELECT  YEAR(SYSDATE()))');
-        $this->reference = 'CTR-' . $max_id . '/' . date('Y');
+        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(ref, 8, LENGTH(SUBSTR(ref,8))-5))),0)+1  AS reference FROM contrats WHERE SUBSTR(ref,LENGTH(ref)-3,4)= (SELECT  YEAR(SYSDATE()))');
+        $this->reference = 'GT-CTR-' . $max_id . '/' . date('Y');
     }
 
     /////////////////////////////////////////////////////////////////////////////////

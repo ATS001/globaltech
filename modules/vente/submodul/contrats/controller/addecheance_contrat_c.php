@@ -9,6 +9,8 @@ if(MInit::form_verif('addecheance_contrat',false))
 		'commentaire'     => Mreq::tp('commentaire') ,
 		);
 
+    $date_fin=Mreq::tp('dat_fn');
+    $date_effet=Mreq::tp('dat_ef');
 
 
 	$checker = null;
@@ -31,7 +33,7 @@ if(MInit::form_verif('addecheance_contrat',false))
 	}
 
 
-    if(date('Y-m-d', strtotime($posted_data['date_echeance'])) >= date('Y-m-d', strtotime($posted_data['date_fin']))  or date('Y-m-d', strtotime($posted_data['date_echeance'])) <= date('Y-m-d', strtotime($posted_data['date_effet'])) )
+    if(date('Y-m-d', strtotime($posted_data['date_echeance'])) >= date('Y-m-d', strtotime($date_fin))  or date('Y-m-d', strtotime($posted_data['date_echeance'])) <= date('Y-m-d', strtotime($date_effet)) )
     {
 
             $date_ech = "<ul>La date d'échéance doit être supérieur de la date d'effet et  inférieur de la date de fin !!!</ul>" ;
