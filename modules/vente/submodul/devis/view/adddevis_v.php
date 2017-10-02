@@ -119,6 +119,10 @@ $(document).ready(function() {
     		ajax_loadmessage('Il faut choisir un client','nok');
     		return false;
     	}
+        if($('#is_abn').val() == 'abn'){
+            ajax_loadmessage("Impossible d'insérer un abonnement avec autres produits",'nok');
+            return false;
+        }
         var $link  = $(this).attr('rel');
    		var $titre = $(this).attr('data_titre'); 
    		var $data  = $(this).attr('data'); 
@@ -242,7 +246,8 @@ $(document).ready(function() {
                     ajax_loadmessage(data_arry[1],'ok',3000);
                     var t1 = $('.dataTable').DataTable().draw();
                     $('#sum_table').val(data_arry[2]);
-                    $('#valeur_remise').trigger('change'); 
+                    $('#valeur_remise').trigger('change');
+                    $('#is_abn').remove();
                 }
 
             }

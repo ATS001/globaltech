@@ -3,9 +3,14 @@
 defined('_MEXEC') or die;
 if(MInit::form_verif('edit_info_ste',false))
 	{
+		/*if (!MInit::crypt_tp('id', null, 'D')) {
+        //returne message error red to client 
+			exit('3#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+		}*/
 
 		$posted_data = array(
 
+			'ste_id'      => Mreq::tp('id') ,
 			'ste_name'    => Mreq::tp('ste_name') ,
 			'ste_bp'      => Mreq::tp('ste_bp') ,
 			'ste_adresse' => Mreq::tp('ste_adresse') ,
@@ -26,30 +31,40 @@ if(MInit::form_verif('edit_info_ste',false))
 
 		$checker = null;
 		$empty_list = "Les champs suivants sont obligatoires:\n<ul>";
-		if(!MInit::is_regex($posted_data['ville'])){
+		
+		if($posted_data['ste_name'] == NULL){
 
-			$empty_list .= "<li>Ville non valide (a-z 1-9)</li>";
+			$empty_list .= "<li>Nom de la Société</li>";
 			$checker = 1;
 		}
+		if($posted_data['ste_bp'] == NULL){
 
-		if($posted_data['ville'] == NULL){
-
-			$empty_list .= "<li>Ville</li>";
+			$empty_list .= "<li>BP</li>";
 			$checker = 1;
 		}
-		if($posted_data['latitude'] == NULL){
+		if($posted_data['ste_adresse'] == NULL){
 
-			$empty_list .= "<li>Latitude</li>";
+			$empty_list .= "<li>Adresse</li>";
 			$checker = 1;
 		}
-		if($posted_data['longitude'] == NULL){
+		if($posted_data['ste_tel'] == NULL){
 
-			$empty_list .= "<li>Longitude</li>";
+			$empty_list .= "<li>Téléphone</li>";
 			$checker = 1;
 		}
-		if($posted_data['id_departement'] == NULL){
+		if($posted_data['ste_email'] == NULL){
 
-			$empty_list .= "<li>Département</li>";
+			$empty_list .= "<li>Email</li>";
+			$checker = 1;
+		}
+		if($posted_data['ste_if'] == NULL){
+
+			$empty_list .= "<li>Identifiant fiscal</li>";
+			$checker = 1;
+		}
+		if($posted_data['ste_rc'] == NULL){
+
+			$empty_list .= "<li>Numéro Registre de commerce</li>";
 			$checker = 1;
 		}
 
@@ -64,16 +79,16 @@ if(MInit::form_verif('edit_info_ste',false))
   //End check empty element
 
 		$ste_info = new  MSte_info($posted_data);
-
+        $ste_info->id_ste = $posted_data['ste_id']; 
 
 
   //execute Insert returne false if error
 		if($ste_info->edit_info_ste()){
 
-			echo("1#".$ste_info->log);
+			exit("1#".$ste_info->log);
 		}else{
 
-			echo("0#".$ste_info->log);
+			exit("0#".$ste_info->log);
 		}
 
 

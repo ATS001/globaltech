@@ -28,6 +28,7 @@ class MDevis
     var $total_tva_t    = null;//
     var $order_detail   = null; //
     var $sum_total_ht   = null;//
+    var $arr_prduit     = array();
 
 
     public function __construct($properties = array()){
@@ -321,17 +322,7 @@ class MDevis
     		//exit('0#'.$this->log);
         	}
         }
-    /////////////////////////////////////////////////////////////////////////////////
-        private function Make_devis_reference()
-        {
-        	if($this->error == false)
-        	{
-        		return false;
-        	}
-        	global $db;
-        	$max_id = $db->QuerySingleValue0('SELECT MAX(id)+1 FROM devis');
-        	$this->reference = 'DEV_'.$max_id.'_'.date('Y');
-        }
+    
     /////////////////////////////////////////////////////////////////////////////////
         private function Check_devis_exist($tkn_frm, $edit = null)
         {
@@ -351,8 +342,7 @@ class MDevis
         	$this->Check_devis_exist($this->_data['tkn_frm'], null);
       //Check if devis have détails
         	$this->Check_devis_have_details($this->_data['tkn_frm']);
-      //Make reference
-        	$this->Make_devis_reference();
+      
         //Before execute do the multiple check
         	$this->Check_exist('reference', $this->reference, 'Réference Devis', null);
 
@@ -591,6 +581,24 @@ class MDevis
         }
     }
 
+    private function check_detail_have_more_abn($tkn_frm)
+    {
+        if($this->error == false)
+        {
+            return false;
+        }
+        $table_details = $this->table_details;
+        global $db;
+        $req_sql = "SELECT COUNT($table_details.id_produit) FROM $table_details, produits, ref_types_produits WHERE tkn_frm = '$tkn_frm' AND  $table_details.id_produit = produits.id AND produits.idtype = ref_types_produits.id AND ref_types_produits.type_produit like 'Abonnement'";
+         
+        $count_id = $db->QuerySingleValue0($req_sql);
+        if($count_id > 0) 
+        {
+          $this->error = false;
+          $this->log .= '</br>Impossible d\'insérer deux abonnement sur le même devis';
+        }
+    }
+
     private function Check_devis_have_details($tkn_frm)
     {
         $table_details = $this->table_details;
@@ -656,7 +664,7 @@ class MDevis
         $table_details = $this->table_details;
         $this->check_detail_exist_in_devis($tkn_frm, $this->_data['id_produit']);
         $this->check_non_exist('produits','id',$this->_data['id_produit'] ,'Réference du produit' );
-
+        $this->check_detail_have_more_abn($tkn_frm);
 
         //Check $this->error (true / false)
         if($this->error == true){
@@ -739,7 +747,8 @@ class MDevis
         $this->get_devis_d();
         if($this->h('id_produit') != $this->_data['id_produit'])
         {
-            $this->check_detail_exist_in_devis($tkn_frm, $this->_data['id_produit'], 1); 
+            $this->check_detail_exist_in_devis($tkn_frm, $this->_data['id_produit'], 1);
+            $this->check_detail_have_more_abn($tkn_frm); 
         }
 
         $this->check_non_exist('produits','id',$this->_data['id_produit'] ,'Réference du produit' );
@@ -818,7 +827,13 @@ class MDevis
         global $db;
         $table = $this->table;
         $id_devis = $this->id_devis;
-        $req_sql = " UPDATE $table SET etat = $etat+1 WHERE id = $id_devis ";
+        if(!$reference = $db->Generate_reference($table, 'DEV'))
+        {
+            $this->log .= '</br>Problème Réference';
+            return false;
+        }
+        $req_sql = " UPDATE $table SET etat = $etat+1, reference = '$reference'  WHERE id = $id_devis ";
+        
         if (!$db->Query($req_sql)) {
             $this->error = false;
             $this->log .= "Erreur Validation";
@@ -953,6 +968,68 @@ class MDevis
         }else{
             return true;
         }
+    }
+
+
+    /**
+     * [get_info_produit description] Get all product info
+     * @param  [type] $id_produit [description]
+     * @return [type]             [description]
+     * @return array converted to JSON incontroller
+     */
+    public function get_info_produit($id_produit)
+    {
+        global $db;
+        $req_sql = "SELECT 
+        produits.designation,
+        produits.ref,
+        IFNULL(stock.prix_vente, 0) AS prix_vente,
+        ref_unites_vente.unite_vente,
+        ref_types_produits.type_produit,
+        IFNULL((SELECT MAX(d_devis.prix_ht) FROM d_devis WHERE d_devis.id_produit = $id_produit), 0) AS prix_vendu,
+        IFNULL(SUM(stock.qte), 0) AS qte_in_stock,
+        IFNULL(
+        (SELECT 
+        SUM(d_devis.qte) 
+        FROM
+        d_devis,
+        devis 
+        WHERE d_devis.id_produit = produits.id 
+        AND d_devis.id_devis = devis.id 
+        AND devis.etat = 1),
+        0
+        ) AS qte_comand 
+        FROM
+        stock 
+        INNER JOIN produits 
+        ON (
+        stock.idproduit = produits.id
+        ) 
+        INNER JOIN ref_types_produits 
+        ON (
+        produits.idtype = ref_types_produits.id
+        ) 
+        INNER JOIN ref_unites_vente 
+        ON (
+        produits.iduv = ref_unites_vente.id
+        ) 
+        
+        WHERE produits.id = $id_produit ";
+
+        if (!$db->Query($req_sql)) {
+           
+            $this->arr_prduit = array('error' => "Erreur get product info");
+            return false;
+            
+        }else{
+
+            $this->arr_prduit = $db->RowArray();
+            if($this->arr_prduit['type_produit'] == 'Abonnement'){
+                $this->arr_prduit['abn']= true;
+            }
+            
+        }
+        return true;
     }
 
 

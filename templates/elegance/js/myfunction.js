@@ -332,7 +332,7 @@ function do_ajax($url, $data , $the_table){
                 	var data_arry = data.split("#");
                 	if(data_arry[0] == 1) {
 
-        				ajax_loadmessage(data_arry[1],'ok',50000);
+        				ajax_loadmessage(data_arry[1],'ok',5000);
         				
         				 var table = $('#'+$the_table).DataTable();
                          table.row('.selected').remove().draw( false );

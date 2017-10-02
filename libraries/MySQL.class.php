@@ -903,12 +903,12 @@ class MySQL
 			if ($this->RowCount() > 0) {
 				$html = "";
 				$style = '<style type="text/css">
-				.row0
+				.row1
 				{
 					background-color: #eaebed;
 					border:1pt solid black;
 				}
-				.row1{
+				.row0{
 					border:1px solid black;
 				}
 				.alignRight { text-align: right; }
@@ -939,6 +939,29 @@ class MySQL
 
 		return $html;
 	}
+
+    /**
+     * [Generate_reference description] 
+     * table must have culomn named reference else return false
+     * @param [type] $table [table of element ]
+     * @param [type] $abr   [abreviation]
+     * @return [string or false] [<description>]
+     */
+	public function Generate_reference($table, $abr) 
+	{
+        
+        $max_id = $this->QuerySingleValue0("SELECT IFNULL( MAX(SUBSTRING_INDEX(SUBSTRING_INDEX(reference, '-', -1),'/',1)),0) + 1 AS ref FROM  $table WHERE SUBSTRING_INDEX(reference, '/', -1) = YEAR(SYSDATE())");
+        //$lent
+        if($max_id != '0')
+        {
+        	$num_padded = sprintf("%04d", $max_id); //Format Number to 4 char with 0
+        	$reference = $abr.'-' . $num_padded . '/' . date('Y');
+        }else{
+        	return false;
+        }
+        
+        return $reference;
+    }
 
 		/**
 	 * This function returns the last query as an HTML table

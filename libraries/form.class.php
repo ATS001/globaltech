@@ -422,7 +422,7 @@ $this->gallery_bloc_js .= "$('#btn_add_pic').on('click', '.this_add_pic', functi
       $readonly_use = $readonly == null ? null : 'readonly=""';
     	$input = '<div class="space-2"></div>
     	<div class="form-group">
-         <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">'.$input_desc.':</label>
+         <label id="label_'.$input_id.'" class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">'.$input_desc.':</label>
 
          <div class="col-xs-12 col-sm-9">
              <div class="clearfix">';

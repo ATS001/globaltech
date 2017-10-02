@@ -69,9 +69,10 @@ class MNotifier
     		$app   = $column['app'];
     		$table = $column['table'];
             //Get notification 
-            if($count_arr = $this->count_notif($app, $table))
+            if($count_arr = $this->count_notif($app, $table) )
             {
             	//var_dump($count_arr);
+              //  exit();
             	array_push($this->notif_array, $count_arr['0']);
 
             }

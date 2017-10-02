@@ -187,10 +187,23 @@ $(document).ready(function() {
         }
     });
 
-    $('#id_client').on('change', function () {
-        
-        var $adresse = '<div class="form-group>"><address><strong>Twitter, Inc.</strong><br>795 Folsom Ave, Suite 600<br>San Francisco, CA 94107<br><abbr title="Phone">P:</abbr>(123) 456-7890</address></div>';
-        $(this).parent('div').after($adresse);
+    $('#id_client').on('input change', function () {
+                
+        var $id_client = $(this).val();
+        $.ajax({
+
+            cache: false,
+            url  : '?_tsk=add_detaildevis&ajax=1',
+            type : 'POST',
+            data : '&act=1&<?php echo MInit::crypt_tp('exec', 'info_client') ?>&id='+$id_client,
+            dataType:"JSON",
+            success: function(data){
+                //info client après               
+                $('#tva').val(data['tva_brut']);
+                $('#tva').trigger("chosen:updated");
+
+            }
+        });
 
     });
     $('#table_details_devis tbody ').on('click', 'tr .del_det', function() {
@@ -211,6 +224,7 @@ $(document).ready(function() {
                     var t1 = $('.dataTable').DataTable().draw();
                     $('#sum_table').val(data_arry[2]);
                     $('#valeur_remise').trigger('change'); 
+                    $('#is_abn').remove();
                 }
 
             }
