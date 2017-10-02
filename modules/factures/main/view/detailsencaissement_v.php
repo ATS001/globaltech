@@ -2,16 +2,16 @@
 $info_encaissement = new Mfacture();
 $info_encaissement->id_encaissement = Mreq::tp('id');
 $info_encaissement->get_encaissement_info();
-
+$justif = $info_encaissement->encaissement_info['pj'];
 ?>
 <div class="pull-right tableTools-container">
     <div class="btn-group btn-overlap">
 
-<?php
-TableTools::btn_add('encaissements', 'Liste des encaissements', MInit::crypt_tp('id', $info_encaissement->Shw('idfacture', 1)), $exec = NULL, 'reply'); 
-?>
+        <?php
+        TableTools::btn_add('encaissements', 'Liste des encaissements', MInit::crypt_tp('id', $info_encaissement->Shw('idfacture', 1)), $exec = NULL, 'reply');
+        ?>
 
-        
+
 
     </div>
 </div>
@@ -90,12 +90,17 @@ TableTools::btn_add('encaissements', 'Liste des encaissements', MInit::crypt_tp(
                                         <span><?php $info_encaissement->printattribute('date_encaissement'); ?></span>
                                     </div>
                                 </div>
-
-                                  <div class="center">
-                                <a class="iframe_pdf" rel="<?php $info_encaissement->printattribute('pj') ?>">
-                                    <p class="lead"><i class="ace-icon fa fa-file-pdf-o red"></i>Justification de l'encaissement : <?php $info_encaissement->printattribute('ref') ?> </p>
-                                </a>							
-                            </div>  
+                                <?php
+                                if ($justif != null) {
+                                    ?>
+                                    <div class="center">
+                                        <a class="iframe_pdf" rel="<?php $info_encaissement->printattribute('pj') ?>">
+                                            <p class="lead"><i class="ace-icon fa fa-file-pdf-o red"></i>Justification de l'encaissement : <?php $info_encaissement->printattribute('ref') ?> </p>
+                                        </a>							
+                                    </div>  
+                                    <?php
+                                }
+                                ?> 
 
                             </div>
 
