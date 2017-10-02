@@ -77,6 +77,10 @@ $form->radio('Facturation', 'periode_fact', $info_contrat->s('periode_fact'), $f
 //Commentaire
 $form->input_editor('Commentaire', 'commentaire', 8, $info_contrat->s('commentaire'), $js_array = null, $input_height = 50);
 
+//Date notif
+$array_date_notif[] = array('required', 'true', 'Insérer la date de notification');
+$form->input_date('Date notification', 'date_notif', 4, $info_contrat->s('date_notif'), $array_date_notif);
+
 //pj_id
 $form->input('Justification du contrat', 'pj', 'file', 6, 'Justification_client.pdf', null);
 $form->file_js('pj', 1000000, 'pdf', $info_contrat->s('pj'), 1);

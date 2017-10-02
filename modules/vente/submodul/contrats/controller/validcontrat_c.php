@@ -17,7 +17,7 @@ if(!MInit::crypt_tp('id', null, 'D')or !$contrat->get_contrat())
 //Execute activation desactivation
 $etat = $contrat->contrat_info['etat'];
 
-if($contrat->valid_contrat($etat))
+if($contrat->valid_contrats($etat))
 {
 	exit("1#".$contrat->log);
 
