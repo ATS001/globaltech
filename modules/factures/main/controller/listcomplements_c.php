@@ -100,7 +100,7 @@ if (Mreq::tp('export') == 1) {
         $header = array('ID', 'Désignation', 'Facture', 'Montant', 'Type','Date', 'Statut');
         Minit::Export_xls($header, $file_name, $title);
     } elseif (Mreq::tp('format') == 'pdf') {
-        $header = array('ID' => 10, 'Désignation' => 20, 'Facture' => 20, 'Montant' => 15, 'Type' => 15,'Date'=>10, 'Statut' => 20);
+        $header = array('ID' => 10, 'Désignation' => 17, 'Facture' => 17, 'Montant' => 15, 'Type' => 15,'Date'=>12, 'Statut' => 15);
         Minit::Export_pdf($header, $file_name, $title);
     } elseif (Mreq::tp('format') == 'dat') {
         Minit::send_big_param('complements#' . $sqlTot);
