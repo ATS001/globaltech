@@ -175,9 +175,9 @@ class Mfacture {
     //Save new complement after all check
     public function save_new_complement() {
 
-    if($this->_data['type'] == "Réduction")
-    $this->_data['montant']=-$this->_data['montant'];
-    
+        if ($this->_data['type'] == "Réduction")
+            $this->_data['montant'] = -$this->_data['montant'];
+
         global $db;
         $values["designation"] = MySQL::SQLValue($this->_data['designation']);
         $values["idfacture"] = MySQL::SQLValue($this->_data['idfacture']);
@@ -280,17 +280,26 @@ class Mfacture {
             $this->log .= '<br>Problème de mise à jour du reste ';
         }
     }
-    
-    
+
+    public function update_reste_after_delete($id_facture, $mt) {
+        $this->id_facture = $id_facture;
+
+        global $db;
+        $req_sql = "UPDATE factures SET reste = reste + $mt  , total_paye = total_paye - $mt WHERE id = '$id_facture'";
+        if (!$db->Query($req_sql)) {
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .= '<br>Problème de mise à jour du reste ';
+        }
+    }
 
     public function update_reste($id_facture, $montant_init, $montant_modif) {
-        $this->id_facture=$id_facture;
+        $this->id_facture = $id_facture;
         $this->get_facture();
-        $reste= ($this->facture_info['reste'] + $montant_init) - $montant_modif;
-        $total_paye= ($this->facture_info['total_paye']- $montant_init) + $montant_modif;
-                  
+        $reste = ($this->facture_info['reste'] + $montant_init) - $montant_modif;
+        $total_paye = ($this->facture_info['total_paye'] - $montant_init) + $montant_modif;
+
         global $db;
-        //$req_sql = "UPDATE factures SET reste = (reste + $montant_init) - $montant_modif , total_paye = (total_paye - $montant_init) + $montant_modif WHERE id = '$id_facture'";
         $req_sql = "UPDATE factures SET reste = $reste , total_paye = $total_paye WHERE id = '$id_facture'";
         if (!$db->Query($req_sql)) {
             $this->log .= $db->Error();
@@ -454,6 +463,7 @@ class Mfacture {
         global $db;
         $id_encaissement = $this->id_encaissement;
         $this->get_encaissement();
+        $mt = $this->encaissement_info['montant'];
         //Format where clause
         $where['id'] = MySQL::SQLValue($id_encaissement);
         //check if id on where clause isset
@@ -471,6 +481,7 @@ class Mfacture {
 
             $this->error = true;
             $this->log .= '</br>Suppression réussie ';
+            $this->update_reste_after_delete($this->encaissement_info['idfacture'], $mt);
         }
         //check if last error is true then return true else rturn false.
         if ($this->error == false) {
@@ -485,10 +496,10 @@ class Mfacture {
         //Get existing data for complement
         $this->get_complement();
         $this->last_id = $this->id_complement;
-        
-        if($this->_data['type'] == "Réduction")
-        $this->_data['montant']=-$this->_data['montant'];
-    
+
+        if ($this->_data['type'] == "Réduction")
+            $this->_data['montant'] = -$this->_data['montant'];
+
 
         global $db;
         $values["designation"] = MySQL::SQLValue($this->_data['designation']);
@@ -568,7 +579,7 @@ class Mfacture {
                 if ($this->error == true) {
                     $this->log = '</br>Modification réussie: <b>' . $this->_data['id'] . ' ID: ' . $this->last_id;
                     $this->update_reste($this->_data['idfacture'], $mt_init, $this->_data['montant']);
-                    
+
                     //Check $this->error = false return Red message and Bol false	
                 } else {
                     $this->log .= '</br>Modification non réussie: <b>' . $this->_data['id'];
