@@ -627,4 +627,42 @@ class Mfacture {
         }
     }
 
+    // afficher les infos d'un contrat
+    public function printattribute($attibute) {
+        if ($this->encaissement_info[$attibute] != null) {
+            echo $this->encaissement_info[$attibute];
+        } else {
+            echo "";
+        }
+    }
+    
+    //Get all info encaissement from database for edit form
+    public function get_encaissement_info() {
+        global $db;
+
+        $table_encaissement = $this->table_encaissement;
+
+        $sql = "SELECT $table_encaissement.* , factures.ref FROM 
+    		$table_encaissement,factures WHERE $table_encaissement.idfacture=factures.id AND $table_encaissement.id = " . $this->id_encaissement;
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->encaissement_info = $db->RowArray();
+                $this->error = true;
+            }
+        }
+        //return Array produit_info
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 }
