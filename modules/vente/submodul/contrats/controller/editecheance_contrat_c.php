@@ -39,7 +39,7 @@ if (MInit::form_verif('editecheance_contrat', false)) {
     }
     if($posted_data['montant'] == NULL OR $posted_data['montant'] == '0'){
 
-        $empty_list .= "<li>Montant HT à facturer</li>";
+        $empty_list .= "<li>Montant TTC à facturer</li>";
         $checker = 1;
     }
 
@@ -62,7 +62,7 @@ if (MInit::form_verif('editecheance_contrat', false)) {
         exit("1#" . $exist_echeance->log);
     } else {
 
-        exit("0#" . $exist_devis_d->log);
+        exit("0#" . $exist_echeance->log);
     }
 }
 

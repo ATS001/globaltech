@@ -55,7 +55,7 @@ $form->input_hidden('ref', $info_contrat->s('ref'));
 
 //Devis
 $devis_array[]  = array('required', 'true', 'Choisir un devis');
-$form->select_table('Devis ', 'iddevis', 8, 'devis', 'id', 'reference' , 'reference', $indx = '------' , $info_contrat->s('iddevis'),$multi=NULL, $where=NULL, $devis_array);
+$form->select_table('Devis ', 'iddevis', 8, 'devis', 'id', 'reference' , 'reference', $indx = '------' , $info_contrat->s('iddevis'),$multi=NULL, $where="devis.etat=1 AND  devis.`id` NOT IN (SELECT iddevis FROM contrats c WHERE devis.id=c.iddevis)", $devis_array);
 
 //Date effet
 $array_date_effet[] = array('required', 'true', 'Insérer la date effet');
@@ -73,6 +73,7 @@ $form->select_table('Type échéance', 'idtype_echeance', 8, 'ref_type_echeance'
 $facturation_array[]  = array('Début du mois' , 'D' );
 $facturation_array[]  = array('Fin du fin' , 'F' );
 $form->radio('Facturation', 'periode_fact', $info_contrat->s('periode_fact'), $facturation_array, '');
+
 
 //Commentaire
 $form->input_editor('Commentaire', 'commentaire', 8, $info_contrat->s('commentaire'), $js_array = null, $input_height = 50);
@@ -95,10 +96,9 @@ $js_addfunct = 'var column = t.column(0);
      column.visible( ! column.visible() );';
 
 $verif_value = $info_contrat->s('tkn_frm');
-$form->draw_datatabe_form('table_echeance', $verif_value, $columns, 'addcontrat', 'addecheance_contrat', 'Ajouter une échéance', $js_addfunct);
 
-//
-///////////////////////////////////////////////////////////////////////////////////////////////
+
+$form->draw_datatabe_form('table_echeance', $verif_value, $columns, 'addcontrat', 'addecheance_contrat', 'Ajouter une échéance', $js_addfunct);
 
 
 $form->button('Enregistrer');

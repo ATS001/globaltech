@@ -73,10 +73,7 @@ $facturation_array[]  = array('Début du mois' , 'D' );
 $facturation_array[]  = array('Fin du fin' , 'F' );
 $form->radio('Facturation', 'periode_fact', 'D', $facturation_array, '');
 
-//Adresse
-$adresse_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
-$adresse_array[]  = array('required', 'true', 'Insérer Adresse' );
-$form->input('Adresse', 'adresse', 'text', 6, null, $adresse_array);
+
 //commentaire
 $form->input_editor('Commentaire', 'commentaire', 8, $clauses=NULL , $js_array = null,  $input_height = 50);
 
@@ -117,21 +114,29 @@ $form->render();
         
 <script type="text/javascript">
 $(document).ready(function() {
-    $('.table_echeance').hide();
-    
-    $('#idtype_echeance').bind('select change',function() {
 
-        if($("#idtype_echeance option:selected").text()== 'Autres' ){
+   if ($("#idtype_echeance option:selected").text() == 'Autres') {
 
-            $('.table_echeance').show();
+                $('.table_echeance').show();
 
-        }else{
+            } else {
 
-            $('.table_echeance').hide();
+                $('.table_echeance').hide();
+            }    
 
-        }
+        $('#idtype_echeance').bind('select change', function () {
 
-    });
+            if ($("#idtype_echeance option:selected").text() == 'Autres') {
+
+                $('.table_echeance').show();
+
+            } else {
+
+                $('.table_echeance').hide();
+
+            }
+
+        });
    
     $('#addRow').on( 'click', function () {
         
@@ -148,7 +153,6 @@ $(document).ready(function() {
     });
 
   
-   
 
     $('#iddevis').on('change', function () {
         
@@ -157,7 +161,7 @@ $(document).ready(function() {
 
     });
     
-    $('#table_echeance tbody ').on('click', 'tr .edt_det', function() {
+    $('#table_echeance tbody ').on('click', 'tr .edt_ctr', function() {
         
         if($('#iddevis').val() == ''){
 
@@ -170,7 +174,7 @@ $(document).ready(function() {
         ajax_bbox_loader($link, $data, $titre, 'large')
         
     });
-    $('#table_echeance tbody ').on('click', 'tr .del_det', function() {
+    $('#table_echeance tbody ').on('click', 'tr .del_ctr', function() {
         var $idecheance = $(this).attr('data');
         $.ajax({
 

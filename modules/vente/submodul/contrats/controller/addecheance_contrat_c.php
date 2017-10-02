@@ -18,7 +18,7 @@ if(MInit::form_verif('addecheance_contrat',false))
 	}
 	if($posted_data['montant'] == NULL OR $posted_data['montant'] == '0'){
 
-		$empty_list .= "<li>Montant HT à facturer</li>";
+		$empty_list .= "<li>Montant TTC à facturer</li>";
 		$checker = 1; 
 	}
 
