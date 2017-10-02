@@ -69,19 +69,28 @@ $form->input_date('Date de fin', 'date_fin', 4, $info_contrat->s('date_fin'), $a
 $ech_array[] = array('required', 'true', 'Choisir un type échéance');
 $form->select_table('Type échéance', 'idtype_echeance', 8, 'ref_type_echeance', 'id', 'id', 'type_echeance', $indx = '------', $info_contrat->s('idtype_echeance'), $multi = NULL, $where = NULL, $ech_array);
 
+// Facturation
+$facturation_array[]  = array('Début du mois' , 'D' );
+$facturation_array[]  = array('Fin du fin' , 'F' );
+$form->radio('Facturation', 'periode_fact', $info_contrat->s('periode_fact'), $facturation_array, '');
 
+//Commentaire
 $form->input_editor('Commentaire', 'commentaire', 8, $info_contrat->s('commentaire'), $js_array = null, $input_height = 50);
+
+//Date notif
+$array_date_notif[] = array('required', 'true', 'Insérer la date de notification');
+$form->input_date('Date notification', 'date_notif', 4, $info_contrat->s('date_notif'), $array_date_notif);
 
 //pj_id
 $form->input('Justification du contrat', 'pj', 'file', 6, 'Justification_client.pdf', null);
 $form->file_js('pj', 1000000, 'pdf', $info_contrat->s('pj'), 1);
 
 //pj_id
-$form->input('Photo', 'pj_photo', 'file', 6, 'Photo_client.jpeg', null);
-$form->file_js('pj_photo', 1000000, 'image', $info_contrat->s('pj_photo'), 1);
+/*$form->input('Photo', 'pj_photo', 'file', 6, 'Photo_client.jpeg', null);
+$form->file_js('pj_photo', 1000000, 'image', $info_contrat->s('pj_photo'), 1);*/
 
 //Table 
-$columns = array('id' => '1', 'Item' => '5', 'Date échéance' => '30', 'Commentaire' => '50', '#' => '5');
+$columns = array('id' => '1','Item' => '5', 'Date échéance' => '14','Montant TTC' => '30', 'Commentaire' => '40', '#' =>'5'   );
 $js_addfunct = 'var column = t.column(0);
      column.visible( ! column.visible() );';
 

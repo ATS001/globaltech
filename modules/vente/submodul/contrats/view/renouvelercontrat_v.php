@@ -1,37 +1,59 @@
+ <?php
+//Get all contrat info 
+$info_contrat = new Mcontrat();
+//Set ID of Module with POST id
+$info_contrat->id_contrat = Mreq::tp('id');
+//Check if Post ID <==> Post idc or get_modul return false. 
+if (!MInit::crypt_tp('id', null, 'D') or ! $info_contrat->get_contrat()) {
+    // returne message error red to client 
+    exit('3#' . $info_contrat->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+}
+  $ref=$info_contrat->s('ref');
+?>
+
  <div class="pull-right tableTools-container">
-	<div class="btn-group btn-overlap">
-				
-		<?php TableTools::btn_add('contrats','Liste des contrats', Null, $exec = NULL, 'reply'); ?>
-					
-	</div>
+    <div class="btn-group btn-overlap">
+                
+        <?php TableTools::btn_add('contrats','Liste des contrats', Null, $exec = NULL, 'reply'); ?>
+                    
+    </div>
 </div>
 <div class="page-header">
-	<h1>
-		Ajouter un contrat
-		<small>
-			<i class="ace-icon fa fa-angle-double-right"></i>
-		</small>
-	</h1>
+    <h1>
+        Renouveler le contrat : <?php  echo $ref; ?>
+        <small>
+            <i class="ace-icon fa fa-angle-double-right"></i>
+        </small>
+    </h1>
 </div><!-- /.page-header -->
 <!-- Bloc form Add Devis-->
 <div class="row">
-	<div class="col-xs-12">
-		<div class="clearfix">
-			
-		</div>
-		<div class="table-header">
-			Formulaire: "<?php echo ACTIV_APP; ?>"
-		</div>
-		<div class="widget-content">
-			<div class="widget-box">
-				
+    <div class="col-xs-12">
+        <div class="clearfix">
+            
+        </div>
+        <div class="table-header">
+            Formulaire: "<?php echo ACTIV_APP; ?>"
+        </div>
+        <div class="widget-content">
+            <div class="widget-box">
+                
 <?php
-$form = new Mform('addcontrat', 'addcontrat', '', 'contrats', '0', null);
+$form = new Mform('renouvelercontrat', 'renouvelercontrat', '', 'contrats', '0', null);
+
+$form->input_hidden('id', Mreq::tp('id'));
+$form->input_hidden('idc', Mreq::tp('idc'));
+$form->input_hidden('idh', Mreq::tp('idh'));
+
+//Reference
+$form->input_hidden('checker_reference', MInit::cryptage($info_contrat->s('ref'), 1));
+$form->input_hidden('ref', $info_contrat->s('ref'));
+
 
 //Devis
 $devis_array[]  = array('required', 'true', 'Choisir un devis');
-$form->select_table('Devis', 'iddevis', 8, 'devis', 'id', 'reference' , 'reference', $indx = '------' ,$selected=NULL,$multi=NULL,
-        $where="devis.etat=1 AND  devis.`id` NOT IN (SELECT iddevis FROM contrats c WHERE devis.id=c.iddevis)", $devis_array);
+$form->select_table('Devis', 'iddevis', 8, 'devis', 'id', 'reference' , 'reference', $indx = '------' ,$selected=$info_contrat->s('iddevis'),$multi=NULL,
+        $where="devis.etat=1 and devis.id=".$info_contrat->s('iddevis'), $devis_array);
 
 
 //Date effet
@@ -87,12 +109,12 @@ $form->button('Enregistrer');
 $form->render();
 
 ?>
-			</div>
-		</div>
-	</div>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- End Add devis bloc -->
-		
+        
 <script type="text/javascript">
 $(document).ready(function() {
     $('.table_echeance').hide();
@@ -112,15 +134,15 @@ $(document).ready(function() {
     });
    
     $('#addRow').on( 'click', function () {
-    	
-    	if($('#iddevis').val() == ''){
+        
+        if($('#iddevis').val() == ''){
 
-    		ajax_loadmessage('Il faut choisir un devis','nok');
-    		return false;
-    	}
+            ajax_loadmessage('Il faut choisir un devis','nok');
+            return false;
+        }
         var $link  = $(this).attr('rel');
-   		var $titre = $(this).attr('data_titre'); 
-   		var $data  = $(this).attr('data'); 
+        var $titre = $(this).attr('data_titre'); 
+        var $data  = $(this).attr('data'); 
         ajax_bbox_loader($link, $data, $titre, 'large')
         
     });
@@ -177,6 +199,6 @@ $(document).ready(function() {
      
 
 });
-</script>	
+</script>   
 
-		
+        

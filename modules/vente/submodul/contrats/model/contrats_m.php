@@ -96,19 +96,24 @@ class Mcontrat {
     public function get_id_type_echeance($type) {
         $table_echeance = 'ref_type_echeance';
         global $db;
+    //var_dump('testt');
+        $sql = "SELECT $table_echeance.id FROM $table_echeance WHERE $table_echeance.type_echeance = '$type'";
 
-        $sql = "SELECT $table_echeance.id FROM $table_echeance WHERE $table_echeance.type_echance = '$type'";
-
+    //var_dump('testt2');
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
+           // var_dump('testt3'.$this->log);
         } else {
             if ($db->RowCount() == 0) {
                 $this->error = false;
                 $this->log .= 'Aucun enregistrement trouvé ';
+                var_dump('testt4');
             } else {
                 $this->type_echeance_contrat_info = $db->RowArray();
                 $this->error = true;
+
+        //var_dump($this->type_echeance_contrat_info );
             }
         }
 
@@ -119,6 +124,8 @@ class Mcontrat {
         }
     }
 
+
+
     public function Gettable_echeance_contrat() {
         global $db;
         $id_contrat = $this->id_contrat;
@@ -126,6 +133,7 @@ class Mcontrat {
         $colms = null;
         $colms .= " $table.order item, ";
         $colms .= " $table.date_echeance, ";
+        $colms .= " $table.montant, ";
         $colms .= " $table.commentaire ";
 
         $req_sql = " SELECT $colms FROM $table WHERE idcontrat = $id_contrat ";
@@ -135,10 +143,10 @@ class Mcontrat {
             exit($this->log);
         }
 
-        //$style = array('5[#]center', '25[#]center', '70[#]alignLeft');
-        $headers = array('Item'  => '5[#]center', 'Date Echéance'  => '15[#]center','Commentaire' => '30[#]',);
-
+        //$style = array('5[#]center', '25[#
         //$tableau = $db->GetMTable($headers, null, $style);
+        //]center', '70[#]alignLeft');
+        $headers = array('Item'  => '15[#]center', 'Date Echéance'  => '25[#]center','Montant TTC'  => '30[#]center','Commentaire' => '30[#]',);
         $tableau = $db->GetMTable($headers);
 
 
@@ -205,6 +213,8 @@ class Mcontrat {
             $values["commentaire"] = MySQL::SQLValue($this->_data['commentaire']);
             $values["idtype_echeance"] = MySQL::SQLValue($this->_data['idtype_echeance']);
             $values["date_contrat"] = MySQL::SQLValue(date("Y-m-d"));
+            $values["periode_fact"] = MySQL::SQLValue($this->_data['periode_fact']);
+            $values["date_notif"]    = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_notif'])));
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
@@ -289,6 +299,8 @@ class Mcontrat {
             $values["commentaire"] = MySQL::SQLValue($this->_data['commentaire']);
             $values["date_contrat"] = MySQL::SQLValue(date("Y-m-d"));
             $values["idtype_echeance"] = MySQL::SQLValue($this->_data['idtype_echeance']);
+            $values["date_notif"]    = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_notif'])));
+            $values["periode_fact"] = MySQL::SQLValue($this->_data['periode_fact']);
             $values["updusr"] = MySQL::SQLValue(session::get('userid'));
             $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
             $wheres["id"] = $this->id_contrat;
@@ -396,6 +408,7 @@ class Mcontrat {
             $values["tkn_frm"] = MySQL::SQLValue($this->_data['tkn_frm']);
             $values["order"] = MySQL::SQLValue($order_echeance);
             $values["date_echeance"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_echeance'])));
+            $values["montant"] = MySQL::SQLValue($this->_data['montant']);
             $values["commentaire"] = MySQL::SQLValue($this->_data['commentaire']);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
@@ -452,6 +465,7 @@ class Mcontrat {
 
 
             $values["date_echeance"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_echeance'])));
+            $values["montant"] = MySQL::SQLValue($this->_data['montant']);
             $values["commentaire"] = MySQL::SQLValue($this->_data['commentaire']);
             $values["updusr"] = MySQL::SQLValue(session::get('userid'));
             $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
@@ -551,6 +565,20 @@ class Mcontrat {
         }
     }
 
+    //get les type echeance 
+    public function Shw_type($key, $no_echo = "") {
+       if ($this->type_echeance_contrat_info[$key] != null) {
+            if ($no_echo != null) {
+                return $this->type_echeance_contrat_info[$key];
+            }
+
+            echo $this->type_echeance_contrat_info[$key];
+        } else {
+            echo "";
+        }
+    }
+           
+
     //get les infos  contrat
     public function s($key) {
         if ($this->contrat_info[$key] != null) {
@@ -559,6 +587,7 @@ class Mcontrat {
             return null;
         }
     }
+  
 
     // get les infos d'un devis
     public function g($key) {
@@ -802,7 +831,56 @@ class Mcontrat {
     }
    
   
-  
+  //activer ou desactiver un contrats_frn
+    public function valid_contrats($etat)
+    {
+        
+    global $db;
+    //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
+    //$etat = $etat == 0 ? 1 : 0;
+    if($etat==0)
+    {
+      $etat=1;
+    }else if ($etat==1)
+    {
+      $etat=0;
+    }
+    else
+    {
+      $etat=$etat;
+    }
+        //Format value for requet
+        $values["etat"]         = MySQL::SQLValue($etat);
+        $values["updusr"]       = MySQL::SQLValue(session::get('userid'));
+        $values["upddat"]       = MySQL::SQLValue(date("Y-m-d H:i:s"));
+
+        $where["id"]            = $this->id_contrat;
+
+        // Execute the update and show error case error
+        if( !$result = $db->UpdateRows($this->table, $values , $where))
+        {
+            $this->log .= '</br>Impossible de changer le statut!';
+            $this->log .= '</br>'.$db->Error();
+            $this->error = false;
+        }else{
+
+            if(!$this->Get_detail_contrat_pdf())
+            {
+                $this->log .= $this->log;
+                 return false;
+
+            }
+
+            $this->log .= '</br>Statut changé! ';
+            $this->error = true;
+
+        } 
+        if($this->error == false){
+            return false;
+        }else{
+            return true;
+        }
+    }
 ///////////////////////////////////////////////////////////////////////////
     
     public function Get_detail_contrat_pdf()

@@ -107,6 +107,7 @@
 
                     $this->last_id = $result;
                     $this->log .= '</br>Enregistrement  réussie ' . ' - ' . $this->last_id . ' -';
+                    $this->maj_prix_vente($this->_data['idproduit'], $this->_data['prix_vente']);
                 }
             } else {
 
@@ -120,6 +121,17 @@
                 return true;
             }
         }
+
+       public function maj_prix_vente($id_facture, $montant) {
+
+        global $db;
+        $req_sql = "UPDATE produits SET prix_vente = $montant WHERE id = '$id_facture'";
+        if (!$db->Query($req_sql)) {
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .= '<br>Problème de mise à jour du reste ';
+        }
+    }
 
         //activer ou valider une produit
         public function valid_achat_produit($etat = 0) {

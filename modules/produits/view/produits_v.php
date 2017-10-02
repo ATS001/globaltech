@@ -35,6 +35,9 @@
 	                                                <th>
 								Référence
 							</th>
+                                                        <th>
+								Type
+							</th>
 	                                                <th>
 								Désignation
 							</th>                                              
@@ -62,15 +65,16 @@
 		
 		var table = $('#produits_grid').DataTable({
 			bProcessing: true,
-			notifcol : 4,
+			notifcol : 5,
 			serverSide: true,
 			
 			ajax_url:"produits",
 			
 	                aoColumns: [
 	                    {"sClass": "center","sWidth":"5%"}, // Identifiant 
-	                    {"sClass": "left","sWidth":"20%"}, // Catégorie
-	                    {"sClass": "left","sWidth":"25%"},   
+	                    {"sClass": "left","sWidth":"15%"}, 
+                            {"sClass": "left","sWidth":"10%"},
+	                    {"sClass": "left","sWidth":"20%"},   
 	                    {"sClass": "left","sWidth":"10%"},
 	                    {"sClass": "center","sWidth":"10%"}, // Statut
 	                    {"sClass": "center","sWidth":"10%"}, // Action

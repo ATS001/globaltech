@@ -98,6 +98,14 @@
                                             <span><?php $info_produit->printattribute('stock_min'); ?></span>
                                         </div>
                                     </div>
+                                     <div class="profile-info-row">
+                                        <div class="profile-info-name"> Prix de vente </div>
+
+                                        <div class="profile-info-value">
+                                                <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+                                            <span><?php $info_produit->printattribute('prix_vente'); ?></span>
+                                        </div>
+                                    </div>
 
                                 </div>
 

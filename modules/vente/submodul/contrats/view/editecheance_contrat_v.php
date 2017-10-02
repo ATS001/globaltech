@@ -23,6 +23,11 @@ $form->input_hidden('tkn_frm', $info_echeance->h('tkn_frm'));
 $array_date_echeance[] = array('required', 'true', 'Insérer la date échéance');
 $form->input_date('Date échéance', 'date_echeance', 4, $info_echeance->h('date_echeance'), $array_date_echeance);
 
+//Montant
+$array_montant[]= array('required', 'true', 'Insérer le montant à facturer');
+$array_montant[]= array('number', 'true', 'Montant invalid' );
+$form->input('Montant TTC', 'montant', 'number' ,'3 is-number alignRight',  $info_echeance->h('montant'), $array_montant);
+
 //Commentaire
 $form->input_editor('Commentaire', 'commentaire', 8, $info_echeance->h('commentaire'), $js_array = null, $input_height = 200);
 

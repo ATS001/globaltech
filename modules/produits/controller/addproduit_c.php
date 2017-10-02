@@ -10,6 +10,7 @@
            
             'stock_min' => Mreq::tp('stock_min'),
             'idcategorie' => Mreq::tp('idcategorie'),
+            'prix_vente' => Mreq::tp('prix_vente'),
             'iduv' => Mreq::tp('iduv'),
             'idtype' => Mreq::tp('idtype'),
         );

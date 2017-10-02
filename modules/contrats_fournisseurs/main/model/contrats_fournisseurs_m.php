@@ -145,6 +145,7 @@ class Mcontrats_fournisseurs {
       $values["date_effet"]    = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_effet'])));
       $values["date_fin"]      = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_fin'])));
    		$values["commentaire"]   = MySQL::SQLValue($this->_data['commentaire']);
+      $values["date_notif"]    = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_notif'])));
     	$values["creusr"]      	 = MySQL::SQLValue(session::get('userid'));
     	$values["credat"]      	 = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
@@ -187,12 +188,23 @@ class Mcontrats_fournisseurs {
 	
 
     //activer ou desactiver un contrats_frn
-    public function valid_contrats_frn($etat = 0)
+    public function valid_contrats_frn($etat)
     {
     	
     	global $db;
 		//Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
-		$etat = $etat == 0 ? 1 : 0;
+		//$etat = $etat == 0 ? 1 : 0;
+    if($etat==0)
+    {
+      $etat=1;
+    }else if ($etat==1)
+    {
+      $etat=0;
+    }
+    else
+    {
+      $etat=$etat;
+    }
 		//Format value for requet
 		$values["etat"] 		    = MySQL::SQLValue($etat);
 		$values["updusr"]       = MySQL::SQLValue(session::get('userid'));
@@ -280,6 +292,7 @@ class Mcontrats_fournisseurs {
       $values["date_effet"]    = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_effet'])));
       $values["date_fin"]      = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_fin'])));
       $values["commentaire"]   = MySQL::SQLValue($this->_data['commentaire']);
+      $values["date_notif"]    = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_notif'])));
     	$values["updusr"]        = MySQL::SQLValue(session::get('userid'));
     	$values["upddat"]        = MySQL::SQLValue(date("Y-m-d H:i:s"));
     	$wheres["id"]            = $this->id_contrats_frn;

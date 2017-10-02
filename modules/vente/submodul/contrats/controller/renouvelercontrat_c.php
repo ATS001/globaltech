@@ -1,9 +1,10 @@
 <?php
 
 defined('_MEXEC') or die;
-if (MInit::form_verif('addcontrat', false)) {
+if (MInit::form_verif('renouvelercontrat', false)) {
 
     $posted_data = array(
+    	'id'   			   => Mreq::tp('id') ,
         'tkn_frm'         => Mreq::tp('tkn_frm'),
         'iddevis'         => Mreq::tp('iddevis'),
         'date_effet'      => Mreq::tp('date_effet'),
@@ -15,6 +16,14 @@ if (MInit::form_verif('addcontrat', false)) {
         'pj_id'           => Mreq::tp('pj-id'),
         'pj_photo_id'     => Mreq::tp('pj_photo-id')
     );
+
+    $new_contrat = new Mcontrat($posted_data);
+    $new_contrat->id_contrat = $posted_data['id'];
+	$new_contrat->get_contrat();
+
+
+    $new_contrat->exige_pj       = FALSE;
+    $new_contrat->exige_pj_photo = FALSE;
 
 
     //Check if array have empty element return list
@@ -94,6 +103,16 @@ if (MInit::form_verif('addcontrat', false)) {
         exit("0#$control_notif");
     }
 
+    if(date('Y-m-d', strtotime($posted_data['date_effet']))  < $new_contrat->s('date_fin') ){
+
+    	$control_renouvelement = "<ul>La date d'effet doit être supérieur de la fin de l'ancien contrat !!!</ul>";
+   		$checker = 8;
+    }
+  	if($checker == 8)
+  	{
+   		exit("0#$control_renouvelement");
+  	}
+
     $date1=date_create(date('Y-m-d', strtotime($posted_data['date_effet'])));
     $date2=date_create(date('Y-m-d', strtotime($posted_data['date_fin'])));
     $diff=date_diff($date1,$date2);
@@ -167,9 +186,12 @@ exit();*/
     }
 
 
+
     //End check empty element
 
     $new_contrat = new Mcontrat($posted_data);
+    $new_contrat->id_contrat = $posted_data['id'];
+	
 
     $new_contrat->exige_pj       = FALSE;
     $new_contrat->exige_pj_photo = FALSE;
@@ -177,11 +199,14 @@ exit();*/
     //execute Insert returne false if error
     if ($new_contrat->save_new_contrat()) {
 
+    	if($new_contrat->valid_contrats(3))
+    	{
         echo("1#" . $new_contrat->log);
+        }
     } else {
 
         echo("0#" . $new_contrat->log);
     }
 } else {
-    view::load_view('addcontrat');
+    view::load_view('renouvelercontrat');
 }

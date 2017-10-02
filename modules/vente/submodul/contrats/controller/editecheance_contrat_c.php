@@ -16,7 +16,8 @@ if (MInit::form_verif('editecheance_contrat', false)) {
         'checker_tkn_frm' => Mreq::tp('checker_tkn_frm'),
         //'idcontrat' => Mreq::tp('idcontrat'),
         'date_echeance' => Mreq::tp('date_echeance'),
-        'commentaire' => Mreq::tp('commentaire'),
+        'montant'       => Mreq::tp('montant') ,
+        'commentaire'   => Mreq::tp('commentaire'),
     );
 
     $checker = null;
@@ -34,6 +35,11 @@ if (MInit::form_verif('editecheance_contrat', false)) {
     if ($posted_data['date_echeance'] == NULL) {
 
         $empty_list .= "<li>Date d\'échéance</li>";
+        $checker = 1;
+    }
+    if($posted_data['montant'] == NULL OR $posted_data['montant'] == '0'){
+
+        $empty_list .= "<li>Montant HT à facturer</li>";
         $checker = 1;
     }
 

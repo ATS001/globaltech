@@ -40,11 +40,10 @@ $form->select_table('Catégorie', 'idcategorie', 6, 'ref_categories_produits', '
 $uv_array[] = array('required', 'true', 'Choisir une unité de vente');
 $form->select_table('Unité de vente', 'iduv', 6, 'ref_unites_vente', 'id', 'unite_vente', 'unite_vente', $indx = '------', $selected = NULL, $multi = NULL, $where = NULL, $uv_array);
 
-//Référence
-/*$ref_array[] = array('required', 'true', 'Insérez une référence');
-$ref_array[] = array('minlength', '2', 'Minimum 2 caractères');
-$form->input('Référence', 'ref', 'text', 6, null, $ref_array);
-*/
+//prix vente
+$pv_array[]  = array('number', 'true', 'Entrez un nombre valide' );
+$form->input('Prix de vente', 'prix_vente', 'text', 6, null, $pv_array);
+
 //Désignation
 $designation_array[] = array('required', 'true', 'Insérez une désignation');
 $designation_array[] = array('minlength', '2', 'Minimum 2 caractères');
@@ -63,3 +62,23 @@ $form->button('Enregistrer le produit');
             </div>
         </div>
     </div>
+
+    
+  <script type="text/javascript">
+$(document).ready(function() {
+       
+    $('#idtype').on('change',function() {
+
+        if($("#idtype option:selected").text()== 'Prestation'){
+
+            $('#prix_vente').attr('readonly', false);
+            
+        }else{
+
+            $('#prix_vente').attr('readonly', true).val('');
+           
+        }
+
+    });
+});
+   </script>  
