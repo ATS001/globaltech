@@ -44,8 +44,6 @@ $form->input_hidden('id', Mreq::tp('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
 
-$form->input_hidden('date_fin', 1);
-$form->input_hidden('date_effet', Mreq::tp('date_effet'));
 
 
 //Reference
@@ -150,7 +148,7 @@ $form->render();
             }
             var $link = $(this).attr('rel');
             var $titre = $(this).attr('data_titre');
-            var $data = $(this).attr('data');
+            var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val();
             ajax_bbox_loader($link, $data, $titre, 'large')
 
         });
