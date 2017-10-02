@@ -174,7 +174,49 @@ exit();*/
     $new_contrat->exige_pj       = FALSE;
     $new_contrat->exige_pj_photo = FALSE;
 
+    $new_contrat->get_id_type_echeance('Autres');
+
+
     //execute Insert returne false if error
+    if ($posted_data['idtype_echeance'] == $new_contrat->Shw_type('id',1))
+    {
+       
+        $new_contrat1 = new Mcontrat($posted_data);
+        $new_contrat1->get_total_devis($posted_data['iddevis']);
+
+        //var_dump($new_contrat1->Shw_type('totalttc',1));
+
+        //var_dump($posted_data['tkn_frm']);
+
+        $new_contrat2 = new Mcontrat($posted_data);
+        $new_contrat2->get_total_echeances($posted_data['tkn_frm']);
+
+        //var_dump($new_contrat2->Shw_type('montant_total',1));
+        if($new_contrat1->Shw_type('totalttc',1) > $new_contrat2->Shw_type('montant_total',1))
+        {
+             $montant_echeance = "<ul>Le montant total du devis est supérieur au montant total des échéances, Il faut compléter le montant !!!</ul>";
+             $checker = 8;
+         }
+
+        if($checker == 8)
+        {
+        exit("0#$montant_echeance");
+        }
+
+        if($new_contrat1->Shw_type('totalttc',1) < $new_contrat2->Shw_type('montant_total',1))
+        {
+             $montant_echeance1 = "<ul>Le montant total du devis est inférieur au montant total des échéances, Il faut minimiser le montant !!!</ul>";
+             $checker = 9;
+         }
+
+        if($checker == 9)
+        {
+        exit("0#$montant_echeance1");
+        }
+
+
+    }
+
     if ($new_contrat->save_new_contrat()) {
 
         echo("1#" . $new_contrat->log);

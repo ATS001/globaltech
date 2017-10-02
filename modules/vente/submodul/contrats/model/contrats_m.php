@@ -108,7 +108,7 @@ class Mcontrat {
             if ($db->RowCount() == 0) {
                 $this->error = false;
                 $this->log .= 'Aucun enregistrement trouvé ';
-                var_dump('testt4');
+               // var_dump('testt4');
             } else {
                 $this->type_echeance_contrat_info = $db->RowArray();
                 $this->error = true;
@@ -124,7 +124,68 @@ class Mcontrat {
         }
     }
 
+    //Get id montant total des echaaces Autres 
+    public function get_total_echeances($tkn_frm) {
+        $table_echeance = 'echeances_contrat';
+        global $db;
+    //var_dump('testt');
+        $sql = "SELECT sum($table_echeance.montant) as montant_total FROM $table_echeance WHERE  tkn_frm = '$tkn_frm'";
+    //var_dump('testt2');
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+           // var_dump('testt3'.$this->log);
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+                //var_dump('testt4');
+            } else {
+                $this->type_echeance_contrat_info = $db->RowArray();
+                $this->error = true;
 
+        //var_dump($this->type_echeance_contrat_info );
+            }
+        }
+
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    //Get id montant total des echaaces Autres 
+    public function get_total_devis($iddevis) {
+        $table_echeance = 'devis';
+        global $db;
+    //var_dump('testt');
+        $sql = "SELECT $table_echeance.totalttc FROM $table_echeance WHERE  id = ".$iddevis;
+
+    //var_dump('testt2');
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+           // var_dump('testt3'.$this->log);
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+               
+            } else {
+                $this->type_echeance_contrat_info = $db->RowArray();
+                $this->error = true;
+
+        //var_dump($this->type_echeance_contrat_info );
+            }
+        }
+
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     public function Gettable_echeance_contrat() {
         global $db;

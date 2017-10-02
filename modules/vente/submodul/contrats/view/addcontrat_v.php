@@ -28,6 +28,9 @@
 <?php
 $form = new Mform('addcontrat', 'addcontrat', '', 'contrats', '0', null);
 
+$form->input_hidden('date_fin', 1);
+$form->input_hidden('date_effet', Mreq::tp('date_effet'));
+
 //Devis
 $devis_array[]  = array('required', 'true', 'Choisir un devis');
 $form->select_table('Devis', 'iddevis', 8, 'devis', 'id', 'reference' , 'reference', $indx = '------' ,$selected=NULL,$multi=NULL,
@@ -117,7 +120,7 @@ $form->render();
         });
 
         $('#addRow').on('click', function () {
-
+alert($('#date_effet').val());
             if ($('#iddevis').val() == '') {
 
                 ajax_loadmessage('Il faut choisir un devis', 'nok');
@@ -125,7 +128,7 @@ $form->render();
             }
             var $link = $(this).attr('rel');
             var $titre = $(this).attr('data_titre');
-            var $data = $(this).attr('data');
+            var $data = $(this).attr('data')+"&dat_ef="+$('#date_effet').val();
             ajax_bbox_loader($link, $data, $titre, 'large')
 
         });

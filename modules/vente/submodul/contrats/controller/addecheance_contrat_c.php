@@ -9,6 +9,8 @@ if(MInit::form_verif('addecheance_contrat',false))
 		'commentaire'     => Mreq::tp('commentaire') ,
 		);
 
+
+
 	$checker = null;
 	$empty_list = "Les champs suivants sont obligatoires:\n<ul>";
 	if($posted_data['date_echeance'] == NULL){
@@ -28,6 +30,18 @@ if(MInit::form_verif('addecheance_contrat',false))
 		exit("0#$empty_list");
 	}
 
+
+    if(date('Y-m-d', strtotime($posted_data['date_echeance'])) >= date('Y-m-d', strtotime($posted_data['date_fin']))  or date('Y-m-d', strtotime($posted_data['date_echeance'])) <= date('Y-m-d', strtotime($posted_data['date_effet'])) )
+    {
+
+            $date_ech = "<ul>La date d'échéance doit être supérieur de la date d'effet et  inférieur de la date de fin !!!</ul>" ;
+            $checker = 2;
+    }
+
+    if($checker == 2)
+    {
+            exit("0#$date_ech");
+    }
 
 	  //End check empty element
 

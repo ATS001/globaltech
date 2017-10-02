@@ -44,6 +44,10 @@ $form->input_hidden('id', Mreq::tp('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
 
+$form->input_hidden('date_fin', 1);
+$form->input_hidden('date_effet', Mreq::tp('date_effet'));
+
+
 //Reference
 $form->input_hidden('checker_reference', MInit::cryptage($info_contrat->s('ref'), 1));
 $form->input_hidden('ref', $info_contrat->s('ref'));
@@ -55,7 +59,7 @@ $form->input_hidden('ref', $info_contrat->s('ref'));
 
 //Devis
 $devis_array[]  = array('required', 'true', 'Choisir un devis');
-$form->select_table('Devis ', 'iddevis', 8, 'devis', 'id', 'reference' , 'reference', $indx = '------' , $info_contrat->s('iddevis'),$multi=NULL, $where="devis.etat=1 AND  devis.`id` NOT IN (SELECT iddevis FROM contrats c WHERE devis.id=c.iddevis)", $devis_array);
+$form->select_table('Devis ', 'iddevis', 8, 'devis', 'id', 'reference' , 'reference', $indx = '------' , $info_contrat->s('iddevis'),$multi=NULL, $where="devis.etat=1 AND  devis.`id` NOT IN (SELECT iddevis FROM contrats c WHERE devis.id=c.iddevis and devis.id <> ".$info_contrat->s('iddevis').")" , $devis_array);
 
 //Date effet
 $array_date_effet[] = array('required', 'true', 'Insérer la date effet');
