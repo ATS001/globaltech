@@ -28,6 +28,7 @@
 <?php
 $form = new Mform('addcontrat', 'addcontrat', '', 'contrats', '0', null);
 
+
 //Devis
 $devis_array[]  = array('required', 'true', 'Choisir un devis');
 $form->select_table('Devis', 'iddevis', 8, 'devis', 'id', 'reference' , 'reference', $indx = '------' ,$selected=NULL,$multi=NULL,
@@ -51,10 +52,7 @@ $facturation_array[]  = array('Début du mois' , 'D' );
 $facturation_array[]  = array('Fin du fin' , 'F' );
 $form->radio('Facturation', 'periode_fact', 'D', $facturation_array, '');
 
-//Adresse
-$adresse_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
-$adresse_array[]  = array('required', 'true', 'Insérer Adresse' );
-$form->input('Adresse', 'adresse', 'text', 6, null, $adresse_array);
+
 //commentaire
 $form->input_editor('Commentaire', 'commentaire', 8, $clauses=NULL , $js_array = null,  $input_height = 50);
 
@@ -94,89 +92,96 @@ $form->render();
 <!-- End Add devis bloc -->
 		
 <script type="text/javascript">
-$(document).ready(function() {
-    $('.table_echeance').hide();
-    
-    $('#idtype_echeance').bind('select change',function() {
-
-        if($("#idtype_echeance option:selected").text()== 'Autres' ){
-
-            $('.table_echeance').show();
-
-        }else{
-
-            $('.table_echeance').hide();
-
-        }
-
-    });
-   
-    $('#addRow').on( 'click', function () {
-    	
-    	if($('#iddevis').val() == ''){
-
-    		ajax_loadmessage('Il faut choisir un devis','nok');
-    		return false;
-    	}
-        var $link  = $(this).attr('rel');
-   		var $titre = $(this).attr('data_titre'); 
-   		var $data  = $(this).attr('data'); 
-        ajax_bbox_loader($link, $data, $titre, 'large')
+    $(document).ready(function () {
         
-    });
+        if ($("#idtype_echeance option:selected").text() == 'Autres') {
 
-  
-   
+                $('.table_echeance').show();
 
-    $('#iddevis').on('change', function () {
-        
-        //var $adresse = '<div class="form-group>"><address><strong>Twitter, Inc.</strong><br>795 Folsom Ave, Suite 600<br>San Francisco, CA 94107<br><abbr title="Phone">P:</abbr>(123) 456-7890</address></div>';
-       //$(this).parent('div').after($adresse);
+            } else {
 
-    });
-    
-    $('#table_echeance tbody ').on('click', 'tr .edt_det', function() {
-        
-        if($('#iddevis').val() == ''){
+                $('.table_echeance').hide();
+            }    
 
-            ajax_loadmessage('Il faut choisir un devis','nok');
-            return false;
-        }
-        var $link  = $(this).attr('rel');
-        var $titre = 'Modifier détail contrat'; 
-        var $data  = $(this).attr('data'); 
-        ajax_bbox_loader($link, $data, $titre, 'large')
-        
-    });
-    $('#table_echeance tbody ').on('click', 'tr .del_det', function() {
-        var $idecheance = $(this).attr('data');
-        $.ajax({
+        $('#idtype_echeance').bind('select change', function () {
 
-            cache: false,
-            url  : '?_tsk=addecheance_contrat&ajax=1',
-            type : 'POST',
-            data : '&act=1&<?php echo MInit::crypt_tp('exec', 'delete') ?>&'+$idecheance,
-            dataType:"html",
-            success: function(data){
-                var data_arry = data.split("#");
-                if(data_arry[0]==0){
-                    ajax_loadmessage(data_arry[1],'nok',5000)
-                }else{
-                    ajax_loadmessage(data_arry[1],'ok',3000);
-                    var t1 = $('.dataTable').DataTable().draw();
-           
-                }
+            if ($("#idtype_echeance option:selected").text() == 'Autres') {
+
+                $('.table_echeance').show();
+
+            } else {
+
+                $('.table_echeance').hide();
 
             }
+
         });
+
+        $('#addRow').on('click', function () {
+
+            if ($('#iddevis').val() == '') {
+
+                ajax_loadmessage('Il faut choisir un devis', 'nok');
+                return false;
+            }
+            var $link = $(this).attr('rel');
+            var $titre = $(this).attr('data_titre');
+            var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val();
+            ajax_bbox_loader($link, $data, $titre, 'large')
+
+        });
+
+
+
+
+        $('#iddevis').on('change', function () {
+
+            //var $adresse = '<div class="form-group>"><address><strong>Twitter, Inc.</strong><br>795 Folsom Ave, Suite 600<br>San Francisco, CA 94107<br><abbr title="Phone">P:</abbr>(123) 456-7890</address></div>';
+            //$(this).parent('div').after($adresse);
+
+        });
+
+        $('#table_echeance tbody ').on('click', 'tr .edt_ctr', function () {
+
+            if ($('#iddevis').val() == '') {
+
+                ajax_loadmessage('Il faut choisir un devis', 'nok');
+                return false;
+            }
+            var $link = $(this).attr('rel');
+            var $titre = 'Modifier détail contrat';
+            var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val();
+            ajax_bbox_loader($link, $data, $titre, 'large')
+
+        });
+        $('#table_echeance tbody ').on('click', 'tr .del_ctr', function () {
+            var $idecheance = $(this).attr('data');
+            $.ajax({
+
+                cache: false,
+                url: '?_tsk=addecheance_contrat&ajax=1',
+                type: 'POST',
+                data: '&act=1&<?php echo MInit::crypt_tp('exec', 'delete') ?>&' + $idecheance,
+                dataType: "html",
+                success: function (data) {
+                    var data_arry = data.split("#");
+                    if (data_arry[0] == 0) {
+                        ajax_loadmessage(data_arry[1], 'nok', 5000)
+                    } else {
+                        ajax_loadmessage(data_arry[1], 'ok', 3000);
+                        var t1 = $('.dataTable').DataTable().draw();
+
+                    }
+
+                }
+            });
+        });
+
+
+
+
+
+
     });
-
-    
-
-
-     
-
-});
-</script>	
-
+</script>
 		

@@ -167,8 +167,7 @@ class Mfacture {
             return false;
         }
         global $db;
-        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(ref, 9, LENGTH(SUBSTR(ref,9))-5))),0)+1  AS reference  FROM encaissements'
-                . ' WHERE SUBSTR(ref,LENGTH(ref)-3,4)= (SELECT  YEAR(SYSDATE()))');
+        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(ref, 8, LENGTH(SUBSTR(ref,8))-5))),0)+1  AS reference  FROM encaissements WHERE SUBSTR(ref,LENGTH(ref)-3,4)= (SELECT  YEAR(SYSDATE()))');
         $this->reference = 'GT-ENC-' . $max_id . '/' . date('Y');
     }
 
@@ -620,6 +619,83 @@ class Mfacture {
             //$this->log   .= $this->table.' '.$this->id_produit.' '.$etat;
             $this->error = true;
         }
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    // afficher les infos d'un contrat
+    public function printattribute($attibute) {
+        if ($this->encaissement_info[$attibute] != null) {
+            echo $this->encaissement_info[$attibute];
+        } else {
+            echo "";
+        }
+    }
+    
+    // afficher les infos d'un contrat
+    public function printattribute_fact($attibute) {
+        if ($this->facture_info[$attibute] != null) {
+            echo $this->facture_info[$attibute];
+        } else {
+            echo "";
+        }
+    }
+    
+    //Get all info encaissement from database for edit form
+    public function get_encaissement_info() {
+        global $db;
+
+        $table_encaissement = $this->table_encaissement;
+
+        $sql = "SELECT $table_encaissement.* , factures.ref as facture FROM 
+    		$table_encaissement,factures WHERE $table_encaissement.idfacture=factures.id AND $table_encaissement.id = " . $this->id_encaissement;
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->encaissement_info = $db->RowArray();
+                $this->error = true;
+            }
+        }
+        //return Array produit_info
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    
+    //Get all info Facture from database for edit form
+    public function get_facture_info() {
+        global $db;
+
+        $table = $this->table;
+
+        $sql = "SELECT $table.* FROM 
+    		$table WHERE  $table.id = " . $this->id_facture;
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->facture_info = $db->RowArray();
+                $this->error = true;
+            }
+        }
+        //return Array produit_info
         if ($this->error == false) {
             return false;
         } else {

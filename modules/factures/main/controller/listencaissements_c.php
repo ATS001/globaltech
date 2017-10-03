@@ -26,7 +26,7 @@ $colms = $tables = $joint = $where = $where_s = $sqlTot = $sqlRec = "";
 $tables .= " encaissements,factures";
 // set sherched columns.(the final colm without comma)
 $colms .= " encaissements.id AS id, ";
-$colms .= " encaissements.ref AS ref, ";
+$colms .= " encaissements.ref AS refe, ";
 $colms .= " encaissements.designation AS des, ";
 $colms .= " factures.ref as ref, ";
 $colms .= " encaissements.montant as mt, ";
@@ -101,7 +101,7 @@ if (Mreq::tp('export') == 1) {
         $header = array('ID', 'Référence', 'Désignation', 'Facture', 'Montant','Date', 'Statut');
         Minit::Export_xls($header, $file_name, $title);
     } elseif (Mreq::tp('format') == 'pdf') {
-        $header = array('ID' => 10, 'Référence' => 20, 'Désignation' => 20, 'Facture' => 15, 'Montant' => 15,'Date'=>10, 'Statut' => 20);
+        $header = array('ID' => 10, 'Référence' => 15, 'Désignation' => 20, 'Facture' => 15, 'Montant' => 15,'Date'=>12, 'Statut' => 15);
         Minit::Export_pdf($header, $file_name, $title);
     } elseif (Mreq::tp('format') == 'dat') {
         Minit::send_big_param('encaissements#' . $sqlTot);

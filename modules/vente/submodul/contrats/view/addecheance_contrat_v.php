@@ -2,6 +2,9 @@
 $form = new Mform('addecheance_contrat', 'addecheance_contrat', '', 'contrats', '0', 'is_modal');
 //token main form
 $form->input_hidden('tkn_frm', Mreq::tp('tkn'));
+$form->input_hidden('dat_ef', Mreq::tp('dat_ef'));
+$form->input_hidden('dat_fn', Mreq::tp('dat_fn'));
+
 
 //Date échéance
 $array_date_echeance[]= array('required', 'true', 'Insérer la date échéance');
@@ -24,8 +27,8 @@ $form->render();
 <script type="text/javascript">
 //On change produit get all informations.
 $(document).ready(function() {
-	 //called when key is pressed in textbox     	
-    
+	 //called when key is pressed in textbox   
+
     $('.send_modal').on('click', function () {
         if(!$('#addecheance_contrat').valid())
         {
