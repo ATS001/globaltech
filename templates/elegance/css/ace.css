@@ -12372,10 +12372,14 @@ td .lbl:only-child {
   color: #ECB792;
 }
 .infobox-small {
-  width: 135px;
-  height: 52px;
+  float: left;
+  width: 16.33%;
+  height: 60px;
   text-align: left;
   padding-bottom: 5px;
+  padding-left: 8px;
+  padding-right: 8px;
+  position: relative;
 }
 .infobox-small > .infobox-icon,
 .infobox-small > .infobox-chart,
@@ -12386,6 +12390,7 @@ td .lbl:only-child {
   height: 42px;
   line-height: 38px;
   vertical-align: middle;
+  opacity: 0.5;
 }
 .infobox-small > .infobox-data {
   display: inline-block;
