@@ -16,13 +16,6 @@ $info_facture->get_facture_info();
     <h1>
         Détails de la facture : <?php $info_facture->printattribute_fact('ref'); ?> 
         
-                         <div class="widget-toolbar hidden-480">
-							<a href="#" class="iframe_pdf" rel="<?php $info_facture->printattribute_fact('facture_pdf') ?>">
-								<i class="ace-icon fa fa-print"></i>
-							</a>
-						</div>       
-                     
-
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
         </small>
@@ -51,7 +44,11 @@ $info_facture->get_facture_info();
 
                         <div class="col-xs-12 col-sm-4">
                             <div class="profile-achat-info">
-
+<div class="widget-toolbar hidden-480">
+							<a href="#" class="iframe_pdf" rel="<?php $info_facture->printattribute_fact('facture_pdf') ?>">
+								<i class="ace-icon fa fa-print"></i>
+							</a>
+						</div> 
                                 <div class="profile-info-row">
                                     <div class="profile-info-name"> Référence </div>
 

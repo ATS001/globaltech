@@ -188,7 +188,7 @@ $block_sum = '<div></div>
 <table style="width: 685px;" cellpadding="2">
     <tr align="right">
         <td width="50%" align="left" style="background-color: #eeecec;">
-            Arrêté le présent Devis à la somme de :<br>
+            Arrêté la présente Facture à la somme de :<br>
             <strong>'.$ttc_lettre.' </strong>
         </td>
         <td width="50%">
