@@ -91,6 +91,9 @@ class MYPDF extends TCPDF {
 		//Info général
 		$tableau_head = $this->Table_head;
 		$this->writeHTMLCell('', '', 15, 83, $tableau_head, 0, 0, 0, true, 'L', true);
+		$height = $this->getLastH();
+       
+        $this->SetTopMargin($height + $this->GetY());
 		//$pdf->writeHTMLCell('', '','' , '', $html , 0, 0, 0, true, 'L', true);
 
 	}
@@ -106,7 +109,7 @@ class MYPDF extends TCPDF {
 		// Set font
 		$this->SetFont('helvetica', 'I', 8);
 		// Page number
-		//$this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+		$this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
 	}
 
 	

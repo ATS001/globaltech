@@ -839,19 +839,33 @@ class MySQL
 		{
 
 			$html = "";
-			$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px; border:1pt solid black;\">\n";
+			$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px;\">\n";
 
 			$html .= "\t<tr style=\"background-color: #4245f4; color: #fff; font-weight: bold;  padding:15px; \">\n";
 			foreach ($headers as $key => $value) {
 
-			//
+
+			//'Re'          => '5[#]center',
+           // 'Total HT'    => '15[#]alignRight
 				if(strpos($value, '[#]')){
 					$elem  = explode("[#]", $value);
 					$align = isset($elem[1]) ? $elem[1] : '';
 					$width = isset($elem[0]) ? $elem[0] : '15';
 					$width = 'style="width:'.$width.'%;"' ;
-					$align = 'class="'.$align.'"' ;
+					switch ($align) {
+					    case 'C':
+					        $align = 'class="center"' ;						
+						    break;
+					    case 'R':
+					        $align = 'class="alignRight"' ;						
+						    break;
+					    default:
+						    $align = 'class=""' ;
+						    break;
+				    }
+					
 				}
+
 
 				$html .= "\t\t<td $width $align>" . htmlspecialchars($key) . "</td>\n";
 			}
@@ -868,6 +882,7 @@ class MySQL
 			$styl_array = array_values($style);
 
 					//print_r($data);
+            
 
 			$array_styl_last = array_combine($keys_data, $styl_array);
 
@@ -878,7 +893,17 @@ class MySQL
 					$align = isset($elem[1]) ? $elem[1] : '';
 					$width = isset($elem[0]) ? $elem[0] : '15';
 					$width = 'style="width:'.$width.'%;"' ;
-					$align = 'class="'.$align.'"' ;
+					switch ($align) {
+					    case 'C':
+					        $align = 'class="center"' ;						
+						    break;
+					    case 'R':
+					        $align = 'class="alignRight"' ;						
+						    break;
+					    default:
+						    $align = 'class=""' ;
+						    break;
+				    }
 				}
 
 				$html .= "\t\t<td $width $align>" . htmlspecialchars($value) . "</td>\n";
@@ -915,14 +940,14 @@ class MySQL
 				.center{ text-align: center; }
 				</style>';
 				$html .= $style;
-				$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px; border:1pt solid black;\">\n";
+				$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px;\">\n";
 				$this->MoveFirst();
 
                 //$html .= $this->make_table_head($headers, $styleData);
 				$i = 0;
 				while ($member = mysql_fetch_object($this->last_result))
 				{					
-					$html .= "\t<tr class=\"row".($i++ & 1)."\">\n";	
+					$html .= "\t<tr nobr=\"true\" class=\"row".($i++ & 1)."\">\n";	
 					$html .= $this->make_table_body($member, $headers);
 					$html .= "\t</tr>\n";
 

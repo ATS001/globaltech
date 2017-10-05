@@ -538,7 +538,7 @@ static public function pub_copy_file($old_file, $new_file, $path, $mode = 0777){
    
  }
 
- static public function Export_pdf($header, $file_name, $title = NULL)
+ static public function Export_pdf($headers, $file_name, $title = NULL)
  {
    global $db;
 
@@ -548,7 +548,11 @@ static public function pub_copy_file($old_file, $new_file, $path, $mode = 0777){
     exit("2#Le résultat dépasse 400 lignes, merci d'exporter en format XLS. ");
    }
    $file_export = MPATH_TEMP.$file_name.'_' .date('d_m_Y_H_i_s').'.pdf';
-   $html = $db->GetHTML($header, true, null, $styleHeader = null, $styleData = null);
+   
+   $tableau_head = MySQL::make_table_head($headers);
+   $tableau_body = $db->GetMTable_pdf($headers);
+   $title_report = $title;
+   $html = $tableau_body;//$db->GetHTML($header, true, null, $styleHeader = null, $styleData = null);
    //Load template 
    include_once MPATH_THEMES.'pdf_template/export_list_pdf.php';
 
@@ -561,7 +565,7 @@ static public function pub_copy_file($old_file, $new_file, $path, $mode = 0777){
    }
 
  }
-
+ 
  /**
   * Check if is REG EXPRESSION
   * return bool
