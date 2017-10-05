@@ -173,12 +173,21 @@ class Mdatatable
             $headers = array();
            
             //Return Error 
+            $sum_width = array_sum(array_column($this->columns, 'width'));
             
-            /*if(array_sum(array_column($this->columns, 'alias') > 100))
+            foreach (array_column($this->columns, 'width') as $value) {
+               if(!is_numeric($value)){
+                    $this->error = false;
+                    $this->log   = '<br\>Les largeurs des columns is_numeric';
+                    return false;
+                }
+            }
+            if($sum_width > 100)
             {
                 $this->error = false;
                 $this->log   = '<br\>La largeur total des columns dépasse 100';
-            }*/
+                return false;
+            }
             foreach ($this->columns as $key => $value) {
             	$titl  = $value['header'];
             	$width = $value['width'];
