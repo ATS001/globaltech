@@ -9,10 +9,12 @@ class Mfacture {
     private $_data; //data receive from form
     var $table = 'factures'; //Main table of module
     var $table_complement = 'complement_facture'; // Complement facture table
-    var $table_encaissement = 'encaissements';
+    var $table_encaissement = 'encaissements'; // Encaissement facture table
+    var $table_details  = 'd_devis'; //Tables détails devis
     var $last_id; //return last ID after insert command
     var $log = NULL; //Log of all opération.
     var $error = true; //Error bol changed when an error is occured
+    var $id_devis; // Devus ID
     var $id_facture; // Facture ID append when request
     var $id_complement; // Complement ID
     var $id_encaissement; //Encaissement ID
@@ -20,6 +22,7 @@ class Mfacture {
     var $facture_info; //Array Facture all info
     var $complement_info; // Array Complement info
     var $encaissement_info; // Array encaissement info
+    var $devis_info; // Array Devis info
     var $reference = null; // Reference 
 
     public function __construct($properties = array()) {
@@ -597,35 +600,32 @@ class Mfacture {
         }
     }
 
-    //activer ou valider une facture
-    public function valid_facture($etat = 0) {
+       
+     public function valid_facture($etat)
+    {
         global $db;
-
-        //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
-        $etat = $etat == 0 ? 1 : 0;
-
-        $values["etat"] = MySQL::SQLValue($etat);
-        $values["updusr"] = MySQL::SQLValue(session::get('userid'));
-        $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
-        $wheres['id'] = $this->id_facture;
-
-        // Execute the update and show error case error
-        if (!$result = $db->UpdateRows($this->table, $values, $wheres)) {
-            $this->log .= '</br>Impossible de changer le statut!';
-            $this->log .= '</br>' . $db->Error();
+        $table = $this->table;
+        $id_facture = $this->id_facture;
+        $this->get_id_devis();
+        
+        $req_sql = " UPDATE $table SET etat = $etat+1  WHERE id = $id_facture";
+        
+        if (!$db->Query($req_sql)) {
             $this->error = false;
-        } else {
-            $this->log .= '</br>Statut changé! ';
-            //$this->log   .= $this->table.' '.$this->id_produit.' '.$etat;
-            $this->error = true;
-        }
-        if ($this->error == false) {
+            $this->log .= "Erreur Validation";
             return false;
-        } else {
+        }
+        
+        if(!$this->Get_detail_facture_pdf())
+        {
+            $this->log .= $this->log;
+            return false;
+
+        }else{
+            $this->log .= "Validation réussie";
             return true;
         }
     }
-
     // afficher les infos d'un contrat
     public function printattribute($attibute) {
         if ($this->encaissement_info[$attibute] != null) {
@@ -703,4 +703,150 @@ class Mfacture {
         }
     }
 
+     public function Get_detail_facture_pdf()
+    {
+        global $db;
+        $id_devis = $this->id_devis['id'];
+        $id_facture= $this->id_facture;
+        $table    = $this->table_details;
+        $this->Get_detail_facture_show();
+        $devis_info = $this->devis_info;
+        $this->get_facture();
+        $info_facture = $this->facture_info;
+        
+        $colms = null;
+        $colms .= " $table.id item, ";
+        $colms .= " $table.ref_produit, ";
+        $colms .= " $table.designation, ";
+        $colms .= " REPLACE(FORMAT($table.qte,0),',',' '), ";
+        $colms .= " REPLACE(FORMAT($table.prix_unitaire,0),',',' '), ";
+        $colms .= " REPLACE(FORMAT($table.remise_valeur,0),',',' '), ";
+        $colms .= " REPLACE(FORMAT($table.total_ttc,0),',', ' ') ";
+        
+        $req_sql  = " SELECT $colms FROM $table WHERE id_devis = $id_devis ";
+        if(!$db->Query($req_sql))
+        {
+            $this->error = false;
+            $this->log  .= $db->Error().' '.$req_sql;
+            exit($this->log);
+        }
+        
+        
+        $headers = array(
+            'Item'        => '5[#]center',
+            'Réf'         => '10[#]center',
+            'Description' => '45[#]', 
+            'Qte'         => '5[#]center', 
+            'P.U'         => '10[#]alignRight', 
+            'Re'          => '5[#]center',
+            'Total HT'    => '15[#]alignRight',
+
+        );
+
+        $tableau_head = MySQL::make_table_head($headers);
+        $tableau_body = $db->GetMTable_pdf($headers);
+        
+        $file_export = MPATH_TEMP.'Facture'.'_' .date('d_m_Y_H_i_s').'.pdf';
+
+   //Load template 
+        include_once MPATH_THEMES.'pdf_template/facture_pdf.php';
+        $new_file_target = MPATH_UPLOAD.'Facture'.date('m_Y');
+
+        if(file_exists($file_export))
+        {       
+            if(!Minit::save_file_upload($file_export, 'Facture_'.$id_facture, $new_file_target, $id_facture, 'Facture '.$id_facture, 'factures', 'factures', 'facture_pdf', 'document', $edit = null))
+            {
+                $this->error = false;
+                $this->log .= "Erreur Archivage Devis";
+
+            }
+            
+        }else{
+            $this->error = false;
+            $this->log .= "Erreur création template Facture";
+        }
+
+        if($this->error == false)
+        {
+            return false;
+        }else{
+            return true ;
+        }
+        
+     }
+     
+     public function Get_detail_facture_show()
+    {
+         $id_devis = $this->id_devis['id'];
+        global $db;
+        $req_sql = "SELECT
+        devis.reference
+        , devis.date_devis
+        , devis.valeur_remise
+        ,  REPLACE(FORMAT(devis.totalht,0),',',' ') as totalht
+        ,  REPLACE(FORMAT(devis.totaltva,0),',',' ') as totaltva
+        ,  REPLACE(FORMAT(devis.totalttc,0),',',' ') as totalttc
+        , devis.claus_comercial
+        , clients.code
+        , clients.denomination
+        , clients.adresse
+        , clients.bp
+        , clients.tel
+        , clients.nif
+        , clients.email
+        , ref_pays.pays
+        , ref_ville.ville
+        FROM
+        devis
+        INNER JOIN clients 
+        ON (devis.id_client = clients.id)
+        INNER JOIN ref_pays 
+        ON (clients.id_pays = ref_pays.id)
+        INNER JOIN ref_ville
+        WHERE devis.id = ".$id_devis;
+        if(!$db->Query($req_sql))
+        {
+            $this->error = false;
+            $this->log  .= $db->Error();
+        }else{
+            if ($db->RowCount() == 0)
+            {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->devis_info = $db->RowArray();
+                $this->error = true;
+            }
+
+
+        }
+
+    }
+    
+    public function get_id_devis()
+    {
+         global $db;
+
+           $sql = "SELECT iddevis as id FROM 
+    		contrats WHERE  contrats.id = " . $this->facture_info['idcontrat'];
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->id_devis = $db->RowArray();
+                $this->error = true;
+            }
+        }
+        //return Array produit_info
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
