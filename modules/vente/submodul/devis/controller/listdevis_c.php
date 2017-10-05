@@ -30,7 +30,7 @@ $array_column = array(
         'column' => 'clients.denomination',
         'type'   => '',
         'alias'  => 'client',
-        'width'  => '40',
+        'width'  => '25',
         'header' => 'Client',
         'align'  => 'C'
     ),
@@ -46,7 +46,7 @@ $array_column = array(
         'column' => 'devis.totalttc',
         'type'   => 'int',
         'alias'  => 'montantttc',
-        'width'  => '25',
+        'width'  => '15',
         'header' => 'Montant TTC et le test text',
         'align'  => 'C'
     ),
@@ -54,7 +54,7 @@ $array_column = array(
         'column' => 'statut',
         'type'   => '',
         'alias'  => 'statut',
-        'width'  => '25',
+        'width'  => '15',
         'header' => 'Statut',
         'align'  => 'C'
     ),
@@ -77,7 +77,12 @@ $list_data_table->file_name = 'liste_devis';
 //Set Title of report
 $list_data_table->title_report = 'Liste Devis';
 //Print JSON DATA
-print($list_data_table->Query_maker());
+if(!$data = $list_data_table->Query_maker())
+{
+    exit("0#".$list_data_table->log);
+}else{
+    echo $data;
+}
 
 
 
