@@ -1,7 +1,6 @@
 <?php 
 $tva = Mcfg::get('tva');
-var_dump($tva);
-exit();
+
 
 global $db;
 
