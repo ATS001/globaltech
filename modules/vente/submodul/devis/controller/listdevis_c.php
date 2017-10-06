@@ -32,7 +32,7 @@ $array_column = array(
         'alias'  => 'client',
         'width'  => '25',
         'header' => 'Client',
-        'align'  => 'C'
+        'align'  => 'L'
     ),
     array(
         'column' => 'devis.totalht',
@@ -40,15 +40,15 @@ $array_column = array(
         'alias'  => 'montantht',
         'width'  => '10',
         'header' => 'Montant HT',
-        'align'  => 'C'
+        'align'  => 'R'
     ),
     array(
         'column' => 'devis.totalttc',
         'type'   => 'int',
         'alias'  => 'montantttc',
         'width'  => '15',
-        'header' => 'Montant TTC et le test text',
-        'align'  => 'C'
+        'header' => 'Montant TTC',
+        'align'  => 'R'
     ),
     array(
         'column' => 'statut',
@@ -56,7 +56,7 @@ $array_column = array(
         'alias'  => 'statut',
         'width'  => '15',
         'header' => 'Statut',
-        'align'  => 'C'
+        'align'  => 'L'
     ),
     
  );

@@ -895,18 +895,18 @@ class MySQL
 					$width = 'style="width:'.$width.'%;"' ;
 					switch ($align) {
 					    case 'C':
-					        $align = 'class="center"' ;						
+					        $align_f = 'class="center"' ;						
 						    break;
 					    case 'R':
-					        $align = 'class="alignRight"' ;						
+					        $align_f = 'class="alignRight"' ;						
 						    break;
 					    default:
-						    $align = 'class=""' ;
+						    $align_f = 'class=""' ;
 						    break;
 				    }
 				}
 
-				$html .= "\t\t<td $width $align>" . htmlspecialchars($value) . "</td>\n";
+				$html .= "\t\t<td $width $align_f>" . htmlspecialchars($value) . "</td>\n";
 			}
 
 

@@ -254,10 +254,18 @@ class Mmodul {
 		$file_action_c = $modul_path.'/controller/action'.$task_name.'_c.php';
 		$file_m = $modul_path.'/model/'.$task_name.'_m.php';
 		$file_v = $modul_path.'/view/'.$task_name.'_v.php';
+        
+        $templat_folder = MPATH_LIBRARIES.'templates_script/';
+		$template = null;
+		if(file_exists($templat_folder.'template_control.php')){
+			$template_c = file_get_contents($templat_folder.'template_control.php');
+			$template = str_replace('%task%', $task_name, $template_c);
+		}
 
 		$content   = '<?php '. PHP_EOL . '//'.MCfg::get('sys_titre'). PHP_EOL .'// Modul: '.$modul_name.' => ';
-		if(!file_exists($file_c) && !file_put_contents($file_c, $content.'Controller', FILE_APPEND | LOCK_EX))
+		if(!file_exists($file_c) && !file_put_contents($file_c, $content.'Controller'.PHP_EOL.$template, FILE_APPEND | LOCK_EX))
 		{
+
 			$this->error = false;
 			$this->log .='</br>Unable Creat Controller '; 
 			return false;
@@ -272,9 +280,26 @@ class Mmodul {
 		    }
 		}
 
+		if($type_view != 'exec' && $type_view == 'list')
+		{
+			$template = null;
+			if(file_exists($templat_folder.'template_view.php')){
+				$template_c = file_get_contents($templat_folder.'template_view.php');
+				$template = str_replace('%task%', $task_name, $template_c);
+			}
+			if(!file_exists($file_v) && !file_put_contents($file_v, $content.'View'.PHP_EOL.$template, FILE_APPEND | LOCK_EX))
+			{
+				$this->error = false;
+				$this->log .='</br>Unable Creat View'; 
+				return false;
+			}
+		}
+
 		if($type_view != 'exec')
 		{
-			if(!file_exists($file_v) && !file_put_contents($file_v, $content.'View', FILE_APPEND | LOCK_EX))
+			$template = null;
+			
+			if(!file_exists($file_v) && !file_put_contents($file_v, $content.'View'.PHP_EOL.$template, FILE_APPEND | LOCK_EX))
 			{
 				$this->error = false;
 				$this->log .='</br>Unable Creat View'; 
@@ -285,13 +310,25 @@ class Mmodul {
 		
 		if($type_view == 'list')
 		{
-			if(!file_exists($file_list_c) && !file_put_contents($file_list_c, $content.'Controller Liste', FILE_APPEND | LOCK_EX))
+			$template = null;
+			if(file_exists($templat_folder.'template_list.php')){
+				$template_c = file_get_contents($templat_folder.'template_list.php');
+				$template = str_replace('%task%', $task_name, $template_c);
+			}
+			
+			
+			if(!file_exists($file_list_c) && !file_put_contents($file_list_c, $content.'Controller Liste'.PHP_EOL.$template, FILE_APPEND | LOCK_EX))
 		    {
 			    $this->error = false;
 			    $this->log .='</br>Unable Creat Controller Liste'; 
 			    return false;
 		    }
-		    if(!file_exists($file_action_c) && !file_put_contents($file_action_c, $content.'Controller Action', FILE_APPEND | LOCK_EX))
+		    $template = null;
+			if(file_exists($templat_folder.'template_action.php')){
+				$template_c = file_get_contents($templat_folder.'template_action.php');
+				$template = str_replace('%task%', $task_name, $template_c);
+			}
+		    if(!file_exists($file_action_c) && !file_put_contents($file_action_c, $content.'Controller Action'.PHP_EOL.$template, FILE_APPEND | LOCK_EX))
 		    {
 			    $this->error = false;
 			    $this->log .='</br>Unable Creat Controller Action'; 
