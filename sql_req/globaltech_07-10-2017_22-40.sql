@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Client :  127.0.0.1
--- Généré le :  Sam 07 Octobre 2017 à 22:30
+-- Généré le :  Sam 07 Octobre 2017 à 22:40
 -- Version du serveur :  5.6.17
 -- Version de PHP :  5.5.12
 
@@ -1217,7 +1217,7 @@ CREATE TABLE IF NOT EXISTS `modul` (
   `services` varchar(40) CHARACTER SET latin1 DEFAULT NULL COMMENT 'Services de Module',
   PRIMARY KEY (`id`),
   UNIQUE KEY `modul` (`modul`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Table Systeme Modules' AUTO_INCREMENT=147 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Table Systeme Modules' AUTO_INCREMENT=148 ;
 
 --
 -- Contenu de la table `modul`
@@ -1242,11 +1242,11 @@ INSERT INTO `modul` (`id`, `modul`, `description`, `rep_modul`, `tables`, `app_m
 (104, 'contrats', 'Abonnements', 'vente/submodul/contrats', 'contrats', 'contrats', 'vente', 2, 0, '[-1-]'),
 (105, 'devis', 'Gestion Devis', 'vente/submodul/devis', 'devis', 'devis', 'vente', 2, 0, '[-1-2-]'),
 (109, 'proforma', 'Gestion Proforma', 'vente/submodul/proforma', 'proforma', 'proforma', 'vente', 2, 0, '[-1-2-3-5-4-]'),
-(110, 'factures', 'Gestion des factures', 'factures/main', 'factures', 'factures', NULL, 0, 0, '[-1-]'),
 (111, 'sys_setting', 'Paramètrage Système', 'Systeme/settings/sys_setting', 'sys', 'sys_setting', 'Systeme', 1, 0, '[-1-]'),
 (112, 'users', 'Utilisateurs', 'users', 'users_sys', 'user', NULL, 0, 0, '[-1-2-3-]'),
 (113, 'contrats_fournisseurs', 'Contrats Fournisseur', 'contrats_fournisseurs/main', 'contrats_frn', 'contrats_fournisseurs', NULL, 0, 0, '[-1-]'),
-(114, 'fournisseurs', 'Gestion Fournisseurs', 'fournisseurs/main', 'fournisseurs', 'fournisseurs', NULL, 0, 0, '[-1-]');
+(114, 'fournisseurs', 'Gestion Fournisseurs', 'fournisseurs/main', 'fournisseurs', 'fournisseurs', NULL, 0, 0, '[-1-]'),
+(147, 'factures', 'Gestion des factures', 'factures/main', 'factures', 'factures', NULL, 0, 0, '[-1-]');
 
 -- --------------------------------------------------------
 
@@ -1917,7 +1917,7 @@ CREATE TABLE IF NOT EXISTS `rules_action` (
   KEY `rules_action_user_sys` (`userid`),
   KEY `rule_action_task_action` (`action_id`),
   KEY `rule_action_service_id` (`service`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Table store rules for each user for each App and action' AUTO_INCREMENT=24345 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Table store rules for each user for each App and action' AUTO_INCREMENT=24376 ;
 
 --
 -- Contenu de la table `rules_action`
@@ -1994,26 +1994,6 @@ INSERT INTO `rules_action` (`id`, `appid`, `idf`, `service`, `userid`, `action_i
 (24164, 498, '38f10871792c133ebcc6040e9a11cde8', 1, 1, 721, 'Modifier détail Devis', 0, '1', '2017-10-07 19:38:03'),
 (24165, 499, '8def42e75fd4aee61c378d9fb303850d', 1, 1, 722, 'Afficher détail devis', 0, '1', '2017-10-07 19:38:03'),
 (24166, 500, '7666e87783b0f5a7eec1eea7593f7dfe', 1, 1, 723, 'Valider Devis', 0, '1', '2017-10-07 19:38:03'),
-(24167, 526, 'd76c286028993aff54af01da5dc4b233', 1, 1, 769, 'Gestion des factures', 0, '1', '2017-10-07 19:38:03'),
-(24168, 526, '98a697ec628778765b25e02ba2929d38', 1, 1, 770, 'Liste complément', 0, '1', '2017-10-07 19:38:03'),
-(24169, 526, '3b6d1456980ea86c0f44c16c464ca790', 1, 1, 771, 'Liste encaissements', 0, '1', '2017-10-07 19:38:03'),
-(24170, 526, '9a51fb5298e39a28af3ad6272fc51177', 1, 1, 772, 'Valider facture', 0, '1', '2017-10-07 19:38:03'),
-(24171, 526, '851f1d4c13f6025f69f5b9315321d350', 1, 1, 773, 'Désactiver facture', 0, '1', '2017-10-07 19:38:03'),
-(24172, 526, '5c79105956d28b5cac52f85784039919', 1, 1, 774, 'Détail facture', 0, '1', '2017-10-07 19:38:03'),
-(24173, 527, '55c3c5d2d93143b315513b7401043c8b', 1, 1, 775, 'complements', 0, '1', '2017-10-07 19:38:03'),
-(24174, 527, 'dfc4772cc03cf0b92a47f54fc6a2326e', 1, 1, 776, 'Modifier complément', 0, '1', '2017-10-07 19:38:03'),
-(24175, 528, '03a18bdd5201e433a3c523a2b34d059a', 1, 1, 777, 'Ajouter complément', 0, '1', '2017-10-07 19:38:03'),
-(24176, 529, '88d9bc979cd1102eb8196e7f5e6042ca', 1, 1, 778, 'Encaissement', 0, '1', '2017-10-07 19:38:03'),
-(24177, 529, 'c690cc68f5257c0c225b8b8e6126ea56', 1, 1, 779, 'Modifier encaissement', 0, '1', '2017-10-07 19:38:03'),
-(24178, 529, '1dc06f602e8630f273d44aa2751b2127', 1, 1, 780, 'Détails encaissement', 0, '1', '2017-10-07 19:38:03'),
-(24179, 530, 'e4866b292dbc3c9c5d9cc37273a5b498', 1, 1, 781, 'Ajouter encaissement', 0, '1', '2017-10-07 19:38:03'),
-(24180, 531, '8665be10959f39df4f149962eb70041f', 1, 1, 782, 'Modifier complément', 0, '1', '2017-10-07 19:38:03'),
-(24181, 532, '585d411904bf7d9e83d21b2810ff1d6c', 1, 1, 783, 'Modifier encaissement', 0, '1', '2017-10-07 19:38:03'),
-(24182, 533, '8c8b058a4d030cdc8b49c9008abb2e92', 1, 1, 784, 'Supprimer complément', 0, '1', '2017-10-07 19:38:03'),
-(24183, 534, '6bf7d5180940f03567a5d711e8563ba4', 1, 1, 785, 'Supprimer encaissement', 0, '1', '2017-10-07 19:38:03'),
-(24184, 535, '256abad0ec8e3bc8ed1c0653ff177255', 1, 1, 786, 'Valider facture', 0, '1', '2017-10-07 19:38:03'),
-(24185, 536, 'b5dc5719c1f96df7334f371dcf51a5b6', 1, 1, 787, 'Détail encaissement', 0, '1', '2017-10-07 19:38:03'),
-(24186, 537, '16fbf6fdcbb72f863bcf7e4ef28d8e75', 1, 1, 788, 'Détails facture', 0, '1', '2017-10-07 19:38:03'),
 (24191, 559, '6beb279abea6434e3b73229aebadc081', 1, 1, 825, 'Gestion Fournisseurs', 0, '1', '2017-10-07 19:38:03'),
 (24192, 559, 'ff95747f3a590b6539803f2a9a394cd5', 1, 1, 826, 'Editer Fournisseur', 0, '1', '2017-10-07 19:38:03'),
 (24193, 559, 'fea982f5074995d4ccd6211a71ab2680', 1, 1, 827, 'Valider Fournisseur', 0, '1', '2017-10-07 19:38:03'),
@@ -2162,7 +2142,26 @@ INSERT INTO `rules_action` (`id`, `appid`, `idf`, `service`, `userid`, `action_i
 (24341, 90, 'e152b9052d3dcfcac593489dbdc0f61c', 1, 1, 115, 'Ajouter ville', 1, '1', '2017-10-07 19:38:04'),
 (24342, 91, '3107e0cd0e0df14c4e94aa088e4457d7', 1, 1, 116, 'Editer Ville', 1, '1', '2017-10-07 19:38:04'),
 (24343, 92, 'da79d9214ed5819d7f4f1e3070629a3d', 1, 1, 117, 'Supprimer Ville', 1, '1', '2017-10-07 19:38:04'),
-(24344, 423, 'fe03a68d17c62ff2c27329573a1b3550', 1, 1, 601, 'Valider Ville', 0, '1', '2017-10-07 19:38:04');
+(24344, 423, 'fe03a68d17c62ff2c27329573a1b3550', 1, 1, 601, 'Valider Ville', 0, '1', '2017-10-07 19:38:04'),
+(24345, 622, 'd76c286028993aff54af01da5dc4b233', 1, 1, 902, 'Gestion des factures', 0, '1', '2017-10-07 22:40:14'),
+(24346, 622, '98a697ec628778765b25e02ba2929d38', 1, 1, 903, 'Liste complément', 0, '1', '2017-10-07 22:40:14'),
+(24347, 622, '9a51fb5298e39a28af3ad6272fc51177', 1, 1, 905, 'Valider facture', 0, '1', '2017-10-07 22:40:14'),
+(24348, 622, '851f1d4c13f6025f69f5b9315321d350', 1, 1, 906, 'Désactiver facture', 0, '1', '2017-10-07 22:40:14'),
+(24349, 622, '5c79105956d28b5cac52f85784039919', 1, 1, 907, 'Détail facture', 0, '1', '2017-10-07 22:40:14'),
+(24350, 623, '55c3c5d2d93143b315513b7401043c8b', 1, 1, 909, 'complements', 0, '1', '2017-10-07 22:40:14'),
+(24351, 623, 'dfc4772cc03cf0b92a47f54fc6a2326e', 1, 1, 910, 'Modifier complément', 0, '1', '2017-10-07 22:40:14'),
+(24352, 624, '03a18bdd5201e433a3c523a2b34d059a', 1, 1, 911, 'Ajouter complément', 0, '1', '2017-10-07 22:40:14'),
+(24353, 625, '88d9bc979cd1102eb8196e7f5e6042ca', 1, 1, 912, 'Encaissement', 0, '1', '2017-10-07 22:40:14'),
+(24354, 625, 'c690cc68f5257c0c225b8b8e6126ea56', 1, 1, 913, 'Modifier encaissement', 0, '1', '2017-10-07 22:40:14'),
+(24355, 625, '1dc06f602e8630f273d44aa2751b2127', 1, 1, 914, 'Détails encaissement', 0, '1', '2017-10-07 22:40:14'),
+(24356, 626, 'e4866b292dbc3c9c5d9cc37273a5b498', 1, 1, 915, 'Ajouter encaissement', 0, '1', '2017-10-07 22:40:14'),
+(24357, 627, '8665be10959f39df4f149962eb70041f', 1, 1, 916, 'Modifier complément', 0, '1', '2017-10-07 22:40:14'),
+(24358, 628, '585d411904bf7d9e83d21b2810ff1d6c', 1, 1, 917, 'Modifier encaissement', 0, '1', '2017-10-07 22:40:14'),
+(24359, 629, '8c8b058a4d030cdc8b49c9008abb2e92', 1, 1, 918, 'Supprimer complément', 0, '1', '2017-10-07 22:40:14'),
+(24360, 630, '6bf7d5180940f03567a5d711e8563ba4', 1, 1, 919, 'Supprimer encaissement', 0, '1', '2017-10-07 22:40:14'),
+(24361, 631, '256abad0ec8e3bc8ed1c0653ff177255', 1, 1, 920, 'Valider facture', 0, '1', '2017-10-07 22:40:14'),
+(24362, 632, 'b5dc5719c1f96df7334f371dcf51a5b6', 1, 1, 921, 'Détail encaissement', 0, '1', '2017-10-07 22:40:14'),
+(24363, 633, '16fbf6fdcbb72f863bcf7e4ef28d8e75', 1, 1, 922, 'Détails facture', 0, '1', '2017-10-07 22:40:14');
 
 -- --------------------------------------------------------
 
@@ -2180,7 +2179,7 @@ CREATE TABLE IF NOT EXISTS `rules_action_temp` (
   UNIQUE KEY `uniq_rule` (`idf`,`userid`),
   KEY `rules_action_user_sys` (`userid`),
   KEY `rule_action_service_id` (`service`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Table store rules for each user for each App and action' AUTO_INCREMENT=1 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Table store rules for each user for each App and action' AUTO_INCREMENT=32 ;
 
 -- --------------------------------------------------------
 
@@ -2552,7 +2551,7 @@ CREATE TABLE IF NOT EXISTS `task` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `UNIQUE` (`app`),
   KEY `task_ibfk_1` (`modul`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Table Task of modules' AUTO_INCREMENT=622 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Table Task of modules' AUTO_INCREMENT=635 ;
 
 --
 -- Contenu de la table `task`
@@ -2683,18 +2682,6 @@ INSERT INTO `task` (`id`, `app`, `modul`, `file`, `rep`, `session`, `dscrip`, `s
 (523, 'validproforma', 109, 'validproforma', 'vente/submodul/proforma', 1, 'valider Proforma', 'check', 1, 0, 0, 'exec', '[-1-2-3-5-4-]'),
 (524, 'viewproforma', 109, 'viewproforma', 'vente/submodul/proforma', 1, 'Détail Pro-forma', 'eye', 1, 0, 0, 'profil', '[-1-2-3-5-4-]'),
 (525, 'edit_detailproforma', 109, 'edit_detailproforma', 'vente/submodul/proforma', 1, 'Editer détail proforma', 'pen', 1, 0, 0, 'form', '[-1-2-3-5-4-]'),
-(526, 'factures', 110, 'factures', 'factures/main', 1, 'Gestion des factures', 'file', 1, 0, 0, 'list', '[-1-]'),
-(527, 'complements', 110, 'complements', 'factures/main', 1, 'complements', 'cogs', 1, 0, 0, 'list', '[-1-]'),
-(528, 'addcomplement', 110, 'addcomplement', 'factures/main', 1, 'Ajouter complément', 'cogs', 1, 0, 0, 'form', '[-1-]'),
-(529, 'encaissements', 110, 'encaissements', 'factures/main', 1, 'Encaissement', 'cogs', 1, 0, 0, 'list', '[-1-]'),
-(530, 'addencaissement', 110, 'addencaissement', 'factures/main', 1, 'Ajouter encaissement', 'cogs', 1, 0, 0, 'form', '[-1-]'),
-(531, 'editcomplement', 110, 'editcomplement', 'factures/main', 1, 'Modifier complément', 'cogs', 1, 0, 0, 'form', '[-1-]'),
-(532, 'editencaissement', 110, 'editencaissement', 'factures/main', 1, 'Modifier encaissement', 'cogs', 1, 0, 0, 'form', '[-1-]'),
-(533, 'deletecomplement', 110, 'deletecomplement', 'factures/main', 1, 'Supprimer complément', 'cogs', 1, 0, 0, 'exec', '[-1-]'),
-(534, 'deleteencaissement', 110, 'deleteencaissement', 'factures/main', 1, 'Supprimer encaissement', 'cogs', 1, 0, 0, 'exec', '[-1-]'),
-(535, 'validfacture', 110, 'validfacture', 'factures/main', 1, 'Valider facture', 'cogs', 1, 0, 0, 'exec', '[-1-]'),
-(536, 'detailsencaissement', 110, 'detailsencaissement', 'factures/main', 1, 'Détail encaissement', 'eye', 1, 0, 0, 'profil', '[-1-]'),
-(537, 'detailsfacture', 110, 'detailsfacture', 'factures/main', 1, 'Détails facture', 'eye', 1, 0, 0, 'profil', '[-1-]'),
 (538, 'sys_setting', 111, 'sys_setting', 'Systeme/settings/sys_setting', 1, 'Paramètrage Système', 'setting', 1, 0, 0, 'list', '[-1-]'),
 (539, 'add_sys_setting', 111, 'add_sys_setting', 'Systeme/settings/sys_setting', 1, 'Ajouter Paramètre', 'plus', 1, 0, 0, 'form', '[-1-]'),
 (540, 'edit_sys_setting', 111, 'edit_sys_setting', 'Systeme/settings/sys_setting', 1, 'Editer paramètre', 'pen', 1, 0, 0, 'form', '[-1-]'),
@@ -2721,7 +2708,20 @@ INSERT INTO `task` (`id`, `app`, `modul`, `file`, `rep`, `session`, `dscrip`, `s
 (561, 'editfournisseur', 114, 'editfournisseur', 'fournisseurs/main', 1, 'Editer Fournisseur', 'cogs', 1, 0, 0, 'form', '[-1-]'),
 (562, 'deletefournisseur', 114, 'deletefournisseur', 'fournisseurs/main', 1, 'Supprimer Fournisseur', 'trash', 1, 0, 0, 'exec', '[-1-]'),
 (563, 'validfournisseur', 114, 'validfournisseur', 'fournisseurs/main', 1, 'Valider Fournisseur', 'lock', 1, 0, 0, 'exec', '[-1-]'),
-(564, 'detailsfournisseur', 114, 'detailsfournisseur', 'fournisseurs/main', 1, 'Détails Fournisseur', 'eye', 1, 0, 0, 'profil', '[-1-]');
+(564, 'detailsfournisseur', 114, 'detailsfournisseur', 'fournisseurs/main', 1, 'Détails Fournisseur', 'eye', 1, 0, 0, 'profil', '[-1-]'),
+(622, 'factures', 147, 'factures', 'factures/main', 1, 'Gestion des factures', 'file', 1, 0, 0, 'list', '[-1-]'),
+(623, 'complements', 147, 'complements', 'factures/main', 1, 'complements', 'cogs', 1, 0, 0, 'list', '[-1-]'),
+(624, 'addcomplement', 147, 'addcomplement', 'factures/main', 1, 'Ajouter complément', 'cogs', 1, 0, 0, 'form', '[-1-]'),
+(625, 'encaissements', 147, 'encaissements', 'factures/main', 1, 'Encaissement', 'cogs', 1, 0, 0, 'list', '[-1-]'),
+(626, 'addencaissement', 147, 'addencaissement', 'factures/main', 1, 'Ajouter encaissement', 'cogs', 1, 0, 0, 'form', '[-1-]'),
+(627, 'editcomplement', 147, 'editcomplement', 'factures/main', 1, 'Modifier complément', 'cogs', 1, 0, 0, 'form', '[-1-]'),
+(628, 'editencaissement', 147, 'editencaissement', 'factures/main', 1, 'Modifier encaissement', 'cogs', 1, 0, 0, 'form', '[-1-]'),
+(629, 'deletecomplement', 147, 'deletecomplement', 'factures/main', 1, 'Supprimer complément', 'cogs', 1, 0, 0, 'exec', '[-1-]'),
+(630, 'deleteencaissement', 147, 'deleteencaissement', 'factures/main', 1, 'Supprimer encaissement', 'cogs', 1, 0, 0, 'exec', '[-1-]'),
+(631, 'validfacture', 147, 'validfacture', 'factures/main', 1, 'Valider facture', 'cogs', 1, 0, 0, 'exec', '[-1-]'),
+(632, 'detailsencaissement', 147, 'detailsencaissement', 'factures/main', 1, 'Détail encaissement', 'eye', 1, 0, 0, 'profil', '[-1-]'),
+(633, 'detailsfacture', 147, 'detailsfacture', 'factures/main', 1, 'Détails facture', 'eye', 1, 0, 0, 'profil', '[-1-]'),
+(634, 'rejectfacture', 147, 'rejectfacture', 'factures/main', 1, 'Désactiver Facture', 'remove', 1, 0, 0, 'exec', '[-1-]');
 
 -- --------------------------------------------------------
 
@@ -2752,7 +2752,7 @@ CREATE TABLE IF NOT EXISTS `task_action` (
   PRIMARY KEY (`id`),
   KEY `task_action_task` (`appid`),
   KEY `task_action_descrip` (`descrip`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Table of Task_Action and Permission of Task' AUTO_INCREMENT=902 ;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 COMMENT='Table of Task_Action and Permission of Task' AUTO_INCREMENT=924 ;
 
 --
 -- Contenu de la table `task_action`
@@ -2934,26 +2934,6 @@ INSERT INTO `task_action` (`id`, `appid`, `idf`, `descrip`, `mode_exec`, `app`, 
 (766, 523, 'e9f745054778257a255452c6609461a0', 'valider Proforma', NULL, 'validproforma', NULL, '', 0, '[-1-2-3-5-]', 0, 0, 'Attente validation', 'warning', '<span class="label label-sm label-warning">Attente validation</span>', NULL, NULL, NULL, NULL),
 (767, 524, 'defef148c404c7e6ac79e4783e0a7ab7', 'Détail Pro-forma', NULL, 'viewproforma', NULL, '', 0, '[-1-2-3-5-]', 0, 0, 'Attente validation', 'warning', 'Attente validation', NULL, NULL, NULL, NULL),
 (768, 525, '53008d64edf241c937a06f03eff139aa', 'Editer détail proforma', NULL, 'edit_detailproforma', NULL, '', 0, '[-1-2-3-5-]', 0, 0, 'Attente validation', 'warning', '<span class="label label-sm label-warning">Attente validation</span>', NULL, NULL, NULL, NULL),
-(769, 526, 'd76c286028993aff54af01da5dc4b233', 'Gestion des factures', NULL, 'factures', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(770, 526, '98a697ec628778765b25e02ba2929d38', 'Liste complément', 'this_url', 'complements', NULL, '<li><a href="#" class="this_url" data="%id%" rel="complements"  ><i class="ace-icon fa fa-circle bigger-100"></i> Liste complément</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(771, 526, '3b6d1456980ea86c0f44c16c464ca790', 'Liste encaissements', 'this_url', 'encaissements', NULL, '<li><a href="#" class="this_url" data="%id%" rel="encaissements"  ><i class="ace-icon fa fa-euro bigger-100"></i> Liste encaissements</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(772, 526, '9a51fb5298e39a28af3ad6272fc51177', 'Valider facture', 'this_exec', 'validfacture', NULL, '<li><a href="#" class="this_exec" data="%id%" rel="validfacture"  ><i class="ace-icon fa fa-check  bigger-100"></i> Valider facture</a></li>', 0, '[-1-]', 0, 1, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(773, 526, '851f1d4c13f6025f69f5b9315321d350', 'Désactiver facture', 'this_exec', 'validfacture', NULL, '<li><a href="#" class="this_exec" data="%id%" rel="validfacture"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Désactiver facture</a></li>', 0, '[-1-]', 1, 0, 'Facture validée', 'success', '<span class="label label-sm label-success">Facture validée</span>', NULL, NULL, NULL, NULL),
-(774, 526, '5c79105956d28b5cac52f85784039919', 'Détail facture', 'this_url', 'detailsfacture', NULL, '<li><a href="#" class="this_url" data="%id%" rel="detailsfacture"  ><i class="ace-icon fa fa-eye bigger-100"></i> Détail facture</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(775, 527, '55c3c5d2d93143b315513b7401043c8b', 'complements', NULL, 'complements', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(776, 527, 'dfc4772cc03cf0b92a47f54fc6a2326e', 'Modifier complément', 'this_url', 'editcomplement', NULL, '<li><a href="#" class="this_url" data="%id%" rel="editcomplement"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Modifier complément</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(777, 528, '03a18bdd5201e433a3c523a2b34d059a', 'Ajouter complément', NULL, 'addcomplement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(778, 529, '88d9bc979cd1102eb8196e7f5e6042ca', 'Encaissement', NULL, 'encaissements', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(779, 529, 'c690cc68f5257c0c225b8b8e6126ea56', 'Modifier encaissement', 'this_url', 'editencaissement', NULL, '<li><a href="#" class="this_url" data="%id%" rel="editencaissement"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Modifier encaissement</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(780, 529, '1dc06f602e8630f273d44aa2751b2127', 'Détails encaissement', 'this_url', 'detailsencaissement', NULL, '<li><a href="#" class="this_url" data="%id%" rel="detailsencaissement"  ><i class="ace-icon fa fa-eye bigger-100"></i> Détails encaissement</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(781, 530, 'e4866b292dbc3c9c5d9cc37273a5b498', 'Ajouter encaissement', NULL, 'addencaissement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(782, 531, '8665be10959f39df4f149962eb70041f', 'Modifier complément', NULL, 'editcomplement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(783, 532, '585d411904bf7d9e83d21b2810ff1d6c', 'Modifier encaissement', NULL, 'editencaissement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(784, 533, '8c8b058a4d030cdc8b49c9008abb2e92', 'Supprimer complément', NULL, 'deletecomplement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', 'Attente de validation', NULL, NULL, NULL, NULL),
-(785, 534, '6bf7d5180940f03567a5d711e8563ba4', 'Supprimer encaissement', NULL, 'deleteencaissement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(786, 535, '256abad0ec8e3bc8ed1c0653ff177255', 'Valider facture', NULL, 'validfacture', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(787, 536, 'b5dc5719c1f96df7334f371dcf51a5b6', 'Détail encaissement', NULL, 'detailsencaissement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
-(788, 537, '16fbf6fdcbb72f863bcf7e4ef28d8e75', 'Détails facture', NULL, 'detailsfacture', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
 (789, 538, 'a1c5a2657cc1b2ff6f85c6fe8f1c51ac', 'Paramètrage Système', NULL, 'sys_setting', '538', '', 0, '[-1-]', 0, 0, 'Rien', 'success', '<span class="label label-sm label-success">Rien</span>', NULL, NULL, NULL, NULL),
 (790, 539, '82f83d9d3d30fdef00d4c3ef96f0f899', 'Ajouter Paramètre', NULL, 'add_sys_setting', '539', '', 0, '[-1-]', 1, 0, 'Confirmé', 'success', '<span class="label label-sm label-success">Confirmé</span>', NULL, NULL, NULL, NULL),
 (791, 540, 'f0e54f346e9dcfdff65274709ce2c8ca', 'Editer paramètre', NULL, 'edit_sys_setting', '540', '', 0, '[-1-]', 1, 0, 'Validé', 'success', '<span class="label label-sm label-success">Validé</span>', NULL, NULL, NULL, NULL),
@@ -3000,7 +2980,29 @@ INSERT INTO `task_action` (`id`, `appid`, `idf`, `descrip`, `mode_exec`, `app`, 
 (832, 561, '58c6694abfd3228d927a5d5a06d40b94', 'Editer Fournisseur', NULL, 'editfournisseur', NULL, '', 0, '[-1-]', 0, 0, 'Attente Validation', 'warning', '<span class="label label-sm label-warning">Attente Validation</span>', NULL, NULL, NULL, NULL),
 (833, 562, 'd072f81cd779e4b0152953241d713ca3', 'Supprimer Fournisseur', NULL, 'deletefournisseur', NULL, '', 0, '[-1-]', 0, 0, 'Attente Validation', 'warning', '<span class="label label-sm label-warning">Attente Validation</span>', NULL, NULL, NULL, NULL),
 (834, 563, '657351ce5aa227513e3b50dea77db918', 'Valider Fournisseur', NULL, 'validfournisseur', NULL, '', 0, '[-1-]', 0, 0, 'Attente Validation', 'warning', '<span class="label label-sm label-warning">Attente Validation</span>', NULL, NULL, NULL, NULL),
-(835, 564, '83b693fe35a1be29edafe4f6170641aa', 'Détails Fournisseur', NULL, 'detailsfournisseur', NULL, '', 0, '[-1-]', 0, 0, 'Attente Validation', 'warning', '<span class="label label-sm label-warning">Attente Validation</span>', NULL, NULL, NULL, NULL);
+(835, 564, '83b693fe35a1be29edafe4f6170641aa', 'Détails Fournisseur', NULL, 'detailsfournisseur', NULL, '', 0, '[-1-]', 0, 0, 'Attente Validation', 'warning', '<span class="label label-sm label-warning">Attente Validation</span>', NULL, NULL, NULL, NULL),
+(902, 622, 'd76c286028993aff54af01da5dc4b233', 'Gestion des factures', NULL, 'factures', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(903, 622, '98a697ec628778765b25e02ba2929d38', 'Liste complément', 'this_url', 'complements', NULL, '<li><a href="#" class="this_url" data="%id%" rel="complements"  ><i class="ace-icon fa fa-circle bigger-100"></i> Liste complément</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(904, 622, '23758c703551e6c6cb120a2fdae3f5b4', 'Liste encaissements', 'this_url', 'encaissements', NULL, '<li><a href="#" class="this_url" data="%id%" rel="encaissements"  ><i class="ace-icon fa fa-euro bigger-100"></i> Liste encaissements</a></li>', 0, '[-1-]', 1, 0, 'Facture Validée', 'success', '<span class="label label-sm label-success">Facture Validée</span>', NULL, NULL, NULL, NULL),
+(905, 622, '9a51fb5298e39a28af3ad6272fc51177', 'Valider facture', 'this_exec', 'validfacture', NULL, '<li><a href="#" class="this_exec" data="%id%" rel="validfacture"  ><i class="ace-icon fa fa-check  bigger-100"></i> Valider facture</a></li>', 0, '[-1-]', 0, 1, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(906, 622, '851f1d4c13f6025f69f5b9315321d350', 'Désactiver facture', 'this_exec', 'rejectfacture', NULL, '<li><a href="#" class="this_exec" data="%id%" rel="rejectfacture"  ><i class="ace-icon fa fa-remove bigger-100"></i> Désactiver facture</a></li>', 0, '[-1-]', 1, 0, 'Facture Validée', 'success', '<span class="label label-sm label-success">Facture Validée</span>', NULL, NULL, NULL, NULL),
+(907, 622, '5c79105956d28b5cac52f85784039919', 'Détail facture', 'this_url', 'detailsfacture', NULL, '<li><a href="#" class="this_url" data="%id%" rel="detailsfacture"  ><i class="ace-icon fa fa-eye bigger-100"></i> Détail facture</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(908, 622, '7892721423af84a0b54e90250cf27ee3', 'Détails Facture', 'this_url', 'detailsfacture', NULL, '<li><a href="#" class="this_url" data="%id%" rel="detailsfacture"  ><i class="ace-icon fa fa-eye bigger-100"></i> Détails Facture</a></li>', 0, '[-1-]', 1, 0, 'Facture Validée', 'success', '<span class="label label-sm label-success">Facture Validée</span>', NULL, NULL, NULL, NULL),
+(909, 623, '55c3c5d2d93143b315513b7401043c8b', 'complements', NULL, 'complements', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(910, 623, 'dfc4772cc03cf0b92a47f54fc6a2326e', 'Modifier complément', 'this_url', 'editcomplement', NULL, '<li><a href="#" class="this_url" data="%id%" rel="editcomplement"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Modifier complément</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(911, 624, '03a18bdd5201e433a3c523a2b34d059a', 'Ajouter complément', NULL, 'addcomplement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(912, 625, '88d9bc979cd1102eb8196e7f5e6042ca', 'Encaissement', NULL, 'encaissements', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(913, 625, 'c690cc68f5257c0c225b8b8e6126ea56', 'Modifier encaissement', 'this_url', 'editencaissement', NULL, '<li><a href="#" class="this_url" data="%id%" rel="editencaissement"  ><i class="ace-icon fa fa-cogs bigger-100"></i> Modifier encaissement</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(914, 625, '1dc06f602e8630f273d44aa2751b2127', 'Détails encaissement', 'this_url', 'detailsencaissement', NULL, '<li><a href="#" class="this_url" data="%id%" rel="detailsencaissement"  ><i class="ace-icon fa fa-eye bigger-100"></i> Détails encaissement</a></li>', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(915, 626, 'e4866b292dbc3c9c5d9cc37273a5b498', 'Ajouter encaissement', NULL, 'addencaissement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(916, 627, '8665be10959f39df4f149962eb70041f', 'Modifier complément', NULL, 'editcomplement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(917, 628, '585d411904bf7d9e83d21b2810ff1d6c', 'Modifier encaissement', NULL, 'editencaissement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(918, 629, '8c8b058a4d030cdc8b49c9008abb2e92', 'Supprimer complément', NULL, 'deletecomplement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', 'Attente de validation', NULL, NULL, NULL, NULL),
+(919, 630, '6bf7d5180940f03567a5d711e8563ba4', 'Supprimer encaissement', NULL, 'deleteencaissement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(920, 631, '256abad0ec8e3bc8ed1c0653ff177255', 'Valider facture', NULL, 'validfacture', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(921, 632, 'b5dc5719c1f96df7334f371dcf51a5b6', 'Détail encaissement', NULL, 'detailsencaissement', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(922, 633, '16fbf6fdcbb72f863bcf7e4ef28d8e75', 'Détails facture', NULL, 'detailsfacture', NULL, '', 0, '[-1-]', 0, 0, 'Attente de validation', 'warning', '<span class="label label-sm label-warning">Attente de validation</span>', NULL, NULL, NULL, NULL),
+(923, 634, '5efdeb41007109ca99f23f0756217827', 'Désactiver Facture', NULL, 'rejectfacture', NULL, '', 0, '[-1-]', 0, 0, 'Facture Validée', 'success', '<span class="label label-sm label-success">Facture Validée</span>', NULL, NULL, NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -3052,7 +3054,7 @@ CREATE TABLE IF NOT EXISTS `users_sys` (
 --
 
 INSERT INTO `users_sys` (`id`, `nom`, `fnom`, `lnom`, `pass`, `mail`, `service`, `tel`, `etat`, `defapp`, `agence`, `ctc`, `lastactive`, `photo`, `signature`, `form`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
-(1, 'admin', 'Administrateur', 'Systeme', '5a05679021426829ab75ac9fa6655947', 'rachid@atelsolution.com', 1, '6544545454', 1, 0, 1, 0, '2017-10-07 22:28:26', 1, 2, 9, NULL, '2017-01-13 13:52:42', '1', '2017-06-06 19:22:54'),
+(1, 'admin', 'Administrateur', 'Systeme', '5a05679021426829ab75ac9fa6655947', 'rachid@atelsolution.com', 1, '6544545454', 1, 0, 1, 0, '2017-10-07 22:40:14', 1, 2, 9, NULL, '2017-01-13 13:52:42', '1', '2017-06-06 19:22:54'),
 (2, 'rachid', 'Rachid', 'Kada', '5a05679021426829ab75ac9fa6655947', 'rachid@bdctchad.com', 2, '0612668698', 1, 3, NULL, 0, '2017-01-19 22:29:53', 4, 5, 6, NULL, '2017-01-19 21:59:10', NULL, '2017-01-19 21:59:10'),
 (17, 'tester', 'tester', 'tester', '5a05679021426829ab75ac9fa6655947', 'test@test', 2, '00000000', 1, 3, NULL, 0, '2017-06-14 23:49:21', 376, 377, 378, '1', '2017-06-13 10:02:41', NULL, NULL),
 (18, 'test1', 'test1', 'test1', 'd41d8cd98f00b204e9800998ecf8427e', 'test@tests', 2, '000000000', 0, 3, NULL, 0, NULL, 422, 380, 381, '1', '2017-06-13 10:08:34', '1', '2017-09-13 16:28:38');
