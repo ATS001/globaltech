@@ -26,7 +26,12 @@ class Mdatatable
     var $file_name        = null;//Used for Export data 
     var $title_report     = null;//Used on Report exported
     var $error            = true;//Used to check error on methides
-    var $log              = null;//return log error 
+    var $log              = null;//return log error
+    var $html_table       = null;//Generated html table view
+    var $columns_html     = array();//Columns Html table array('title' => title, 'width'=>50, 'align'=>(L,R,C))
+    var $js_code          = null;//Rend JS datatable jquery caller
+    var $js_notif_col     = null;//Int set the column of notif embedded generally the last one 
+    var $title_module     = null;//Used in HTML View (ex. Factures) 
 
 
     public function __construct($properties = array()){
@@ -165,15 +170,15 @@ class Mdatatable
         }
     	if($format == 'csv')
     	{
-    		$header    = array_column($this->columns, 'alias');
+    		$header    = array_column($this->columns, 'header');
             
     		Minit::Export_xls($header, $file_name, $title);
     	}elseif(Mreq::tp('format')=='pdf'){
            
             $headers = array();
-           
+            $array_width = array_column($this->columns, 'width'); 
             //Return Error 
-            $sum_width = array_sum(array_column($this->columns, 'width'));
+            $sum_width   = array_sum($array_width);
             
             foreach (array_column($this->columns, 'width') as $value) {
                if(!is_numeric($value)){
@@ -192,7 +197,12 @@ class Mdatatable
             	$titl  = $value['header'];
             	$width = $value['width'];
             	$align = $value['align'];
-            	$headers[$titl] = $width.'[#]'.$align;
+            	
+                if($sum_width < 100 && $key ==  count($array_width) - 1)
+                {                    
+                    $width = (100 - $sum_width) + $value['width'];
+               }
+                $headers[$titl] = $width.'[#]'.$align;
             }
             
             
@@ -225,8 +235,8 @@ class Mdatatable
     	$this->get_where();
 
     	$where .= $this->where_etat_line;
-    	if($this->need_notif ==true){
-    		$where .= ' AND '.$this->joint;
+    	if($this->need_notif){
+    		$where .= $this->joint == null ?'' : ' AND '.$this->joint;
     	}else{
     		$where .= ' WHERE '.$this->joint;
     	}
@@ -234,11 +244,11 @@ class Mdatatable
     	$where .= $this->where_s == NULL ? NULL : $this->where_s;
 
         
-	// getting total number records without any search
+	    //getting total number records without any search
     	$sql = "SELECT $colms  FROM  $tables  ";
     	$sqlTot .= $sql;
     	$sqlRec .= $sql;
-	//concatenate search sql if value exist
+	    //concatenate search sql if value exist
     	if(isset($where) && $where != NULL) {
 
     		$sqlTot .= $where;
@@ -284,14 +294,12 @@ class Mdatatable
 
         }
 
-	//iterate on results row and create new index array of data
+	    //iterate on results row and create new index array of data
     	while (!$db->EndOfSeek()) {
     		$row = $db->RowValue();
     		$data[] = $row;
     	}
-	//while( $row = mysqli_fetch_row($queryRecords) ) { 
-		//$data[] = $row;
-	//}	
+		
 
     	$json_data = array(
     		"draw"            => intval( $params['draw'] ),   
@@ -305,5 +313,155 @@ class Mdatatable
         }
 
     	return json_encode($json_data);
+    }
+
+
+    private function get_html_column()
+    {
+        $header_table = array_column($this->columns_html, 'header');
+        foreach ($header_table as $key => $value) {
+            $this->list_col .="\t<th>\n\t$value\t</th>\n";
+        }
+        $this->list_col .="\t<th>\n\t#\t</th>\n";
+    }
+
+
+
+    public function js_render()
+    {
+        $count_col = count($this->columns_html) - 1;
+        
+        $notif_col = $this->need_notif == true ? $count_col : 0;
+        $js = "<script type=\"text/javascript\">$(document).ready(function() {";
+        $js .= "var table = $('#".$this->task."_grid').DataTable({";
+        $js .= "bProcessing: true,notifcol : ".$notif_col.",serverSide: true,ajax_url:\"".$this->task."\",aoColumns: [";
+        
+        $js_arr = $this->columns_html;
+
+        foreach ($js_arr as $key => $value) {
+            switch ($value['align']) {
+                case 'C':
+                    $aling = 'center';
+                    break;
+                case 'R':
+                    $aling = 'alignRight';
+                    break;
+                default:
+                    $aling = 'left';
+                    break;
+            }
+            $sWidth = !is_numeric($value['width']) ? 10 : $value['width'];
+            $js .= "{\"sClass\": \"$aling\",\"sWidth\":\"$sWidth%\"},";
+        }
+        $js .= "{\"sClass\": \"center\",\"sWidth\":\"5%\"},],});";
+        //last blocjs
+        $js .= "$('.export_csv').on('click', function() {csv_export(table, 'csv');});";
+        $js .= "$('.export_pdf').on('click', function() {csv_export(table, 'pdf');});";
+        $js .= "$('#".$this->task."_grid').on('click', 'tr button', function() {
+            var row = $(this).closest('tr');
+            append_drop_menu('".$this->task."', table.cell(row, 0).data(),'.btn_action');});});</script>";
+        $this->js_code = $js;
+        
+    }
+
+    public function table_html()
+    {
+        $html = "";
+        $html .= "\t<div class=\"page-header\">\n\t<h1>\n";
+        $html .= ACTIV_APP;
+        $html .= "<small><i class=\"ace-icon fa fa-angle-double-right\"></i></small>\t</h1>\n\t</div>\n";
+        $html .= "\t<div class=\"row\">\n\t<div class=\"col-xs-12\"\n>\t<div class=\"clearfix\">\n";
+        $html .= "\t<div class=\"pull-right tableTools-container\">\n";
+        $html .= "\t<div class=\"btn-group btn-overlap\">\n";
+        $html .= $this->btn_add('add'.$this->task,'Ajouter '.$this->title_module);
+        $html .= $this->btn_csv($this->task,'Exporter Liste');
+        $html .= $this->btn_pdf($this->task,'Exporter Liste');
+        $html .= "\t</div>\n\t</div>\n\t</div>\n";
+        $html .= "\t<div class=\"table-header\">\tListe ".$this->title_module." </div>\n";
+        $html .= "\t<div>\n<table id=\"".$this->task."_grid\" class=\"table table-bordered table-condensed table-hover table-striped dataTable no-footer\">\n";
+        $html .= "\t<thead>\n\t<tr>\n";
+        $this->get_html_column();
+        $html .= $this->list_col;
+        $html .="\t</tr>\n\t</thead>\n\t</table>\n\t</div>\n\t</div>\n\t</div>\n";
+        $this->js_render();
+        $html .= $this->js_code;
+        return $html;
+
+   
+    }
+
+    /**
+     * [btn_add Add Btn to an table ]
+     * @param  [string] $app     [App for ste _tsk]
+     * @param  [text] $text    [Text of Button]
+     * @param  [url setting] $add_set [Parameteres to be add to url]
+     * @param  [int] $exec    [set to 1 is we want use ]
+     * @param  [string] $icon    [icon]
+     * @return [Html]          [render html or null]
+     */
+    private function btn_add($app, $text=NULL, $add_set=NULL, $exec = NULL, $icon = NULL){
+        global $db;
+        $userid = session::get('userid');
+        $sql = "SELECT
+        1
+        FROM
+        `rules_action`
+        INNER JOIN `task` 
+        ON (`rules_action`.`appid` = `task`.`id`)
+        INNER JOIN `task_action` 
+        ON (`task_action`.`appid` = `task`.`id`) AND (`rules_action`.`action_id` = `task_action`.`id`)
+        INNER JOIN `users_sys` 
+        ON (`rules_action`.`userid` = `users_sys`.`id`)
+        WHERE users_sys.id = $userid 
+
+        AND task.app =  ".MySQL::SQLValue($app)." ";
+
+        $permission = $db->QuerySingleValue0($sql);
+
+        $exec_class = $exec == NULL ? 'this_url' : 'this_exec';
+        $icon_class = $icon == NULL ? 'plus' : $icon;
+
+        $output = $permission == "0"?"":'<a href="#" rel="'.$app.'&'.$add_set.'" class=" btn btn-white btn-info btn-bold '.$exec_class.' spaced"><span><i class="fa fa-'.$icon_class.'"></i> '.$text.'</span></a>';
+
+        $render = ($output);
+
+
+        return $render ;
+
+    }
+    
+    /**
+     * [btn_csv description]
+     * @param  [type] $app  [description]
+     * @param  [type] $text [description]
+     * @return [type]       [description]
+     */
+    private function btn_csv($app, $text)
+    {
+        $output = '<a title="Export XLS" href="#"  class="ColVis_Button ColVis_MasterButton btn btn-white btn-info btn-bold export_csv"><span><i class="fa fa-file-excel-o fa-lg" style="color:green"></i></span></a>';
+
+
+        $render = ($output);
+
+
+        return $render ;
+    }
+
+
+    /**
+     * [btn_pdf description]
+     * @param  [type] $app  [description]
+     * @param  [type] $text [description]
+     * @return [type]       [description]
+     */
+    private function btn_pdf($app, $text)
+    {
+        $output = '<a title="Export PDF" href="#"  class="ColVis_Button ColVis_MasterButton btn btn-white btn-info btn-bold export_pdf"><span><i class="fa fa-file-pdf-o fa-lg" style="color:red"></i></span></a>';
+
+
+        $render = ($output);
+
+
+        return $render ;
     }
 }

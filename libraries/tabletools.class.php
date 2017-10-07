@@ -254,7 +254,7 @@ class TableTools
     			WHEN SUM(task_action.`notif`) > 0 
     			THEN 
     			task_action.`etat_desc`                            
-    			ELSE CONCAT(task_action.`etat_desc`,'*') 
+    			ELSE CONCAT(task_action.`etat_desc`,' ') 
     			END ";
     	}else{
     			$message_etat = " CASE

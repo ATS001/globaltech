@@ -227,8 +227,8 @@ class MAjax
 		FROM users_sys 
 		where id = ".MySQL::SQLValue(session::get('userid'));
 		$time = $db->QuerySingleValue0($sql);
-		$test = MCfg::get('auto_logout');
-		//print($this->msg_ajax.'  '.$test.' '.$time);
+		
+		
 		if($time > MCfg::get('auto_logout'))//Config by user or systeme
 		{
 			
@@ -245,7 +245,7 @@ class MAjax
 			$this->degre_message = '4#';
 			
 			
-			$hash = md5(uniqid(rand(), true).$temp_folder);
+			$hash = md5(uniqid(rand(), true));
 			$this->log .=' </br>vous avez été deconnecté du serveur pour une inactivité de [#]'.$hash.'[#] //AUTO_LOGOUT';
 
 			$file = MPATH_TEMP.SLASH.$hash.'.ses';

@@ -488,7 +488,10 @@ static public function pub_copy_file($old_file, $new_file, $path, $mode = 0777){
    $file_name   = $file_name.'_' .date('d_m_Y_H_i_s');
    $file        = $db->GetCSV($header, $file_name.'.csv');
    $file_export = MPATH_TEMP.$file_name.'.xls';
-
+   $count_col   = count($header)-1;
+   $alphabet = range('A', 'Z');
+   $end_rang_header = $alphabet[$count_col];
+   
 
 
 
@@ -504,7 +507,7 @@ static public function pub_copy_file($old_file, $new_file, $path, $mode = 0777){
    $objPHPExcel = $objReader->load($file);
 
    $objPHPExcel->getActiveSheet()
-    ->getStyle('A1:D1')
+    ->getStyle('A1:'.$end_rang_header.'1')
     ->getFill()
     ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
     ->getStartColor()
@@ -522,7 +525,7 @@ static public function pub_copy_file($old_file, $new_file, $path, $mode = 0777){
 
    $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
    $objPHPExcel->setActiveSheetIndex(0);
-   foreach(range('B','G') as $columnID) {
+   foreach(range('B',$end_rang_header) as $columnID) {
     $objPHPExcel->getActiveSheet()->getColumnDimension($columnID)
         ->setAutoSize(true);
    }
