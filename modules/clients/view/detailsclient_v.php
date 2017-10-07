@@ -59,7 +59,7 @@
 
 									<div class="profile-user-info">
 										<div class="profile-info-row">
-											<div class="profile-info-name"> Code</div>
+											<div class="profile-info-name"> Référence</div>
 
 											<div class="profile-info-value">
 												<span><?php  $client->s('code')  ?></span>
