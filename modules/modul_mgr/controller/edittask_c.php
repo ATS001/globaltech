@@ -37,7 +37,7 @@ if(MInit::form_verif('edittask', false))
     $empty_list .= "<li>Nom de l'application</li>";
     $checker = 1;
   }
-  if($posted_data['type_view'] == NULL or !in_array($posted_data['type_view'],  array('list','form','profil', 'exec'))){
+  if($posted_data['type_view'] == NULL or !in_array($posted_data['type_view'],  array('list','formadd' , 'formedit', 'profil', 'exec'))){
 
     $empty_list .= "<li>Type d'affichage</li>";
     $checker = 1;

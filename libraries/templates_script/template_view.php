@@ -1,7 +1,7 @@
 //array colomn
 $array_column = array(
 	array(
-        'column' => '%task%.id',
+        'column' => '%table%.id',
         'type'   => '',
         'alias'  => 'id',
         'width'  => '5',
@@ -9,6 +9,8 @@ $array_column = array(
         'align'  => 'C'
     ),
     //Complete Array fields here
+    %lines_select%
+    
     array(
         'column' => 'statut',
         'type'   => '',

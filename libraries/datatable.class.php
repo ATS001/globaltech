@@ -235,8 +235,8 @@ class Mdatatable
     	$this->get_where();
 
     	$where .= $this->where_etat_line;
-    	if($this->need_notif ==true){
-    		$where .= ' AND '.$this->joint;
+    	if($this->need_notif){
+    		$where .= $this->joint == null ?'' : ' AND '.$this->joint;
     	}else{
     		$where .= ' WHERE '.$this->joint;
     	}
@@ -357,7 +357,7 @@ class Mdatatable
         //last blocjs
         $js .= "$('.export_csv').on('click', function() {csv_export(table, 'csv');});";
         $js .= "$('.export_pdf').on('click', function() {csv_export(table, 'pdf');});";
-        $js .= "$('#devis_grid').on('click', 'tr button', function() {
+        $js .= "$('#".$this->task."_grid').on('click', 'tr button', function() {
             var row = $(this).closest('tr');
             append_drop_menu('".$this->task."', table.cell(row, 0).data(),'.btn_action');});});</script>";
         $this->js_code = $js;
@@ -373,7 +373,7 @@ class Mdatatable
         $html .= "\t<div class=\"row\">\n\t<div class=\"col-xs-12\"\n>\t<div class=\"clearfix\">\n";
         $html .= "\t<div class=\"pull-right tableTools-container\">\n";
         $html .= "\t<div class=\"btn-group btn-overlap\">\n";
-        $html .= $this->btn_add('adddevis','Ajouter '.$this->title_module);
+        $html .= $this->btn_add('add'.$this->task,'Ajouter '.$this->title_module);
         $html .= $this->btn_csv($this->task,'Exporter Liste');
         $html .= $this->btn_pdf($this->task,'Exporter Liste');
         $html .= "\t</div>\n\t</div>\n\t</div>\n";

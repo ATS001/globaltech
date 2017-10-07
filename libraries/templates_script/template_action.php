@@ -1,14 +1,14 @@
 
 echo '<ul class="dropdown-menu dropdown-menu-right">';
-$%task% = new M%task%();
-$%task%->id_%task% = Mreq::tp('id');
-$%task%->get_%task%();
+$%model% = new M%model%();
+$%model%->id_%model% = Mreq::tp('id');
+$%model%->get_%model%();
 
 
 
 $action = new TableTools();
-$action->line_data = $%task%->%task%_info;
-$action->action_line_table('%task%', '%task%', $%task%->%task%_info['creusr'], 'delete%task%');
+$action->line_data = $%model%->%model%_info;
+$action->action_line_table('%model%', '%table%', $%model%->%model%_info['creusr'], 'delete%model%');
 
 
 echo '</ul>';

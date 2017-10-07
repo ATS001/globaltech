@@ -34,7 +34,7 @@ if(MInit::form_verif('addtask', false))
     $empty_list .= "<li>Nom de l'application</li>";
     $checker = 1;
   }
-  if($posted_data['type_view'] == NULL or !in_array($posted_data['type_view'],  array('list','form','profil', 'exec'))){
+  if($posted_data['type_view'] == NULL or !in_array($posted_data['type_view'],  array('list','formadd', 'formedit', 'profil', 'exec'))){
 
     $empty_list .= "<li>Type d'affichage</li>";
     $checker = 1;
@@ -80,7 +80,7 @@ if(MInit::form_verif('addtask', false))
   //execute Insert returne false if error
   if($new_modul->save_new_task(Mreq::tp('id_modul'))){
 
-    echo("1#".$new_modul->log);
+    echo("0#".$new_modul->log);
   }else{
 
     echo("0#".$new_modul->log);

@@ -1,6 +1,6 @@
 $array_column = array(
 	array(
-        'column' => '%task%.id',
+        'column' => '%table%.id',
         'type'   => '',
         'alias'  => 'id',
         'width'  => '5',
@@ -8,6 +8,8 @@ $array_column = array(
         'align'  => 'C'
     ),
      //Complete Array fields here
+     %lines_select%
+     
     array(
         'column' => 'statut',
         'type'   => '',
@@ -21,13 +23,13 @@ $array_column = array(
 //Creat new instance
 $list_data_table = new Mdatatable();
 //Set tabels used in Query
-$list_data_table->tables = array('%task%');
+$list_data_table->tables = array('%table%');
 //Set Jointure
 $list_data_table->joint = '';
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query
-$list_data_table->main_table = '%task%';
+$list_data_table->main_table = '%table%';
 //Set Task used for statut line
 $list_data_table->task = '%task%';
 //Set File name for export
