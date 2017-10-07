@@ -600,8 +600,8 @@ class Mfacture {
         }
     }
 
-       
-     public function valid_facture($etat)
+    //validation ayoub
+/*     public function valid_facture($etat)
     {
         global $db;
         $table = $this->table;
@@ -625,7 +625,55 @@ class Mfacture {
             $this->log .= "Validation réussie";
             return true;
         }
+    }*/
+
+    public function valid_facture() {
+        global $db;
+        $table = $this->table;
+        $values['etat'] = ' ETAT + 1 ';
+        $wheres['id'] = MySQL::SQLValue($this->id_facture);
+
+        if (!$result = $db->UpdateRows($table, $values, $wheres)) {
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .= 'Validation non réussie DB';
+        } else {
+            $this->log .= 'Validation réussie';
+            $this->error = true;
+        }
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
     }
+    
+    public function reject_facture() {
+        global $db;
+        $values['etat'] = ' ETAT - 1 ';
+        $table = $this->table;
+        $wheres['id'] = MySQL::SQLValue($this->id_facture);
+
+        if (!$result = $db->UpdateRows($table, $values, $wheres)) {
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .= 'Rejet non réussie DB';
+        } else {
+            $this->log .= 'Rejet réussie';
+            $this->error = true;
+        }
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
+
+
+
+
     // afficher les infos d'un contrat
     public function printattribute($attibute) {
         if ($this->encaissement_info[$attibute] != null) {
