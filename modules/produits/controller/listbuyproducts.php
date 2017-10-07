@@ -2,7 +2,7 @@
 //array colomn
 $array_column = array(
 	array(
-        'column' => 'produits.id',
+        'column' => 'stock.id',
         'type'   => '',
         'alias'  => 'id',
         'width'  => '5',
@@ -18,28 +18,28 @@ $array_column = array(
         'align'  => 'L'
     ),
     array(
-        'column' => 'ref_types_produits.type_produit',
+        'column' => 'stock.qte',
         'type'   => '',
-        'alias'  => 'type',
+        'alias'  => 'qte',
         'width'  => '10',
-        'header' => 'Type',
+        'header' => 'Quantité',
         'align'  => 'L'
     ),
   
     array(
-        'column' => 'produits.designation',
+        'column' => 'stock.prix_achat',
         'type'   => '',
-        'alias'  => 'des',
+        'alias'  => 'pa',
         'width'  => '10',
-        'header' => 'Désignation',
+        'header' => 'Prix achat',
         'align'  => 'L'
     ),
     array(
-        'column' => 'produits.stock_min',
+        'column' => 'stock.prix_vente',
         'type'   => '',
-        'alias'  => 'stmin',
+        'alias'  => 'pv',
         'width'  => '15',
-        'header' => 'Stock minimale',
+        'header' => 'Prix vente',
         'align'  => 'C'
     ),
     array(
@@ -55,19 +55,19 @@ $array_column = array(
 //Creat new instance
 $list_data_table = new Mdatatable();
 //Set tabels used in Query
-$list_data_table->tables = array('produits', 'ref_types_produits');
+$list_data_table->tables = array('stock', 'produits');
 //Set Jointure
-$list_data_table->joint = 'produits.idtype=ref_types_produits.id';
+$list_data_table->joint = 'stock.idproduit=produits.id AND stock.idproduit ='.Mreq::tp('id');
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query
-$list_data_table->main_table = 'produits';
+$list_data_table->main_table = 'stock';
 //Set Task used for statut line
-$list_data_table->task = 'produits';
+$list_data_table->task = 'buyproducts';
 //Set File name for export
-$list_data_table->file_name = 'liste_produits';
+$list_data_table->file_name = 'liste_buyproducts';
 //Set Title of report
-$list_data_table->title_report = 'Liste produits';
+$list_data_table->title_report = 'Liste achats';
 //Print JSON DATA
 if(!$data = $list_data_table->Query_maker())
 {
