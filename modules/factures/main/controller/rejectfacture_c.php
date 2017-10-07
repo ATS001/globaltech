@@ -1,5 +1,8 @@
-	<?php 
-	//Get all achat info 
+<?php 
+//SYS GLOBAL TECH
+// Modul: factures => Controller
+
+	//Get all facture info 
 	 $facture = new Mfacture();
 	//Set ID of Module with POST id
 	 $facture->id_facture = Mreq::tp('id');
@@ -13,7 +16,7 @@
 	//$etat = $facture->facture_info['etat'];
 
 
-	if($facture->valid_facture())
+	if($facture->reject_facture())
 	{
 		exit("1#".$facture->log);
 
