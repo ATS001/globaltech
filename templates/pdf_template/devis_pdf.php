@@ -1,11 +1,9 @@
 <?php
 //============================================================+
-// File name   : example_001.php
-// Begin       : 2008-03-04
-// Last Update : 2013-05-14
+// File name   : devis_pdf.php
+// Last Update : 08/10/2017
 //
-// Description : Example 001 for TCPDF class
-//               Default Header and Footer
+// Description : All info Devis
 //
 // Author: Nicola Asuni
 //
@@ -15,6 +13,42 @@
 //               www.tecnick.com
 //               info@tecnick.com
 //============================================================+
+//Get all info Devis from model
+$devis = new Mdevis();
+$devis->id_devis = Mreq::tp('id');
+
+if(!MInit::crypt_tp('id', null, 'D') or !$devis->get_devis())
+{  
+   // returne message error red to devis 
+   exit('0#<br>Les informations pour cette template sont erronées, contactez l\'administrateur');
+}
+
+
+
+//Execute Pdf render
+
+if(!$devis->Get_detail_devis_pdf())
+{
+	exit("0#".$devis->log);
+
+}
+global $db;
+$headers = array(
+            'Item'        => '5[#]center',
+            'Réf'         => '10[#]center',
+            'Description' => '45[#]', 
+            'Qte'         => '5[#]center', 
+            'P.U'         => '10[#]alignRight', 
+            'Re'          => '5[#]center',
+            'Total HT'    => '15[#]alignRight',
+
+        );
+$devis_info   = $devis->devis_info;
+$tableau_head = MySQL::make_table_head($headers);
+$tableau_body = $db->GetMTable_pdf($headers);
+
+
+
 
 // Extend the TCPDF class to create custom Header and Footer
 class MYPDF extends TCPDF {
@@ -120,7 +154,9 @@ class MYPDF extends TCPDF {
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
 $pdf->Table_head = $tableau_head;
-$pdf->info_devis = $devis_info;
+$pdf->info_devis = $devis->devis_info;
+
+
 // set document information
 $pdf->SetCreator(MCfg::get('sys_titre'));
 $pdf->SetAuthor(session::get('username'));
@@ -218,7 +254,7 @@ $block_sum = '<div></div>
 </tr>
 <tr>
     <td colspan="2" style="width: 650px; border:1pt solid black; background-color: #eeecec; padding: 5px;">
-        '.$this->info_devis['claus_comercial'].'
+        '.$pdf->info_devis['claus_comercial'].'
      <br>
      Merci de nous avoir consulter.
  </td>
