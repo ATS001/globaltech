@@ -703,6 +703,35 @@ $(document).ready(function(){
 											
 					
 				});
+				// Call report script exec template PDF
+				$('body').on('click', '.report_tplt', function() {
+
+					$.ajax({
+		                type: 'POST',
+		                url: './?_tsk=report&ajax=1',
+		                data: $(this).attr('rel')+'&'+$(this).attr('data'),
+		                timeout: 3000,
+		                dataType:'JSON',
+		                success: function(data) {
+			                	
+					        if(data['error'] == 'error'){
+					        	ajax_loadmessage('Erreur chargement Template JS','nok',3000);
+					        	return false;
+					        }else{
+					        	$.colorbox({iframe:true, width:"80%", height:"90%",href:data['file']});
+					        	return true;
+					        }
+					        
+			            },
+		                error: function() {
+			                ajax_loadmessage('Affichage Impossible #AJAX','nok',3000);
+			                return false;
+		                }
+	                });
+											
+					
+				});
+
 				//$(".iframe_pdf").colorbox({iframe:true, width:"80%", height:"90%",href:data});
 				$('body').on('click', '.show_pic', function() {
 					var $link_pic = $(this).attr('rel');

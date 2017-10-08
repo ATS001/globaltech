@@ -156,10 +156,16 @@ class MDevis
 
 
         }
+        if($this->error == false)
+        {
+            return false;
+        }else{
+            return true ;
+        }
 
     }
 
-    public function Get_detail_devis_pdf()
+    /*public function Get_detail_devis_pdf()
     {
         global $db;
 
@@ -167,7 +173,7 @@ class MDevis
         $table    = $this->table_details;
         $this->Get_detail_devis_show();
         $devis_info = $this->devis_info;
-        $colms = null;
+        $colms  = null;
         $colms .= " $table.id item, ";
         $colms .= " $table.ref_produit, ";
         $colms .= " $table.designation, ";
@@ -204,7 +210,7 @@ class MDevis
         $tableau_body = $db->GetMTable_pdf($headers);
         $file_export = MPATH_TEMP.'Devis'.'_' .date('d_m_Y_H_i_s').'.pdf';
 
-   //Load template 
+        //Load template 
         include_once MPATH_THEMES.'pdf_template/devis_pdf.php';
         $new_file_target = MPATH_UPLOAD.'Devis'.date('m_Y');
 
@@ -223,6 +229,46 @@ class MDevis
             $this->log .= "Erreur création template Devis";
         }
 
+        if($this->error == false)
+        {
+            return false;
+        }else{
+            return true ;
+        }
+        
+        
+    }*/
+
+    public function Get_detail_devis_pdf()
+    {
+        global $db;
+
+        $id_devis = $this->id_devis;
+        $table    = $this->table_details;
+        $this->Get_detail_devis_show();
+        $devis_info = $this->devis_info;
+        $colms  = null;
+        $colms .= " $table.id item, ";
+        $colms .= " $table.ref_produit, ";
+        $colms .= " $table.designation, ";
+        $colms .= " REPLACE(FORMAT($table.qte,0),',',' '), ";
+        $colms .= " REPLACE(FORMAT($table.prix_unitaire,0),',',' '), ";
+        //$colms .= " $table.type_remise, ";
+        $colms .= " REPLACE(FORMAT($table.remise_valeur,0),',',' '), ";
+        
+       // $colms .= " REPLACE(FORMAT($table.total_ht,0),',',' '), ";
+       // $colms .= " REPLACE(FORMAT($table.total_tva,0),',',' '), ";
+        $colms .= " REPLACE(FORMAT($table.total_ttc,0),',', ' ') ";
+        
+        $req_sql  = " SELECT $colms FROM $table WHERE id_devis = $id_devis ";
+        if(!$db->Query($req_sql))
+        {
+            $this->error = false;
+            $this->log  .= $db->Error().' '.$req_sql;
+            exit($this->log);
+        }
+        
+        
         if($this->error == false)
         {
             return false;

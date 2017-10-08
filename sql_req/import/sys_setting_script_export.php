@@ -1,5 +1,5 @@
 <?php 
-//Export Module 'sys_setting' Date: 07-10-2017
+//Export Module 'sys_setting' Date: 08-10-2017
 global $db;
 if(!$result_insert_modul = $db->Query("insert into modul (modul, description, rep_modul, tables, app_modul, modul_setting, is_setting, etat, services)values('sys_setting', 'Paramètrage Système','Systeme/settings/sys_setting','sys','sys_setting','Systeme','1', '0', '[-1-]')")){$this->error = false; $this->log .= "<li> Error Import Modul 'sys_setting' </li>";}
   //Task 'sys_setting' 'Paramètrage Système'
