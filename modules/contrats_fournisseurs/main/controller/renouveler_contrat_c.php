@@ -126,7 +126,7 @@ if (MInit::form_verif('renouveler_contrat', false)) {
     //execute Insert returne false if error
    if($new_contrats_frn->save_new_contrats_frn()){
 
-		if($new_contrats_frn->valid_contrats_frn(3))
+		if($new_contrats_frn->valid_contrats_frn(4))
 			{
     echo("1#".$new_contrats_frn->log);
     	    }
