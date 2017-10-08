@@ -17,6 +17,16 @@ $array_column = array(
         'header' => 'Référence',
         'align'  => 'L'
     ),
+    
+    array(
+        'column' => 'factures.total_ttc',
+        'type'   => '',
+        'alias'  => 'tttc',
+        'width'  => '10',
+        'header' => 'Totale TTC',
+        'align'  => 'L'
+    ),
+    
     array(
         'column' => 'factures.total_paye',
         'type'   => '',
@@ -27,7 +37,7 @@ $array_column = array(
     ),
   
     array(
-        'column' => 'factures.tva',
+        'column' => 'factures.reste',
         'type'   => '',
         'alias'  => 'tva',
         'width'  => '10',
