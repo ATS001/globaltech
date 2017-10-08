@@ -33,7 +33,7 @@
 							ID
 						</th>
 						<th>
-							Code 
+							Référence 
 						</th>
 						<th>
 							Dénomination
