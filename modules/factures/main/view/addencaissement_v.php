@@ -50,6 +50,14 @@ $form->file_js('pj', 1000000, 'pdf');
 $des_array[] = array('required', 'true', 'Insérez la désignation');
 $form->input('Désignation', 'designation', 'text', 6, null, $des_array);
 
+//mode de payment
+$mode_array  = array('Espèce' => 'Espèce', 'Chèque' => 'Chèque','Virement'=>'Virement');
+$form->select('Mode de payement', 'mode_payement', 3, $mode_array, Null,'Réduction', $multi = NULL );
+
+//Réf de la pièce de payement
+$refp_array[] = array('required', 'true', 'Insérez la désignation');
+$form->input('Référence', 'ref_payement', 'text', 6, null, $refp_array);
+
 //Montant
 $mt_array[] = array('required', 'true', 'Insérez le montant');
 $mt_array[] = array('number', 'true', 'Entrez un montant valide');

@@ -2,8 +2,8 @@
 /*$json = '{"a":"1","b":2,"c":3,"d":4}';
 $arr = json_decode($json, true);
 var_dump($arr);*/
-/*$yes = Msetting::get_set('par2');
-var_dump($yes);*/
+$yes = Msetting::get_set('tva');
+var_dump($yes);
 //$ste = new MSte_info();
 //print($ste->get_ste_info_report_footer(1));
 $table = 'ste_info';

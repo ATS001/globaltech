@@ -11,6 +11,8 @@ if (MInit::form_verif('editencaissement', false)) {//If form is Posted do Action
         'id' => Mreq::tp('id'),
         'designation' => Mreq::tp('designation'),
         'idfacture' => Mreq::tp('idfacture'),
+        'mode_payement' => Mreq::tp('mode_payement'),
+        'ref_payement' => Mreq::tp('ref_payement'),
         'montant' => Mreq::tp('montant'),
         'pj_id' => Mreq::tp('pj-id'),
     );
@@ -24,25 +26,36 @@ if (MInit::form_verif('editencaissement', false)) {//If form is Posted do Action
 
 
 
-     if($posted_data['designation'] == NULL ){
+    if ($posted_data['designation'] == NULL) {
 
-            $empty_list .= "<li>Désignation</li>";
-            $checker = 1;
-        }
-        
-        if($posted_data['idfacture'] == NULL){
+        $empty_list .= "<li>Désignation</li>";
+        $checker = 1;
+    }
 
-            $empty_list .= "<li>Facture</li>";
-            $checker = 1;
-        }
-        
-        if ($posted_data['montant'] == NULL) {
+    if ($posted_data['idfacture'] == NULL) {
 
-            $empty_list .= "<li>Montant</li>";
-            $checker = 1;
-        }
+        $empty_list .= "<li>Facture</li>";
+        $checker = 1;
+    }
+    if ($posted_data['mode_payement'] == NULL) {
 
+        $empty_list .= "<li>Mode de payement</li>";
+        $checker = 1;
+    }
+
+    if ($posted_data['ref_payement'] == NULL) {
+
+        $empty_list .= "<li>Référence payement</li>";
+        $checker = 1;
+    }
     
+    if ($posted_data['montant'] == NULL) {
+
+        $empty_list .= "<li>Montant</li>";
+        $checker = 1;
+    }
+
+
     $empty_list .= "</ul>";
     if ($checker == 1) {
         exit("0#$empty_list");

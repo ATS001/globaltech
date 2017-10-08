@@ -10,7 +10,7 @@ class Mfacture {
     var $table = 'factures'; //Main table of module
     var $table_complement = 'complement_facture'; // Complement facture table
     var $table_encaissement = 'encaissements'; // Encaissement facture table
-    var $table_details  = 'd_devis'; //Tables détails devis
+    var $table_details = 'd_devis'; //Tables détails devis
     var $last_id; //return last ID after insert command
     var $log = NULL; //Log of all opération.
     var $error = true; //Error bol changed when an error is occured
@@ -230,6 +230,8 @@ class Mfacture {
             $values["ref"] = MySQL::SQLValue($this->reference);
             $values["designation"] = MySQL::SQLValue($this->_data['designation']);
             $values["idfacture"] = MySQL::SQLValue($this->_data['idfacture']);
+            $values["mode_payement"] = MySQL::SQLValue($this->_data['mode_payement']);
+            $values["ref_payement"] = MySQL::SQLValue($this->_data['ref_payement']);
             $values["montant"] = MySQL::SQLValue($this->_data['montant']);
             $values["date_encaissement"] = MySQL::SQLValue(date("Y-m-d"));
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
@@ -555,6 +557,8 @@ class Mfacture {
         global $db;
         $values["designation"] = MySQL::SQLValue($this->_data['designation']);
         $values["idfacture"] = MySQL::SQLValue($this->_data['idfacture']);
+        $values["mode_payement"] = MySQL::SQLValue($this->_data['mode_payement']);
+        $values["ref_payement"] = MySQL::SQLValue($this->_data['ref_payement']);
         $values["montant"] = MySQL::SQLValue($this->_data['montant']);
         $values["date_encaissement"] = MySQL::SQLValue(date("Y-m-d"));
         $values["updusr"] = MySQL::SQLValue(session::get('userid'));
@@ -601,31 +605,31 @@ class Mfacture {
     }
 
     //validation ayoub
-/*     public function valid_facture($etat)
-    {
-        global $db;
-        $table = $this->table;
-        $id_facture = $this->id_facture;
-        $this->get_id_devis();
-        
-        $req_sql = " UPDATE $table SET etat = $etat+1  WHERE id = $id_facture";
-        
-        if (!$db->Query($req_sql)) {
-            $this->error = false;
-            $this->log .= "Erreur Validation";
-            return false;
-        }
-        
-        if(!$this->Get_detail_facture_pdf())
-        {
-            $this->log .= $this->log;
-            return false;
+    /*     public function valid_facture($etat)
+      {
+      global $db;
+      $table = $this->table;
+      $id_facture = $this->id_facture;
+      $this->get_id_devis();
 
-        }else{
-            $this->log .= "Validation réussie";
-            return true;
-        }
-    }*/
+      $req_sql = " UPDATE $table SET etat = $etat+1  WHERE id = $id_facture";
+
+      if (!$db->Query($req_sql)) {
+      $this->error = false;
+      $this->log .= "Erreur Validation";
+      return false;
+      }
+
+      if(!$this->Get_detail_facture_pdf())
+      {
+      $this->log .= $this->log;
+      return false;
+
+      }else{
+      $this->log .= "Validation réussie";
+      return true;
+      }
+      } */
 
     public function valid_facture() {
         global $db;
@@ -647,7 +651,7 @@ class Mfacture {
             return true;
         }
     }
-    
+
     public function reject_facture() {
         global $db;
         $values['etat'] = ' ETAT - 1 ';
@@ -669,11 +673,6 @@ class Mfacture {
         }
     }
 
-
-
-
-
-
     // afficher les infos d'un contrat
     public function printattribute($attibute) {
         if ($this->encaissement_info[$attibute] != null) {
@@ -682,7 +681,7 @@ class Mfacture {
             echo "";
         }
     }
-    
+
     // afficher les infos d'un contrat
     public function printattribute_fact($attibute) {
         if ($this->facture_info[$attibute] != null) {
@@ -691,7 +690,7 @@ class Mfacture {
             echo "";
         }
     }
-    
+
     //Get all info encaissement from database for edit form
     public function get_encaissement_info() {
         global $db;
@@ -720,8 +719,7 @@ class Mfacture {
             return true;
         }
     }
-    
-    
+
     //Get all info Facture from database for edit form
     public function get_facture_info() {
         global $db;
@@ -751,17 +749,16 @@ class Mfacture {
         }
     }
 
-     public function Get_detail_facture_pdf()
-    {
+    public function Get_detail_facture_pdf() {
         global $db;
         $id_devis = $this->id_devis['id'];
-        $id_facture= $this->id_facture;
-        $table    = $this->table_details;
+        $id_facture = $this->id_facture;
+        $table = $this->table_details;
         $this->Get_detail_facture_show();
         $devis_info = $this->devis_info;
         $this->get_facture();
         $info_facture = $this->facture_info;
-        
+
         $colms = null;
         $colms .= " $table.id item, ";
         $colms .= " $table.ref_produit, ";
@@ -770,62 +767,53 @@ class Mfacture {
         $colms .= " REPLACE(FORMAT($table.prix_unitaire,0),',',' '), ";
         $colms .= " REPLACE(FORMAT($table.remise_valeur,0),',',' '), ";
         $colms .= " REPLACE(FORMAT($table.total_ttc,0),',', ' ') ";
-        
-        $req_sql  = " SELECT $colms FROM $table WHERE id_devis = $id_devis ";
-        if(!$db->Query($req_sql))
-        {
+
+        $req_sql = " SELECT $colms FROM $table WHERE id_devis = $id_devis ";
+        if (!$db->Query($req_sql)) {
             $this->error = false;
-            $this->log  .= $db->Error().' '.$req_sql;
+            $this->log .= $db->Error() . ' ' . $req_sql;
             exit($this->log);
         }
-        
-        
-        $headers = array(
-            'Item'        => '5[#]center',
-            'Réf'         => '10[#]center',
-            'Description' => '45[#]', 
-            'Qte'         => '5[#]center', 
-            'P.U'         => '10[#]alignRight', 
-            'Re'          => '5[#]center',
-            'Total HT'    => '15[#]alignRight',
 
+
+        $headers = array(
+            'Item' => '5[#]center',
+            'Réf' => '10[#]center',
+            'Description' => '45[#]',
+            'Qte' => '5[#]center',
+            'P.U' => '10[#]alignRight',
+            'Re' => '5[#]center',
+            'Total HT' => '15[#]alignRight',
         );
 
         $tableau_head = MySQL::make_table_head($headers);
         $tableau_body = $db->GetMTable_pdf($headers);
-        
-        $file_export = MPATH_TEMP.'Facture'.'_' .date('d_m_Y_H_i_s').'.pdf';
 
-   //Load template 
-        include_once MPATH_THEMES.'pdf_template/facture_pdf.php';
-        $new_file_target = MPATH_UPLOAD.'Facture'.date('m_Y');
+        $file_export = MPATH_TEMP . 'Facture' . '_' . date('d_m_Y_H_i_s') . '.pdf';
 
-        if(file_exists($file_export))
-        {       
-            if(!Minit::save_file_upload($file_export, 'Facture_'.$id_facture, $new_file_target, $id_facture, 'Facture '.$id_facture, 'factures', 'factures', 'facture_pdf', 'document', $edit = null))
-            {
+        //Load template 
+        include_once MPATH_THEMES . 'pdf_template/facture_pdf.php';
+        $new_file_target = MPATH_UPLOAD . 'Facture' . date('m_Y');
+
+        if (file_exists($file_export)) {
+            if (!Minit::save_file_upload($file_export, 'Facture_' . $id_facture, $new_file_target, $id_facture, 'Facture ' . $id_facture, 'factures', 'factures', 'facture_pdf', 'document', $edit = null)) {
                 $this->error = false;
                 $this->log .= "Erreur Archivage Devis";
-
             }
-            
-        }else{
+        } else {
             $this->error = false;
             $this->log .= "Erreur création template Facture";
         }
 
-        if($this->error == false)
-        {
+        if ($this->error == false) {
             return false;
-        }else{
-            return true ;
+        } else {
+            return true;
         }
-        
-     }
-     
-     public function Get_detail_facture_show()
-    {
-         $id_devis = $this->id_devis['id'];
+    }
+
+    public function Get_detail_facture_show() {
+        $id_devis = $this->id_devis['id'];
         global $db;
         $req_sql = "SELECT
         devis.reference
@@ -851,31 +839,25 @@ class Mfacture {
         INNER JOIN ref_pays 
         ON (clients.id_pays = ref_pays.id)
         INNER JOIN ref_ville
-        WHERE devis.id = ".$id_devis;
-        if(!$db->Query($req_sql))
-        {
+        WHERE devis.id = " . $id_devis;
+        if (!$db->Query($req_sql)) {
             $this->error = false;
-            $this->log  .= $db->Error();
-        }else{
-            if ($db->RowCount() == 0)
-            {
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
                 $this->error = false;
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
                 $this->devis_info = $db->RowArray();
                 $this->error = true;
             }
-
-
         }
-
     }
-    
-    public function get_id_devis()
-    {
-         global $db;
 
-           $sql = "SELECT iddevis as id FROM 
+    public function get_id_devis() {
+        global $db;
+
+        $sql = "SELECT iddevis as id FROM 
     		contrats WHERE  contrats.id = " . $this->facture_info['idcontrat'];
 
         if (!$db->Query($sql)) {
@@ -897,4 +879,5 @@ class Mfacture {
             return true;
         }
     }
+
 }
