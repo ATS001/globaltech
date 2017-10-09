@@ -30,15 +30,15 @@
 
 //Type de produit
 $type_array[] = array('required', 'true', 'Choisir un type');
-$form->select_table('Type', 'idtype', 6, 'ref_types_produits', 'id', 'type_produit', 'type_produit', $indx = '------', $selected = NULL, $multi = NULL, $where = NULL, $type_array);
+$form->select_table('Type', 'idtype', 6, 'ref_types_produits', 'id', 'type_produit', 'type_produit', $indx = '------', $selected = NULL, $multi = NULL, $where = 'etat= 1', $type_array);
 
 //Catégorie
 $cat_array[] = array('required', 'true', 'Choisir une catégorie');
-$form->select_table('Catégorie', 'idcategorie', 6, 'ref_categories_produits', 'id', 'categorie_produit', 'categorie_produit', $indx = '------', $selected = NULL, $multi = NULL, $where = NULL, $cat_array);
+$form->select_table('Catégorie', 'idcategorie', 6, 'ref_categories_produits', 'id', 'categorie_produit', 'categorie_produit', $indx = '------', $selected = NULL, $multi = NULL, $where = 'etat= 1', $cat_array);
 
 //Unité de vente
 $uv_array[] = array('required', 'true', 'Choisir une unité de vente');
-$form->select_table('Unité de vente', 'iduv', 6, 'ref_unites_vente', 'id', 'unite_vente', 'unite_vente', $indx = '------', $selected = NULL, $multi = NULL, $where = NULL, $uv_array);
+$form->select_table('Unité de vente', 'iduv', 6, 'ref_unites_vente', 'id', 'unite_vente', 'unite_vente', $indx = '------', $selected = NULL, $multi = NULL, $where = 'etat= 1', $uv_array);
 
 //prix vente
 $pv_array[]  = array('number', 'true', 'Entrez un nombre valide' );
@@ -66,10 +66,14 @@ $form->button('Enregistrer le produit');
     
   <script type="text/javascript">
 $(document).ready(function() {
+
+
+        $('#prix_vente').attr('readonly', true);
+
        
     $('#idtype').on('change',function() {
 
-        if($("#idtype option:selected").text()== 'Prestation'){
+        if($("#idtype option:selected").text() != 'Produit'){
 
             $('#prix_vente').attr('readonly', false);
             
