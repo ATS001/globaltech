@@ -44,5 +44,6 @@
           echo("0#" . $new_unite_vente->log);
       }
   } else {
-      view::load('produits/settings/unites_vente', 'addunite_vente');
+      view::load_view('addunite_vente');
+
   }

@@ -43,5 +43,6 @@
           echo("0#" . $new_categorie_produit->log);
       }
   } else {
-      view::load('produits/settings/categories_produits', 'addcategorie_produit');
+    view::load_view('addcategorie_produit');
+
   }

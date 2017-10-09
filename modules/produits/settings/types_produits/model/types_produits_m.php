@@ -168,7 +168,7 @@
                     {
                         $this->log .= '</br>Un problème de log ';
                     }
-				}
+				
 
 			}
 			if($this->error == false){
