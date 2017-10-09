@@ -803,8 +803,8 @@ class Mfacture {
         $this->get_facture();
         $info_facture = $this->facture_info;
         
-        $this->get_complement_by_facture();
-        $info_complement=$this->complement_info;
+        //$this->get_complement_by_facture();
+        //$info_complement=$this->complement_info;
                 
         $colms = null;
         $colms .= " $table.id item, ";

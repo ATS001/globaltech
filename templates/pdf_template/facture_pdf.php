@@ -55,11 +55,12 @@ $tableau_head = MySQL::make_table_head($headers);
 $tableau_body = $db->GetMTable_pdf($headers);
 //var_dump($tableau_body);
 
-$complement_info=$facture->complement_info;
 $facture->get_complement_by_facture();
-
+//$facture->get_complement_by_facture();
+$complement_info=$facture->complement_info;
 $tableau_head2 = MySQL::make_table_head($headers2);
 $tableau_body2 = $db->GetMTable_pdf($headers2);
+
 //var_dump($db);
 
 // Extend the TCPDF class to create custom Header and Footer
@@ -246,14 +247,16 @@ $height = $pdf->getLastH();
        
 $pdf->SetTopMargin($height + $pdf->GetY());
 
-$pdf->writeHTML('<strong>Tableau des compliments</strong>', true, false, true, false, '');
+if($pdf->info_complement != null)
+{
+$pdf->writeHTML('<strong>Tableau des compléments</strong>', true, false, true, false, '');
 $pdf->writeHTMLCell('', '', 15,'', $tableau_head2, 0, 0, 0, true, 'L', true);
 $height = $pdf->getLastH();
        
 $pdf->SetY($height + $pdf->GetY());
 $pdf->SetX(16);
 $pdf->writeHTML($html2, true, false, true, false, '');
-
+}
 // ---------------------------------------------------------
 //$pdf->writeHTMLCell('', '','' , '', $html , 0, 0, 0, true, 'L', true);
 
@@ -274,7 +277,7 @@ $block_sum = '<div></div>
                 <tr>
                     <td style="width:35%;"><strong>Total HT</strong></td>
                     <td style="width:5%;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_devis['totalht'] . '</strong></td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['total_ht'] . '</strong></td>
                 </tr>
                 <tr>
                     <td style="width:35%;"><strong>Remise:</strong></td>
@@ -282,14 +285,24 @@ $block_sum = '<div></div>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $remise_valeur . ' %</strong></td>
                 </tr>
                 <tr>
-                    <td style="width:35%;"><strong>TVA 18%</strong></td>
+                    <td style="width:35%;"><strong>Totale payé</strong></td>
                     <td style="width:5%;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_devis['totaltva'] . '</strong></td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['total_paye'] . '</strong></td>
+                </tr>
+                <tr>
+                    <td style="width:35%;"><strong>Reste</strong></td>
+                    <td style="width:5%;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['reste'] . '</strong></td>
+                </tr>
+                <tr>
+                    <td style="width:35%;"><strong>Totale Tva</strong></td>
+                    <td style="width:5%;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['total_tva'] . '</strong></td>
                 </tr>
                 <tr>
                     <td style="width:35%;"><strong>Total TTC</strong></td>
                     <td style="width:5%;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_devis['totalttc'] . '</strong></td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['total_ttc'] . '</strong></td>
                 </tr>
             </tbody>
         </table> 
