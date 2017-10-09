@@ -40,7 +40,7 @@ $headers = array(
     'Qte' => '5[#]center',
     'P.U' => '10[#]alignRight',
     'Re' => '5[#]center',
-    'Total HT' => '15[#]alignRight',
+    'Total TTC' => '15[#]alignRight',
 );
 
 $headers2 = array(

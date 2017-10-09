@@ -239,6 +239,7 @@ class Mfacture {
 
                 $this->last_id = $result;
                 $this->log .= '</br>Enregistrement  réussie ' . ' - ' . $this->last_id . ' -';
+             
             }
         } else {
 
