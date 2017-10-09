@@ -116,6 +116,12 @@ class Munite_vente {
 
 				$this->last_id = $result;
 				$this->log .='</br>Enregistrement  réussie '. $this->_data['unite_vente'] .' - '.$this->last_id.' -';
+
+
+                    if(!Mlog::log_exec($this->table, $this->last_id, 'Insertion unité de vente', 'Insert'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
 			}
 
 
@@ -159,6 +165,11 @@ class Munite_vente {
 			$this->log   .= '</br>Statut changé! ';
 			//$this->log   .= $this->table.' '.$this->id_unite_vente.' '.$etat;
 			$this->error  = true;
+
+                    if(!Mlog::log_exec($this->table, $this->id_unite_vente, 'Validation unité de vente', 'Validate'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
 
 		}
 		if($this->error == false){
@@ -223,6 +234,19 @@ class Munite_vente {
 
 				//$this->last_id = $result;
 				$this->log .='</br>Enregistrement  réussie '. $this->_data['unite_vente'] .' - '.$this->last_id.' -';
+
+                    if(!Mlog::log_exec($this->table, $this->id_unite_vente, 'Modification unité de vente', 'Update'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
+
+
+                //Esspionage
+                if(!$db->After_update($this->table, $this->id_unite_vente, $values, $this->unite_vente_info)){
+                    $this->log .= '</br>Problème Esspionage';
+                    $this->error = false; 
+                }
+						
 			}
 
 
@@ -267,6 +291,11 @@ class Munite_vente {
     		
     		$this->error = true;
     		$this->log .='</br>Suppression réussie ';
+
+                    if(!Mlog::log_exec($this->table, $this->id_unite_vente, 'Suppression unité de vente', 'Delete'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
     	}
     	//check if last error is true then return true else rturn false.
 		if($this->error == false){
