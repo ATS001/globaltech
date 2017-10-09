@@ -42,15 +42,33 @@ $headers = array(
     'Re' => '5[#]center',
     'Total HT' => '15[#]alignRight',
 );
+
+$headers2 = array(
+    'ID' => '5[#]center',
+    'Désignation' => '30[#]center',
+    'Type' => '15[#]',
+    'Montant' => '10[#]center',
+   );
+
 $devis_info = $facture->devis_info;
 $tableau_head = MySQL::make_table_head($headers);
 $tableau_body = $db->GetMTable_pdf($headers);
+//var_dump($tableau_body);
+
+$complement_info=$facture->complement_info;
+$facture->get_complement_by_facture();
+
+$tableau_head2 = MySQL::make_table_head($headers2);
+$tableau_body2 = $db->GetMTable_pdf($headers2);
+//var_dump($db);
 
 // Extend the TCPDF class to create custom Header and Footer
 class MYPDF extends TCPDF {
 
     var $Table_head = null;
     var $Table_body = null;
+    var $Table_head2 = null;
+    var $Table_body2 = null;
     var $info_devis = array();
     var $info_ste = array();
     var $info_facture = array();
@@ -143,6 +161,8 @@ class MYPDF extends TCPDF {
         $height = $this->getLastH();
        
         $this->SetTopMargin($height + $this->GetY());
+        
+        
         //$pdf->writeHTMLCell('', '','' , '', $html , 0, 0, 0, true, 'L', true);
     }
 
@@ -166,8 +186,10 @@ class MYPDF extends TCPDF {
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
 $pdf->Table_head = $tableau_head;
+$pdf->Table_head2=$tableau_head2;
 $pdf->info_devis = $devis_info;
 $pdf->info_facture = $facture->facture_info;
+$pdf->info_complement=$facture->complement_info;
 
 
 // set document information
@@ -218,8 +240,20 @@ $pdf->Table_body = $tableau_body;
 $html = $pdf->Table_body;
 $pdf->writeHTML($html, true, false, true, false, '');
 
-$pdf->writeHTML($tableau_head, true, false, true, false, '');
-$pdf->writeHTML($html, true, false, true, false, '');
+$pdf->Table_body2 = $tableau_body2;
+$html2 = $pdf->Table_body2;
+$height = $pdf->getLastH();
+       
+$pdf->SetTopMargin($height + $pdf->GetY());
+
+$pdf->writeHTML('<strong>Tableau des compliments</strong>', true, false, true, false, '');
+$pdf->writeHTMLCell('', '', 15,'', $tableau_head2, 0, 0, 0, true, 'L', true);
+$height = $pdf->getLastH();
+       
+$pdf->SetY($height + $pdf->GetY());
+$pdf->SetX(16);
+$pdf->writeHTML($html2, true, false, true, false, '');
+
 // ---------------------------------------------------------
 //$pdf->writeHTMLCell('', '','' , '', $html , 0, 0, 0, true, 'L', true);
 

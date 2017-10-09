@@ -101,7 +101,7 @@ class Mfacture {
 
         $table_complement = $this->table_complement;
 
-        $sql = "SELECT $table_complement.* FROM 
+        $sql = "SELECT id,designation,type,montant FROM 
     		$table_complement WHERE  $table_complement.idfacture = " . $this->id_facture;
 
        if(!$db->Query($sql))
@@ -799,9 +799,13 @@ class Mfacture {
         $table = $this->table_details;
         $this->Get_detail_facture_show();
         $devis_info = $this->devis_info;
+        
         $this->get_facture();
-         $info_facture = $this->facture_info;
-
+        $info_facture = $this->facture_info;
+        
+        $this->get_complement_by_facture();
+        $info_complement=$this->complement_info;
+                
         $colms = null;
         $colms .= " $table.id item, ";
         $colms .= " $table.ref_produit, ";
