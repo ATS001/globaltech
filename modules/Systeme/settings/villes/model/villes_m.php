@@ -141,6 +141,11 @@ class Mville {
 
 				$this->last_id = $result;
 				$this->log .='</br>Enregistrement  réussie '. $this->_data['ville'] .' - '.$this->last_id.' -';
+
+                    if(!Mlog::log_exec($this->table, $this->last_id, 'Insertion ville', 'Insert'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
 			}
 
 
@@ -180,6 +185,11 @@ class Mville {
 		}else{
 			$this->log .= '</br>Statut changé! ';
 			$this->error = true;
+
+                    if(!Mlog::log_exec($this->table, $this->id_ville, 'Validation ville', 'Validate'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
 
 		} 
 		if($this->error == false){
@@ -248,6 +258,17 @@ class Mville {
 
 				$this->last_id = $result;
 				$this->log .='</br>Modification  réussie '. $this->_data['ville'] .' - '.$this->last_id.' -';
+
+                    if(!Mlog::log_exec($this->table, $this->id_ville, 'Modification ville', 'Update'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
+
+                //Esspionage
+                if(!$db->After_update($this->table, $this->id_ville, $values, $this->ville_info)){
+                    $this->log .= '</br>Problème Esspionage';
+                    $this->error = false; 
+                }
 			}
 
 
@@ -292,6 +313,11 @@ class Mville {
     		
     		$this->error = true;
     		$this->log .='</br>Suppression réussie ';
+
+                    if(!Mlog::log_exec($this->table, $this->id_ville, 'Suppression ville', 'Delete'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
     	}
     	//check if last error is true then return true else rturn false.
 		if($this->error == false){
