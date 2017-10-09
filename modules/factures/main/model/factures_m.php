@@ -104,24 +104,29 @@ class Mfacture {
         $sql = "SELECT $table_complement.* FROM 
     		$table_complement WHERE  $table_complement.idfacture = " . $this->id_facture;
 
-        if (!$db->Query($sql)) {
-            $this->error = false;
-            $this->log .= $db->Error();
-        } else {
-            if ($db->RowCount() == 0) {
-                $this->error = false;
-                $this->log .= 'Aucun enregistrement trouvé ';
-            } else {
-                $this->complement_info = $db->RowArray();
-                $this->error = true;
-            }
-        }
-        //return Array produit_info
-        if ($this->error == false) {
-            return false;
-        } else {
-            return true;
-        }
+       if(!$db->Query($sql))
+    {
+      $this->error = false;
+      $this->log  .= $db->Error();
+    }else{
+      if (!$db->RowCount()) {
+        $this->error = false;
+        $this->log .= 'Aucun enregistrement trouvé ';
+      } else {
+        $this->complement_info = $db->RecordsSimplArray();
+                //var_dump( $this->user_activities );
+        $this->error = true;
+      }
+
+
+    }
+        //return Array user_activities
+    if($this->error == false)
+    {
+      return false;
+    }else{
+      return true;
+    }
     }
     
     //Get all info encaissement from database for edit form
@@ -133,24 +138,28 @@ class Mfacture {
         $sql = "SELECT $table_encaissement.* FROM 
     		$table_encaissement WHERE  $table_encaissement.idfacture = " . $this->id_facture;
 
-        if (!$db->Query($sql)) {
-            $this->error = false;
-            $this->log .= $db->Error();
-        } else {
-            if ($db->RowCount() == 0) {
-                $this->error = false;
-                $this->log .= 'Aucun enregistrement trouvé ';
-            } else {
-                $this->encaissement_info = $db->RowArray();
-                $this->error = true;
-            }
-        }
-        //return Array produit_info
-        if ($this->error == false) {
-            return false;
-        } else {
-            return true;
-        }
+        if(!$db->Query($sql))
+    {
+      $this->error = false;
+      $this->log  .= $db->Error();
+    }else{
+      if (!$db->RowCount()) {
+        $this->error = false;
+        $this->log .= 'Aucun enregistrement trouvé ';
+      } else {
+        $this->encaissement_info = $db->RecordsSimplArray();
+            $this->error = true;
+      }
+
+
+    }
+        //return Array user_activities
+    if($this->error == false)
+    {
+      return false;
+    }else{
+      return true;
+    }
     }
 
     /**

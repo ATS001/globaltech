@@ -2,6 +2,11 @@
 $info_facture = new Mfacture();
 $info_facture->id_facture = Mreq::tp('id');
 $info_facture->get_facture_info();
+$info_facture->get_complement_by_facture();
+$complements=$info_facture->complement_info;
+$info_facture->get_encaissement();
+$encaissements=$info_facture->encaissement_info;
+
 ?>
 <div class="pull-right tableTools-container">
     <div class="btn-group btn-overlap">
@@ -44,8 +49,8 @@ $info_facture->get_facture_info();
                         </li>
 
                         <li>
-                            <a data-toggle="tab" href="#feed">
-                                <i class="red ace-icon fa fa-adjust bigger-120"></i>
+                            <a data-toggle="tab" href="#feed1">
+                            <i class="blue ace-icon fa fa-inbox bigger-120"></i>
                                 Encaissements
                             </a>
                         </li>
@@ -161,85 +166,107 @@ $info_facture->get_facture_info();
                                                          <div class="profile-info-value">
                                         <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
                                     <span>
-                                        
-              <table id="cmpl_grid" class="table table-bordered table-condensed table-hover table-striped dataTable no-footer">
-                    <thead>
-                        <tr>
-
-                            <th>
-                                ID
-                            </th>
-                            <th>
-                                Désignation
-                            </th>
-                            <th>
-                                Facture
-                            </th>
-                            <th>
-                                Montant
-                            </th>
-                            <th>
-                                Type
-                            </th>
-                            
-                           
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
-    </div>
-    <script type="text/javascript">
-
-
-        $(document).ready(function () {
-
-            var table = $('#cmpl_grid').DataTable({
-                bProcessing: true,
-               // notifcol: 5,
-                serverSide: true,
-
-                ajax_url: "complements",
-                extra_data: "id=<?php echo Mreq::tp('id'); ?>",
-
-                aoColumns: [
-                    {"sClass": "center", "sWidth": "5%"}, // Identifiant 
-                    {"sClass": "left", "sWidth": "25%"},
-                    {"sClass": "left", "sWidth": "20%"},
-                     {"sClass": "left", "sWidth": "15%"},
-                      {"sClass": "left", "sWidth": "15%"},
-                  
-                    
-                ],
-            });
-
-
-            $('.export_csv').on('click', function () {
-                csv_export(table, 'csv');
-            });
-            $('.export_pdf').on('click', function () {
-                csv_export(table, 'pdf');
-            });
-
-            $('#cmpl_grid').on('click', 'tr button', function () {
-                var $row = $(this).closest('tr')
-                append_drop_menu('complements', table.cell($row, 0).data(), '.btn_action')
-            });
-
-            $('#id_search').on('keyup', function () {
-                table.column(0).search($(this).val())
-                        .draw();
-
-            });
-        });
-
-    </script>
+                                        <?php 
+                                                                                         if($complements == null)
+                                                                                             echo '<B>Aucun complément trouvé</B> ';
+                                                                                         else {?>
+                                        <table class="table table-striped table-bordered table-hover" style="width: 800px">
+										<th>
+											ID
+										</th>
+                                                                                <th>
+											Désignation
+										</th>
+                                                                                <th>
+											Type
+										</th>
+                                                                                <th>
+											Montant
+										</th>
+											<?php 
+//                                                                                         if($complements == null)
+//                                                                                             echo '<B>Aucun enregistrement trouvé</B> ';
+//                                                                                         else {
+											foreach($complements as $cmpl ) {?>
+											<tr>	
+												<td>
+													<span><?php echo $cmpl['0']; ?></span>
+												</td>
+                                                                                                <td>
+													<span><?php echo $cmpl['1']; ?></span>
+												</td>
+                                                                                                <td>
+													<span><?php echo $cmpl['4']; ?></span>
+												</td>
+                                                                                                <td>
+													<span><?php echo $cmpl['3']; ?></span>
+												</td>
+											</tr>
+                                                                                        
+                                                                                     
+                                                                                         <?php }
+                                                                                         
+                                                                                         } ?>
+											
+	     </table>
                                     </span>
                                 </div>
                             </div>
 
                              
                         </div><!-- /#feed -->
+                        
+                        
+                        <div id="feed1" class="tab-pane">
+                            <div class="profile-info-row">
+                                                         <div class="profile-info-value">
+                                        <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+                                    <span>
+                                        <?php 
+                                                                                         if($encaissements == null)
+                                                                                             echo '<B>Aucun encaissement trouvé</B> ';
+                                                                                         else {?>
+                                        <table class="table table-striped table-bordered table-hover" style="width: 800px">
+										<th>
+											ID
+										</th>
+                                                                                <th>
+											Référence
+										</th>
+                                                                                <th>
+											Montant
+										</th>
+                                                                                <th>
+											Date
+										</th>
+											<?php 
+											foreach($encaissements as $encs ) {?>
+											<tr>	
+												<td>
+													<span><?php echo $encs['0']; ?></span>
+												</td>
+                                                                                                <td>
+													<span><?php echo $encs['1']; ?></span>
+												</td>
+                                                                                                <td>
+													<span><?php echo $encs['4']; ?></span>
+												</td>
+                                                                                                <td>
+													<span><?php echo $encs['6']; ?></span>
+												</td>
+											</tr>
+                                                                                        
+                                                                                     
+                                                                                        <?php }} ?>
+											
+	     </table>
+                                    </span>
+                                </div>
+                            </div>
+
+                             
+                        </div><!-- /#feed -->
+                        
                 </div><!-- /#home -->
 
                 
