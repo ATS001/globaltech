@@ -15,7 +15,7 @@ $info_facture->get_facture_info();
 <div class="page-header">
     <h1>
         Détails de la facture : <?php $info_facture->printattribute_fact('ref'); ?> 
-        
+
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
         </small>
@@ -35,6 +35,20 @@ $info_facture->get_facture_info();
                             Facture
                         </a>
                     </li>
+                    
+                    <li>
+                            <a data-toggle="tab" href="#feed">
+                                <i class="red ace-icon fa fa-adjust bigger-120"></i>
+                                Compléments
+                            </a>
+                        </li>
+
+                        <li>
+                            <a data-toggle="tab" href="#feed">
+                                <i class="red ace-icon fa fa-adjust bigger-120"></i>
+                                Encaissements
+                            </a>
+                        </li>
 
                 </ul>
 
@@ -44,11 +58,16 @@ $info_facture->get_facture_info();
 
                         <div class="col-xs-12 col-sm-4">
                             <div class="profile-achat-info">
-<div class="widget-toolbar hidden-480">
-							<a href="#" class="iframe_pdf" rel="<?php $info_facture->printattribute_fact('facture_pdf') ?>">
-								<i class="ace-icon fa fa-print"></i>
-							</a>
-						</div> 
+                                <div class="widget-toolbar hidden-480">
+                                    <a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'facture') ?>" data="<?php echo MInit::crypt_tp('id', $info_facture->id_facture) ?>">
+                                        <i class="ace-icon fa fa-print"></i>
+                                    </a>
+                                </div>   
+                                <!--<div class="widget-toolbar hidden-480">
+                                                                                        <a href="#" class="iframe_pdf" rel="<?php $info_facture->printattribute_fact('facture_pdf') ?>">
+                                                                                                <i class="ace-icon fa fa-print"></i>
+                                                                                        </a>
+                                                                                </div> -->
                                 <div class="profile-info-row">
                                     <div class="profile-info-name"> Référence </div>
 
@@ -136,9 +155,94 @@ $info_facture->get_facture_info();
 
 
                     </div><!-- /.row -->
+                    
+                    <div id="feed" class="tab-pane">
+                            <div class="profile-info-row">
+                                                         <div class="profile-info-value">
+                                        <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+                                    <span>
+                                        
+              <table id="cmpl_grid" class="table table-bordered table-condensed table-hover table-striped dataTable no-footer">
+                    <thead>
+                        <tr>
 
+                            <th>
+                                ID
+                            </th>
+                            <th>
+                                Désignation
+                            </th>
+                            <th>
+                                Facture
+                            </th>
+                            <th>
+                                Montant
+                            </th>
+                            <th>
+                                Type
+                            </th>
+                            
+                           
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+    <script type="text/javascript">
+
+
+        $(document).ready(function () {
+
+            var table = $('#cmpl_grid').DataTable({
+                bProcessing: true,
+               // notifcol: 5,
+                serverSide: true,
+
+                ajax_url: "complements",
+                extra_data: "id=<?php echo Mreq::tp('id'); ?>",
+
+                aoColumns: [
+                    {"sClass": "center", "sWidth": "5%"}, // Identifiant 
+                    {"sClass": "left", "sWidth": "25%"},
+                    {"sClass": "left", "sWidth": "20%"},
+                     {"sClass": "left", "sWidth": "15%"},
+                      {"sClass": "left", "sWidth": "15%"},
+                  
+                    
+                ],
+            });
+
+
+            $('.export_csv').on('click', function () {
+                csv_export(table, 'csv');
+            });
+            $('.export_pdf').on('click', function () {
+                csv_export(table, 'pdf');
+            });
+
+            $('#cmpl_grid').on('click', 'tr button', function () {
+                var $row = $(this).closest('tr')
+                append_drop_menu('complements', table.cell($row, 0).data(), '.btn_action')
+            });
+
+            $('#id_search').on('keyup', function () {
+                table.column(0).search($(this).val())
+                        .draw();
+
+            });
+        });
+
+    </script>
+                                    </span>
+                                </div>
+                            </div>
+
+                             
+                        </div><!-- /#feed -->
                 </div><!-- /#home -->
 
+                
 
             </div>
         </div>

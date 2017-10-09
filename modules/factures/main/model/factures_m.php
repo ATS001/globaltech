@@ -94,7 +94,36 @@ class Mfacture {
             return true;
         }
     }
+    
+    
+    public function get_complement_by_facture() {
+        global $db;
 
+        $table_complement = $this->table_complement;
+
+        $sql = "SELECT $table_complement.* FROM 
+    		$table_complement WHERE  $table_complement.idfacture = " . $this->id_facture;
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->complement_info = $db->RowArray();
+                $this->error = true;
+            }
+        }
+        //return Array produit_info
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
     //Get all info encaissement from database for edit form
     public function get_encaissement() {
         global $db;
@@ -102,7 +131,7 @@ class Mfacture {
         $table_encaissement = $this->table_encaissement;
 
         $sql = "SELECT $table_encaissement.* FROM 
-    		$table_encaissement WHERE  $table_encaissement.id = " . $this->id_encaissement;
+    		$table_encaissement WHERE  $table_encaissement.idfacture = " . $this->id_facture;
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -641,13 +670,15 @@ class Mfacture {
             $this->log .= $db->Error();
             $this->error = false;
             $this->log .= 'Validation non réussie DB';
-        } else {
-            $this->log .= 'Validation réussie';
-            $this->error = true;
-        }
-        if ($this->error == false) {
+         }
+        
+        if(!$this->Get_detail_facture_pdf())
+        {
+            $this->log .= $this->log;
             return false;
-        } else {
+
+        }else{
+            $this->log .= "Validation réussie";
             return true;
         }
     }
@@ -749,15 +780,18 @@ class Mfacture {
         }
     }
 
-    public function Get_detail_facture_pdf() {
+     public function Get_detail_facture_pdf() {
         global $db;
+       
+        $id_facture = $this->id_facture;
+        $this->get_id_devis();
         $id_devis = $this->id_devis['id'];
         $id_facture = $this->id_facture;
         $table = $this->table_details;
         $this->Get_detail_facture_show();
         $devis_info = $this->devis_info;
         $this->get_facture();
-        $info_facture = $this->facture_info;
+         $info_facture = $this->facture_info;
 
         $colms = null;
         $colms .= " $table.id item, ";
@@ -773,36 +807,6 @@ class Mfacture {
             $this->error = false;
             $this->log .= $db->Error() . ' ' . $req_sql;
             exit($this->log);
-        }
-
-
-        $headers = array(
-            'Item' => '5[#]center',
-            'Réf' => '10[#]center',
-            'Description' => '45[#]',
-            'Qte' => '5[#]center',
-            'P.U' => '10[#]alignRight',
-            'Re' => '5[#]center',
-            'Total HT' => '15[#]alignRight',
-        );
-
-        $tableau_head = MySQL::make_table_head($headers);
-        $tableau_body = $db->GetMTable_pdf($headers);
-
-        $file_export = MPATH_TEMP . 'Facture' . '_' . date('d_m_Y_H_i_s') . '.pdf';
-
-        //Load template 
-        include_once MPATH_THEMES . 'pdf_template/facture_pdf.php';
-        $new_file_target = MPATH_UPLOAD . 'Facture' . date('m_Y');
-
-        if (file_exists($file_export)) {
-            if (!Minit::save_file_upload($file_export, 'Facture_' . $id_facture, $new_file_target, $id_facture, 'Facture ' . $id_facture, 'factures', 'factures', 'facture_pdf', 'document', $edit = null)) {
-                $this->error = false;
-                $this->log .= "Erreur Archivage Devis";
-            }
-        } else {
-            $this->error = false;
-            $this->log .= "Erreur création template Facture";
         }
 
         if ($this->error == false) {

@@ -69,7 +69,7 @@ $(document).ready(function() {
        
     $('#idtype').on('change',function() {
 
-        if($("#idtype option:selected").text() == 'Prestation'){
+        if($("#idtype option:selected").text()== 'Prestation'){
 
             $('#prix_vente').attr('readonly', false);
             
