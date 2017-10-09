@@ -196,7 +196,7 @@ $encaissements=$info_facture->encaissement_info;
 													<span><?php echo $cmpl['1']; ?></span>
 												</td>
                                                                                                 <td>
-													<span><?php echo $cmpl['4']; ?></span>
+													<span><?php echo $cmpl['2']; ?></span>
 												</td>
                                                                                                 <td>
 													<span><?php echo $cmpl['3']; ?></span>
