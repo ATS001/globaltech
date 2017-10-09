@@ -284,6 +284,12 @@ $block_sum = '<div></div>
                     <td style="width:5%;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $remise_valeur . ' %</strong></td>
                 </tr>
+                
+                <tr>
+                    <td style="width:35%;"><strong>Totale Tva</strong></td>
+                    <td style="width:5%;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['total_tva'] . '</strong></td>
+                </tr>
                 <tr>
                     <td style="width:35%;"><strong>Totale payé</strong></td>
                     <td style="width:5%;">:</td>
@@ -293,11 +299,6 @@ $block_sum = '<div></div>
                     <td style="width:35%;"><strong>Reste</strong></td>
                     <td style="width:5%;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['reste'] . '</strong></td>
-                </tr>
-                <tr>
-                    <td style="width:35%;"><strong>Totale Tva</strong></td>
-                    <td style="width:5%;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['total_tva'] . '</strong></td>
                 </tr>
                 <tr>
                     <td style="width:35%;"><strong>Total TTC</strong></td>

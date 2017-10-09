@@ -3,10 +3,9 @@ $info_facture = new Mfacture();
 $info_facture->id_facture = Mreq::tp('id');
 $info_facture->get_facture_info();
 $info_facture->get_complement_by_facture();
-$complements=$info_facture->complement_info;
+$complements = $info_facture->complement_info;
 $info_facture->get_encaissement();
-$encaissements=$info_facture->encaissement_info;
-
+$encaissements = $info_facture->encaissement_info;
 ?>
 <div class="pull-right tableTools-container">
     <div class="btn-group btn-overlap">
@@ -40,20 +39,20 @@ $encaissements=$info_facture->encaissement_info;
                             Facture
                         </a>
                     </li>
-                    
-                    <li>
-                            <a data-toggle="tab" href="#feed">
-                                <i class="red ace-icon fa fa-adjust bigger-120"></i>
-                                Compléments
-                            </a>
-                        </li>
 
-                        <li>
-                            <a data-toggle="tab" href="#feed1">
+                    <li>
+                        <a data-toggle="tab" href="#feed">
+                            <i class="red ace-icon fa fa-adjust bigger-120"></i>
+                            Compléments
+                        </a>
+                    </li>
+
+                    <li>
+                        <a data-toggle="tab" href="#feed1">
                             <i class="blue ace-icon fa fa-inbox bigger-120"></i>
-                                Encaissements
-                            </a>
-                        </li>
+                            Encaissements
+                        </a>
+                    </li>
 
                 </ul>
 
@@ -81,12 +80,40 @@ $encaissements=$info_facture->encaissement_info;
                                         <span><?php $info_facture->printattribute_fact('ref'); ?></span>
                                     </div>
                                 </div>
+
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name"> Date facture </div>
+
+                                    <div class="profile-info-value">
+                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+                                        <span><?php $info_facture->printattribute_fact('date_facture'); ?></span>
+                                    </div>
+                                </div>
+
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name"> Client </div>
+
+                                    <div class="profile-info-value">
+                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+                                        <span><?php $info_facture->printattribute_fact('client'); ?></span>
+                                    </div>
+                                </div>
+
                                 <div class="profile-info-row">
                                     <div class="profile-info-name"> Totale HT </div>
 
                                     <div class="profile-info-value">
                                             <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
                                         <span><?php $info_facture->printattribute_fact('total_ht'); ?></span>
+                                    </div>
+                                </div>
+
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name"> TVA </div>
+
+                                    <div class="profile-info-value">
+                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+                                        <span><?php $info_facture->printattribute_fact('tva'); ?></span>
                                     </div>
                                 </div>
 
@@ -125,32 +152,11 @@ $encaissements=$info_facture->encaissement_info;
                                     </div>
                                 </div>
 
-                                <div class="profile-info-row">
-                                    <div class="profile-info-name"> Client </div>
 
-                                    <div class="profile-info-value">
-                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                        <span><?php $info_facture->printattribute_fact('client'); ?></span>
-                                    </div>
-                                </div>
 
-                                <div class="profile-info-row">
-                                    <div class="profile-info-name"> TVA </div>
 
-                                    <div class="profile-info-value">
-                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                        <span><?php $info_facture->printattribute_fact('tva'); ?></span>
-                                    </div>
-                                </div>
 
-                                <div class="profile-info-row">
-                                    <div class="profile-info-name"> Date facture </div>
 
-                                    <div class="profile-info-value">
-                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                        <span><?php $info_facture->printattribute_fact('date_facture'); ?></span>
-                                    </div>
-                                </div>
 
                             </div>
 
@@ -160,116 +166,119 @@ $encaissements=$info_facture->encaissement_info;
 
 
                     </div><!-- /.row -->
-                    
+
                     <div id="feed" class="tab-pane">
-                            <div class="profile-info-row">
-                                                         <div class="profile-info-value">
-                                        <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                    <span>
-                                        <?php 
-                                                                                         if($complements == null)
-                                                                                             echo '<B>Aucun complément trouvé</B> ';
-                                                                                         else {?>
+                        <div class="profile-info-row">
+                            <div class="profile-info-value">
+           <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+                                <span>
+                                    <?php
+                                    if ($complements == null)
+                                        echo '<B>Aucun complément trouvé</B> ';
+                                    else {
+                                        ?>
                                         <table class="table table-striped table-bordered table-hover" style="width: 800px">
-										<th>
-											ID
-										</th>
-                                                                                <th>
-											Désignation
-										</th>
-                                                                                <th>
-											Type
-										</th>
-                                                                                <th>
-											Montant
-										</th>
-											<?php 
+                                            <th>
+                                                ID
+                                            </th>
+                                            <th>
+                                                Désignation
+                                            </th>
+                                            <th>
+                                                Type
+                                            </th>
+                                            <th>
+                                                Montant
+                                            </th>
+                                            <?php
 //                                                                                         if($complements == null)
 //                                                                                             echo '<B>Aucun enregistrement trouvé</B> ';
 //                                                                                         else {
-											foreach($complements as $cmpl ) {?>
-											<tr>	
-												<td>
-													<span><?php echo $cmpl['0']; ?></span>
-												</td>
-                                                                                                <td>
-													<span><?php echo $cmpl['1']; ?></span>
-												</td>
-                                                                                                <td>
-													<span><?php echo $cmpl['2']; ?></span>
-												</td>
-                                                                                                <td>
-													<span><?php echo $cmpl['3']; ?></span>
-												</td>
-											</tr>
-                                                                                        
-                                                                                     
-                                                                                         <?php }
-                                                                                         
-                                                                                         } ?>
-											
-	     </table>
-                                    </span>
-                                </div>
-                            </div>
+                                            foreach ($complements as $cmpl) {
+                                                ?>
+                                                <tr>	
+                                                    <td>
+                                                        <span><?php echo $cmpl['0']; ?></span>
+                                                    </td>
+                                                    <td>
+                                                        <span><?php echo $cmpl['1']; ?></span>
+                                                    </td>
+                                                    <td>
+                                                        <span><?php echo $cmpl['2']; ?></span>
+                                                    </td>
+                                                    <td>
+                                                        <span><?php echo $cmpl['3']; ?></span>
+                                                    </td>
+                                                </tr>
 
-                             
-                        </div><!-- /#feed -->
-                        
-                        
-                        <div id="feed1" class="tab-pane">
-                            <div class="profile-info-row">
-                                                         <div class="profile-info-value">
-                                        <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                    <span>
-                                        <?php 
-                                                                                         if($encaissements == null)
-                                                                                             echo '<B>Aucun encaissement trouvé</B> ';
-                                                                                         else {?>
+
+                                            <?php }
+                                        }
+                                        ?>
+
+                                    </table>
+                                </span>
+                            </div>
+                        </div>
+
+
+                    </div><!-- /#feed -->
+
+
+                    <div id="feed1" class="tab-pane">
+                        <div class="profile-info-row">
+                            <div class="profile-info-value">
+           <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+                                <span>
+                                    <?php
+                                    if ($encaissements == null)
+                                        echo '<B>Aucun encaissement trouvé</B> ';
+                                    else {
+                                        ?>
                                         <table class="table table-striped table-bordered table-hover" style="width: 800px">
-										<th>
-											ID
-										</th>
-                                                                                <th>
-											Référence
-										</th>
-                                                                                <th>
-											Montant
-										</th>
-                                                                                <th>
-											Date
-										</th>
-											<?php 
-											foreach($encaissements as $encs ) {?>
-											<tr>	
-												<td>
-													<span><?php echo $encs['0']; ?></span>
-												</td>
-                                                                                                <td>
-													<span><?php echo $encs['1']; ?></span>
-												</td>
-                                                                                                <td>
-													<span><?php echo $encs['4']; ?></span>
-												</td>
-                                                                                                <td>
-													<span><?php echo $encs['6']; ?></span>
-												</td>
-											</tr>
-                                                                                        
-                                                                                     
-                                                                                        <?php }} ?>
-											
-	     </table>
-                                    </span>
-                                </div>
-                            </div>
+                                            <th>
+                                                ID
+                                            </th>
+                                            <th>
+                                                Référence
+                                            </th>
+                                            <th>
+                                                Montant
+                                            </th>
+                                            <th>
+                                                Date
+                                            </th>
+    <?php foreach ($encaissements as $encs) { ?>
+                                                <tr>	
+                                                    <td>
+                                                        <span><?php echo $encs['0']; ?></span>
+                                                    </td>
+                                                    <td>
+                                                        <span><?php echo $encs['1']; ?></span>
+                                                    </td>
+                                                    <td>
+                                                        <span><?php echo $encs['5']; ?></span>
+                                                    </td>
+                                                    <td>
+                                                        <span><?php echo $encs['8']; ?></span>
+                                                    </td>
+                                                </tr>
 
-                             
-                        </div><!-- /#feed -->
-                        
+
+    <?php }
+} ?>
+
+                                    </table>
+                                </span>
+                            </div>
+                        </div>
+
+
+                    </div><!-- /#feed -->
+
                 </div><!-- /#home -->
 
-                
+
 
             </div>
         </div>
