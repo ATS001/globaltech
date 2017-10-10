@@ -79,7 +79,7 @@ $lnom_array[]  = array('minlength', '3', 'Minimum 3 caractères' );
 $form->input('Prénom utilisateur', 'lnom', 'text', 6, $info_user->Shw('lnom',1), $lnom_array);
 //Service
 $service_array[]  = array('required', 'true', 'Choisir le Service' );
-$form->select_table('Service', 'service', 6, 'services', 'id', 'service' , 'service', $indx = '------' ,$selected=$info_user->Shw('service',1),$multi=NULL, $where=NULL, $service_array);
+$form->select_table('Service', 'service', 6, 'services', 'id', 'service' , 'service', $indx = '------' ,$selected=$info_user->Shw('service',1),$multi=NULL, $where='id <> 1', $service_array);
 $form->step_end();
 $form->step_start(3, 'Informations d\'accés');
 //Pseudo utilisateur

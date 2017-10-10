@@ -30,9 +30,10 @@ $form = new Mform('addcontrat', 'addcontrat', '', 'contrats', '0', null);
 
 
 //Devis
+$etat_devis_valid = Msetting::get_set('etat_valid_devis');
 $devis_array[]  = array('required', 'true', 'Choisir un devis');
 $form->select_table('Devis', 'iddevis', 8, 'devis', 'id', 'reference' , 'reference', $indx = '------' ,$selected=NULL,$multi=NULL,
-        $where="devis.etat=1 AND  devis.`id` NOT IN (SELECT iddevis FROM contrats c WHERE devis.id=c.iddevis)", $devis_array);
+        $where="devis.etat = $etat_devis_valid AND  devis.`id` NOT IN (SELECT iddevis FROM contrats c WHERE devis.id = c.iddevis)", $devis_array);
 
 
 //Date effet

@@ -11,8 +11,6 @@ if(!MInit::crypt_tp('id', null, 'D')  or !$info_setting->get_setting())
  	// returne message error red to client 
  	exit('3#'.$info_setting->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
  }
- var_dump($info_setting->setting_info);
-
  ?>
 <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">

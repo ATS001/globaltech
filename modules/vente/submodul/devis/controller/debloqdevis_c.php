@@ -20,8 +20,8 @@ if(!MInit::crypt_tp('id', null, 'D')or !$devis->get_devis())
 //$devis->debloqdevis($etat)
 //Execute Validate - delete
 
-
-if($devis->debloqdevis())
+$etat = $devis->devis_info['etat'];
+if($devis->debloqdevis($etat))
 {
 	exit("1#".$devis->log);
 

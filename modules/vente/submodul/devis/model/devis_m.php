@@ -929,10 +929,19 @@ class MDevis
         
         
     }
-
-    public function Valid_Devis($etat)
+    /**
+     * [Valid_Devis Basclly send devis to client and generat PDF]
+     * @param [type] $etat [description]
+     */
+    public function senddevis_to_client($etat)
     {
         //Send to client
+        if($etat != 0)
+        {
+            $this->error = false;
+            $this->log .= "Ce devis ne peux pas être envoyé pour le momement #Etat faild";
+            return false;
+        }
         global $db;
         $table = $this->table;
         $id_devis = $this->id_devis;
@@ -944,14 +953,41 @@ class MDevis
             $this->log .= "Erreur Opération";
             return false;
         }
-        
+        if(Msetting::get_set('send_mail_devis') == true){
             $this->send_devis_mail();
-            $this->log .= "<br/>Expédition réussie";
-            return true;
+        }        
+        
+        $this->log .= "<br/>Expédition réussie";
+        return true;
         
     }
 
-    
+    public function debloqdevis($etat)
+    {
+        if($etat != 2)
+        {
+            $this->error = false;
+            $this->log .= "Ce devis ne peux pas être débloqué //Etat faild";
+            return false;
+        }
+        global $db;
+        $table    = $this->table;
+        $id_devis = $this->id_devis;
+        $doc      = $this->g('devis_pdf');
+        
+        $req_sql = " UPDATE $table SET etat = 0, devis_pdf = NULL WHERE id = $id_devis ";
+        
+        if (!$db->Query($req_sql)) {
+            $this->error = false;
+            $this->log .= "Erreur Opération";
+            return false;
+        }
+            //Delete file form archive table
+            $db->Query("DELETE FROM archive WHERE doc = $doc ");
+            $this->log .= "<br/>Opération réussie";
+            return true;
+        
+    }
 
     public function Delete_detail_devis($id_detail)
     {
@@ -1083,7 +1119,7 @@ class MDevis
         $req_sql = "SELECT 
         produits.designation,
         produits.ref,
-        IFNULL(stock.prix_vente, 0) AS prix_vente,
+        produits.prix_vente AS prix_vente,
         ref_unites_vente.unite_vente,
         ref_types_produits.type_produit,
         IFNULL((SELECT MAX(d_devis.prix_ht) FROM d_devis WHERE d_devis.id_produit = $id_produit), 0) AS prix_vendu,
