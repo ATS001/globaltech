@@ -1,6 +1,6 @@
 <?php 
 //Call view 
-View::load('tdb', 'setting');
+view::load('tdb', 'setting');
 
 				
 
