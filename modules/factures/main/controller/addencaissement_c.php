@@ -7,6 +7,8 @@
         $posted_data = array(       
             'designation' => Mreq::tp('designation'),
             'idfacture' => Mreq::tp('idfacture'),
+            'mode_payement' => Mreq::tp('mode_payement'),
+             'ref_payement' => Mreq::tp('ref_payement'),
             'montant' => Mreq::tp('montant'),
             'pj_id'          => Mreq::tp('pj-id'),
             );
@@ -25,6 +27,19 @@
             $empty_list .= "<li>Désignation</li>";
             $checker = 1;
         }
+        
+        if($posted_data['mode_payement'] == NULL ){
+
+            $empty_list .= "<li>Mode de payement</li>";
+            $checker = 1;
+        }
+       if( $posted_data['mode_payement'] != 'Espèce'){
+        if($posted_data['ref_payement'] == NULL ){
+
+            $empty_list .= "<li>Référence payement</li>";
+            $checker = 1;
+        }
+       }
         
         if($posted_data['idfacture'] == NULL){
 

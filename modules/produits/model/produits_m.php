@@ -88,8 +88,8 @@ class Mproduit {
         }
         global $db;
         global $db;
-        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(ref, 5, LENGTH(SUBSTR(ref,5))-5))),0)+1  AS reference FROM produits WHERE SUBSTR(ref,LENGTH(ref)-3,4)= (SELECT  YEAR(SYSDATE()))');
-        $this->reference = 'PRD-' . $max_id . '/' . date('Y');
+        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(ref, 8, LENGTH(SUBSTR(ref,8))-5))),0)+1  AS reference FROM produits WHERE SUBSTR(ref,LENGTH(ref)-3,4)= (SELECT  YEAR(SYSDATE()))');
+        $this->reference = 'GT-PRD-' . $max_id . '/' . date('Y');
     }
 
     //Save new produit after all check
@@ -126,6 +126,11 @@ class Mproduit {
 
                 $this->last_id = $result;
                 $this->log .= '</br>Enregistrement  réussie ' . $this->_data['ref'] . ' - ' . $this->last_id . ' -';
+
+                    if(!Mlog::log_exec($this->table, $this->last_id , 'Insertion produit', 'Insert'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
             }
         } else {
 
@@ -160,6 +165,11 @@ class Mproduit {
             $this->log .= '</br>Statut changé! ';
             //$this->log   .= $this->table.' '.$this->id_produit.' '.$etat;
             $this->error = true;
+
+                    if(!Mlog::log_exec($this->table, $this->id_produit , 'Validation produit', 'Validate'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
         }
         if ($this->error == false) {
             return false;
@@ -201,15 +211,28 @@ class Mproduit {
                 //$db->Kill();
                 $this->log .= $db->Error();
                 $this->error == false;
-                $this->log .= '</br>Enregistrement BD non réussie';
+                $this->log .= '</br>Modification BD non réussie';
             } else {
 
+
+                //Esspionage
+                if(!$db->After_update($this->table, $this->id_produit, $values, $this->produit_info)){
+                    $this->log .= '</br>Problème Esspionage';
+                    $this->error = false; 
+                }
+
                 //$this->last_id = $result;
-                $this->log .= '</br>Enregistrement  réussie ' . $this->_data['ref'] . ' - ' . $this->last_id . ' -';
+                $this->log .= '</br>Modification  réussie ' . $this->_data['ref'] . ' - ' . $this->last_id . ' -';
+
+                    if(!Mlog::log_exec($this->table, $this->id_produit , 'Modification produit', 'Update'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
+
             }
         } else {
 
-            $this->log .= '</br>Enregistrement non réussie';
+            $this->log .= '</br>Modification non réussie';
         }
 
         //check if last error is true then return true else rturn false.
@@ -241,6 +264,11 @@ class Mproduit {
 
             $this->error = true;
             $this->log .= '</br>Suppression réussie ';
+
+                if(!Mlog::log_exec($this->table, $this->id_produit , 'Suppression produit', 'Delete'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
         }
         //check if last error is true then return true else rturn false.
         if ($this->error == false) {

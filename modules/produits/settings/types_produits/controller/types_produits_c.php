@@ -1,7 +1,7 @@
 <?php
 	//Call Liste types socité
+	view::load_view('types_produits');
 
-	view::load('produits/settings/types_produits','types_produits');
 
 
 ?>

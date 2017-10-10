@@ -1,5 +1,5 @@
 <?php 
-$tva = Mcfg::get('tva');
+$tva = Msetting::get_set('tva');
 
 
 global $db;

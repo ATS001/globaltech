@@ -44,6 +44,7 @@
         }
     //Call View if no POST
     } else {
-        view::load('produits/settings/types_produits', 'edittype_produit');
+        view::load_view('edittype_produit');
+
     }
     ?>

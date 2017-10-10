@@ -137,6 +137,11 @@ class Mpays {
 
     			$this->last_id = $result;
     			$this->log .='</br>Enregistrement  réussie '. $this->_data['pays'] .' - '.$this->last_id.' -';
+
+                    if(!Mlog::log_exec($this->table, $this->last_id, 'Insertion pays', 'Insert'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
     		}
 
 
@@ -178,6 +183,11 @@ class Mpays {
 		}else{
 			$this->log .= '</br>Statut changé! ';
 			$this->error = true;
+
+                    if(!Mlog::log_exec($this->table, $this->id_pays, 'Validation pays', 'Validate'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
 
 		} 
 		if($this->error == false){
@@ -241,6 +251,17 @@ class Mpays {
 
 				//$this->last_id = $result;
     			$this->log .='</br>Enregistrement  réussie '. $this->_data['pays'] .' - '.$this->last_id.' -';
+
+                    if(!Mlog::log_exec($this->table, $this->id_pays, 'Modification pays', 'Update'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
+
+                //Esspionage
+                if(!$db->After_update($this->table, $this->id_pays, $values, $this->pays_info)){
+                    $this->log .= '</br>Problème Esspionage';
+                    $this->error = false; 
+                }
     		}
 
 
@@ -285,6 +306,11 @@ class Mpays {
     		
     		$this->error = true;
     		$this->log .='</br>Suppression réussie ';
+
+                    if(!Mlog::log_exec($this->table, $this->id_pays, 'Suppression pays', 'Delete'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
     	}
     	//check if last error is true then return true else rturn false.
     	if($this->error == false){

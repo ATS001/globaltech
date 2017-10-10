@@ -45,6 +45,7 @@
         }
     //Call View if no POST
     } else {
-        view::load('produits/settings/categories_produits', 'editecategorie_produit');
+        view::load_view('editecategorie_produit');
+
     }
 ?>

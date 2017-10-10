@@ -108,6 +108,12 @@
                     $this->last_id = $result;
                     $this->log .= '</br>Enregistrement  réussie ' . ' - ' . $this->last_id . ' -';
                     $this->maj_prix_vente($this->_data['idproduit'], $this->_data['prix_vente']);
+
+
+                    if(!Mlog::log_exec($this->table, $this->last_id , 'Insertion achat produit', 'Insert'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
                 }
             } else {
 
@@ -154,6 +160,12 @@
                 $this->log .= '</br>Statut changé! ';
                 //$this->log   .= $this->table.' '.$this->id_produit.' '.$etat;
                 $this->error = true;
+
+
+                    if(!Mlog::log_exec($this->table, $this->id_achat , 'Validation achat produit', 'Validate'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
             }
             if ($this->error == false) {
                 return false;
@@ -195,6 +207,21 @@
 
                     //$this->last_id = $result;
                     $this->log .= '</br>Enregistrement  réussie ' . ' - ' . $this->last_id . ' -';
+
+                    $this->maj_prix_vente($this->_data['idproduit'], $this->_data['prix_vente']);
+
+
+                //Esspionage
+                if(!$db->After_update($this->table, $this->id_achat, $values, $this->achat_info)){
+                    $this->log .= '</br>Problème Esspionage';
+                    $this->error = false; 
+                }
+
+
+                    if(!Mlog::log_exec($this->table, $this->id_achat , 'Modification achat produit', 'Update'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
                 }
             } else {
 
@@ -230,6 +257,12 @@
 
                 $this->error = true;
                 $this->log .= '</br>Suppression réussie ';
+
+
+                    if(!Mlog::log_exec($this->table, $this->id_achat , 'Suppression achat produit', 'Delete'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
             }
             //check if last error is true then return true else rturn false.
             if ($this->error == false) {

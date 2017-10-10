@@ -297,9 +297,15 @@ class Mcontrat {
                 //Check $this->error = true return Green message and Bol true
                 if ($this->error == true) {
                     $this->log = '</br>Enregistrement réussie: <b>' . $this->reference . ' ID: ' . $this->last_id;
+
+
+                    if(!Mlog::log_exec($this->table, $this->last_id, 'Insertion contrat abonnement', 'Insert'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
                     //Check $this->error = false return Red message and Bol false	
                 } else {
-                    $this->log .= '</br>Enregistrement réussie: <b>' . $this->reference;
+                    $this->log .= '</br>Enregistrement non réussie: <b>' . $this->reference;
 
                     $this->log .= '</br>Un problème d\'Enregistrement ';
                 }
@@ -381,12 +387,27 @@ class Mcontrat {
 
                 $this->save_file('pj_photo', 'Photo' . $this->_data['ref'], 'image');
 
+
                 //Check $this->error = true return Green message and Bol true
                 if ($this->error == true) {
                     $this->log = '</br>Modification réussie: <b>' . $this->_data['ref'] . ' ID: ' . $this->last_id;
                     $this->save_temp_detail($this->_data['tkn_frm'], $this->id_contrat);
+
+
+                    if(!Mlog::log_exec($this->table, $this->id_contrat, 'Modification contrat abonnement', 'Update'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
+
+
+                //Esspionage
+                if(!$db->After_update($this->table, $this->id_contrat, $values, $this->contrat_info)){
+                    $this->log .= '</br>Problème Esspionage';
+                    $this->error = false; 
+                }
+
                 } else {
-                    $this->log .= '</br>Modification réussie: <b>' . $this->_data['ref'];
+                    $this->log .= '</br>Modification non réussie: <b>' . $this->_data['ref'];
                     $this->log .= '</br>Un problème d\'Enregistrement ';
                 }
             }
@@ -490,6 +511,11 @@ class Mcontrat {
                 if ($this->error == true) {
                     $this->log = '</br>Enregistrement réussie: <b>' . $this->_data['date_echeance'] . ' ID: ' . $this->last_id;
 
+                    if(!Mlog::log_exec($this->table_echeance, $this->last_id, 'Insertion échéance contrat abonnement', 'Insert'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
+
                     //Check $this->error = false return Red message and Bol false   
                 } else {
                     $this->log .= '</br>Enregistrement réussie: <b>' . $this->_data['date_echeance'];
@@ -542,6 +568,18 @@ class Mcontrat {
                 if ($this->error == true) {
                     $this->log = '</br>Modification réussie: <b>' . $this->_data['date_echeance'] . ' ID: ' . $this->id_echeance_contrat;
 
+
+                    if(!Mlog::log_exec($this->table_echeance, $this->id_echeance_contrat, 'Modification échéance contrat abonnement', 'Update'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
+
+
+                //Esspionage
+                if(!$db->After_update($this->table_echeance, $this->id_echeance_contrat, $values, $this->echeance_contrat_info)){
+                    $this->log .= '</br>Problème Esspionage';
+                    $this->error = false; 
+                }
 
                     //Check $this->error = false return Red message and Bol false   
                 } else {
@@ -689,6 +727,12 @@ class Mcontrat {
 
             $this->error = true;
             $this->log .= '</br>Suppression réussie ';
+
+                    if(!Mlog::log_exec($this->table, $this->id_contrat, 'Suppression contrat abonnement', 'Delete'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
+
         }
         //check if last error is true then return true else rturn false.
         if ($this->error == false) {
@@ -720,6 +764,11 @@ class Mcontrat {
 
             $this->error = true;
             $this->log .= '</br>Suppression réussie ';
+
+                    if(!Mlog::log_exec($this->table_echeance, $this->id_echeance_contrat, 'Suppression échéance contrat abonnement', 'Delete'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
         }
         //check if last error is true then return true else rturn false.
         if ($this->error == false) {
@@ -887,6 +936,11 @@ class Mcontrat {
 
         }else{
             $this->log .= "Validation réussie";
+
+                    if(!Mlog::log_exec($this->table, $this->id_contrat, 'Validation contrat abonnement', 'Validate'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
             return true;
         }        
     }
@@ -933,6 +987,11 @@ class Mcontrat {
             }
 
             $this->log .= '</br>Statut changé! ';
+            
+                    if(!Mlog::log_exec($this->table, $this->id_contrat, 'Validation contrat abonnement', 'Validate'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
             $this->error = true;
 
         } 

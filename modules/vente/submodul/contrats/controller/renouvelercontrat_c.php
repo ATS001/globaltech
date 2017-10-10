@@ -243,7 +243,7 @@ exit();*/
     //execute Insert returne false if error
     if ($new_contrat->save_new_contrat()) {
 
-    	if($new_contrat->valid_contrats(3))
+    	if($new_contrat->valid_contrats(4))
     	{
         echo("1#" . $new_contrat->log);
         }

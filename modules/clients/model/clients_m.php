@@ -202,6 +202,11 @@ class Mclients {
 				if($this->error == true)
 				{
 					$this->log = '</br>Enregistrement réussie: <b>'.$this->_data['denomination'].' ID: '.$this->last_id;
+                    
+                    if(!Mlog::log_exec($this->table, $this->last_id, 'Création client', 'Insert'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
 				//Check $this->error = false return Red message and Bol false	
 				}else{
 					$this->log .= '</br>Enregistrement réussie: <b>'.$this->_data['denomination'];
@@ -245,6 +250,10 @@ class Mclients {
 		}else{
 			$this->log .= '</br>Statut changé! ';
 			$this->error = true;
+            if(!Mlog::log_exec($this->table, $this->id_client, 'Validation client', 'Validate'))
+            {
+                $this->log .= '</br>Un problème de log ';
+            }
 
 		} 
 		if($this->error == false){
@@ -367,11 +376,22 @@ class Mclients {
 					
 				
 				$this->save_file('pj_photo', 'Photo du client'.$this->_data['denomination'], 'image');
+
+                //Esspionage
+                if(!$db->After_update($this->table, $this->id_client, $values, $this->client_info)){
+                    $this->log .= '</br>Problème Esspionage';
+                    $this->error = false; 
+                }
 								
 				//Check $this->error = true return Green message and Bol true
 				if($this->error == true)
 				{
 					$this->log = '</br>Modification réussie: <b>'.$this->_data['denomination'].' ID: '.$this->last_id;
+
+                    if(!Mlog::log_exec($this->table, $this->id_client, 'Modification client', 'Update'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
 				//Check $this->error = false return Red message and Bol false	
 				}else{
 					$this->log .= '</br>Modification réussie: <b>'.$this->_data['denomination'];
@@ -416,6 +436,10 @@ class Mclients {
     		
     		$this->error = true;
     		$this->log .='</br>Suppression réussie ';
+            if(!Mlog::log_exec($this->table, $this->id_client, 'Suppression client', 'Delete'))
+            {
+                        $this->log .= '</br>Un problème de log ';
+            }
     	}
     	//check if last error is true then return true else rturn false.
     	if($this->error == false){

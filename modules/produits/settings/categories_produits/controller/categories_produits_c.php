@@ -1,7 +1,7 @@
 <?php
 //Call List categories
 
-view::load('produits/settings/categories_produits','categories_produits');
+view::load_view('categories_produits');
 
 
 ?>

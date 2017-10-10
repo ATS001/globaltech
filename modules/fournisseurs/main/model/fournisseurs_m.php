@@ -218,7 +218,7 @@ class Mfournisseurs {
 				$this->last_id = $result;
 				//If Attached required Save file to Archive
 				
-                $this->save_file('pj', 'Justifications du fournisseurs'.$this->_data['denomination'], 'Document');
+        $this->save_file('pj', 'Justifications du fournisseurs'.$this->_data['denomination'], 'Document');
 				
 				$this->save_file('pj_photo', 'Photo du fournisseur'.$this->_data['denomination'], 'Image');
 								
@@ -226,9 +226,14 @@ class Mfournisseurs {
 				if($this->error == true)
 				{
 					$this->log = '</br>Enregistrement réussie: <b>'.$this->_data['denomination'].' ID: '.$this->last_id;
+
+                    if(!Mlog::log_exec($this->table, $this->last_id, 'Insertion fournisseur', 'Insert'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
 				//Check $this->error = false return Red message and Bol false	
 				}else{
-					$this->log .= '</br>Enregistrement réussie: <b>'.$this->_data['denomination'];
+					$this->log .= '</br>Enregistrement non réussie: <b>'.$this->_data['denomination'];
                     
 					$this->log .= '</br>Un problème d\'Enregistrement ';
 				}
@@ -256,7 +261,7 @@ class Mfournisseurs {
 		//Format value for requet
 		$values["etat"] 		= MySQL::SQLValue($etat);
 		$values["updusr"]       = MySQL::SQLValue(session::get('userid'));
-	    $values["upddat"]       = MySQL::SQLValue(date("Y-m-d H:i:s"));
+	  $values["upddat"]       = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
 		$where["id"]   			= $this->id_fournisseur;
 
@@ -269,6 +274,11 @@ class Mfournisseurs {
 		}else{
 			$this->log .= '</br>Statut changé! ';
 			$this->error = true;
+
+                    if(!Mlog::log_exec($this->table, $this->id_fournisseur, 'Validation fournisseur', 'Validate'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
 
 		} 
 		if($this->error == false){
@@ -412,14 +422,27 @@ class Mfournisseurs {
 					
 				
 				$this->save_file('pj_photo', 'Photo du fournisseur'.$this->_data['denomination'], 'image');
+
+        //Esspionage
+        if(!$db->After_update($this->table, $this->id_fournisseur , $values, $this->fournisseur_info)){
+             $this->log .= '</br>Problème Esspionage';
+             $this->error = false; 
+        }
 								
 				//Check $this->error = true return Green message and Bol true
 				if($this->error == true)
 				{
 					$this->log = '</br>Modification réussie: <b>'.$this->_data['denomination'].' ID: '.$this->last_id;
+
+
+          if(!Mlog::log_exec($this->table, $this->id_fournisseur, 'Modification fournisseur', 'Update'))
+          {
+             $this->log .= '</br>Un problème de log ';
+          }
+
 				//Check $this->error = false return Red message and Bol false	
 				}else{
-					$this->log .= '</br>Modification réussie: <b>'.$this->_data['denomination'];
+					$this->log .= '</br>Modification non réussie: <b>'.$this->_data['denomination'];
 					$this->log .= '</br>Un problème d\'Enregistrement ';
 				}
 			}
@@ -461,6 +484,11 @@ class Mfournisseurs {
     		
     		$this->error = true;
     		$this->log .='</br>Suppression réussie ';
+
+          if(!Mlog::log_exec($this->table, $this->id_fournisseur, 'Suppression fournisseur', 'Delete'))
+          {
+             $this->log .= '</br>Un problème de log ';
+          }
     	}
     	//check if last error is true then return true else rturn false.
     	if($this->error == false){

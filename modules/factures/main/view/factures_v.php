@@ -34,10 +34,13 @@
                             Réference
                         </th>
                         <th>
-                            Totale
+                            Totale TTC
                         </th>
                         <th>
-                            Tva
+                            Totale payée
+                        </th>
+                        <th>
+                            Reste
                         </th>
                         <th>
                             Client
@@ -70,6 +73,7 @@
                 {"sClass": "center", "sWidth": "5%"},
                 {"sClass": "left", "sWidth": "15%"}, //
                 {"sClass": "left", "sWidth": "15%"}, //
+                {"sClass": "left", "sWidth": "15%"},//
                 {"sClass": "left", "sWidth": "15%"}, //
                 {"sClass": "left", "sWidth": "15%"}, //
                 {"sClass": "center", "sWidth": "20%"},

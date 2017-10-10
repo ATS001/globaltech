@@ -54,6 +54,14 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_encaissement->get_encaissement(
 //Désignation
                 $des_array[] = array('required', 'true', 'Insérez la désignation');
                 $form->input('Désignation', 'designation', 'text', 6, $info_encaissement->Shw('designation', 1), $des_array);
+                
+                //mode de payment
+$mode_array  = array('Espèce' => 'Espèce', 'Chèque' => 'Chèque','Virement'=>'Virement');
+$form->select('Mode de payement', 'mode_payement', 3, $mode_array, Null,$info_encaissement->Shw2('mode_payement', 1), $multi = NULL );
+
+//Réf de la pièce de payement
+$form->input('Référence', 'ref_payement', 'text', 6, $info_encaissement->Shw('ref_payement', 1), NULL);
+
 
 //Montant
                 $mt_array[] = array('required', 'true', 'Insérez le montant');

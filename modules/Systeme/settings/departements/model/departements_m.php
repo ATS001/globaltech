@@ -139,6 +139,12 @@ class Mdept {
 
 				$this->last_id = $result;
 				$this->log .='</br>Enregistrement  réussie '. $this->_data['departement'] .' - '.$this->last_id.' -';
+
+
+                    if(!Mlog::log_exec($this->table, $this->last_id, 'Insertion département', 'Insert'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
 			}
 
 
@@ -177,6 +183,11 @@ class Mdept {
 			$this->error = false;
 		}else{
 			$this->log .= '</br>Statut changé! ';
+
+                    if(!Mlog::log_exec($this->table, $this->id_departement, 'Validation département', 'Validate'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
 			$this->error = true;
 
 		} 
@@ -244,6 +255,20 @@ class Mdept {
 
 				$this->last_id = $result;
 				$this->log .='</br>Modification  réussie '. $this->_data['departement'] .' - '.$this->last_id.' -';
+
+
+                    if(!Mlog::log_exec($this->table, $this->id_departement, 'Modification département', 'Update'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
+
+
+                //Esspionage
+                if(!$db->After_update($this->table, $this->id_departement, $values, $this->departement_info)){
+                    $this->log .= '</br>Problème Esspionage';
+                    $this->error = false; 
+                }
+
 			}
 
 
@@ -288,6 +313,11 @@ class Mdept {
     		
     		$this->error = true;
     		$this->log .='</br>Suppression réussie ';
+
+                    if(!Mlog::log_exec($this->table, $this->id_departement, 'Suppression département', 'Delete'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
     	}
     	//check if last error is true then return true else rturn false.
 		if($this->error == false){

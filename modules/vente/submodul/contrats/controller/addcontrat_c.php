@@ -116,8 +116,14 @@ exit();*/
     $contratS = new Mcontrat($posted_data);
     $contratS->get_id_type_echeance('Simestrielle');
 
-/*var_dump( $diff->format('%a'));   
-var_dump($contratA->Shw_type('id',1));
+
+/*var_dump( $diff->format('%y'));       
+var_dump( $diff->format('%m'));  
+var_dump( $diff->format('%a')); */
+
+
+
+/*var_dump($contratA->Shw_type('id',1));
 var_dump($contratM->Shw_type('id',1));
 var_dump($contratT->Shw_type('id',1));
 var_dump($contratS->Shw_type('id',1));
@@ -125,40 +131,187 @@ var_dump($posted_data['idtype_echeance']);
 exit();*/
 
 
-    if ($diff->format('%a') < 365 and $posted_data['idtype_echeance'] == $contratA->Shw_type('id',1))
+    if ( /*($diff->format('%a') % 365) <>0 and*/ $posted_data['idtype_echeance'] == $contratA->Shw_type('id',1))
     {
-        $control_echeance_a = "<ul>Il faut choisir une période supérieure ou égale à 365 jours pour séléctionner le type d'échéance : Annuelle  !!!</ul>";
-        $checker = 4;
+        $date_d = $posted_data['date_effet'];
+       $date_f = $posted_data['date_fin'];
+       $output = [];
+       $output_an = [];
+       $total_jr=0;
+       $time   = strtotime($date_d);
+       $last   = date('d-m-Y', strtotime($date_f));
+       $res=0;
+
+
+       do {
+        $month = date('d-m-Y', $time);
+        $mon   = date('m', $time);
+        $total = date('t', $time);
+        $total_jr += $total ;
+        $annee= date('L', $time);
+
+        $output[] = [
+        'month' => $month,
+        'total' => $total,
+        'tot_jr'=> $total_jr,
+        'annee' => $annee,
+        'mo'=>$mon,
+        'time'=>$time,
+
+        ];
+
+        $time = strtotime('+1 year', $time);
+
+
+            } while (date('Y-m-d', strtotime($month)) < date('Y-m-d', strtotime($last)));
+
+        if(date('Y-m-d', strtotime($month)) <> date('Y-m-d', strtotime($last)))
+        {  
+            $control_echeance_a = "<ul>Il faut choisir une période Annuelle, ou séléctionner le type d'échéance : Autres  !!!</ul>";
+            $checker = 4;
+        }
     }
     if($checker == 4)
     {
         exit("0#$control_echeance_a");
     }
-
-    if ($diff->format('%a') < 28 and $posted_data['idtype_echeance'] == $contratM->Shw_type('id',1))
+//return 12 * $nbyear + $nbmonth;
+    if ( /*($diff->format('%a') % 28) <>0  and */$posted_data['idtype_echeance'] == $contratM->Shw_type('id',1))
     {
-        $control_echeance_m = "<ul>Il faut choisir une période supérieure ou égale à 28 jours pour séléctionner le type d'échéance : Mensuelle !!!</ul>";
-        $checker = 5;
+       $date_d = $posted_data['date_effet'];
+       $date_f = $posted_data['date_fin'];
+       $output = [];
+       $output_an = [];
+       $total_jr=0;
+       $time   = strtotime($date_d);
+       $last   = date('d-m-Y', strtotime($date_f));
+       $res=0;
+
+
+       do {
+        $month = date('d-m-Y', $time);
+        $mon   = date('m', $time);
+        $total = date('t', $time);
+        $total_jr += $total ;
+        $annee= date('L', $time);
+
+        $output[] = [
+        'month' => $month,
+        'total' => $total,
+        'tot_jr'=> $total_jr,
+        'annee' => $annee,
+        'mo'=>$mon,
+        'time'=>$time,
+
+        ];
+
+        $time = strtotime('+1 month', $time);
+
+
+           } while (date('Y-m-d', strtotime($month)) < date('Y-m-d', strtotime($last)));
+
+        if(date('Y-m-d', strtotime($month)) <> date('Y-m-d', strtotime($last)))
+        {
+            $control_echeance_m = "<ul>Il faut choisir une période Mensuelle, ou séléctionner le type d'échéance : Autres   !!!</ul>";
+            $checker = 5;
+        }
+
+    //var_dump($output);
+       
     }
     if($checker == 5)
     {
         exit("0#$control_echeance_m");
     }
 
-    if ($diff->format('%a') < 88 and $posted_data['idtype_echeance'] == $contratT->Shw_type('id',1))
+    if (/*$diff->format('%a') < 88 and*/ $posted_data['idtype_echeance'] == $contratT->Shw_type('id',1))
     {
-        $control_echeance_t = "<ul>Il faut choisir une période supérieure ou égale à 88 jours pour séléctionner le type d'échéance : Trimestrielle !!!</ul>";
-        $checker = 6;
+       $date_d = $posted_data['date_effet'];
+       $date_f = $posted_data['date_fin'];
+       $output = [];
+       $output_an = [];
+       $total_jr=0;
+       $time   = strtotime($date_d);
+       $last   = date('d-m-Y', strtotime($date_f));
+       $res=0;
+
+
+       do {
+        $month = date('d-m-Y', $time);
+        $mon   = date('m', $time);
+        $total = date('t', $time);
+        $total_jr += $total ;
+        $annee= date('L', $time);
+
+        $output[] = [
+        'month' => $month,
+        'total' => $total,
+        'tot_jr'=> $total_jr,
+        'annee' => $annee,
+        'mo'=>$mon,
+        'time'=>$time,
+
+        ];
+
+        $time = strtotime('+3 month', $time);
+
+
+           } while (date('Y-m-d', strtotime($month)) < date('Y-m-d', strtotime($last)));
+
+        if(date('Y-m-d', strtotime($month)) <> date('Y-m-d', strtotime($last)))
+        {
+            $control_echeance_t = "<ul>Il faut choisir une période Trimestrielle, ou séléctionner le type d'échéance : Autres   !!!</ul>";
+            $checker = 6;
+        }
+
+    //var_dump($output);
+       
     }
     if($checker == 6)
     {
         exit("0#$control_echeance_t");
     }
 
-    if ($diff->format('%a') < 178 and $posted_data['idtype_echeance'] == $contratS->Shw_type('id',1))
-    {
-        $control_echeance_s = "<ul>Il faut choisir une période supérieure ou égale à 178 jours pour séléctionner le type d'échéance : Simestrielle !!!</ul>";
-        $checker = 7;
+    if (/*$diff->format('%a') < 178 and */$posted_data['idtype_echeance'] == $contratS->Shw_type('id',1))
+    {   
+       $date_d = $posted_data['date_effet'];
+       $date_f = $posted_data['date_fin'];
+       $output = [];
+       $output_an = [];
+       $total_jr=0;
+       $time   = strtotime($date_d);
+       $last   = date('d-m-Y', strtotime($date_f));
+       $res=0;
+
+
+       do {
+        $month = date('d-m-Y', $time);
+        $mon   = date('m', $time);
+        $total = date('t', $time);
+        $total_jr += $total ;
+        $annee= date('L', $time);
+
+        $output[] = [
+        'month' => $month,
+        'total' => $total,
+        'tot_jr'=> $total_jr,
+        'annee' => $annee,
+        'mo'=>$mon,
+        'time'=>$time,
+
+        ];
+
+        $time = strtotime('+6 month', $time);
+
+
+           } while (date('Y-m-d', strtotime($month)) < date('Y-m-d', strtotime($last)));
+
+        if(date('Y-m-d', strtotime($month)) <> date('Y-m-d', strtotime($last)))
+        {
+            $control_echeance_s = "<ul>Il faut choisir une période Simestrielle, ou séléctionner le type d'échéance : Autres   !!!</ul>";
+            $checker = 7;
+        }
+
     }
 
     if($checker == 7)
