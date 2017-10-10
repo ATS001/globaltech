@@ -173,7 +173,7 @@ while (!$db->EndOfSeek()) {
  }// end for each ?>
 		</div><!-- /.row -->
 		<!-- PAGE CONTENT END -->
-		<div id="data">test</div>
+		<div id="data"></div>
 	</div>
     </form>
 </div>

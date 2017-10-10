@@ -162,19 +162,25 @@ class MLogin
 				
 				
 				//exit($session->get_cookie('alg'));
-				
-				$this->photo_file = MInit::get_file_archive($this->user_info['photo']);
-				$x                = $y = 36;
-				
-				
-                $img_user = MInit::creat_thumbail($this->photo_file ,$x ,$y);
-				if($this->photo_file == false || !file_exists($img_user))
+				if($this->photo_file != null)
 				{
-					$session->set('tof','img/user.jpg');
+					$this->photo_file = MInit::get_file_archive($this->user_info['photo']);
+					$x                = $y = 36;
+
+
+					$img_user = MInit::creat_thumbail($this->photo_file ,$x ,$y);
+					if($this->photo_file == false || !file_exists($img_user))
+					{
+						$session->set('tof','img/user.jpg');
+					}else{
+
+						$session->set('tof',$img_user);
+					}
+
 				}else{
-					
-					$session->set('tof',$img_user);
+					$session->set('tof','img/user.jpg');
 				}
+				
 				//Creat temporary folder for this session
 				//ion réussie
 

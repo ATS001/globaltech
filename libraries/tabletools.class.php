@@ -166,14 +166,13 @@ class TableTools
 		AND $table_modul.etat = task_action.etat_line 
 		$and_task 
 		AND task.id = task_action.appid 
-		AND rules_action.userid = $user 
-		AND task_action.service LIKE  '$service_f'
+		AND rules_action.userid = $user
 		AND rules_action.service = $service
 		AND $table_modul.etat = $etat 
 		AND $table_modul.id = $id
 		AND task_action.type = 0 ";
-
-//exit($sql);
+        //for more secure add this AND task_action.service LIKE  '$service_f' 
+        //exit($sql);
 
 
 		if(!$db->Query($sql))
