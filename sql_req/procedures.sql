@@ -3,6 +3,12 @@ DELIMITER $$
 --
 -- Procédures
 --
+DELIMITER $$
+
+USE `globaltech`$$
+
+DROP PROCEDURE IF EXISTS `generate_fact`$$
+
 CREATE DEFINER=`root`@`localhost` PROCEDURE `generate_fact`(in tva INT)
 BEGIN
 DECLARE finished INT DEFAULT FALSE;
@@ -97,13 +103,14 @@ DECLARE CONTINUE HANDLER FOR NOT FOUND SET finished = TRUE;
  
 SELECT CONCAT('GT-FCT-',(SELECT IFNULL(( MAX(SUBSTR(ref, 8, LENGTH(SUBSTR(ref,8))-5))),0)+1  AS reference 
 FROM factures WHERE SUBSTR(ref,LENGTH(ref)-3,4)= (SELECT  YEAR(SYSDATE()))),'/',(SELECT  YEAR(SYSDATE()))) INTO reference ;
-INSERT INTO factures (ref, base_fact, total_ht, total_tva, total_ttc, total_paye, reste,  CLIENT, idcontrat, date_facture, creusr, credat) 
-values(reference,'C',totalht,totaltva,totalttc,0,totalttc,CLIENT,contrat,(SELECT NOW() FROM DUAL),1,(SELECT NOW() FROM DUAL));
+INSERT INTO factures (ref, base_fact, total_ht, total_tva, total_ttc_initial ,total_ttc, total_paye, reste,  CLIENT, idcontrat, date_facture, creusr, credat) 
+values(reference,'C',totalht,totaltva,totalttc,totalttc,0,totalttc,CLIENT,contrat,(SELECT NOW() FROM DUAL),1,(SELECT NOW() FROM DUAL));
 END LOOP;
 CLOSE cur1;
  
     END$$
 
+DELIMITER ;
 CREATE DEFINER=`root`@`localhost` PROCEDURE `notify_contrat`()
 BEGIN
 update contrats c set c.`etat`= 2 where (SELECT date(NOW()) FROM DUAL)=c.`date_notif` and c.etat=1 ;
