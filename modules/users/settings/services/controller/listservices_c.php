@@ -51,6 +51,7 @@ $array_column = array(
 $list_data_table = new Mdatatable();
 //Set tabels used in Query
 $list_data_table->tables = array('services');
+$list_data_table->joint = "id <> 1";
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query
