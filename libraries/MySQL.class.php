@@ -978,9 +978,12 @@ class MySQL
         $max_id = $this->QuerySingleValue0("SELECT IFNULL( MAX(SUBSTRING_INDEX(SUBSTRING_INDEX(reference, '-', -1),'/',1)),0) + 1 AS ref FROM  $table WHERE SUBSTRING_INDEX(reference, '/', -1) = YEAR(SYSDATE())");
         //$lent
         if($max_id != '0')
-        {
+        {  
+
+        	$lettre_ste = Msetting::get_set('abr_ste');
+        	$lettre_ste = $lettre_ste == null ? null : $lettre_ste.'_';
         	$num_padded = sprintf("%04d", $max_id); //Format Number to 4 char with 0
-        	$reference = $abr.'-' . $num_padded . '/' . date('Y');
+        	$reference = $lettre_ste.$abr.'-' . $num_padded . '/' . date('Y');
         }else{
         	return false;
         }
@@ -2292,6 +2295,10 @@ class MySQL
 	 * @return boolean Returns TRUE on success or FALSE on error
 	 */
 	public function After_update($table, $id, $arr_new, $arr_old) {
+		/*var_dump($arr_new);
+		var_dump($arr_old);
+		exit();*/
+
 		$aReturn = array();
 		$error   = true;
 		$updt_id = MD5(uniqid(rand(), true));
@@ -2309,6 +2316,7 @@ class MySQL
 				}
 			}
 		}
+		
         //Exploit returned Array	
 		foreach ($aReturn as $key_g => $values) {
 			foreach ($values as $key => $value) {

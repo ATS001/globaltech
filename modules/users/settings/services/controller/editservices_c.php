@@ -1,11 +1,12 @@
 <?php
 defined('_MEXEC') or die;
-if(MInit::form_verif('addservice', false))
+if(MInit::form_verif('editservices', false))
 {
   
   $posted_data = array(
    'service'                    => Mreq::tp('service') ,
    'sign'                      => Mreq::tp('sign') ,
+   'id'                      => Mreq::tp('id') ,
    
    
   );
@@ -25,7 +26,7 @@ if(MInit::form_verif('addservice', false))
     }
     if($posted_data['sign'] == NULL){
 
-      $empty_list .= "<li>Spécifier Oui ou Non</li>";
+      $empty_list .= "<li>Spécifier 0 ou 1</li>";
       $checker = 1;
     }    
   
@@ -37,21 +38,28 @@ if(MInit::form_verif('addservice', false))
     }
 
 
+  //End check empty element
+
+
   $new_service = new  Mservice($posted_data);
+  $new_service->id_service = $posted_data['id'];
+  
   
   
 
   //execute Insert returne false if error
-  if($new_service->save_new_service()){
+  if($new_service->update_service()){
 
-    echo("1#".$new_service->log);
+    exit("1#".$new_service->log);
 
   }else{
 
-    echo("0#".$new_service->log);
+    exit("0#".$new_service->log);
   }
 
 } else {
-  view::load('users/settings/services','addservice');
+  view::load_view('editservices');
 }
 
+
+?>

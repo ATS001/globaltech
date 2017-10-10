@@ -29,6 +29,8 @@ class MDevis
     var $order_detail   = null; //
     var $sum_total_ht   = null;//
     var $arr_prduit     = array();
+    var $attached       = null;
+    
 
 
     public function __construct($properties = array()){
@@ -117,8 +119,9 @@ class MDevis
         global $db;
         $req_sql = "SELECT
         devis.reference
-        , devis.date_devis
+        , DATE_FORMAT(devis.date_devis,'%d-%m-%Y') as date_devis
         , devis.valeur_remise
+        , devis.devis_pdf
         ,  REPLACE(FORMAT(devis.totalht,0),',',' ') as totalht
         ,  REPLACE(FORMAT(devis.totaltva,0),',',' ') as totaltva
         ,  REPLACE(FORMAT(devis.totalttc,0),',',' ') as totalttc
@@ -165,80 +168,10 @@ class MDevis
 
     }
 
-    /*public function Get_detail_devis_pdf()
-    {
-        global $db;
-
-        $id_devis = $this->id_devis;
-        $table    = $this->table_details;
-        $this->Get_detail_devis_show();
-        $devis_info = $this->devis_info;
-        $colms  = null;
-        $colms .= " $table.id item, ";
-        $colms .= " $table.ref_produit, ";
-        $colms .= " $table.designation, ";
-        $colms .= " REPLACE(FORMAT($table.qte,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.prix_unitaire,0),',',' '), ";
-        //$colms .= " $table.type_remise, ";
-        $colms .= " REPLACE(FORMAT($table.remise_valeur,0),',',' '), ";
-        
-       // $colms .= " REPLACE(FORMAT($table.total_ht,0),',',' '), ";
-       // $colms .= " REPLACE(FORMAT($table.total_tva,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.total_ttc,0),',', ' ') ";
-        
-        $req_sql  = " SELECT $colms FROM $table WHERE id_devis = $id_devis ";
-        if(!$db->Query($req_sql))
-        {
-            $this->error = false;
-            $this->log  .= $db->Error().' '.$req_sql;
-            exit($this->log);
-        }
-        
-        
-        $headers = array(
-            'Item'        => '5[#]center',
-            'Réf'         => '10[#]center',
-            'Description' => '45[#]', 
-            'Qte'         => '5[#]center', 
-            'P.U'         => '10[#]alignRight', 
-            'Re'          => '5[#]center',
-            'Total HT'    => '15[#]alignRight',
-
-        );
-
-        $tableau_head = MySQL::make_table_head($headers);
-        $tableau_body = $db->GetMTable_pdf($headers);
-        $file_export = MPATH_TEMP.'Devis'.'_' .date('d_m_Y_H_i_s').'.pdf';
-
-        //Load template 
-        include_once MPATH_THEMES.'pdf_template/devis_pdf.php';
-        $new_file_target = MPATH_UPLOAD.'Devis'.date('m_Y');
-
-        if(file_exists($file_export))
-        {
-              
-            if(!Minit::save_file_upload($file_export, 'Devis_'.$id_devis, $new_file_target, $id_devis, 'Devis '.$id_devis, 'devis', 'devis', 'devis_pdf', 'document', $edit = null))
-            {
-                $this->error = false;
-                $this->log .= "Erreur Archivage Devis";
-
-            }
-            
-        }else{
-            $this->error = false;
-            $this->log .= "Erreur création template Devis";
-        }
-
-        if($this->error == false)
-        {
-            return false;
-        }else{
-            return true ;
-        }
-        
-        
-    }*/
-
+    /**
+     * [Get_detail_devis_pdf Render query for export PDF]
+     * @return bol send to controller
+     */
     public function Get_detail_devis_pdf()
     {
         global $db;
@@ -397,8 +330,13 @@ class MDevis
         	$this->Get_sum_detail($this->_data['tkn_frm']); 
       //calcul values devis
         	$this->Calculate_devis_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva']);
-
-
+            global $db;
+            //Generate reference
+            if(!$reference = $db->Generate_reference($this->table, 'DEV'))
+            {
+                $this->log .= '</br>Problème Réference';
+                return false;
+            }  
       //Check $this->error (true / false)
         	if($this->error == false)
         	{
@@ -407,7 +345,7 @@ class MDevis
         	}
 
 		//Format values for Insert query 
-        	global $db;
+        	
         	$totalht  = $this->total_ht_t;
         	$totaltva = $this->total_tva_t;
         	$totalttc = $this->total_ttc_t;
@@ -416,6 +354,7 @@ class MDevis
 
         	$values["reference"]       = MySQL::SQLValue($this->reference);
         	$values["tkn_frm"]         = MySQL::SQLValue($this->_data['tkn_frm']);
+            $values["reference"]       = MySQL::SQLValue($reference);
         	$values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
             $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
             $values["id_commercial"]   = MySQL::SQLValue(session::get('userid'));
@@ -431,22 +370,27 @@ class MDevis
         //Check if Insert Query been executed (False / True)
             if(!$result = $db->InsertRow($this->table, $values))
             {
-		    //False => Set $this->log and $this->error = false
-              $this->log .= $db->Error();
-              $this->error = false;
-              $this->log .='</br>Enregistrement BD non réussie'; 
-          }else{
-              $this->last_id = $result;
-            //Check $this->error = true return Green message and Bol true
-              if($this->error == true)
-              {
-               $this->log = '</br>Enregistrement réussie: <b>Réference: '.$this->reference;
-               $this->save_temp_detail($this->_data['tkn_frm'], $this->last_id);
-				//Check $this->error = false return Red message and Bol false	
-           }else{
-               $this->log .= '</br>Enregistrement réussie: <b>'.$this->reference;
-               $this->log .= '</br>Un problème d\'Enregistrement ';
-           }
+		        //False => Set $this->log and $this->error = false
+                $this->log .= $db->Error();
+                $this->error = false;
+                $this->log .='</br>Enregistrement BD non réussie'; 
+            }else{
+                $this->last_id = $result;
+                //Check $this->error = true return Green message and Bol true
+                if($this->error == true)
+                {
+                    $this->log = '</br>Enregistrement réussie: <b>Réference: '.$reference;
+                    $this->save_temp_detail($this->_data['tkn_frm'], $this->last_id);
+                    //log
+                    if(!Mlog::log_exec($this->table, $this->last_id, 'Enregistrement Devis '.$this->last_id, 'Insert'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
+		   //Check $this->error = false return Red message and Bol false	
+                }else{
+                 $this->log .= '</br>Enregistrement réussie: <b>'.$reference;
+                 $this->log .= '</br>Un problème d\'Enregistrement ';
+             }
         }//Else Error false	
         
         //check if last error is true then return true else rturn false.
@@ -460,42 +404,42 @@ class MDevis
 
     public function edit_exist_devis()
     {
-    	$this->reference = $this->_data['reference'];
-      //Check if devis exist
+    	//$this->reference = $this->_data['reference'];
+        //Check if devis exist
     	$this->Check_devis_exist($this->_data['tkn_frm'], 1);
-      //Check if devis have détails
+        //Check if devis have détails
     	$this->Check_devis_have_details($this->_data['tkn_frm']);
-      //Make reference
-      //$this->Make_devis_reference();
+        //Make reference
+        //$this->Make_devis_reference();
         //Before execute do the multiple check
     	$this->Check_exist('reference', $this->reference, 'Réference Devis', 1);
 
     	$this->check_non_exist('clients','id',$this->_data['id_client'] ,'Client' );
-      //Get sum of details
+        //Get sum of details
     	$this->Get_sum_detail($this->_data['tkn_frm']); 
-      //calcul values devis
+        //calcul values devis
     	$this->Calculate_devis_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva']);
 
 
-      //Check $this->error (true / false)
+        //Check $this->error (true / false)
     	if($this->error == false)
     	{
     		$this->log .='</br>Enregistrement non réussie';
     		return false;
     	}
-
-    //Format values for Insert query 
+        $this->get_devis();
+        //Format values for Insert query 
     	global $db;
     	$totalht  = $this->total_ht_t;
     	$totaltva = $this->total_tva_t;
     	$totalttc = $this->total_ttc_t;
         $valeur_remise = $this->valeur_remis_t;
-    	$this->reference = $this->_data['reference'];
+        $this->reference = $this->devis_info['reference'];
 
 
-    	$values["reference"]       = MySQL::SQLValue($this->reference);
-    	$values["tkn_frm"]         = MySQL::SQLValue($this->_data['tkn_frm']);
-    	$values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
+        $values["reference"]       = MySQL::SQLValue($this->reference);
+        $values["tkn_frm"]         = MySQL::SQLValue($this->_data['tkn_frm']);
+        $values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
         $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
         $values["id_commercial"]   = MySQL::SQLValue(session::get('userid'));
         $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
@@ -511,22 +455,33 @@ class MDevis
         //Check if Insert Query been executed (False / True)
         if (!$result = $db->UpdateRows($this->table, $values, $wheres)) 
         {
-        //False => Set $this->log and $this->error = false
-          $this->log .= $db->Error();
-          $this->error = false;
-          $this->log .='</br>Modification BD non réussie'; 
-      }else{
-          $this->last_id = $result;
+            //False => Set $this->log and $this->error = false
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .='</br>Modification BD non réussie'; 
+        }else{
+            $this->last_id = $this->id_devis;
             //Check $this->error = true return Green message and Bol true
-          if($this->error == true)
-          {
-             $this->log = '</br>Modification réussie: <b>Réference: '.$this->reference;
-             $this->save_temp_detail($this->_data['tkn_frm'], $this->id_devis);
-        //Check $this->error = false return Red message and Bol false 
-         }else{
-             $this->log .= '</br>Modification réussie: <b>'.$this->reference;
-             $this->log .= '</br>Un problème d\'Modification ';
-         }
+            if($this->error == true)
+            {
+                $this->log = '</br>Modification réussie: <b>Réference: '.$this->reference;
+                $this->save_temp_detail($this->_data['tkn_frm'], $this->id_devis);
+                //log
+                if(!Mlog::log_exec($this->table, $this->last_id, 'Modification Devis '.$this->last_id, 'Update'))
+                {
+                    $this->log .= '</br>Un problème de log ';
+                }
+                //Spy
+                if(!$db->After_update($this->table, $this->last_id, $values, $this->devis_info))
+                {
+                    $this->log .= '</br>Problème Esspionage';
+                    $this->error = false; 
+                }
+            //Check $this->error = false return Red message and Bol false 
+            }else{
+                $this->log .= '</br>Modification réussie: <b>'.$this->reference;
+                $this->log .= '</br>Un problème d\'Modification ';
+            }
         }//Else Error false 
         
         //check if last error is true then return true else rturn false.
@@ -695,6 +650,7 @@ class MDevis
         }
         $arr_return = array('error' => $this->error, 'mess' => $this->log, 'sum' => $this->sum_total_ht);
         return $arr_return;
+     
     }
 
     private function Get_sum_detail($tkn_frm)
@@ -767,6 +723,12 @@ class MDevis
                 if($this->error == true)
                 {
                     $this->log = '</br>Enregistrement réussie: <b>'.$this->_data['ref_produit'].' ID: '.$this->last_id;
+                    //log
+                    if(!Mlog::log_exec($table_details, $this->last_id, 'Enregistrement Détail Devis '.$this->last_id, 'Insert'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
+                    
 
                     $this->Get_sum_detail($this->_data['tkn_frm']);
                 //Check $this->error = false return Red message and Bol false   
@@ -849,6 +811,18 @@ class MDevis
                     $this->log = '</br>Modification réussie: <b>'.$this->_data['ref_produit'].' ID: '.$this->id_devis_d;
 
                     $this->Get_sum_detail($tkn_frm);
+                    //log
+                    if(!Mlog::log_exec($table_details, $this->id_devis_d, 'Modification Détail Devis '.$this->id_devis_d, 'Update'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                        
+                    }
+                    //Spy
+                    if(!$db->After_update($table_details, $this->id_devis_d, $values, $this->devis_d_info))
+                    {
+                        $this->log .= '</br>Problème Esspionage';
+                        $this->error = false; 
+                    }
                 //Check $this->error = false return Red message and Bol false   
                 }else{
                     $this->log .= '</br>Modification réussie: <b>'.$this->_data['ref_produit'];
@@ -868,33 +842,113 @@ class MDevis
         }
     }
 
-    public function Valid_Devis($etat)
+    public function validdevisclient_devis()
     {
+        $reponse = $this->_data['reponse'];
+        switch ($reponse) {
+            case 'valid':
+                $etat = 3;
+                $message = "Validation client";
+                break;
+            case 'modif':
+                $etat = 2;
+                $message = "Demande modification devis";
+                break;
+            case 'refus':
+                $etat = 4;
+                $message = "Refus devis par le client";
+                break;
+            default:
+                # code...
+                break;
+        }
         global $db;
         $table = $this->table;
         $id_devis = $this->id_devis;
-        if(!$reference = $db->Generate_reference($table, 'DEV'))
-        {
-            $this->log .= '</br>Problème Réference';
-            return false;
-        }
-        $req_sql = " UPDATE $table SET etat = $etat+1, reference = '$reference'  WHERE id = $id_devis ";
+        
+        $req_sql = " UPDATE $table SET etat = $etat  WHERE id = $id_devis ";
         
         if (!$db->Query($req_sql)) {
             $this->error = false;
-            $this->log .= "Erreur Validation";
+            $this->log .= "Erreur Opération";
+            return false;
+        }else{
+            //log
+            if(!Mlog::log_exec($table, $this->id_devis, $message.' #Devis:'.$this->id_devis_d, 'Update'))
+            {
+                $this->log .= '</br>Un problème de log ';
+                        
+            }
+            $this->last_id = $this->_data['id'];
+            $this->save_file('scan', 'PJ réponse devis '.$this->_data['id'], 'Document');
+            $this->log .= '</br>Opération réussie ';
+        }
+        if($this->error == false){
+            return false;
+        }else{
+            return true;
+        }
+    }
+    /**
+     * [generate_devis_pdf Generate PDF for store and send to client]
+     * @return [type] [description]
+     */
+    Private function generate_devis_pdf()
+    {
+        $file_tplt = MPATH_THEMES.'pdf_template/devis_pdf.php';
+        $saf_ref = str_replace('/','_',$this->g('reference'));
+        $file_export  = MPATH_TEMP.session::get('ssid').SLASH.'#'.$saf_ref.'.pdf';
+        
+        $qr_code = true;
+        include_once $file_tplt;
+        //Format all parameteres
+        $temp_file     =  $file_export;
+        //If nofile uploaded return kill function
+        
+        if($temp_file == Null){
+            return true;
+        }
+        
+        $new_name_file = $this->g('id').'_'.$saf_ref;
+        $folder        = MPATH_UPLOAD.SLASH.'devis/mois_'.date('m_Y').SLASH.$this->g('id');
+        $id_line       = $this->g('id');
+        $title         = 'Devis '.$this->g('id').' #'.$this->g('reference');
+        $table         = $this->table;
+        $column        = 'devis_pdf';
+        $type          = 'Document';
+
+
+         
+        //Call save_file_upload from initial class
+        if(!Minit::save_file_upload($temp_file, $new_name_file, $folder, $id_line, $title, 'devis', $table, $column, $type, $edit = null))
+        {
+            $this->error = false;
+            $this->log .='</br>Enregistrement '.$item.' dans BD non réussie';
+        }
+        $this->attached = $folder.SLASH.$new_name_file.'.pdf';
+        
+        
+    }
+
+    public function Valid_Devis($etat)
+    {
+        //Send to client
+        global $db;
+        $table = $this->table;
+        $id_devis = $this->id_devis;
+        $this->generate_devis_pdf();
+        $req_sql = " UPDATE $table SET etat = 1 WHERE id = $id_devis ";
+        
+        if (!$db->Query($req_sql)) {
+            $this->error = false;
+            $this->log .= "Erreur Opération";
             return false;
         }
         
-        if(!$this->Get_detail_devis_pdf())
-        {
-            $this->log .= $this->log;
-            return false;
-
-        }else{
-            $this->log .= "Validation réussie";
+            $this->send_devis_mail();
+            $this->log .= "<br/>Expédition réussie";
             return true;
-        }
+        
     }
 
     
@@ -1076,6 +1130,127 @@ class MDevis
             
         }
         return true;
+    }
+
+    /**
+     * [save_file For save anattached file for entrie ]
+     * @param  [string] $item  [input_name of attached file we add _id]
+     * @param  [string] $titre [Title stored for file on Archive DB]
+     * @param  [string] $type  [Type of file (Document, PDF, Image)]
+     * @return [Setting]       [Set $this->error and $this->log]
+     */
+    private function save_file($item, $titre, $type)
+    {
+
+        //Format all parameteres
+        $temp_file     = $this->_data[$item.'_id'];
+        //If nofile uploaded return kill function
+        
+        if($temp_file == Null){
+            return true;
+        }
+
+        $new_name_file = $item.'_'.$this->last_id;
+        $folder        = MPATH_UPLOAD.SLASH.'devis/mois_'.date('m_Y').SLASH.$this->last_id;
+        $id_line       = $this->last_id;
+        $title         = $titre;
+        $table         = $this->table;
+        $column        = $item;
+        $type          = $type;
+
+
+         
+        //Call save_file_upload from initial class
+        if(!Minit::save_file_upload($temp_file, $new_name_file, $folder, $id_line, $title, 'devis', $table, $column, $type, $edit = null))
+        {
+            $this->error = false;
+            $this->log .='</br>Enregistrement '.$item.' dans BD non réussie';
+        }
+    }
+
+    /**
+     * [check_file Check attached if required stop Insert this must be placed befor Insert commande]
+     * @param  [string] $item [input_name of attached file we add _id]
+     * @param  [string] $msg  [description]
+     * @param  [int] $edit    [Used if is edit action must be the ID of row edited]
+     * @return [Setting]      [Set $this->error and $this->log]
+     */
+    Private function check_file($item, $msg = null, $edit = null)
+    {
+        //Format temporary file
+        $temp_file     = $this->_data[$item.'_id'];
+        //Check if is edit action (is numeric when called from archive DB else is retrned target upload)
+        if($edit != null && !is_numeric($temp_file))
+        {
+            if(!file_exists($temp_file))
+            {
+                $this->log .= '</br>Il faut choisir '.$msg.' pour la mise à jour '.$edit;
+                $this->error = false;
+            }
+        //When is not edit do check for existing file
+        }else{
+            if($edit == null && $this->exige_.$item == true && ($this->_data[$item.'_id'] == null || !file_exists($this->_data[$item.'_id'])))
+            {
+                $this->log .= '</br>Il faut choisir '.$msg. '  '.$edit;
+                $this->error = false; 
+            }
+        }
+
+    }
+
+    /**
+     * [send_devis_mail Send email to client if have email adresse]
+     * @return [bol] [fil log]
+     */
+    private function send_devis_mail()
+    {
+        //Get info devis
+        $this->Get_detail_devis_show();
+        $devis_info = $this->devis_info;
+        if($this->g('email') == null)
+        {
+            $this->log .='<br/>Ce client n\'a pas une adresse Mail';
+            return false;
+        }
+        //prepare all variables
+        $ste_c = new MSte_info();
+        $ste = $ste_c->get_ste_info_report_footer(1);
+
+        $agent = new Musers();
+        $agent->id_user = session::get('userid');
+        $agent->get_user();
+
+        $agent_name    = $agent->g('fnom').' '.$agent->g('lnom');
+        $agent_service = $agent->g('service_user');
+        $agent_tel     = $agent->g('tel');
+
+        date_default_timezone_set('Etc/UTC');
+        //Create a new PHPMailer instance
+        $mail = new PHPMailer;
+        //Tell PHPMailer to use SMTP
+        $mail->isSMTP();
+
+        $mail->addAddress($this->g('email'), $this->g('denomination'));
+        if($this->attached != null)
+        {
+           $mail->addAttachment($this->attached, $name = '', $encoding = 'base64', $type = '', $disposition = 'attachment'); 
+        }
+        
+        //Set the subject line
+        $mail->Subject = 'Devis Réf: #'.$this->g('reference');
+        //Read an HTML message body from an external file, convert referenced images to embedded,
+        $Msg_body = file_get_contents(MPATH_MSG.'template_send_devis.php');
+        $Msg_body = str_replace(
+            array('%ste_footer%','%agent%', '%service%', '%agenttel%'), 
+            array($ste, $agent_name, $agent_service, $agent_tel ), 
+            $Msg_body);
+        $mail->msgHTML($Msg_body);
+
+        if (!$mail->send()) {
+            $this->log .= "Mailer Error: " . $mail->ErrorInfo;
+        } else {
+            $this->log .= "Devis envoyé  à ".$this->g('email');
+        }
     }
 
 

@@ -72,7 +72,7 @@ $app_sys = array( '0' => 'NON' ,  '1' => 'OUI' );
 //$form->select('Application Système', 'app_sys', 3, $app_sys, $indx = NULL ,$selected = NULL );
 //$form->select_onchange('app_sys');
 //Type d'affichage (Tableau, Formulaire, Profile)
-$type_view  = array('list' => 'Tableau liste', 'formadd' => 'Formulaire Ajout', 'formedit' => 'Formulaire Edit' , 'profil' => 'Page d\'informations' , 'exec' => 'Executable');
+$type_view  = array('list' => 'Tableau liste', 'formadd' => 'Formulaire Ajout', 'formedit' => 'Formulaire Edit' , 'formpers' => 'Formulaire Personnalisé' ,'profil' => 'Page d\'informations' , 'exec' => 'Executable');
 $form->select('Type d\'affichage', 'type_view', 5, $type_view, $indx = NULL ,$selected = NULL );
 $form->select_table('Services', 'services[]', 10, 'services','id', 'service', 'service', $indx = NULL ,$selected = NULL , 1, NULL, NULL);
 //$sbclass_array[]  = array('regex', 'true', 'Insérer Classe Valid' );

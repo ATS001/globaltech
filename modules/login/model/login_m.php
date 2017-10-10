@@ -179,9 +179,7 @@ class MLogin
 				//ion réussie
 
 
-/*Fichier créer ./upload/users/1/43ec517d68b6edd3015b3edc9a11367b36X36.png ./upload/users/1/./upload/users/1f8fe9a8cc5f68d60f8258bfca27dfd8e36X36.png
-Bienvenue Systeme Administrateur
-Vous serez rédiriger dans qulques instants*/
+
 				
 				if(!$this->creat_temp_folder()){
 					$this->log .= '</br>Unable to create Temp folder';

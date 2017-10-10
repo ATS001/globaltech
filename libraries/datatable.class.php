@@ -31,7 +31,10 @@ class Mdatatable
     var $columns_html     = array();//Columns Html table array('title' => title, 'width'=>50, 'align'=>(L,R,C))
     var $js_code          = null;//Rend JS datatable jquery caller
     var $js_notif_col     = null;//Int set the column of notif embedded generally the last one 
+    var $js_extra_data    = null;//When we want send more data to ajax datatable
+    var $js_order         = null;//Used when we want ordering table by column start form 0 ex:[ 3, "desc" ]
     var $title_module     = null;//Used in HTML View (ex. Factures) 
+    var $btn_return       = null;//Used to mak button return if null we use the Main task 
 
 
     public function __construct($properties = array()){
@@ -85,6 +88,9 @@ class Mdatatable
                     case 'date':
                     $list_col .= " DATE_FORMAT(".$value['column'].",'%d-%m-%Y')  as ".$value['alias']."$v";
                     break;
+                    case 'datetime':
+                    $list_col .= " DATE_FORMAT(".$value['column'].",'%d-%m-%Y %H:%i:%s') as ".$value['alias']."$v";
+                    break;
                     default:
                     $list_col .= " ".$value['column']." as ".$value['alias']."$v";
                     break;
@@ -124,9 +130,23 @@ class Mdatatable
             
             foreach ($arr_columns as $key => $value) {
                 $operator = $i == 0 ? " AND ( " : " OR ";
+                switch ($value['type']) {
+                    case 'int':
+                    $col = " REPLACE(FORMAT(".$value['column'].",0), ',', ' ')";
+                    break;
+                    case 'date':
+                    $col = " DATE_FORMAT(".$value['column'].",'%d-%m-%Y')";
+                    break;
+                    case 'datetime':
+                    $col = " DATE_FORMAT(".$value['column'].",'%d-%m-%Y %H:%i:%s')";
+                    break;
+                    default:
+                    $col = $value['column'];
+                    break;
+                }
                 if($value['column'] != 'statut')
                 {
-                    $where_s .=" $operator ".$value['column']." LIKE '%".$serch_value."%' ";
+                    $where_s .=" $operator $col LIKE '%".$serch_value."%' ";
                 }
                 $i++; 
             }
@@ -137,7 +157,9 @@ class Mdatatable
     		{
     			$where_s .= TableTools::where_search_etat($this->main_table, $this->task, $serch_value);
     		}
+            $where_s .= $this->need_notif == true ? NULL : ')';
     		$this->where_s = $where_s;
+
     	}
     	if($this->need_notif == true && $this->task != null)
     	{
@@ -238,11 +260,12 @@ class Mdatatable
     	if($this->need_notif){
     		$where .= $this->joint == null ?'' : ' AND '.$this->joint;
     	}else{
-    		$where .= ' WHERE '.$this->joint;
+    		
+            $where .= $this->joint == null ?'' : ' WHERE '.$this->joint;
     	}
     	
     	$where .= $this->where_s == NULL ? NULL : $this->where_s;
-
+        
         
 	    //getting total number records without any search
     	$sql = "SELECT $colms  FROM  $tables  ";
@@ -330,11 +353,12 @@ class Mdatatable
     public function js_render()
     {
         $count_col = count($this->columns_html) - 1;
-        
+        $order = $this->js_order == null ? null : '"order": ['.$this->js_order.'],';
+        $extra_data = $this->js_extra_data == null ? null : 'extra_data :"'. $this->js_extra_data.'",';
         $notif_col = $this->need_notif == true ? $count_col : 0;
         $js = "<script type=\"text/javascript\">$(document).ready(function() {";
         $js .= "var table = $('#".$this->task."_grid').DataTable({";
-        $js .= "bProcessing: true,notifcol : ".$notif_col.",serverSide: true,ajax_url:\"".$this->task."\",aoColumns: [";
+        $js .= "bProcessing: true,notifcol : ".$notif_col.",serverSide: true,ajax_url:\"".$this->task."\", $extra_data $order aoColumns: [";
         
         $js_arr = $this->columns_html;
 
@@ -366,9 +390,11 @@ class Mdatatable
 
     public function table_html()
     {
+        $task_return = $this->btn_return == null ? $this->task : $this->btn_return;
         $html = "";
+        $html .= $this->btn_reply();
         $html .= "\t<div class=\"page-header\">\n\t<h1>\n";
-        $html .= ACTIV_APP;
+        $html .= $this->title_module;
         $html .= "<small><i class=\"ace-icon fa fa-angle-double-right\"></i></small>\t</h1>\n\t</div>\n";
         $html .= "\t<div class=\"row\">\n\t<div class=\"col-xs-12\"\n>\t<div class=\"clearfix\">\n";
         $html .= "\t<div class=\"pull-right tableTools-container\">\n";
@@ -388,6 +414,26 @@ class Mdatatable
         return $html;
 
    
+    }
+
+    private function btn_reply()
+    {
+        $html = null;
+        if($this->btn_return != null && is_array($this->btn_return))
+        {
+            $arr   = $this->btn_return;
+            $task  = array_key_exists('task', $arr) ? $arr['task'] : 'tdb';
+            $title = array_key_exists('title', $arr) ? $arr['title'] : 'Retour';
+            $data  = array_key_exists('data', $arr) ? $arr['data'] : '';
+            
+            $html  = "\t<div class=\"pull-right tableTools-container\">\n\t<div class=\"btn-group btn-overlap\">";
+            $html .= $this->btn_add($task, $title, $data, $exec = NULL, 'reply');   
+            $html .= "\t</div>\n\t</div>\n";
+        }
+
+        return $html;
+           
+    
     }
 
     /**

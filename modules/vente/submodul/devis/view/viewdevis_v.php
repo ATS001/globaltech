@@ -1,6 +1,11 @@
 <?php
 //Get all Devis info 
 $info_devis = new Mdevis();
+//$action = new TableTools();
+$info_devis->id_devis = Mreq::tp('id');
+//$info_devis->get_devis();
+//$action->line_data = $info_devis->devis_info;
+//$actions = $action->action_profil_view('devis', 'devis', Minit::crypt_tp('id', Mreq::tp('id')), $info_devis->g('creusr') , 'deletedevis');
 //Set ID of Module with POST id
 $info_devis->id_devis = Mreq::tp('id');
 //Check if Post ID <==> Post idc or get_modul return false. 
@@ -15,7 +20,11 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->Get_detail_devis_show())
 <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
 
-		<?php TableTools::btn_add('devis','Liste des Devis', Null, $exec = NULL, 'reply'); ?>
+		<?php 
+         
+		TableTools::btn_add('devis','Liste des Devis', Null, $exec = NULL, 'reply'); 
+
+		?>
 
 	</div>
 </div>
@@ -55,9 +64,14 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->Get_detail_devis_show())
 
                         
                          <div class="widget-toolbar hidden-480">
+                         	<?php if($info_devis->g('devis_pdf') == null){?>
 							<a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'devis') ?>" data="<?php echo MInit::crypt_tp('id', $info_devis->id_devis) ?>">
+							<?php }else{?>
+                            <a href="#" class="iframe_pdf" rel="<?php echo $info_devis->g('devis_pdf').'&'.MInit::crypt_tp('doc',$info_devis->g('devis_pdf')) ?>" >
+							<?php }?>
 								<i class="ace-icon fa fa-print"></i>
 							</a>
+
 						</div>       
                        
 						

@@ -488,6 +488,40 @@ class Mmodul {
 			}
 		}
 
+		//Task form Costumized
+		if($app_base == false && $type_view == 'formpers')
+		{
+			
+			//Controller
+			$template = null;
+			if(file_exists($templat_folder.'template_control_formpers.php')){
+				$template_c = file_get_contents($templat_folder.'template_control_formpers.php');
+				$template = str_replace('%task%', $task_name, $template_c);
+				$template = str_replace('%modul%', $modul_name, $template);
+				
+			}
+			if(!file_exists($file_c) && !file_put_contents($file_c, $content.'Controller EDIT Form'.PHP_EOL.$template, FILE_APPEND | LOCK_EX))
+			{
+
+				$this->error = false;
+				$this->log .='</br>Unable Creat Controller '; 
+				return false;
+			}
+			//view
+			$template = null;
+			if(file_exists($templat_folder.'template_view_formpers.php')){
+				$template_c = file_get_contents($templat_folder.'template_view_formpers.php');
+				$template = str_replace('%task%', $task_name, $template_c);
+				$template = str_replace('%modul%', $modul_name, $template);
+			}
+			if(!file_exists($file_v) && !file_put_contents($file_v, $content.'View'.PHP_EOL.$template, FILE_APPEND | LOCK_EX))
+			{
+				$this->error = false;
+				$this->log .='</br>Unable Creat View'; 
+				return false;
+			}
+		}
+
 		//Task Exec
 		if($app_base == false && $type_view == 'exec')
 		{
