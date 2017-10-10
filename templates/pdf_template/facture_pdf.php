@@ -274,37 +274,38 @@ $block_sum = '<div></div>
         <td width="50%">
            <table class="table" cellspacing="2" cellpadding="2"  style="width: 300px; border:1pt solid black;" >
             <tbody>
+            <tr>
+                    <td style="width:35%;"><strong>Total TTC Initial</strong></td>
+                    <td style="width:5%;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['total_ttc_initial'] . '</strong></td>
+                </tr>
                 <tr>
                     <td style="width:35%;"><strong>Total HT</strong></td>
                     <td style="width:5%;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['total_ht'] . '</strong></td>
                 </tr>
+                                
                 <tr>
-                    <td style="width:35%;"><strong>Remise:</strong></td>
-                    <td style="width:5%;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $remise_valeur . ' %</strong></td>
-                </tr>
-                
-                <tr>
-                    <td style="width:35%;"><strong>Totale Tva</strong></td>
+                    <td style="width:35%;"><strong>Total Tva</strong></td>
                     <td style="width:5%;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['total_tva'] . '</strong></td>
-                </tr>
-                <tr>
-                    <td style="width:35%;"><strong>Totale payé</strong></td>
-                    <td style="width:5%;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['total_paye'] . '</strong></td>
-                </tr>
-                <tr>
-                    <td style="width:35%;"><strong>Reste</strong></td>
-                    <td style="width:5%;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['reste'] . '</strong></td>
                 </tr>
                 <tr>
                     <td style="width:35%;"><strong>Total TTC</strong></td>
                     <td style="width:5%;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['total_ttc'] . '</strong></td>
                 </tr>
+                <tr>
+                    <td style="width:35%;"><strong>Total payé</strong></td>
+                    <td style="width:5%;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['total_paye'] . '</strong></td>
+                </tr>
+                <tr>
+                    <td style="width:35%;"><strong>Reste à payer</strong></td>
+                    <td style="width:5%;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['reste'] . '</strong></td>
+                </tr>
+                
             </tbody>
         </table> 
     </td>

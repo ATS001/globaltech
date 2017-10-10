@@ -4,7 +4,7 @@ $info_facture->id_facture = Mreq::tp('id');
 $info_facture->get_facture_info();
 $info_facture->get_complement_by_facture();
 $complements = $info_facture->complement_info;
-$info_facture->get_encaissement();
+$info_facture->get_all_encaissements();
 $encaissements = $info_facture->encaissement_info;
 ?>
 <div class="pull-right tableTools-container">

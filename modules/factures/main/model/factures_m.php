@@ -94,8 +94,7 @@ class Mfacture {
             return true;
         }
     }
-    
-    
+
     public function get_complement_by_facture() {
         global $db;
 
@@ -104,31 +103,27 @@ class Mfacture {
         $sql = "SELECT id,designation,type,montant FROM 
     		$table_complement WHERE  $table_complement.idfacture = " . $this->id_facture;
 
-       if(!$db->Query($sql))
-    {
-      $this->error = false;
-      $this->log  .= $db->Error();
-    }else{
-      if (!$db->RowCount()) {
-        $this->error = false;
-        $this->log .= 'Aucun enregistrement trouvé ';
-      } else {
-        $this->complement_info = $db->RecordsSimplArray();
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->complement_info = $db->RecordsSimplArray();
                 //var_dump( $this->user_activities );
-        $this->error = true;
-      }
-
-
-    }
+                $this->error = true;
+            }
+        }
         //return Array user_activities
-    if($this->error == false)
-    {
-      return false;
-    }else{
-      return true;
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
     }
-    }
-    
+
     //Get all info encaissement from database for edit form
     public function get_encaissement() {
         global $db;
@@ -136,30 +131,54 @@ class Mfacture {
         $table_encaissement = $this->table_encaissement;
 
         $sql = "SELECT $table_encaissement.* FROM 
+    		$table_encaissement WHERE  $table_encaissement.id = " . $this->id_encaissement;
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->encaissement_info = $db->RowArray();
+                $this->error = true;
+            }
+        }
+        //return Array user_activities
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function get_all_encaissements() {
+        global $db;
+
+        $table_encaissement = $this->table_encaissement;
+
+        $sql = "SELECT $table_encaissement.* FROM 
     		$table_encaissement WHERE  $table_encaissement.idfacture = " . $this->id_facture;
 
-        if(!$db->Query($sql))
-    {
-      $this->error = false;
-      $this->log  .= $db->Error();
-    }else{
-      if (!$db->RowCount()) {
-        $this->error = false;
-        $this->log .= 'Aucun enregistrement trouvé ';
-      } else {
-        $this->encaissement_info = $db->RecordsSimplArray();
-            $this->error = true;
-      }
-
-
-    }
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->encaissement_info = $db->RecordsSimplArray();
+                $this->error = true;
+            }
+        }
         //return Array user_activities
-    if($this->error == false)
-    {
-      return false;
-    }else{
-      return true;
-    }
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -240,8 +259,6 @@ class Mfacture {
                 $this->last_id = $result;
                 $this->log .= '</br>Enregistrement  réussie ' . ' - ' . $this->last_id . ' -';
                 $this->maj_fact_after_complement($this->_data['idfacture'], $this->_data['montant']);
-                
-             
             }
         } else {
 
@@ -318,19 +335,21 @@ class Mfacture {
     public function maj_reste($id_facture, $montant) {
 
         global $db;
-        $req_sql = "UPDATE factures SET reste = reste - $montant , total_paye = total_paye + $montant,total_ttc = total_ttc - $montant WHERE id = '$id_facture'";
+        $req_sql = "UPDATE factures SET reste = reste - $montant , total_paye = total_paye + $montant WHERE id = '$id_facture'";
         if (!$db->Query($req_sql)) {
             $this->log .= $db->Error();
             $this->error = false;
             $this->log .= '<br>Problème de mise à jour du reste ';
         }
     }
-    
+
     public function maj_fact_after_complement($id_facture, $montant) {
 
         global $db;
-        $req_sql = "UPDATE factures SET reste = reste + $montant , total_paye = total_paye - $montant,total_ttc = total_ttc + $montant WHERE id = '$id_facture'";
+        $req_sql = "UPDATE factures SET reste = reste + $montant ,"
+                . "total_ttc = total_ttc + $montant WHERE id = '$id_facture'";
         if (!$db->Query($req_sql)) {
+
             $this->log .= $db->Error();
             $this->error = false;
             $this->log .= '<br>Problème de mise à jour du reste ';
@@ -341,19 +360,19 @@ class Mfacture {
         $this->id_facture = $id_facture;
 
         global $db;
-        $req_sql = "UPDATE factures SET reste = reste + $mt  , total_paye = total_paye - $mt , total_ttc = total_ttc + $mt WHERE id = '$id_facture'";
+        $req_sql = "UPDATE factures SET reste = reste + $mt  , total_paye = total_paye - $mt WHERE id = '$id_facture'";
         if (!$db->Query($req_sql)) {
             $this->log .= $db->Error();
             $this->error = false;
             $this->log .= '<br>Problème de mise à jour du reste ';
         }
     }
-    
-     public function update_after_delete_complement($id_facture, $mt) {
+
+    public function update_after_delete_complement($id_facture, $mt) {
         $this->id_facture = $id_facture;
 
         global $db;
-        $req_sql = "UPDATE factures SET reste = reste - $mt  , total_paye = total_paye + $mt , total_ttc = total_ttc - $mt WHERE id = '$id_facture'";
+        $req_sql = "UPDATE factures SET reste = reste - $mt , total_ttc = total_ttc - $mt WHERE id = '$id_facture'";
         if (!$db->Query($req_sql)) {
             $this->log .= $db->Error();
             $this->error = false;
@@ -366,36 +385,41 @@ class Mfacture {
         $this->get_facture();
         $reste = ($this->facture_info['reste'] + $montant_init) - $montant_modif;
         $total_paye = ($this->facture_info['total_paye'] - $montant_init) + $montant_modif;
-        $total_ttc= ($this ->facture_info['total_ttc'] + $montant_init) - $montant_modif;
+        $total_ttc = ($this->facture_info['total_ttc'] + $montant_init) - $montant_modif;
 
         global $db;
-        $req_sql = "UPDATE factures SET reste = $reste , total_paye = $total_paye, total_ttc = $total_ttc WHERE id = '$id_facture'";
+        $req_sql = "UPDATE factures SET reste = $reste , total_paye = $total_paye WHERE id = '$id_facture'";
         if (!$db->Query($req_sql)) {
             $this->log .= $db->Error();
             $this->error = false;
             $this->log .= '<br>Problème de mise à jour du reste ';
         }
     }
-    
+
     public function update_reste_after_complement($id_facture, $montant_init, $montant_modif) {
         $this->id_facture = $id_facture;
         $this->get_facture();
-        $reste = ($this->facture_info['reste'] - $montant_init) + $montant_modif;
-        $total_paye = ($this->facture_info['total_paye'] + $montant_init) - $montant_modif;
-        $total_ttc= ($this ->facture_info['total_ttc'] - $montant_init) + $montant_modif;
+        //if ($montant_init < 0) {
+            $reste = ($this->facture_info['reste'] - $montant_init) + $montant_modif;
+            //$total_paye = ($this->facture_info['total_paye'] + $montant_init) - $montant_modif;
+            $total_ttc = ($this->facture_info['total_ttc'] - $montant_init) + $montant_modif;
+//        }else
+//         if($montant_init > 0)
+//             {
+//        $reste = ($this->facture_info['reste'] - $montant_init) + $montant_modif;
+//        $total_paye = ($this->facture_info['total_paye'] + $montant_init) - $montant_modif;
+//        $total_ttc = ($this->facture_info['total_ttc'] - $montant_init) + $montant_modif;
+//        }
 
         global $db;
-        $req_sql = "UPDATE factures SET reste = $reste , total_paye = $total_paye, total_ttc = $total_ttc WHERE id = '$id_facture'";
+        $req_sql = "UPDATE factures SET reste = $reste , total_ttc = $total_ttc WHERE id = '$id_facture'";
         if (!$db->Query($req_sql)) {
             $this->log .= $db->Error();
             $this->error = false;
             $this->log .= '<br>Problème de mise à jour du reste ';
         }
     }
-    
-    
 
-    
     //activer ou desactiver un contrats_frn
     public function valid_contrats_frn($etat = 0) {
 
@@ -538,7 +562,7 @@ class Mfacture {
 
             $this->error = true;
             $this->log .= '</br>Suppression réussie ';
-            $this->update_after_delete_complement($this->complement_info['idfacture'],$this->complement_info['montant']);
+            $this->update_after_delete_complement($this->complement_info['idfacture'], $this->complement_info['montant']);
         }
         //check if last error is true then return true else rturn false.
         if ($this->error == false) {
@@ -549,7 +573,7 @@ class Mfacture {
     }
 
     public function delete_encaissement() {
-        $mt=0;
+        $mt = 0;
         global $db;
         $id_encaissement = $this->id_encaissement;
         $this->get_encaissement();
@@ -571,7 +595,7 @@ class Mfacture {
 
             $this->error = true;
             $this->log .= '</br>Suppression réussie ';
-            $this->update_reste_after_delete($this->encaissement_info['idfacture'],$this->encaissement_info['montant']);
+            $this->update_reste_after_delete($this->encaissement_info['idfacture'], $this->encaissement_info['montant']);
         }
         //check if last error is true then return true else rturn false.
         if ($this->error == false) {
@@ -583,7 +607,7 @@ class Mfacture {
 
     public function edit_complement() {
 
-        
+
         //Get existing data for complement
         $this->get_complement();
         $mt_init = $this->complement_info['montant'];
@@ -591,7 +615,8 @@ class Mfacture {
 
         if ($this->_data['type'] == "Réduction" && $this->_data['montant'] > 0)
             $this->_data['montant'] = -$this->_data['montant'];
-
+        if ($this->_data['type'] == "Pénalité" && $this->_data['montant'] < 0)
+            $this->_data['montant'] = -$this->_data['montant'];
 
         global $db;
         $values["designation"] = MySQL::SQLValue($this->_data['designation']);
@@ -730,14 +755,12 @@ class Mfacture {
             $this->log .= $db->Error();
             $this->error = false;
             $this->log .= 'Validation non réussie DB';
-         }
-        
-        if(!$this->Get_detail_facture_pdf())
-        {
+        }
+
+        if (!$this->Get_detail_facture_pdf()) {
             $this->log .= $this->log;
             return false;
-
-        }else{
+        } else {
             $this->log .= "Validation réussie";
             return true;
         }
@@ -840,9 +863,9 @@ class Mfacture {
         }
     }
 
-     public function Get_detail_facture_pdf() {
+    public function Get_detail_facture_pdf() {
         global $db;
-       
+
         $id_facture = $this->id_facture;
         $this->get_id_devis();
         $id_devis = $this->id_devis['id'];
@@ -850,13 +873,13 @@ class Mfacture {
         $table = $this->table_details;
         $this->Get_detail_facture_show();
         $devis_info = $this->devis_info;
-        
+
         $this->get_facture();
         $info_facture = $this->facture_info;
-        
+
         //$this->get_complement_by_facture();
         //$info_complement=$this->complement_info;
-                
+
         $colms = null;
         $colms .= " $table.id item, ";
         $colms .= " $table.ref_produit, ";

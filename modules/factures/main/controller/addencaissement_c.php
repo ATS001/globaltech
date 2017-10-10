@@ -33,13 +33,13 @@
             $empty_list .= "<li>Mode de payement</li>";
             $checker = 1;
         }
-        
+       if( $posted_data['mode_payement'] != 'Espèce'){
         if($posted_data['ref_payement'] == NULL ){
 
             $empty_list .= "<li>Référence payement</li>";
             $checker = 1;
         }
-        
+       }
         
         if($posted_data['idfacture'] == NULL){
 

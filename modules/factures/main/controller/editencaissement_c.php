@@ -43,11 +43,13 @@ if (MInit::form_verif('editencaissement', false)) {//If form is Posted do Action
         $checker = 1;
     }
 
-    if ($posted_data['ref_payement'] == NULL) {
+    if( $posted_data['mode_payement'] != 'Espèce'){
+        if($posted_data['ref_payement'] == NULL ){
 
-        $empty_list .= "<li>Référence payement</li>";
-        $checker = 1;
-    }
+            $empty_list .= "<li>Référence payement</li>";
+            $checker = 1;
+        }
+       }
     
     if ($posted_data['montant'] == NULL) {
 

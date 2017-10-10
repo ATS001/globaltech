@@ -55,8 +55,8 @@ $mode_array  = array('Espèce' => 'Espèce', 'Chèque' => 'Chèque','Virement'=>
 $form->select('Mode de payement', 'mode_payement', 3, $mode_array, Null,'Réduction', $multi = NULL );
 
 //Réf de la pièce de payement
-$refp_array[] = array('required', 'true', 'Insérez la désignation');
-$form->input('Référence', 'ref_payement', 'text', 6, null, $refp_array);
+
+$form->input('Référence', 'ref_payement', 'text', 6, null, NULL);
 
 //Montant
 $mt_array[] = array('required', 'true', 'Insérez le montant');
