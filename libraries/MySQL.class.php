@@ -839,19 +839,33 @@ class MySQL
 		{
 
 			$html = "";
-			$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px; border:1pt solid black;\">\n";
+			$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px;\">\n";
 
 			$html .= "\t<tr style=\"background-color: #4245f4; color: #fff; font-weight: bold;  padding:15px; \">\n";
 			foreach ($headers as $key => $value) {
 
-			//
+
+			//'Re'          => '5[#]center',
+           // 'Total HT'    => '15[#]alignRight
 				if(strpos($value, '[#]')){
 					$elem  = explode("[#]", $value);
 					$align = isset($elem[1]) ? $elem[1] : '';
 					$width = isset($elem[0]) ? $elem[0] : '15';
 					$width = 'style="width:'.$width.'%;"' ;
-					$align = 'class="'.$align.'"' ;
+					switch ($align) {
+					    case 'C':
+					        $align = 'class="center"' ;						
+						    break;
+					    case 'R':
+					        $align = 'class="alignRight"' ;						
+						    break;
+					    default:
+						    $align = 'class=""' ;
+						    break;
+				    }
+					
 				}
+
 
 				$html .= "\t\t<td $width $align>" . htmlspecialchars($key) . "</td>\n";
 			}
@@ -868,6 +882,7 @@ class MySQL
 			$styl_array = array_values($style);
 
 					//print_r($data);
+            
 
 			$array_styl_last = array_combine($keys_data, $styl_array);
 
@@ -878,10 +893,20 @@ class MySQL
 					$align = isset($elem[1]) ? $elem[1] : '';
 					$width = isset($elem[0]) ? $elem[0] : '15';
 					$width = 'style="width:'.$width.'%;"' ;
-					$align = 'class="'.$align.'"' ;
+					switch ($align) {
+					    case 'C':
+					        $align_f = 'class="center"' ;						
+						    break;
+					    case 'R':
+					        $align_f = 'class="alignRight"' ;						
+						    break;
+					    default:
+						    $align_f = 'class=""' ;
+						    break;
+				    }
 				}
 
-				$html .= "\t\t<td $width $align>" . htmlspecialchars($value) . "</td>\n";
+				$html .= "\t\t<td $width $align_f>" . htmlspecialchars($value) . "</td>\n";
 			}
 
 
@@ -903,26 +928,26 @@ class MySQL
 			if ($this->RowCount() > 0) {
 				$html = "";
 				$style = '<style type="text/css">
-				.row0
+				.row1
 				{
 					background-color: #eaebed;
 					border:1pt solid black;
 				}
-				.row1{
+				.row0{
 					border:1px solid black;
 				}
 				.alignRight { text-align: right; }
 				.center{ text-align: center; }
 				</style>';
 				$html .= $style;
-				$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px; border:1pt solid black;\">\n";
+				$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px;\">\n";
 				$this->MoveFirst();
 
                 //$html .= $this->make_table_head($headers, $styleData);
 				$i = 0;
 				while ($member = mysql_fetch_object($this->last_result))
 				{					
-					$html .= "\t<tr class=\"row".($i++ & 1)."\">\n";	
+					$html .= "\t<tr nobr=\"true\" class=\"row".($i++ & 1)."\">\n";	
 					$html .= $this->make_table_body($member, $headers);
 					$html .= "\t</tr>\n";
 
@@ -939,6 +964,32 @@ class MySQL
 
 		return $html;
 	}
+
+    /**
+     * [Generate_reference description] 
+     * table must have culomn named reference else return false
+     * @param [type] $table [table of element ]
+     * @param [type] $abr   [abreviation]
+     * @return [string or false] [<description>]
+     */
+	public function Generate_reference($table, $abr) 
+	{
+        
+        $max_id = $this->QuerySingleValue0("SELECT IFNULL( MAX(SUBSTRING_INDEX(SUBSTRING_INDEX(reference, '-', -1),'/',1)),0) + 1 AS ref FROM  $table WHERE SUBSTRING_INDEX(reference, '/', -1) = YEAR(SYSDATE())");
+        //$lent
+        if($max_id != '0')
+        {  
+
+        	$lettre_ste = Msetting::get_set('abr_ste');
+        	$lettre_ste = $lettre_ste == null ? null : $lettre_ste.'_';
+        	$num_padded = sprintf("%04d", $max_id); //Format Number to 4 char with 0
+        	$reference = $lettre_ste.$abr.'-' . $num_padded . '/' . date('Y');
+        }else{
+        	return false;
+        }
+        
+        return $reference;
+    }
 
 		/**
 	 * This function returns the last query as an HTML table
@@ -2244,6 +2295,10 @@ class MySQL
 	 * @return boolean Returns TRUE on success or FALSE on error
 	 */
 	public function After_update($table, $id, $arr_new, $arr_old) {
+		/*var_dump($arr_new);
+		var_dump($arr_old);
+		exit();*/
+
 		$aReturn = array();
 		$error   = true;
 		$updt_id = MD5(uniqid(rand(), true));
@@ -2261,6 +2316,7 @@ class MySQL
 				}
 			}
 		}
+		
         //Exploit returned Array	
 		foreach ($aReturn as $key_g => $values) {
 			foreach ($values as $key => $value) {

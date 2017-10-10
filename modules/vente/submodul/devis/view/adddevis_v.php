@@ -26,14 +26,16 @@
 			<div class="widget-box">
 				
 <?php
+$tva  = Mcfg::get('tva'); 
 $form = new Mform('adddevis', 'adddevis', '', 'devis', '0', null);
 
 //Date devis
 $array_date[]= array('required', 'true', 'Insérer la date de devis');
 $form->input_date('Date devis', 'date_devis', 4, date('d-m-Y'), $array_date);
 //Client
+$hard_code_client = '<span class="help-block returned_span">...</span>';
 $client_array[]  = array('required', 'true', 'Choisir un Client');
-$form->select_table('Client ', 'id_client', 8, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $client_array);
+$form->select_table('Client ', 'id_client', 8, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $client_array, $hard_code_client);
 //TVA
 $tva_opt = array('O' => 'OUI' , 'N' => 'NON' );
 $form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$selected = NULL, $multi = NULL);
@@ -83,7 +85,7 @@ $(document).ready(function() {
     	//var $type_remise    = $type_remise == null ? 'P' : $type_remise;
     	var $remise_valeur  = parseFloat($remise_valeur) ? parseFloat($remise_valeur) : 0;
     	var $tva            = $tva == null ? 'O' : $tva;
-    	
+    	var $val_tva = <?php echo Mcfg::get('tva')?>
     	//calculate remise
     	if($type_remise == 'P')
     	{
@@ -102,7 +104,7 @@ $(document).ready(function() {
     	{
     		var $total_tva = 0;
     	}else{
-    		var $total_tva = ($total_ht * 20) / 100; //TVA value get from app setting
+    		var $total_tva = ($total_ht * $val_tva) / 100; //TVA value get from app setting
     	}
     	var $total_ttc = $total_ht + $total_tva ;
     	$('#'+$f_total_ht).val($total_ht);
@@ -117,6 +119,10 @@ $(document).ready(function() {
     		ajax_loadmessage('Il faut choisir un client','nok');
     		return false;
     	}
+        if($('#is_abn').val() == 'abn'){
+            ajax_loadmessage("Impossible d'insérer un abonnement avec autres produits",'nok');
+            return false;
+        }
         var $link  = $(this).attr('rel');
    		var $titre = $(this).attr('data_titre'); 
    		var $data  = $(this).attr('data'); 
@@ -131,7 +137,7 @@ $(document).ready(function() {
     	var type_remise   = $('#type_remise').val();
     	var remise_valeur = parseFloat($('#valeur_remise').val());
     	var tva           = $('#tva').val();
-       
+
     	var dix_per_ht    = parseFloat((totalht * 10) / 100);
     	if((type_remise == 'P' && remise_valeur > 10) || (type_remise == 'M' && remise_valeur > dix_per_ht)){
     		ajax_loadmessage('La remise exeptionnel ne doit pas dépasser 10% du Total des articles','nok');
@@ -141,15 +147,70 @@ $(document).ready(function() {
     		return false;
     	}
     	calculat_devis(totalht, type_remise, remise_valeur, tva, 'totalht', 'totaltva', 'totalttc');
+        
     })
+
+    $('#tva').on('change', function () {
+        var table = $('#table_details_devis').DataTable();
+
+        if (table.data().count()) {
+
+            bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de TVA sera appliqué sur l'ensemble des lignes détails, voulez vous vous continuer ?</span>", 
+                function(result){
+                    if(result == true){
+                        var $tkn_frm = $(this).attr('tkn_frm');
+                        $.ajax({
+
+                            cache: false,
+                            url  : '?_tsk=add_detaildevis&ajax=1'+'&act=1&<?php echo MInit::crypt_tp('exec', 'set_tva')?>',
+                            type : 'POST',
+                            data : $('#adddevis').serialize(),
+                            dataType:"JSON",
+                            success: function(data){
+
+                                if(data['error']== false){
+                                    ajax_loadmessage(data['mess'],'nok',5000)
+                                }else{
+                                    ajax_loadmessage(data['mess'],'ok',3000);
+                                    var t1 = $('.dataTable').DataTable().draw();
+                                    $('#sum_table').val(data['sum']);
+                                    $('#valeur_remise').trigger('change'); 
+                                }
+
+                            }
+                        });
+                    }
+
+
+                });  
+            
+            
+            
+        }
+
+    });
+
     $('#type_remise').on('change', function () {
         $('#valeur_remise').trigger('input');
     });
 
-    $('#id_client').on('change', function () {
-        
-        //var $adresse = '<div class="form-group>"><address><strong>Twitter, Inc.</strong><br>795 Folsom Ave, Suite 600<br>San Francisco, CA 94107<br><abbr title="Phone">P:</abbr>(123) 456-7890</address></div>';
-       //$(this).parent('div').after($adresse);
+    $('#id_client').on('input change', function () {
+                
+        var $id_client = $(this).val();
+        $.ajax({
+
+            cache: false,
+            url  : '?_tsk=add_detaildevis&ajax=1',
+            type : 'POST',
+            data : '&act=1&<?php echo MInit::crypt_tp('exec', 'info_client') ?>&id='+$id_client,
+            dataType:"JSON",
+            success: function(data){
+                //info client après               
+                $('#tva').val(data['tva_brut']);
+                $('#tva').trigger("chosen:updated");
+
+            }
+        });
 
     });
     $('#table_details_devis tbody ').on('click', 'tr .edt_det', function() {
@@ -165,6 +226,9 @@ $(document).ready(function() {
         ajax_bbox_loader($link, $data, $titre, 'large')
         
     });
+    
+    
+    
     $('#table_details_devis tbody ').on('click', 'tr .del_det', function() {
         var $id_detail = $(this).attr('data');
         $.ajax({
@@ -182,7 +246,8 @@ $(document).ready(function() {
                     ajax_loadmessage(data_arry[1],'ok',3000);
                     var t1 = $('.dataTable').DataTable().draw();
                     $('#sum_table').val(data_arry[2]);
-                    $('#valeur_remise').trigger('change'); 
+                    $('#valeur_remise').trigger('change');
+                    $('#is_abn').remove();
                 }
 
             }

@@ -34,6 +34,7 @@ class Mform
     var $wizard_steps_bloc     = Null;
     var $wizard_steps          = null;
     var $form_subbloc          = null;
+    var $verif_value           = null;
     
 
 
@@ -70,7 +71,8 @@ class Mform
         $ssid = 'f_v'.$this->_id_form;
         session::clear($ssid);
         session::set($ssid,session::generate_sid());
-        $verif_value  = session::get($ssid);
+        $verif_value       = session::get($ssid);
+        $this->verif_value = $verif_value;
         
 
         //If is Wizard start with bloc Wizard 
@@ -420,7 +422,7 @@ $this->gallery_bloc_js .= "$('#btn_add_pic').on('click', '.this_add_pic', functi
       $readonly_use = $readonly == null ? null : 'readonly=""';
     	$input = '<div class="space-2"></div>
     	<div class="form-group">
-         <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">'.$input_desc.':</label>
+         <label id="label_'.$input_id.'" class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">'.$input_desc.':</label>
 
          <div class="col-xs-12 col-sm-9">
              <div class="clearfix">';
@@ -815,8 +817,15 @@ public function select_onchange($input_id)
 
 public function draw_datatabe_form($id_table, $verif_value, $columns = array(), $url_data = null, $url_addrow = null, $titr_addrow = null, $add_js_func = null)
 {
-  /*$ssid = 'f_v'.$this->_id_form;
-  $verif_value  = md5(session::get($ssid));*/
+  if($this->_is_edit != null){
+    $verif_value;
+  }else{
+    $ssid = 'f_v'.$this->_id_form;
+    session::clear($ssid);
+    session::set($ssid,session::generate_sid());
+    $verif_value       = md5(session::get($ssid));
+  }
+  
   $button_action = "$('#".$id_table."').on('click', 'tr button', function() {
   var row = $(this).closest('tr')
   append_drop_menu('".$url_data."', t.cell(row, 0).data(), '.btn_action')

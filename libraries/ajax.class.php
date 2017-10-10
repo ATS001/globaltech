@@ -6,25 +6,26 @@
 class MAjax 
 {
 	
-	Var $error = true;
-	var $is_appli = false;
+	Var $error       = true;
+	var $is_appli    = false;
 	var $default_app = null;
-	var $log = '';
-	var $app_id;
-	var $app_array = array();
+	var $log         = null;	
+	var $app_id      = null;
+	var $app_array   = array();
 	var $session_user;
 	var $session_id; 
-	var $msg_ajax = "Vous n'êtes pas autorisé(e) à accéder à cette application , redirection vers acceuil";
+	var $app_sys       = null;
+	var $msg_ajax      = "Vous n'êtes pas autorisé(e) à accéder à cette application , redirection vers acceuil";
 	var $degre_message = '3#';
 
 
 	function __construct() {
-        
-    }
 
-    function __destruct() {
-        
-    }
+	}
+
+	function __destruct() {
+
+	}
 
 	
 
@@ -43,7 +44,7 @@ class MAjax
 		}else{
 			$this->error = true;
 		}
-      
+
 	}
 
 	//Check if Application exist on DB and append app_array
@@ -61,14 +62,14 @@ class MAjax
 			{
 				$this->error = false;
 				$this->degre_message = '3#';
-			    $this->log .='//APP_TASK_NULL';
-			    
+				$this->log .='//APP_TASK_NULL';
+
 
 			}else{
 				$this->app_array = $db->RowArray();
 				$this->error = true;
 				
-								
+
 			}			
 
 		} 
@@ -85,22 +86,22 @@ class MAjax
 			{
 				$this->error = false;
 				$this->degre_message = '3#';
-			    $this->log .='//AJAX_REQUEST';
+				$this->log .='//AJAX_REQUEST';
 			    //sleep(2);
                 //header('location:./');
 			}else{
-			    $this->error = true;
-		    }
+				$this->error = true;
+			}
 		}else{
 			if(empty($_SERVER['HTTP_X_REQUESTED_WITH']))
 			{
 				$this->error = false;
 			    //$this->log .='//AJAX_REQUEST';
 			    //sleep(2);
-                header('location:./');
+				header('location:./');
 			}else{
-			    $this->error = true;
-		    }
+				$this->error = true;
+			}
 		}
 		
 		//exit($this->app_array['ajax']);
@@ -113,102 +114,102 @@ class MAjax
 	private function Check_session_template()
 	{
 		if($this->app_array['session'] == 0 && session::get('ssid') != false)
-		{
-			$this->error = false;
-			$this->degre_message = '4#';
-			$this->log .=' //AUTO_LOGOUT';
-			$new_logout = new  MLogin();
-            $new_logout->token = session::get('username');
-            $new_logout->logout();
+			{
+				$this->error = false;
+				$this->degre_message = '4#';
+				$this->log .=' //AUTO_LOGOUT';
+				$new_logout = new  MLogin();
+				$new_logout->token = session::get('username');
+				$new_logout->logout();
             //sleep(2);
             //header('location:./');
-		}else{
-			$this->error = true;
+			}else{
+				$this->error = true;
+			}
+
 		}
 
-	}
-
-	private function Check_user_active()
-	{
-		global $db;
-		$sql = "SELECT pass  
-		FROM users_sys 
-		where id = ".MySQL::SQLValue(session::get('userid'))." AND   etat = 1";
-		if($db->QuerySingleValue0($sql) != session::get('key'))
+		private function Check_user_active()
 		{
-			$this->error = false;
-			$this->degre_message = '3#';
-			$this->log .=' //USER_ACOUNT_INACTIVE';
-			$new_logout = new  MLogin();
-            $new_logout->token = session::get('username');
-            $new_logout->logout();
+			global $db;
+			$sql = "SELECT pass  
+			FROM users_sys 
+			where id = ".MySQL::SQLValue(session::get('userid'))." AND   etat = 1";
+			if($db->QuerySingleValue0($sql) != session::get('key'))
+				{
+					$this->error = false;
+					$this->degre_message = '3#';
+					$this->log .=' //USER_ACOUNT_INACTIVE';
+					$new_logout = new  MLogin();
+					$new_logout->token = session::get('username');
+					$new_logout->logout();
 
-		}else{
-			$this->error = true;
-		}
+				}else{
+					$this->error = true;
+				}
 
-	}
+			}
 
 	//Check if need session or not 
 	//return error true
-	private function Check_need_session()
-	{
-		
-		$this->session_user = MySQL::SQLValue(session::get('username'));
-		$this->session_id   = MySQL::SQLValue(session::get('ssid'));
-		
-		
+			private function Check_need_session()
+			{
 
-		global $db;
-		$sql = "SELECT id_sys  
-		FROM session 
-		where expir is null AND  id = ".$this->session_id." and user = ".$this->session_user;
-		if($db->QuerySingleValue0($sql) == '0' && $this->app_array['session'] == 1)
-		{
-			$this->error = false;
-			$this->degre_message = '4#';
-			$this->log .=' //NEED_SESSION';
-			$new_logout = new  MLogin();
-            $new_logout->token = session::get('ssid');
-            $new_logout->logout();
+				$this->session_user = MySQL::SQLValue(session::get('username'));
+				$this->session_id   = MySQL::SQLValue(session::get('ssid'));
 
-		}else{
-			$this->error = true;
-		}
 
-	}
+
+				global $db;
+				$sql = "SELECT id_sys  
+				FROM session 
+				where expir is null AND  id = ".$this->session_id." and user = ".$this->session_user;
+				if($db->QuerySingleValue0($sql) == '0' && $this->app_array['session'] == 1)
+				{
+					$this->error = false;
+					$this->degre_message = '4#';
+					$this->log .=' //NEED_SESSION';
+					$new_logout = new  MLogin();
+					$new_logout->token = session::get('ssid');
+					$new_logout->logout();
+
+				}else{
+					$this->error = true;
+				}
+
+			}
 
 	//Check if user have permission 
 	//Return error true
-	private function Check_user_permission()
-	{
-		global $db;
-		$this->session_user = MySQL::SQLValue(session::get('userid'));
-		
+			private function Check_user_permission()
+			{
+				global $db;
+				$this->session_user = MySQL::SQLValue(session::get('userid'));
 
-		$sql = "SELECT
-    1
-FROM
-    `rules_action`
-    INNER JOIN `task` 
-        ON (`rules_action`.`appid` = `task`.`id`)
-    INNER JOIN `task_action` 
-        ON (`task_action`.`appid` = `task`.`id`) AND (`rules_action`.`action_id` = `task_action`.`id`)
-    INNER JOIN `users_sys` 
-        ON (`rules_action`.`userid` = `users_sys`.`id`)
-WHERE users_sys.id = ".$this->session_user." 
 
-      AND task.app =  ".MySQL::SQLValue($this->app_array['app'])." ";
-		if($db->QuerySingleValue0($sql) == '0' && $this->app_array['app_sys'] == 0)
-		{
-			$this->error = false;
-			$this->degre_message = '3#';
-			$this->log .='//PERMISSION_USER';
+				$sql = "SELECT
+				1
+				FROM
+				`rules_action`
+				INNER JOIN `task` 
+				ON (`rules_action`.`appid` = `task`.`id`)
+				INNER JOIN `task_action` 
+				ON (`task_action`.`appid` = `task`.`id`) AND (`rules_action`.`action_id` = `task_action`.`id`)
+				INNER JOIN `users_sys` 
+				ON (`rules_action`.`userid` = `users_sys`.`id`)
+				WHERE users_sys.id = ".$this->session_user." 
 
-		}else{
-			$this->error = true;
-		}
-	}
+				AND task.app =  ".MySQL::SQLValue($this->app_array['app'])." ";
+				if($db->QuerySingleValue0($sql) == '0' && $this->app_array['app_sys'] == 0)
+				{
+					$this->error = false;
+					$this->degre_message = '3#';
+					$this->log .='//PERMISSION_USER';
+
+				}else{
+					$this->error = true;
+				}
+			}
 
 	/**
 	 * Last Activité exec
@@ -223,40 +224,60 @@ WHERE users_sys.id = ".$this->session_user."
 		//if is elapsed logout
 		
 		$sql = "SELECT TIMESTAMPDIFF(MINUTE, lastactive, CURRENT_TIMESTAMP) as expir
-				FROM users_sys 
-		        where id = ".MySQL::SQLValue(session::get('userid'));
+		FROM users_sys 
+		where id = ".MySQL::SQLValue(session::get('userid'));
 		$time = $db->QuerySingleValue0($sql);
-		$test = MCfg::get('auto_logout');
-		//print($this->msg_ajax.'  '.$test.' '.$time);
+		
+		
 		if($time > MCfg::get('auto_logout'))//Config by user or systeme
 		{
 			
 			$minutes = $time;
 			$zero    = new DateTime('@0');
-            $offset  = new DateTime('@' . $minutes * 60);
-            $diff    = $zero->diff($offset);
+			$offset  = new DateTime('@' . $minutes * 60);
+			$diff    = $zero->diff($offset);
 
-            $days =  $diff->format('%a') == 0 ? null : $diff->format('%a').' J - ';
-            $hour =  $diff->format('%h') == 0 ? '00h:' : $diff->format('%h').'h:';
-            $minu =  $diff->format('%i') == 0 ? '00min ' : $diff->format('%i').'min';
-            $template =  $days.$hour.$minu;
+			$days =  $diff->format('%a') == 0 ? null : $diff->format('%a').' J - ';
+			$hour =  $diff->format('%h') == 0 ? '00h:' : $diff->format('%h').'H:';
+			$minu =  $diff->format('%i') == 0 ? '00Min ' : $diff->format('%i').'Min';
+			$template =  $days.$hour.$minu;
 			$this->error = false;
 			$this->degre_message = '4#';
-			$this->log .=' </br>vous avez été deconnecté du serveur pour une inactivité de '.$template.' //AUTO_LOGOUT';
+			
+			
+			$hash = md5(uniqid(rand(), true));
+			$this->log .=' </br>vous avez été deconnecté du serveur pour une inactivité de [#]'.$hash.'[#] //AUTO_LOGOUT';
+
+			$file = MPATH_TEMP.SLASH.$hash.'.ses';
+			if(!file_put_contents($file, $template, FILE_APPEND | LOCK_EX))
+			{
+				$this->error = false;
+				$this->log .='</br>Erreur sauvgarde ses file';
+			}
+			
+
 			$new_logout = new  MLogin();
-            $new_logout->token = session::get('ssid');
-            $new_logout->logout();
+			$new_logout->token = session::get('ssid');
+			$new_logout->logout();
+
+
+
+
 
 		}else{
-			//Update lastactive into users_sys
-		    $val_time['lastactive'] = 'CURRENT_TIMESTAMP';
-		    $whr_user['id']         = MySQL::SQLValue(session::get('userid'));
-		    if (!$db->UpdateRows('users_sys', $val_time, $whr_user))
-		    {
-			    $this->log .= $db->Error();
-			    $this->error = false;
-			    $this->log .='</br>Problème MAJ dérnière activité'; 
-		    }
+			//Update lastactive into users_sys case no app sys
+			if($this->app_array['app_sys'] == 0)
+			{
+				$val_time['lastactive'] = 'CURRENT_TIMESTAMP';
+				$whr_user['id']         = MySQL::SQLValue(session::get('userid'));
+				if (!$db->UpdateRows('users_sys', $val_time, $whr_user))
+				{
+					$this->log .= $db->Error();
+					$this->error = false;
+					$this->log .='</br>Problème MAJ dérnière activité'; 
+				}
+			}
+
 		} 
 		
 		
@@ -321,45 +342,45 @@ WHERE users_sys.id = ".$this->session_user."
 		}else{
 			//sleep(5);
 			if(MReq::tp('act') == 1)
-			{
-				$target = MPATH_MODULES.$this->app_array['rep'].SLASH.'controller/action'.$this->app_array['file'].'_c.php';
-			}elseif(MReq::tp('lst') == 1){
-				$target = MPATH_MODULES.$this->app_array['rep'].SLASH.'controller/list'.$this->app_array['file'].'_c.php';
-			}else{
-				$target = MPATH_MODULES.$this->app_array['rep'].SLASH.'controller/'.$this->app_array['file'].'_c.php';
-			}
-			
-			if(!file_exists($target))
-			{
-				exit($this->degre_message.$this->msg_ajax.'//FILE'.$target);
-			}else{
-				define('ACTIV_APP', $this->app_array['dscrip']);
-			    define('MODUL_APP', $this->app_array['modul']);
-			    define('APP_TARGET', MPATH_MODULES.$this->app_array['rep'].SLASH.'controller/');
-			    define('APP_VIEW', MPATH_MODULES.$this->app_array['rep'].SLASH.'view'.SLASH);
-			    define('APP_ID', $this->app_array['id']);
-				
+				{
+					$target = MPATH_MODULES.$this->app_array['rep'].SLASH.'controller/action'.$this->app_array['file'].'_c.php';
+				}elseif(MReq::tp('lst') == 1){
+					$target = MPATH_MODULES.$this->app_array['rep'].SLASH.'controller/list'.$this->app_array['file'].'_c.php';
+				}else{
+					$target = MPATH_MODULES.$this->app_array['rep'].SLASH.'controller/'.$this->app_array['file'].'_c.php';
+				}
+
+				if(!file_exists($target))
+				{
+					exit($this->degre_message.$this->msg_ajax.'//FILE'.$target);
+				}else{
+					define('ACTIV_APP', $this->app_array['dscrip']);
+					define('MODUL_APP', $this->app_array['modul']);
+					define('APP_TARGET', MPATH_MODULES.$this->app_array['rep'].SLASH.'controller/');
+					define('APP_VIEW', MPATH_MODULES.$this->app_array['rep'].SLASH.'view'.SLASH);
+					define('APP_ID', $this->app_array['id']);
+
 
 			    //Append tree top menu only for no appli App
-			    if($this->is_appli == false && MReq::tp('cor') == 1){
-			    	
-			    	$output  = '<li><i class="ace-icon fa fa-home home-icon"></i><a href="#" left_menu="1" class="tip-right this_url" rel="dbd" title="Tableau de bord">Accueil</a></li>';
-			        $output .= '<li><a href="#" left_menu="1" class="fa-double_angle_right this_url" rel="'.$this->app_array['app_modul'].'" title="'.$this->app_array['modul'].'">'.$this->app_array['modul'].'</a></li>';
-	                $output .= '<li class="active">'.$this->app_array['dscrip'].'</li>';
+					if($this->is_appli == false && MReq::tp('cor') == 1){
+
+						$output  = '<li><i class="ace-icon fa fa-home home-icon"></i><a href="#" left_menu="1" class="tip-right this_url" rel="dbd" title="Tableau de bord">Accueil</a></li>';
+						$output .= '<li><a href="#" left_menu="1" class="fa-double_angle_right this_url" rel="'.$this->app_array['app_modul'].'" title="'.$this->app_array['modul'].'">'.$this->app_array['modul'].'</a></li>';
+						$output .= '<li class="active">'.$this->app_array['dscrip'].'</li>';
 	                $output .='#||#'; //Separator data
 	                print($output);
 
-			    }		    
-			    
-			    require_once($target);
+	            }		    
+
+	            require_once($target);
 			    //var_dump($_SESSION);
 
-			}
+	        }
 
 
-		}
-		
-		
+	    }
+
+
 	}
 
 

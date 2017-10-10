@@ -142,6 +142,11 @@ class Mregion {
 
 				$this->last_id = $result;
 				$this->log .='</br>Enregistrement  réussie '. $this->_data['region'] .' - '.$this->last_id.' -';
+
+                    if(!Mlog::log_exec($this->table, $this->last_id, 'Insertion région', 'Insert'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
 			}
 
 
@@ -185,6 +190,11 @@ class Mregion {
 			$this->log   .= '</br>Statut changé! ';
 			//$this->log   .= $this->table.' '.$this->id_region.' '.$etat;
 			$this->error  = true;
+
+                    if(!Mlog::log_exec($this->table, $this->id_region, 'Validation région', 'Validate'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
 
 		}
 		if($this->error == false){
@@ -254,6 +264,18 @@ class Mregion {
 
 				//$this->last_id = $result;
 				$this->log .='</br>Enregistrement  réussie '. $this->_data['region'] .' - '.$this->last_id.' -';
+
+                    if(!Mlog::log_exec($this->table, $this->id_region, 'Modifiation région', 'Update'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
+
+
+                //Esspionage
+                if(!$db->After_update($this->table, $this->id_region, $values, $this->region_info)){
+                    $this->log .= '</br>Problème Esspionage';
+                    $this->error = false; 
+                }
 			}
 
 
@@ -298,6 +320,11 @@ class Mregion {
     		
     		$this->error = true;
     		$this->log .='</br>Suppression réussie ';
+
+                    if(!Mlog::log_exec($this->table, $this->id_region, 'Suppression région', 'Delete'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
     	}
     	//check if last error is true then return true else rturn false.
 		if($this->error == false){

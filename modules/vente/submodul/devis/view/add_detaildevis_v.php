@@ -2,10 +2,11 @@
 $form = new Mform('add_detaildevis', 'add_detaildevis', '', 'devis', '0', 'is_modal');
 //token main form
 $form->input_hidden('tkn_frm', Mreq::tp('tkn'));
+$form->input_hidden('tva_d', 'O');
 //Produit
 $produit_array[]  = array('required', 'true', 'Choisir un Produit / Service');
 $form->select_table('Produit / Service', 'id_produit', 8, 'produits', 'id', 'designation' , 'designation', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $produit_array);
-$hard_code_pri_u_ht = '<label style="margin-left:15px;margin-right : 20px;">Prix Unité HT: </label><input id="prix_unitaire" name="prix_unitaire" value="0" class="input-large alignRight" type="text">';
+$hard_code_pri_u_ht = '<label style="margin-left:15px;margin-right : 20px;">Prix Unité HT: </label><input id="prix_unitaire" name="prix_unitaire" value="0" class="input-large alignRight" readonly="" type="text">';
 $hard_code_pri_u_ht .= '<span class="help-block returned_span">...</span>';
 //Réference
 $form->input('Réference', 'ref_produit', 'text' ,3, null, Null, $hard_code_pri_u_ht, 1);
@@ -35,15 +36,17 @@ $form->render();
 <script type="text/javascript">
 //On change produit get all informations.
 $(document).ready(function() {
+    //Get TVA value from main TVA select 
+    $('#tva_d').val($('#tva').val()); 
 	 //called when key is pressed in textbox
 	 function calculat_devis($prix_u, $qte, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc)
 	 {
     	//var $prix_u_remised = $total_ht = $total_ttc = $total_tva = null;
-    	var $prix_u         = parseFloat($prix_u) ? parseFloat($prix_u) : 0;
-    	var $qte            = parseInt($qte) ? parseInt($qte) : 0;
+    	var $prix_u           = parseFloat($prix_u) ? parseFloat($prix_u) : 0;
+    	var $qte              = parseInt($qte) ? parseInt($qte) : 0;
     	//var $type_remise    = $type_remise == null ? 'P' : $type_remise;
-    	var $remise_valeur  = parseFloat($remise_valeur) ? parseFloat($remise_valeur) : 0;
-    	var $tva            = $tva == null ? 'Y' : $tva;
+    	var $remise_valeur    = parseFloat($remise_valeur) ? parseFloat($remise_valeur) : 0;
+    	var $val_tva          = <?php echo Mcfg::get('tva')?>
     	
     	//calculate remise
     	if($type_remise == 'P')
@@ -55,6 +58,7 @@ $(document).ready(function() {
     	}else{
     		var $prix_u_remised = $prix_u;
     	}
+        
     	//Total HT 
     	var $total_ht = $prix_u_remised * $qte;
     	//Calculate TVA
@@ -62,7 +66,7 @@ $(document).ready(function() {
     	{
     		var $total_tva = 0;
     	}else{
-    		var $total_tva = ($total_ht * 20) / 100; //TVA value get from app setting
+    		var $total_tva = ($total_ht * $val_tva) / 100; //TVA value get from app setting
     	}
     	var $total_ttc = $total_ht + $total_tva ;
     	$('#'+$f_total_ht).val($total_ht);
@@ -81,24 +85,42 @@ $(document).ready(function() {
     		url  : '?_tsk=add_detaildevis&ajax=1',
     		type : 'POST',
     		data : '&act=1&id='+$id_produit+'&<?php echo MInit::crypt_tp('exec', 'produit_info') ?>',
-    		dataType:"html",
+    		dataType:"JSON",
     		success: function(data){
-    			var data_arry = data.split("#");
-    			if(data_arry[0]==0){
-    				ajax_loadmessage(data_arry[1],'nok',5000)
+    			
+    			if(data['error']){
+    				ajax_loadmessage(data['error'] ,'nok',5000)
     			}else{
-    				var arr = new Array();
-    				arr = JSON.parse(data);
+                    if(data['abn'] == true){
 
-    				$('#ref_produit').val(arr['ref']);
-    				$('#prix_unitaire').val(arr['prix']);
-    				$('.returned_span').remove();
-    				$('#ref_produit').parent('div').after(arr['prix_base']);
-    				$('#prix_unitaire').trigger('change'); 
-    			}
+                    }
+                    
+                    var table = $('#table_details_devis').DataTable();
+                    var $abn = data['abn'] == true ? 'abn' : '';
 
-    		}
-    	})
+                    if (table.data().count()) {
+                        if(data['abn'] == true){
+                            ajax_loadmessage("Impossible d'insérer un abonnement avec autres produits" ,'nok',5000);
+                            return false;
+                        } 
+                    }
+                    $('#label_qte').text('Quantité: ('+data['unite_vente']+')');
+                    $('#prix_unitaire').val(data['prix_vente']);
+                    $('.returned_span').remove();
+                    if(data['prix_vendu'] == 0){
+                     $('#ref_produit').parent('div').after('<span class="help-block returned_span">Ce produit n\' pas été vendu avant!</span>'); 
+                    }else{
+                        $('#ref_produit').parent('div').after('<span class="help-block returned_span">Ce produit étais vendu à :'+data['prix_vendu']+'</span>');
+                    }
+                    $('#prix_unitaire').trigger('change');
+                    //check if have already rox in table stop if produit is Abonnement
+                    $('#is_abn').remove();
+                    $('#addRow').after('<input id="is_abn" type="hidden" value="'+$abn+'"/>');
+
+                    
+                }
+            }//end success
+        });
 
     	var validator = $('#add_detaildevis').validate();
     	validator.resetForm();
@@ -109,9 +131,9 @@ $(document).ready(function() {
     	var qte           = parseFloat($('#qte').val());
     	var type_remise   = $('#type_remise_d').val();
     	var remise_valeur = parseFloat($('#remise_valeur_d').val());
-    	var tva           = parseFloat($('#tva').val());
+    	var tva           = $('#tva').val();
 
-    	calculat_devis(prix_unitaire, qte, type_remise, remise_valeur, null, 'total_ht', 'total_tva', 'total_ttc');
+    	calculat_devis(prix_unitaire, qte, type_remise, remise_valeur, tva, 'total_ht', 'total_tva', 'total_ttc');
     });
     $('.send_modal').on('click', function () {
         if(!$('#add_detaildevis').valid())
@@ -150,6 +172,8 @@ $(document).ready(function() {
         }
 
     });
+
+    
 
 
 

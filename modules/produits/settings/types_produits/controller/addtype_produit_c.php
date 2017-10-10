@@ -43,5 +43,6 @@
           echo("0#" . $new_type_produit->log);
       }
   } else {
-      view::load('produits/settings/types_produits', 'addtype_produit');
+      view::load_view('addtype_produit');
+
   }

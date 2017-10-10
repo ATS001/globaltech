@@ -65,10 +65,10 @@ $form->input_hidden('idh', Mreq::tp('idh'));
 
 //Start Step 1
 $form->step_start(1, 'Renseignements client');
-//Code
+/*//Code
 $code_array[]  = array('required', 'true', 'Insérer le code ' );
 $code_array[]  = array('remote', 'code#clients#code', 'Ce Code Client existe déja' );
-$form->input('Code Client', 'code', 'text' ,6 , $info_client->Shw('code',1), $code_array);
+$form->input('Code Client', 'code', 'text' ,6 , $info_client->Shw('code',1), $code_array);*/
 
 //Denomination
 $denomination_array[]  = array('minlength', '2', 'Minimum 2 caractères' );

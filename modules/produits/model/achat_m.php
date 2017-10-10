@@ -107,6 +107,13 @@
 
                     $this->last_id = $result;
                     $this->log .= '</br>Enregistrement  réussie ' . ' - ' . $this->last_id . ' -';
+                    $this->maj_prix_vente($this->_data['idproduit'], $this->_data['prix_vente']);
+
+
+                    if(!Mlog::log_exec($this->table, $this->last_id , 'Insertion achat produit', 'Insert'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
                 }
             } else {
 
@@ -120,6 +127,17 @@
                 return true;
             }
         }
+
+       public function maj_prix_vente($id_facture, $montant) {
+
+        global $db;
+        $req_sql = "UPDATE produits SET prix_vente = $montant WHERE id = '$id_facture'";
+        if (!$db->Query($req_sql)) {
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .= '<br>Problème de mise à jour du reste ';
+        }
+    }
 
         //activer ou valider une produit
         public function valid_achat_produit($etat = 0) {
@@ -142,6 +160,12 @@
                 $this->log .= '</br>Statut changé! ';
                 //$this->log   .= $this->table.' '.$this->id_produit.' '.$etat;
                 $this->error = true;
+
+
+                    if(!Mlog::log_exec($this->table, $this->id_achat , 'Validation achat produit', 'Validate'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
             }
             if ($this->error == false) {
                 return false;
@@ -183,6 +207,21 @@
 
                     //$this->last_id = $result;
                     $this->log .= '</br>Enregistrement  réussie ' . ' - ' . $this->last_id . ' -';
+
+                    $this->maj_prix_vente($this->_data['idproduit'], $this->_data['prix_vente']);
+
+
+                //Esspionage
+                if(!$db->After_update($this->table, $this->id_achat, $values, $this->achat_info)){
+                    $this->log .= '</br>Problème Esspionage';
+                    $this->error = false; 
+                }
+
+
+                    if(!Mlog::log_exec($this->table, $this->id_achat , 'Modification achat produit', 'Update'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
                 }
             } else {
 
@@ -218,6 +257,12 @@
 
                 $this->error = true;
                 $this->log .= '</br>Suppression réussie ';
+
+
+                    if(!Mlog::log_exec($this->table, $this->id_achat , 'Suppression achat produit', 'Delete'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
             }
             //check if last error is true then return true else rturn false.
             if ($this->error == false) {

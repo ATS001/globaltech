@@ -12372,10 +12372,14 @@ td .lbl:only-child {
   color: #ECB792;
 }
 .infobox-small {
-  width: 135px;
-  height: 52px;
+  float: left;
+  width: 16.33%;
+  height: 60px;
   text-align: left;
   padding-bottom: 5px;
+  padding-left: 8px;
+  padding-right: 8px;
+  position: relative;
 }
 .infobox-small > .infobox-icon,
 .infobox-small > .infobox-chart,
@@ -12386,6 +12390,7 @@ td .lbl:only-child {
   height: 42px;
   line-height: 38px;
   vertical-align: middle;
+  opacity: 0.5;
 }
 .infobox-small > .infobox-data {
   display: inline-block;
@@ -19996,3 +20001,43 @@ input.typeahead.scrollable ~ .tt-dropdown-menu {
     display: none !important;
   }
 }
+.notifyjs-metro-base {
+	position: relative;
+    min-height: 52px;
+    color:#444;
+}
+
+    .notifyjs-metro-base .image {
+        display: table;
+        position: absolute;
+        height: auto;
+        width: auto;
+        left: 25px;
+        top: 50%;
+
+        -moz-transform: translate(-50%, -50%);
+        -ms-transform: translate(-50%, -50%);
+        -o-transform: translate(-50%, -50%);
+        -webkit-transform: translate(-50%, -50%);
+        transform: translate(-50%, -50%);
+    }
+
+    .notifyjs-metro-base .text-wrapper {
+        display: inline-block;
+        vertical-align: top;
+        text-align: left;
+        margin: 10px 10px 10px 52px;
+        clear: both;
+        font-family: 'Segoe UI';
+    }
+
+    .notifyjs-metro-base .title {
+        font-size: 15px;
+        font-weight: bold;
+    }
+
+    .notifyjs-metro-base .text {
+        font-size: 12px;
+        font-weight: normal;
+        vertical-align: middle;
+    }

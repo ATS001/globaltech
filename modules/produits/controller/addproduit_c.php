@@ -10,6 +10,7 @@
            
             'stock_min' => Mreq::tp('stock_min'),
             'idcategorie' => Mreq::tp('idcategorie'),
+            'prix_vente' => Mreq::tp('prix_vente'),
             'iduv' => Mreq::tp('iduv'),
             'idtype' => Mreq::tp('idtype'),
         );
@@ -19,12 +20,12 @@
 
         $checker = null;
         $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
-
+/*
         if ($posted_data['ref'] == NULL) {
 
             $empty_list .= "<li>Référence</li>";
             $checker = 1;
-        }
+        }*/
         
          if ($posted_data['designation'] == NULL) {
 

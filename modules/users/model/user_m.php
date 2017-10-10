@@ -190,6 +190,22 @@ class Musers {
       
     }
 
+    /**
+     * [s description]
+     * @param [type] $key     [Key of info_array]
+     * @param string $no_echo [Used for echo the value on View ]
+     */
+    public function g($key)
+    {
+      if($this->user_info[$key] != null)
+      {
+        return $this->user_info[$key];
+      }else{
+        return null;
+      }
+      
+    }
+
 	/**
      * [check_exist Check if one entrie already exist on table]
      * @param  [string] $column  [Column of field on main table]

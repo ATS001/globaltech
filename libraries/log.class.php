@@ -16,6 +16,7 @@ class Mlog
 		$values["type_log"]  = MySQL::SQLValue($type);
 		$values["table_use"] = MySQL::SQLValue($table);
 		$values["idm"]       = MySQL::SQLValue($idm);
+		$values["sesid"]     = MySQL::SQLValue(session::get('sesid'));
 		$values["user_exec"] = MySQL::SQLValue(session::get('username'));
 		//If no error on Insert commande
     		if (!$result = $db->InsertRow("sys_log", $values))

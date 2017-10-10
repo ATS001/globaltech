@@ -18,7 +18,7 @@
 </div>
 <div class="page-header">
 	<h1>
-		Détails du client de: <?php $client->s('code').' '.$client->s('denomination'); ?> 
+		Détails du client: <?php $client->s('code')?>    <?php $client->s('denomination'); ?> 
 
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
@@ -59,7 +59,7 @@
 
 									<div class="profile-user-info">
 										<div class="profile-info-row">
-											<div class="profile-info-name"> Code</div>
+											<div class="profile-info-name"> Référence</div>
 
 											<div class="profile-info-value">
 												<span><?php  $client->s('code')  ?></span>
@@ -252,15 +252,20 @@
 						    }
 							?>
 
+							<?php if ($photo != null)
+							{ 
+							?>
+
 							<div class="center">
-								<!-- <a class="iframe_pdf" rel=<?php echo $photo; ?>><p class="lead"><i class="ace-icon fa fa-file-pdf-o red"></i>Photo du client : <?php  $client->s('denomination')  ?> </p></a>					
-							 -->
+							
 											<span class="profile-picture">
 										    	<img width="180" height="200" class="editable img-responsive" alt=<?php $client->s('denomination')   ?> id="avatar2" src="<?php echo $photo ?>" />
 									        </span>	
 
 							</div>
-										
+							<?php 
+						    }
+							?>			
 
 
 									

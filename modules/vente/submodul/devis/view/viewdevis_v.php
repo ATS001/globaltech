@@ -1,29 +1,30 @@
 <?php
 //Get all Devis info 
 $info_devis = new Mdevis();
+//$action = new TableTools();
+$info_devis->id_devis = Mreq::tp('id');
+//$info_devis->get_devis();
+//$action->line_data = $info_devis->devis_info;
+//$actions = $action->action_profil_view('devis', 'devis', Minit::crypt_tp('id', Mreq::tp('id')), $info_devis->g('creusr') , 'deletedevis');
 //Set ID of Module with POST id
 $info_devis->id_devis = Mreq::tp('id');
 //Check if Post ID <==> Post idc or get_modul return false. 
-if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->get_devis())
+if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->Get_detail_devis_show())
 { 	
  	// returne message error red to client 
 	exit('3#'.$info_user->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
-//Get all client info
-$info_client = new Mclients();
-$info_client->id_client = $info_devis->g('id_client');
-if(!$info_client->get_client())
-{
-	exit('3#'.$info_client->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
-}
-
-//var_dump($info_client->client_info);
+//var_dump($info_devis->client_info);
 
 ?>
 <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
 
-		<?php TableTools::btn_add('devis','Liste des Devis', Null, $exec = NULL, 'reply'); ?>
+		<?php 
+         
+		TableTools::btn_add('devis','Liste des Devis', Null, $exec = NULL, 'reply'); 
+
+		?>
 
 	</div>
 </div>
@@ -48,7 +49,7 @@ if(!$info_client->get_client())
 					<div class="widget-header widget-header-large">
 						<h3 class="widget-title grey lighter">
 							<i class="ace-icon fa fa-adress-card-o green"></i>
-							Client: <?php $info_client->s('r_social')?>
+							Client: <?php $info_devis->s('denomination')?>
 						</h3>
 
 						<!-- #section:pages/invoice.info -->
@@ -61,13 +62,18 @@ if(!$info_client->get_client())
 							<span class="blue"><?php $info_devis->s('date_devis') ?></span>
 						</div>
 
-                        <?php if($info_devis->g('devis_pdf') != null){?>
+                        
                          <div class="widget-toolbar hidden-480">
-							<a href="#" class="iframe_pdf" rel="<?php $info_devis->s('devis_pdf') ?>">
+                         	<?php if($info_devis->g('devis_pdf') == null){?>
+							<a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'devis') ?>" data="<?php echo MInit::crypt_tp('id', $info_devis->id_devis) ?>">
+							<?php }else{?>
+                            <a href="#" class="iframe_pdf" rel="<?php echo $info_devis->g('devis_pdf').'&'.MInit::crypt_tp('doc',$info_devis->g('devis_pdf')) ?>" >
+							<?php }?>
 								<i class="ace-icon fa fa-print"></i>
 							</a>
+
 						</div>       
-                       <?php } ?>
+                       
 						
 
 						<!-- /section:pages/invoice.info -->
@@ -79,36 +85,39 @@ if(!$info_client->get_client())
 								<div class="col-sm-6">
 									<div class="row">
 										<div class="col-xs-11 label label-lg label-info arrowed-in arrowed-right">
-											<b>Company Info</b>
+											<b>Informations Client</b>
 										</div>
 									</div>
 
 									<div>
 										<ul class="list-unstyled spaced">
 											<li>
-												<i class="ace-icon fa fa-caret-right blue"></i>Street, City
-											</li>
-
-											<li>
-												<i class="ace-icon fa fa-caret-right blue"></i>Zip Code
-											</li>
-
-											<li>
-												<i class="ace-icon fa fa-caret-right blue"></i>State, Country
+												<i class="ace-icon fa fa-caret-right blue"></i>
+												Identifiant: 
+												<b class="blue"><?php echo $info_devis->g('denomination').'  #'.$info_devis->g('code')?></b>
 											</li>
 
 											<li>
 												<i class="ace-icon fa fa-caret-right blue"></i>
-												Phone:
-												<b class="red">111-111-111</b>
+												Adresse: 
+												<b class="blue"><?php echo $info_devis->g('adresse').' BP '.$info_devis->g('bp').' '.$info_devis->g('ville').'  '.$info_devis->g('pays')?></b>
+											</li>
+
+											<li>
+												<i class="ace-icon fa fa-caret-right blue"></i>
+												Contact: 
+												<b class="blue"><?php echo '@: '.$info_devis->g('email').'  Tél: '.$info_devis->g('tel')?></b>
+											</li>
+
+											<li>
+												<i class="ace-icon fa fa-caret-right blue"></i>
+												Identifiant Fiscal: 
+												<b class="blue"><?php $info_devis->s('nif')?></b>
 											</li>
 
 											<li class="divider"></li>
 
-											<li>
-												<i class="ace-icon fa fa-caret-right blue"></i>
-												Paymant Info
-											</li>
+											
 										</ul>
 									</div>
 								</div><!-- /.col -->
@@ -116,29 +125,36 @@ if(!$info_client->get_client())
 								<div class="col-sm-6">
 									<div class="row">
 										<div class="col-xs-11 label label-lg label-success arrowed-in arrowed-right">
-											<b>Customer Info</b>
+											<b>Informations Devis</b>
 										</div>
 									</div>
 
 									<div>
 										<ul class="list-unstyled  spaced">
 											<li>
-												<i class="ace-icon fa fa-caret-right green"></i>Street, City
+												<i class="ace-icon fa fa-caret-right green"></i>
+												Total hors Taxes: 
+												<b class="blue right"><?php $info_devis->s('totalht')?></b>
 											</li>
-
-											<li>
-												<i class="ace-icon fa fa-caret-right green"></i>Zip Code
-											</li>
-
-											<li>
-												<i class="ace-icon fa fa-caret-right green"></i>State, Country
-											</li>
-
-											<li class="divider"></li>
 
 											<li>
 												<i class="ace-icon fa fa-caret-right green"></i>
-												Contact Info
+												Total Remises: 
+												<b class="blue right"><?php $info_devis->s('valeur_remise')?></b>
+											</li>
+
+											<li>
+												<i class="ace-icon fa fa-caret-right green"></i>
+												Total TVA: 
+												<b class="blue right"><?php $info_devis->s('totaltva')?></b>
+											</li>
+
+											
+
+											<li>
+												<i class="ace-icon fa fa-caret-right green"></i>
+												Total TTC: 
+												<b class="blue right"><?php $info_devis->s('totalttc')?></b>
 											</li>
 										</ul>
 									</div>
@@ -158,17 +174,25 @@ if(!$info_client->get_client())
 							<div class="row">
 								<div class="col-sm-5 pull-right">
 									<h4 class="pull-right">
-										Total amount :
-										<span class="red">$395</span>
+										Montant Total :
+										<span class="red"><?php $info_devis->s('totalttc')?> FCFA</span>
 									</h4>
 								</div>
-								<div class="col-sm-7 pull-left"> Extra Information </div>
+								<div class="col-sm-7 pull-left"> 
+									<b class="red">
+								<?php 
+
+                                $obj = new nuts($info_devis->g('totalttc'), "FCFA");
+                                $ttc_lettre = $obj->convert("fr-FR");
+                                echo 'Soit: '.$ttc_lettre;
+								?>
+                                    </b>
+								</div>
 							</div>
 
 							<div class="space-6"></div>
 							<div class="well">
-								Thank you for choosing Ace Company products.
-								We believe you will be satisfied by our services.
+								<?php $info_devis->s('claus_comercial')?>
 							</div>
 						</div>
 					</div>
@@ -184,9 +208,6 @@ if(!$info_client->get_client())
 
 <!-- page specific plugin scripts -->
 <script type="text/javascript">
-	var scripts = [null, null]
-	$('.page-content-area').ace_ajax('loadScripts', scripts, function() {
-	  //inline scripts related to this page
-	});
+	
 </script>
 

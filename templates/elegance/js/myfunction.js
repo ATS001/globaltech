@@ -332,7 +332,7 @@ function do_ajax($url, $data , $the_table){
                 	var data_arry = data.split("#");
                 	if(data_arry[0] == 1) {
 
-        				ajax_loadmessage(data_arry[1],'ok',50000);
+        				ajax_loadmessage(data_arry[1],'ok',5000);
         				
         				 var table = $('#'+$the_table).DataTable();
                          table.row('.selected').remove().draw( false );
@@ -383,20 +383,22 @@ function exec_ajax($url, $data, $confirm, $message_confirm , $the_table){
 function ajax_loadmessage($core, $class, $time) {
 	$.gritter.removeAll();
 	
-    
+	
 	$time = typeof $time !== 'undefined' ? $time : 5000;	
 
 	$laclass = $class == 'ok'?'gritter-success':'gritter-error';
 	$titre = $class == 'ok'?'Opération  réussie':'Erreur Opération';
 	
-
-	$.gritter.add({
-		title: $titre,
-		text:  $core,
-		class_name: $laclass + '  gritter-center gritter-light',
-		time:  $time,
-	});
-
+	window.setTimeout( function(){
+		$.gritter.add({
+			title: $titre,
+			text:  $core,
+			class_name: $laclass + '  gritter-center gritter-light',
+			time:  $time,
+		});
+	}, 10 );
+	
+	
 	return false;
 
 
@@ -701,6 +703,35 @@ $(document).ready(function(){
 											
 					
 				});
+				// Call report script exec template PDF
+				$('body').on('click', '.report_tplt', function() {
+
+					$.ajax({
+		                type: 'POST',
+		                url: './?_tsk=report&ajax=1',
+		                data: $(this).attr('rel')+'&'+$(this).attr('data'),
+		                timeout: 3000,
+		                dataType:'JSON',
+		                success: function(data) {
+			                	
+					        if(data['error'] == 'error'){
+					        	ajax_loadmessage('Erreur chargement Template JS','nok',3000);
+					        	return false;
+					        }else{
+					        	$.colorbox({iframe:true, width:"80%", height:"90%",href:data['file']});
+					        	return true;
+					        }
+					        
+			            },
+		                error: function() {
+			                ajax_loadmessage('Affichage Impossible #AJAX','nok',3000);
+			                return false;
+		                }
+	                });
+											
+					
+				});
+
 				//$(".iframe_pdf").colorbox({iframe:true, width:"80%", height:"90%",href:data});
 				$('body').on('click', '.show_pic', function() {
 					var $link_pic = $(this).attr('rel');

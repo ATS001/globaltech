@@ -1,6 +1,6 @@
 <?php
 
 // Rep,File
-view::load('users/settings/services','services');
+view::load_view('services');
 
 ?>

@@ -74,12 +74,17 @@ $app_sys = array( '0' => 'NON' ,  '1' => 'OUI' );
 //$form->select('Application Système', 'app_sys', 3, $app_sys, $indx = NULL ,$info_task->task_info['app_sys'] );
 //$form->select_onchange('app_sys');
 //Type d'affichage (Tableau, Formulaire, Profile)
-$type_view  = array('list' => 'Tableau liste', 'form' => 'Formulaire' , 'profil' => 'Page d\'informations' , 'exec' => 'Executable');
+$type_view  = array('list' => 'Tableau liste', 'formadd' => 'Formulaire Ajout', 'formedit' => 'Formulaire Edit' , 'profil' => 'Page d\'informations' , 'exec' => 'Executable');
 $form->select('Type d\'affichage', 'type_view', 5, $type_view, $indx = NULL ,$info_task->task_info['type_view'] );
 $form->select_table('Services', 'services[]', 10, 'services','id', 'service', 'service', $indx = NULL ,$info_task->task_info['services'] , 1, NULL, NULL);
 $sbclass_array[]  = array('regex', 'true', 'Insérer Classe Valid' );
 $sbclass_array[]  = array('minlength', '2', 'Minimum 3 caractères' );
 $form->input('Class TDB', 'sbclass', 'text', 6 , $info_task->task_info['sbclass'], $sbclass_array);
+//Message dans la liste
+$form->input('Message à afficher', 'etat_desc', 'text' ,6 , $info_task->task_info['etat_desc'], $desc_array);
+//Style Message
+$message_style = array('success' => 'Vert', 'warning' => 'Orange', 'danger' => 'Rouge', 'info' => 'Bleu', 'inverse' => 'Noire' );
+$form->select('Type Message', 'message_class', 3, $message_style, $indx = NULL ,$info_task->task_info['message_class'] );
 //Button submit 
 $form->button('Enregistrer Application');
 //Add JS function if need

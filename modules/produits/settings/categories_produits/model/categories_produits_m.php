@@ -116,6 +116,11 @@
 
 					$this->last_id = $result;
 					$this->log .='</br>Enregistrement  réussie '. $this->_data['categorie_produit'] .' - '.$this->last_id.' -';
+
+                    if(!Mlog::log_exec($this->table, $this->last_id , 'Insertion catégorie produit', 'Insert'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
 				}
 
 
@@ -159,6 +164,12 @@
 				$this->log   .= '</br>Statut changé! ';
 				//$this->log   .= $this->table.' '.$this->id_categorie_produit.' '.$etat;
 				$this->error  = true;
+
+
+                    if(!Mlog::log_exec($this->table, $this->id_categorie_produit , 'Validation catégorie produit', 'Validate'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
 
 			}
 			if($this->error == false){
@@ -223,6 +234,19 @@
 
 					//$this->last_id = $result;
 					$this->log .='</br>Enregistrement  réussie '. $this->_data['categorie_produit'] .' - '.$this->last_id.' -';
+
+                    if(!Mlog::log_exec($this->table, $this->id_categorie_produit , 'Modification catégorie produit', 'Update'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
+
+
+                //Esspionage
+                if(!$db->After_update($this->table, $this->id_categorie_produit, $values, $this->categorie_produit_info)){
+                    $this->log .= '</br>Problème Esspionage';
+                    $this->error = false; 
+                }
+
 				}
 
 
@@ -268,6 +292,11 @@
 	    		
 	    		$this->error = true;
 	    		$this->log .='</br>Suppression réussie ';
+
+                    if(!Mlog::log_exec($this->table, $this->id_categorie_produit , 'Suppression catégorie produit', 'Delete'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
 	    	}
 	    	//check if last error is true then return true else rturn false.
 			if($this->error == false){

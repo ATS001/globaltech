@@ -38,11 +38,11 @@ if(MInit::form_verif('addclient',false))
   $checker = null;
   $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
 
-  if($posted_data['code'] == NULL){
+  /*if($posted_data['code'] == NULL){
 
     $empty_list .= "<li>Code Client</li>";
     $checker = 1;
-  }
+  }*/
 
   if($posted_data['denomination'] == NULL){
 
@@ -101,6 +101,11 @@ if(MInit::form_verif('addclient',false))
   if($posted_data['email'] == NULL){
 
     $empty_list .= "<li>Email</li>";
+    $checker = 1;
+  }
+   if($posted_data['id_devise'] == NULL){
+
+    $empty_list .= "<li>Devise</li>";
     $checker = 1;
   }
 

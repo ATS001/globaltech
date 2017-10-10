@@ -1,11 +1,9 @@
 <?php
 //============================================================+
-// File name   : example_001.php
-// Begin       : 2008-03-04
-// Last Update : 2013-05-14
+// File name   : devis_pdf.php
+// Last Update : 08/10/2017
 //
-// Description : Example 001 for TCPDF class
-//               Default Header and Footer
+// Description : All info Devis
 //
 // Author: Nicola Asuni
 //
@@ -15,13 +13,50 @@
 //               www.tecnick.com
 //               info@tecnick.com
 //============================================================+
+//Get all info Devis from model
+$devis = new Mdevis();
+$devis->id_devis = Mreq::tp('id');
+
+if(!MInit::crypt_tp('id', null, 'D') or !$devis->get_devis())
+{  
+   // returne message error red to devis 
+   exit('0#<br>Les informations pour cette template sont erronées, contactez l\'administrateur');
+}
+
+
+
+//Execute Pdf render
+
+if(!$devis->Get_detail_devis_pdf())
+{
+	exit("0#".$devis->log);
+
+}
+global $db;
+$headers = array(
+            'Item'        => '5[#]C',
+            'Réf'         => '10[#]C',
+            'Description' => '45[#]', 
+            'Qte'         => '5[#]C', 
+            'P.U'         => '10[#]R', 
+            'Re'          => '5[#]C',
+            'Total HT'    => '15[#]R',
+
+        );
+$devis_info   = $devis->devis_info;
+$tableau_head = MySQL::make_table_head($headers);
+$tableau_body = $db->GetMTable_pdf($headers);
+
+
+
 
 // Extend the TCPDF class to create custom Header and Footer
 class MYPDF extends TCPDF {
-     var $Table_head  = null;
-     var $Table_body  = null;
-     var $info_devis  = array();
-     var $info_ste    = array();
+     var $Table_head = null;
+     var $Table_body = null;
+     var $info_devis = array();
+     var $info_ste   = array();
+     var $qr         = false;
      
 	//Page header
 	public function Header() {
@@ -31,8 +66,25 @@ class MYPDF extends TCPDF {
 		$image_file = MPATH_IMG.MCfg::get('logo');
 		$this->writeHTMLCell(50, 25, '', '', '' , 1, 0, 0, true, 'C', true);
 		$this->Image($image_file, 22, 6, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
-		
-		$ste = '<div class="form-group>"><address><strong>Data Connect Tchad SARL</strong><br>795 Folsom Ave, Suite 600<br>San Francisco, CA 94107<br><abbr title="Phone">Tél:</abbr>(123) 456-7890<br>Email: contact@dctchad.com</address></div>';
+		if($this->qr == true){
+// QRCODE,H : QR-CODE Best error correction
+			$qr_content = $this->info_devis['reference']."\n".$this->info_devis['denomination']."\n".$this->info_devis['date_devis'];
+			$style = array(
+				'border' => 1,
+				'vpadding' => 'auto',
+				'hpadding' => 'auto',
+				'fgcolor' => array(0,0,0),
+	            'bgcolor' => false, //array(255,255,255)
+	            'module_width' => 1, // width of a single module in points
+	            'module_height' => 1 // height of a single module in points
+            );
+	//write2DBarcode($code, $type, $x='', $y='', $w='', $h='', $style='', $align='', $distort=false)
+			$this->write2DBarcode($qr_content, 'QRCODE,H', 67, 5, 25, 25, $style, 'N');
+		}
+		//Get info ste from DB
+		$ste_c = new MSte_info();
+        
+		$ste = $ste_c->get_ste_info_report_head(1);
 		$this->writeHTMLCell(0, 0, '', 30, $ste , '', 0, 0, true, 'L', true);
 		$this->SetTextColor(0, 50, 127);
 		// Set font
@@ -89,18 +141,25 @@ class MYPDF extends TCPDF {
 		//Info général
 		$tableau_head = $this->Table_head;
 		$this->writeHTMLCell('', '', 15, 83, $tableau_head, 0, 0, 0, true, 'L', true);
+		$height = $this->getLastH();
+       
+        $this->SetTopMargin($height + $this->GetY());
 		//$pdf->writeHTMLCell('', '','' , '', $html , 0, 0, 0, true, 'L', true);
 
 	}
 
 	// Page footer
 	public function Footer() {
+		$ste_c = new MSte_info();
+        $this->SetY(-30);
+		$ste = $ste_c->get_ste_info_report_footer(1);
+		$this->writeHTMLCell(0, 0, '', '', $ste , '', 0, 0, true, 'C', true);
 		// Position at 15 mm from bottom
 		$this->SetY(-15);
 		// Set font
 		$this->SetFont('helvetica', 'I', 8);
 		// Page number
-		$this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'C', 0, '', 0, false, 'T', 'M');
+		$this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
 	}
 
 	
@@ -111,7 +170,10 @@ class MYPDF extends TCPDF {
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
 $pdf->Table_head = $tableau_head;
-$pdf->info_devis = $devis_info;
+$pdf->info_devis = $devis->devis_info;
+$pdf->qr = isset($qr_code) ? $qr_code : false;
+
+
 // set document information
 $pdf->SetCreator(MCfg::get('sys_titre'));
 $pdf->SetAuthor(session::get('username'));
@@ -154,6 +216,7 @@ $pdf->SetFont('helvetica', '', 9);
 // Add a page
 // This method has several options, check the source code documentation for more information.
 $pdf->AddPage();
+//If is generated to stored the QR is need
 
 // Print text using writeHTMLCell()
 $pdf->Table_body = $tableau_body;
@@ -209,7 +272,7 @@ $block_sum = '<div></div>
 </tr>
 <tr>
     <td colspan="2" style="width: 650px; border:1pt solid black; background-color: #eeecec; padding: 5px;">
-        '.$this->info_devis['claus_comercial'].'
+        '.$pdf->info_devis['claus_comercial'].'
      <br>
      Merci de nous avoir consulter.
  </td>
@@ -227,6 +290,7 @@ $pdf->writeHTML($html, true, false, true, false, '');
 // Close and output PDF document
 // This method has several options, check the source code documentation for more information.
 $pdf->Output($file_export,'F');
+
 
 //============================================================+
 // END OF FILE

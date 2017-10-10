@@ -4,16 +4,18 @@ if(MInit::form_verif('edittask', false))
 {
 	
   $posted_data = array(
-   'description'               => Mreq::tp('description') ,
-   'app'                       => Mreq::tp('app') ,
-   //'app_sys'                   => Mreq::tp('app_sys') ,
-   'type_view'                 => Mreq::tp('type_view') ,
-   'sbclass'                   => Mreq::tp('sbclass') ,
-   'id_checker_modul'          => Mreq::tp('id_checker_modul') ,
-   'id_modul'                  => Mreq::tp('id_modul') ,
-   'services'                  => Mreq::tp('services') ,
-   'id_checker'                => Mreq::tp('id_checker') ,
-   'id_app'                    => Mreq::tp('id_app') ,
+   'description'      => Mreq::tp('description') ,
+   'app'              => Mreq::tp('app') ,
+   //'app_sys'        => Mreq::tp('app_sys') ,
+   'type_view'        => Mreq::tp('type_view') ,
+   'sbclass'          => Mreq::tp('sbclass') ,
+   'id_checker_modul' => Mreq::tp('id_checker_modul') ,
+   'id_modul'         => Mreq::tp('id_modul') ,
+   'services'         => Mreq::tp('services') ,
+   'id_checker'       => Mreq::tp('id_checker') ,
+   'message_class'    => Mreq::tp('message_class') ,
+   'etat_desc'        => Mreq::tp('etat_desc') ,
+   'id_app'           => Mreq::tp('id_app') ,
    
   );
 
@@ -35,7 +37,7 @@ if(MInit::form_verif('edittask', false))
     $empty_list .= "<li>Nom de l'application</li>";
     $checker = 1;
   }
-  if($posted_data['type_view'] == NULL or !in_array($posted_data['type_view'],  array('list','form','profil', 'exec'))){
+  if($posted_data['type_view'] == NULL or !in_array($posted_data['type_view'],  array('list','formadd' , 'formedit', 'profil', 'exec'))){
 
     $empty_list .= "<li>Type d'affichage</li>";
     $checker = 1;

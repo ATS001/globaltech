@@ -1,10 +1,18 @@
 <?php 
-$user_info = new Musers();
-$user_info->id_user = session::get('userid');
-$user_info->get_user();
+//Get all compte info 
+ $user_info = new Musers();
+//Set ID of Module with POST id
+ $user_info->id_user = Mreq::tp('id');
+//Check if Post ID <==> Post idc or get_modul return false. 
+ if(!MInit::crypt_tp('id', null, 'D') or !$user_info->get_user())
+ { 	
+ 	// returne message error red to client 
+ 	exit('3#'.$user_info->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+ }
 
-$user_id = session::get('userid');
-$user_id_c = Minit::crypt_tp('id',$user_id);
+
+$user_id = Mreq::tp('id');
+$user_id_c = MInit::crypt_tp('id', $user_id);
 
 $user_info->get_activities();
 $array_activities = $user_info->user_activities; 
