@@ -275,6 +275,7 @@ static public function pub_copy_file($old_file, $new_file, $path, $mode = 0777){
 // ---------------------------------------------------   
       static public function creat_thumbail($img,$x,$y)
       {
+        var_dump($img);
        $path_parts = pathinfo($img);
        $path       = $path_parts['dirname'];
        $image      = new Image($img);
