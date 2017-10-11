@@ -4,7 +4,7 @@
 * MDevis Gestion Devis et Détail 
 * V1.0
 */
-class MDevis
+class Mdevis
 {
 	//Declared Private
 	private $_data; //data receive from form
@@ -49,7 +49,8 @@ class MDevis
 
     public function get_devis()
     {
-    	$table = $this->table;
+    	
+        $table = $this->table;
     	global $db;
 
     	$sql = "SELECT $table.*, DATE_FORMAT($table.date_devis,'%d-%m-%Y') AS date_devis from $table where $table.id = ".$this->id_devis;
