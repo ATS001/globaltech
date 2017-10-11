@@ -34,13 +34,13 @@ if(!$devis->Get_detail_devis_pdf())
 }
 global $db;
 $headers = array(
-            'Item'        => '5[#]center',
-            'Réf'         => '10[#]center',
+            'Item'        => '5[#]C',
+            'Réf'         => '10[#]C',
             'Description' => '45[#]', 
-            'Qte'         => '5[#]center', 
-            'P.U'         => '10[#]alignRight', 
-            'Re'          => '5[#]center',
-            'Total HT'    => '15[#]alignRight',
+            'Qte'         => '5[#]C', 
+            'P.U'         => '10[#]R', 
+            'Re'          => '5[#]C',
+            'Total HT'    => '15[#]R',
 
         );
 $devis_info   = $devis->devis_info;
@@ -52,10 +52,11 @@ $tableau_body = $db->GetMTable_pdf($headers);
 
 // Extend the TCPDF class to create custom Header and Footer
 class MYPDF extends TCPDF {
-     var $Table_head  = null;
-     var $Table_body  = null;
-     var $info_devis  = array();
-     var $info_ste    = array();
+     var $Table_head = null;
+     var $Table_body = null;
+     var $info_devis = array();
+     var $info_ste   = array();
+     var $qr         = false;
      
 	//Page header
 	public function Header() {
@@ -65,6 +66,21 @@ class MYPDF extends TCPDF {
 		$image_file = MPATH_IMG.MCfg::get('logo');
 		$this->writeHTMLCell(50, 25, '', '', '' , 1, 0, 0, true, 'C', true);
 		$this->Image($image_file, 22, 6, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
+		if($this->qr == true){
+// QRCODE,H : QR-CODE Best error correction
+			$qr_content = $this->info_devis['reference']."\n".$this->info_devis['denomination']."\n".$this->info_devis['date_devis'];
+			$style = array(
+				'border' => 1,
+				'vpadding' => 'auto',
+				'hpadding' => 'auto',
+				'fgcolor' => array(0,0,0),
+	            'bgcolor' => false, //array(255,255,255)
+	            'module_width' => 1, // width of a single module in points
+	            'module_height' => 1 // height of a single module in points
+            );
+	//write2DBarcode($code, $type, $x='', $y='', $w='', $h='', $style='', $align='', $distort=false)
+			$this->write2DBarcode($qr_content, 'QRCODE,H', 67, 5, 25, 25, $style, 'N');
+		}
 		//Get info ste from DB
 		$ste_c = new MSte_info();
         
@@ -155,6 +171,7 @@ $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8',
 
 $pdf->Table_head = $tableau_head;
 $pdf->info_devis = $devis->devis_info;
+$pdf->qr = isset($qr_code) ? $qr_code : false;
 
 
 // set document information
@@ -199,6 +216,7 @@ $pdf->SetFont('helvetica', '', 9);
 // Add a page
 // This method has several options, check the source code documentation for more information.
 $pdf->AddPage();
+//If is generated to stored the QR is need
 
 // Print text using writeHTMLCell()
 $pdf->Table_body = $tableau_body;
@@ -272,6 +290,7 @@ $pdf->writeHTML($html, true, false, true, false, '');
 // Close and output PDF document
 // This method has several options, check the source code documentation for more information.
 $pdf->Output($file_export,'F');
+
 
 //============================================================+
 // END OF FILE

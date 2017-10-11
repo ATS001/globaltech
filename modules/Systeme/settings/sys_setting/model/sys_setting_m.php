@@ -31,7 +31,7 @@ class Msetting {
 		: null
 		;
 	}
-		//Get all info region from database for edit form
+		//Get all info  from database for edit form
 
 	public function get_setting()
 	{
@@ -81,6 +81,9 @@ class Msetting {
 			if(json_decode($result, true) != null){
                 return json_decode($result, true);
 			}
+			//case booleen value
+			$result = $result == 'true' ? true : $result;
+			$result = $result == 'false' ? false : $result;
 			return $result;
 		}else{
 			return null;

@@ -71,10 +71,10 @@ $(document).ready(function() {
 
 
                 aoColumns: [
-                    {"sClass": "left","sWidth":"3%"}, //
+                    {"sClass": "center","sWidth":"3%"}, //
                     {"sClass": "left","sWidth":"32%"},
                     {"sClass": "left","sWidth":"30%"},
-                    {"sClass": "center","sWidth":"25%"},
+                    {"sClass": "left","sWidth":"25%"},
                     {"sClass": "center","sWidth":"5%"},
                     ],
                 });

@@ -113,13 +113,14 @@ $(document).ready(function() {
         
     } 
     $('#addRow').on( 'click', function () {
-    	
+    	var table = $('#table_details_devis').DataTable();
     	if($('#id_client').val() == ''){
 
     		ajax_loadmessage('Il faut choisir un client','nok');
     		return false;
     	}
-        if($('#is_abn').val() == 'abn'){
+
+        if(table.data().count() && $('#is_abn').val() == 'abn'){
             ajax_loadmessage("Impossible d'insérer un abonnement avec autres produits",'nok');
             return false;
         }

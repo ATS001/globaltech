@@ -162,26 +162,30 @@ class MLogin
 				
 				
 				//exit($session->get_cookie('alg'));
-				
-				$this->photo_file = MInit::get_file_archive($this->user_info['photo']);
-				$x                = $y = 36;
-				
-				
-                $img_user = MInit::creat_thumbail($this->photo_file ,$x ,$y);
-				if($this->photo_file == false || !file_exists($img_user))
+				if($this->photo_file != null)
 				{
-					$session->set('tof','img/user.jpg');
+					$this->photo_file = MInit::get_file_archive($this->user_info['photo']);
+					$x                = $y = 36;
+
+
+					$img_user = MInit::creat_thumbail($this->photo_file ,$x ,$y);
+					if($this->photo_file == false || !file_exists($img_user))
+					{
+						$session->set('tof','img/user.jpg');
+					}else{
+
+						$session->set('tof',$img_user);
+					}
+
 				}else{
-					
-					$session->set('tof',$img_user);
+					$session->set('tof','img/user.jpg');
 				}
+				
 				//Creat temporary folder for this session
 				//ion réussie
 
 
-/*Fichier créer ./upload/users/1/43ec517d68b6edd3015b3edc9a11367b36X36.png ./upload/users/1/./upload/users/1f8fe9a8cc5f68d60f8258bfca27dfd8e36X36.png
-Bienvenue Systeme Administrateur
-Vous serez rédiriger dans qulques instants*/
+
 				
 				if(!$this->creat_temp_folder()){
 					$this->log .= '</br>Unable to create Temp folder';

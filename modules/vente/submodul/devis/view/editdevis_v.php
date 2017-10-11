@@ -130,18 +130,62 @@ $(document).ready(function() {
     	$('#'+$f_total_ttc).val($total_ttc);  
     } 
     $('#addRow').on( 'click', function () {
-    	
+    	var table = $('#table_details_devis').DataTable();
     	if($('#id_client').val() == ''){
 
     		ajax_loadmessage('Il faut choisir un client','nok');
     		return false;
     	}
+        if(table.data().count() && $('#is_abn').val() == 'abn'){
+            ajax_loadmessage("Impossible d'insérer un abonnement avec autres produits",'nok');
+            return false;
+        }
         var $link  = $(this).attr('rel');
    		var $titre = $(this).attr('data_titre'); 
    		var $data  = $(this).attr('data'); 
         ajax_bbox_loader($link, $data, $titre, 'large')
         
     });
+    $('#tva').on('change', function () {
+        var table = $('#table_details_devis').DataTable();
+
+        if (table.data().count()) {
+
+            bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de TVA sera appliqué sur l'ensemble des lignes détails, voulez vous vous continuer ?</span>", 
+                function(result){
+                    if(result == true){
+                        var $tkn_frm = $(this).attr('tkn_frm');
+                        $.ajax({
+
+                            cache: false,
+                            url  : '?_tsk=add_detaildevis&ajax=1'+'&act=1&<?php echo MInit::crypt_tp('exec', 'set_tva')?>',
+                            type : 'POST',
+                            data : $('#editdevis').serialize(),
+                            dataType:"JSON",
+                            success: function(data){
+
+                                if(data['error']== false){
+                                    ajax_loadmessage(data['mess'],'nok',5000)
+                                }else{
+                                    ajax_loadmessage(data['mess'],'ok',3000);
+                                    var t1 = $('.dataTable').DataTable().draw();
+                                    $('#sum_table').val(data['sum']);
+                                    $('#valeur_remise').trigger('change'); 
+                                }
+
+                            }
+                        });
+                    }
+
+
+                });  
+            
+            
+            
+        }
+
+    });
+
 
     $('#table_details_devis tbody ').on('click', 'tr .edt_det', function() {
         

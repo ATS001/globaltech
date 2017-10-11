@@ -1,95 +1,81 @@
-<div class="pull-right tableTools-container">
-	<div class="btn-group btn-overlap">
-		<?php TableTools::btn_add('compte', 'Page de profil', Null, $exec = NULL, 'reply');   ?>			
-	</div>
-</div>
-<div class="page-header">
-	<h1>
-		Historique de connexion
-		<small>
-			<i class="ace-icon fa fa-angle-double-right"></i>
-		</small>
-	</h1>
-</div><!-- /.page-header -->
+<?php
+//Check if Post ID <==> Post idc or get_modul return false. 
+ if(!MInit::crypt_tp('id', null, 'D'))
+ {  
+    // returne message error red to client 
+    exit('3#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+ }
+//array colomn
+$array_column = array(
+	array(
+        'column' => '',
+        'type'   => '',
+        'alias'  => 'id',
+        'width'  => '5',
+        'header' => 'ID',
+        'align'  => 'C'
+    ),
+    array(
+        'column' => '',
+        'type'   => '',
+        'alias'  => 'operation',
+        'width'  => '20',
+        'header' => 'Statut',
+        'align'  => 'L'
+    ),
+    array(
+        'column' => '',
+        'type'   => '',
+        'alias'  => 'nom',
+        'width'  => '15',
+        'header' => 'Utilisateur',
+        'align'  => 'L'
+    ),
+    array(
+        'column' => '',
+        'type'   => '',
+        'alias'  => 'connexion',
+        'width'  => '15',
+        'header' => 'Heure Connexion',
+        'align'  => 'C'
+    ),
+    array(
+        'column' => '',
+        'type'   => '',
+        'alias'  => 'deconnection',
+        'width'  => '15',
+        'header' => 'Heure Déconnexion',
+        'align'  => 'C'
+    ),
+    array(
+        'column' => '',
+        'type'   => '',
+        'alias'  => 'duree',
+        'width'  => '15',
+        'header' => 'Durée',
+        'align'  => 'L'
+    ),
+    
+ );
+//Get info utilisateur to add into title
+$user = new Musers();
+$user->id_user = Mreq::tp('id');
+$user->get_user();
+$uesr_infos = $user->g('fnom').' '.$user->g('lnom').' -'.$user->g('id').'- #'.$user->g('nom');
+//Creat new instance
+$html_data_table = new Mdatatable();
+$html_data_table->columns_html = $array_column;
+$html_data_table->title_module = "Connexions $uesr_infos";
+$html_data_table->task = 'history';
+$html_data_table->js_extra_data = MInit::crypt_tp('id', Mreq::tp('id'));
+$html_data_table->js_order = '[ 0, "DESC" ]';
+//Set Button return if need
+$html_data_table->btn_return = array('task'=>'compte', 'title'=>'Page de Profil', 'data'=> MInit::crypt_tp('id', Mreq::tp('id')));
 
-<div class="row">
-	<div class="col-xs-12">
-	
+if(!$data = $html_data_table->table_html())
+{
+    exit("0#".$html_data_table->log);
+}else{
+    echo $data;
+}
 
-		<div class="table-header">
-			Historique "Connexion" 
-		</div>
-		<div>
-			<table id="history_grid" class="table table-bordered table-condensed table-hover table-striped dataTable no-footer">
-				<thead>
-					<tr>						
-						<th>
-							Id
-						</th>
-						<th>
-							Opération
-						</th>
-						<th>
-							Utilisateur 
-						</th>
-						<th>
-							Date d'opération
-						</th>
-						<th>
-							Durée
-						</th>
-						<th>
-							#
-						</th>
-				
-					</tr>
-				</thead>
-			</table>
-		</div>
-	</div>
-</div>
-<script type="text/javascript">
-
-
-$(document).ready(function() {
-	
-	var table = $('#history_grid').DataTable({
-		bProcessing: true,
-		//notifcol : 3,
-		serverSide: true,
-		//Personnalisation des collonne et style d'ordre (asc or desc) for multiple columns order we should use [[3,'desc'],[colonne,'ordre']],
-		
-		order: [[3,'desc']],
-		
-		ajax_url:"history",
-		extra_data: "id=<?php echo Mreq::tp('id');?>",
-	
-
-
-                aoColumns: [
-                    {"sClass": "left","sWidth":"5%"}, 
-                    {"sClass": "left","sWidth":"30%"},
-                    {"sClass": "left","sWidth":"30%"}, 
-                    {"sClass": "left","sWidth":"15%"},
-                    {"sClass": "left","sWidth":"15%"}, 
-                    {"sClass": "left","sWidth":"5%"}, 
-                    ],
-                });
-      
-
-$('#history_grid').on('click', 'tr button', function() {
-	var $row = $(this).closest('tr')
-	//alert(table.cell($row, 0).data());
-	append_drop_menu('history', table.cell($row, 0).data(), '.btn_action')
-});
-
-$('#id_search').on('keyup', function () {
-		table.column(0).search( $(this).val() )
-		.draw();
-		
-});
-
-
-});
-
-</script>
