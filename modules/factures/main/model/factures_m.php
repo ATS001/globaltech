@@ -22,6 +22,7 @@ class Mfacture {
     var $facture_info; //Array Facture all info
     var $complement_info; // Array Complement info
     var $encaissement_info; // Array encaissement info
+    var $contrat_info; // Array contrat info
     var $devis_info; // Array Devis info
     var $reference = null; // Reference 
     var $sum_enc_fact; // Somme encaissements par facture
@@ -925,7 +926,10 @@ class Mfacture {
 
         $this->get_facture();
         $info_facture = $this->facture_info;
-
+        
+        $this->get_contrat($this->facture_info['idcontrat']);
+        $info_contrat=$this->contrat_info;
+        
         //$this->get_complement_by_facture();
         //$info_complement=$this->complement_info;
 
@@ -1039,6 +1043,34 @@ class Mfacture {
             } else {
                 //$this->sum_enc_fact = $db->RecordsSimplArray();
                 $this->sum_enc_fact = $db->QuerySingleValue0();
+                $this->error = true;
+            }
+        }
+        //return Array user_activities
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    
+
+    public function get_contrat($idcontrat) {
+        global $db;
+
+        $sql = "SELECT * FROM contrats WHERE id = " . $idcontrat;
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->contrat_info = $db->RecordsSimplArray();
+                //var_dump( $this->user_activities );
                 $this->error = true;
             }
         }
