@@ -12,7 +12,10 @@ if(MInit::form_verif('addecheance_contrat',false))
     $date_fin=Mreq::tp('dat_fn');
     $date_effet=Mreq::tp('dat_ef');
 
-
+    $echeance=new Mcontrat();
+    $date_echeance=$echeance->verif_date_echeance($posted_data['tkn_frm'],date('Y-m-d',strtotime($posted_data['date_echeance'])));
+    
+    
 	$checker = null;
 	$empty_list = "Les champs suivants sont obligatoires:\n<ul>";
 	if($posted_data['date_echeance'] == NULL){
@@ -20,6 +23,7 @@ if(MInit::form_verif('addecheance_contrat',false))
 		$empty_list .= "<li>Date d'échéance</li>";
 		$checker = 1;
 	}
+       
 	if($posted_data['montant'] == NULL OR $posted_data['montant'] == '0'){
 
 		$empty_list .= "<li>Montant TTC à facturer</li>";
@@ -44,7 +48,28 @@ if(MInit::form_verif('addecheance_contrat',false))
     {
             exit("0#$date_ech");
     }
+    
+  
+    if( $date_echeance == TRUE)
+    {
+            $date= "<ul>Date d'échéance existe déjà</ul>";
+            $checker = 3;
+    }
+    if($checker == 3)
+    {
+            exit("0#$date");
+    }
+    
+    if (date('Y-m-d', strtotime($posted_data['date_echeance'])) < date('Y-m-d')) {
 
+        $control_date_eche .= "<li>Date d'échéance doit être supérieur ou égal à la date d'aujourd'hui</li>";
+        $checker = 4;
+    }
+    
+    if($checker == 4)
+    {
+        exit("0#$control_date_eche");
+    }
 	  //End check empty element
 
 
