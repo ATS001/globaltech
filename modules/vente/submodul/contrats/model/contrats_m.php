@@ -325,6 +325,7 @@ class Mcontrat {
     //Edit contrat after all check
     public function edit_contrat() {
         $table = $this->table;
+        $this->get_contrat();
 
         $this->reference = $this->_data['ref'];
         //var_dump($this->_data['tkn_frm']);
@@ -389,7 +390,7 @@ class Mcontrat {
 
                 $this->save_file('pj_photo', 'Photo' . $this->_data['ref'], 'image');
 
-                //Esspionage
+               //Esspionage
                 if(!$db->After_update($this->table, $this->id_contrat, $values, $this->contrat_info)){
                     $this->log .= '</br>Problème Esspionage';
                     $this->error = false; 
@@ -403,7 +404,7 @@ class Mcontrat {
 
                     if(!Mlog::log_exec($this->table, $this->id_contrat, 'Modification contrat abonnement', 'Update'))
                     {
-                        $this->log .= '</br>Un problème de log '.$db->Error();
+                        $this->log .= '</br>Un problème de log ';
                     }
 
 

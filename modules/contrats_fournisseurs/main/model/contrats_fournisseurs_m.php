@@ -327,7 +327,7 @@ if($this->error == true){
     $this->error = false; 
   }
 
-				//Check $this->error = true return Green message and Bol true
+	//Check $this->error = true return Green message and Bol true
   if($this->error == true)
   {
    $this->log = '</br>Modification réussie: <b>'.$this->_data['reference'].' ID: '.$this->last_id;
