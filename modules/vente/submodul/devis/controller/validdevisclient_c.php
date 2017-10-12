@@ -16,12 +16,15 @@ if(MInit::form_verif('validdevisclient', false))
                 'id'      => Mreq::tp('id') ,
                 'reponse' => Mreq::tp('reponse') ,
                 'modcom'  => Mreq::tp('modcom') ,
+                'ref_bc'  => Mreq::tp('ref_bc') ,
                 'scan_id' => Mreq::tp('scan-id') ,
 
 
             );
 
-
+            //for acceptable empty field do not put here
+            $checker = null;
+            $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
 
         //Check if array have empty element return list
             if($posted_data['reponse'] == NULL OR !in_array($posted_data['reponse'] , array('valid', 'modif', 'refus'))){
@@ -29,15 +32,17 @@ if(MInit::form_verif('validdevisclient', false))
                 $empty_list .= "<li>Nom</li>";
                 $checker = 1;
             }
-            if($posted_data['modcom'] == NULL OR !in_array($posted_data['modcom'] , array('ar', 'email', 'tel'))){
+            if($posted_data['modcom'] == NULL OR !in_array($posted_data['modcom'] , array('bc', 'ar', 'email', 'tel'))){
 
                 $empty_list .= "<li>Nom</li>";
                 $checker = 1;
             }
+            if($posted_data['modcom'] == 'bc' && $posted_data['reponse']== 'valid' && $posted_data['ref_bc'] == NULL){
+                $empty_list .= "<li>Réference Bon de commande</li>";
+                $checker = 1;
+            }
 
-        //for acceptable empty field do not put here
-            $checker = null;
-            $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
+        
 
         //Add posted data fields verificator here
 

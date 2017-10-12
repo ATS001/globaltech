@@ -63,7 +63,7 @@ class Mmodul {
 		$sql = "SELECT modul.*, task.id as id_app, task.app, task.rep as modul_rep, task.sbclass, task_action.etat_desc, task_action.message_class
 		FROM 
 		modul, task, task_action
-		WHERE  task_action.etat_line = 0 AND task_action.app = task.app AND task_action.type = 0 AND modul.app_modul = task.app AND modul.id = ".$this->id_modul;
+		WHERE  task_action.etat_line = 0 AND task_action.app = task.app  AND modul.app_modul = task.app AND modul.id = ".$this->id_modul;
 		//exit($sql);
 		if(!$db->Query($sql))
 		{
@@ -1355,7 +1355,7 @@ class Mmodul {
 		//to difference of next task action we use 0def
 		$values["idf"]           = MySQL::SQLValue(MD5($description . '0def'));
 		$values["descrip"]       = MySQL::SQLValue($description);
-		$values["type"]          = MySQL::SQLValue(0);
+		$values["type"]          = MySQL::SQLValue(1);
 		$values["service"]       = MySQL::SQLValue($services);
 		$values["etat_line"]     = MySQL::SQLValue(0);
 		$values["notif"]         = MySQL::SQLValue(0);
@@ -1429,7 +1429,7 @@ class Mmodul {
 		$values["app"]           = MySQL::SQLValue($this->_data['app']);
 		$values["idf"]           = MySQL::SQLValue(MD5($description.'0def'));
 		$values["descrip"]       = MySQL::SQLValue($description);
-		$values["type"]          = MySQL::SQLValue(0);
+		$values["type"]          = MySQL::SQLValue(1);
 		$values["etat_line"]     = MySQL::SQLValue(0);
 		$values["notif"]         = MySQL::SQLValue(0);
 		$values["etat_desc"]     = MySQL::SQLValue($etat_desc);
@@ -1603,6 +1603,47 @@ class Mmodul {
     	}
 
     }
+    Private function update_message_task_action($app, $etat_line, $message, $etat_desc, $msg_class, $notif)
+    {
+    	//Get array old services
+    	/*$old_service      = str_replace('[-','', $old_service);
+    	$old_service      = str_replace('-]','', $old_service);
+    	$old_service      = str_replace('-',',', $old_service);
+    	$arr_old_services = explode(',', $old_service);
+        //Get array new services
+    	$new_service      = str_replace('[-','', $new_service);
+    	$new_service      = str_replace('-]','', $new_service);
+    	$new_service      = str_replace('-',',', $new_service);
+    	$arr_new_services = explode(',', $new_service); 
+
+    	var_dump($arr_new_services);
+    	var_dump($arr_old_services);*/
+
+    	global $db;
+
+    	$values["etat_desc"]     = MySQL::SQLValue($etat_desc);
+    	$values["message_class"] = MySQL::SQLValue($msg_class);
+    	$values["message_etat"]  = MySQL::SQLValue($message);
+    	$values["notif"]         = MySQL::SQLValue($notif);
+    	$wheres["appid"]         = MySQL::SQLValue($app); 
+    	$wheres["etat_line"]     = MySQL::SQLValue($etat_line);
+    	$wheres["type"]          = MySQL::SQLValue(0);
+
+        
+    	if (!$result             = $db->UpdateRows("task_action", $values, $wheres))
+    	{
+				//$db->Kill();
+    		$this->log .= $db->Error().' '.$db->BuildSQLUpdate("task_action", $values, $wheres);
+    		$this->error = false;
+    		$this->log .='</br>Update all Task action non réussie'; 
+
+    	}else{
+    		$this->error == true;
+    		$this->log = '</br>MAJ all Task action réussie: <b>';
+
+    	}
+
+    }
     /**
      * [add_task_action Add Task Action (Autorisation_Lien_WF)]
      */
@@ -1650,6 +1691,7 @@ class Mmodul {
     		}else{
     			$this->error == true;
     			$this->log = '</br>Enregistrement réussie: <b>';
+    			$this->update_message_task_action($this->_data['id_task'], $this->_data['etat_line'], $message, $this->_data['etat_desc'], $this->_data['message_class'], $this->_data['notif']);
 
     		}
 
@@ -1668,6 +1710,7 @@ class Mmodul {
 
 
     }
+    
 
     /**
      * [edit_task_action Edit Task Action]
@@ -1724,7 +1767,7 @@ class Mmodul {
     		}else{
     			$this->error == true;
     			$this->log = '</br>Modification réussie: <b>';
-
+                $this->update_message_task_action($this->_data['id_task'], $this->_data['etat_line'], $message, $this->_data['etat_desc'], $this->_data['message_class'], $this->_data['notif']);
     		}
 
 
@@ -1795,6 +1838,40 @@ class Mmodul {
     	}
 
 
+    }
+
+    public function delete_task_action()
+    {
+    	global $db;
+    	$id_task_action = $this->id_task_action;
+    	$this->get_task_action();
+    	//Format where clause
+    	$where['id'] = MySQL::SQLValue($id_task_action);
+    	//check if id on where clause isset
+    	if($where['id'] == null)
+    	{
+    		$this->error = false;
+    		$this->log .='</br>Le id est vide';
+    	}
+    	//execute Delete Query
+    	if(!$db->DeleteRows('task_action',$where))
+    	{
+
+    		$this->log .= $db->Error().'  '.$db->BuildSQLDelete('task_action',$where);
+    		$this->error = false;
+    		$this->log .='</br>Suppression non réussie';
+
+    	}else{
+    		//remove files
+    		$this->error = true;
+    		$this->log .='</br>Suppression réussie ';
+    	}
+    	//check if last error is true then return true else rturn false.
+    	if($this->error == false){
+    		return false;
+    	}else{
+    		return true;
+    	}
     }
     
     /**
@@ -1932,6 +2009,123 @@ class Mmodul {
     		}
     	}
     	
+    }
+    /**
+     * [show_work_flow description]
+     * @param  [type] $task [description]
+     * @return [type]       [description]
+     */
+    public function show_work_flow($task)
+    {
+    	
+    	global $db;
+    	$sql = "SELECT 
+    	task_action.code,
+    	task_action.etat_line,
+    	task_action.etat_desc,
+    	task_action.message_class,
+    	task_action.descrip,
+    	modul.services,
+    	task_action.service AS service_task_action
+    	FROM
+    	task_action,
+    	task,
+    	modul
+    	WHERE task.app = '$task' 
+    	AND task.id = task_action.appid 
+    	AND task.modul = modul.id
+    	AND task_action.type = 0 
+    	ORDER BY  task_action.etat_line";
+
+    	if(!$db->Query($sql)) $db->kill($db->Error());
+    	if (!$db->RowCount())
+    	{
+            exit('0#Pas de work flow trouvé');
+    	} 
+    	$main_arr    = $db->RecordsArray();
+
+    	$etat_arr    = array_column($main_arr, 'etat_line');
+    	$etat__desc_arr    = array_column($main_arr, 'etat_desc');
+    	$descrip_arr = array_column($main_arr, 'descrip');
+    	$service_maine = $main_arr[0]['services'];
+    	$service_maine = str_replace('[-','', $service_maine);
+    	$service_maine = str_replace('-]','', $service_maine);
+    	$service_maine = str_replace('-',',', $service_maine);
+    	$arr_main_services = explode(',', $service_maine); 
+
+    	foreach ($arr_main_services as $key => $service) {
+	    //get service name
+
+    		$sql_req = "SELECT service FROM services WHERE id = $service ";
+    		$service_name = $db->QuerySingleValue0($sql_req);
+    		$etat_a = array();
+    		$html = '<div class="col-sm-12">
+    		<div class="widget-box">
+    		<div class="widget-header widget-header-flat widget-header-small">
+    		<h5 class="widget-title">
+    		<i class="ace-icon fa fa-setting"></i>
+    		'.$service_name.' - '.$service.' -
+    		</h5>
+    		</div>
+
+    		<div class="widget-body">
+    		<div class="widget-main">';
+
+    		$html .= '<ul class="steps">'; 
+    		foreach ($etat_arr as $keye => $etat) {
+    			if(!in_array($etat, $etat_a))
+    			{
+    				array_push($etat_a, $etat);
+    				$html .= '<li data-step="1" class="">';
+    				$html .= '<span class="step">'.$etat.'</span>';
+    				$html .= '<div class="alert alert-'.$main_arr[$keye]['message_class'].'"><strong>'.$main_arr[$keye]['etat_desc'].'</strong></div>';
+
+    				foreach ($main_arr as $key => $descrip) {
+    					if($etat == $descrip['etat_line'] && strpos($descrip['service_task_action'],$service)){
+    						$html .= '<span class="title">'.$descrip['descrip'].'</span>';
+    					}    
+
+
+    				}
+
+    				$html .= '</li>';
+    			}
+
+    		}
+
+    		$html .= '</ul>';
+    		$html .= '			</div><!-- /.widget-main -->
+    		</div><!-- /.widget-body -->
+    		</div><!-- /.widget-box -->
+    		</div>
+    		';
+    		print $html;
+    	}
+    	return true;
+    }
+
+    static public function get_statut_etat_line($task, $etat_line)
+    {
+    	global $db;
+    	$sql = "SELECT 
+    	task_action.message_class, task_action.etat_desc
+    	FROM
+    	task_action,
+    	task
+    	WHERE task.app = '$task' 
+    	AND task.id = task_action.appid 
+    	AND task_action.type = 0 
+    	AND task_action.etat_line = $etat_line ";
+        if(!$db->Query($sql))
+        {
+             $result = null;
+        }else{
+        	$arr_result = $db->RowArray();
+        	$result = '<div class="alert alert-'.$arr_result['message_class'].'"><strong>'.$arr_result['etat_desc'].'</strong></div>';
+        }
+       
+        return print($result);
+
     }
 
 

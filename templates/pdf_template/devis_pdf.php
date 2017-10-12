@@ -35,8 +35,8 @@ if(!$devis->Get_detail_devis_pdf())
 global $db;
 $headers = array(
             'Item'        => '5[#]C',
-            'Réf'         => '10[#]C',
-            'Description' => '45[#]', 
+            'Réf'         => '15[#]C',
+            'Description' => '40[#]', 
             'Qte'         => '5[#]C', 
             'P.U'         => '10[#]R', 
             'Re'          => '5[#]C',
@@ -64,7 +64,7 @@ class MYPDF extends TCPDF {
 		
 		// Logo
 		$image_file = MPATH_IMG.MCfg::get('logo');
-		$this->writeHTMLCell(50, 25, '', '', '' , 1, 0, 0, true, 'C', true);
+		$this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
 		$this->Image($image_file, 22, 6, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
 		if($this->qr == true){
 // QRCODE,H : QR-CODE Best error correction
@@ -92,52 +92,58 @@ class MYPDF extends TCPDF {
 		//Ste
 		
 		// Title
-		$titre_doc = '<h1 style="letter-spacing: 10px;">DEVIS</h1>';
-		$this->writeHTMLCell(0, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'C', true);
+		$titre_doc = '<h1 style="letter-spacing: 2px;color;#495375;font-size: 20pt;">DEVIS</h1>';
+		$this->writeHTMLCell(0, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true);
 		$this->SetTextColor(0, 0, 0);
 		$this->SetFont('helvetica', '', 9);
 		$detail_devis = '<table cellspacing="3" cellpadding="2" border="0">
 		<tr>
-		<td style="width:35%;"><strong>Réf Devis</strong></td>
+		<td style="width:35%; color:#A1A0A0;"><strong>Réf Devis</strong></td>
 		<td style="width:5%;">:</td>
 		<td style="width:60%; background-color: #eeecec;">'.$this->info_devis['reference'].'</td>
 		</tr> 
 		<tr>
-		<td style="width:35%;"><strong>Date</strong></td>
+		<td style="width:35%; color:#A1A0A0;"><strong>Date</strong></td>
 		<td style="width:5%;">:</td>
 		<td style="width:60%; background-color: #eeecec; ">'.$this->info_devis['date_devis'].'</td>
 		</tr>
 		</table>';
 		$this->writeHTMLCell(0, 0, 140, 23, $detail_devis, '', 0, 0, true, 'L', true);
 	    //Info Client
+	    $nif = null;
+	    if($this->info_devis['nif'] != null)
+	    {
+	    	$nif = '<tr>
+		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">NIF</td>
+		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
+		<td style="width: 65%; background-color: #eeecec;">'.$this->info_devis['nif'].'hh</td>
+		</tr>';
+	    }
+	    
 		$detail_client = '<table cellspacing="3" cellpadding="2" border="0">
 		<tbody>
-		<tr style="background-color:#4245f4; font-size:14; font-weight:bold; color:#fff;">
+		<tr style="background-color:#495375; font-size:14; font-weight:bold; color:#fff;">
 		<td colspan="3"><strong>Info. client</strong></td>
 		</tr>
 		<tr>
-		<td style="width: 30%;">Dénomination</td>
-		<td style="width: 5%;">:</td>
+		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Dénomination</td>
+		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;"><strong>'.$this->info_devis['denomination'].'</strong></td>
 		</tr>
 		<tr>
-		<td style="width: 30%;">Adresse</td>
-		<td style="width: 5%;">:</td>
+		<td align="right" style="width: 30%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Adresse</td>
+		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$this->info_devis['adresse'].' BP'.$this->info_devis['bp'].' '.$this->info_devis['ville'].' '.$this->info_devis['pays'].'</td>
 		</tr>
 		<tr>
-		<td style="width: 30%;">Contact</td>
-		<td style="width: 5%;">:</td>
+		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Contact</td>
+		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">Tél.'.$this->info_devis['tel'].' Email.'.$this->info_devis['email'].'</td>
 		</tr>
-		<tr>
-		<td style="width: 30%;">NIF</td>
-		<td style="width: 5%;">:</td>
-		<td style="width: 65%; background-color: #eeecec;">'.$this->info_devis['nif'].'</td>
-		</tr>
+		'.$nif.'
 		</tbody>
 		</table>';
-		$this->writeHTMLCell(100, 0, 99, 40, $detail_client, 1, 0, 0, true, 'L', true);
+		$this->writeHTMLCell(100, 0, 99, 40, $detail_client, 0, 0, 0, true, 'L', true);
 		//Info général
 		$tableau_head = $this->Table_head;
 		$this->writeHTMLCell('', '', 15, 83, $tableau_head, 0, 0, 0, true, 'L', true);
@@ -232,7 +238,7 @@ $remise_valeur = $pdf->info_devis['valeur_remise'] == null ? '-' : $pdf->info_de
 $block_sum = '<div></div>
 <table style="width: 685px;" cellpadding="2">
     <tr align="right">
-        <td width="50%" align="left" style="background-color: #eeecec;">
+        <td width="50%" align="left" style="background-color: #eeecec; color:#6B6868;">
             Arrêté le présent Devis à la somme de :<br>
             <strong>'.$ttc_lettre.' </strong>
         </td>
@@ -240,23 +246,23 @@ $block_sum = '<div></div>
            <table class="table" cellspacing="2" cellpadding="2"  style="width: 300px; border:1pt solid black;" >
             <tbody>
                 <tr>
-                    <td style="width:35%;"><strong>Total HT</strong></td>
-                    <td style="width:5%;">:</td>
+                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Total HT</strong></td>
+                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_devis['totalht'].'</strong></td>
                 </tr>
                 <tr>
-                    <td style="width:35%;"><strong>Remise:</strong></td>
-                    <td style="width:5%;">:</td>
+                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Remise:</strong></td>
+                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$remise_valeur.' %</strong></td>
                 </tr>
                 <tr>
-                    <td style="width:35%;"><strong>TVA 18%</strong></td>
-                    <td style="width:5%;">:</td>
+                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>TVA 18%</strong></td>
+                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_devis['totaltva'].'</strong></td>
                 </tr>
                 <tr>
-                    <td style="width:35%;"><strong>Total TTC</strong></td>
-                    <td style="width:5%;">:</td>
+                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Total TTC</strong></td>
+                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_devis['totalttc'].'</strong></td>
                 </tr>
             </tbody>
@@ -264,14 +270,14 @@ $block_sum = '<div></div>
     </td>
 </tr>
 <tr>
-    <td colspan="2">
+    <td colspan="2" style="color: #E99222;font-family: sans-serif;font-weight: bold;">
         
         <strong>Conditions générales:</strong>
         
     </td>
 </tr>
 <tr>
-    <td colspan="2" style="width: 650px; border:1pt solid black; background-color: #eeecec; padding: 5px;">
+    <td colspan="2" style="color:#6B6868; width: 650px; border:1pt solid black; background-color: #eeecec; padding: 5px;">
         '.$pdf->info_devis['claus_comercial'].'
      <br>
      Merci de nous avoir consulter.

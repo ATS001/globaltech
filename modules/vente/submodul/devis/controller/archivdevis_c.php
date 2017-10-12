@@ -1,5 +1,10 @@
 <?php 
-
+//First check target no Hack
+if(!defined('_MEXEC'))die();
+//SYS GLOBAL TECH
+// Modul: devis
+//Created : 12-10-2017
+//Controller EXEC Form
 $devis = new Mdevis();
 $devis->id_devis = Mreq::tp('id');
 
@@ -10,22 +15,13 @@ if(!MInit::crypt_tp('id', null, 'D')or !$devis->get_devis())
 }
 
 
+//Etat for validate row
+//$etat = $devis->devis_info['etat'];
+//$devis->archivdevis($etat)
+//Execute Validate - delete
 
-//Execute activation desactivation
-$etat = $devis->devis_info['etat'];
 
-switch ($etat) {
-	case 0:
-		$action = 'valid_devis';
-		break;
-	case 1:
-	    $action = 'senddevis_to_client';	
-	default:
-		# code...
-		break;
-}
-
-if($devis->$action($etat))
+if($devis->archivdevis())
 {
 	exit("1#".$devis->log);
 
