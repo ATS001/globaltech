@@ -93,17 +93,24 @@ if (MInit::form_verif('addcontrat', false)) {
     {
         exit("0#$control_notif");
     }
+    
+    
 
     $date1=date_create(date('Y-m-d', strtotime($posted_data['date_effet'])));
     $date2=date_create(date('Y-m-d', strtotime($posted_data['date_fin'])));
     $diff=date_diff($date1,$date2);
 
- /*   var_dump($date1);
-    var_dump($date2);
-   
+ if (date('Y-m-d', strtotime($posted_data['date_effet'])) < date('Y-m-d')) {
 
-var_dump( $diff->format('%a'));
-exit();*/
+        $control_date_effet .= "<li>Date d'effet doit être supérieur ou égal à la date d'aujourd'hui</li>";
+        $checker = 4;
+    }
+    
+    if($checker == 4)
+    {
+        exit("0#$control_date_effet");
+    }
+    
     $contratA = new Mcontrat($posted_data);
     $contratA->get_id_type_echeance('Annuelle');
 

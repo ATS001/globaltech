@@ -4,7 +4,7 @@
 * MDevis Gestion Devis et Détail 
 * V1.0
 */
-class MDevis
+class Mdevis
 {
 	//Declared Private
 	private $_data; //data receive from form
@@ -49,7 +49,8 @@ class MDevis
 
     public function get_devis()
     {
-    	$table = $this->table;
+    	
+        $table = $this->table;
     	global $db;
 
     	$sql = "SELECT $table.*, DATE_FORMAT($table.date_devis,'%d-%m-%Y') AS date_devis from $table where $table.id = ".$this->id_devis;
@@ -118,14 +119,11 @@ class MDevis
     {
         global $db;
         $req_sql = "SELECT
-        devis.reference
+        devis.*
         , DATE_FORMAT(devis.date_devis,'%d-%m-%Y') as date_devis
-        , devis.valeur_remise
-        , devis.devis_pdf
         ,  REPLACE(FORMAT(devis.totalht,0),',',' ') as totalht
         ,  REPLACE(FORMAT(devis.totaltva,0),',',' ') as totaltva
         ,  REPLACE(FORMAT(devis.totalttc,0),',',' ') as totalttc
-        , devis.claus_comercial
         , clients.code
         , clients.denomination
         , clients.adresse
@@ -281,6 +279,25 @@ class MDevis
     		$this->log .='</br>'.$message.' existe déjà';
     	}
     }
+    /**
+     * [check_date_devis description]
+     * @param  [type] $date_devis [description]
+     * @return [type]             [description]
+     */
+    Private function check_date_devis($date_devis)
+    {
+        $today = date('Y-m-d');
+        
+        $date_devis = date('Y-m-d', strtotime($date_devis));
+        $date_devis_moin = date('Y-m-d', strtotime($today. ' - 3 days'));
+        $date_devis_plus = date('Y-m-d', strtotime($today. ' + 3 days'));
+
+        if($date_devis_moin > $date_devis OR $date_devis_plus < $date_devis)
+        {
+            $this->error = false;
+            $this->log .='</br>La date devis ne doit pas dépasser un interval de 3 jours';
+        }
+    }
     /////////////////////////////////////////////////////////////////////////////////
         /**
      * [check_non_exist Check if one entrie not exist on referential table]
@@ -321,7 +338,8 @@ class MDevis
         	$this->Check_devis_exist($this->_data['tkn_frm'], null);
       //Check if devis have détails
         	$this->Check_devis_have_details($this->_data['tkn_frm']);
-      
+            //Check interval date devis
+            $this->check_date_devis($this->_data['date_devis']);
         //Before execute do the multiple check
         	$this->Check_exist('reference', $this->reference, 'Réference Devis', null);
 
@@ -361,6 +379,8 @@ class MDevis
             $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
             $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
             $values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
+            $values["projet"]          = MySQL::SQLValue($this->_data['projet']);
+            $values["vie"]             = MySQL::SQLValue($this->_data['vie']);
             $values["claus_comercial"] = MySQL::SQLValue($this->_data['claus_comercial']);
             $values["totalht"]         = MySQL::SQLValue($totalht);
             $values["totalttc"]        = MySQL::SQLValue($totalttc);
@@ -445,13 +465,15 @@ class MDevis
         $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
         $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
         $values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
+        $values["projet"]          = MySQL::SQLValue($this->_data['projet']);
+        $values["vie"]             = MySQL::SQLValue($this->_data['vie']);
         $values["claus_comercial"] = MySQL::SQLValue($this->_data['claus_comercial']);
         $values["totalht"]         = MySQL::SQLValue($totalht);
         $values["totalttc"]        = MySQL::SQLValue($totalttc);
         $values["totaltva"]        = MySQL::SQLValue($totaltva);
-        $values["updusr"]  = MySQL::SQLValue(session::get('userid'));
-        $values["upddat"] = ' CURRENT_TIMESTAMP ';
-        $wheres["id"]     = MySQL::SQLValue($this->id_devis);
+        $values["updusr"]          = MySQL::SQLValue(session::get('userid'));
+        $values["upddat"]          = ' CURRENT_TIMESTAMP ';
+        $wheres["id"]              = MySQL::SQLValue($this->id_devis);
         //Check if Insert Query been executed (False / True)
         if (!$result = $db->UpdateRows($this->table, $values, $wheres)) 
         {
@@ -841,21 +863,34 @@ class MDevis
             return true;
         }
     }
-
+    /**
+     * [validdevisclient_devis Action valid client]
+     *  'creat_devis' => string '0' (length=1)
+        'valid_devis' => string '1' (length=1)
+        'send_devis' => string '2' (length=1)
+        'modif_client' => string '3' (length=1)
+        'valid_client' => string '4' (length=1)
+        'refus_client' => string '5' (length=1)
+        'devis_expir' => string '6' (length=1)
+        'devis_archive' => string '7' (length=1)
+     * @return [type] [update etat depend the choise of action]
+     */
     public function validdevisclient_devis()
     {
         $reponse = $this->_data['reponse'];
+        $ref_bc = null;
         switch ($reponse) {
             case 'valid':
-                $etat = 3;
+                $etat = 'valid_client';
+                $ref_bc = " , ref_bc = '".$this->_data['ref_bc']."'";
                 $message = "Validation client";
                 break;
             case 'modif':
-                $etat = 2;
+                $etat = 'modif_client';
                 $message = "Demande modification devis";
                 break;
             case 'refus':
-                $etat = 4;
+                $etat = 'refus_client';
                 $message = "Refus devis par le client";
                 break;
             default:
@@ -865,8 +900,15 @@ class MDevis
         global $db;
         $table = $this->table;
         $id_devis = $this->id_devis;
+        $new_etat = Msetting::get_set('etat_devis', $etat);
+        if($etat == null)
+        {
+            $this->error = false;
+            $this->log .= "Manque paramètre etat_devis => $etat";
+            return false;
+        }
         
-        $req_sql = " UPDATE $table SET etat = $etat  WHERE id = $id_devis ";
+        $req_sql = " UPDATE $table SET etat = $new_etat  $ref_bc WHERE id = $id_devis ";
         
         if (!$db->Query($req_sql)) {
             $this->error = false;
@@ -930,13 +972,20 @@ class MDevis
         
     }
     /**
-     * [Valid_Devis Basclly send devis to client and generat PDF]
+     * [senddevis_to_client Basclly send devis to client and generat PDF]
      * @param [type] $etat [description]
      */
     public function senddevis_to_client($etat)
     {
         //Send to client
-        if($etat != 0)
+        $old_etat = Msetting::get_set('etat_devis', 'valid_devis');
+        if($old_etat == null)
+        {
+            $this->error = false;
+            $this->log .= "Manque paramètre etat_devis => valid_devis";
+            return false;
+        }
+        if($etat != $old_etat)
         {
             $this->error = false;
             $this->log .= "Ce devis ne peux pas être envoyé pour le momement #Etat faild";
@@ -945,8 +994,16 @@ class MDevis
         global $db;
         $table = $this->table;
         $id_devis = $this->id_devis;
+        
+        $new_etat = Msetting::get_set('etat_devis', 'send_devis');
+        if($new_etat == null)
+        {
+            $this->error = false;
+            $this->log .= "Manque paramètre etat_devis => send_devis";
+            return false;
+        }
         $this->generate_devis_pdf();
-        $req_sql = " UPDATE $table SET etat = 1 WHERE id = $id_devis ";
+        $req_sql = " UPDATE $table SET etat = $new_etat WHERE id = $id_devis ";
         
         if (!$db->Query($req_sql)) {
             $this->error = false;
@@ -961,13 +1018,74 @@ class MDevis
         return true;
         
     }
-
+    /**
+     * [valid_devis valider devis to prepare to send to client]
+     * @param  [int] $etat [etat of devis must be 0]
+     * @return [type]       [description]
+     */
+    public function valid_devis($etat)
+    {
+        $old_etat = Msetting::get_set('etat_devis', 'creat_devis');
+        if($old_etat == null)
+        {
+            $this->error = false;
+            $this->log .= "Manque paramètre etat_devis => creat_devis";
+            return false;
+        }
+        if($etat != $old_etat)
+        {
+            $this->error = false;
+            $this->log .= "Ce devis ne peux pas être validé //Etat faild";
+            return false;
+        }
+        global $db;
+        $table    = $this->table;
+        $id_devis = $this->id_devis;
+        
+        $new_etat = Msetting::get_set('etat_devis', 'valid_devis');
+        if($new_etat == null)
+        {
+            $this->error = false;
+            $this->log .= "Manque paramètre etat_devis => valid_devis";
+            return false;
+        }
+        $req_sql = " UPDATE $table SET etat = $new_etat WHERE id = $id_devis ";
+        
+        if (!$db->Query($req_sql)) {
+            $this->error = false;
+            $this->log .= "Erreur Opération";
+            return false;
+        }
+            
+            $this->log .= "<br/>Opération réussie";
+            return true;
+        
+    }
+    /**
+     * [debloqdevis description]
+     * @param  [type] $etat [description]
+     * @return [type]       [description]
+     */
     public function debloqdevis($etat)
     {
-        if($etat != 2)
+        $old_etat = Msetting::get_set('etat_devis', 'modif_client');
+        if($old_etat == null)
+        {
+            $this->error = false;
+            $this->log .= "Manque paramètre etat_devis => modif_client";
+            return false;
+        }
+        if($etat != $old_etat)
         {
             $this->error = false;
             $this->log .= "Ce devis ne peux pas être débloqué //Etat faild";
+            return false;
+        }
+        $new_etat = Msetting::get_set('etat_devis', 'creat_devis');
+        if($new_etat == null)
+        {
+            $this->error = false;
+            $this->log .= "Manque paramètre etat_devis => valid_devis";
             return false;
         }
         global $db;
@@ -975,7 +1093,7 @@ class MDevis
         $id_devis = $this->id_devis;
         $doc      = $this->g('devis_pdf');
         
-        $req_sql = " UPDATE $table SET etat = 0, devis_pdf = NULL WHERE id = $id_devis ";
+        $req_sql = " UPDATE $table SET etat = $new_etat, devis_pdf = NULL WHERE id = $id_devis ";
         
         if (!$db->Query($req_sql)) {
             $this->error = false;

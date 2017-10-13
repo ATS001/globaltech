@@ -13,6 +13,8 @@ if(MInit::form_verif('adddevis', false))
    'totalht'         => Mreq::tp('totalht') ,
    'totalttc'        => Mreq::tp('totalttc') ,
    'totaltva'        => Mreq::tp('totaltva') ,
+   'projet'          => Mreq::tp('projet'),
+   'vie'             => Mreq::tp('vie'),
    'claus_comercial' => Mreq::tp('claus_comercial')
 
    );
@@ -36,6 +38,11 @@ if(MInit::form_verif('adddevis', false))
     if($posted_data['type_remise'] == NULL OR !in_array($posted_data['type_remise'],  array( 'P','M' ))){
 
       $empty_list .= "<li>Type remise est incorrecte</li>";
+      $checker = 1;
+    }
+    if($posted_data['vie'] == NULL OR !in_array($posted_data['vie'],  array( '30','60', '90' ))){
+
+      $empty_list .= "<li>Durée de validité</li>";
       $checker = 1;
     }
     if($posted_data['totalttc'] == NULL){

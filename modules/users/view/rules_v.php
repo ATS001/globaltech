@@ -128,7 +128,7 @@ global $db;
 if (!$db->Query($query_modul->Get_action_modul($row['id'], Mreq::tp('id')))) $db->Kill($db->Error());
 while (!$db->EndOfSeek()) {
         $row = $db->Row();
-        $type = $row->code != '' ? ' <span class="pull-right label label-info arrowed-in-right arrowed">Lien menu</span>' : ' <span class="pull-right label label-success arrowed-in-right arrowed">Autorisation</span>'; 
+        $type = $row->type == 0 ? ' <span class="pull-right label label-info arrowed-in-right arrowed">Lien menu</span>' : ' <span class="pull-right label label-success arrowed-in-right arrowed">Autorisation</span>'; 
         $etat_line = $row->type == 0 ? ' <span class="badge badge-pink">'.$row->etat_line.'</span>' : null;
 ?>
 									<tr>

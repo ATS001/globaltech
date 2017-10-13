@@ -15,7 +15,7 @@ class Export_modul extends Mmodul
 	}
 
 
-	public function Export_mod($id_modul)
+	public function Export_mod($id_modul, $bkp = null)
 	{
 		global $db;
 
@@ -50,8 +50,8 @@ class Export_modul extends Mmodul
 			$content .= $this->list_task_of_modul;
 		}
 		//creat file into Modul folder
-		
-		$file = MPATH_EXPORT_MOD.$this->modul_info['modul'].'_script_export.php';
+		$old = $bkp == null ? null : 'bkp_';
+		$file = MPATH_EXPORT_MOD.$this->modul_info['modul'].'_script_'.$old.'export.php';
 		if(file_exists($file)){
 			unlink($file);
 		}
@@ -232,7 +232,7 @@ class Export_modul extends Mmodul
 
 
 		foreach ($modules_array as $row){
-			if(strstr($row,$terminison_file))
+			if(strstr($row, $terminison_file))
 			{
 				$modul_name = str_replace($terminison_file,null,$row);
 				$result = $db->QuerySingleValue0("SELECT modul FROM modul 

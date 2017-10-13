@@ -66,7 +66,7 @@ class Msetting {
 		}
 		
 	}
-    static public function get_set($key)
+    static public function get_set($key, $key_arr = null)
     {
     	global $db;
 
@@ -78,8 +78,20 @@ class Msetting {
 		$result = $db->QuerySingleValue($sql);
 		
 		if($result){
-			if(json_decode($result, true) != null){
-                return json_decode($result, true);
+			if(json_decode($result, true) != null)
+			{
+				$result = json_decode($result, true);
+               
+				if($key_arr != null && is_array($result)){
+					if(array_key_exists($key_arr, $result))
+					{					
+						$result = $result[$key_arr];
+					}else{
+						$result = null;
+
+					}
+				}
+				
 			}
 			//case booleen value
 			$result = $result == 'true' ? true : $result;
