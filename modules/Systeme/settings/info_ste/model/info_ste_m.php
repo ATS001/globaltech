@@ -162,7 +162,7 @@ class MSte_info
     	$this->id_ste = $id_ste;
     	$this->get_ste_info();
     	
-    	$footer = '<h1>'.$this->ste_info['ste_name'].'</h1><p>Télécommunications – Réseaux - Sécurité électronique - Prestation de Services<br/>RCCM : '.$this->ste_info['ste_rc'].'  Numéro d’Identification Fiscale : '.$this->ste_info['ste_if'].'<br/>'.$this->ste_info['ste_adresse'].', '.$this->ste_info['ste_ville'].' ; Tél. : '.$this->ste_info['ste_tel'].'<br/>Site web: <a href="http://'.$this->ste_info['ste_website'].'/">'.$this->ste_info['ste_website'].'</a><span style=" color: #00F; font-family: sans-serif; font-style: italic; font-weight: normal; font-size: 7pt;"> </span>– Email: <a href="mailto:'.$this->ste_info['ste_email'].'" class="s1"> '.$this->ste_info['ste_email'].'</a><br/>Compte Orabank n°20403500201</p>';
+    	$footer = '<h1>'.$this->ste_info['ste_name'].'</h1><p>Télécommunications – Réseaux - Sécurité électronique - Prestation de Services<br/>RCCM : '.$this->ste_info['ste_rc'].'  Numéro d’Identification Fiscale : '.$this->ste_info['ste_if'].'<br/>Compte Orabank n°20403500201</p>';
 
     	
     	return $footer;

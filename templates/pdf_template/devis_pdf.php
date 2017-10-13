@@ -144,6 +144,13 @@ class MYPDF extends TCPDF {
 		</tbody>
 		</table>';
 		$this->writeHTMLCell(100, 0, 99, 40, $detail_client, 0, 0, 0, true, 'L', true);
+		if($this->info_devis['projet'] != null){
+			$projet = '<b>Projet: </b> Site FAYA'.$this->info_devis['projet'];
+		    $height = $this->getLastH();
+		    $this->SetTopMargin($height + $this->GetY() + 5);
+		    $this->writeHTMLCell(100, 0, 15, '', $projet, 1, 0, 0, true, 'L', true);
+		}
+		
 		//Info général
 		$tableau_head = $this->Table_head;
 		$this->writeHTMLCell('', '', 15, 83, $tableau_head, 0, 0, 0, true, 'L', true);
