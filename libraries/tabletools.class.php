@@ -198,7 +198,7 @@ class TableTools
 
 				}
 				$stanadr_delete = null;
-				if($etat == 0 AND ($cre_usr == session::get('userid') OR session::get('service') == 1))
+				if($etat == 0 AND ($cre_usr == session::get('userid') OR session::get('service') == 1) AND $task_exec != null)
 				{
 						$stanadr_delete = '<li class="divider"></li><li><a href="#" class="this_exec" data="'.MInit::crypt_tp('id',$id).'" rel="'.$task_exec.'"  ><i class="ace-icon fa fa-trash red bigger-100"></i> Supprimer ligne</a></li>';
 				}
