@@ -22,6 +22,10 @@ if (MInit::form_verif('editecheance_contrat', false)) {
 
     $date_fin=Mreq::tp('dat_fn');
     $date_effet=Mreq::tp('dat_ef');
+    
+    $echeance=new Mcontrat();
+    $date_echeance=$echeance->verif_date_echeance($posted_data['tkn_frm'],date('Y-m-d',strtotime($posted_data['date_echeance'])));
+    
 
     $checker = null;
     $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
@@ -63,6 +67,15 @@ if (MInit::form_verif('editecheance_contrat', false)) {
             exit("0#$date_ech");
     }
 
+    if( $date_echeance == TRUE)
+    {
+            $date= "<ul>Date d'échéance existe déjà</ul>";
+            $checker = 3;
+    }
+    if($checker == 3)
+    {
+            exit("0#$date");
+    }
     //End check empty element
 
 
