@@ -1624,7 +1624,7 @@ class Mmodul {
     	$values["etat_desc"]     = MySQL::SQLValue($etat_desc);
     	$values["message_class"] = MySQL::SQLValue($msg_class);
     	$values["message_etat"]  = MySQL::SQLValue($message);
-    	$values["notif"]         = MySQL::SQLValue($notif);
+    	//$values["notif"]         = MySQL::SQLValue($notif);
     	$wheres["appid"]         = MySQL::SQLValue($app); 
     	$wheres["etat_line"]     = MySQL::SQLValue($etat_line);
     	$wheres["type"]          = MySQL::SQLValue(0);
@@ -1817,6 +1817,7 @@ class Mmodul {
     			$this->log .= $db->Error().' '.$db->BuildSQLinsert("task_action", $values);
     			$this->error = false;
     			$this->log .='</br>Enregistrement Autorisation WF BD non réussie'; 
+    			$this->update_message_task_action($this->_data['id_task'], $this->_data['etat_line'], $message, $this->_data['etat_desc'], $this->_data['message_class'], 0);
 
     		}else{
     			$this->error == true;
@@ -2021,6 +2022,7 @@ class Mmodul {
     	global $db;
     	$sql = "SELECT 
     	task_action.code,
+    	task_action.id,
     	task_action.etat_line,
     	task_action.etat_desc,
     	task_action.message_class,
@@ -2083,8 +2085,8 @@ class Mmodul {
 
     				foreach ($main_arr as $key => $descrip) {
     					if($etat == $descrip['etat_line'] && strpos($descrip['service_task_action'],$service)){
-    						$notif = $descrip['notif'] == 1 ? 'btn-notif' : 'btn-info';
-    						$html .= '<span class="title '.$notif.' ">'.$descrip['descrip'].'</span>';
+    						$notif = $descrip['notif'] == 1 ? 'btn-danger' : 'btn-info';
+    						$html .= '<span style="color:#FFFFFF; margin: 2px;" class="title '.$notif.' ">'.$descrip['descrip'].' - '.$descrip['id'].' - </span>';
     					}    
 
 
