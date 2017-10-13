@@ -153,7 +153,7 @@ class MSte_info
     	
     	
 
-    	$head = '<div class="form-group>"><address><strong>'.$this->ste_info['ste_name'].'</strong><br>'.$this->ste_info['ste_bp'].' '.$this->ste_info['ste_adresse'].'<br>'.$this->ste_info['ste_ville'].' '.$this->ste_info['ste_pays'].'<br><abbr title="Phone">Tél:</abbr>'.$this->ste_info['ste_tel'].'<br>@: '.$this->ste_info['ste_email'].'<br>'.$this->ste_info['ste_website'].'</address></div>';
+    	$head = '<div style="color:#4A5375;font-size: 9pt;font-family: sans-serif;"><address><br>'.$this->ste_info['ste_adresse'].'<br>'.$this->ste_info['ste_ville'].' '.$this->ste_info['ste_pays'].'<br><abbr title="Phone">Tél: </abbr>'.$this->ste_info['ste_tel'].'<br>BP: </abbr>'.$this->ste_info['ste_bp'].' N\'Djamena<br>Email: '.$this->ste_info['ste_email'].'<br>Site web: '.$this->ste_info['ste_website'].'</address></div>';
     	return $head;
     }
 
@@ -162,7 +162,7 @@ class MSte_info
     	$this->id_ste = $id_ste;
     	$this->get_ste_info();
     	
-    	$footer = '<h1>'.$this->ste_info['ste_name'].'</h1><p>RCCM : '.$this->ste_info['ste_rc'].'  Numéro d’Identification Fiscale : '.$this->ste_info['ste_if'].'<br/>'.$this->ste_info['ste_adresse'].', '.$this->ste_info['ste_ville'].' ; Tél. : '.$this->ste_info['ste_tel'].'<br/>Site web: <a href="http://'.$this->ste_info['ste_website'].'/">'.$this->ste_info['ste_website'].'</a><span style=" color: #00F; font-family: sans-serif; font-style: italic; font-weight: normal; font-size: 7pt;"> </span>– Email: <a href="mailto:'.$this->ste_info['ste_email'].'" class="s1"> '.$this->ste_info['ste_email'].'</a></p>';
+    	$footer = '<h1>'.$this->ste_info['ste_name'].'</h1><p>Télécommunications – Réseaux - Sécurité électronique - Prestation de Services<br/>RCCM : '.$this->ste_info['ste_rc'].'  Numéro d’Identification Fiscale : '.$this->ste_info['ste_if'].'<br/>Compte Orabank n°20403500201</p>';
 
     	
     	return $footer;

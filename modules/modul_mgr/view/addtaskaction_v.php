@@ -70,7 +70,7 @@ $class_array[]  = array('minlength', '3', 'Minimum 3 caractères' );
 $form->input('Class Action', 'class', 'text', 6, null, $class_array);
 //Etat de ligne
 //select_count($input_desc, $input_id, $input_class, $count, $indx = NULL ,$selected = NULL )
-$form->select_count('Etat de la ligne', 'etat_line', 1, 5, $indx = NULL ,$selected = NULL );
+$form->select_count('Etat de la ligne', 'etat_line', 1, 10, $indx = NULL ,$selected = NULL );
 //Message dans la liste
 $form->input('Message à afficher', 'etat_desc', 'text' ,6 , null, $desc_array);
 //Style Message

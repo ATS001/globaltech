@@ -4725,6 +4725,11 @@ a.thumbnail.active {
 .alert-warning .alert-link {
   color: #66512c;
 }
+.alert-inverse {
+  background-color: #BAB8B8;
+  border-color: #838282;
+  color: #4B4A4A;
+}
 .alert-danger {
   background-color: #f2dede;
   border-color: #ebccd1;

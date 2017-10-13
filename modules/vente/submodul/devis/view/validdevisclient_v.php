@@ -78,11 +78,12 @@ $form->input_hidden('idh', Mreq::tp('idh'));
 
 //Add fields input here
 //Réponse client
+$hard_ref_bc = '<label style="margin-left:15px;margin-right : 20px;">Référence Bon de commande </label><input id="ref_bc" name="ref_bc" class="input-large" value="" type="text">';
 $reponse_opt = array('valid' => 'Validation Devis', 'modif' => 'Modification' , 'refus' => 'Réfus' );
 $form->select('Réponse client', 'reponse', 6, $reponse_opt, $indx = NULL ,$selected = NULL, $multi = NULL);
 //Mode validation
-$mode_opt = array('ar' => 'Acusé devis', 'email' => 'Email' , 'tel' => 'Téléphone' );
-$form->select('Mode communication', 'modcom', 3, $mode_opt, $indx = NULL ,$selected = NULL, $multi = NULL);
+$mode_opt = array('bc' => 'Bon de commande', 'ar' => 'Acusé devis', 'email' => 'Email' , 'tel' => 'Téléphone' );
+$form->select('Mode communication', 'modcom', 3, $mode_opt, $indx = NULL ,$selected = NULL, $multi = NULL, $hard_ref_bc);
 //PJ
 $form->input('Pièce jointe', 'scan', 'file', 6, null, null);
 $form->file_js('scan', 1000000, 'pdf');
@@ -101,7 +102,6 @@ $form->render();
 <script type="text/javascript">
 $(document).ready(function() {
     
-//JS Bloc    
 
 });
 </script>	

@@ -841,7 +841,7 @@ class MySQL
 			$html = "";
 			$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px;\">\n";
 
-			$html .= "\t<tr style=\"background-color: #4245f4; color: #fff; font-weight: bold;  padding:15px; \">\n";
+			$html .= "\t<tr style=\"background-color: #495375; color: #fff; font-weight: bold;  padding:15px; \">\n";
 			foreach ($headers as $key => $value) {
 
 

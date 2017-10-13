@@ -49,7 +49,7 @@
                                         <div class="profile-info-name"> Type de produit </div>
 
                                         <div class="profile-info-value">
-                                                <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
                                             <span><?php $info_produit->printattribute('type_produit'); ?></span>
                                         </div>
                                     </div>
@@ -58,7 +58,7 @@
                                         <div class="profile-info-name"> Catégorie du produit </div>
 
                                         <div class="profile-info-value">
-                                                <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
                                             <span><?php $info_produit->printattribute('categorie_produit'); ?></span>
                                         </div>
                                     </div>
@@ -66,7 +66,7 @@
                                         <div class="profile-info-name"> Unité de vente </div>
 
                                         <div class="profile-info-value">
-                                                <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
                                             <span><?php $info_produit->printattribute('unite_vente'); ?></span>
                                         </div>
                                     </div>
@@ -83,7 +83,7 @@
                                         <div class="profile-info-name"> Désignation </div>
 
                                         <div class="profile-info-value">
-                                                <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
                                             <span><?php $info_produit->printattribute('designation'); ?></span>
                                         </div>
                                     </div>
@@ -94,15 +94,15 @@
                                         <div class="profile-info-name"> Stock minimale </div>
 
                                         <div class="profile-info-value">
-                                                <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
                                             <span><?php $info_produit->printattribute('stock_min'); ?></span>
                                         </div>
                                     </div>
-                                     <div class="profile-info-row">
+                                    <div class="profile-info-row">
                                         <div class="profile-info-name"> Prix de vente </div>
 
                                         <div class="profile-info-value">
-                                                <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
                                             <span><?php $info_produit->printattribute('prix_vente'); ?></span>
                                         </div>
                                     </div>
@@ -122,9 +122,4 @@
                 </div>
             </div>
         </div>
-
-
-
-
-
     </div><!-- /.produit-profile -->

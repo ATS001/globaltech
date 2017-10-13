@@ -39,6 +39,8 @@ $form->select_table('Client ', 'id_client', 8, 'clients', 'id', 'denomination' ,
 //TVA
 $tva_opt = array('O' => 'OUI' , 'N' => 'NON' );
 $form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$selected = NULL, $multi = NULL);
+//Projet if client have more project
+$form->input('Projet', 'projet', 'text' ,'6', NULL, null, null, null);
 //Table 
 $columns = array('id' => '1' ,'Item' => '5' , 'Réference'=>'10', 'Produit' => '30', 'P.U HT' => '10', 'T.Rem' => '5', 'V.Remise' => '10', 'Qte' => '5', 'Total HT' => '10', 'TVA' => '7', 'Total' =>'10', '#' =>'3'   );
 $js_addfunct = 'var column = t.column(0);
@@ -61,8 +63,11 @@ $prixht_array[]  = array('required', 'true', 'Le montant est invalide');
 $hard_code_prices = '<label style="margin-left:15px;margin-right : 20px;">TVA Calculé: </label><input id="totaltva" readonly="" name="totaltva" class="input-small is-number alignRight " value="0" type="text">';
 $hard_code_prices .= '<label style="margin-left:15px;margin-right : 20px;">Prix Global TTC: </label><input readonly="" id="totalttc" name="totalttc" class="input-large is-number alignRight" value="0" type="text">';
 $form->input('Prix Global HT', 'totalht', 'text' ,'3 is-number alignRight', '0', $prixht_array, $hard_code_prices, 'readonly');
+//Validité
+$vie_opt = array('30' => '30 Jours' , '60' => '60 Jours', '90' => '90 Jours' );
+$form->select('Validité', 'vie', 3, $vie_opt, $indx = NULL ,$selected = NULL, $multi = NULL);
 //Conditions commercial
-$clauses = 'Paiement 100% à la commande pour';
+$clauses = 'Paiement 100% à la commande';
 $form->input_editor('Conditions commerciales', 'claus_comercial', 8, $clauses, $js_array = null,  $input_height = 50);
 $form->button('Enregistrer');
 //Form render

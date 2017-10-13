@@ -8,7 +8,7 @@ body {
   padding-bottom: 0;
   font-family: 'Open Sans';
   font-size: 13px;
-  color: #393939;
+  
   line-height: 1.5;
 }
 .main-container:before {
@@ -236,6 +236,7 @@ li > ol {
 .list-unstyled,
 .list-inline {
   margin-left: 0;
+  margin-right: 50px;
 }
 .list-unstyled > li > .ace-icon:first-child,
 .list-inline > li > .ace-icon:first-child {
