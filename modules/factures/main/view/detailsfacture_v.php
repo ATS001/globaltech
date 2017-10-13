@@ -89,6 +89,14 @@ $encaissements = $info_facture->encaissement_info;
                                         <span><?php $info_facture->printattribute_fact('date_facture'); ?></span>
                                     </div>
                                 </div>
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name"> Période facturée </div>
+
+                                    <div class="profile-info-value">
+                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+                                        <span> <b>Du</b> <?php $info_facture->printattribute_fact('du'); ?> <b>Au</b> <?php $info_facture->printattribute_fact('au'); ?> </span>
+                                    </div>
+                                </div>
 
                                 <div class="profile-info-row">
                                     <div class="profile-info-name"> Client </div>
