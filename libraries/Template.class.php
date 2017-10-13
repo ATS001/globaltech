@@ -65,7 +65,7 @@ class Template {
     AND  task.app = modul.app_modul AND  users_sys.id = $user 
     AND modul.is_setting = 0
     GROUP BY  modul.app_modul ORDER BY   modul.id  "; 
-exit($sql_modul);
+
     if(!$db->Query($sql_modul))
     {
       $db->kill($db->Error());
