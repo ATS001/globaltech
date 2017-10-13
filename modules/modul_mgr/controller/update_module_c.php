@@ -17,8 +17,6 @@ $export_modul = new Export_modul;
 	if(!$export_modul->export_mod($mod_id, 'bkp'))
 	{
 		exit('0#Erreur Opération');
-	}else{
-		exit('1#Opération réussie');
 	}
 
 if(!$update_modul->Update_module($mod_id, $update_modul->modul_info['modul']))
