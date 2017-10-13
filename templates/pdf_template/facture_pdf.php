@@ -53,10 +53,9 @@ $headers2 = array(
 $devis_info = $facture->devis_info;
 $tableau_head = MySQL::make_table_head($headers);
 $tableau_body = $db->GetMTable_pdf($headers);
-//var_dump($tableau_body);
+
 
 $facture->get_complement_by_facture();
-//$facture->get_complement_by_facture();
 $complement_info=$facture->complement_info;
 $tableau_head2 = MySQL::make_table_head($headers2);
 $tableau_body2 = $db->GetMTable_pdf($headers2);
@@ -74,7 +73,7 @@ class MYPDF extends TCPDF {
     var $info_ste = array();
     var $info_facture = array();
     var $info_complement = array();
-
+    var $periode=null;
     //Page header
     public function Header() {
         //writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
@@ -91,34 +90,43 @@ class MYPDF extends TCPDF {
         // Set font
         $this->SetFont('helvetica', 'B', 22);
         //Ste
+        //
+        
         // Title
         $titre_doc = '<h3>FACTURE</h3>';
         $this->writeHTMLCell(0, 0, 140, 10, $titre_doc, 'B', 0, 0, true, 'C', true);
         $this->SetTextColor(0, 0, 0);
         $this->SetFont('helvetica', '', 9);
+        $this->periode=(date('d-m-Y', strtotime($this->info_facture['du']))).' <b>AU</b> '.(date('d-m-Y', strtotime($this->info_facture['au'])));
+              
         $detail_devis = '<table cellspacing="3" cellpadding="2" border="0">
 		<tr>
-		<td style="width:35%;"><strong>Référence</strong></td>
+		<td style="width:40%;"><strong>Référence</strong></td>
 		<td style="width:5%;">:</td>
 		<td style="width:60%; background-color: #eeecec;">' . $this->info_facture['ref'] . '</td>
 		</tr> 
 		<tr>
-		<td style="width:35%;"><strong>Date</strong></td>
+		<td style="width:40%;"><strong>Date facture</strong></td>
 		<td style="width:5%;">:</td>
 		<td style="width:60%; background-color: #eeecec; ">' . $this->info_facture['date_facture'] . '</td>
 		</tr>
                 <tr>
-		<td style="width:35%;"><strong>Réf devis</strong></td>
+		<td style="width:40%;"><strong>Réf devis</strong></td>
 		<td style="width:5%;">:</td>
 		<td style="width:60%; background-color: #eeecec; ">' . $this->info_devis['reference'] . '</td>
 		</tr>
                 <tr>
-		<td style="width:35%;"><strong>Date</strong></td>
+		<td style="width:40%;"><strong>Date devis</strong></td>
 		<td style="width:5%;">:</td>
 		<td style="width:60%; background-color: #eeecec; ">' . $this->info_devis['date_devis'] . '</td>
 		</tr>
-		</table>';
-        $this->writeHTMLCell(0, 0, 140, 23, $detail_devis, '', 0, 0, true, 'L', true);
+                <tr>
+               	<td style="width:40%;"><strong>Période facturée</strong></td>
+		<td style="width:5%;">:</td>
+		<td style="width:60%; background-color: #eeecec; ">' . $this->periode . '</td>
+		</tr>
+               		</table>';
+        $this->writeHTMLCell(0, 0, 120, 23, $detail_devis, '', 0, 0, true, 'L', true);
         $height = $this->getLastH();
        
         $this->SetTopMargin($height + $this->GetY());

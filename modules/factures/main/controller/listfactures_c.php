@@ -53,6 +53,14 @@ $array_column = array(
         'align'  => 'C'
     ),
     array(
+        'column' => 'CONCAT("<b>DU</b> ",factures.du," <b>AU</b> ",factures.au)',
+        'type'   => '',
+        'alias'  => 'clt',
+        'width'  => '15',
+        'header' => 'Client',
+        'align'  => 'C'
+    ),
+    array(
         'column' => 'statut',
         'type'   => '',
         'alias'  => 'statut',
