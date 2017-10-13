@@ -45,6 +45,9 @@
                         <th>
                             Client
                         </th>
+                        <th>
+                            Période facturée
+                        </th>
 
                         <th>
                             Statut
@@ -71,13 +74,14 @@
 
             aoColumns: [
                 {"sClass": "center", "sWidth": "5%"},
-                {"sClass": "left", "sWidth": "15%"}, //
-                {"sClass": "left", "sWidth": "15%"}, //
-                {"sClass": "left", "sWidth": "15%"},//
-                {"sClass": "left", "sWidth": "15%"}, //
-                {"sClass": "left", "sWidth": "15%"}, //
+                {"sClass": "left", "sWidth": "12%"}, //
+                {"sClass": "left", "sWidth": "12%"}, //
+                {"sClass": "left", "sWidth": "12%"},//
+                {"sClass": "left", "sWidth": "12%"}, //
+                {"sClass": "left", "sWidth": "12%"}, //
+                {"sClass": "left", "sWidth": "17%"},
                 {"sClass": "center", "sWidth": "20%"},
-                {"sClass": "center", "sWidth": "5%"},
+                {"sClass": "center", "sWidth": "7%"},
             ],
         });
         /*var column = table.column(0);
