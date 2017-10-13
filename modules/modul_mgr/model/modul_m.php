@@ -2025,6 +2025,7 @@ class Mmodul {
     	task_action.etat_desc,
     	task_action.message_class,
     	task_action.descrip,
+    	task_action.notif,
     	modul.services,
     	task_action.service AS service_task_action
     	FROM
@@ -2082,7 +2083,8 @@ class Mmodul {
 
     				foreach ($main_arr as $key => $descrip) {
     					if($etat == $descrip['etat_line'] && strpos($descrip['service_task_action'],$service)){
-    						$html .= '<span class="title">'.$descrip['descrip'].'</span>';
+    						$notif = $descrip['notif'] == 1 ? 'btn-notif' : 'btn-info';
+    						$html .= '<span class="title '.$notif.' ">'.$descrip['descrip'].'</span>';
     					}    
 
 
