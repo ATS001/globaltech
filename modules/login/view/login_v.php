@@ -1,4 +1,5 @@
-<div style="background-color: #fff">
+<div class="login-box visible widget-box no-border">
+	<div class="widget-body">
 	<h1>
 		<img src="img/<?php echo Mcfg::get('logo')?>" width="149" height="40" />
 
