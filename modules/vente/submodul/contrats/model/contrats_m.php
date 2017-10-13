@@ -322,6 +322,7 @@ class Mcontrat {
 
     //Edit contrat after all check
     public function edit_contrat() {
+        $this->get_contrat();
         $this->reference = $this->_data['ref'];
         //var_dump($this->_data['tkn_frm']);
         //Check if devis exist
@@ -393,7 +394,7 @@ class Mcontrat {
 
 
                     if (!Mlog::log_exec($this->table, $this->id_contrat, 'Modification contrat abonnement', 'Update')) {
-                        $this->log .= '</br>Un problème de log '.$db->error();
+                        $this->log .= '</br>Un problème de log ';
                     }
 
 
