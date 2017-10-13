@@ -393,7 +393,7 @@ class Mcontrat {
 
 
                     if (!Mlog::log_exec($this->table, $this->id_contrat, 'Modification contrat abonnement', 'Update')) {
-                        $this->log .= '</br>Un problème de log ';
+                        $this->log .= '</br>Un problème de log '.$db->error();
                     }
 
 
