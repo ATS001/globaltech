@@ -50,8 +50,10 @@ class Export_modul extends Mmodul
 			$content .= $this->list_task_of_modul;
 		}
 		//creat file into Modul folder
-		$old = $bkp == null ? null : 'bkp_';
-		$file = MPATH_EXPORT_MOD.$this->modul_info['modul'].'_script_'.$old.'export.php';
+		$old = $bkp == null ? null : 'bkp_'.date('d_m_Y_H_i_s').'_';
+		$main_folder  = $bkp == null ? MPATH_EXPORT_MOD : MPATH_CACHE.'bkp_modul_updated/';
+		
+		$file = $main_folder.$this->modul_info['modul'].'_script_'.$old.'export.php';
 		if(file_exists($file)){
 			unlink($file);
 		}

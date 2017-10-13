@@ -178,16 +178,7 @@ class Update_modul extends Mmodul
 		}
 	}
 	
-
-	
-
-	
-
-
-
-
-
-	
+		
 }
 
 ?>
