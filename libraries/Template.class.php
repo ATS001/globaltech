@@ -57,44 +57,66 @@ class Template {
 
       //Get user ID 
     $user = session::get('userid'); 
+    
       //Format Query to get modul list
-    $sql_modul = "SELECT  modul.modul AS modul , modul.description AS descrip ,
-    modul.app_modul AS app , task.sbclass AS class
+    $sql_modul = "SELECT modul.modul AS modul, modul.description AS descrip ,
+    modul.app_modul AS app , task.sbclass AS class, modul.modul_setting as parent
     FROM rules_action, task, modul, users_sys
     WHERE (rules_action.userid = users_sys.id) AND (rules_action.appid = task.id)
     AND  task.app = modul.app_modul AND  users_sys.id = $user 
-    AND modul.is_setting = 0
-    GROUP BY  modul.app_modul ORDER BY   modul.id  "; 
+    AND modul.is_setting <> 1
+    GROUP BY CASE WHEN parent IS NOT NULL THEN parent ELSE modul.modul END ORDER BY   modul.id  "; 
 
-    if(!$db->Query($sql_modul))
+    if(!$db->Query($sql_modul) or !$db->RowCount())
     {
-      $db->kill($db->Error());
-      return fals;
+      return false;
     }else{
       $this->left_menu_arr = $db->RecordsArray();
       return true;
     } 
   }
+   public function get_modul_parent($modul)
+   {
+    global $db;
+  
+      //Format Query to get modul list
+    $sql_parent_modul = "SELECT  modul.modul AS modul , modul.description AS descrip ,
+    modul.app_modul AS app , task.sbclass AS class
+    FROM task, modul
+    WHERE 
+    task.app = modul.app_modul AND  modul.modul = '$modul' AND modul.is_setting = 0 "; 
+//exit($sql_sub_modul);
+    if(!$db->Query($sql_parent_modul) or !$db->RowCount())
+    {
+      return false;
+    }else{
+      
+        $parent_modul         = $db->RecordsArray();
+        return $parent_modul;
+      
 
-  public function get_sub_modul($modul, $app, $descrip, $class)
+   }
+ }
+  public function get_sub_modul($modul)
   {
     global $db;
     $render_sub_modul = NULL;
       //Get user ID 
-
+    $user = session::get('userid');
       //Format Query to get modul list
     $sql_sub_modul = "SELECT  modul.modul AS modul , modul.description AS descrip ,
     modul.app_modul AS app , task.sbclass AS class
     FROM rules_action, task, modul, users_sys
     WHERE (rules_action.userid = users_sys.id) AND (rules_action.appid = task.id)
+    AND (users_sys.id = $user )
     AND  task.app = modul.app_modul AND  modul.modul_setting = '$modul' AND modul.is_setting = 2
 
     GROUP BY  modul.app_modul ORDER BY   modul.id  "; 
 //exit($sql_sub_modul);
     if(!$db->Query($sql_sub_modul))
     {
-      $db->kill($db->Error());
-      return fals;
+      
+      return false;
     }else{
       if($db->RowCount()){
         $render_sub_modul .= '<ul class="submenu">';

@@ -111,17 +111,11 @@ class Mproforma
     }
 
 
-    public function Get_detail_proforma_show()
+        public function Get_detail_proforma_show()
     {
         global $db;
         $req_sql = "SELECT
-        proforma.reference
-        , proforma.date_proforma
-        , proforma.valeur_remise
-        ,  REPLACE(FORMAT(proforma.totalht,0),',',' ') as totalht
-        ,  REPLACE(FORMAT(proforma.totaltva,0),',',' ') as totaltva
-        ,  REPLACE(FORMAT(proforma.totalttc,0),',',' ') as totalttc
-        , proforma.claus_comercial
+        proforma.*
         , clients.code
         , clients.denomination
         , clients.adresse
@@ -155,9 +149,19 @@ class Mproforma
 
 
         }
+        if($this->error == false)
+        {
+            return false;
+        }else{
+            return true ;
+        }
 
     }
 
+    /**
+     * [Get_detail_proforma_pdf Render query for export PDF]
+     * @return bol send to controller
+     */
     public function Get_detail_proforma_pdf()
     {
         global $db;
@@ -166,7 +170,7 @@ class Mproforma
         $table    = $this->table_details;
         $this->Get_detail_proforma_show();
         $proforma_info = $this->proforma_info;
-        $colms = null;
+        $colms  = null;
         $colms .= " $table.id item, ";
         $colms .= " $table.ref_produit, ";
         $colms .= " $table.designation, ";
@@ -188,40 +192,6 @@ class Mproforma
         }
         
         
-        $headers = array(
-            'Item'        => '5[#]center',
-            'Réf'         => '10[#]center',
-            'Description' => '45[#]', 
-            'Qte'         => '5[#]center', 
-            'P.U'         => '10[#]alignRight', 
-            'Re'          => '5[#]center',
-            'Total HT'    => '15[#]alignRight',
-
-        );
-
-        $tableau_head = MySQL::make_table_head($headers);
-        $tableau_body = $db->GetMTable_pdf($headers);
-        $file_export = MPATH_TEMP.'proforma'.'_' .date('d_m_Y_H_i_s').'.pdf';
-
-   //Load template 
-        include_once MPATH_THEMES.'pdf_template/proforma_pdf.php';
-        $new_file_target = MPATH_UPLOAD.'proforma'.date('m_Y');
-
-        if(file_exists($file_export))
-        {
-              
-            if(!Minit::save_file_upload($file_export, 'proforma_'.$id_proforma, $new_file_target, $id_proforma, 'proforma '.$id_proforma, 'proforma', 'proforma', 'proforma_pdf', 'document', $edit = null))
-            {
-                $this->error = false;
-                $this->log .= "Erreur Archivage proforma";
-
-            }
-            
-        }else{
-            $this->error = false;
-            $this->log .= "Erreur création template proforma";
-        }
-
         if($this->error == false)
         {
             return false;
@@ -360,9 +330,9 @@ class Mproforma
       //Get sum of details
             $this->Get_sum_detail($this->_data['tkn_frm']); 
       //calcul values proforma
-            $this->Calculate_proforma_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva']);
+           // $this->Calculate_proforma_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva']);
 
-
+            
       //Check $this->error (true / false)
             if($this->error == false)
             {
@@ -372,30 +342,38 @@ class Mproforma
 
         //Format values for Insert query 
             global $db;
-            $totalht  = $this->total_ht_t;
-            $totaltva = $this->total_tva_t;
-            $totalttc = $this->total_ttc_t;
-            $valeur_remise = $this->valeur_remis_t;
+            $table = $this->table;
+            //Generate reference
+            if(!$reference = $db->Generate_reference($table, 'PROF'))
+            {
+                $this->log .= '</br>Problème Réference';
+                return false;
+            }
+            //$totalht  = $this->total_ht_t;
+            //$totaltva = $this->total_tva_t;
+            //$totalttc = $this->total_ttc_t;
+            //$valeur_remise = $this->valeur_remis_t;
 
             
 
 
-            //$values["reference"]       = MySQL::SQLValue($this->reference);
+            $values["reference"]       = MySQL::SQLValue($reference);
             $values["tkn_frm"]         = MySQL::SQLValue($this->_data['tkn_frm']);
             $values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
             $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
+            $values["vie"]             = MySQL::SQLValue($this->_data['vie']);
             $values["id_commercial"]   = MySQL::SQLValue(session::get('userid'));
             $values["date_proforma"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_proforma'])));
-            $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
-            $values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
+            //$values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
+            //$values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
             $values["claus_comercial"] = MySQL::SQLValue($this->_data['claus_comercial']);
-            $values["totalht"]         = MySQL::SQLValue($totalht);
-            $values["totalttc"]        = MySQL::SQLValue($totalttc);
-            $values["totaltva"]        = MySQL::SQLValue($totaltva);
+            //$values["totalht"]         = MySQL::SQLValue($totalht);
+            //$values["totalttc"]        = MySQL::SQLValue($totalttc);
+            //$values["totaltva"]        = MySQL::SQLValue($totaltva);
             $values["creusr"]          = MySQL::SQLValue(session::get('userid'));
             $values["credat"]          = MySQL::SQLValue(date("Y-m-d H:i:s"));
         //Check if Insert Query been executed (False / True)
-            if(!$result = $db->InsertRow($this->table, $values))
+            if(!$result = $db->InsertRow($table, $values))
             {
             //False => Set $this->log and $this->error = false
               $this->log .= $db->Error();
@@ -406,8 +384,14 @@ class Mproforma
             //Check $this->error = true return Green message and Bol true
               if($this->error == true)
               {
-               $this->log = '</br>Enregistrement réussie: <b>Réference: '.$this->reference;
+               $this->log = '</br>Enregistrement réussie: <b>Réference: '.$reference;
                $this->save_temp_detail($this->_data['tkn_frm'], $this->last_id);
+               //log
+                if(!Mlog::log_exec($table, $this->id_proforma, 'Enregistrement proforma '.$this->id_proforma, 'Insert' ))
+                {
+                    $this->log .= '</br>Un problème de log ';
+                        
+                }
                 //Check $this->error = false return Red message and Bol false   
            }else{
                $this->log .= '</br>Enregistrement réussie: <b>'.$this->reference;
@@ -440,7 +424,7 @@ class Mproforma
       //Get sum of details
         $this->Get_sum_detail($this->_data['tkn_frm']); 
       //calcul values proforma
-        $this->Calculate_proforma_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva']);
+        //$this->Calculate_proforma_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva']);
 
 
       //Check $this->error (true / false)
@@ -449,45 +433,62 @@ class Mproforma
             $this->log .='</br>Enregistrement non réussie';
             return false;
         }
+        //Get existing info
+        $this->get_proforma();
 
     //Format values for Insert query 
         global $db;
-        $totalht  = $this->total_ht_t;
-        $totaltva = $this->total_tva_t;
-        $totalttc = $this->total_ttc_t;
-        $valeur_remise = $this->valeur_remis_t;
-        $this->reference = $this->_data['reference'];
+        $table = $this->table;
+        //$totalht  = $this->total_ht_t;
+        //$totaltva = $this->total_tva_t;
+        //$totalttc = $this->total_ttc_t;
+        //$valeur_remise = $this->valeur_remis_t;
+        //$this->reference = $this->_data['reference'];
 
 
         $values["reference"]       = MySQL::SQLValue($this->reference);
         $values["tkn_frm"]         = MySQL::SQLValue($this->_data['tkn_frm']);
         $values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
         $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
+        $values["vie"]             = MySQL::SQLValue($this->_data['vie']);
         $values["id_commercial"]   = MySQL::SQLValue(session::get('userid'));
         $values["date_proforma"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_proforma'])));
-        $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
-        $values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
-        $values["claus_comercial"] = MySQL::SQLValue($this->_data['claus_comercial']);
-        $values["totalht"]         = MySQL::SQLValue($totalht);
-        $values["totalttc"]        = MySQL::SQLValue($totalttc);
-        $values["totaltva"]        = MySQL::SQLValue($totaltva);
+        //$values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
+        //$values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
+        //$values["claus_comercial"] = MySQL::SQLValue($this->_data['claus_comercial']);
+        //$values["totalht"]         = MySQL::SQLValue($totalht);
+        //$values["totalttc"]        = MySQL::SQLValue($totalttc);
+        //$values["totaltva"]        = MySQL::SQLValue($totaltva);
         $values["updusr"]  = MySQL::SQLValue(session::get('userid'));
         $values["upddat"] = ' CURRENT_TIMESTAMP ';
         $wheres["id"]     = MySQL::SQLValue($this->id_proforma);
         //Check if Insert Query been executed (False / True)
-        if (!$result = $db->UpdateRows($this->table, $values, $wheres)) 
+        if (!$result = $db->UpdateRows($table, $values, $wheres)) 
         {
         //False => Set $this->log and $this->error = false
           $this->log .= $db->Error();
           $this->error = false;
           $this->log .='</br>Modification BD non réussie'; 
-      }else{
-          $this->last_id = $result;
+        }else{
+            $this->last_id = $result;
             //Check $this->error = true return Green message and Bol true
-          if($this->error == true)
-          {
-             $this->log = '</br>Modification réussie: <b>Réference: '.$this->reference;
-             $this->save_temp_detail($this->_data['tkn_frm'], $this->id_proforma);
+            if($this->error == true)
+            {
+                 $this->log = '</br>Modification réussie: <b>Réference: '.$this->reference;
+                 $this->save_temp_detail($this->_data['tkn_frm'], $this->id_proforma);
+                //log
+                if(!Mlog::log_exec($table, $this->id_proforma, 'Modification proforma '.$this->id_proforma, 'Update' ))
+                {
+                    $this->log .= '</br>Un problème de log ';
+                        
+                }
+                
+                //Spy
+                if(!$db->After_update($table, $this->last_id, $values, $this->proforma_info))
+                {
+                    $this->log .= '</br>Problème Esspionage';
+                    $this->error = false; 
+                }
         //Check $this->error = false return Red message and Bol false 
          }else{
              $this->log .= '</br>Modification réussie: <b>'.$this->reference;
@@ -796,6 +797,21 @@ class Mproforma
                     $this->log = '</br>Modification réussie: <b>'.$this->_data['ref_produit'].' ID: '.$this->id_proforma_d;
 
                     $this->Get_sum_detail($tkn_frm);
+                    //log if is edit main devis
+                    if($this->proforma_d_info['id_proforma'] != null)
+                    {
+                        if(!Mlog::log_exec($table, $this->id_proforma, 'Modification Détail proforma '.$this->proforma_d_info['id_proforma'], 'Update'))
+                        {
+                            $this->log .= '</br>Un problème de log ';
+                        
+                        }
+                        //Spy
+                        if(!$db->After_update($table_details, $this->id_proforma_d, $values, $this->proforma_d_info))
+                        {
+                            $this->log .= '</br>Problème Esspionage';
+                            $this->error = false; 
+                        }
+                    }
                 //Check $this->error = false return Red message and Bol false   
                 }else{
                     $this->log .= '</br>Modification réussie: <b>'.$this->_data['ref_produit'];
@@ -815,32 +831,149 @@ class Mproforma
         }
     }
 
-    public function Valid_proforma($etat)
+    /**
+     * [senddevis_to_client Basclly send devis to client and generat PDF]
+     * @param [type] $etat [description]
+     */
+    public function sendproforma_to_client($etat)
     {
+        //Send to client
+        $old_etat = Msetting::get_set('etat_proforma', 'valid_proforma');
+        if($old_etat == null)
+        {
+            $this->error = false;
+            $this->log .= "Manque paramètre etat_proforma => valid_proforma";
+            return false;
+        }
+        if($etat != $old_etat)
+        {
+            $this->error = false;
+            $this->log .= "Ce proforma ne peux pas être envoyé pour le momement #Etat faild";
+            return false;
+        }
         global $db;
         $table = $this->table;
         $id_proforma = $this->id_proforma;
-        if(!$reference = $db->Generate_reference($table, 'PROF'))
+        
+        $new_etat = Msetting::get_set('etat_proforma', 'send_proforma');
+        if($new_etat == null)
         {
-            $this->log .= '</br>Problème Réference';
+            $this->error = false;
+            $this->log .= "Manque paramètre etat_proforma => send_proforma";
             return false;
         }
-        $req_sql = " UPDATE $table SET etat = $etat+1, reference = '$reference'  WHERE id = $id_proforma ";
+        $this->generate_proforma_pdf();
+        $req_sql = " UPDATE $table SET etat = $new_etat WHERE id = $id_proforma ";
+        
         if (!$db->Query($req_sql)) {
             $this->error = false;
-            $this->log .= "Erreur Validation";
+            $this->log .= "Erreur Opération";
             return false;
         }
-        
-        if(!$this->Get_detail_proforma_pdf())
+        if(Msetting::get_set('send_mail_proforma') == true){
+            $this->send_proforma_mail();
+        }
+        //log
+        if(!Mlog::log_exec($table, $this->id_devis, 'Expédition proforma '.$this->id_proforma, 'Update'))
         {
-            $this->log .= $this->log;
+            $this->log .= '</br>Un problème de log ';
+                        
+        }        
+        
+        $this->log .= "<br/>Expédition réussie";
+        return true;
+        
+    }
+    /**
+     * [valid_proforma valider proforma to prepare to send to client]
+     * @param  [int] $etat [etat of proforma must be 0]
+     * @return [type]       [description]
+     */
+    public function valid_proforma($etat)
+    {
+        $old_etat = Msetting::get_set('etat_proforma', 'creat_proforma');
+        if($old_etat == null)
+        {
+            $this->error = false;
+            $this->log .= "Manque paramètre etat_proforma => creat_proforma";
             return false;
+        }
+        if($etat != $old_etat)
+        {
+            $this->error = false;
+            $this->log .= "Ce proforma ne peux pas être validée //Etat faild";
+            return false;
+        }
+        global $db;
+        $table    = $this->table;
+        $id_proforma = $this->id_proforma;
+        
+        $new_etat = Msetting::get_set('etat_proforma', 'valid_proforma');
+        if($new_etat == null)
+        {
+            $this->error = false;
+            $this->log .= "Manque paramètre etat_proforma => valid_proforma";
+            return false;
+        }
+        $req_sql = " UPDATE $table SET etat = $new_etat WHERE id = $id_proforma ";
+        
+        if (!$db->Query($req_sql)) {
+            $this->error = false;
+            $this->log .= "Erreur Opération";
+            return false;
+        }
+        //log
+        if(!Mlog::log_exec($table, $this->id_proforma, 'Validation PROFORMA:'.$this->id_proforma, 'Update'))
+        {
+            $this->log .= '</br>Un problème de log ';
+                        
+        }
 
-        }else{
-            $this->log .= "Validation réussie";
+            
+        $this->log .= "<br/>Opération réussie";
+        return true;
+        
+    }
+
+    /**
+     * [generate_devis_pdf Generate PDF for store and send to client]
+     * @return [type] [description]
+     */
+    Private function generate_proforma_pdf()
+    {
+        $file_tplt = MPATH_THEMES.'pdf_template/proforma_pdf.php';
+        $saf_ref = str_replace('/','_',$this->g('reference'));
+        $file_export  = MPATH_TEMP.session::get('ssid').SLASH.'#'.$saf_ref.'.pdf';
+        
+        $qr_code = true;
+        include_once $file_tplt;
+        //Format all parameteres
+        $temp_file     =  $file_export;
+        //If nofile uploaded return kill function
+        
+        if($temp_file == Null){
             return true;
         }
+        
+        $new_name_file = $this->g('id').'_'.$saf_ref;
+        $folder        = MPATH_UPLOAD.SLASH.'proforma/mois_'.date('m_Y').SLASH.$this->g('id');
+        $id_line       = $this->g('id');
+        $title         = 'Proforma '.$this->g('id').' #'.$this->g('reference');
+        $table         = $this->table;
+        $column        = 'proforma_pdf';
+        $type          = 'Document';
+
+
+         
+        //Call save_file_upload from initial class
+        if(!Minit::save_file_upload($temp_file, $new_name_file, $folder, $id_line, $title, 'proforma', $table, $column, $type, $edit = null))
+        {
+            $this->error = false;
+            $this->log .='</br>Enregistrement '.$item.' dans BD non réussie';
+        }
+        $this->attached = $folder.SLASH.$new_name_file.'.pdf';
+        
+        
     }
 
     
@@ -873,6 +1006,15 @@ class Mproforma
             $this->log .='</br>Suppression réussie ';
             $this->Get_sum_detail($get_tkn_frm);
             $this->log .='#'.$this->sum_total_ht;
+            //log if is edit main devis
+            if($this->proforma_d_info['id_proforma'] != null)
+            {
+                if(!Mlog::log_exec($table, $this->id_proforma, 'Suppression détail proforma '.$this->proforma_d_info['id_proforma'], 'Delete'))
+                {
+                    $this->log .= '</br>Un problème de log ';
+                        
+                }
+            }
         }
       //check if last error is true then return true else rturn false.
         if($this->error == false){
@@ -932,6 +1074,7 @@ class Mproforma
     {
         global $db;
         $id_proforma = $this->id_proforma;
+        $table = $this->table;
         $this->get_proforma();
         //Format where clause
         $where['id'] = MySQL::SQLValue($id_proforma);
@@ -942,7 +1085,7 @@ class Mproforma
             $this->log .='</br>L\' id est vide';
         }
         //execute Delete Query
-        if(!$db->DeleteRows('proforma',$where))
+        if(!$db->DeleteRows($table, $where))
         {
 
             $this->log .= $db->Error().'  '.$db->BuildSQLDelete('proforma',$where);
@@ -953,6 +1096,12 @@ class Mproforma
 
             $this->error = true;
             $this->log .='</br>Suppression réussie ';
+            //log
+            if(!Mlog::log_exec($table, $this->id_proforma, 'Suppression proforma '.$this->id_proforma, 'Delete'))
+            {
+                $this->log .= '</br>Un problème de log ';
+                        
+            }
         }
         //check if last error is true then return true else rturn false.
         if($this->error == false){
@@ -962,7 +1111,120 @@ class Mproforma
         }
     }
 
+        /**
+     * [get_info_produit description] Get all product info
+     * @param  [type] $id_produit [description]
+     * @return [type]             [description]
+     * @return array converted to JSON incontroller
+     */
+    public function get_info_produit($id_produit)
+    {
+        global $db;
+        $req_sql = "SELECT 
+        produits.designation,
+        produits.ref,
+        produits.prix_vente AS prix_vente,
+        ref_unites_vente.unite_vente,
+        ref_types_produits.type_produit,
+        IFNULL((SELECT MAX(d_devis.prix_ht) FROM d_devis WHERE d_devis.id_produit = $id_produit), 0) AS prix_vendu,
+        IFNULL(SUM(stock.qte), 0) AS qte_in_stock,
+        IFNULL(
+        (SELECT 
+        SUM(d_devis.qte) 
+        FROM
+        d_devis,
+        devis 
+        WHERE d_devis.id_produit = produits.id 
+        AND d_devis.id_devis = devis.id 
+        AND devis.etat = 1),
+        0
+        ) AS qte_comand 
+        FROM
+        stock 
+        INNER JOIN produits 
+        ON (
+        stock.idproduit = produits.id
+        ) 
+        INNER JOIN ref_types_produits 
+        ON (
+        produits.idtype = ref_types_produits.id
+        ) 
+        INNER JOIN ref_unites_vente 
+        ON (
+        produits.iduv = ref_unites_vente.id
+        ) 
+        
+        WHERE produits.id = $id_produit ";
 
+        if (!$db->Query($req_sql)) {
+           
+            $this->arr_prduit = array('error' => "Erreur get product info");
+            return false;
+            
+        }else{
+            
+            $this->arr_prduit = $db->RowArray();
+            if($this->arr_prduit['prix_vente'] == null)
+            {
+                $this->arr_prduit = array('error' => "Prix de produit n'est pas enregitré");
+            }            
+        }
+        return true;
+    }
+    /**
+     * [send_devis_mail Send email to client if have email adresse]
+     * @return [bol] [fil log]
+     */
+    private function send_proforma_mail()
+    {
+        //Get info proforma
+        $this->Get_detail_proforma_show();
+        $proforma_info = $this->proforma_info;
+        if($this->g('email') == null)
+        {
+            $this->log .='<br/>Ce client n\'a pas une adresse Mail';
+            return false;
+        }
+        //prepare all variables
+        $ste_c = new MSte_info();
+        $ste = $ste_c->get_ste_info_report_footer(1);
+
+        $agent = new Musers();
+        $agent->id_user = session::get('userid');
+        $agent->get_user();
+
+        $agent_name    = $agent->g('fnom').' '.$agent->g('lnom');
+        $agent_service = $agent->g('service_user');
+        $agent_tel     = $agent->g('tel');
+
+        date_default_timezone_set('Etc/UTC');
+        //Create a new PHPMailer instance
+        $mail = new PHPMailer;
+        //Tell PHPMailer to use SMTP
+        $mail->isSMTP();
+
+        $mail->addAddress($this->g('email'), $this->g('denomination'));
+        if($this->attached != null)
+        {
+           $mail->addAttachment($this->attached, $name = '', $encoding = 'base64', $type = '', $disposition = 'attachment'); 
+        }
+        
+        //Set the subject line
+        $mail->Subject = 'Proforma Réf: #'.$this->g('reference');
+        //Read an HTML message body from an external file, convert referenced images to embedded,
+        $Msg_body = file_get_contents(MPATH_MSG.'template_send_proforma.php');
+        $Msg_body = str_replace(
+            array('%ste_footer%','%agent%', '%service%', '%agenttel%'), 
+            array($ste, $agent_name, $agent_service, $agent_tel ), 
+            $Msg_body);
+        $mail->msgHTML($Msg_body);
+
+        if (!$mail->send()) {
+            $this->log .= "Mailer Error: " . $mail->ErrorInfo;
+        } else {
+            $this->log .= "Devis envoyé  à ".$this->g('email');
+        }
+    }
 /**
  * End Class destrector
  */

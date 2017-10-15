@@ -13,14 +13,15 @@ if(MInit::form_verif('editproforma', false))
 		'id_client'         => Mreq::tp('id_client') ,
 		'tva'               => Mreq::tp('tva') ,
 		'tkn_frm'           => Mreq::tp('tkn_frm') ,
+		'vie'               => Mreq::tp('vie') ,
 		'reference'         => Mreq::tp('reference') ,
 		'checker_reference' => Mreq::tp('checker_reference') ,
-		'date_proforma'        => Mreq::tp('date_proforma') ,
-		'type_remise'       => Mreq::tp('type_remise') ,
+		'date_proforma'     => Mreq::tp('date_proforma') ,
+		/*'type_remise'     => Mreq::tp('type_remise') ,
 		'valeur_remise'     => Mreq::tp('remise_montant') ,
 		'totalht'           => Mreq::tp('totalht') ,
 		'totalttc'          => Mreq::tp('totalttc') ,
-		'totaltva'          => Mreq::tp('totaltva') ,
+		'totaltva'          => Mreq::tp('totaltva') ,*/
 		'claus_comercial'   => Mreq::tp('claus_comercial')
 
 		);
@@ -46,7 +47,17 @@ if(MInit::form_verif('editproforma', false))
 		$empty_list .= "<li>Date proforma</li>";
 		$checker = 1;
 	}
-	if($posted_data['type_remise'] == NULL OR !in_array($posted_data['type_remise'],  array( 'P','M' ))){
+	if($posted_data['tva'] == NULL OR !in_array($posted_data['tva'],  array( 'O','N' ))){
+
+      $empty_list .= "<li>Type remise est incorrecte</li>";
+      $checker = 1;
+    }
+    if($posted_data['vie'] == NULL OR !in_array($posted_data['vie'],  array( '30','60', '90' ))){
+
+      $empty_list .= "<li>Durée de validité</li>";
+      $checker = 1;
+    }
+	/*if($posted_data['type_remise'] == NULL OR !in_array($posted_data['type_remise'],  array( 'P','M' ))){
 
 		$empty_list .= "<li>Type remise est incorrecte</li>";
 		$checker = 1;
@@ -65,7 +76,7 @@ if(MInit::form_verif('editproforma', false))
 
 		$empty_list .= "<li>Total HT</li>";
 		$checker = 1;
-	}
+	}*/
 	if($posted_data['claus_comercial'] == NULL){
 
 		$empty_list .= "<li>Clauses commerciales</li>";

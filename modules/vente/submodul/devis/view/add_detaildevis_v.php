@@ -90,11 +90,14 @@ $(document).ready(function() {
     			
     			if(data['error']){
     				ajax_loadmessage(data['error'] ,'nok',5000)
+                    $('#prix_unitaire').val(0);
+                    $('#ref_produit').val(null);
+                    $('#prix_unitaire').trigger('change');
+                    $('.returned_span').text('...');
+                    $('#label_qte').text('Quantité: ');
+                    return false;
     			}else{
-                    if(data['abn'] == true){
-
-                    }
-                    
+                                        
                     var table = $('#table_details_devis').DataTable();
                     var $abn = data['abn'] == true ? 'abn' : '';
 

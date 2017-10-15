@@ -67,19 +67,22 @@ $form->draw_datatabe_form('table_details_proforma', $verif_value, $columns, 'add
 //Finance bloc
 $form->bloc_title('Zone totaux');
 //Type Remise
-$form->input('Total des articles enregistrés', 'sum_table', 'text' ,'4 is-number alignRight', $info_proforma->g('totalht'), null, null, 'readonly');
-$hard_code_remise = '<label style="margin-left:15px;margin-right : 20px;">Valeur remise: </label><input id="valeur_remise" name="valeur_remise" class="input-small alignRight" value="'.$info_proforma->g('valeur_remise').'" type="text"><span class="help-block">Cette remise sera appliquée sur le total H.T de proforma</span>';
-$typ_remise = array('P' => 'Pourcentage' , 'M' => 'Montant' );
-$form->select('Remise Exept', 'type_remise', 2, $typ_remise, $indx = NULL ,$info_proforma->g('type_remise'), $multi = NULL,  $hard_code_remise);
+//$form->input('Total des articles enregistrés', 'sum_table', 'text' ,'4 is-number alignRight', $info_proforma->g('totalht'), null, null, 'readonly');
+//$hard_code_remise = '<label style="margin-left:15px;margin-right : 20px;">Valeur remise: </label><input id="valeur_remise" name="valeur_remise" class="input-small alignRight" value="'.$info_proforma->g('valeur_remise').'" type="text"><span class="help-block">Cette remise sera appliquée sur le total H.T de proforma</span>';
+//$typ_remise = array('P' => 'Pourcentage' , 'M' => 'Montant' );
+//$form->select('Remise Exept', 'type_remise', 2, $typ_remise, $indx = NULL ,$info_proforma->g('type_remise'), $multi = NULL,  $hard_code_remise);
 
 
 //Prix
-$prixht_array[]  = array('required', 'true', 'Le montant est invalid');
-$hard_code_prices = '<label style="margin-left:15px;margin-right : 20px;">TVA Calculé: </label><input id="totaltva" readonly="" name="totaltva" class="input-small is-number alignRight " value="'.$info_proforma->g('totaltva').'" type="text">';
-$hard_code_prices .= '<label style="margin-left:15px;margin-right : 20px;">Prix Global TTC: </label><input readonly="" id="totalttc" name="totalttc" class="input-large is-number alignRight" value="'.$info_proforma->g('totalttc').'" type="text">';
-$form->input('Prix Global HT', 'totalht', 'text' ,'3 is-number alignRight', $info_proforma->g('totalht'), $prixht_array, $hard_code_prices, 'readonly');
+//$prixht_array[]  = array('required', 'true', 'Le montant est invalid');
+//$hard_code_prices = '<label style="margin-left:15px;margin-right : 20px;">TVA Calculé: </label><input id="totaltva" readonly="" name="totaltva" class="input-small is-number alignRight " value="'.$info_proforma->g('totaltva').'" type="text">';
+////$hard_code_prices .= '<label style="margin-left:15px;margin-right : 20px;">Prix Global TTC: </label><input readonly="" id="totalttc" name="totalttc" class="input-large is-number alignRight" value="'.$info_proforma->g('totalttc').'" type="text">';
+//$form->input('Prix Global HT', 'totalht', 'text' ,'3 is-number alignRight', $info_proforma->g('totalht'), $prixht_array, $hard_code_prices, 'readonly');
+//Validité
+$vie_opt = array('30' => '30 Jours' , '60' => '60 Jours', '90' => '90 Jours' );
+$form->select('Validité', 'vie', 3, $vie_opt, $indx = NULL ,$info_proforma->g('vie'), $multi = NULL);
 //Conditions commercial
-$clauses = 'Paiement 100% à la commande pour';
+$clauses = Msetting::get_set('claus_comercial');
 $form->input_editor('Conditions commerciales', 'claus_comercial', 8, $info_proforma->g('claus_comercial'), $js_array = null,  $input_height = 50);
 $form->button('Enregistrer');
 //Form render
@@ -179,12 +182,41 @@ $(document).ready(function() {
     $('#tva').on('change', function () {
         var table = $('#table_details_proforma').DataTable();
 
-        if (table.data().count() && $(this).val() == 'O' ) {
-            window.setTimeout( function(){
-                        ajax_loadmessage('La TVA sera appliquée sur l\'ensemble des lignes détails', 'nok');
-                        }, 10 );
+        if (table.data().count()) {
+
+            bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de TVA sera appliqué sur l'ensemble des lignes détails, voulez vous vous continuer ?</span>", 
+                function(result){
+                    if(result == true){
+                        
+                        $.ajax({
+
+                            cache: false,
+                            url  : '?_tsk=add_detailproforma&ajax=1'+'&act=1&<?php echo MInit::crypt_tp('exec', 'set_tva')?>',
+                            type : 'POST',
+                            data : $('#editproforma').serialize(),
+                            dataType:"JSON",
+                            success: function(data){
+
+                                if(data['error']== false){
+                                    ajax_loadmessage(data['mess'],'nok',5000)
+                                }else{
+                                    ajax_loadmessage(data['mess'],'ok',3000);
+                                    var t1 = $('.dataTable').DataTable().draw();
+                                    $('#sum_table').val(data['sum']);
+                                    $('#valeur_remise').trigger('change'); 
+                                }
+
+                            }
+                        });
+                    }
+
+
+                });  
+            
+            
             
         }
+
     });
 
     $('#id_client').on('change', function () {
