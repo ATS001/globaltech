@@ -966,22 +966,49 @@ class MySQL
 	}
 
     /**
-     * [Generate_reference description] 
+     * [Generate_reference  Get max or missing rank] 
      * table must have culomn named reference else return false
      * @param [type] $table [table of element ]
      * @param [type] $abr   [abreviation]
      * @return [string or false] [<description>]
      */
-	public function Generate_reference($table, $abr) 
-	{
-        
-        $max_id = $this->QuerySingleValue0("SELECT IFNULL( MAX(SUBSTRING_INDEX(SUBSTRING_INDEX(reference, '-', -1),'/',1)),0) + 1 AS ref FROM  $table WHERE SUBSTRING_INDEX(reference, '/', -1) = YEAR(SYSDATE())");
-        //$lent
-        if($max_id != '0')
-        {  
+    public function Generate_reference($table, $abr) 
+    {
 
-        	$lettre_ste = Msetting::get_set('abr_ste');
-        	$lettre_ste = $lettre_ste == null ? null : $lettre_ste.'_';
+    	$max_id = $this->QuerySingleValue0("SELECT MIN( (
+    		SUBSTRING_INDEX(
+    		SUBSTRING_INDEX(a.reference, '-', - 1),
+    		'/',
+    		1
+    		) * 1
+    		))+1 AS next_id
+    		FROM $table a
+    		LEFT JOIN $table b ON  (
+    		SUBSTRING_INDEX(
+    		SUBSTRING_INDEX(a.reference, '-', - 1),
+    		'/',
+    		1
+    		) * 1
+    		) =  (
+    		SUBSTRING_INDEX(
+    		SUBSTRING_INDEX(b.reference, '-', - 1),
+    		'/',
+    		1
+    		) * 1
+    		)-1
+    		WHERE  (
+    		SUBSTRING_INDEX(
+    		SUBSTRING_INDEX(b.reference, '-', - 1),
+    		'/',
+    		1
+    		) * 1
+    	) IS NULL");
+        //$lent
+    	if($max_id != '0')
+    	{  
+
+    		$lettre_ste = Msetting::get_set('abr_ste');
+    		$lettre_ste = $lettre_ste == null ? null : $lettre_ste.'_';
         	$num_padded = sprintf("%04d", $max_id); //Format Number to 4 char with 0
         	$reference = $lettre_ste.$abr.'-' . $num_padded . '/' . date('Y');
         }else{

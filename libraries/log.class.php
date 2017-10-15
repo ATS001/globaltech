@@ -19,13 +19,15 @@ class Mlog
 		$values["sesid"]     = MySQL::SQLValue(session::get('ssid'));
 		$values["user_exec"] = MySQL::SQLValue(session::get('username'));
 		//If no error on Insert commande
-    		if (!$result = $db->InsertRow("sys_log", $values))
-    		{
-    			return false;  			 
-    		}else{
-                return true;
-    		}
+		if (!$result = $db->InsertRow("sys_log", $values))
+		{
+			return false;  			 
+		}else{
+			return true;
+		}
 		
 	}
+
+	
 
 }

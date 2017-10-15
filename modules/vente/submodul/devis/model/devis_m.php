@@ -833,18 +833,23 @@ class Mdevis
                     $this->log = '</br>Modification réussie: <b>'.$this->_data['ref_produit'].' ID: '.$this->id_devis_d;
 
                     $this->Get_sum_detail($tkn_frm);
-                    //log
-                    if(!Mlog::log_exec($table_details, $this->id_devis_d, 'Modification Détail Devis '.$this->id_devis_d, 'Update'))
+                    //log if is edit main devis
+                    if($this->devis_d_info['id_devis'] != null)
                     {
-                        $this->log .= '</br>Un problème de log ';
+                        if(!Mlog::log_exec($table, $this->id_devis, 'Modification Détail Devis '.$this->devis_d_info['id_devis'], 'Update'))
+                        {
+                            $this->log .= '</br>Un problème de log ';
                         
+                        }
+                        //Spy
+                        if(!$db->After_update($table_details, $this->id_devis_d, $values, $this->devis_d_info))
+                        {
+                            $this->log .= '</br>Problème Esspionage';
+                            $this->error = false; 
+                        }
                     }
-                    //Spy
-                    if(!$db->After_update($table_details, $this->id_devis_d, $values, $this->devis_d_info))
-                    {
-                        $this->log .= '</br>Problème Esspionage';
-                        $this->error = false; 
-                    }
+                    
+                    
                 //Check $this->error = false return Red message and Bol false   
                 }else{
                     $this->log .= '</br>Modification réussie: <b>'.$this->_data['ref_produit'];
@@ -916,7 +921,7 @@ class Mdevis
             return false;
         }else{
             //log
-            if(!Mlog::log_exec($table, $this->id_devis, $message.' #Devis:'.$this->id_devis_d, 'Update'))
+            if(!Mlog::log_exec($table, $this->id_devis, $message.' #Devis:'.$this->id_devis, 'Update'))
             {
                 $this->log .= '</br>Un problème de log ';
                         
@@ -1013,7 +1018,12 @@ class Mdevis
         if(Msetting::get_set('send_mail_devis') == true){
             $this->send_devis_mail();
         }        
-        
+        //log
+        if(!Mlog::log_exec($table, $this->id_devis, 'Expédition devis '.$this->id_devis, 'Update'))
+        {
+            $this->log .= '</br>Un problème de log ';
+                        
+        }
         $this->log .= "<br/>Expédition réussie";
         return true;
         
@@ -1056,7 +1066,12 @@ class Mdevis
             $this->log .= "Erreur Opération";
             return false;
         }
-            
+            //log
+            if(!Mlog::log_exec($table, $this->id_devis, 'Validation devis '.$this->id_devis, 'Update'))
+            {
+                $this->log .= '</br>Un problème de log ';
+                        
+            }
             $this->log .= "<br/>Opération réussie";
             return true;
         
@@ -1103,6 +1118,12 @@ class Mdevis
             //Delete file form archive table
             $db->Query("DELETE FROM archive WHERE doc = $doc ");
             $this->log .= "<br/>Opération réussie";
+            //log
+            if(!Mlog::log_exec($table, $this->id_devis, 'Débloquer devis '.$this->id_devis, 'Update'))
+            {
+                $this->log .= '</br>Un problème de log ';
+                        
+            }
             return true;
         
     }
@@ -1135,6 +1156,16 @@ class Mdevis
             $this->log .='</br>Suppression réussie ';
             $this->Get_sum_detail($get_tkn_frm);
             $this->log .='#'.$this->sum_total_ht;
+            //log if is edit main devis
+            if($this->devis_d_info['id_devis'] != null)
+            {
+                if(!Mlog::log_exec($table, $this->id_devis, 'Suppression détail devis '.$this->devis_d_info['id_devis'], 'Delete'))
+                {
+                    $this->log .= '</br>Un problème de log ';
+                        
+                }
+            }
+            
         }
       //check if last error is true then return true else rturn false.
         if($this->error == false){
@@ -1194,6 +1225,7 @@ class Mdevis
     {
         global $db;
         $id_devis = $this->id_devis;
+        $table = $this->table;
         $this->get_devis();
     	//Format where clause
         $where['id'] = MySQL::SQLValue($id_devis);
@@ -1204,7 +1236,7 @@ class Mdevis
             $this->log .='</br>L\' id est vide';
         }
     	//execute Delete Query
-        if(!$db->DeleteRows('devis',$where))
+        if(!$db->DeleteRows($table, $where))
         {
 
             $this->log .= $db->Error().'  '.$db->BuildSQLDelete('devis',$where);
@@ -1215,6 +1247,12 @@ class Mdevis
 
             $this->error = true;
             $this->log .='</br>Suppression réussie ';
+            //log
+            if(!Mlog::log_exec($table, $this->id_devis, 'Suppression devis '.$this->id_devis, 'Delete'))
+            {
+                $this->log .= '</br>Un problème de log ';
+                        
+            }
         }
     	//check if last error is true then return true else rturn false.
         if($this->error == false){
@@ -1281,7 +1319,10 @@ class Mdevis
             if($this->arr_prduit['type_produit'] == 'Abonnement'){
                 $this->arr_prduit['abn']= true;
             }
-            
+            if($this->arr_prduit['prix_vente'] == null)
+            {
+                $this->arr_prduit = array('error' => "Prix de produit n'est pas enregitré");
+            }
         }
         return true;
     }

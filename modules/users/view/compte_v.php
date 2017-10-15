@@ -14,11 +14,19 @@
 $user_id = Mreq::tp('id');
 $user_id_c = MInit::crypt_tp('id', $user_id);
 
-$user_info->get_activities();
-$array_activities = $user_info->user_activities; 
+if($user_info->get_activities()){
+	$array_activities = $user_info->user_activities;
+}else{
+	$array_activities = $user_info->log;
+}
+ 
 
-$user_info->get_connexion_history();
-$array_connexion_history = $user_info->user_connexion_history;
+if($user_info->get_connexion_history()){
+	$array_connexion_history = $user_info->user_connexion_history;
+}else{
+	$array_connexion_history = $user_info->log;
+}
+
 
 //var_dump($user_info->user_info);
 $photo = Minit::get_file_archive($user_info->user_info['photo']);
@@ -163,14 +171,21 @@ $photo = Minit::get_file_archive($user_info->user_info['photo']);
 										<th>
 											Liste des activités
 										</th>
-											<?php //var_dump($array_activities);
-											foreach($array_activities as $activities ) {?>
+											<?php
+											if(is_array($array_activities)){
+												foreach($array_activities as $activities ) {?>
 											<tr>	
 												<td>
 													<span><?php echo $activities['0']; ?></span>
 												</td>
 											</tr>
-											<?php } ?>
+											<?php }
+											 } else{
+											 	echo $array_activities;
+											 }
+											 ?>
+											
+											
 											
 										</table>
 
@@ -188,13 +203,17 @@ $photo = Minit::get_file_archive($user_info->user_info['photo']);
 												Historique de connexion
 											</th>
 											<?php //var_dump($array_activities);
+											if(is_array($array_connexion_history)){
 											foreach($array_connexion_history as $history ) {?>
 											<tr>
 												<td>
 													<span><?php echo $history['0']; ?></span>
 												</td>
 											</tr>
-											<?php } ?>
+											<?php }
+											}else{
+												echo $array_connexion_history;
+											} ?>
 											
 										</table>
 

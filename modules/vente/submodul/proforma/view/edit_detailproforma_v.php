@@ -101,26 +101,35 @@ $(document).ready(function() {
             url  : '?_tsk=add_detailproforma&ajax=1',
             type : 'POST',
             data : '&act=1&id='+$id_produit+'&<?php echo MInit::crypt_tp('exec', 'produit_info') ?>',
-            dataType:"html",
+            dataType:"JSON",
             success: function(data){
-                var data_arry = data.split("#");
-                if(data_arry[0]==0){
-                    ajax_loadmessage(data_arry[1],'nok',5000)
+                
+                if(data['error']){
+                    ajax_loadmessage(data['error'] ,'nok',5000);
+                    $('#prix_unitaire').val(0);
+                    $('#ref_produit').val(null);
+                    $('#prix_unitaire').trigger('change');
+                    $('.returned_span').text('...');
+                    $('#label_qte').text('Quantité: ');
+                    return false;
                 }else{
-                    var arr = new Array();
-                    arr = JSON.parse(data);
-
-                    $('#ref_produit').val(arr['ref']);
-                    $('#prix_unitaire').val(arr['prix']);
+                                                                                                    
+                    $('#label_qte').text('Quantité: ('+data['unite_vente']+')');
+                    $('#prix_unitaire').val(data['prix_vente']);
+                    $('#ref_produit').val(data['ref']);
                     $('.returned_span').remove();
-                    $('#ref_produit').parent('div').after(arr['prix_base']);
-                    $('#prix_unitaire').trigger('change'); 
+                    if(data['prix_vendu'] == 0){
+                     $('#ref_produit').parent('div').after('<span class="help-block returned_span">Ce produit n\' pas été vendu avant!</span>'); 
+                    }else{
+                        $('#ref_produit').parent('div').after('<span class="help-block returned_span">Ce produit étais vendu à :'+data['prix_vendu']+'</span>');
+                    }
+                    $('#prix_unitaire').trigger('change');
+                                        
                 }
+            }//end success
+        });
 
-            }
-        })
-
-        var validator = $('#edit_detailproforma').validate();
+        var validator = $('#add_detailproforma').validate();
         validator.resetForm();
 
     });

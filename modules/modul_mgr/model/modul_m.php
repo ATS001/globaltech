@@ -130,6 +130,7 @@ class Mmodul {
 		, `task_action`.`code`  AS code
 		, `task_action`.`etat_line`  AS etat_line
 		, `task_action`.`id`    AS action_id
+		, `task_action`.`service`    AS service
 		,(
 		CASE
 		WHEN (SELECT 1 FROM rules_action WHERE rules_action.`action_id` =  task_action.id AND rules_action.userid = $user GROUP BY userid) = 1 THEN 1
@@ -1347,13 +1348,14 @@ class Mmodul {
 		$services = str_replace('"', '-', $services);
 		$services = str_replace('-,-', '-', $services);
 		$message = '<span class="label label-sm label-'.$this->_data['message_class'] .'">'.$this->_data['etat_desc'].'</span>';
-
+        $id = MD5($description.'0def');
+        $this->check_exist_idf($idf); 
 		global $db;
 		//$service               = '-'.session::get('service').'-';
 		$values["appid"]         = MySQL::SQLValue($app_id);
 		$values["app"]           = MySQL::SQLValue($this->_data['app']);
 		//to difference of next task action we use 0def
-		$values["idf"]           = MySQL::SQLValue(MD5($description . '0def'));
+		$values["idf"]           = MySQL::SQLValue($idf);
 		$values["descrip"]       = MySQL::SQLValue($description);
 		$values["type"]          = MySQL::SQLValue(1);
 		$values["service"]       = MySQL::SQLValue($services);
@@ -1422,12 +1424,12 @@ class Mmodul {
 			$services = str_replace('-,-', '-', $services);
 			$values["service"]   = MySQL::SQLValue($services);
 		}
-
-
+        $id = MD5($description.'0def');
+        $this->check_exist_idf($idf); 
 		//$service               = '-'.session::get('service').'-';
 		$values["appid"]         = MySQL::SQLValue($app_id);
 		$values["app"]           = MySQL::SQLValue($this->_data['app']);
-		$values["idf"]           = MySQL::SQLValue(MD5($description.'0def'));
+		$values["idf"]           = MySQL::SQLValue($idf);
 		$values["descrip"]       = MySQL::SQLValue($description);
 		$values["type"]          = MySQL::SQLValue(1);
 		$values["etat_line"]     = MySQL::SQLValue(0);
@@ -1644,13 +1646,24 @@ class Mmodul {
     	}
 
     }
+    Private function check_exist_idf($idf)
+    {   
+    	global $db;
+    	$sql_req = "SELECT COUNT(id) FROM task_action WHERE idf = '$idf'";
+    	if($db->QuerySingleValue0($sql_req) > 0){
+    		$this->error = false;
+    		$this->log .= '</br>La descripttion existe déjà dans la table Task Action';
+    		$this->log .= '<br/>Chercher le IDF : '.$idf;
+    	}
+    }
+
     /**
      * [add_task_action Add Task Action (Autorisation_Lien_WF)]
      */
     public function add_task_action()
     {
     	
-
+        
 
 
     	$services = json_encode($this->_data['services']);
@@ -1659,8 +1672,8 @@ class Mmodul {
 
     	$code    = '<li><a href="#" class="'.$this->_data['mode_exec'].'" data="%id%" rel="'.$this->_data['app'].'"  ><i class="ace-icon fa fa-'.$this->_data['class'].' bigger-100"></i> '.$this->_data['description'].'</a></li>';
     	$message = '<span class="label label-sm label-'.$this->_data['message_class'] .'">'.$this->_data['etat_desc'].'</span>';
-    	$idf     = MD5($this->_data['description'].$this->_data['etat_line']);
-
+    	$idf     = MD5($this->_data['description'].$this->_data['etat_line'].$this->_data['services']);
+        $this->check_exist_idf($idf);
     	global $db;
     	$values["appid"]         = MySQL::SQLValue($this->_data['id_task']);
     	$values["descrip"]       = MySQL::SQLValue($this->_data['description']);
@@ -1734,8 +1747,8 @@ class Mmodul {
 
     	$code    = '<li><a href="#" class="'.$this->_data['mode_exec'].'" data="%id%" rel="'.$this->_data['app'].'"  ><i class="ace-icon fa fa-'.$this->_data['class'].' bigger-100"></i> '.$this->_data['description'].'</a></li>';
     	$message = '<span class="label label-sm label-'.$this->_data['message_class'] .'">'.$this->_data['etat_desc'].'</span>';
-    	$idf     = MD5($this->_data['description'].$this->_data['etat_line']);
-
+    	$idf     = MD5($this->_data['description'].$this->_data['etat_line'].$this->_data['services']);
+        $this->check_exist_idf($idf);
     	global $db;
     	$values["appid"]         = MySQL::SQLValue($this->_data['id_task']);
     	$values["descrip"]       = MySQL::SQLValue($this->_data['description']);

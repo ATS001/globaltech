@@ -127,7 +127,9 @@ global $db;
                     
 if (!$db->Query($query_modul->Get_action_modul($row['id'], Mreq::tp('id')))) $db->Kill($db->Error());
 while (!$db->EndOfSeek()) {
+
         $row = $db->Row();
+        if(strpos($row->service, '-'.$info_user->Shw('service',1).'-')){
         $type = $row->type == 0 ? ' <span class="pull-right label label-info arrowed-in-right arrowed">Lien menu</span>' : ' <span class="pull-right label label-success arrowed-in-right arrowed">Autorisation</span>'; 
         $etat_line = $row->type == 0 ? ' <span class="badge badge-pink">'.$row->etat_line.'</span>' : null;
 ?>
@@ -156,7 +158,9 @@ while (!$db->EndOfSeek()) {
 													</label>
 										</td>
 									</tr>
-<?php } ?> 
+<?php 
+    }//End if service
+}//End While ?> 
 									
 
 									

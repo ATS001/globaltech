@@ -14,7 +14,18 @@ if(!MInit::crypt_tp('id', null, 'D')or !$proforma->get_proforma())
 //Execute activation desactivation
 $etat = $proforma->proforma_info['etat'];
 
-if($proforma->valid_proforma($etat))
+switch ($etat) {
+	case 0:
+		$action = 'valid_proforma';
+		break;
+	case 1:
+	    $action = 'sendproforma_to_client';	
+	default:
+		# code...
+		break;
+}
+
+if($proforma->$action($etat))
 {
 	exit("1#".$proforma->log);
 
