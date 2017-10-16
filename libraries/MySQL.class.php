@@ -980,12 +980,12 @@ class MySQL
     	(SELECT (SUBSTRING_INDEX(SUBSTRING_INDEX(a.reference, '-', - 1),'/', 1 ) * 1) AS id  FROM $table a ORDER BY id ) AS $table ORDER BY id;";
 
     	$max_id = $this->QuerySingleValue0($sql_req);
-    	
+    	$max_id = $max_id == 0 ? 1 : $max_id;
         //$lent
     	if($max_id != '0')
     	{  
             
-            //$max_id = $max_id == 0 ? 1 : $max_id;
+            
     		$lettre_ste = Msetting::get_set('abr_ste');
     		$lettre_ste = $lettre_ste == null ? null : $lettre_ste.'_';
         	$num_padded = sprintf("%04d", $max_id); //Format Number to 4 char with 0
