@@ -975,12 +975,9 @@ class MySQL
     public function Generate_reference($table, $abr) 
     {
         //SET Ranking value
-        $this->QuerySingleValue0('SET @i = 1 ;');
-    	$sql_req = "SELECT  MAX(IF
-    			(@i=(SUBSTRING_INDEX(SUBSTRING_INDEX(a.reference, '-', - 1),'/', 1 ) * 1),
-    			@i:=(SUBSTRING_INDEX(SUBSTRING_INDEX(a.reference, '-', - 1),'/', 1) * 1)+1, @i)) AS next_ref 
-    			
-    			FROM $table a ORDER BY (SUBSTRING_INDEX( SUBSTRING_INDEX(a.reference, '-', - 1),'/', 1)) ;";
+    	$this->QuerySingleValue0('SET @i = 1 ;');
+    	$sql_req = "SELECT MAX(IF(@i=id,@i:=id+1,@i)) AS next_ref FROM 
+    	(SELECT (SUBSTRING_INDEX(SUBSTRING_INDEX(a.reference, '-', - 1),'/', 1 ) * 1) AS id  FROM $table a ORDER BY id ) AS $table ORDER BY id;";
 
     	$max_id = $this->QuerySingleValue0($sql_req);
     	
