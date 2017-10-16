@@ -17,54 +17,62 @@ $array_column = array(
         'header' => 'Référence',
         'align'  => 'L'
     ),
+    array(
+        'column' => 'factures.date_facture',
+        'type'   => 'date',
+        'alias'  => 'df',
+        'width'  => '8',
+        'header' => 'Date',
+        'align'  => 'C'
+    ),
     
     array(
         'column' => 'factures.total_ttc',
-        'type'   => '',
+        'type'   => 'int',
         'alias'  => 'tttc',
-        'width'  => '10',
-        'header' => 'Totale TTC',
-        'align'  => 'L'
+        'width'  => '6',
+        'header' => 'Total TTC',
+        'align'  => 'R'
     ),
     
     array(
         'column' => 'factures.total_paye',
-        'type'   => '',
+        'type'   => 'int',
         'alias'  => 'tp',
-        'width'  => '10',
-        'header' => 'Totale payé',
-        'align'  => 'L'
+        'width'  => '7',
+        'header' => 'Total payé',
+        'align'  => 'R'
     ),
   
     array(
         'column' => 'factures.reste',
-        'type'   => '',
-        'alias'  => 'tva',
-        'width'  => '10',
-        'header' => 'TVA',
-        'align'  => 'L'
+        'type'   => 'int',
+        'alias'  => 'rest',
+        'width'  => '6',
+        'header' => 'Reste',
+        'align'  => 'R'
     ),
     array(
-        'column' => 'factures.client',
+        'column' => 'CONCAT(c.code, " - ",factures.client)',
         'type'   => '',
-        'alias'  => 'clt',
-        'width'  => '15',
+        'alias'  => 'con_clt',
+        'width'  => '17',
         'header' => 'Client',
         'align'  => 'C'
     ),
     array(
-        'column' => 'CONCAT("<b>DU</b> ",factures.du," <b>AU</b> ",factures.au)',
+        'column' => 'IF(base_fact="C",CONCAT("<b>DU</b> ", DATE_FORMAT(factures.du,"%d-%m-%Y")," <b>AU</b> ",DATE_FORMAT(factures.au,"%d-%m-%Y"))," ")',
         'type'   => '',
         'alias'  => 'clt',
-        'width'  => '15',
-        'header' => 'Client',
+        'width'  => '18',
+        'header' => 'Période facturée',
         'align'  => 'C'
     ),
     array(
         'column' => 'statut',
         'type'   => '',
         'alias'  => 'statut',
-        'width'  => '15',
+        'width'  => '10',
         'header' => 'Statut',
         'align'  => 'C'
     ),
@@ -73,9 +81,9 @@ $array_column = array(
 //Creat new instance
 $list_data_table = new Mdatatable();
 //Set tabels used in Query
-$list_data_table->tables = array('factures');
+$list_data_table->tables = array('factures,clients c,contrats ctr,devis d');
 //Set Jointure
-$list_data_table->joint = '';
+$list_data_table->joint = 'factures.idcontrat=ctr.id and ctr.iddevis=d.id and d.id_client=c.id';
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query
