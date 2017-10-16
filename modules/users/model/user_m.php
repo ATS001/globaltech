@@ -125,7 +125,7 @@ class Musers {
 
     $sql = "SELECT CONCAT((IF (s.`expir`IS NULL,'Session ouverte, depuis ',CONCAT('Ouverture de session, le ',DATE_FORMAT(s.`dat`,'%d-%m-%Y %H:%i'),' pendant ')))
     ,TIMESTAMPDIFF(MINUTE, s.`dat`, (IF (s.`expir`IS NULL,NOW(),s.`expir`))),' minutes') AS HISTORY FROM 
-    users_sys u, SESSION s WHERE u.`id`=s.`userid` AND u.id = $this->id_user ORDER BY s.`dat` DESC LIMIT 0,6";
+    users_sys u, session s WHERE u.`id`=s.`userid` AND u.id = $this->id_user ORDER BY s.`dat` DESC LIMIT 0,6";
 
     if(!$db->Query($sql))
     {
