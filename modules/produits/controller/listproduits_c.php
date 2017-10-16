@@ -35,7 +35,7 @@ $array_column = array(
         'align'  => 'L'
     ),
     array(
-        'column' => '(SELECT qte_act FROM qte_actuel WHERE id_produit = produits.id) as stock',
+        'column' => '(SELECT qte_act FROM qte_actuel WHERE id_produit = produits.id)',
         'type'   => '',
         'alias'  => 'stmin',
         'width'  => '15',
