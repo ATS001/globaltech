@@ -55,8 +55,9 @@ $form->input_hidden('ref', $info_contrat->s('ref'));
 //////////////////////////////////////////////////////////////////////////////////////////
 //
 
+
 //Devis
-$etat_devis_valid = Msetting::get_set('etat_valid_devis');
+$etat_devis_valid = Msetting::get_set('etat_devis','valid_client');
 $devis_array[]  = array('required', 'true', 'Choisir un devis');
 $form->select_table('Devis ', 'iddevis', 8, 'devis', 'id', 'reference' , 'reference', $indx = '------' , $info_contrat->s('iddevis'),$multi=NULL, $where="devis.etat=$etat_devis_valid AND  devis.`id` NOT IN (SELECT iddevis FROM contrats c WHERE devis.id=c.iddevis and devis.id <> ".$info_contrat->s('iddevis').")" , $devis_array);
 
