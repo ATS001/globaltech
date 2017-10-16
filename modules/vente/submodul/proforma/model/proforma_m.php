@@ -387,7 +387,7 @@ class Mproforma
                $this->log = '</br>Enregistrement réussie: <b>Réference: '.$reference;
                $this->save_temp_detail($this->_data['tkn_frm'], $this->last_id);
                //log
-                if(!Mlog::log_exec($table, $this->id_proforma, 'Enregistrement proforma '.$this->id_proforma, 'Insert' ))
+                if(!Mlog::log_exec($table, $this->id_proforma, 'Enregistrement proforma '.$this->last_id, 'Insert' ))
                 {
                     $this->log .= '</br>Un problème de log ';
                         
