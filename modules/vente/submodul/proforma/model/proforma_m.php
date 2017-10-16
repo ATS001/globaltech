@@ -943,7 +943,7 @@ class Mproforma
     {
         $file_tplt = MPATH_THEMES.'pdf_template/proforma_pdf.php';
         $saf_ref = str_replace('/','_',$this->g('reference'));
-        $file_export  = MPATH_TEMP.session::get('ssid').SLASH.'#'.$saf_ref.'.pdf';
+        $file_export  = MPATH_TEMP.'#'.$saf_ref.'.pdf';
         
         $qr_code = true;
         include_once $file_tplt;
