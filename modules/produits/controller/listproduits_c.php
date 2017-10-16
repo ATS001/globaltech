@@ -35,11 +35,11 @@ $array_column = array(
         'align'  => 'L'
     ),
     array(
-        'column' => 'produits.stock_min',
+        'column' => '(SELECT qte_act FROM qte_actuel WHERE idproduit = produits.id) as stock',
         'type'   => '',
         'alias'  => 'stmin',
         'width'  => '15',
-        'header' => 'Stock minimale',
+        'header' => 'Stock',
         'align'  => 'C'
     ),
     array(
