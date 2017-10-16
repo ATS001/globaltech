@@ -22,7 +22,7 @@ $array_column = array(
         'column' => 'proforma.reference',
         'type'   => '',
         'alias'  => 'ref_produit',
-        'width'  => '10',
+        'width'  => '15',
         'header' => 'Référence',
         'align'  => 'C'
     ),

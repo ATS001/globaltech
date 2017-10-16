@@ -974,39 +974,21 @@ class MySQL
      */
     public function Generate_reference($table, $abr) 
     {
+        //SET Ranking value
+        $this->QuerySingleValue0('SET @i = 1 ;');
+    	$sql_req = "SELECT  MAX(IF
+    			(@i=(SUBSTRING_INDEX(SUBSTRING_INDEX(a.reference, '-', - 1),'/', 1 ) * 1),
+    			@i:=(SUBSTRING_INDEX(SUBSTRING_INDEX(a.reference, '-', - 1),'/', 1) * 1)+1, @i)) AS next_ref 
+    			
+    			FROM $table a ORDER BY (SUBSTRING_INDEX( SUBSTRING_INDEX(a.reference, '-', - 1),'/', 1)) ;";
 
-    	$max_id = $this->QuerySingleValue0("SELECT MIN( (
-    		SUBSTRING_INDEX(
-    		SUBSTRING_INDEX(a.reference, '-', - 1),
-    		'/',
-    		1
-    		) * 1
-    		))+1 AS next_id
-    		FROM $table a
-    		LEFT JOIN $table b ON  (
-    		SUBSTRING_INDEX(
-    		SUBSTRING_INDEX(a.reference, '-', - 1),
-    		'/',
-    		1
-    		) * 1
-    		) =  (
-    		SUBSTRING_INDEX(
-    		SUBSTRING_INDEX(b.reference, '-', - 1),
-    		'/',
-    		1
-    		) * 1
-    		)-1
-    		WHERE  (
-    		SUBSTRING_INDEX(
-    		SUBSTRING_INDEX(b.reference, '-', - 1),
-    		'/',
-    		1
-    		) * 1
-    	) IS NULL");
+    	$max_id = $this->QuerySingleValue0($sql_req);
+    	
         //$lent
     	if($max_id != '0')
     	{  
-
+            
+            //$max_id = $max_id == 0 ? 1 : $max_id;
     		$lettre_ste = Msetting::get_set('abr_ste');
     		$lettre_ste = $lettre_ste == null ? null : $lettre_ste.'_';
         	$num_padded = sprintf("%04d", $max_id); //Format Number to 4 char with 0
@@ -1569,7 +1551,7 @@ class MySQL
 		$this->Query($sql);
 		if ($this->RowCount() > 0 && $this->GetColumnCount() > 0) {
 			$row = $this->RowArray(0, MYSQL_NUM);
-			$returned = $row[0] == NULL?"0":$row[0];
+			$returned = $row[0] == NULL? "0" : $row[0];
 			
 			return $returned;
 
