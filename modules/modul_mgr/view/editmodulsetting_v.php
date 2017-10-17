@@ -82,7 +82,7 @@ $form->input('Nom Application', 'app', 'text', 6,  $info_modul->Shw('app'), $app
 
 //Class en cas de app de base
 
-$sbclass_array[]  = array('regex', 'true', 'Insérer Classe Valid' );
+//$sbclass_array[]  = array('regex', 'true', 'Insérer Classe Valid' );
 $sbclass_array[]  = array('minlength', '3', 'Minimum 3 caractères' );
 $form->input('Class TDB', 'sbclass', 'text', 6, $info_modul->Shw('sbclass'), $sbclass_array);
 //Message dans la liste

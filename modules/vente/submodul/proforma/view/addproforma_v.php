@@ -26,7 +26,7 @@
             <div class="widget-box">
                 
 <?php
-$tva  = Mcfg::get('tva'); 
+
 $form = new Mform('addproforma', 'addproforma', '', 'proforma', '0', null);
 
 //Date proforma
@@ -50,19 +50,22 @@ $form->draw_datatabe_form('table_details_proforma', $verif_value, $columns, 'add
 //Finance bloc
 $form->bloc_title('Zone totaux');
 //Type Remise
-$form->input('Total des articles enregistrés', 'sum_table', 'text' ,'4 is-number alignRight', '0', null, null, 'readonly');
-$hard_code_remise = '<label style="margin-left:15px;margin-right : 20px;">Valeur remise: </label><input id="valeur_remise" name="valeur_remise" class="input-small alignRight" value="0" type="text"><span class="help-block">Cette remise sera appliquée sur le total H.T de proforma</span>';
-$typ_remise = array('P' => 'Pourcentage' , 'M' => 'Montant' );
-$form->select('Remise Exept', 'type_remise', 2, $typ_remise, $indx = NULL ,$selected = NULL, $multi = NULL,  $hard_code_remise);
+//$form->input('Total des articles enregistrés', 'sum_table', 'text' ,'4 is-number alignRight', '0', null, null, 'readonly');
+//$hard_code_remise = '<label style="margin-left:15px;margin-right : 20px;">Valeur remise: </label><input id="valeur_remise" name="valeur_remise" class="input-small alignRight" value="0" type="text"><span class="help-block">Cette remise sera appliquée sur le total H.T de proforma</span>';
+//$typ_remise = array('P' => 'Pourcentage' , 'M' => 'Montant' );
+//$form->select('Remise Exept', 'type_remise', 2, $typ_remise, $indx = NULL ,$selected = NULL, $multi = NULL,  $hard_code_remise);
 
 
 //Prix
-$prixht_array[]  = array('required', 'true', 'Le montant est invalide');
-$hard_code_prices = '<label style="margin-left:15px;margin-right : 20px;">TVA Calculé: </label><input id="totaltva" readonly="" name="totaltva" class="input-small is-number alignRight " value="0" type="text">';
-$hard_code_prices .= '<label style="margin-left:15px;margin-right : 20px;">Prix Global TTC: </label><input readonly="" id="totalttc" name="totalttc" class="input-large is-number alignRight" value="0" type="text">';
-$form->input('Prix Global HT', 'totalht', 'text' ,'3 is-number alignRight', '0', $prixht_array, $hard_code_prices, 'readonly');
+//$prixht_array[]  = array('required', 'true', 'Le montant est invalide');
+//$hard_code_prices = '<label style="margin-left:15px;margin-right : 20px;">TVA Calculé: </label><input id="totaltva" readonly="" name="totaltva" class="input-small is-number alignRight " value="0" type="text">';
+//$hard_code_prices .= '<label style="margin-left:15px;margin-right : 20px;">Prix Global TTC: </label><input readonly="" id="totalttc" name="totalttc" class="input-large is-number alignRight" value="0" type="text">';
+//$form->input('Prix Global HT', 'totalht', 'text' ,'3 is-number alignRight', '0', $prixht_array, $hard_code_prices, 'readonly');
+//Validité
+$vie_opt = array('30' => '30 Jours' , '60' => '60 Jours', '90' => '90 Jours' );
+$form->select('Validité', 'vie', 3, $vie_opt, $indx = NULL ,$selected = NULL, $multi = NULL);
 //Conditions commercial
-$clauses = 'Paiement 100% à la commande pour';
+$clauses = Msetting::get_set('claus_comercial');
 $form->input_editor('Conditions commerciales', 'claus_comercial', 8, $clauses, $js_array = null,  $input_height = 50);
 $form->button('Enregistrer');
 //Form render
@@ -154,7 +157,7 @@ $(document).ready(function() {
             bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de TVA sera appliqué sur l'ensemble des lignes détails, voulez vous vous continuer ?</span>", 
                 function(result){
                     if(result == true){
-                        var $tkn_frm = $(this).attr('tkn_frm');
+                        
                         $.ajax({
 
                             cache: false,

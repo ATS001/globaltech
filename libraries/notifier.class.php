@@ -40,7 +40,7 @@ class MNotifier
     	    AND task_action.notif = 1 
     	    AND task.app = '$app' 
     	    AND task_action.id = rules_action.action_id 
-    	    AND rules_action.userid = 1
+    	    AND rules_action.userid = $user
             )AND task.app = '$app' LIMIT 0,1 ";
     	
 

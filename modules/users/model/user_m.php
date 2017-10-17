@@ -22,8 +22,8 @@ class Musers {
 	var $id_user         = null; // User ID append when request
 	var $token           = null; //user for recovery function
 	var $user_info; //Array stock all userinfo 
-  var $user_activities; //Array stock all user activities
-  var $user_connexion_history; //Array stock all user connexion history
+  var $user_activities        = null; //Array stock all user activities
+  var $user_connexion_history = null; //Array stock all user connexion history
 	var $app_action; //Array action for each row
 
 	public function __construct($properties = array()){
@@ -125,7 +125,7 @@ class Musers {
 
     $sql = "SELECT CONCAT((IF (s.`expir`IS NULL,'Session ouverte, depuis ',CONCAT('Ouverture de session, le ',DATE_FORMAT(s.`dat`,'%d-%m-%Y %H:%i'),' pendant ')))
     ,TIMESTAMPDIFF(MINUTE, s.`dat`, (IF (s.`expir`IS NULL,NOW(),s.`expir`))),' minutes') AS HISTORY FROM 
-    users_sys u, SESSION s WHERE u.`id`=s.`userid` AND u.id = $this->id_user ORDER BY s.`dat` DESC LIMIT 0,6";
+    users_sys u, session s WHERE u.`id`=s.`userid` AND u.id = $this->id_user ORDER BY s.`dat` DESC LIMIT 0,6";
 
     if(!$db->Query($sql))
     {
@@ -441,12 +441,14 @@ class Musers {
         $this->check_file('signature', 'La Signature d\'Utilisateur.', $this->_data['signature_id']);
       }
 
+
+
       if($this->error == true)
       {
         global $db;
         $values["nom"]     = MySQL::SQLValue($this->_data['nom']);
         $values["mail"]    = MySQL::SQLValue($this->_data['mail']);
-        $values["pass"]    = MySQL::SQLValue(md5($this->_data['pass']));
+        
         $values["service"] = MySQL::SQLValue($this->_data['service']);
         $values["fnom"]    = MySQL::SQLValue($this->_data['fnom']);
         $values["lnom"]    = MySQL::SQLValue($this->_data['lnom']);
@@ -456,6 +458,10 @@ class Musers {
         $values["updusr"]  = MySQL::SQLValue(session::get('userid'));
         $values["upddat"]  = ' CURRENT_TIMESTAMP ';
         $wheres["id"]      = MySQL::SQLValue($this->id_user);
+        //if password not null then update it
+        if($this->_data['pass'] != null){
+          $values["pass"]    = MySQL::SQLValue(md5($this->_data['pass']));
+        }
 
 
 			//If no error on Update commande

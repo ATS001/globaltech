@@ -966,22 +966,28 @@ class MySQL
 	}
 
     /**
-     * [Generate_reference description] 
+     * [Generate_reference  Get max or missing rank] 
      * table must have culomn named reference else return false
      * @param [type] $table [table of element ]
      * @param [type] $abr   [abreviation]
      * @return [string or false] [<description>]
      */
-	public function Generate_reference($table, $abr) 
-	{
-        
-        $max_id = $this->QuerySingleValue0("SELECT IFNULL( MAX(SUBSTRING_INDEX(SUBSTRING_INDEX(reference, '-', -1),'/',1)),0) + 1 AS ref FROM  $table WHERE SUBSTRING_INDEX(reference, '/', -1) = YEAR(SYSDATE())");
-        //$lent
-        if($max_id != '0')
-        {  
+    public function Generate_reference($table, $abr) 
+    {
+        //SET Ranking value
+    	$this->QuerySingleValue0('SET @i = 1 ;');
+    	$sql_req = "SELECT MAX(IF(@i=id,@i:=id+1,@i)) AS next_ref FROM 
+    	(SELECT (SUBSTRING_INDEX(SUBSTRING_INDEX(a.reference, '-', - 1),'/', 1 ) * 1) AS id  FROM $table a ORDER BY id ) AS $table ORDER BY id;";
 
-        	$lettre_ste = Msetting::get_set('abr_ste');
-        	$lettre_ste = $lettre_ste == null ? null : $lettre_ste.'_';
+    	$max_id = $this->QuerySingleValue0($sql_req);
+    	$max_id = $max_id == 0 ? 1 : $max_id;
+        //$lent
+    	if($max_id != '0')
+    	{  
+            
+            
+    		$lettre_ste = Msetting::get_set('abr_ste');
+    		$lettre_ste = $lettre_ste == null ? null : $lettre_ste.'_';
         	$num_padded = sprintf("%04d", $max_id); //Format Number to 4 char with 0
         	$reference = $lettre_ste.$abr.'-' . $num_padded . '/' . date('Y');
         }else{
@@ -1542,7 +1548,7 @@ class MySQL
 		$this->Query($sql);
 		if ($this->RowCount() > 0 && $this->GetColumnCount() > 0) {
 			$row = $this->RowArray(0, MYSQL_NUM);
-			$returned = $row[0] == NULL?"0":$row[0];
+			$returned = $row[0] == NULL? "0" : $row[0];
 			
 			return $returned;
 

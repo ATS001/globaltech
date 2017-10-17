@@ -43,7 +43,7 @@
 							</th>                                              
 	                                               
 	                                                <th>
-								Stock minimale
+								Stock
 							</th>
 	                                                
 							<th>

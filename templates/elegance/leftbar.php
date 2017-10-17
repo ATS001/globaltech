@@ -69,34 +69,62 @@ $arr_modul = $modules->left_menu_arr;
                      
                     	
 <?php
-//liste Modules
+$render = null;
+//Check if we have one or more modul access if not render = null
+if($arr_modul){
+	//liste Modules
 
-$render = '';
-foreach ($arr_modul as $row)
-{
-		
-	$check_sub_modul = $modules->get_sub_modul($row['modul'], $row['app'], $row['descrip'], $row['class']);
+	
+	foreach ($arr_modul as $row)
+	{
+	    
+        if($row['parent'] == null)
+        {
+        	$modul = $row['modul'];
+        	$class = $row['class'];
+        	$dscri = $row['descrip'];
+        }else{
+        	$modul = $row['parent'];
+        	if($parent = $modules->get_modul_parent($modul))
+        	{
+        		foreach ($parent as $key => $value) {
+        			$modul = $value['modul'];
+        	        $class = $value['class'];
+        	        $dscri = $value['descrip'];
+        		}
+
+        		 
+        	}
+        } 
+
+
+
+		$check_sub_modul = $modules->get_sub_modul($modul);
 	//exit($check_sub_modul);
-	if( $check_sub_modul == NULL){
-        
-		$render .='<li left_menu="1"><a href="#"  class="tip-right this_url " rel="'.$row['app'].'" title="'.$row['descrip'].'"><i class="menu-icon fa fa-'.$row['class'].'"></i><span class="menu-text this_url" rel="'.$row['app'].'"> '.$row['descrip'].'</span></b></a></li>'; 
-	}else{
-		$render .='<li left_menu="1" ><a href="#" class="dropdown-toggle" title="'.$row['descrip'].'"><i class="menu-icon fa fa-'.$row['class'].'"></i><span class="menu-text"> '.$row['descrip'].'</span><b class="arrow fa fa-angle-down"></b></a>';
-		$render .= $check_sub_modul .'</li>';
+		if( $check_sub_modul == NULL){
+
+			$render .='<li left_menu="1"><a href="#"  class="tip-right this_url " rel="'.$row['app'].'" title="'.$row['descrip'].'"><i class="menu-icon fa fa-'.$row['class'].'"></i><span class="menu-text this_url" rel="'.$row['app'].'"> '.$row['descrip'].'</span></b></a></li>'; 
+		}else{
+			$render .='<li left_menu="1" ><a href="#" class="dropdown-toggle" title="'.$dscri.'"><i class="menu-icon fa fa-'.$class.'"></i><span class="menu-text"> '.$dscri.'</span><b class="arrow fa fa-angle-down"></b></a>';
+			$render .= $check_sub_modul .'</li>';
+		}
+
 	}
-    
-}
- $render .= '';
 
- echo $render;
-
-?> 
-                    </ul><!-- /.nav-list -->
+	$render .= '</ul><!-- /.nav-list -->
 
                     <!-- #section:basics/sidebar.layout.minimize -->
                     <div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
                     	<i class="ace-icon fa fa-angle-double-left" data-icon1="ace-icon fa fa-angle-double-left" data-icon2="ace-icon fa fa-angle-double-right"></i>
-                    </div>
+                    </div>';
+		
+}
+
+
+
+echo $render;
+?> 
+                    
 
                     <!-- /section:basics/sidebar.layout.minimize -->
                     <script type="text/javascript">
