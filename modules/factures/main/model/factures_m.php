@@ -24,6 +24,7 @@ class Mfacture {
     var $encaissement_info; // Array encaissement info
     var $contrat_info; // Array contrat info
     var $devis_info; // Array Devis info
+    var $client_info; // Array Client info
     var $reference = null; // Reference 
     var $sum_enc_fact; // Somme encaissements par facture
 
@@ -67,15 +68,16 @@ class Mfacture {
             return true;
         }
     }
-
+    
     //Get all info complement from database for edit form
-    public function get_complement() {
+    public function get_client() {
+        
+        //$this->get_facture();
+        
         global $db;
-
-        $table_complement = $this->table_complement;
-
-        $sql = "SELECT $table_complement.* FROM 
-    		$table_complement WHERE  $table_complement.id = " . $this->id_complement;
+        $client=$this->facture_info['client'];
+        
+        $sql = "SELECT * FROM clients WHERE  denomination = '$client'";
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -85,9 +87,9 @@ class Mfacture {
                 $this->error = false;
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
-                $this->complement_info = $db->RowArray();
+                $this->client_info = $db->RowArray();
                 $this->error = true;
-            }
+                          }
         }
         //return Array produit_info
         if ($this->error == false) {
@@ -97,6 +99,7 @@ class Mfacture {
         }
     }
 
+    
     public function get_complement_by_facture() {
         global $db;
 
@@ -291,6 +294,7 @@ class Mfacture {
             return FALSE;
         }
         $this->Generate_encaissement_reference();
+        
         //Check if PJ attached required
         if ($this->exige_pj) {
             $this->check_file('pj', 'Justifications du contrat.');
@@ -854,6 +858,24 @@ class Mfacture {
             echo "";
         }
     }
+    
+    // afficher les infos d'un contrat
+    public function printattribute_clt($attibute) {
+        if ($this->client_info[$attibute] != null) {
+            echo $this->client_info[$attibute];
+        } else {
+            echo "";
+        }
+    }
+    
+    // afficher les infos d'un contrat
+    public function printattribute_ctr($attibute) {
+        if ($this->contrat_info[$attibute] != null) {
+            echo $this->contrat_info[$attibute];
+        } else {
+            echo "";
+        }
+    }
 
     //Get all info encaissement from database for edit form
     public function get_encaissement_info() {
@@ -886,11 +908,15 @@ class Mfacture {
 
     //Get all info Facture from database for edit form
     public function get_facture_info() {
+        
         global $db;
 
         $table = $this->table;
 
-        $sql = "SELECT $table.* FROM 
+        $sql = "SELECT id,ref,base_fact,total_ht,total_tva,total_ttc,
+                total_ttc_initial,total_paye,reste,client,tva,projet,ref_bc,idcontrat,du,au,
+                DATE_FORMAT(date_facture,'%d-%m-%Y') as date_facture
+                FROM 
     		$table WHERE  $table.id = " . $this->id_facture;
 
         if (!$db->Query($sql)) {
@@ -1054,13 +1080,15 @@ class Mfacture {
         }
     }
     
-    
-
+   
     public function get_contrat($idcontrat) {
+        
         global $db;
 
-        $sql = "SELECT * FROM contrats WHERE id = " . $idcontrat;
-
+        $sql = "SELECT id,ref,iddevis, DATE_FORMAT(date_effet,'%d-%m-%Y') as date_effet,
+                DATE_FORMAT(date_fin,'%d-%m-%Y') as date_fin,
+                DATE_FORMAT(date_contrat,'%d-%m-%Y') as date_contrat FROM contrats WHERE id = " . $idcontrat;
+        
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
@@ -1069,8 +1097,7 @@ class Mfacture {
                 $this->error = false;
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
-                $this->contrat_info = $db->RecordsSimplArray();
-                //var_dump( $this->user_activities );
+                $this->contrat_info = $db->RowArray();
                 $this->error = true;
             }
         }
@@ -1081,4 +1108,5 @@ class Mfacture {
             return true;
         }
     }
-}
+    
+  }
