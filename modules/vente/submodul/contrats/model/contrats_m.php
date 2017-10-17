@@ -296,6 +296,7 @@ class Mcontrat {
                 //Check $this->error = true return Green message and Bol true
                 if ($this->error == true) {
                     $this->log = '</br>Enregistrement réussie: <b>' . $this->reference . ' ID: ' . $this->last_id;
+                    $this->save_temp_detail($this->_data['tkn_frm'], $this->last_id);
 
 
                     if (!Mlog::log_exec($this->table, $this->last_id, 'Insertion contrat abonnement', 'Insert')) {
