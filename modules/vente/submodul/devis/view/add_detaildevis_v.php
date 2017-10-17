@@ -3,6 +3,11 @@ $form = new Mform('add_detaildevis', 'add_detaildevis', '', 'devis', '0', 'is_mo
 //token main form
 $form->input_hidden('tkn_frm', Mreq::tp('tkn'));
 $form->input_hidden('tva_d', 'O');
+//Type Produit
+
+$hard_code_type_produit = '<label style="margin-left:15px;margin-right : 20px;">Catégorie: </label><select id="categ_produit" name="categ_produit" class="chosen-select col-xs-12 col-sm-6" chosen-class="'.((6 * 100) / 12).'" ><option >----</option></select>';
+$type_produit_array[]  = array('required', 'true', 'Choisir un Type Produit');
+$form->select_table('Type Produit', 'type_produit', 3, 'ref_types_produits', 'id', 'type_produit' , 'type_produit', $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat = 1' , $type_produit_array, $hard_code_type_produit);
 //Produit
 $produit_array[]  = array('required', 'true', 'Choisir un Produit / Service');
 $form->select_table('Produit / Service', 'id_produit', 8, 'produits', 'id', 'designation' , 'designation', $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat = 1' , $produit_array);
@@ -128,6 +133,77 @@ $(document).ready(function() {
 
     	var validator = $('#add_detaildevis').validate();
     	validator.resetForm();
+
+    });
+    $('#type_produit').change(function(e) {
+        var $type_produit = $(this).val();
+
+        if($type_produit == null){
+            return true;
+        }
+        $('#categ_produit').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
+        //$('#categ_produit').trigger('change');
+        $('#id_produit').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
+        $.ajax({
+
+            cache: false,
+            url  : '?_tsk=add_detaildevis&ajax=1',
+            type : 'POST',
+            data : '&act=1&id='+$type_produit+'&<?php echo MInit::crypt_tp('exec', 'load_select_categ') ?>',
+            dataType:"JSON",
+            success: function(data){
+               
+                if(data['error'] == false){
+                    ajax_loadmessage(data['mess'] ,'nok',5000);
+                    return false;
+                }else{
+                    $.each(data, function(key, value) {   
+                     $('#categ_produit')
+                     .append($("<option></option>")
+                         .attr("value",key)
+                         .text(value)); 
+                    });
+                    $('#categ_produit').trigger("chosen:updated");
+                }
+                
+                
+            }//end success
+        });
+    });
+    $('#categ_produit').change(function(e) {
+        var $categ_produit = $(this).val();
+
+        if($categ_produit == null){
+            return true;
+        }
+        $('#id_produit').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
+        $.ajax({
+
+            cache: false,
+            url  : '?_tsk=add_detaildevis&ajax=1',
+            type : 'POST',
+            data : '&act=1&id='+$categ_produit+'&<?php echo MInit::crypt_tp('exec', 'load_select_produit') ?>',
+            dataType:"JSON",
+            success: function(data){
+                if(data['error'] == false){
+                    ajax_loadmessage(data['mess'] ,'nok',5000);
+                    return false;
+                }else{
+                    $.each(data, function(key, value) {   
+                   $('#id_produit')
+                   .append($("<option></option>")
+                   .attr("value",key)
+                   .text(value)); 
+                   });
+                   $('#id_produit').trigger("chosen:updated");
+                }
+                
+                
+            }//end success
+        });
+
+        var validator = $('#add_detaildevis').validate();
+        validator.resetForm();
 
     });
     $('#qte, #prix_unitaire, #remise_valeur_d, #type_remise_d').bind('input change',function() {

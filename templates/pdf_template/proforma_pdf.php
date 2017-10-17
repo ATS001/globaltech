@@ -108,7 +108,7 @@ class MYPDF extends TCPDF {
 		<td style="width:50%; background-color: #eeecec; ">'.$this->info_proforma['date_proforma'].'</td>
 		</tr>
 		</table>';
-		$this->writeHTMLCell(0, 0, 140, 23, $detail_proforma, '', 0, 0, true, 'L', true);
+		$this->writeHTMLCell(70, 0, 129, 23, $detail_proforma, '', 0, 0, true, 'L', true);
 	    //Info Client
 	    $nif = null;
 	    if($this->info_proforma['nif'] != null)
@@ -116,7 +116,7 @@ class MYPDF extends TCPDF {
 	    	$nif = '<tr>
 		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">NIF</td>
 		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
-		<td style="width: 65%; background-color: #eeecec;">'.$this->info_proforma['nif'].'hh</td>
+		<td style="width: 65%; background-color: #eeecec;">'.$this->info_proforma['nif'].'</td>
 		</tr>';
 	    }
 	    
@@ -251,8 +251,7 @@ $block_sum = '<div></div>
 
 <tr>
     <td colspan="2" align="right" style="font: underline; padding-right: 200px;">
-        <br><br><br><br>
-        <strong>Responsable Commercial</strong>
+            <strong>Responsable Commercial</strong>
     </td>
 </tr>
 </table>';
