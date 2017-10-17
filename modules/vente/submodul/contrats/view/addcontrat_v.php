@@ -38,7 +38,7 @@ $form->select_table('Devis', 'iddevis', 8, 'devis', 'id', 'reference' , 'referen
 
 //Date effet
 $array_date_effet[]= array('required', 'true', 'Insérer la date effet');
-$form->input_date('Date effet', 'date_effet', 4, date('d-m-Y'), $array_date_effet);
+$form->input_date('Date début', 'date_effet', 4, date('d-m-Y'), $array_date_effet);
 
 //Date fin
 $array_date_fin[]= array('required', 'true', 'Insérer la date de fin');

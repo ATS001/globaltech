@@ -950,7 +950,7 @@ class Mfacture {
         $this->Get_detail_facture_show();
         $devis_info = $this->devis_info;
 
-        $this->get_facture();
+        $this->get_facture_info();
         $info_facture = $this->facture_info;
         
         $this->get_contrat($this->facture_info['idcontrat']);
@@ -993,6 +993,7 @@ class Mfacture {
         ,  REPLACE(FORMAT(devis.totaltva,0),',',' ') as totaltva
         ,  REPLACE(FORMAT(devis.totalttc,0),',',' ') as totalttc
         , devis.claus_comercial
+        , devis.projet
         , clients.code
         , clients.denomination
         , clients.adresse

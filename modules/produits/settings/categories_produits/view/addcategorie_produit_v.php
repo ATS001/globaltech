@@ -29,6 +29,10 @@
 
 	$form = new Mform('addcategorie_produit', 'addcategorie_produit', '', 'categories_produits', '0');
 
+        //Type de produit
+        $type_array[] = array('required', 'true', 'Choisir un type');
+        $form->select_table('Type', 'idtype', 6, 'ref_types_produits', 'id', 'type_produit', 'type_produit', $indx = '------', $selected = NULL, $multi = NULL, $where = 'etat= 1', $type_array);
+
 	//Catégorie de produit
 	$cat_prod_array[]  = array('required', 'true', 'Insérez une catégorie' );
 	$cat_prod_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
