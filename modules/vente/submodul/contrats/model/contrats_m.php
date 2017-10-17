@@ -1041,11 +1041,11 @@ class Mcontrat {
     }
 
     //Get all info echeance contrat from database for edit form
-    public function verif_date_echeance($tkn_frm, $date) {
+    public function verif_date_echeance($tkn_frm, $date,$id) {
         $table_echeance = $this->table_echeance;
         global $db;
 
-        $sql = "SELECT $table_echeance.* FROM $table_echeance WHERE $table_echeance.tkn_frm = '$tkn_frm' AND $table_echeance.date_echeance = '$date'";
+        $sql = "SELECT $table_echeance.* FROM $table_echeance WHERE $table_echeance.tkn_frm = '$tkn_frm' AND $table_echeance.date_echeance = '$date' AND $table_echeance.id <> $id ";
 
         if (!$db->Query($sql)) {
             $this->error = false;
