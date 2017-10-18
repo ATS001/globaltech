@@ -62,13 +62,11 @@ $encaissements = $info_facture->encaissement_info;
                             Encaissements
                         </a>
                     </li>
-                    <li>
-                       <div class="widget-toolbar hidden-480">
+                     <div class="widget-toolbar hidden-480">
                                     <a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'facture') ?>" data="<?php echo MInit::crypt_tp('id', $info_facture->id_facture) ?>">
                                         <i class="ace-icon fa fa-print"></i>
                                     </a>
                                 </div> 
-                    </li>
 
                 </ul>
 

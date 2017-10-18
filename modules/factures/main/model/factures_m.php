@@ -99,6 +99,35 @@ class Mfacture {
         }
     }
 
+    //Get all info complement from database for edit form
+    public function get_complement() {
+        global $db;
+
+        $table_complement = $this->table_complement;
+
+        $sql = "SELECT $table_complement.* FROM 
+    		$table_complement WHERE  $table_complement.id = " . $this->id_complement;
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->complement_info = $db->RowArray();
+                $this->error = true;
+            }
+        }
+        //return Array produit_info
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     
     public function get_complement_by_facture() {
         global $db;
