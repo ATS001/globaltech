@@ -14,7 +14,7 @@
     </div>
     <div class="page-header">
         <h1>
-            Détails du produit : <?php $info_produit->printattribute('ref'); ?> 
+            Détails du produit : <?php $info_produit->printattribute('reference'); ?> 
 
             <small>
                 <i class="ace-icon fa fa-angle-double-right"></i>
