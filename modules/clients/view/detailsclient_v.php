@@ -18,7 +18,7 @@
 </div>
 <div class="page-header">
 	<h1>
-		Détails du client: <?php $client->s('code')?>    <?php $client->s('denomination'); ?> 
+		Détails du client: <?php $client->s('reference')?>    <?php $client->s('denomination'); ?> 
 
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
@@ -62,7 +62,7 @@
 											<div class="profile-info-name"> Référence</div>
 
 											<div class="profile-info-value">
-												<span><?php  $client->s('code')  ?></span>
+												<span><?php  $client->s('reference')  ?></span>
 											</div>
 										</div>
 

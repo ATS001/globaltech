@@ -26,7 +26,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_complement->get_complement()) {
 </div>
 <div class="page-header">
     <h1>
-        Modifier complement facture : <?php $info_complement->printattribute_fact('ref') ?>
+        Modifier complement facture : <?php $info_complement->printattribute_fact('reference') ?>
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
         </small>

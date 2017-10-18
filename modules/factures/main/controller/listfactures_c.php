@@ -10,9 +10,9 @@ $array_column = array(
         'align'  => 'C'
     ),
     array(
-        'column' => 'factures.ref',
+        'column' => 'factures.reference',
         'type'   => '',
-        'alias'  => 'ref',
+        'alias'  => 'reference',
         'width'  => '10',
         'header' => 'Référence',
         'align'  => 'L'
@@ -53,7 +53,7 @@ $array_column = array(
         'align'  => 'R'
     ),
     array(
-        'column' => 'CONCAT(c.code, " - ",factures.client)',
+        'column' => 'CONCAT(c.reference, " - ",factures.client)',
         'type'   => '',
         'alias'  => 'con_clt',
         'width'  => '17',

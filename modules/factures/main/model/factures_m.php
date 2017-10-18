@@ -261,7 +261,7 @@ class Mfacture {
             return false;
         }
         global $db;
-        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(ref, 8, LENGTH(SUBSTR(ref,8))-5))),0)+1  AS reference  FROM encaissements WHERE SUBSTR(ref,LENGTH(ref)-3,4)= (SELECT  YEAR(SYSDATE()))');
+        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(reference, 8, LENGTH(SUBSTR(reference,8))-5))),0)+1  AS reference  FROM encaissements WHERE SUBSTR(reference,LENGTH(ref)-3,4)= (SELECT  YEAR(SYSDATE()))');
         $this->reference = 'GT-ENC-' . $max_id . '/' . date('Y');
     }
 
@@ -322,7 +322,15 @@ class Mfacture {
             $this->log .= '</br>Le montant doit être inférieur ou égal à '.$this->facture_info['reste'].' FCFA';
             return FALSE;
         }
-        $this->Generate_encaissement_reference();
+        //$this->Generate_encaissement_reference();
+        global $db;
+        //Generate reference
+        if(!$reference = $db->Generate_reference($this->table, 'ENC'))
+        {
+                $this->log .= '</br>Problème Réference';
+                return false;
+        }  
+        
         
         //Check if PJ attached required
         if ($this->exige_pj) {
@@ -332,7 +340,7 @@ class Mfacture {
         if ($this->error == true) {
 
             global $db;
-            $values["ref"] = MySQL::SQLValue($this->reference);
+            $values["ref"] = MySQL::SQLValue($reference);
             $values["designation"] = MySQL::SQLValue($this->_data['designation']);
             $values["idfacture"] = MySQL::SQLValue($this->_data['idfacture']);
             $values["mode_payement"] = MySQL::SQLValue($this->_data['mode_payement']);
@@ -1023,7 +1031,7 @@ class Mfacture {
         ,  REPLACE(FORMAT(devis.totalttc,0),',',' ') as totalttc
         , devis.claus_comercial
         , devis.projet
-        , clients.code
+        , clients.reference
         , clients.denomination
         , clients.adresse
         , clients.bp

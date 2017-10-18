@@ -32,7 +32,7 @@ if(!$info_contrat->get_devis_info())
 </div>
 <div class="page-header">
 	<h1>
-            Détails contrat: <?php echo $info_contrat->s('ref');?>
+            Détails contrat: <?php echo $info_contrat->s('reference');?>
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
 		</small>
@@ -57,7 +57,7 @@ if(!$info_contrat->get_devis_info())
 						<!-- #section:pages/invoice.info -->
 						<div class="widget-toolbar no-border invoice-info">
 							<span class="invoice-info-label">Contrat:</span>
-                                                        <span class="red"><?php echo $info_contrat->s('ref');
+                                                        <span class="red"><?php echo $info_contrat->s('reference');
                                                                         
                                                           ?></span>
 
@@ -145,7 +145,7 @@ if(!$info_contrat->get_devis_info())
 
 											<li>
 												<i class="ace-icon fa fa-caret-right green"></i>
-												Tél Client
+											Tél Client
                                                                                                 <b style="color:green"><?php echo $info_contrat->g('tel');?></b>
 											</li>
 										</ul>

@@ -34,7 +34,7 @@
 			<i class="ace-icon fa fa-aechongle-double-right"></i>
 		</small>
 
-		<?php echo ' ('.$info_fournisseur->Shw('denomination',1).' -'.$info_fournisseur->Shw('code',1).'-)' ;
+		<?php echo ' ('.$info_fournisseur->Shw('denomination',1).' -'.$info_fournisseur->Shw('reference',1).'-)' ;
 		
 		?>
 	</h1>

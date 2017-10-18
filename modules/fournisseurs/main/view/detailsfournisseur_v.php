@@ -21,7 +21,7 @@
 </div>
 <div class="page-header">
 	<h1>
-		Détails du fournisseur: <?php $fournisseur->s('code')?>   <?php $fournisseur->s('denomination'); ?> 
+		Détails du fournisseur: <?php $fournisseur->s('reference')?>   <?php $fournisseur->s('denomination'); ?> 
 
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
@@ -62,10 +62,10 @@
 
 									<div class="profile-user-info">
 										<div class="profile-info-row">
-											<div class="profile-info-name"> Code</div>
+											<div class="profile-info-name"> Réference</div>
 
 											<div class="profile-info-value">
-												<span><?php  $fournisseur->s('code')  ?></span>
+												<span><?php  $fournisseur->s('reference')  ?></span>
 											</div>
 										</div>
 

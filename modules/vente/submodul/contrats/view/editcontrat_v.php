@@ -8,7 +8,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_contrat->get_contrat()) {
     // returne message error red to client 
     exit('3#' . $info_contrat->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
-  $ref=$info_contrat->s('ref');
+  $ref=$info_contrat->s('reference');
 ?>
 
 <div class="pull-right tableTools-container">
@@ -47,8 +47,8 @@ $form->input_hidden('idh', Mreq::tp('idh'));
 
 
 //Reference
-$form->input_hidden('checker_reference', MInit::cryptage($info_contrat->s('ref'), 1));
-$form->input_hidden('ref', $info_contrat->s('ref'));
+$form->input_hidden('checker_reference', MInit::cryptage($info_contrat->s('reference'), 1));
+$form->input_hidden('ref', $info_contrat->s('reference'));
 //var_dump($info_contrat->g('ref').''.$info_contrat->s('ref').''.$info_contrat->g('date_fin'));
 //var_dump(Mreq::tp('id'));
 
@@ -59,7 +59,7 @@ $form->input_hidden('ref', $info_contrat->s('ref'));
 //Devis
 $etat_devis_valid = Msetting::get_set('etat_devis','valid_client');
 $devis_array[]  = array('required', 'true', 'Choisir un devis');
-$form->select_table('Devis ', 'iddevis', 8, 'devis', 'id', 'reference' , 'reference', $indx = '------' , $info_contrat->s('iddevis'),$multi=NULL, $where="devis.etat=$etat_devis_valid AND  devis.`id` NOT IN (SELECT iddevis FROM contrats c WHERE devis.id=c.iddevis and devis.id <> ".$info_contrat->s('iddevis').")" , $devis_array);
+$form->select_table('Devis ', 'iddevis', 8, 'devis,clients,ref_devise', 'devis.id', 'CONCAT(devis.reference," / Client: ",clients.denomination,IF(devis.projet IS NOT NULL,CONCAT(" / Projet: ",devis.projet)," ")," / Total: ",devis.totalttc,IF(ref_devise.abreviation IS NOT NULL,CONCAT(" ",ref_devise.abreviation)," "))' , 'CONCAT(devis.reference," / Client: ",clients.denomination,IF(devis.projet IS NOT NULL,CONCAT(" / Projet: ",devis.projet)," ")," / Total: ",devis.totalttc,IF(ref_devise.abreviation IS NOT NULL,CONCAT(" ",ref_devise.abreviation)," "))', $indx = '------' , $info_contrat->s('iddevis'),$multi=NULL, $where="devis.id_client=clients.id and ref_devise.id=clients.id_devise and devis.etat=$etat_devis_valid AND  devis.`id` NOT IN (SELECT iddevis FROM contrats c WHERE devis.id=c.iddevis and devis.id <> ".$info_contrat->s('iddevis').")" , $devis_array);
 
 //Date effet
 $array_date_effet[] = array('required', 'true', 'Insérer la date effet');
@@ -95,7 +95,7 @@ $form->file_js('pj', 1000000, 'pdf', $info_contrat->s('pj'), 1);
 $form->file_js('pj_photo', 1000000, 'image', $info_contrat->s('pj_photo'), 1);*/
 
 //Table 
-$columns = array('id' => '1','Item' => '5', 'Date échéance' => '14','Montant TTC' => '30', 'Commentaire' => '40', '#' =>'5'   );
+$columns = array('id' => '1','Item' => '5', 'Date échéance' => '12','Montant TTC' => '20', 'Commentaire' => '52', '#' =>'5'   );
 $js_addfunct = 'var column = t.column(0);
      column.visible( ! column.visible() );';
 

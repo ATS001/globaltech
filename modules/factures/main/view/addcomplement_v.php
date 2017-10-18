@@ -20,7 +20,7 @@ $id_facture = Mreq::tp('id');
 </div>
 <div class="page-header">
     <h1>
-        Ajout complément facture : <?php $info_facture->printattribute_fact('ref'); ?>
+        Ajout complément facture : <?php $info_facture->printattribute_fact('reference'); ?>
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
         </small>

@@ -239,13 +239,14 @@ class Mcontrat {
 
         /*//Generate reference
         $this->Generate_contrat_reference();*/
+        global $db;
         //Generate reference
         if(!$reference = $db->Generate_reference($this->table, 'CTR'))
         {
                 $this->log .= '</br>Problème Réference';
                 return false;
         }  
-
+        
         //Before execute do the multiple check
         $this->Check_exist('reference', $this->reference, 'Référence contrat', null);
 
@@ -271,7 +272,7 @@ class Mcontrat {
             //Format values for Insert query 
             global $db;
 
-            $values["reference"] = MySQL::SQLValue($this->reference);
+            $values["reference"] = MySQL::SQLValue($reference);
             $values["tkn_frm"] = MySQL::SQLValue($this->_data['tkn_frm']);
             $values["iddevis"] = MySQL::SQLValue($this->_data['iddevis']);
             $values["date_effet"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_effet'])));
