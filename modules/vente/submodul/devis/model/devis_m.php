@@ -86,12 +86,21 @@ class Mdevis
     	$table_details = $this->table_details;
     	global $db;
 
-    	$sql = "SELECT $table_details.* FROM $table_details WHERE $table_details.id = ".$this->id_devis_d;
+    	$sql = "SELECT $table_details.* ,
+        ref_categories_produits.id as categ_id, ref_categories_produits.categorie_produit,
+        ref_types_produits.id as type_id, produits.designation
+        FROM 
+        $table_details , ref_types_produits, ref_categories_produits, produits
+        WHERE 
+        produits.idcategorie = ref_categories_produits.id
+        AND ref_types_produits.id = ref_categories_produits.type_produit
+        AND $table_details.id_produit = produits.id
+        AND $table_details.id = ".$this->id_devis_d;
 
     	if(!$db->Query($sql))
     	{
     		$this->error = false;
-    		$this->log  .= $db->Error();
+    		$this->log  .= $db->Error().'  '.$sql;
     	}else{ 
     		if ($db->RowCount() == 0)
     		{

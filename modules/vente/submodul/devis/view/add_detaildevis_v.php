@@ -9,8 +9,10 @@ $hard_code_type_produit = '<label style="margin-left:15px;margin-right : 20px;">
 $type_produit_array[]  = array('required', 'true', 'Choisir un Type Produit');
 $form->select_table('Type Produit', 'type_produit', 3, 'ref_types_produits', 'id', 'type_produit' , 'type_produit', $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat = 1' , $type_produit_array, $hard_code_type_produit);
 //Produit
-$produit_array[]  = array('required', 'true', 'Choisir un Produit / Service');
-$form->select_table('Produit / Service', 'id_produit', 8, 'produits', 'id', 'designation' , 'designation', $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat = 1' , $produit_array);
+//$produit_array[]  = array('required', 'true', 'Choisir un Produit / Service');
+//$form->select_table('Produit / Service', 'id_produit', 8, 'produits', 'id', 'designation' , 'designation', $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat = 1' , $produit_array);
+$opt_produit = array('' => '------');
+$form->select('Produit / Service', 'id_produit', 8, $opt_produit, $indx = NULL ,$selected = NULL, $multi = NULL,  null);
 $hard_code_pri_u_ht = '<label style="margin-left:15px;margin-right : 20px;">Prix Unité HT: </label><input id="prix_unitaire" name="prix_unitaire" value="0" class="input-large alignRight" readonly="" type="text">';
 $hard_code_pri_u_ht .= '<span class="help-block returned_span">...</span>';
 //Réference
@@ -144,6 +146,7 @@ $(document).ready(function() {
         $('#categ_produit').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
         //$('#categ_produit').trigger('change');
         $('#id_produit').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
+         $('#prix_unitaire').val('0').trigger('change');
         $.ajax({
 
             cache: false,
@@ -164,6 +167,7 @@ $(document).ready(function() {
                          .text(value)); 
                     });
                     $('#categ_produit').trigger("chosen:updated");
+                   
                 }
                 
                 
@@ -177,6 +181,7 @@ $(document).ready(function() {
             return true;
         }
         $('#id_produit').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
+        $('#prix_unitaire').val('0').trigger('change');
         $.ajax({
 
             cache: false,
@@ -196,14 +201,12 @@ $(document).ready(function() {
                    .text(value)); 
                    });
                    $('#id_produit').trigger("chosen:updated");
+
                 }
                 
                 
             }//end success
         });
-
-        var validator = $('#add_detaildevis').validate();
-        validator.resetForm();
 
     });
     $('#qte, #prix_unitaire, #remise_valeur_d, #type_remise_d').bind('input change',function() {
@@ -252,12 +255,6 @@ $(document).ready(function() {
         }
 
     });
-
-    
-
-
-
-    
 });	
 
 </script>
