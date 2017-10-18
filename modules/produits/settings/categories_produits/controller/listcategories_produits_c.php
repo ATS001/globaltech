@@ -10,6 +10,14 @@ $array_column = array(
         'align'  => 'C'
     ),
     array(
+        'column' => 'ref_types_produits.type_produit',
+        'type'   => '',
+        'alias'  => 'type_produit',
+        'width'  => '15',
+        'header' => 'Type produit',
+        'align'  => 'C'
+    ),
+    array(
         'column' => 'ref_categories_produits.categorie_produit',
         'type'   => '',
         'alias'  => 'categorie_produit',
@@ -30,9 +38,9 @@ $array_column = array(
 //Creat new instance
 $list_data_table = new Mdatatable();
 //Set tabels used in Query
-$list_data_table->tables = array('ref_categories_produits');
+$list_data_table->tables = array('ref_categories_produits,ref_types_produits');
 //Set Jointure
-$list_data_table->joint = '';
+$list_data_table->joint = 'ref_categories_produits.type_produit=ref_types_produits.id';
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query

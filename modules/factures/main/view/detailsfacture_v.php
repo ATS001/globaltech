@@ -2,8 +2,16 @@
 $info_facture = new Mfacture();
 $info_facture->id_facture = Mreq::tp('id');
 $info_facture->get_facture_info();
+$facture=$info_facture->facture_info;
+
+$info_facture->get_client();
+$client = $info_facture->client_info;
+
+$info_facture->get_contrat($facture['idcontrat']);
+
 $info_facture->get_complement_by_facture();
 $complements = $info_facture->complement_info;
+
 $info_facture->get_all_encaissements();
 $encaissements = $info_facture->encaissement_info;
 ?>
@@ -36,8 +44,9 @@ $encaissements = $info_facture->encaissement_info;
                     <li class="active">
                         <a data-toggle="tab" href="#home">
                             <i class="green ace-icon fa fa-user bigger-120"></i>
-                            Facture
+                            Facture 
                         </a>
+                        
                     </li>
 
                     <li>
@@ -53,127 +62,158 @@ $encaissements = $info_facture->encaissement_info;
                             Encaissements
                         </a>
                     </li>
+                     <div class="widget-toolbar hidden-480">
+                                    <a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'facture') ?>" data="<?php echo MInit::crypt_tp('id', $info_facture->id_facture) ?>">
+                                        <i class="ace-icon fa fa-print"></i>
+                                    </a>
+                                </div> 
 
                 </ul>
 
                 <div class="tab-content no-border padding-24">
                     <div id="home" class="tab-pane in active">
-                        <div class="col-xs-12 col-sm-4"></div>
 
-                        <div class="col-xs-12 col-sm-4">
-                            <div class="profile-achat-info">
-                                <div class="widget-toolbar hidden-480">
-                                    <a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'facture') ?>" data="<?php echo MInit::crypt_tp('id', $info_facture->id_facture) ?>">
-                                        <i class="ace-icon fa fa-print"></i>
-                                    </a>
-                                </div>   
-                                <!--<div class="widget-toolbar hidden-480">
-                                                                                        <a href="#" class="iframe_pdf" rel="<?php $info_facture->printattribute_fact('facture_pdf') ?>">
-                                                                                                <i class="ace-icon fa fa-print"></i>
-                                                                                        </a>
-                                                                                </div> -->
-                                <div class="profile-info-row">
-                                    <div class="profile-info-name"> Référence </div>
-
-                                    <div class="profile-info-value">
-                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                        <span><?php $info_facture->printattribute_fact('ref'); ?></span>
+                        <div class="row">
+                            <div class="col-sm-4">
+                                
+                                <div class="row">
+                                    <div class="col-xs-11 label label-lg label-info arrowed-in arrowed-right">
+                                        <b>Facture Info</b> 
+                                         
                                     </div>
                                 </div>
 
-                                <div class="profile-info-row">
-                                    <div class="profile-info-name"> Date facture </div>
+                                <div>
+                                    <ul class="list-unstyled spaced">
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right blue"></i> Référence                                                                                               
+                                            <b style="color:blue"> <?php $info_facture->printattribute_fact('ref'); ?> </b>                                                                                                          
 
-                                    <div class="profile-info-value">
-                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                        <span><?php $info_facture->printattribute_fact('date_facture'); ?></span>
-                                    </div>
+
+                                        </li>
+
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right blue"></i> Date facture
+                                            <b style="color:blue"><?php  $info_facture->printattribute_fact('date_facture'); ?>  </b>                                                                                                              
+
+                                        </li>
+
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right blue"></i> Période facturée
+                                            <b style="color:blue"><?php
+        if ($info_facture->printattribute_fact('du') != null and $info_facture->printattribute_fact('au') != null)
+            $info_facture->printattribute_fact('du');
+        ?> <b>Au</b> <?php $info_facture->printattribute_fact('au'); ?></b> 
+                                        </li>											
+
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right blue"></i>
+                                            Total HT
+                                            <b style="color:blue"><?php $info_facture->printattribute_fact('total_ht'); ?></b>
+                                        </li>
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right blue"></i>
+                                            TVA
+                                            <b style="color:blue"><?php $info_facture->printattribute_fact('tva'); ?></b>
+                                        </li>
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right blue"></i>
+                                            Totale TVA
+                                            <b style="color:blue"><?php $info_facture->printattribute_fact('total_tva'); ?></b>
+                                        </li>
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right blue"></i>
+                                            Total TTC
+                                            <b style="color:blue"><?php $info_facture->printattribute_fact('total_ttc'); ?></b>
+                                        </li>
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right blue"></i>
+                                            Total payé
+                                            <b style="color:blue"><?php $info_facture->printattribute_fact('total_paye'); ?></b>
+                                        </li>
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right blue"></i>
+                                            Reste
+                                            <b style="color:blue"><?php $info_facture->printattribute_fact('reste'); ?></b>
+                                        </li>
+                                    </ul>
                                 </div>
-                                <div class="profile-info-row">
-                                    <div class="profile-info-name"> Période facturée </div>
+                            </div><!-- /.col -->
 
-                                    <div class="profile-info-value">
-                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                        <span> <b>Du</b> <?php $info_facture->printattribute_fact('du'); ?> <b>Au</b> <?php $info_facture->printattribute_fact('au'); ?> </span>
-                                    </div>
-                                </div>
-
-                                <div class="profile-info-row">
-                                    <div class="profile-info-name"> Client </div>
-
-                                    <div class="profile-info-value">
-                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                        <span><?php $info_facture->printattribute_fact('client'); ?></span>
-                                    </div>
-                                </div>
-
-                                <div class="profile-info-row">
-                                    <div class="profile-info-name"> Totale HT </div>
-
-                                    <div class="profile-info-value">
-                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                        <span><?php $info_facture->printattribute_fact('total_ht'); ?></span>
-                                    </div>
-                                </div>
-
-                                <div class="profile-info-row">
-                                    <div class="profile-info-name"> TVA </div>
-
-                                    <div class="profile-info-value">
-                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                        <span><?php $info_facture->printattribute_fact('tva'); ?></span>
-                                    </div>
-                                </div>
-
-                                <div class="profile-info-row">
-                                    <div class="profile-info-name"> Totale TVA </div>
-
-                                    <div class="profile-info-value">
-                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                        <span><?php $info_facture->printattribute_fact('total_tva'); ?></span>
-                                    </div>
-                                </div>
-
-                                <div class="profile-info-row">
-                                    <div class="profile-info-name"> Total TTC </div>
-
-                                    <div class="profile-info-value">
-                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                        <span><?php $info_facture->printattribute_fact('total_ttc'); ?></span>
-                                    </div>
-                                </div>
-                                <div class="profile-info-row">
-                                    <div class="profile-info-name"> Totale payé </div>
-
-                                    <div class="profile-info-value">
-                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                        <span><?php $info_facture->printattribute_fact('total_paye'); ?></span>
+                            <div class="col-sm-4">
+                                <div class="row">
+                                    <div class="col-xs-11 label label-lg label-success arrowed-in arrowed-right">
+                                        <b>Client Info</b>
                                     </div>
                                 </div>
 
-                                <div class="profile-info-row">
-                                    <div class="profile-info-name"> Reste </div>
+                                <div>
+                                    <ul class="list-unstyled  spaced">
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right green"></i> Code
+                                            <b style="color:green"><?php $info_facture->printattribute_clt('code'); ?></b>
+                                        </li>
 
-                                    <div class="profile-info-value">
-                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                        <span><?php $info_facture->printattribute_fact('reste'); ?></span>
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right green"></i> Dénomination
+                                            <b style="color:green"><?php $info_facture->printattribute_clt('denomination'); ?></b>
+                                        </li>
+
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right green"></i>Raison social
+                                            <b style="color:green"><?php $info_facture->printattribute_clt('r_social'); ?></b>
+                                        </li>
+
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right green"></i>
+                                            Registe de commerce
+                                            <b style="color:green"><?php echo $info_facture->printattribute_clt('r_commerce'); ?></b>
+                                        </li>
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right green"></i>
+                                            NIF
+                                            <b style="color:green"><?php echo $info_facture->printattribute_clt('nif'); ?></b>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div><!-- /.col -->
+                            
+                            <div class="col-sm-4">
+                                <div class="row">
+                                    <div class="col-xs-11 label label-lg label-yellow arrowed-in arrowed-right">
+                                        <b>Contrat Info</b>
                                     </div>
                                 </div>
 
+                                <div>
+                                    <ul class="list-unstyled  spaced">
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right yellow"></i> Référence
+                                            <b style="color:#996633"><?php $info_facture->printattribute_ctr('ref'); ?></b>
+                                        </li>
+                                        
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right yellow"></i>
+                                            Date contrat
+                                            <b style="color:#996633"><?php echo $info_facture->printattribute_ctr('date_contrat'); ?></b>
+                                        </li>
 
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right yellow"></i> Daté d'effet
+                                            <b style="color:#996633"><?php $info_facture->printattribute_ctr('date_effet'); ?></b>
+                                        </li>
 
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right yellow"></i>Date fin
+                                            <b style="color:#996633"><?php $info_facture->printattribute_ctr('date_fin'); ?></b>
+                                        </li>                                        
+                                       
+                                    </ul>
+                                </div>
+                            </div><!-- /.col -->
+                        </div><!-- /.row -->
+                    </div><!-- /#home -->
 
-
-
-
-                            </div>
-
-                        </div><!-- /.col -->
-
-                        <div class="col-xs-12 col-sm-4"></div>
-
-
-                    </div><!-- /.row -->
 
                     <div id="feed" class="tab-pane">
                         <div class="profile-info-row">
@@ -220,7 +260,8 @@ $encaissements = $info_facture->encaissement_info;
                                                 </tr>
 
 
-                                            <?php }
+                                                <?php
+                                            }
                                         }
                                         ?>
 
@@ -256,7 +297,7 @@ $encaissements = $info_facture->encaissement_info;
                                             <th>
                                                 Date
                                             </th>
-    <?php foreach ($encaissements as $encs) { ?>
+                                            <?php foreach ($encaissements as $encs) { ?>
                                                 <tr>	
                                                     <td>
                                                         <span><?php echo $encs['0']; ?></span>
@@ -268,13 +309,15 @@ $encaissements = $info_facture->encaissement_info;
                                                         <span><?php echo $encs['5']; ?></span>
                                                     </td>
                                                     <td>
-                                                        <span><?php echo $encs['8']; ?></span>
+                                                        <span><?php echo date('d-m-Y', strtotime($encs['8'])) ?></span>
                                                     </td>
                                                 </tr>
 
 
-    <?php }
-} ?>
+                                                <?php
+                                            }
+                                        }
+                                        ?>
 
                                     </table>
                                 </span>
@@ -284,16 +327,15 @@ $encaissements = $info_facture->encaissement_info;
 
                     </div><!-- /#feed -->
 
-                </div><!-- /#home -->
 
 
 
+                </div>
             </div>
         </div>
-    </div>
 
 
 
 
 
-</div><!-- /.-profile -->
+    </div><!-- /.-profile -->

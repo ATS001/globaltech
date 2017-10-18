@@ -33,7 +33,7 @@
 						</th>
 						
 						<th>
-							Réf
+							Réference
 						</th>
 						<th>
 							Devis
@@ -42,7 +42,7 @@
 							Date Contrat
 						</th>
 						<th>
-							Date d'effet
+							Date début
 						</th>
 						<th>
 							Date fin

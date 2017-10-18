@@ -9,6 +9,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_facture->get_facture()) {
 }
 
 $id_facture = Mreq::tp('id');
+
 ?>
 
 <div class="pull-right tableTools-container">
@@ -20,7 +21,7 @@ $id_facture = Mreq::tp('id');
 </div>
 <div class="page-header">
     <h1>
-        Ajouter un encaissement
+        Ajouter encaissement facture : <?php $info_facture->printattribute_fact('ref'); ?>
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
         </small>

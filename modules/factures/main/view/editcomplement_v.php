@@ -15,13 +15,18 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_complement->get_complement()) {
 <div class="pull-right tableTools-container">
     <div class="btn-group btn-overlap">
 
-        <?php TableTools::btn_add('complements', 'Liste des complements', MInit::crypt_tp('id', $info_complement->Shw2('idfacture', 1)), $exec = NULL, 'reply'); ?>
+        <?php TableTools::btn_add('complements', 'Liste des complements', MInit::crypt_tp('id', $info_complement->Shw2('idfacture', 1)), $exec = NULL, 'reply'); 
 
+        $info_complement->id_facture = $info_complement->Shw2('idfacture', 1);       
+        $info_complement->get_facture();
+        
+        ?>
+        
     </div>
 </div>
 <div class="page-header">
     <h1>
-        Modifier un complement
+        Modifier complement facture : <?php $info_complement->printattribute_fact('ref') ?>
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
         </small>

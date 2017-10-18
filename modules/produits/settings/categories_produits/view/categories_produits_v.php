@@ -32,6 +32,9 @@
 							<th>
 								ID
 							</th>
+                                                        <th>
+								Type
+							</th>
 						    <th>
 								Catégorie
 							</th>
@@ -61,6 +64,7 @@
 			
 	                aoColumns: [
 	                    {"sClass": "center","sWidth":"5%"}, // Identifiant 
+                            {"sClass": "left","sWidth":"30%"}, // Type
 	                    {"sClass": "left","sWidth":"30%"}, // Catégorie
 	                    {"sClass": "center","sWidth":"10%"}, // Statut
 	                    {"sClass": "center","sWidth":"5%"}, // Action

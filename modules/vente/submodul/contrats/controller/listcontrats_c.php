@@ -10,7 +10,7 @@ $array_column = array(
         'align'  => 'C'
     ),
     array(
-        'column' => 'contrats.ref',
+        'column' => 'contrats.reference',
         'type'   => '',
         'alias'  => 'reference',
         'width'  => '10',

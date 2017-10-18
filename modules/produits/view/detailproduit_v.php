@@ -75,7 +75,7 @@
                                         <div class="profile-info-name"> Référence </div>
 
                                         <div class="profile-info-value">
-                                            <span><?php $info_produit->printattribute('ref'); ?></span>
+                                            <span><?php $info_produit->printattribute('reference'); ?></span>
                                         </div>
                                     </div>
 

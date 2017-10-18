@@ -5,9 +5,7 @@
     if (MInit::form_verif('addproduit', false)) {
 
         $posted_data = array(
-            'ref' => Mreq::tp('ref'),
-            'designation' => Mreq::tp('designation'),
-           
+            'designation' => Mreq::tp('designation'),           
             'stock_min' => Mreq::tp('stock_min'),
             'idcategorie' => Mreq::tp('idcategorie'),
             'prix_vente' => Mreq::tp('prix_vente'),
@@ -20,19 +18,12 @@
 
         $checker = null;
         $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
-/*
-        if ($posted_data['ref'] == NULL) {
-
-            $empty_list .= "<li>Référence</li>";
-            $checker = 1;
-        }*/
         
          if ($posted_data['designation'] == NULL) {
 
             $empty_list .= "<li>Désignation</li>";
             $checker = 1;
-        }
-      
+        }      
            
         if ($posted_data['idcategorie'] == NULL) {
 

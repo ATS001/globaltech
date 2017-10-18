@@ -25,7 +25,7 @@
 
     <div class="page-header">
         <h1>
-            Gestion des encaissements
+            Gestion des encaissements facture : <?php $info_facture->printattribute_fact('ref'); ?>
             <small>
                 <i class="ace-icon fa fa-angle-double-right"></i>
             </small>
