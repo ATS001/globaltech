@@ -33,7 +33,7 @@
 			<i class="ace-icon fa fa-aechongle-double-right"></i>
 		</small>
 
-		<?php echo ' ('.$info_client->Shw('denomination',1).' -'.$info_client->Shw('code',1).'-)' ;
+		<?php echo ' ('.$info_client->Shw('denomination',1).' -'.$info_client->Shw('reference',1).'-)' ;
 		
 		?>
 	</h1>
