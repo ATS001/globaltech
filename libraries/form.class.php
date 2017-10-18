@@ -851,6 +851,21 @@ public function draw_datatabe_form($id_table, $verif_value, $columns = array(), 
 
 }
 
+static public function load_select($table, $value, $text, $where = null)
+{
+  global $db;
+  $output = array();
+  $where = null ? null : ' WHERE '.$where;
+  $sql = "SELECT $value as val, $text as txt FROM $table $where order by $text limit 0,1000 ";
+  if ($db->Query($sql) && $db->RowCount()){
+      $output = $db->RecordsSelectArray();
+      
+  }else{
+    $output = $db->Error();
+  }
+  return $output;
+
+}
 
 }
 
