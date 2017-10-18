@@ -26,7 +26,7 @@ $encaissements = $info_facture->encaissement_info;
 </div>
 <div class="page-header">
     <h1>
-        Détails de la facture : <?php $info_facture->printattribute_fact('ref'); ?> 
+        Détails de la facture : <?php $info_facture->printattribute_fact('reference'); ?> 
 
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
@@ -87,7 +87,7 @@ $encaissements = $info_facture->encaissement_info;
                                     <ul class="list-unstyled spaced">
                                         <li>
                                             <i class="ace-icon fa fa-caret-right blue"></i> Référence                                                                                               
-                                            <b style="color:blue"> <?php $info_facture->printattribute_fact('ref'); ?> </b>                                                                                                          
+                                            <b style="color:blue"> <?php $info_facture->printattribute_fact('reference'); ?> </b>                                                                                                          
 
 
                                         </li>
@@ -150,8 +150,8 @@ $encaissements = $info_facture->encaissement_info;
                                 <div>
                                     <ul class="list-unstyled  spaced">
                                         <li>
-                                            <i class="ace-icon fa fa-caret-right green"></i> Code
-                                            <b style="color:green"><?php $info_facture->printattribute_clt('code'); ?></b>
+                                            <i class="ace-icon fa fa-caret-right green"></i> Réference
+                                            <b style="color:green"><?php $info_facture->printattribute_clt('reference'); ?></b>
                                         </li>
 
                                         <li>
@@ -189,7 +189,7 @@ $encaissements = $info_facture->encaissement_info;
                                     <ul class="list-unstyled  spaced">
                                         <li>
                                             <i class="ace-icon fa fa-caret-right yellow"></i> Référence
-                                            <b style="color:#996633"><?php $info_facture->printattribute_ctr('ref'); ?></b>
+                                            <b style="color:#996633"><?php $info_facture->printattribute_ctr('reference'); ?></b>
                                         </li>
                                         
                                         <li>

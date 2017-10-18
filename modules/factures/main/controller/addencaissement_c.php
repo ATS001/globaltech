@@ -8,7 +8,7 @@
             'designation' => Mreq::tp('designation'),
             'idfacture' => Mreq::tp('idfacture'),
             'mode_payement' => Mreq::tp('mode_payement'),
-             'ref_payement' => Mreq::tp('ref_payement'),
+            'ref_payement' => Mreq::tp('ref_payement'),
             'montant' => Mreq::tp('montant'),
             'pj_id'          => Mreq::tp('pj-id'),
             );

@@ -25,7 +25,7 @@
 
     <div class="page-header">
         <h1>
-            Gestion des compléments facture : <?php $info_facture->printattribute_fact('ref'); ?>
+            Gestion des compléments facture : <?php $info_facture->printattribute_fact('reference'); ?>
             <small>
                 <i class="ace-icon fa fa-angle-double-right"></i>
             </small>

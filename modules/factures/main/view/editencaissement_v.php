@@ -25,7 +25,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_encaissement->get_encaissement(
 </div>
 <div class="page-header">
     <h1>
-        Modifier encaissement facture : <?php $info_encaissement->printattribute_fact('ref'); ?>
+        Modifier encaissement facture : <?php $info_encaissement->printattribute_fact('reference'); ?>
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
         </small>

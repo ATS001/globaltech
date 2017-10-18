@@ -21,7 +21,7 @@ $id_facture = Mreq::tp('id');
 </div>
 <div class="page-header">
     <h1>
-        Ajouter encaissement facture : <?php $info_facture->printattribute_fact('ref'); ?>
+        Ajouter encaissement facture : <?php $info_facture->printattribute_fact('reference'); ?>
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
         </small>
