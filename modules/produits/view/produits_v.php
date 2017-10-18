@@ -79,13 +79,7 @@
 	                    {"sClass": "center","sWidth":"10%"}, // Statut
 	                    {"sClass": "center","sWidth":"10%"}, // Action
 	                    ],
-	                });
-
-	            
-	 
-	            
-	           
-	        
+	                });	        
 	    
 	$('.export_csv').on('click', function() {
 		csv_export(table, 'csv');
