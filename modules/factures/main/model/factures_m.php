@@ -261,7 +261,7 @@ class Mfacture {
             return false;
         }
         global $db;
-        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(reference, 8, LENGTH(SUBSTR(reference,8))-5))),0)+1  AS reference  FROM encaissements WHERE SUBSTR(reference,LENGTH(ref)-3,4)= (SELECT  YEAR(SYSDATE()))');
+        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(reference, 8, LENGTH(SUBSTR(reference,8))-5))),0)+1  AS reference  FROM encaissements WHERE SUBSTR(reference,LENGTH(YEAR(SYSDATE()))-3,4)= (SELECT  YEAR(SYSDATE()))');
         $this->reference = 'GT-ENC-' . $max_id . '/' . date('Y');
     }
 
@@ -340,7 +340,7 @@ class Mfacture {
         if ($this->error == true) {
 
             global $db;
-            $values["ref"] = MySQL::SQLValue($reference);
+            $values["reference"] = MySQL::SQLValue($reference);
             $values["designation"] = MySQL::SQLValue($this->_data['designation']);
             $values["idfacture"] = MySQL::SQLValue($this->_data['idfacture']);
             $values["mode_payement"] = MySQL::SQLValue($this->_data['mode_payement']);
@@ -920,7 +920,7 @@ class Mfacture {
 
         $table_encaissement = $this->table_encaissement;
 
-        $sql = "SELECT $table_encaissement.* , factures.ref as facture FROM 
+        $sql = "SELECT $table_encaissement.* , factures.reference as facture FROM 
     		$table_encaissement,factures WHERE $table_encaissement.idfacture=factures.id AND $table_encaissement.id = " . $this->id_encaissement;
 
         if (!$db->Query($sql)) {
@@ -950,7 +950,7 @@ class Mfacture {
 
         $table = $this->table;
 
-        $sql = "SELECT id,ref,base_fact,total_ht,total_tva,total_ttc,
+        $sql = "SELECT id,reference,base_fact,total_ht,total_tva,total_ttc,
                 total_ttc_initial,total_paye,reste,client,tva,projet,ref_bc,idcontrat,du,au,
                 DATE_FORMAT(date_facture,'%d-%m-%Y') as date_facture
                 FROM 
@@ -1123,7 +1123,7 @@ class Mfacture {
         
         global $db;
 
-        $sql = "SELECT id,ref,iddevis, DATE_FORMAT(date_effet,'%d-%m-%Y') as date_effet,
+        $sql = "SELECT id,reference,iddevis, DATE_FORMAT(date_effet,'%d-%m-%Y') as date_effet,
                 DATE_FORMAT(date_fin,'%d-%m-%Y') as date_fin,
                 DATE_FORMAT(date_contrat,'%d-%m-%Y') as date_contrat FROM contrats WHERE id = " . $idcontrat;
         
