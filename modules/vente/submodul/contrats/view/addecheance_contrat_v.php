@@ -1,19 +1,30 @@
+<div class="table-header">
+            Contrat Du: 
+            <?php 
+            $date_debut=Mreq::tp('dat_ef'); 
+            echo $date_debut; ?>
+            Au: <?php 
+            $date_fin=Mreq::tp('dat_fn');  
+            echo $date_fin; ?>
+</div>
 <?php 
 $form = new Mform('addecheance_contrat', 'addecheance_contrat', '', 'contrats', '0', 'is_modal');
 //token main form
-$form->input_hidden('tkn_frm', Mreq::tp('tkn'));
+$form->input_hidden('tkn_frm',Mreq::tp('tkn'));
 $form->input_hidden('dat_ef', Mreq::tp('dat_ef'));
 $form->input_hidden('dat_fn', Mreq::tp('dat_fn'));
-
 
 //Date échéance
 $array_date_echeance[]= array('required', 'true', 'Insérer la date échéance');
 $form->input_date('Date échéance', 'date_echeance', 6, date('d-m-Y'), $array_date_echeance);
 
+
 //Montant
+
 $array_montant[]= array('required', 'true', 'Insérer le montant à facturer');
 $array_montant[]= array('number', 'true', 'Montant invalid' );
-$form->input('Montant TTC', 'montant', 'number' ,'3 is-number alignRight', '10000', $array_montant);
+$form->input('Montant TTC', 'montant', 'text' ,3, '100000', $array_montant);
+
 
 //Commentaire
 $form->input_editor('Commentaire', 'commentaire', 6, $clauses=NULL , $js_array = null,  $input_height = 200);
