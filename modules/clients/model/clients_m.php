@@ -151,6 +151,8 @@ class Mclients {
 
     	$this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
 
+        $this->check_non_exist('ref_devise','id', $this->_data['id_devise'], 'Devise');
+
     	  //Check if PJ attached required
         if($this->exige_pj)
         {

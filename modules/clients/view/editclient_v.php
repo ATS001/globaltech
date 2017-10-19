@@ -128,8 +128,10 @@ $pays_array[]  = array('required', 'true', 'Choisir le Pays' );
 $form->select_table('Pays', 'id_pays', 6, 'ref_pays', 'id', 'pays' , 'pays', $indx = '------' ,$selected=$info_client->Shw('id_pays',1),$multi=NULL, $where='etat=1', $pays_array);
 
 //ville
-$ville_array[]  = array('required', 'true', 'Choisir la Ville' );
-$form->select_table('Ville', 'id_ville', 6, 'ref_ville', 'id', 'ville' , 'ville', $indx = '------' ,$selected=$info_client->Shw('id_ville',1),$multi=NULL, $where=NULL, $ville_array);
+/*$ville_array[]  = array('required', 'true', 'Choisir la Ville' );
+$form->select_table('Ville', 'id_ville', 6, 'ref_ville', 'id', 'ville' , 'ville', $indx = '------' ,$selected=$info_client->Shw('id_ville',1),$multi=NULL, $where=NULL, $ville_array);*/
+$opt_ville = array('' => '------');
+$form->select('Ville', 'id_ville', 6, $opt_ville, $indx = NULL ,$selected = $info_client->Shw('id_ville',1), $multi = NULL);
 
 // Tél
 $tel_array[]  = array('required', 'true', 'Insérer N° de téléphone' );
@@ -188,3 +190,48 @@ $form->render();
 		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+
+    
+    $('#id_pays').change(function(e) {
+        var $id_pays = $(this).val();
+
+        if($id_pays == null){
+            return true;
+        }
+        $('#id_ville').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
+        //$('#categ_produit').trigger('change');
+        //$('#id_pays').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
+        $.ajax({
+
+            cache: false,
+            url  : '?_tsk=addclient&ajax=1',
+            type : 'POST',
+            data : '&act=1&id='+$id_pays+'&<?php echo MInit::crypt_tp('exec', 'load_select_ville') ?>',
+            dataType:"JSON",
+            success: function(data){
+               
+                if(data['error'] == false){
+                    ajax_loadmessage(data['mess'] ,'nok',5000);
+                    return false;
+                }else{
+                    $.each(data, function(key, value) {   
+                     $('#id_ville')
+                     .append($("<option></option>")
+                         .attr("value",key)
+                         .text(value)); 
+                    });
+                    $('#id_ville').trigger("chosen:updated");
+                }
+                
+                
+            }//end success
+        });
+    });
+    
+
+    });
+    
+   </script>  
