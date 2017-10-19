@@ -128,10 +128,10 @@ $pays_array[]  = array('required', 'true', 'Choisir le Pays' );
 $form->select_table('Pays', 'id_pays', 6, 'ref_pays', 'id', 'pays' , 'pays', $indx = '------' ,$selected=$info_client->Shw('id_pays',1),$multi=NULL, $where='etat=1', $pays_array);
 
 //ville
-/*$ville_array[]  = array('required', 'true', 'Choisir la Ville' );
-$form->select_table('Ville', 'id_ville', 6, 'ref_ville', 'id', 'ville' , 'ville', $indx = '------' ,$selected=$info_client->Shw('id_ville',1),$multi=NULL, $where=NULL, $ville_array);*/
-$opt_ville = array('' => '------');
-$form->select('Ville', 'id_ville', 6, $opt_ville, $indx = NULL ,$selected = $info_client->Shw('id_ville',1), $multi = NULL);
+$ville_array[]  = array('required', 'true', 'Choisir la Ville' );
+$form->select_table('Ville', 'id_ville', 6, 'ref_ville', 'id', 'ville' , 'ville', $indx = '------' ,$selected=$info_client->Shw('id_ville',1),$multi=NULL, $where=NULL, $ville_array);
+/*$opt_ville = array('' => '------');
+$form->select('Ville', 'id_ville', 6, $opt_ville, $indx = NULL ,$selected = $info_client->Shw('id_ville',1), $multi = NULL);*/
 
 // Tél
 $tel_array[]  = array('required', 'true', 'Insérer N° de téléphone' );

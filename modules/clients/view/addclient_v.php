@@ -172,6 +172,34 @@ $form->render();
 
 <script type="text/javascript">
 $(document).ready(function() {
+//var $id_pays = $(this).val();
+		 $.ajax({
+
+
+            cache: false,
+            url  : '?_tsk=addclient&ajax=1',
+            type : 'POST',
+            data : '&act=1&id='+242+'&<?php echo MInit::crypt_tp('exec', 'load_select_ville') ?>',
+            dataType:"JSON",
+            success: function(data){
+               
+                if(data['error'] == false){
+                    ajax_loadmessage(data['mess'] ,'nok',5000);
+                    return false;
+                }else{
+                    $.each(data, function(key, value) {   
+                     $('#id_ville')
+                     .append($("<option></option>")
+                         .attr("value",key)
+                         .text(value)); 
+                    });
+                    $('#id_ville').trigger("chosen:updated");
+                }
+                
+                
+            }//end success
+        });
+
 
     
     $('#id_pays').change(function(e) {
