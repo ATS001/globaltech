@@ -84,6 +84,7 @@ class Mproduit {
     //Save new produit after all check
     public function save_new_produit() {
 
+        global $db;
         //Generate reference
         //$this->Generate_produit_reference();
     if(!$reference = $db->Generate_reference($this->table, 'PRD'))
@@ -97,7 +98,7 @@ class Mproduit {
 
 
         global $db;
-        $values["reference"] = MySQL::SQLValue($this->reference);
+        $values["reference"] = MySQL::SQLValue($reference);
         $values["designation"] = MySQL::SQLValue($this->_data['designation']);
         $values["stock_min"] = MySQL::SQLValue($this->_data['stock_min']);
         $values["idcategorie"] = MySQL::SQLValue($this->_data['idcategorie']);
@@ -118,7 +119,7 @@ class Mproduit {
             } else {
 
                 $this->last_id = $result;
-                $this->log .= '</br>Enregistrement  réussie ' . $this->_data['reference'] . ' - ' . $this->last_id . ' -';
+                $this->log .= '</br>Enregistrement  réussie ' . $reference . ' - ' . $this->last_id . ' -';
 
                     if(!Mlog::log_exec($this->table, $this->last_id , 'Insertion produit', 'Insert'))
                     {
@@ -209,7 +210,7 @@ class Mproduit {
                 }
 
                 //$this->last_id = $result;
-                $this->log .= '</br>Modification  réussie ' . $this->_data['reference'] . ' - ' . $this->last_id . ' -';
+                $this->log .= '</br>Modification  réussie ' . $this->produit_info['reference'] . ' - ' . $this->last_id . ' -';
 
                     if(!Mlog::log_exec($this->table, $this->id_produit , 'Modification produit', 'Update'))
                     {

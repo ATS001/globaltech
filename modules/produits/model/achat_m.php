@@ -276,10 +276,16 @@
             global $db;
             $table = $this->table;
             //Format Select commande
-            $sql = "SELECT $table.*,produits.ref
-                    FROM $table,produits"
-                    . " WHERE  $table.idproduit  = produits.id "
-                    . " AND $table.id = " . $this->id_achat;
+            $sql = "SELECT $table.*,
+                    
+                    REPLACE(FORMAT($table.prix_achat,0),',',' ') as prix_achat,
+                    REPLACE(FORMAT($table.prix_vente,0),',',' ') as prix_vente,
+                    DATE_FORMAT(date_achat,'%d-%m-%Y') as date_achat,
+                    DATE_FORMAT(date_validite,'%d-%m-%Y') as date_validite,
+                    produits.reference as reference
+                    FROM $table,produits
+                    WHERE  $table.idproduit  = produits.id 
+                    AND $table.id = " . $this->id_achat;
             if (!$db->Query($sql)) {
                 $this->error = false;
                 $this->log .= $db->Error();

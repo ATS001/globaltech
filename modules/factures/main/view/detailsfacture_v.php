@@ -14,6 +14,7 @@ $complements = $info_facture->complement_info;
 
 $info_facture->get_all_encaissements();
 $encaissements = $info_facture->encaissement_info;
+
 ?>
 <div class="pull-right tableTools-container">
     <div class="btn-group btn-overlap">
@@ -306,10 +307,10 @@ $encaissements = $info_facture->encaissement_info;
                                                         <span><?php echo $encs['1']; ?></span>
                                                     </td>
                                                     <td>
-                                                        <span><?php echo $encs['5']; ?></span>
+                                                        <span><?php echo $encs['3']; ?></span>
                                                     </td>
                                                     <td>
-                                                        <span><?php echo date('d-m-Y', strtotime($encs['8'])) ?></span>
+                                                        <span><?php echo $encs['4']; ?></span>
                                                     </td>
                                                 </tr>
 
