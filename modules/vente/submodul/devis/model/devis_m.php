@@ -30,6 +30,7 @@ class Mdevis
     var $sum_total_ht   = null;//
     var $arr_prduit     = array();
     var $attached       = null;
+    var $type_devis     = null;//Type Devis (ABN / VNT)
     
 
 
@@ -340,6 +341,25 @@ class Mdevis
         		$this->log .='</br>Ce devis est déjà enregitré '.$count_id;
         	}
         }
+        private function get_type_devis($tkn_frm)
+        {
+            if($this->error == false)
+            {
+                return false;
+            }
+            $table_details = $this->table_details;
+            global $db;
+            $req_sql = "SELECT COUNT($table_details.id_produit) FROM $table_details, produits, ref_types_produits WHERE tkn_frm = '$tkn_frm' AND  $table_details.id_produit = produits.id AND produits.idtype = ref_types_produits.id AND ref_types_produits.type_produit like 'Abonnement'";
+
+            $count_id = $db->QuerySingleValue0($req_sql);
+            if($count_id > 0) 
+            {
+                $this->type_devis = 'ABN';            
+            }else{
+                $this->type_devis = 'VNT';
+            }  
+            $this->error == true;
+      }
     /////////////////////////////////////////////////////////////////////////////////
         public function save_new_devis()
         {
@@ -363,7 +383,8 @@ class Mdevis
             {
                 $this->log .= '</br>Problème Réference';
                 return false;
-            }  
+            }
+            $this->get_type_devis($this->_data['tkn_frm']);  
       //Check $this->error (true / false)
         	if($this->error == false)
         	{
@@ -381,6 +402,7 @@ class Mdevis
 
         	$values["reference"]       = MySQL::SQLValue($this->reference);
         	$values["tkn_frm"]         = MySQL::SQLValue($this->_data['tkn_frm']);
+            $values["type_devis"]      = MySQL::SQLValue($this->type_devis);
             $values["reference"]       = MySQL::SQLValue($reference);
         	$values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
             $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
@@ -449,7 +471,8 @@ class Mdevis
         //calcul values devis
     	$this->Calculate_devis_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva']);
 
-
+        //Get Type devis
+        $this->get_type_devis($this->_data['tkn_frm']);
         //Check $this->error (true / false)
     	if($this->error == false)
     	{
@@ -468,6 +491,7 @@ class Mdevis
 
         $values["reference"]       = MySQL::SQLValue($this->reference);
         $values["tkn_frm"]         = MySQL::SQLValue($this->_data['tkn_frm']);
+        $values["type_devis"]      = MySQL::SQLValue($this->type_devis);
         $values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
         $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
         $values["id_commercial"]   = MySQL::SQLValue(session::get('userid'));
@@ -938,7 +962,14 @@ class Mdevis
             $this->last_id = $this->_data['id'];
             $this->save_file('scan', 'PJ réponse devis '.$this->_data['id'], 'Document');
             $this->log .= '</br>Opération réussie ';
-            $this->generate_facture($this->id_devis);
+            $this->get_devis();
+            //If TYPE Devis is VNT then Generate Facture
+            
+            if($this->g('type_devis') == 'VNT')
+            {
+                $this->generate_facture($this->id_devis);
+            }
+            
         }
         if($this->error == false){
             return false;
