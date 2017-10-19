@@ -18,7 +18,8 @@ $form->input_hidden('idh', Mreq::tp('idh'));
 $form->input_hidden('checker_tkn_frm',  MInit::cryptage($info_devis_d->h('tkn_frm'), 1));
 $form->input_hidden('tkn_frm', $info_devis_d->h('tkn_frm'));
 $form->input_hidden('tva_d', 'O');
-
+//Type produit old
+$form->input_hidden('type_produit_old', $info_devis_d->h('type_id'));
 $hard_code_type_produit = '<label style="margin-left:15px;margin-right : 20px;">Catégorie: </label><select id="categ_produit" name="categ_produit" class="chosen-select col-xs-12 col-sm-6" chosen-class="'.((6 * 100) / 12).'" ><option value="'.$info_devis_d->h('categ_id').'" >'.$info_devis_d->h('categorie_produit').'</option></select>';
 $type_produit_array[]  = array('required', 'true', 'Choisir un Type Produit');
 $form->select_table('Type Produit', 'type_produit', 3, 'ref_types_produits', 'id', 'type_produit' , 'type_produit', $indx = '------' ,$selected = $info_devis_d->h('type_id'),$multi=NULL, $where='etat = 1' , $type_produit_array, $hard_code_type_produit);//Produit
@@ -186,22 +187,21 @@ $(document).ready(function() {
                 if(data['error']){
                     ajax_loadmessage(data['error'] ,'nok',5000)
                 }else{
-                    if(data['abn'] == true){
-
-                    }
-                    
+                                        
                     var table = $('#table_details_devis').DataTable();
                     var $abn = data['abn'] == true ? 'abn' : '';
-
+                    var $typ_old = $('#type_produit_old').val();
+                    var $typ_new = $('#type_produit').val();
                     if (table.data().count()) {
-                        if(data['abn'] == true){
+
+                        if(data['abn'] == true && $typ_old != $typ_new ){
                             ajax_loadmessage("Impossible d'insérer un abonnement avec autres produits" ,'nok',5000);
                             return false;
                         } 
                     }
                     $('#label_qte').text('Quantité: ('+data['unite_vente']+')');
                     $('#prix_unitaire').val(data['prix_vente']);
-                    $('#ref_produit').val(data['ref']);
+                    $('#ref_produit').val(data['reference']);
                     $('.returned_span').remove();
                     if(data['prix_vendu'] == 0){
                      $('#ref_produit').parent('div').after('<span class="help-block returned_span">Ce produit n\' pas été vendu avant!</span>'); 

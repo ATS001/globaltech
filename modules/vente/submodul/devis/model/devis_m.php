@@ -133,7 +133,7 @@ class Mdevis
         ,  REPLACE(FORMAT(devis.totalht,0),',',' ') as totalht
         ,  REPLACE(FORMAT(devis.totaltva,0),',',' ') as totaltva
         ,  REPLACE(FORMAT(devis.totalttc,0),',',' ') as totalttc
-        , clients.code
+        , clients.reference
         , clients.denomination
         , clients.adresse
         , clients.bp
@@ -708,7 +708,7 @@ class Mdevis
             $produit->id_produit = MySQL::SQLValue($this->_data['id_produit']);
             $produit->get_produit();
 
-            $ref_produit         = $produit->produit_info['ref'];
+            $ref_produit         = $produit->produit_info['reference'];
             $designation         = $produit->produit_info['designation'];
           //Valeu finance
             $total_ht            = $this->total_ht_d;
@@ -938,11 +938,21 @@ class Mdevis
             $this->last_id = $this->_data['id'];
             $this->save_file('scan', 'PJ réponse devis '.$this->_data['id'], 'Document');
             $this->log .= '</br>Opération réussie ';
+            $this->generate_facture($this->id_devis);
         }
         if($this->error == false){
             return false;
         }else{
             return true;
+        }
+    }
+    Private function generate_facture($id_devis)
+    {
+        global $db;
+        $sql_req = " CALL generate_devis_fact($id_devis)";
+        if(!$db->Query($sql_req))
+        {
+            $this->log .= '</br>Erreur génération de facture'.$sql_req;
         }
     }
     /**
@@ -1283,7 +1293,7 @@ class Mdevis
         global $db;
         $req_sql = "SELECT 
         produits.designation,
-        produits.ref,
+        produits.reference,
         produits.prix_vente AS prix_vente,
         ref_unites_vente.unite_vente,
         ref_types_produits.type_produit,

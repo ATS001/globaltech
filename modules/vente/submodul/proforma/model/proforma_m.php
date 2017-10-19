@@ -670,7 +670,7 @@ class Mproforma
             $produit->id_produit = MySQL::SQLValue($this->_data['id_produit']);
             $produit->get_produit();
 
-            $ref_produit         = $produit->produit_info['ref'];
+            $ref_produit         = $produit->produit_info['reference'];
             $designation         = $produit->produit_info['designation'];
           //Valeu finance
             $total_ht            = $this->total_ht_d;
@@ -1122,7 +1122,7 @@ class Mproforma
         global $db;
         $req_sql = "SELECT 
         produits.designation,
-        produits.ref,
+        produits.reference,
         produits.prix_vente AS prix_vente,
         ref_unites_vente.unite_vente,
         ref_types_produits.type_produit,

@@ -15,7 +15,7 @@ if($action == 'delete')
 {
 	if(!MInit::crypt_tp('id', null, 'D'))
 	{ 	
-		exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur zzzzzzzz');
+		exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur ');
 	}
 //Initialise
 	$id     = Mreq::tp('id');

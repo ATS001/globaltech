@@ -101,7 +101,7 @@ $(document).ready(function() {
                                                                                                     
                     $('#label_qte').text('Quantité: ('+data['unite_vente']+')');
                     $('#prix_unitaire').val(data['prix_vente']);
-                    $('#ref_produit').val(data['ref']);
+                    $('#ref_produit').val(data['reference']);
                     $('.returned_span').remove();
                     if(data['prix_vendu'] == 0){
                      $('#ref_produit').parent('div').after('<span class="help-block returned_span">Ce produit n\' pas été vendu avant!</span>'); 
