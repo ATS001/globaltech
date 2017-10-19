@@ -193,8 +193,7 @@ $form->render();
 
 <script type="text/javascript">
 $(document).ready(function() {
-
-    
+ 
     $('#id_pays').change(function(e) {
         var $id_pays = $(this).val();
 
