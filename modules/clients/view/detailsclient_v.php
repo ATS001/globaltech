@@ -46,7 +46,22 @@ $photo   = Minit::get_file_archive($client->client_info['pj_photo']);
 				<!-- #section:pages/invoice -->
 				<div class="widget-box transparent">
 					<div class="widget-header widget-header-large">
+						
 						<h3 class="widget-title grey lighter">
+							<?php if ($photo != null)
+							{ 
+							?>
+
+							
+							
+											<span class="profile-picture">
+										    	<img width="50" height="50" class="editable img-responsive" alt=<?php $client->s('denomination')   ?> id="avatar2" src="<?php echo $photo ?>" />
+									        </span>	
+
+							
+							<?php 
+						    }
+							?>
 							<i class="ace-icon fa fa-adress-card-o green"></i>
 							Client : <?php echo $client->s('reference')?>
 						</h3>
@@ -79,6 +94,7 @@ $photo   = Minit::get_file_archive($client->client_info['pj_photo']);
 									</div>
 
 									<div>
+										
 										<ul class="list-unstyled spaced">
 											<li>
 												<i class="ace-icon fa fa-caret-right blue"></i> Référence                                                                                               
@@ -202,20 +218,7 @@ $photo   = Minit::get_file_archive($client->client_info['pj_photo']);
 
 							<div class="hr hr8 hr-double hr-dotted"></div>
 
-							<?php if ($photo != null)
-							{ 
-							?>
-
-							<div class="center">
-							
-											<span class="profile-picture">
-										    	<img width="180" height="200" class="editable img-responsive" alt=<?php $client->s('denomination')   ?> id="avatar2" src="<?php echo $photo ?>" />
-									        </span>	
-
-							</div>
-							<?php 
-						    }
-							?>		
+									
 <!--							<div class="row">
 								<div class="col-sm-5 pull-right">
 									<h4 class="pull-right">
