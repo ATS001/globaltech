@@ -180,3 +180,47 @@ $form->render();
 		</div>
 	</div>
 </div>
+
+<script type="text/javascript">
+$(document).ready(function() {
+ 
+    $('#id_pays').change(function(e) {
+        var $id_pays = $(this).val();
+
+        if($id_pays == null){
+            return true;
+        }
+        $('#id_ville').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
+        //$('#categ_produit').trigger('change');
+        //$('#id_pays').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
+        $.ajax({
+
+            cache: false,
+            url  : '?_tsk=addfournisseur&ajax=1',
+            type : 'POST',
+            data : '&act=1&id='+$id_pays+'&<?php echo MInit::crypt_tp('exec', 'load_select_ville') ?>',
+            dataType:"JSON",
+            success: function(data){
+               
+                if(data['error'] == false){
+                    ajax_loadmessage(data['mess'] ,'nok',5000);
+                    return false;
+                }else{
+                    $.each(data, function(key, value) {   
+                     $('#id_ville')
+                     .append($("<option></option>")
+                         .attr("value",key)
+                         .text(value)); 
+                    });
+                    $('#id_ville').trigger("chosen:updated");
+                }
+                
+                
+            }//end success
+        });
+    });
+    
+
+    });
+    
+   </script>  

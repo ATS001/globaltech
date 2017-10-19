@@ -143,14 +143,15 @@ class Mfournisseurs {
 
 		
 
-    	$this->check_non_exist('ref_pays','id', $this->_data['id_pays'], 'Pays');
+    	 $this->check_non_exist('ref_pays','id', $this->_data['id_pays'], 'Pays');
 
         if($this->_data['id_ville'] = '------')
         {
             null;
+            //var_dump('ville vide');
         }    
         else{
-    	$this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
+    	      $this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
         }
 
         if($this->_data['id_devise'] = '------')
@@ -158,7 +159,7 @@ class Mfournisseurs {
             null;
         }    
         else{
-      $this->check_non_exist('ref_devise','id', $this->_data['id_devise'], 'Devise');
+            $this->check_non_exist('ref_devise','id', $this->_data['id_devise'], 'Devise');
         }
 
 
@@ -337,15 +338,13 @@ class Mfournisseurs {
 
     	$this->last_id = $this->id_fournisseur;
 
-        $this->Check_exist('r_social', $this->_data['r_social'], 'Raison Sociale', $this->id_fournisseur);
+      $this->Check_exist('denomination', $this->_data['denomination'], 'Dénomination', $this->id_fournisseur);
+      
+      $this->Check_exist('r_social', $this->_data['r_social'], 'Raison Sociale', $this->id_fournisseur);
              
-        $this->Check_exist('r_commerce', $this->_data['r_commerce'], 'N° de registre', $this->id_fournisseur);           
-       
-        $this->Check_exist('nif', $this->_data['nif'], 'N° de NIF', $this->id_fournisseur);
+      $this->Check_exist('r_commerce', $this->_data['r_commerce'], 'N° de registre', $this->id_fournisseur);           
+      $this->Check_exist('nif', $this->_data['nif'], 'N° de NIF', $this->id_fournisseur);
 
-
-
-    	$this->check_non_exist('fournisseurs','id_pays', $this->_data['id_pays'], 'Pays');
 
     	$this->check_non_exist('ref_pays','id', $this->_data['id_pays'], 'Pays');
 
@@ -365,8 +364,8 @@ class Mfournisseurs {
       $this->check_non_exist('ref_devise','id', $this->_data['id_devise'], 'Devise');
         }
 
-
-    	  //Check if PJ attached required
+    
+     	  //Check if PJ attached required
         if($this->exige_pj)
         {
             $this->check_file('pj', 'Justifications du fournisseur.', $this->_data['pj_id']);
