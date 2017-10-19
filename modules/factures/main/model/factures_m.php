@@ -134,8 +134,9 @@ class Mfacture {
 
         $table_complement = $this->table_complement;
 
-        $sql = "SELECT id,designation,type,montant FROM 
-    		$table_complement WHERE  $table_complement.idfacture = " . $this->id_facture;
+        $sql = "SELECT id,designation,type,
+                REPLACE(FORMAT(montant,0),',',' ') as montant
+                FROM $table_complement WHERE  $table_complement.idfacture = " . $this->id_facture;
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -950,8 +951,16 @@ class Mfacture {
 
         $table = $this->table;
 
-        $sql = "SELECT id,reference,base_fact,total_ht,total_tva,total_ttc,
-                total_ttc_initial,total_paye,reste,client,tva,projet,ref_bc,idcontrat,du,au,
+        $sql = "SELECT id,reference,base_fact,
+                REPLACE(FORMAT(total_ht,0),',',' ') as total_ht ,  
+                REPLACE(FORMAT(total_tva,0),',',' ') as total_tva ,         
+                REPLACE(FORMAT(total_ttc,0),',',' ') as total_ttc,           
+                REPLACE(FORMAT(total_ttc_initial,0),',',' ') as total_ttc_initial,
+                REPLACE(FORMAT(total_paye,0),',',' ') as total_paye,
+                REPLACE(FORMAT(reste,0),',',' ') as reste,               
+                client,tva,projet,ref_bc,idcontrat,
+                DATE_FORMAT(du,'%d-%m-%Y') as du,
+                DATE_FORMAT(au,'%d-%m-%Y') as au,
                 DATE_FORMAT(date_facture,'%d-%m-%Y') as date_facture
                 FROM 
     		$table WHERE  $table.id = " . $this->id_facture;
@@ -1003,7 +1012,7 @@ class Mfacture {
         $colms .= " REPLACE(FORMAT($table.qte,0),',',' '), ";
         $colms .= " REPLACE(FORMAT($table.prix_unitaire,0),',',' '), ";
         $colms .= " REPLACE(FORMAT($table.remise_valeur,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.total_ttc,0),',', ' ') ";
+        $colms .= " REPLACE(FORMAT($table.total_ht,0),',', ' ') ";
 
         $req_sql = " SELECT $colms FROM $table WHERE id_devis = $id_devis ";
         if (!$db->Query($req_sql)) {

@@ -33,12 +33,12 @@ if (!$facture->Get_detail_facture_pdf()) {
 global $db;
 $headers = array(
     'Item' => '5[#]C',
-    'Réf' => '15[#]C',
-    'Description' => '40[#]L',
+    'Réf' => '20[#]L',
+    'Description' => '35[#]L',
     'Qte' => '5[#]C',
-    'P.U' => '10[#]R',
+    'P.U' => '10[#]L',
     'Re' => '5[#]C',
-    'Total TTC' => '15[#]R',
+    'Total HT' => '15[#]L',
 );
 
 $headers2 = array(
@@ -294,35 +294,29 @@ $pdf->writeHTML($html2, true, false, true, false, '');
 //$pdf->writeHTMLCell('', '','' , '', $html , 0, 0, 0, true, 'L', true);
 
 $pdf->lastPage();
-$obj = new nuts($pdf->info_devis['totalttc'], "FCFA");
+$obj = new nuts($pdf->info_facture['total_ttc'], "FCFA");
 $ttc_lettre = $obj->convert("fr-FR");
 $remise_valeur = $pdf->info_devis['valeur_remise'] == null ? '-' : $pdf->info_devis['valeur_remise'];
 $block_sum = '<div></div>
 <table style="width: 685px;" cellpadding="2">
     <tr align="right">
         <td width="50%" align="left" style="background-color: #eeecec; color:#6B6868;">
-            Arrêté le présent Devis à la somme de :<br>
+            Arrêté la Facture à la somme de :<br>
             <strong>' . $ttc_lettre . ' </strong>
         </td>
         <td>
            <table class="table" cellspacing="2" cellpadding="2"  style="width: 300px; border:1pt solid black;" >
             <tbody>
-            <tr>
-                    <td style="width:35%;"><strong>Total TTC Initial</strong></td>
-                    <td style="width:5%;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['total_ttc_initial'] . '</strong></td>
-                </tr>
                 <tr>
                     <td style="width:35%;"><strong>Total HT</strong></td>
                     <td style="width:5%;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['total_ht'] . '</strong></td>
                 </tr>
-                                
                 <tr>
                     <td style="width:35%;"><strong>Total Tva</strong></td>
                     <td style="width:5%;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['total_tva'] . '</strong></td>
-                </tr>
+                   </tr>
                 <tr>
                     <td style="width:35%;"><strong>Total TTC</strong></td>
                     <td style="width:5%;">:</td>
