@@ -31,6 +31,8 @@
 //Type de produit
 $type_array[] = array('required', 'true', 'Choisir un type');
 $form->select_table('Type', 'idtype', 6, 'ref_types_produits', 'id', 'type_produit', 'type_produit', $indx = '------', $selected = NULL, $multi = NULL, $where = 'etat= 1', $type_array);
+
+//Catégorie produit
 $opt_categ = array('' => '------');
 $form->select('Catégorie', 'idcategorie', 3, $opt_categ, $indx = NULL ,$selected = null, $multi = NULL);
 
