@@ -35,83 +35,62 @@
                                 Produit
                             </a>
                         </li>
-
                     </ul>
 
                     <div class="tab-content no-border padding-24">
                         <div id="home" class="tab-pane in active">
                             <div class="col-xs-12 col-sm-4"></div>
 
-                            <div class="col-xs-12 col-sm-4">
-                                <div class="profile-produit-info">
-
-                                    <div class="profile-info-row">
-                                        <div class="profile-info-name"> Type de produit </div>
-
-                                        <div class="profile-info-value">
-                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                            <span><?php $info_produit->printattribute('type_produit'); ?></span>
-                                        </div>
+                         <div class="col-sm-4">
+                                <div class="row">
+                                    <div class="col-xs-11 label label-lg label-success arrowed-in arrowed-right">
+                                        <b>Produit Info</b>
                                     </div>
-
-                                    <div class="profile-info-row">
-                                        <div class="profile-info-name"> Catégorie du produit </div>
-
-                                        <div class="profile-info-value">
-                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                            <span><?php $info_produit->printattribute('categorie_produit'); ?></span>
-                                        </div>
-                                    </div>
-                                    <div class="profile-info-row">
-                                        <div class="profile-info-name"> Unité de vente </div>
-
-                                        <div class="profile-info-value">
-                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                            <span><?php $info_produit->printattribute('unite_vente'); ?></span>
-                                        </div>
-                                    </div>
-
-                                    <div class="profile-info-row">
-                                        <div class="profile-info-name"> Référence </div>
-
-                                        <div class="profile-info-value">
-                                            <span><?php $info_produit->printattribute('reference'); ?></span>
-                                        </div>
-                                    </div>
-
-                                    <div class="profile-info-row">
-                                        <div class="profile-info-name"> Désignation </div>
-
-                                        <div class="profile-info-value">
-                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                            <span><?php $info_produit->printattribute('designation'); ?></span>
-                                        </div>
-                                    </div>
-
-
-
-                                    <div class="profile-info-row">
-                                        <div class="profile-info-name"> Stock minimale </div>
-
-                                        <div class="profile-info-value">
-                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                            <span><?php $info_produit->printattribute('stock_min'); ?></span>
-                                        </div>
-                                    </div>
-                                    <div class="profile-info-row">
-                                        <div class="profile-info-name"> Prix de vente </div>
-
-                                        <div class="profile-info-value">
-                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                            <span><?php $info_produit->printattribute('prix_vente'); ?></span>
-                                        </div>
-                                    </div>
-
                                 </div>
 
-                            </div><!-- /.col -->
+                                <div>
+                                    <ul class="list-unstyled  spaced">
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right green"></i> Type de produit
+                                            <b style="color:green"><?php $info_produit->printattribute('type_produit'); ?></b>
+                                        </li>
 
-                            <div class="col-xs-12 col-sm-4"></div>
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right green"></i> Catégorie du produit
+                                            <b style="color:green"><?php $info_produit->printattribute('categorie_produit'); ?></b>
+                                        </li>
+
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right green"></i> Unité de vente
+                                            <b style="color:green"><?php $info_produit->printattribute('unite_vente'); ?></b>
+                                        </li>
+
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right green"></i>
+                                            Référence
+                                            <b style="color:green"><?php $info_produit->printattribute('reference'); ?></b>
+                                        </li>
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right green"></i>
+                                            Désignation
+                                            <b style="color:green"><?php $info_produit->printattribute('designation'); ?></b>
+                                        </li>
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right green"></i>
+                                            Prix de vente
+                                            <b style="color:green"><?php $info_produit->printattribute('prix_vente'); ?></b>
+                                        </li>
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right green"></i>
+                                            Stock minimal
+                                            <b style="color:green"><?php $info_produit->printattribute('stock_min'); ?></b>
+                                        </li>
+                                        
+                                    </ul>
+                                </div>
+                            </div><!-- /.col -->   
+                            
+                                              <div class="col-xs-12 col-sm-4"></div>
 
 
                         </div><!-- /.row -->
