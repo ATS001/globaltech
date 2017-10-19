@@ -10,9 +10,9 @@ $array_column = array(
         'align'  => 'C'
     ),
     array(
-        'column' => 'produits.ref',
+        'column' => 'produits.reference',
         'type'   => '',
-        'alias'  => 'ref',
+        'alias'  => 'reference',
         'width'  => '10',
         'header' => 'Référence',
         'align'  => 'L'
