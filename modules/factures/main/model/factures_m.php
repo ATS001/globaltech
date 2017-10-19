@@ -193,7 +193,10 @@ class Mfacture {
 
         $table_encaissement = $this->table_encaissement;
 
-        $sql = "SELECT $table_encaissement.* FROM 
+        $sql = "SELECT id,ref,designation,
+                REPLACE(FORMAT(montant,0),',',' ') as montant,
+                DATE_FORMAT(date_encaissement,'%d-%m-%Y') as date_encaissement                        
+                FROM 
     		$table_encaissement WHERE  $table_encaissement.idfacture = " . $this->id_facture;
 
         if (!$db->Query($sql)) {
@@ -961,6 +964,7 @@ class Mfacture {
                 client,tva,projet,ref_bc,idcontrat,
                 DATE_FORMAT(du,'%d-%m-%Y') as du,
                 DATE_FORMAT(au,'%d-%m-%Y') as au,
+                CONCAT(DATE_FORMAT(du,'%d-%m-%Y'),' Au ',DATE_FORMAT(au,'%d-%m-%Y')) as periode,
                 DATE_FORMAT(date_facture,'%d-%m-%Y') as date_facture
                 FROM 
     		$table WHERE  $table.id = " . $this->id_facture;
@@ -1009,9 +1013,9 @@ class Mfacture {
         $colms .= " $table.id item, ";
         $colms .= " $table.ref_produit, ";
         $colms .= " $table.designation, ";
-        $colms .= " REPLACE(FORMAT($table.qte,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.prix_unitaire,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.remise_valeur,0),',',' '), ";
+       // $colms .= " REPLACE(FORMAT($table.qte,0),',',' '), ";
+        //$colms .= " REPLACE(FORMAT($table.prix_unitaire,0),',',' '), ";
+        //$colms .= " REPLACE(FORMAT($table.remise_valeur,0),',',' '), ";
         $colms .= " REPLACE(FORMAT($table.total_ht,0),',', ' ') ";
 
         $req_sql = " SELECT $colms FROM $table WHERE id_devis = $id_devis ";
@@ -1134,7 +1138,7 @@ class Mfacture {
 
         $sql = "SELECT id,reference,iddevis, DATE_FORMAT(date_effet,'%d-%m-%Y') as date_effet,
                 DATE_FORMAT(date_fin,'%d-%m-%Y') as date_fin,
-                DATE_FORMAT(date_contrat,'%d-%m-%Y') as date_contrat FROM contrats WHERE id = " . $idcontrat;
+                DATE_FORMAT(date_contrat,'%d-%m-%Y') as date_contrat,commentaire FROM contrats WHERE id = " . $idcontrat;
         
         if (!$db->Query($sql)) {
             $this->error = false;

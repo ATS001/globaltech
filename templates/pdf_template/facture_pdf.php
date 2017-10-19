@@ -33,17 +33,17 @@ if (!$facture->Get_detail_facture_pdf()) {
 global $db;
 $headers = array(
     'Item' => '5[#]C',
-    'Réf' => '20[#]L',
+    'Réf' => '18[#]L',
     'Description' => '35[#]L',
-    'Qte' => '5[#]C',
-    'P.U' => '10[#]L',
-    'Re' => '5[#]C',
-    'Total HT' => '15[#]L',
+    //'Qte' => '5[#]C',
+    //'P.U' => '10[#]R',
+    //'Remise' => '7[#]C',
+    'Total HT' => '15[#]R',
 );
 
 $headers2 = array(
     'ID' => '5[#]C',
-    'Désignation' => '30[#]C',
+    'Désignation' => '30[#]L',
     'Type' => '15[#]L',
     'Montant' => '10[#]C',
 );
@@ -57,6 +57,7 @@ $facture->get_complement_by_facture();
 $complement_info = $facture->complement_info;
 $tableau_head_complement = MySQL::make_table_head($headers2);
 $tableau_body_complement = $db->GetMTable_pdf($headers2);
+
 
 // Extend the TCPDF class to create custom Header and Footer
 class MYPDF extends TCPDF {
@@ -72,6 +73,8 @@ class MYPDF extends TCPDF {
     var $info_complement = array();
     var $periode = null;
      var $qr = false;
+     
+     
 
     //Page header
     public function Header() {
@@ -109,6 +112,18 @@ class MYPDF extends TCPDF {
         $this->writeHTMLCell(0, 0, 140, 10, $titre_doc, 'B', 0, 0, true, 'R', true);
         $this->SetTextColor(0, 0, 0);
         $this->SetFont('helvetica', '', 9);
+        
+        $per=NULL;
+        if($this->info_facture['periode'] != NULL)
+        {
+               $per=' <tr>
+		<td style="width:40%; color:#A1A0A0;"><strong>Période facturée
+                </strong></td>
+		<td style="width:5%;">:</td>
+		<td style="width:60%; background-color: #eeecec; ">' .$this->info_facture['periode'] . '</td>
+		</tr>';
+        }
+               
         $detail_devis = '<table cellspacing="3" cellpadding="2" border="0">
 		<tr>
 		<td style="width:40%; color:#A1A0A0;"><strong>Référence</strong></td>
@@ -133,12 +148,7 @@ class MYPDF extends TCPDF {
 		<td style="width:5%;">:</td>
 		<td style="width:60%; background-color: #eeecec; ">' . $this->info_contrat['date_contrat'] . '</td>
 		</tr>
-                <tr>
-		<td style="width:40%; color:#A1A0A0;"><strong>Période facturée
-                </strong></td>
-		<td style="width:5%;">:</td>
-		<td style="width:60%; background-color: #eeecec; ">' .$this->periode. '</td>
-		</tr>
+               '.$per.'
 		</table>';
         $this->writeHTMLCell(0, 0, 122, 23, $detail_devis, '', 0, 0, true, 'L', true);
         //Info Client
@@ -331,8 +341,7 @@ $block_sum = '<div></div>
                     <td style="width:35%;"><strong>Reste à payer</strong></td>
                     <td style="width:5%;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['reste'] . '</strong></td>
-                </tr>
-                
+                </tr>               
                 
             </tbody>
         </table> 
@@ -347,7 +356,7 @@ $block_sum = '<div></div>
 </tr>
 <tr>
     <td colspan="2" style="color:#6B6868; width: 650px; border:1pt solid black; background-color: #eeecec; padding: 5px;">
-        ' . $pdf->info_devis['claus_comercial'] . '
+        ' . $pdf->info_contrat['commentaire'] . '
      <br>
      Merci de nous avoir consulter.
  </td>
