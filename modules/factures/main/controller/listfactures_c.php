@@ -81,9 +81,11 @@ $array_column = array(
 //Creat new instance
 $list_data_table = new Mdatatable();
 //Set tabels used in Query
-$list_data_table->tables = array('factures,clients c,contrats ctr,devis d');
+$list_data_table->tables = array('factures,clients c,devis d');
 //Set Jointure
-$list_data_table->joint = 'factures.idcontrat=ctr.id and ctr.iddevis=d.id and d.id_client=c.id';
+$list_data_table->joint = 'IF(factures.`base_fact`="C",
+( factures.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE factures.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client=c.id ) ), 
+(factures.iddevis=d.id AND d.id_client=c.id))';
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query
