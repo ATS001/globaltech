@@ -39,7 +39,7 @@ $headers = array(
             'Description' => '40[#]', 
             'Qte'         => '5[#]C', 
             'P.U'         => '10[#]R', 
-            'Re'          => '5[#]C',
+            'Remise'      => '5[#]C',
             'Total HT'    => '15[#]R',
 
         );
@@ -241,7 +241,26 @@ $html = $pdf->Table_body;
 $pdf->lastPage();
 $obj = new nuts($pdf->info_devis['totalttc'], "FCFA");
 $ttc_lettre = $obj->convert("fr-FR");
-$remise_valeur = $pdf->info_devis['valeur_remise'] == null ? '-' : $pdf->info_devis['valeur_remise'];
+
+$block_remise = '<tr>
+                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Remise:</strong></td>
+                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_devis['valeur_remise'].' %</strong></td>
+                </tr>';
+$block_ttc = '<tr>
+                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>TVA 18%</strong></td>
+                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_devis['totaltva'].'</strong></td>
+                </tr>
+                <tr>
+                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Total TTC</strong></td>
+                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_devis['totalttc'].'</strong></td>
+                </tr>';                
+$block_remise = $pdf->info_devis['valeur_remise'] == null ? null : $block_remise;   
+$block_ttc    = $pdf->info_devis['totaltva'] == 0 ? null : $block_ttc;
+$titl_ht = $pdf->info_devis['totaltva'] == 0 ? 'Total à payer' : 'Total HT';
+
 $block_sum = '<div></div>
 <table style="width: 685px;" cellpadding="2">
     <tr align="right">
@@ -252,26 +271,14 @@ $block_sum = '<div></div>
         <td width="50%">
            <table class="table" cellspacing="2" cellpadding="2"  style="width: 300px; border:1pt solid black;" >
             <tbody>
+                '.$block_remise.'
                 <tr>
-                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Total HT</strong></td>
+                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>'.$titl_ht.'</strong></td>
                     <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_devis['totalht'].'</strong></td>
                 </tr>
-                <tr>
-                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Remise:</strong></td>
-                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$remise_valeur.' %</strong></td>
-                </tr>
-                <tr>
-                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>TVA 18%</strong></td>
-                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_devis['totaltva'].'</strong></td>
-                </tr>
-                <tr>
-                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Total TTC</strong></td>
-                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_devis['totalttc'].'</strong></td>
-                </tr>
+                '.$block_ttc.'
+                
             </tbody>
         </table> 
     </td>
