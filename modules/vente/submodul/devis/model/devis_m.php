@@ -1073,7 +1073,9 @@ class Mdevis
             $this->log .= "Erreur Opération";
             return false;
         }
+        
         if(Msetting::get_set('send_mail_devis') == true){
+            
             $this->send_devis_mail();
         }        
         //log

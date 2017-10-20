@@ -94,8 +94,13 @@ class Msetting {
 				
 			}
 			//case booleen value
-			$result = $result == 'true' ? true : $result;
-			$result = $result == 'false' ? false : $result;
+			if($result == 'true'){
+				$result = true;
+			}elseif($result == 'false'){
+				$result = false;
+			}
+			//$result = $result == 'true' ? true : $result;
+			//$result = $result == 'false' ? false : $result;
 			return $result;
 		}else{
 			return null;
