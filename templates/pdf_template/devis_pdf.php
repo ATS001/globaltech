@@ -259,7 +259,7 @@ $block_ttc = '<tr>
                     <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_devis['totalttc'].' '.$pdf->info_devis['devise'].'</strong></td>
                 </tr>';                
-$block_remise = $pdf->info_devis['valeur_remise'] == null ? null : $block_remise;   
+$block_remise = $pdf->info_devis['valeur_remise'] == 0 ? null : $block_remise;   
 $block_ttc    = $pdf->info_devis['totaltva'] == 0 ? null : $block_ttc;
 $titl_ht = $pdf->info_devis['totaltva'] == 0 ? 'Total à payer' : 'Total HT';
 $signature = $pdf->info_devis['comercial']; 
