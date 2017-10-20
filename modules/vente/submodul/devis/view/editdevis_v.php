@@ -27,7 +27,7 @@
 			<i class="ace-icon fa fa-angle-double-right"></i>
 		</small>
 	</h1>
-</div><!-- /.page-header -->
+</div><!-- /.page-header   -->
 <!-- Bloc form Add Devis-->
 <div class="row">
 	<div class="col-xs-12">
