@@ -34,13 +34,13 @@ if(!$proforma->Get_detail_proforma_pdf())
 }
 global $db;
 $headers = array(
-            'Item'        => '5[#]C',
-            'Réf'         => '15[#]C',
-            'Description' => '40[#]', 
+            ' #'          => '4[#]C',
+            'Réf'         => '16[#]C',
+            'Description' => '41[#]', 
             'Qte'         => '5[#]C', 
             'P.U'         => '10[#]R', 
-            'Re'          => '5[#]C',
-            'Total HT'    => '15[#]R',
+            'Remise'      => '7[#]C',
+            'Total HT'    => '12[#]R',
 
         );
 $proforma_info   = $proforma->proforma_info;
@@ -66,21 +66,7 @@ class MYPDF extends TCPDF {
 		$image_file = MPATH_IMG.MCfg::get('logo');
 		$this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
 		$this->Image($image_file, 22, 6, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
-		if($this->qr == true){
-// QRCODE,H : QR-CODE Best error correction
-			$qr_content = $this->info_proforma['reference']."\n".$this->info_proforma['denomination']."\n".$this->info_proforma['date_proforma'];
-			$style = array(
-				'border' => 1,
-				'vpadding' => 'auto',
-				'hpadding' => 'auto',
-				'fgcolor' => array(0,0,0),
-	            'bgcolor' => false, //array(255,255,255)
-	            'module_width' => 1, // width of a single module in points
-	            'module_height' => 1 // height of a single module in points
-            );
-	//write2DBarcode($code, $type, $x='', $y='', $w='', $h='', $style='', $align='', $distort=false)
-			$this->write2DBarcode($qr_content, 'QRCODE,H', 67, 5, 25, 25, $style, 'N');
-		}
+		
 		//Get info ste from DB
 		$ste_c = new MSte_info();
         
@@ -108,7 +94,7 @@ class MYPDF extends TCPDF {
 		<td style="width:50%; background-color: #eeecec; ">'.$this->info_proforma['date_proforma'].'</td>
 		</tr>
 		</table>';
-		$this->writeHTMLCell(0, 0, 140, 23, $detail_proforma, '', 0, 0, true, 'L', true);
+		$this->writeHTMLCell(70, 0, 129, 23, $detail_proforma, '', 0, 0, true, 'L', true);
 	    //Info Client
 	    $nif = null;
 	    if($this->info_proforma['nif'] != null)
@@ -116,7 +102,7 @@ class MYPDF extends TCPDF {
 	    	$nif = '<tr>
 		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">NIF</td>
 		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
-		<td style="width: 65%; background-color: #eeecec;">'.$this->info_proforma['nif'].'hh</td>
+		<td style="width: 65%; background-color: #eeecec;">'.$this->info_proforma['nif'].'</td>
 		</tr>';
 	    }
 	    
@@ -159,6 +145,22 @@ class MYPDF extends TCPDF {
 	// Page footer
 	public function Footer() {
 		$ste_c = new MSte_info();
+		if($this->qr == true){
+// QRCODE,H : QR-CODE Best error correction
+			$qr_content = $this->info_proforma['reference']."\n".$this->info_proforma['denomination']."\n".$this->info_proforma['date_proforma'];
+			$style = array(
+				'border' => 1,
+				'vpadding' => 'auto',
+				'hpadding' => 'auto',
+				'fgcolor' => array(0,0,0),
+	            'bgcolor' => false, //array(255,255,255)
+	            'module_width' => 1, // width of a single module in points
+	            'module_height' => 1 // height of a single module in points
+            );
+	//write2DBarcode($code, $type, $x='', $y='', $w='', $h='', $style='', $align='', $distort=false)
+	        $this->SetY(-30);
+			$this->write2DBarcode($qr_content, 'QRCODE,H', 15, '', 25, 25, $style, 'N');
+		}
         $this->SetY(-30);
 		$ste = $ste_c->get_ste_info_report_footer(1);
 		$this->writeHTMLCell(0, 0, '', '', $ste , '', 0, 0, true, 'C', true);
@@ -231,6 +233,9 @@ $pdf->Table_body = $tableau_body;
 $html = $pdf->Table_body;
 // ---------------------------------------------------------
 
+$signature = $pdf->info_proforma['comercial']; 
+
+
 $block_sum = '<div></div>
 <table style="width: 685px;" cellpadding="2">
 
@@ -242,7 +247,7 @@ $block_sum = '<div></div>
     </td>
 </tr>
 <tr>
-    <td colspan="2" style="color:#6B6868; width: 650px; border:1pt solid black; background-color: #eeecec; padding: 5px;">
+    <td colspan="2" style="color:#6B6868; width: 650px; border:1pt solid black; background-color: #eeecec;">
         '.$pdf->info_proforma['claus_comercial'].'
      <br>
      Merci de nous avoir consulter.
@@ -252,7 +257,7 @@ $block_sum = '<div></div>
 <tr>
     <td colspan="2" align="right" style="font: underline; padding-right: 200px;">
         <br><br><br><br>
-        <strong>Responsable Commercial</strong>
+        <strong>'.$signature.'</strong>
     </td>
 </tr>
 </table>';

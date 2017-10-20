@@ -30,6 +30,7 @@ class Mdevis
     var $sum_total_ht   = null;//
     var $arr_prduit     = array();
     var $attached       = null;
+    var $type_devis     = null;//Type Devis (ABN / VNT)
     
 
 
@@ -86,12 +87,21 @@ class Mdevis
     	$table_details = $this->table_details;
     	global $db;
 
-    	$sql = "SELECT $table_details.* FROM $table_details WHERE $table_details.id = ".$this->id_devis_d;
+    	$sql = "SELECT $table_details.* ,
+        ref_categories_produits.id as categ_id, ref_categories_produits.categorie_produit,
+        ref_types_produits.id as type_id, produits.designation
+        FROM 
+        $table_details , ref_types_produits, ref_categories_produits, produits
+        WHERE 
+        produits.idcategorie = ref_categories_produits.id
+        AND ref_types_produits.id = ref_categories_produits.type_produit
+        AND $table_details.id_produit = produits.id
+        AND $table_details.id = ".$this->id_devis_d;
 
     	if(!$db->Query($sql))
     	{
     		$this->error = false;
-    		$this->log  .= $db->Error();
+    		$this->log  .= $db->Error().'  '.$sql;
     	}else{ 
     		if ($db->RowCount() == 0)
     		{
@@ -124,7 +134,7 @@ class Mdevis
         ,  REPLACE(FORMAT(devis.totalht,0),',',' ') as totalht
         ,  REPLACE(FORMAT(devis.totaltva,0),',',' ') as totaltva
         ,  REPLACE(FORMAT(devis.totalttc,0),',',' ') as totalttc
-        , clients.code
+        , clients.reference as reference_client
         , clients.denomination
         , clients.adresse
         , clients.bp
@@ -133,6 +143,8 @@ class Mdevis
         , clients.email
         , ref_pays.pays
         , ref_ville.ville
+        , ref_devise.abreviation as devise
+        , CONCAT(users_sys.fnom,' ',users_sys.lnom) as comercial
         FROM
         devis
         INNER JOIN clients 
@@ -140,6 +152,11 @@ class Mdevis
         INNER JOIN ref_pays 
         ON (clients.id_pays = ref_pays.id)
         INNER JOIN ref_ville
+        ON (clients.id_ville = ref_ville.id)
+        INNER JOIN ref_devise
+        ON (clients.id_devise = ref_devise.id)
+        INNER JOIN users_sys
+        ON (devis.creusr = users_sys.id)
         WHERE devis.id = ".$this->id_devis;
         if(!$db->Query($req_sql))
         {
@@ -179,17 +196,17 @@ class Mdevis
         $this->Get_detail_devis_show();
         $devis_info = $this->devis_info;
         $colms  = null;
-        $colms .= " $table.id item, ";
+        $colms .= " $table.order item, ";
         $colms .= " $table.ref_produit, ";
         $colms .= " $table.designation, ";
         $colms .= " REPLACE(FORMAT($table.qte,0),',',' '), ";
         $colms .= " REPLACE(FORMAT($table.prix_unitaire,0),',',' '), ";
         //$colms .= " $table.type_remise, ";
-        $colms .= " REPLACE(FORMAT($table.remise_valeur,0),',',' '), ";
+        $colms .= " CONCAT(REPLACE(FORMAT($table.remise_valeur,0),',',' '),'%'), ";
         
        // $colms .= " REPLACE(FORMAT($table.total_ht,0),',',' '), ";
        // $colms .= " REPLACE(FORMAT($table.total_tva,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.total_ttc,0),',', ' ') ";
+        $colms .= " REPLACE(FORMAT($table.total_ht,0),',', ' ') ";
         
         $req_sql  = " SELECT $colms FROM $table WHERE id_devis = $id_devis ";
         if(!$db->Query($req_sql))
@@ -331,6 +348,25 @@ class Mdevis
         		$this->log .='</br>Ce devis est déjà enregitré '.$count_id;
         	}
         }
+        private function get_type_devis($tkn_frm)
+        {
+            if($this->error == false)
+            {
+                return false;
+            }
+            $table_details = $this->table_details;
+            global $db;
+            $req_sql = "SELECT COUNT($table_details.id_produit) FROM $table_details, produits, ref_types_produits WHERE tkn_frm = '$tkn_frm' AND  $table_details.id_produit = produits.id AND produits.idtype = ref_types_produits.id AND ref_types_produits.type_produit like 'Abonnement'";
+
+            $count_id = $db->QuerySingleValue0($req_sql);
+            if($count_id > 0) 
+            {
+                $this->type_devis = 'ABN';            
+            }else{
+                $this->type_devis = 'VNT';
+            }  
+            $this->error == true;
+      }
     /////////////////////////////////////////////////////////////////////////////////
         public function save_new_devis()
         {
@@ -354,7 +390,8 @@ class Mdevis
             {
                 $this->log .= '</br>Problème Réference';
                 return false;
-            }  
+            }
+            $this->get_type_devis($this->_data['tkn_frm']);  
       //Check $this->error (true / false)
         	if($this->error == false)
         	{
@@ -372,6 +409,7 @@ class Mdevis
 
         	$values["reference"]       = MySQL::SQLValue($this->reference);
         	$values["tkn_frm"]         = MySQL::SQLValue($this->_data['tkn_frm']);
+            $values["type_devis"]      = MySQL::SQLValue($this->type_devis);
             $values["reference"]       = MySQL::SQLValue($reference);
         	$values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
             $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
@@ -438,9 +476,11 @@ class Mdevis
         //Get sum of details
     	$this->Get_sum_detail($this->_data['tkn_frm']); 
         //calcul values devis
+        
     	$this->Calculate_devis_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva']);
 
-
+        //Get Type devis
+        $this->get_type_devis($this->_data['tkn_frm']);
         //Check $this->error (true / false)
     	if($this->error == false)
     	{
@@ -459,6 +499,7 @@ class Mdevis
 
         $values["reference"]       = MySQL::SQLValue($this->reference);
         $values["tkn_frm"]         = MySQL::SQLValue($this->_data['tkn_frm']);
+        $values["type_devis"]      = MySQL::SQLValue($this->type_devis);
         $values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
         $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
         $values["id_commercial"]   = MySQL::SQLValue(session::get('userid'));
@@ -552,7 +593,7 @@ class Mdevis
     		$totalht_remised = $totalht - ($totalht * $value_remise) / 100;
             $this->valeur_remis_t = $value_remise;
 
-    	}else if($type_remise == 'M'){
+    	}elseif($type_remise == 'M'){
     		$totalht_remised = $totalht - $value_remise;
             $this->valeur_remis_t = ($value_remise * 100) / $totalht;
 
@@ -699,7 +740,7 @@ class Mdevis
             $produit->id_produit = MySQL::SQLValue($this->_data['id_produit']);
             $produit->get_produit();
 
-            $ref_produit         = $produit->produit_info['ref'];
+            $ref_produit         = $produit->produit_info['reference'];
             $designation         = $produit->produit_info['designation'];
           //Valeu finance
             $total_ht            = $this->total_ht_d;
@@ -929,11 +970,28 @@ class Mdevis
             $this->last_id = $this->_data['id'];
             $this->save_file('scan', 'PJ réponse devis '.$this->_data['id'], 'Document');
             $this->log .= '</br>Opération réussie ';
+            $this->get_devis();
+            //If TYPE Devis is VNT then Generate Facture
+            
+            if($this->g('type_devis') == 'VNT')
+            {
+                $this->generate_facture($this->id_devis);
+            }
+            
         }
         if($this->error == false){
             return false;
         }else{
             return true;
+        }
+    }
+    Private function generate_facture($id_devis)
+    {
+        global $db;
+        $sql_req = " CALL generate_devis_fact($id_devis)";
+        if(!$db->Query($sql_req))
+        {
+            $this->log .= '</br>Erreur génération de facture'.$sql_req;
         }
     }
     /**
@@ -1274,7 +1332,7 @@ class Mdevis
         global $db;
         $req_sql = "SELECT 
         produits.designation,
-        produits.ref,
+        produits.reference,
         produits.prix_vente AS prix_vente,
         ref_unites_vente.unite_vente,
         ref_types_produits.type_produit,

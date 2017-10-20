@@ -50,10 +50,10 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_produit->get_produit()) {
                 //Type de produit
                 $type_array[] = array('required', 'true', 'Choisir un type');
                 $form->select_table('Type', 'idtype', 6, 'ref_types_produits', 'id', 'type_produit', 'type_produit', $indx = '------', $info_produit->Shw('idtype', 1), $multi = NULL, $where = NULL, $type_array);
-
+                
                 //Catégorie
                 $cat_array[] = array('required', 'true', 'Choisir une catégorie');
-                $form->select_table('Catégorie', 'idcategorie', 6, 'ref_categories_produits', 'id', 'categorie_produit', 'categorie_produit', $indx = '------', $info_produit->Shw('idcategorie', 1), $multi = NULL, $where = NULL, $cat_array);
+                $form->select_table('Catégorie', 'idcategorie', 6, 'ref_categories_produits', 'id', 'categorie_produit', 'categorie_produit', $indx = '------', $info_produit->Shw('idcategorie', 1), $multi = NULL, $where = 'type_produit='.$info_produit->Shw('idtype',1), $cat_array);
 
                 //Unité de vente
                 $uv_array[] = array('required', 'true', 'Choisir une unité de vente');
@@ -82,3 +82,47 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_produit->get_produit()) {
         </div>
     </div>
 </div>
+
+
+ <script type="text/javascript">
+$(document).ready(function() {
+
+ $('#idtype').change(function(e) {
+        var $idtype = $(this).val();
+
+        if($idtype == null){
+            return true;
+        }
+        $('#idcategorie').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
+        //$('#categ_produit').trigger('change');
+        //$('#idtype').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
+        $.ajax({
+
+            cache: false,
+            url  : '?_tsk=addproduit&ajax=1',
+            type : 'POST',
+            data : '&act=1&id='+$idtype+'&<?php echo MInit::crypt_tp('exec', 'load_select_categ') ?>',
+            dataType:"JSON",
+            success: function(data){
+               
+                if(data['error'] == false){
+                    ajax_loadmessage(data['mess'] ,'nok',5000);
+                    return false;
+                }else{
+                    $.each(data, function(key, value) {   
+                     $('#idcategorie')
+                     .append($("<option></option>")
+                         .attr("value",key)
+                         .text(value)); 
+                    });
+                    $('#idcategorie').trigger("chosen:updated");
+                }
+                
+                
+            }//end success
+        });
+    });
+
+  });
+    
+   </script>  

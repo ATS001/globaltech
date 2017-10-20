@@ -81,30 +81,24 @@ class Mproduit {
         }
     }
 
-    //Generate refrence fournisseur
-    private function Generate_produit_reference() {
-        if ($this->error == false) {
-            return false;
-        }
-        global $db;
-        global $db;
-        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(ref, 8, LENGTH(SUBSTR(ref,8))-5))),0)+1  AS reference FROM produits WHERE SUBSTR(ref,LENGTH(ref)-3,4)= (SELECT  YEAR(SYSDATE()))');
-        $this->reference = 'GT-PRD-' . $max_id . '/' . date('Y');
-    }
-
     //Save new produit after all check
     public function save_new_produit() {
 
+        global $db;
         //Generate reference
-        $this->Generate_produit_reference();
-
+        //$this->Generate_produit_reference();
+    if(!$reference = $db->Generate_reference($this->table, 'PRD'))
+        {
+                $this->log .= '</br>Problème Réference';
+                return false;
+        } 
         //Before execute do the multiple check
         // check Region
-        $this->Check_exist('ref', $this->reference, 'Référence', null);
+        $this->Check_exist('reference', $this->reference, 'Référence', null);
 
 
         global $db;
-        $values["ref"] = MySQL::SQLValue($this->reference);
+        $values["reference"] = MySQL::SQLValue($reference);
         $values["designation"] = MySQL::SQLValue($this->_data['designation']);
         $values["stock_min"] = MySQL::SQLValue($this->_data['stock_min']);
         $values["idcategorie"] = MySQL::SQLValue($this->_data['idcategorie']);
@@ -125,7 +119,7 @@ class Mproduit {
             } else {
 
                 $this->last_id = $result;
-                $this->log .= '</br>Enregistrement  réussie ' . $this->_data['ref'] . ' - ' . $this->last_id . ' -';
+                $this->log .= '</br>Enregistrement  réussie ' . $reference . ' - ' . $this->last_id . ' -';
 
                     if(!Mlog::log_exec($this->table, $this->last_id , 'Insertion produit', 'Insert'))
                     {
@@ -186,13 +180,7 @@ class Mproduit {
 
         $this->last_id = $this->id_produit;
 
-        //Before execute do the multiple check
-        // check Region
-        //$this->Check_exist('ref', $this->_data['ref'], 'Référence', $this->id_produit);
-
-
         global $db;
-        //$values["ref"] = MySQL::SQLValue($this->_data['ref']);
         $values["designation"] = MySQL::SQLValue($this->_data['designation']);
         $values["stock_min"] = MySQL::SQLValue($this->_data['stock_min']);
         $values["idcategorie"] = MySQL::SQLValue($this->_data['idcategorie']);
@@ -222,7 +210,7 @@ class Mproduit {
                 }
 
                 //$this->last_id = $result;
-                $this->log .= '</br>Modification  réussie ' . $this->_data['ref'] . ' - ' . $this->last_id . ' -';
+                $this->log .= '</br>Modification  réussie ' . $this->produit_info['reference'] . ' - ' . $this->last_id . ' -';
 
                     if(!Mlog::log_exec($this->table, $this->id_produit , 'Modification produit', 'Update'))
                     {

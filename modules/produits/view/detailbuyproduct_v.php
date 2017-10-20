@@ -2,8 +2,7 @@
      $info_achat= new Machat();
      $info_achat->id_achat = Mreq::tp('id');
      $info_achat->get_achat_produit_info();
-
-
+     
      ?>
     <div class="pull-right tableTools-container">
     	<div class="btn-group btn-overlap">
@@ -18,7 +17,7 @@
     </div>
     <div class="page-header">
     	<h1>
-    		Détails de l'achat : <?php  $info_achat->printattribute('ref'); ?> 
+    		Détails de l'achat du produit : <?php  $info_achat->printattribute('reference'); ?> 
 
     		<small>
     			<i class="ace-icon fa fa-angle-double-right"></i>
@@ -36,7 +35,7 @@
                         <li class="active">
                             <a data-toggle="tab" href="#home">
                                 <i class="green ace-icon fa fa-user bigger-120"></i>
-                                Produit
+                                Achat
                             </a>
                         </li>
 
@@ -46,64 +45,54 @@
                         <div id="home" class="tab-pane in active">
                             <div class="col-xs-12 col-sm-4"></div>
 
-                            <div class="col-xs-12 col-sm-4">
-                                <div class="profile-achat-info">
-                                    
-                                    <div class="profile-info-row">
-                                        <div class="profile-info-name"> Produit </div>
-
-                                        <div class="profile-info-value">
-                                                <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                            <span><?php $info_achat->printattribute('idproduit'); ?></span>
-                                        </div>
+                            <div class="col-sm-4">
+                                <div class="row">
+                                    <div class="col-xs-11 label label-lg label-success arrowed-in arrowed-right">
+                                        <b>Produit Info</b>
                                     </div>
-                                    <div class="profile-info-row">
-                                        <div class="profile-info-name"> Quantité </div>
-
-                                        <div class="profile-info-value">
-                                                <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                            <span><?php $info_achat->printattribute('qte'); ?></span>
-                                        </div>
-                                    </div>
-
-                                    <div class="profile-info-row">
-                                        <div class="profile-info-name"> Prix d'achat </div>
-
-                                        <div class="profile-info-value">
-                                                <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                            <span><?php $info_achat->printattribute('prix_achat'); ?></span>
-                                        </div>
-                                    </div>
-
-                                    <div class="profile-info-row">
-                                        <div class="profile-info-name"> Prix de vente </div>
-
-                                        <div class="profile-info-value">
-                                                <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                            <span><?php $info_achat->printattribute('prix_vente'); ?></span>
-                                        </div>
-                                    </div>
-                                    <div class="profile-info-row">
-                                        <div class="profile-info-name"> Date d'achat </div>
-
-                                        <div class="profile-info-value">
-                                                <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                            <span><?php $info_achat->printattribute('date_achat'); ?></span>
-                                        </div>
-                                    </div>
-                                    <div class="profile-info-row">
-                                        <div class="profile-info-name"> Date de fin de validité </div>
-
-                                        <div class="profile-info-value">
-                                                <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                            <span><?php $info_achat->printattribute('date_validite'); ?></span>
-                                        </div>
-                                    </div>
-
-                                    
                                 </div>
 
-                            </div><!-- /.col -->
+                                <div>
+                                    <ul class="list-unstyled  spaced">
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right green"></i> Référence produit
+                                            <b style="color:green"><?php $info_achat->printattribute('reference'); ?></b>
+                                        </li>
+
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right green"></i> Quantité
+                                            <b style="color:green"><?php $info_achat->printattribute('qte'); ?></b>
+                                        </li>
+
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right green"></i> Prix d'achat
+                                            <b style="color:green"><?php  $info_achat->printattribute('prix_achat'); ?></b>
+                                        </li>
+
+                                        <li>
+                                       
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right green"></i>
+                                            Prix de vente
+                                            <b style="color:green"><?php $info_achat->printattribute('prix_vente'); ?></b>
+                                        </li>
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right green"></i>
+                                            Date d'achat 
+                                            <b style="color:green"><?php $info_achat->printattribute('date_achat'); ?></b>
+                                        </li>
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right green"></i>
+                                            Date de fin de validité 
+                                            <b style="color:green"><?php $info_achat->printattribute('date_validite'); ?></b>
+                                        </li>
+                                        
+                                    </ul>
+                                </div>
+                            </div><!-- /.col --> 
+                            
+                            
+                                
                             
                             <div class="col-xs-12 col-sm-4"></div>
                             

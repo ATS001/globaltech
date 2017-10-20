@@ -116,7 +116,8 @@ class Mproforma
         global $db;
         $req_sql = "SELECT
         proforma.*
-        , clients.code
+        , DATE_FORMAT(proforma.date_proforma,'%d-%m-%Y') as date_proforma
+        , clients.reference as reference_client
         , clients.denomination
         , clients.adresse
         , clients.bp
@@ -125,6 +126,8 @@ class Mproforma
         , clients.email
         , ref_pays.pays
         , ref_ville.ville
+        , ref_devise.abreviation as devise
+        , CONCAT(users_sys.fnom,' ',users_sys.lnom) as comercial
         FROM
         proforma
         INNER JOIN clients 
@@ -132,6 +135,11 @@ class Mproforma
         INNER JOIN ref_pays 
         ON (clients.id_pays = ref_pays.id)
         INNER JOIN ref_ville
+        ON (clients.id_ville = ref_ville.id)
+        INNER JOIN ref_devise
+        ON (clients.id_devise = ref_devise.id)
+        INNER JOIN users_sys
+        ON (proforma.creusr = users_sys.id)
         WHERE proforma.id = ".$this->id_proforma;
         if(!$db->Query($req_sql))
         {
@@ -171,17 +179,17 @@ class Mproforma
         $this->Get_detail_proforma_show();
         $proforma_info = $this->proforma_info;
         $colms  = null;
-        $colms .= " $table.id item, ";
+        $colms .= " $table.order item, ";
         $colms .= " $table.ref_produit, ";
         $colms .= " $table.designation, ";
         $colms .= " REPLACE(FORMAT($table.qte,0),',',' '), ";
         $colms .= " REPLACE(FORMAT($table.prix_unitaire,0),',',' '), ";
         //$colms .= " $table.type_remise, ";
-        $colms .= " REPLACE(FORMAT($table.remise_valeur,0),',',' '), ";
+        $colms .= " CONCAT(REPLACE(FORMAT($table.remise_valeur,0),',',' '),'%'), ";
         
        // $colms .= " REPLACE(FORMAT($table.total_ht,0),',',' '), ";
        // $colms .= " REPLACE(FORMAT($table.total_tva,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.total_ttc,0),',', ' ') ";
+        $colms .= " REPLACE(FORMAT($table.total_ht,0),',', ' ') ";
         
         $req_sql  = " SELECT $colms FROM $table WHERE id_proforma = $id_proforma ";
         if(!$db->Query($req_sql))
@@ -208,7 +216,7 @@ class Mproforma
         $id_proforma = $this->id_proforma;
         $table    = $this->table_details;
         $colms = null;
-        $colms .= " $table.id item, ";
+        $colms .= " $table.order item, ";
         $colms .= " $table.ref_produit, ";
         $colms .= " $table.designation, ";
         $colms .= " REPLACE(FORMAT($table.qte,0),',',' '), ";
@@ -231,7 +239,7 @@ class Mproforma
         
         $headers = array(
             'Item'        => '5[#]center',
-            'Réf'         => '10[#]center',
+            'Réf'         => '15[#]center',
             'Description' => '30[#]', 
             'Qte'         => '5[#]center', 
             'P.U'         => '10[#]alignRight', 
@@ -670,7 +678,7 @@ class Mproforma
             $produit->id_produit = MySQL::SQLValue($this->_data['id_produit']);
             $produit->get_produit();
 
-            $ref_produit         = $produit->produit_info['ref'];
+            $ref_produit         = $produit->produit_info['reference'];
             $designation         = $produit->produit_info['designation'];
           //Valeu finance
             $total_ht            = $this->total_ht_d;
@@ -1122,7 +1130,7 @@ class Mproforma
         global $db;
         $req_sql = "SELECT 
         produits.designation,
-        produits.ref,
+        produits.reference,
         produits.prix_vente AS prix_vente,
         ref_unites_vente.unite_vente,
         ref_types_produits.type_produit,

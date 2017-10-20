@@ -8,7 +8,7 @@ if(MInit::form_verif('addfournisseur',false))
 {
 	
   $posted_data = array(
-   'code'           => Mreq::tp('code') ,
+   'reference'      => Mreq::tp('reference') ,
    'denomination'   => Mreq::tp('denomination') ,
    'r_social'       => Mreq::tp('r_social') ,
    'r_commerce'     => Mreq::tp('r_commerce') ,

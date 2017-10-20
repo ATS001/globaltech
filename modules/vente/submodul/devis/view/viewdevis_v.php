@@ -115,7 +115,7 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->Get_detail_devis_show())
 													<li>
 														<i class="ace-icon fa fa-caret-right blue"></i>
 														Identifiant: 
-														<b class="blue pull-right"><?php echo $info_devis->g('denomination').'  #'.$info_devis->g('code')?></b>
+														<b class="blue pull-right"><?php echo $info_devis->g('denomination').'  #'.$info_devis->g('reference_client')?></b>
 													</li>
 
 													<li>

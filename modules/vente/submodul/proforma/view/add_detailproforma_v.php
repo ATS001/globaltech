@@ -3,9 +3,14 @@ $form = new Mform('add_detailproforma', 'add_detailproforma', '', 'proforma', '0
 //token main form
 $form->input_hidden('tkn_frm', Mreq::tp('tkn'));
 $form->input_hidden('tva_d', 'O');
+$hard_code_type_produit = '<label style="margin-left:15px;margin-right : 20px;">Catégorie: </label><select id="categ_produit" name="categ_produit" class="chosen-select col-xs-12 col-sm-6" chosen-class="'.((6 * 100) / 12).'" ><option >----</option></select>';
+$type_produit_array[]  = array('required', 'true', 'Choisir un Type Produit');
+$form->select_table('Type Produit', 'type_produit', 3, 'ref_types_produits', 'id', 'type_produit' , 'type_produit', $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat = 1' , $type_produit_array, $hard_code_type_produit);
 //Produit
-$produit_array[]  = array('required', 'true', 'Choisir un Produit / Service');
-$form->select_table('Produit / Service', 'id_produit', 8, 'produits', 'id', 'designation' , 'designation', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $produit_array);
+//$produit_array[]  = array('required', 'true', 'Choisir un Produit / Service');
+//$form->select_table('Produit / Service', 'id_produit', 8, 'produits', 'id', 'designation' , 'designation', $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat = 1' , $produit_array);
+$opt_produit = array('' => '------');
+$form->select('Produit / Service', 'id_produit', 8, $opt_produit, $indx = NULL ,$selected = NULL, $multi = NULL,  null);
 $hard_code_pri_u_ht = '<label style="margin-left:15px;margin-right : 20px;">Prix Unité HT: </label><input id="prix_unitaire" name="prix_unitaire" value="0" class="input-large alignRight" readonly="" type="text">';
 $hard_code_pri_u_ht .= '<span class="help-block returned_span">...</span>';
 //Réference
@@ -101,7 +106,7 @@ $(document).ready(function() {
                                                                                                     
                     $('#label_qte').text('Quantité: ('+data['unite_vente']+')');
                     $('#prix_unitaire').val(data['prix_vente']);
-                    $('#ref_produit').val(data['ref']);
+                    $('#ref_produit').val(data['reference']);
                     $('.returned_span').remove();
                     if(data['prix_vendu'] == 0){
                      $('#ref_produit').parent('div').after('<span class="help-block returned_span">Ce produit n\' pas été vendu avant!</span>'); 
@@ -116,6 +121,78 @@ $(document).ready(function() {
 
         var validator = $('#add_detailproforma').validate();
         validator.resetForm();
+
+    });
+    $('#type_produit').change(function(e) {
+        var $type_produit = $(this).val();
+
+        if($type_produit == null){
+            return true;
+        }
+        $('#categ_produit').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
+        //$('#categ_produit').trigger('change');
+        $('#id_produit').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
+         $('#prix_unitaire').val('0').trigger('change');
+        $.ajax({
+
+            cache: false,
+            url  : '?_tsk=add_detailproforma&ajax=1',
+            type : 'POST',
+            data : '&act=1&id='+$type_produit+'&<?php echo MInit::crypt_tp('exec', 'load_select_categ') ?>',
+            dataType:"JSON",
+            success: function(data){
+               
+                if(data['error'] == false){
+                    ajax_loadmessage(data['mess'] ,'nok',5000);
+                    return false;
+                }else{
+                    $.each(data, function(key, value) {   
+                     $('#categ_produit')
+                     .append($("<option></option>")
+                         .attr("value",key)
+                         .text(value)); 
+                    });
+                    $('#categ_produit').trigger("chosen:updated");
+                   
+                }
+                
+                
+            }//end success
+        });
+    });
+    $('#categ_produit').change(function(e) {
+        var $categ_produit = $(this).val();
+
+        if($categ_produit == null){
+            return true;
+        }
+        $('#id_produit').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
+        $('#prix_unitaire').val('0').trigger('change');
+        $.ajax({
+
+            cache: false,
+            url  : '?_tsk=add_detailproforma&ajax=1',
+            type : 'POST',
+            data : '&act=1&id='+$categ_produit+'&<?php echo MInit::crypt_tp('exec', 'load_select_produit') ?>',
+            dataType:"JSON",
+            success: function(data){
+                if(data['error'] == false){
+                    ajax_loadmessage(data['mess'] ,'nok',5000);
+                    return false;
+                }else{
+                    $.each(data, function(key, value) {   
+                   $('#id_produit')
+                   .append($("<option></option>")
+                   .attr("value",key)
+                   .text(value)); 
+                   });
+                   $('#id_produit').trigger("chosen:updated");
+
+                }
+                
+                
+            }//end success
+        });
 
     });
 

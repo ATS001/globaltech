@@ -5,6 +5,7 @@
   {
   	
     $posted_data = array(
+     'type_produit'               => Mreq::tp('type_produit') ,
      'categorie_produit'               => Mreq::tp('categorie_produit') ,
       
      
@@ -15,6 +16,12 @@
     
     $checker = null;
     $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
+    
+     if($posted_data['type_produit'] == NULL){
+
+      $empty_list .= "<li>type produit</li>";
+      $checker = 1;
+    }
 
     if($posted_data['categorie_produit'] == NULL){
 

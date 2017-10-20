@@ -17,7 +17,7 @@ if(MInit::form_verif('editdevis', false))
 		'checker_reference' => Mreq::tp('checker_reference') ,
 		'date_devis'        => Mreq::tp('date_devis') ,
 		'type_remise'       => Mreq::tp('type_remise') ,
-		'valeur_remise'     => Mreq::tp('remise_montant') ,
+		'valeur_remise'     => Mreq::tp('valeur_remise') ,
 		'totalht'           => Mreq::tp('totalht') ,
 		'totalttc'          => Mreq::tp('totalttc') ,
 		'totaltva'          => Mreq::tp('totaltva') ,

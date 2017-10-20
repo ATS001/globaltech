@@ -10,7 +10,7 @@ $array_column = array(
         'align'  => 'C'
     ),
     array(
-        'column' => 'contrats.ref',
+        'column' => 'contrats.reference',
         'type'   => '',
         'alias'  => 'reference',
         'width'  => '10',
@@ -34,11 +34,19 @@ $array_column = array(
         'align'  => 'C'
     ),
     array(
+        'column' => 'devis.projet',
+        'type'   => '',
+        'alias'  => 'projet',
+        'width'  => '10',
+        'header' => 'Projet',
+        'align'  => 'L'
+    ),
+    array(
         'column' => 'contrats.date_effet',
         'type'   => 'date',
         'alias'  => 'date_effet',
         'width'  => '10',
-        'header' => 'Date Effet',
+        'header' => 'Date Début',
         'align'  => 'C'
     ),
     array(

@@ -12,7 +12,7 @@ if (MInit::form_verif('editcontrat', false)) {
     }
     $posted_data = array(
         'id' => Mreq::tp('id'),
-        'ref' => Mreq::tp('ref'),
+        'reference' => Mreq::tp('reference'),
         'iddevis' => Mreq::tp('iddevis'),
         'idtype_echeance' => Mreq::tp('idtype_echeance'),
         'tkn_frm'           => Mreq::tp('tkn_frm') ,

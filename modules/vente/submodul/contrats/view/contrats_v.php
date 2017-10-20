@@ -33,7 +33,7 @@
 						</th>
 						
 						<th>
-							Réf
+							Réference
 						</th>
 						<th>
 							Devis
@@ -42,7 +42,10 @@
 							Date Contrat
 						</th>
 						<th>
-							Date d'effet
+							Projet
+						</th>
+						<th>
+							Date début
 						</th>
 						<th>
 							Date fin
@@ -66,17 +69,18 @@ $(document).ready(function() {
 	
 	var table = $('#contrats_grid').DataTable({
 		bProcessing: true,
-		notifcol : 6,
+		notifcol : 7,
 		serverSide: true,
 		ajax_url:"contrats",
 		
                 aoColumns: [
                     {"sClass": "center","sWidth":"5%"}, 
-                    {"sClass": "left","sWidth":"15%"},//
-                    {"sClass": "left","sWidth":"15%"},
-                    {"sClass": "center","sWidth":"10%"},
-                    {"sClass": "center","sWidth":"10%"},
-                    {"sClass": "center","sWidth":"10%"},
+                    {"sClass": "left","sWidth":"10%"},//
+                    {"sClass": "left","sWidth":"10%"},
+                    {"sClass": "center","sWidth":"7%"},
+                    {"sClass": "left","sWidth":"19%"},
+                    {"sClass": "center","sWidth":"7%"},
+                    {"sClass": "center","sWidth":"7%"},
                     {"sClass": "center","sWidth":"10%"},
                     {"sClass": "center","sWidth":"5%"},
                     ],

@@ -18,9 +18,9 @@ $array_column = array(
         'align'  => 'L'
     ),
     array(
-        'column' => 'factures.ref',
+        'column' => 'factures.reference',
         'type'   => '',
-        'alias'  => 'ref',
+        'alias'  => 'reference',
         'width'  => '10',
         'header' => 'Référence',
         'align'  => 'L'

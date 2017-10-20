@@ -15,13 +15,17 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_encaissement->get_encaissement(
 <div class="pull-right tableTools-container">
     <div class="btn-group btn-overlap">
 
-        <?php TableTools::btn_add('encaissements', 'Liste des encaissements', MInit::crypt_tp('id', $info_encaissement->Shw('idfacture', 1)), $exec = NULL, 'reply'); ?>
+        <?php
+        TableTools::btn_add('encaissements', 'Liste des encaissements', MInit::crypt_tp('id', $info_encaissement->Shw('idfacture', 1)), $exec = NULL, 'reply');
+        $info_encaissement->id_facture = $info_encaissement->Shw('idfacture', 1);
+        $info_encaissement->get_facture();
+        ?>
 
     </div>
 </div>
 <div class="page-header">
     <h1>
-        Modifier un encaissement
+        Modifier encaissement facture : <?php $info_encaissement->printattribute_fact('reference'); ?>
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
         </small>
@@ -49,18 +53,18 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_encaissement->get_encaissement(
 
                 //Justification
                 $form->input('Justification', 'pj', 'file', 6, 'Justif_enc.pdf', null);
-                $form->file_js('pj', 1000000, 'pdf',$info_encaissement->Shw('pj',1),1);
+                $form->file_js('pj', 1000000, 'pdf', $info_encaissement->Shw('pj', 1), 1);
 
 //Désignation
                 $des_array[] = array('required', 'true', 'Insérez la désignation');
                 $form->input('Désignation', 'designation', 'text', 6, $info_encaissement->Shw('designation', 1), $des_array);
-                
+
                 //mode de payment
-$mode_array  = array('Espèce' => 'Espèce', 'Chèque' => 'Chèque','Virement'=>'Virement');
-$form->select('Mode de payement', 'mode_payement', 3, $mode_array, Null,$info_encaissement->Shw2('mode_payement', 1), $multi = NULL );
+                $mode_array = array('Espèce' => 'Espèce', 'Chèque' => 'Chèque', 'Virement' => 'Virement');
+                $form->select('Mode de payement', 'mode_payement', 3, $mode_array, Null, $info_encaissement->Shw2('mode_payement', 1), $multi = NULL);
 
 //Réf de la pièce de payement
-$form->input('Référence', 'ref_payement', 'text', 6, $info_encaissement->Shw('ref_payement', 1), NULL);
+                $form->input('Référence', 'ref_payement', 'text', 6, $info_encaissement->Shw('ref_payement', 1), NULL);
 
 
 //Montant

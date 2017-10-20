@@ -26,7 +26,7 @@ $array_column = array(
     ),
   array(
         'column' => 'echeances_contrat.commentaire',
-        'type'   => 'int',
+        'type'   => '',
         'alias'  => 'commentaire',
         'width'  => '10',
     ),

@@ -90,7 +90,7 @@ function ajax_loader($url,$data,$redirect){
 
 
 //AJAX load bootbox content
-function ajax_bbox_loader($url, $data, $titre, $width, $data_table){
+function ajax_bbox_loader($url, $data, $titre, $width, $data_table ){
 	//alert($url)
 	
 	$.ajax({
@@ -130,35 +130,7 @@ function ajax_bbox_loader($url, $data, $titre, $width, $data_table){
 						"label" : "Enregistrer",
 						"className" : "btn-sm btn-primary send_modal",
 						"callback": function(e) {
-							/*if(!$('#'+$url).valid()){
-								e.preventDefault();
-							}else{
-								$.ajax({
-									cache: false,
-									url  : '?_tsk='+$url+'&ajax=1',
-									type : 'POST',
-									data : $('#'+$url).serialize(),
-									dataType:"html",
-									success: function(data_f)
-									{
-										
-										var data_arry = data_f.split("#");
-										if(data_arry[0]==0){
-											ajax_loadmessage(data_arry[1],'nok',5000);
-										}else{ 
-											ajax_loadmessage(data_arry[1],'ok',5000);
-											var t1 = $('.dataTable').DataTable().draw();
-											dialog.modal('hide');
-										}
-									},
-									timeout: 30000,
-									error: function(){
-										ajax_loadmessage('Délai non attendue','nok',5000)
-										
-									}
-								});
-
-							}*/
+						
 							return false;
 						}
 					},
@@ -175,7 +147,7 @@ function ajax_bbox_loader($url, $data, $titre, $width, $data_table){
 			});
 
 			$('.bootbox-body').ace_scroll({
-				size: 300
+				size: 400
 			});
 
 

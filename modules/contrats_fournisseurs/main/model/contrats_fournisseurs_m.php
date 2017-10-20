@@ -37,7 +37,7 @@ class Mcontrats_fournisseurs {
     global $db;
     $table = $this->table;
 
-    $sql = "SELECT  c.*, f.code ,f.denomination ,f.r_social ,f.tel, f.fax, f.email,p.pays FROM $table c, fournisseurs f, ref_pays p  WHERE c.id_fournisseur=f.id and f.id_pays=p.id and  c.id = ".$this->id_contrats_frn;
+    $sql = "SELECT  c.*, f.reference as ref_fournisseur,f.denomination ,f.r_social ,f.tel, f.fax, f.email,p.pays FROM $table c, fournisseurs f, ref_pays p  WHERE c.id_fournisseur=f.id and f.id_pays=p.id and  c.id = ".$this->id_contrats_frn;
 
     if(!$db->Query($sql))
     {
@@ -119,7 +119,14 @@ class Mcontrats_fournisseurs {
     public function save_new_contrats_frn(){
 
       //Generate reference
-      $this->Generate_contrat_reference();
+      //$this->Generate_contrat_reference();
+      global $db;
+      //Generate reference
+      if(!$reference = $db->Generate_reference($this->table, 'CTR-FRN'))
+      {
+                $this->log .= '</br>Problème Réference';
+                return false;
+      }  
 
       //Before execute do the multiple check
       $this->Check_exist('reference', $this->reference, 'Référence contrat', null);
@@ -140,7 +147,7 @@ class Mcontrats_fournisseurs {
 			//Format values for Insert query 
        global $db;
 
-       $values["reference"]  	 = MySQL::SQLValue($this->reference);
+       $values["reference"]  	 = MySQL::SQLValue($reference);
        $values["id_fournisseur"]= MySQL::SQLValue($this->_data['id_fournisseur']);
        $values["date_effet"]    = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_effet'])));
        $values["date_fin"]      = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_fin'])));

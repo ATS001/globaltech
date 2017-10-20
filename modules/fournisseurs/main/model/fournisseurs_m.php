@@ -113,7 +113,7 @@ class Mfournisseurs {
         }
         global $db;
           global $db;
-        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(CODE, 8, LENGTH(SUBSTR(CODE,8))-5))),0)+1  AS reference FROM fournisseurs WHERE SUBSTR(CODE,LENGTH(CODE)-3,4)= (SELECT  YEAR(SYSDATE()))');
+        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(reference, 8, LENGTH(SUBSTR(reference,8))-5))),0)+1  AS reference FROM fournisseurs WHERE SUBSTR(reference,LENGTH(reference)-3,4)= (SELECT  YEAR(SYSDATE()))');
         $this->reference = 'GT-FRN-' . $max_id . '/' . date('Y');
     }
 
@@ -121,12 +121,19 @@ class Mfournisseurs {
     public function save_new_fournisseur(){
 
         //Generate reference
-        $this->Generate_fournisseur_reference();
+        //$this->Generate_fournisseur_reference();
+        global $db;
+        //Generate reference
+        if(!$reference = $db->Generate_reference($this->table, 'FRN'))
+        {
+                $this->log .= '</br>Problème Réference';
+                return false;
+        }  
 
         //Before execute do the multiple check
         $this->Check_exist('denomination', $this->_data['denomination'], 'Dénomination', null);
 
-        $this->Check_exist('code', $this->reference, 'Code Fournisseur', null);
+        $this->Check_exist('reference', $this->reference, 'Réference Fournisseur', null);
 
         $this->Check_exist('r_social', $this->_data['r_social'], 'Raison Sociale', null);
              
@@ -136,14 +143,15 @@ class Mfournisseurs {
 
 		
 
-    	$this->check_non_exist('ref_pays','id', $this->_data['id_pays'], 'Pays');
+    	 $this->check_non_exist('ref_pays','id', $this->_data['id_pays'], 'Pays');
 
         if($this->_data['id_ville'] = '------')
         {
             null;
+            //var_dump('ville vide');
         }    
         else{
-    	$this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
+    	      $this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
         }
 
         if($this->_data['id_devise'] = '------')
@@ -151,7 +159,7 @@ class Mfournisseurs {
             null;
         }    
         else{
-      $this->check_non_exist('ref_devise','id', $this->_data['id_devise'], 'Devise');
+            $this->check_non_exist('ref_devise','id', $this->_data['id_devise'], 'Devise');
         }
 
 
@@ -171,7 +179,7 @@ class Mfournisseurs {
 			//Format values for Insert query 
     	global $db;
 
-   		$values["code"]  		 = MySQL::SQLValue($this->reference);
+   		$values["reference"]  		 = MySQL::SQLValue($reference);
    		$values["denomination"]  = MySQL::SQLValue($this->_data['denomination']);
    		$values["r_social"] 	 = MySQL::SQLValue($this->_data['r_social']);
    		$values["r_commerce"]    = MySQL::SQLValue($this->_data['r_commerce']);
@@ -330,15 +338,13 @@ class Mfournisseurs {
 
     	$this->last_id = $this->id_fournisseur;
 
-        $this->Check_exist('r_social', $this->_data['r_social'], 'Raison Sociale', $this->id_fournisseur);
+      $this->Check_exist('denomination', $this->_data['denomination'], 'Dénomination', $this->id_fournisseur);
+      
+      $this->Check_exist('r_social', $this->_data['r_social'], 'Raison Sociale', $this->id_fournisseur);
              
-        $this->Check_exist('r_commerce', $this->_data['r_commerce'], 'N° de registre', $this->id_fournisseur);           
-       
-        $this->Check_exist('nif', $this->_data['nif'], 'N° de NIF', $this->id_fournisseur);
+      $this->Check_exist('r_commerce', $this->_data['r_commerce'], 'N° de registre', $this->id_fournisseur);           
+      $this->Check_exist('nif', $this->_data['nif'], 'N° de NIF', $this->id_fournisseur);
 
-
-
-    	$this->check_non_exist('fournisseurs','id_pays', $this->_data['id_pays'], 'Pays');
 
     	$this->check_non_exist('ref_pays','id', $this->_data['id_pays'], 'Pays');
 
@@ -358,8 +364,8 @@ class Mfournisseurs {
       $this->check_non_exist('ref_devise','id', $this->_data['id_devise'], 'Devise');
         }
 
-
-    	  //Check if PJ attached required
+    
+     	  //Check if PJ attached required
         if($this->exige_pj)
         {
             $this->check_file('pj', 'Justifications du fournisseur.', $this->_data['pj_id']);

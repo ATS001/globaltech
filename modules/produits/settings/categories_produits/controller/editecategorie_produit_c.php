@@ -9,6 +9,7 @@
         //Listed data from posted form
         $posted_data = array(
             'id' => Mreq::tp('id'),
+            'type_produit' => Mreq::tp('type_produit'),
             'categorie_produit' => Mreq::tp('categorie_produit'),
            
         );
@@ -20,6 +21,11 @@
 
         $checker = null;
         $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
+        
+         if ($posted_data['type_produit'] == NULL) {
+            $empty_list .= "<li>Type de produit</li>";
+         $checker = 1;
+       }
         
         if ($posted_data['categorie_produit'] == NULL) {
             $empty_list .= "<li>Catégorie de produit</li>";

@@ -9,7 +9,6 @@
         //Listed data from posted form
         $posted_data = array(
             'id' => Mreq::tp('id'),
-            'ref' => Mreq::tp('ref'),
             'designation' => Mreq::tp('designation'),      
             'stock_min' => Mreq::tp('stock_min'),
             'prix_vente' => Mreq::tp('prix_vente'),

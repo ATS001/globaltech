@@ -7,7 +7,7 @@ if(MInit::form_verif('addclient',false))
 {
 	
   $posted_data = array(
-   'code'           => Mreq::tp('code') ,
+   'reference'      => Mreq::tp('reference') ,
    'denomination'   => Mreq::tp('denomination') ,
    'id_categorie'   => Mreq::tp('id_categorie') ,
    'r_social'       => Mreq::tp('r_social') ,

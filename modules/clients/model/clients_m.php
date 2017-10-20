@@ -115,21 +115,28 @@ class Mclients {
         }
         global $db;
           global $db;
-        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(CODE, 8, LENGTH(SUBSTR(CODE,8))-5))),0)+1  AS reference FROM clients WHERE SUBSTR(CODE,LENGTH(CODE)-3,4)= (SELECT  YEAR(SYSDATE()))');
+        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(reference, 8, LENGTH(SUBSTR(reference,8))-5))),0)+1  AS reference FROM clients WHERE SUBSTR(reference,LENGTH(reference)-3,4)= (SELECT  YEAR(SYSDATE()))');
         $this->reference = 'GT-CLT-' . $max_id . '/' . date('Y');
     }
 
 	 //Save new client after all check
     public function save_new_client(){
 
+      /*  //Generate reference
+        $this->Generate_client_reference();*/
+        global $db;
         //Generate reference
-        $this->Generate_client_reference();
+        if(!$reference = $db->Generate_reference($this->table, 'CLT'))
+        {
+                $this->log .= '</br>Problème Réference';
+                return false;
+        }  
 
         //Before execute do the multiple check
 
         $this->Check_exist('denomination', $this->_data['denomination'], 'Dénomination', null);
 
-        $this->Check_exist('code', $this->reference, 'Code Fournisseur', null);
+        $this->Check_exist('reference', $this->reference, 'Réference Client', null);
 
         $this->Check_exist('r_social', $this->_data['r_social'], 'Raison Sociale', null);
              
@@ -143,6 +150,8 @@ class Mclients {
     	$this->check_non_exist('ref_pays','id', $this->_data['id_pays'], 'Pays');
 
     	$this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
+
+        $this->check_non_exist('ref_devise','id', $this->_data['id_devise'], 'Devise');
 
     	  //Check if PJ attached required
         if($this->exige_pj)
@@ -160,7 +169,7 @@ class Mclients {
 			//Format values for Insert query 
     	global $db;
 
-   		$values["code"]  		 = MySQL::SQLValue($this->reference);
+   		$values["reference"]  	 = MySQL::SQLValue($reference);
    		$values["denomination"]  = MySQL::SQLValue($this->_data['denomination']);
    		$values["id_categorie"]  = MySQL::SQLValue($this->_data['id_categorie']);
    		$values["r_social"] 	 = MySQL::SQLValue($this->_data['r_social']);
@@ -316,11 +325,13 @@ class Mclients {
         $this->Check_exist('nif', $this->_data['nif'], 'N° de NIF', $this->id_client);
 
 
-        $this->check_non_exist('clients','id_categorie',$this->_data['id_categorie'] ,'Catégorie' );
+        $this->check_non_exist('categorie_client','id',$this->_data['id_categorie'] ,'Catégorie' );
 
-    	$this->check_non_exist('clients','id_pays', $this->_data['id_pays'], 'Pays');
+        $this->check_non_exist('ref_pays','id', $this->_data['id_pays'], 'Pays');
 
-    	$this->check_non_exist('clients','id_ville', $this->_data['id_ville'], 'Ville');
+        $this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
+
+        $this->check_non_exist('ref_devise','id', $this->_data['id_devise'], 'Devise');
 
     	  //Check if PJ attached required
         if($this->exige_pj)

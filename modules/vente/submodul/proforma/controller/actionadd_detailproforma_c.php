@@ -15,7 +15,7 @@ if($action == 'delete')
 {
 	if(!MInit::crypt_tp('id', null, 'D'))
 	{ 	
-		exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur zzzzzzzz');
+		exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur ');
 	}
 //Initialise
 	$id     = Mreq::tp('id');
@@ -69,4 +69,36 @@ if($action == 'set_tva')
 	}else{
 		echo json_encode(array('error' => false, 'mess' => 'Adaptation TVA non réussie '.$set_tva->log ));
 	}
+}
+
+//Load_categorie by type
+if($action == 'load_select_categ')
+{
+	$where = 'type_produit = '.MReq::tp('id');
+	$table = 'ref_categories_produits';
+	$value = 'id';
+	$text  = 'categorie_produit';
+	
+	if($output = Mform::load_select($table, $value, $text, $where)){
+		echo json_encode($output);
+	}else{
+		echo json_encode(array('error' => false, 'mess' => 'Pas de catégorie trouvée ' ));
+	}
+}
+
+//Load produit by categorie
+if($action == 'load_select_produit')
+{
+	$where = 'idcategorie = '.MReq::tp('id');
+	$table = 'produits';
+	$value = 'id';
+	$text  = 'designation';
+	
+	if($output = Mform::load_select($table, $value, $text, $where)){
+		echo json_encode($output);
+	}else{
+		echo json_encode(array('error' => false, 'mess' => 'Pas de produit trouvé' ));
+	}
+	
+	
 }

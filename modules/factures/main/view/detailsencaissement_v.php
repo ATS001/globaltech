@@ -17,7 +17,7 @@ $justif = $info_encaissement->encaissement_info['pj'];
 </div>
 <div class="page-header">
     <h1>
-        Détails de l'encaissement : <?php $info_encaissement->printattribute('ref'); ?> 
+        Détails de l'encaissement : <?php $info_encaissement->printattribute('reference'); ?> 
 
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
@@ -53,7 +53,7 @@ $justif = $info_encaissement->encaissement_info['pj'];
 
                                     <div class="profile-info-value">
                                             <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
-                                        <span><?php $info_encaissement->printattribute('ref'); ?></span>
+                                        <span><?php $info_encaissement->printattribute('reference'); ?></span>
                                     </div>
                                 </div>
                                 <div class="profile-info-row">
@@ -95,7 +95,7 @@ $justif = $info_encaissement->encaissement_info['pj'];
                                     ?>
                                     <div class="center">
                                         <a class="iframe_pdf" rel="<?php $info_encaissement->printattribute('pj') ?>">
-                                            <p class="lead"><i class="ace-icon fa fa-file-pdf-o red"></i>Justification de l'encaissement : <?php $info_encaissement->printattribute('ref') ?> </p>
+                                            <p class="lead"><i class="ace-icon fa fa-file-pdf-o red"></i>Justification de l'encaissement : <?php $info_encaissement->printattribute('reference') ?> </p>
                                         </a>							
                                     </div>  
                                     <?php

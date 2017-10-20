@@ -24,6 +24,7 @@ class Mfacture {
     var $encaissement_info; // Array encaissement info
     var $contrat_info; // Array contrat info
     var $devis_info; // Array Devis info
+    var $client_info; // Array Client info
     var $reference = null; // Reference 
     var $sum_enc_fact; // Somme encaissements par facture
 
@@ -67,6 +68,36 @@ class Mfacture {
             return true;
         }
     }
+    
+    //Get all info complement from database for edit form
+    public function get_client() {
+        
+        //$this->get_facture();
+        
+        global $db;
+        $client=$this->facture_info['client'];
+        
+        $sql = "SELECT * FROM clients WHERE  denomination = '$client'";
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->client_info = $db->RowArray();
+                $this->error = true;
+                          }
+        }
+        //return Array produit_info
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     //Get all info complement from database for edit form
     public function get_complement() {
@@ -97,13 +128,15 @@ class Mfacture {
         }
     }
 
+    
     public function get_complement_by_facture() {
         global $db;
 
         $table_complement = $this->table_complement;
 
-        $sql = "SELECT id,designation,type,montant FROM 
-    		$table_complement WHERE  $table_complement.idfacture = " . $this->id_facture;
+        $sql = "SELECT id,designation,type,
+                REPLACE(FORMAT(montant,0),',',' ') as montant
+                FROM $table_complement WHERE  $table_complement.idfacture = " . $this->id_facture;
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -160,7 +193,10 @@ class Mfacture {
 
         $table_encaissement = $this->table_encaissement;
 
-        $sql = "SELECT $table_encaissement.* FROM 
+        $sql = "SELECT id,ref,designation,
+                REPLACE(FORMAT(montant,0),',',' ') as montant,
+                DATE_FORMAT(date_encaissement,'%d-%m-%Y') as date_encaissement                        
+                FROM 
     		$table_encaissement WHERE  $table_encaissement.idfacture = " . $this->id_facture;
 
         if (!$db->Query($sql)) {
@@ -229,7 +265,7 @@ class Mfacture {
             return false;
         }
         global $db;
-        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(ref, 8, LENGTH(SUBSTR(ref,8))-5))),0)+1  AS reference  FROM encaissements WHERE SUBSTR(ref,LENGTH(ref)-3,4)= (SELECT  YEAR(SYSDATE()))');
+        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(reference, 8, LENGTH(SUBSTR(reference,8))-5))),0)+1  AS reference  FROM encaissements WHERE SUBSTR(reference,LENGTH(YEAR(SYSDATE()))-3,4)= (SELECT  YEAR(SYSDATE()))');
         $this->reference = 'GT-ENC-' . $max_id . '/' . date('Y');
     }
 
@@ -290,7 +326,16 @@ class Mfacture {
             $this->log .= '</br>Le montant doit être inférieur ou égal à '.$this->facture_info['reste'].' FCFA';
             return FALSE;
         }
-        $this->Generate_encaissement_reference();
+        //$this->Generate_encaissement_reference();
+        global $db;
+        //Generate reference
+        if(!$reference = $db->Generate_reference($this->table, 'ENC'))
+        {
+                $this->log .= '</br>Problème Réference';
+                return false;
+        }  
+        
+        
         //Check if PJ attached required
         if ($this->exige_pj) {
             $this->check_file('pj', 'Justifications du contrat.');
@@ -299,7 +344,7 @@ class Mfacture {
         if ($this->error == true) {
 
             global $db;
-            $values["ref"] = MySQL::SQLValue($this->reference);
+            $values["reference"] = MySQL::SQLValue($reference);
             $values["designation"] = MySQL::SQLValue($this->_data['designation']);
             $values["idfacture"] = MySQL::SQLValue($this->_data['idfacture']);
             $values["mode_payement"] = MySQL::SQLValue($this->_data['mode_payement']);
@@ -854,6 +899,24 @@ class Mfacture {
             echo "";
         }
     }
+    
+    // afficher les infos d'un contrat
+    public function printattribute_clt($attibute) {
+        if ($this->client_info[$attibute] != null) {
+            echo $this->client_info[$attibute];
+        } else {
+            echo "";
+        }
+    }
+    
+    // afficher les infos d'un contrat
+    public function printattribute_ctr($attibute) {
+        if ($this->contrat_info[$attibute] != null) {
+            echo $this->contrat_info[$attibute];
+        } else {
+            echo "";
+        }
+    }
 
     //Get all info encaissement from database for edit form
     public function get_encaissement_info() {
@@ -861,7 +924,7 @@ class Mfacture {
 
         $table_encaissement = $this->table_encaissement;
 
-        $sql = "SELECT $table_encaissement.* , factures.ref as facture FROM 
+        $sql = "SELECT $table_encaissement.* , factures.reference as facture FROM 
     		$table_encaissement,factures WHERE $table_encaissement.idfacture=factures.id AND $table_encaissement.id = " . $this->id_encaissement;
 
         if (!$db->Query($sql)) {
@@ -886,11 +949,24 @@ class Mfacture {
 
     //Get all info Facture from database for edit form
     public function get_facture_info() {
+        
         global $db;
 
         $table = $this->table;
 
-        $sql = "SELECT $table.* FROM 
+        $sql = "SELECT id,reference,base_fact,
+                REPLACE(FORMAT(total_ht,0),',',' ') as total_ht ,  
+                REPLACE(FORMAT(total_tva,0),',',' ') as total_tva ,         
+                REPLACE(FORMAT(total_ttc,0),',',' ') as total_ttc,           
+                REPLACE(FORMAT(total_ttc_initial,0),',',' ') as total_ttc_initial,
+                REPLACE(FORMAT(total_paye,0),',',' ') as total_paye,
+                REPLACE(FORMAT(reste,0),',',' ') as reste,               
+                client,tva,projet,ref_bc,idcontrat,
+                DATE_FORMAT(du,'%d-%m-%Y') as du,
+                DATE_FORMAT(au,'%d-%m-%Y') as au,
+                CONCAT(DATE_FORMAT(du,'%d-%m-%Y'),' Au ',DATE_FORMAT(au,'%d-%m-%Y')) as periode,
+                DATE_FORMAT(date_facture,'%d-%m-%Y') as date_facture
+                FROM 
     		$table WHERE  $table.id = " . $this->id_facture;
 
         if (!$db->Query($sql)) {
@@ -924,7 +1000,7 @@ class Mfacture {
         $this->Get_detail_facture_show();
         $devis_info = $this->devis_info;
 
-        $this->get_facture();
+        $this->get_facture_info();
         $info_facture = $this->facture_info;
         
         $this->get_contrat($this->facture_info['idcontrat']);
@@ -937,10 +1013,10 @@ class Mfacture {
         $colms .= " $table.id item, ";
         $colms .= " $table.ref_produit, ";
         $colms .= " $table.designation, ";
-        $colms .= " REPLACE(FORMAT($table.qte,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.prix_unitaire,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.remise_valeur,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.total_ttc,0),',', ' ') ";
+       // $colms .= " REPLACE(FORMAT($table.qte,0),',',' '), ";
+        //$colms .= " REPLACE(FORMAT($table.prix_unitaire,0),',',' '), ";
+        //$colms .= " REPLACE(FORMAT($table.remise_valeur,0),',',' '), ";
+        $colms .= " REPLACE(FORMAT($table.total_ht,0),',', ' ') ";
 
         $req_sql = " SELECT $colms FROM $table WHERE id_devis = $id_devis ";
         if (!$db->Query($req_sql)) {
@@ -967,7 +1043,8 @@ class Mfacture {
         ,  REPLACE(FORMAT(devis.totaltva,0),',',' ') as totaltva
         ,  REPLACE(FORMAT(devis.totalttc,0),',',' ') as totalttc
         , devis.claus_comercial
-        , clients.code
+        , devis.projet
+        , clients.reference
         , clients.denomination
         , clients.adresse
         , clients.bp
@@ -1054,13 +1131,15 @@ class Mfacture {
         }
     }
     
-    
-
+   
     public function get_contrat($idcontrat) {
+        
         global $db;
 
-        $sql = "SELECT * FROM contrats WHERE id = " . $idcontrat;
-
+        $sql = "SELECT id,reference,iddevis, DATE_FORMAT(date_effet,'%d-%m-%Y') as date_effet,
+                DATE_FORMAT(date_fin,'%d-%m-%Y') as date_fin,
+                DATE_FORMAT(date_contrat,'%d-%m-%Y') as date_contrat,commentaire FROM contrats WHERE id = " . $idcontrat;
+        
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
@@ -1069,8 +1148,7 @@ class Mfacture {
                 $this->error = false;
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
-                $this->contrat_info = $db->RecordsSimplArray();
-                //var_dump( $this->user_activities );
+                $this->contrat_info = $db->RowArray();
                 $this->error = true;
             }
         }
@@ -1081,4 +1159,5 @@ class Mfacture {
             return true;
         }
     }
-}
+    
+  }
