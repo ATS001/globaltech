@@ -233,7 +233,7 @@ class Mdevis
         $id_devis = $this->id_devis;
         $table    = $this->table_details;
         $colms = null;
-        $colms .= " $table.id item, ";
+        $colms .= " $table.order item, ";
         $colms .= " $table.ref_produit, ";
         $colms .= " $table.designation, ";
         $colms .= " REPLACE(FORMAT($table.qte,0),',',' '), ";
@@ -256,13 +256,13 @@ class Mdevis
         
         $headers = array(
             'Item'        => '5[#]center',
-            'Réf'         => '10[#]center',
+            'Réf'         => '15[#]center',
             'Description' => '30[#]', 
             'Qte'         => '5[#]center', 
             'P.U'         => '10[#]alignRight', 
             'Re'          => '5[#]center',
-            'Total HT'    => '10[#]alignRight',
-            'TVA'         => '10[#]alignRight',
+            'Total HT'    => '12[#]alignRight',
+            'TVA'         => '8[#]alignRight',
             'Total TTC'   => '15[#]alignRight',
 
         );
