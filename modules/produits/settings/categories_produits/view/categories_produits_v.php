@@ -33,10 +33,10 @@
 								ID
 							</th>
                                                         <th>
-								Type
+								Type produit
 							</th>
 						    <th>
-								Catégorie
+								Catégorie produit
 							</th>
 							<th>
 								Etat
