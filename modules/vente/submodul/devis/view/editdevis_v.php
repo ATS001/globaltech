@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 <?php
 //Get all Devis info 
  $info_devis = new Mdevis();
@@ -290,5 +288,3 @@ $(document).ready(function() {
 });
 </script>	
 
-		
->>>>>>> refs/remotes/origin/last
