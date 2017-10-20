@@ -111,7 +111,7 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_proforma->Get_detail_proforma_sho
 													<li>
 														<i class="ace-icon fa fa-caret-right blue"></i>
 														Identifiant: 
-														<b class="blue pull-right"><?php echo $info_proforma->g('denomination').'  #'.$info_proforma->g('code')?></b>
+														<b class="blue pull-right"><?php echo $info_proforma->g('denomination').'  #'.$info_proforma->g('reference_client')?></b>
 													</li>
 
 													<li>

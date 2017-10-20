@@ -34,12 +34,12 @@ if(!$devis->Get_detail_devis_pdf())
 }
 global $db;
 $headers = array(
-            'Item'        => '5[#]C',
+            '#'           => '5[#]C',
             'Réf'         => '15[#]C',
-            'Description' => '40[#]', 
+            'Description' => '35[#]', 
             'Qte'         => '5[#]C', 
             'P.U'         => '10[#]R', 
-            'Remise'      => '5[#]C',
+            'Remise'      => '10[#]C',
             'Total HT'    => '15[#]R',
 
         );
@@ -66,21 +66,7 @@ class MYPDF extends TCPDF {
 		$image_file = MPATH_IMG.MCfg::get('logo');
 		$this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
 		$this->Image($image_file, 22, 6, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
-		if($this->qr == true){
-// QRCODE,H : QR-CODE Best error correction
-			$qr_content = $this->info_devis['reference']."\n".$this->info_devis['denomination']."\n".$this->info_devis['date_devis'];
-			$style = array(
-				'border' => 1,
-				'vpadding' => 'auto',
-				'hpadding' => 'auto',
-				'fgcolor' => array(0,0,0),
-	            'bgcolor' => false, //array(255,255,255)
-	            'module_width' => 1, // width of a single module in points
-	            'module_height' => 1 // height of a single module in points
-            );
-	//write2DBarcode($code, $type, $x='', $y='', $w='', $h='', $style='', $align='', $distort=false)
-			$this->write2DBarcode($qr_content, 'QRCODE,H', 67, 5, 25, 25, $style, 'N');
-		}
+		
 		//Get info ste from DB
 		$ste_c = new MSte_info();
         
@@ -145,7 +131,7 @@ class MYPDF extends TCPDF {
 		</table>';
 		$this->writeHTMLCell(100, 0, 99, 40, $detail_client, 0, 0, 0, true, 'L', true);
 		if($this->info_devis['projet'] != null){
-			$projet = '<b>Projet: </b> Site FAYA'.$this->info_devis['projet'];
+			$projet = '<b>Projet: </b> <span style="color:#C81414">'.$this->info_devis['projet'].'</span>';
 		    $height = $this->getLastH();
 		    $this->SetTopMargin($height + $this->GetY() + 5);
 		    $this->writeHTMLCell(100, 0, 15, '', $projet, 1, 0, 0, true, 'L', true);
@@ -163,6 +149,22 @@ class MYPDF extends TCPDF {
 
 	// Page footer
 	public function Footer() {
+		if($this->qr == true){
+// QRCODE,H : QR-CODE Best error correction
+			$qr_content = $this->info_devis['reference']."\n".$this->info_devis['denomination']."\n".$this->info_devis['date_devis'];
+			$style = array(
+				'border' => 1,
+				'vpadding' => 'auto',
+				'hpadding' => 'auto',
+				'fgcolor' => array(0,0,0),
+	            'bgcolor' => false, //array(255,255,255)
+	            'module_width' => 1, // width of a single module in points
+	            'module_height' => 1 // height of a single module in points
+            );
+	//write2DBarcode($code, $type, $x='', $y='', $w='', $h='', $style='', $align='', $distort=false)
+	        $this->SetY(-30);
+			$this->write2DBarcode($qr_content, 'QRCODE,H', 15, '', 25, 25, $style, 'N');
+		}
 		$ste_c = new MSte_info();
         $this->SetY(-30);
 		$ste = $ste_c->get_ste_info_report_footer(1);
@@ -239,27 +241,29 @@ $html = $pdf->Table_body;
 //$pdf->writeHTMLCell('', '','' , '', $html , 0, 0, 0, true, 'L', true);
 
 $pdf->lastPage();
-$obj = new nuts($pdf->info_devis['totalttc'], "FCFA");
+$obj = new nuts($pdf->info_devis['totalttc'], $pdf->info_devis['devise']);
 $ttc_lettre = $obj->convert("fr-FR");
 
 $block_remise = '<tr>
-                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Remise:</strong></td>
+                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Remise</strong></td>
                     <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_devis['valeur_remise'].' %</strong></td>
                 </tr>';
 $block_ttc = '<tr>
                     <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>TVA 18%</strong></td>
                     <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_devis['totaltva'].'</strong></td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_devis['totaltva'].'  '.$pdf->info_devis['devise'].'</strong></td>
                 </tr>
                 <tr>
                     <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Total TTC</strong></td>
                     <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_devis['totalttc'].'</strong></td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_devis['totalttc'].' '.$pdf->info_devis['devise'].'</strong></td>
                 </tr>';                
-$block_remise = $pdf->info_devis['valeur_remise'] == null ? null : $block_remise;   
+$block_remise = $pdf->info_devis['valeur_remise'] == 0 ? null : $block_remise;   
 $block_ttc    = $pdf->info_devis['totaltva'] == 0 ? null : $block_ttc;
 $titl_ht = $pdf->info_devis['totaltva'] == 0 ? 'Total à payer' : 'Total HT';
+$signature = $pdf->info_devis['comercial']; 
+
 
 $block_sum = '<div></div>
 <table style="width: 685px;" cellpadding="2">
@@ -275,7 +279,7 @@ $block_sum = '<div></div>
                 <tr>
                     <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>'.$titl_ht.'</strong></td>
                     <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_devis['totalht'].'</strong></td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_devis['totalht'].' '.$pdf->info_devis['devise'].'</strong></td>
                 </tr>
                 '.$block_ttc.'
                 
@@ -301,7 +305,7 @@ $block_sum = '<div></div>
 <tr>
     <td colspan="2" align="right" style="font: underline; padding-right: 200px;">
         <br><br><br><br>
-        <strong>Responsable Commercial</strong>
+        <strong>'.$signature.'</strong>
     </td>
 </tr>
 </table>';

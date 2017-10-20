@@ -877,6 +877,7 @@ class MySQL
 		private function make_table_body($data, $style)
 		{
 			$html = "";
+
 			$member_array = get_object_vars($data);
 			$keys_data  = array_keys($member_array);
 			$styl_array = array_values($style);
@@ -976,8 +977,7 @@ class MySQL
     {
         //SET Ranking value
     	$this->QuerySingleValue0('SET @i = 1 ;');
-    	$sql_req = "SELECT MAX(IF(@i=id,@i:=id+1,@i)) AS next_ref FROM 
-    	(SELECT (SUBSTRING_INDEX(SUBSTRING_INDEX(a.reference, '-', - 1),'/', 1 ) * 1) AS id  FROM $table a  WHERE  SUBSTRING_INDEX(a.reference, '/', - 1) = YEAR(CURDATE())  ORDER BY id ) AS $table WHERE  ORDER BY id;";
+    	$sql_req = "SELECT MAX(IF(@i = id, @i := id + 1, @i)) AS next_ref FROM  (SELECT ( SUBSTRING_INDEX( SUBSTRING_INDEX(a.reference, '-', - 1), '/', 1 ) * 1 ) AS id  FROM $table a WHERE   SUBSTRING_INDEX(a.reference, '/', - 1) = YEAR(CURDATE())  ORDER BY id) AS refs ORDER BY id ;";
 
     	$max_id = $this->QuerySingleValue0($sql_req);
     	$max_id = $max_id == 0 ? 1 : $max_id;

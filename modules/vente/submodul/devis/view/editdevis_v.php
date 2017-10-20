@@ -27,7 +27,7 @@
 			<i class="ace-icon fa fa-angle-double-right"></i>
 		</small>
 	</h1>
-</div><!-- /.page-header -->
+</div><!-- /.page-header   -->
 <!-- Bloc form Add Devis-->
 <div class="row">
 	<div class="col-xs-12">
@@ -52,14 +52,14 @@ $form->input_hidden('reference', $info_devis->g('reference'));
 //Date devis
 $array_date[]= array('required', 'true', 'Insérer la date de devis');
 $form->input_date('Date devis', 'date_devis', 4, date('d-m-Y'), $array_date);
-//Client
+//Client liste
 $client_array[]  = array('required', 'true', 'Choisir un Client');
 $form->select_table('Client ', 'id_client', 8, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' , $info_devis->g('id_client'),$multi=NULL, $where='etat=1', $client_array);
 //TVA
 $tva_opt = array('O' => 'OUI' , 'N' => 'NON' );
 $form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$info_devis->g('tva'), $multi = NULL);
 //Projet if client have more project
-$form->input('Projet', 'projet', 'text' ,'6', '0', $info_devis->g('projet'), null, null);
+$form->input('Projet', 'projet', 'text' ,'6', $info_devis->g('projet'), null , null, null);
 //Table 
 $columns = array('id' => '1' ,'Item' => '5' , 'Réference'=>'10', 'Produit' => '30', 'P.U HT' => '10', 'T.Rem' => '5', 'V.Remise' => '10', 'Qte' => '5', 'Total HT' => '10', 'TVA' => '7', 'Total' =>'10', '#' =>'3'   );
 $js_addfunct = 'var column = t.column(0);

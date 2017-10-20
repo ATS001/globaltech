@@ -35,7 +35,7 @@ $form->input_date('Date proforma', 'date_proforma', 4, date('d-m-Y'), $array_dat
 //Client
 $hard_code_client = '<span class="help-block returned_span">...</span>';
 $client_array[]  = array('required', 'true', 'Choisir un Client');
-$form->select_table('Client ', 'id_client', 8, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $client_array, $hard_code_client);
+$form->select_table('Client ', 'id_client', 8, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat=1', $client_array, $hard_code_client);
 //TVA
 $tva_opt = array('O' => 'OUI' , 'N' => 'NON' );
 $form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$selected = NULL, $multi = NULL);
@@ -65,7 +65,8 @@ $form->bloc_title('Zone totaux');
 $vie_opt = array('30' => '30 Jours' , '60' => '60 Jours', '90' => '90 Jours' );
 $form->select('Validité', 'vie', 3, $vie_opt, $indx = NULL ,$selected = NULL, $multi = NULL);
 //Conditions commercial
-$clauses = Msetting::get_set('claus_comercial');
+//$clauses = Msetting::get_set('claus_comercial');
+$clauses = 'Paiement 100% à la commande';
 $form->input_editor('Conditions commerciales', 'claus_comercial', 8, $clauses, $js_array = null,  $input_height = 50);
 $form->button('Enregistrer');
 //Form render
