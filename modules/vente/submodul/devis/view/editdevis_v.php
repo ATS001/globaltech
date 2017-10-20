@@ -52,7 +52,7 @@ $form->input_hidden('reference', $info_devis->g('reference'));
 //Date devis
 $array_date[]= array('required', 'true', 'Insérer la date de devis');
 $form->input_date('Date devis', 'date_devis', 4, date('d-m-Y'), $array_date);
-//Client
+//Client liste
 $client_array[]  = array('required', 'true', 'Choisir un Client');
 $form->select_table('Client ', 'id_client', 8, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' , $info_devis->g('id_client'),$multi=NULL, $where='etat=1', $client_array);
 //TVA
