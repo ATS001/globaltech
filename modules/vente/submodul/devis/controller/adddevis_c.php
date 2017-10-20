@@ -9,7 +9,7 @@ if(MInit::form_verif('adddevis', false))
    'tkn_frm'         => Mreq::tp('tkn_frm') ,
    'date_devis'      => Mreq::tp('date_devis') ,
    'type_remise'     => Mreq::tp('type_remise') ,
-   'valeur_remise'   => Mreq::tp('remise_montant') ,
+   'valeur_remise'   => Mreq::tp('valeur_remise') ,
    'totalht'         => Mreq::tp('totalht') ,
    'totalttc'        => Mreq::tp('totalttc') ,
    'totaltva'        => Mreq::tp('totaltva') ,

@@ -134,7 +134,7 @@ class Mdevis
         ,  REPLACE(FORMAT(devis.totalht,0),',',' ') as totalht
         ,  REPLACE(FORMAT(devis.totaltva,0),',',' ') as totaltva
         ,  REPLACE(FORMAT(devis.totalttc,0),',',' ') as totalttc
-        , clients.reference
+        , clients.reference as reference_client
         , clients.denomination
         , clients.adresse
         , clients.bp
@@ -143,6 +143,8 @@ class Mdevis
         , clients.email
         , ref_pays.pays
         , ref_ville.ville
+        , ref_devise.abreviation as devise
+        , CONCAT(users_sys.fnom,' ',users_sys.lnom) as comercial
         FROM
         devis
         INNER JOIN clients 
@@ -150,6 +152,11 @@ class Mdevis
         INNER JOIN ref_pays 
         ON (clients.id_pays = ref_pays.id)
         INNER JOIN ref_ville
+        ON (clients.id_ville = ref_ville.id)
+        INNER JOIN ref_devise
+        ON (clients.id_devise = ref_devise.id)
+        INNER JOIN users_sys
+        ON (devis.creusr = users_sys.id)
         WHERE devis.id = ".$this->id_devis;
         if(!$db->Query($req_sql))
         {
@@ -189,17 +196,17 @@ class Mdevis
         $this->Get_detail_devis_show();
         $devis_info = $this->devis_info;
         $colms  = null;
-        $colms .= " $table.id item, ";
+        $colms .= " $table.order item, ";
         $colms .= " $table.ref_produit, ";
         $colms .= " $table.designation, ";
         $colms .= " REPLACE(FORMAT($table.qte,0),',',' '), ";
         $colms .= " REPLACE(FORMAT($table.prix_unitaire,0),',',' '), ";
         //$colms .= " $table.type_remise, ";
-        $colms .= " REPLACE(FORMAT($table.remise_valeur,0),',',' '), ";
+        $colms .= " CONCAT(REPLACE(FORMAT($table.remise_valeur,0),',',' '),'%'), ";
         
        // $colms .= " REPLACE(FORMAT($table.total_ht,0),',',' '), ";
        // $colms .= " REPLACE(FORMAT($table.total_tva,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.total_ttc,0),',', ' ') ";
+        $colms .= " REPLACE(FORMAT($table.total_ht,0),',', ' ') ";
         
         $req_sql  = " SELECT $colms FROM $table WHERE id_devis = $id_devis ";
         if(!$db->Query($req_sql))
@@ -469,6 +476,7 @@ class Mdevis
         //Get sum of details
     	$this->Get_sum_detail($this->_data['tkn_frm']); 
         //calcul values devis
+        
     	$this->Calculate_devis_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva']);
 
         //Get Type devis
@@ -585,7 +593,7 @@ class Mdevis
     		$totalht_remised = $totalht - ($totalht * $value_remise) / 100;
             $this->valeur_remis_t = $value_remise;
 
-    	}else if($type_remise == 'M'){
+    	}elseif($type_remise == 'M'){
     		$totalht_remised = $totalht - $value_remise;
             $this->valeur_remis_t = ($value_remise * 100) / $totalht;
 

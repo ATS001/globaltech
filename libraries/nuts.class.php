@@ -35,6 +35,12 @@ class nuts {
           "pt-PT" => array('FCFA', 'FCFA', 'cêntimo', 'cêntimos', 'm', 'm'),
           "en-EN" => array('FCFA', 'FCFA', 'cent', 'cents', '', '')
         ),
+        "MAD" => array(
+          100,
+          "fr-FR" => array('MAD', 'MAD', 'centime', 'centimes', '', ''),
+          "pt-PT" => array('MAD', 'MAD', 'cêntimo', 'cêntimos', 'm', 'm'),
+          "en-EN" => array('MAD', 'MAD', 'cent', 'cents', '', '')
+        ),
         "t"  => array(
           1000,
           "fr-FR" => array('tonne', 'tonnes', 'kilo', 'kilos', '', ''),
