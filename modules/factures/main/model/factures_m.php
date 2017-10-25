@@ -25,6 +25,7 @@ class Mfacture {
     var $contrat_info; // Array contrat info
     var $devis_info; // Array Devis info
     var $client_info; // Array Client info
+    var $facture_details_info; // Array details facture
     var $reference = null; // Reference 
     var $sum_enc_fact; // Somme encaissements par facture
 
@@ -68,15 +69,15 @@ class Mfacture {
             return true;
         }
     }
-    
+
     //Get all info complement from database for edit form
     public function get_client() {
-        
+
         //$this->get_facture();
-        
+
         global $db;
-        $client=$this->facture_info['client'];
-        
+        $client = $this->facture_info['client'];
+
         $sql = "SELECT * FROM clients WHERE  denomination = '$client'";
 
         if (!$db->Query($sql)) {
@@ -89,7 +90,7 @@ class Mfacture {
             } else {
                 $this->client_info = $db->RowArray();
                 $this->error = true;
-                          }
+            }
         }
         //return Array produit_info
         if ($this->error == false) {
@@ -128,7 +129,6 @@ class Mfacture {
         }
     }
 
-    
     public function get_complement_by_facture() {
         global $db;
 
@@ -315,27 +315,24 @@ class Mfacture {
     public function save_new_encaissement() {
 
         //$this->sum_encaissement_by_facture($this->_data['idfacture']);
-        $this->id_facture=$this->_data['idfacture'];
+        $this->id_facture = $this->_data['idfacture'];
         $this->get_facture();
         //$total_encaissement= $this->sum_enc_fact + $this->_data['montant'];
-        
         //if($total_encaissement > $this->facture_info['total_ttc'])
-        if($this->_data['montant']> $this->facture_info['reste'])
-        {
-            $this->error=FALSE;
-            $this->log .= '</br>Le montant doit être inférieur ou égal à '.$this->facture_info['reste'].' FCFA';
+        if ($this->_data['montant'] > $this->facture_info['reste']) {
+            $this->error = FALSE;
+            $this->log .= '</br>Le montant doit être inférieur ou égal à ' . $this->facture_info['reste'] . ' FCFA';
             return FALSE;
         }
         //$this->Generate_encaissement_reference();
         global $db;
         //Generate reference
-        if(!$reference = $db->Generate_reference($this->table, 'ENC'))
-        {
-                $this->log .= '</br>Problème Réference';
-                return false;
-        }  
-        
-        
+        if (!$reference = $db->Generate_reference($this->table, 'ENC')) {
+            $this->log .= '</br>Problème Réference';
+            return false;
+        }
+
+
         //Check if PJ attached required
         if ($this->exige_pj) {
             $this->check_file('pj', 'Justifications du contrat.');
@@ -372,18 +369,15 @@ class Mfacture {
                 if ($this->error == true) {
                     $this->log = '</br>Enregistrement réussie: <b>' . $this->reference . ' ID: ' . $this->last_id;
                     $this->maj_reste($this->_data['idfacture'], $this->_data['montant']);
-                    $test_enc=$this->test_first_encaissement($this->_data['idfacture']);
+                    $test_enc = $this->test_first_encaissement($this->_data['idfacture']);
                     $this->get_facture();
-                    
-                    if($test_enc == true and $this->facture_info['reste'] > 0)
-                    {
-                        $this->valid_etat_facture($etat=2,$this->_data['idfacture']);
-                      
+
+                    if ($test_enc == true and $this->facture_info['reste'] > 0) {
+                        $this->valid_etat_facture($etat = 2, $this->_data['idfacture']);
                     }
-                   
-                    if($test_enc == false and $this->facture_info['reste'] == 0)
-                    {
-                        $this->valid_etat_facture($etat=3,$this->_data['idfacture']);
+
+                    if ($test_enc == false and $this->facture_info['reste'] == 0) {
+                        $this->valid_etat_facture($etat = 3, $this->_data['idfacture']);
                     }
                 } else {
                     $this->log .= '</br>Enregistrement réussie: <b>' . $this->reference;
@@ -402,9 +396,8 @@ class Mfacture {
             return true;
         }
     }
-    
-    public function test_first_encaissement($id_facture)
-    {        
+
+    public function test_first_encaissement($id_facture) {
         global $db;
 
         $table_encaissement = $this->table_encaissement;
@@ -418,10 +411,9 @@ class Mfacture {
             if ($db->RowCount() == 1) {
                 return TRUE;
             } else {
-             return FALSE;   
+                return FALSE;
             }
         }
-       
     }
 
     public function maj_reste($id_facture, $montant) {
@@ -492,9 +484,9 @@ class Mfacture {
         $this->id_facture = $id_facture;
         $this->get_facture();
         //if ($montant_init < 0) {
-            $reste = ($this->facture_info['reste'] - $montant_init) + $montant_modif;
-            //$total_paye = ($this->facture_info['total_paye'] + $montant_init) - $montant_modif;
-            $total_ttc = ($this->facture_info['total_ttc'] - $montant_init) + $montant_modif;
+        $reste = ($this->facture_info['reste'] - $montant_init) + $montant_modif;
+        //$total_paye = ($this->facture_info['total_paye'] + $montant_init) - $montant_modif;
+        $total_ttc = ($this->facture_info['total_ttc'] - $montant_init) + $montant_modif;
 
         global $db;
         $req_sql = "UPDATE factures SET reste = $reste , total_ttc = $total_ttc WHERE id = '$id_facture'";
@@ -784,12 +776,11 @@ class Mfacture {
                 if ($this->error == true) {
                     $this->log = '</br>Modification réussie: <b>' . $this->_data['id'] . ' ID: ' . $this->last_id;
                     $this->update_reste($this->_data['idfacture'], $mt_init, $this->_data['montant']);
-                    
+
 //                    if($this->facture_info['reste'] > 0 and $this->facture_info['reste'] == 4)
 //                    {
 //                        $this->invalid_etat_facture($etat=3,$this->_data['idfacture']);
 //                    }
-
                     //Check $this->error = false return Red message and Bol false	
                 } else {
                     $this->log .= '</br>Modification non réussie: <b>' . $this->_data['id'];
@@ -808,7 +799,7 @@ class Mfacture {
         }
     }
 
-    public function valid_etat_facture($etat,$idf) {
+    public function valid_etat_facture($etat, $idf) {
         global $db;
         $table = $this->table;
         $id_facture = $idf;
@@ -818,28 +809,29 @@ class Mfacture {
             $this->log .= " Erreur changement statut";
             return false;
         } else {
-                
-            return true;
-        }
-    }
-    
-    /*
-    public function invalid_etat_facture($etat,$idf) {
-        global $db;
-        $table = $this->table;
-        $id_facture = $idf;
-        $req_sql = " UPDATE $table SET etat = $etat-1 WHERE id = $id_facture ";
-        if (!$db->Query($req_sql)) {
-            $this->error = false;
-            $this->log .= " Erreur changement statut";
-            return false;
-        } else {
-                
+
             return true;
         }
     }
 
-*/
+    /*
+      public function invalid_etat_facture($etat,$idf) {
+      global $db;
+      $table = $this->table;
+      $id_facture = $idf;
+      $req_sql = " UPDATE $table SET etat = $etat-1 WHERE id = $id_facture ";
+      if (!$db->Query($req_sql)) {
+      $this->error = false;
+      $this->log .= " Erreur changement statut";
+      return false;
+      } else {
+
+      return true;
+      }
+      }
+
+     */
+
     public function valid_facture() {
         global $db;
         $table = $this->table;
@@ -899,7 +891,7 @@ class Mfacture {
             echo "";
         }
     }
-    
+
     // afficher les infos d'un contrat
     public function printattribute_clt($attibute) {
         if ($this->client_info[$attibute] != null) {
@@ -908,7 +900,7 @@ class Mfacture {
             echo "";
         }
     }
-    
+
     // afficher les infos d'un contrat
     public function printattribute_ctr($attibute) {
         if ($this->contrat_info[$attibute] != null) {
@@ -949,7 +941,7 @@ class Mfacture {
 
     //Get all info Facture from database for edit form
     public function get_facture_info() {
-        
+
         global $db;
 
         $table = $this->table;
@@ -989,6 +981,36 @@ class Mfacture {
         }
     }
 
+    public function get_d_facture($id_facture) {
+
+        //$id_facture = $this->id_facture;
+        global $db;
+        $req_sql = "SELECT
+        d_factures.ref_produit
+        , d_factures.designation
+        , d_factures.qte
+       
+        , d_factures.prix_unitaire
+       
+        ,  REPLACE(FORMAT(d_factures.total_ht,0),',',' ') as totalht
+      
+        FROM
+        d_factures
+        WHERE d_factures.id_facture = " . $id_facture;
+        if (!$db->Query($req_sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->facture_details_info = $db->RowArray();
+                $this->error = true;
+            }
+        }
+    }
+
     public function Get_detail_facture_pdf() {
         global $db;
 
@@ -996,29 +1018,32 @@ class Mfacture {
         $this->get_id_devis();
         $id_devis = $this->id_devis['id'];
         $id_facture = $this->id_facture;
+        
+        //$this->get_d_facture($this->id_facture);
+        $facture_details_info= $this->facture_details_info;
+        
         $table = $this->table_details;
+        
         $this->Get_detail_facture_show();
         $devis_info = $this->devis_info;
 
         $this->get_facture_info();
         $info_facture = $this->facture_info;
-        
+
         $this->get_contrat($this->facture_info['idcontrat']);
-        $info_contrat=$this->contrat_info;
+        $info_contrat = $this->contrat_info;
+
         
-        //$this->get_complement_by_facture();
-        //$info_complement=$this->complement_info;
 
         $colms = null;
-        $colms .= " $table.id item, ";
-        $colms .= " $table.ref_produit, ";
-        $colms .= " $table.designation, ";
-       // $colms .= " REPLACE(FORMAT($table.qte,0),',',' '), ";
-        //$colms .= " REPLACE(FORMAT($table.prix_unitaire,0),',',' '), ";
-        //$colms .= " REPLACE(FORMAT($table.remise_valeur,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.total_ht,0),',', ' ') ";
+        $colms .= " d_factures.id item, ";
+        $colms .= " d_factures.ref_produit, ";
+        $colms .= " d_factures.designation, ";
+        $colms .= " CONCAT(REPLACE(FORMAT(d_factures.qte,0),',',' '),' ',d_factures.qte_designation) as qte, ";
+        $colms .= " REPLACE(FORMAT(d_factures.prix_unitaire,0),',',' '), ";
+        $colms .= " REPLACE(FORMAT(d_factures.total_ht,0),',', ' ') ";
 
-        $req_sql = " SELECT $colms FROM $table WHERE id_devis = $id_devis ";
+        $req_sql = " SELECT $colms FROM d_factures WHERE d_factures.id_facture = $id_facture ";
         if (!$db->Query($req_sql)) {
             $this->error = false;
             $this->log .= $db->Error() . ' ' . $req_sql;
@@ -1101,10 +1126,9 @@ class Mfacture {
         }
     }
 
-    public function sum_encaissement_by_facture($id_facture)
-    {
-         global $db;
-         
+    public function sum_encaissement_by_facture($id_facture) {
+        global $db;
+
         $table_encaissement = $this->table_encaissement;
 
         $sql = "SELECT sum(montant) FROM 
@@ -1130,16 +1154,15 @@ class Mfacture {
             return true;
         }
     }
-    
-   
+
     public function get_contrat($idcontrat) {
-        
+
         global $db;
 
         $sql = "SELECT id,reference,iddevis, DATE_FORMAT(date_effet,'%d-%m-%Y') as date_effet,
                 DATE_FORMAT(date_fin,'%d-%m-%Y') as date_fin,
                 DATE_FORMAT(date_contrat,'%d-%m-%Y') as date_contrat,commentaire FROM contrats WHERE id = " . $idcontrat;
-        
+
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
@@ -1159,5 +1182,5 @@ class Mfacture {
             return true;
         }
     }
-    
-  }
+
+}
