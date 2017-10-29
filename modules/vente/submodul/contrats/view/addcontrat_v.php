@@ -27,14 +27,12 @@
 				
 <?php
 $form = new Mform('addcontrat', 'addcontrat', '', 'contrats', '0', null);
+$list_devis = Mcontrat::select_devis();
+/*var_dump($list_devis);
+exit();*/
 
 //Devis
-$etat_devis_valid = Msetting::get_set('etat_devis','valid_client');
-
-$devis_array[]  = array('required', 'true', 'Choisir un devis');
-$form->select_table('Devis', 'iddevis', 8, 'devis,clients,ref_devise', 'devis.id', 'CONCAT(devis.reference," / Client: ",clients.denomination,IF(devis.projet IS NOT NULL,CONCAT(" / Projet: ",devis.projet)," ")," / Total: ",devis.totalttc,IF(ref_devise.abreviation IS NOT NULL,CONCAT(" ",ref_devise.abreviation)," "))' , 'CONCAT(devis.reference," / Client: ",clients.denomination,IF(devis.projet IS NOT NULL,CONCAT(" / Projet: ",devis.projet)," ")," / Total: ",devis.totalttc,IF(ref_devise.abreviation IS NOT NULL,CONCAT(" ",ref_devise.abreviation)," "))', $indx = '------' ,$selected=NULL,$multi=NULL,
-        $where="devis.id_client=clients.id and ref_devise.id=clients.id_devise and devis.type_devis='ABN' and devis.etat = $etat_devis_valid AND  devis.`id` NOT IN (SELECT iddevis FROM contrats c WHERE devis.id = c.iddevis)", $devis_array);
-
+$form->select('Devis', 'iddevis', 8, $list_devis, '------', null, null, null);
 
 //Date effet
 $array_date_effet[]= array('required', 'true', 'Insérer la date effet');
