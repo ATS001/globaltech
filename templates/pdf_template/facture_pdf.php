@@ -32,19 +32,19 @@ if (!$facture->Get_detail_facture_pdf()) {
 }
 global $db;
 $headers = array(
-    'Item' => '5[#]C',
-    'Référence' => '18[#]L',
-    'Description' => '35[#]L',
-    'Qte' => '10[#]L',
+    'Item'          => '5[#]C',
+    'Référence'     => '18[#]C',
+    'Description'   => '35[#]L',
+    'Qte'           => '10[#]C',
     'Prix Unitaire' => '12[#]R',
-    'Total HT' => '15[#]R',
+    'Total HT'      => '15[#]R',
 );
 
 $headers2 = array(
-    'ID' => '5[#]C',
+    'ID'          => '5[#]C',
     'Désignation' => '30[#]L',
-    'Type' => '15[#]L',
-    'Montant' => '10[#]C',
+    'Type'        => '15[#]C',
+    'Montant'     => '10[#]R',
 );
 
 $devis_info = $facture->devis_info;
@@ -184,11 +184,12 @@ class MYPDF extends TCPDF {
         $this->writeHTMLCell(100, 0, 99, 55, $detail_client, 0, 0, 0, true, 'L', true);
 
         if ($this->info_devis['projet'] != null) {
-            $projet = '<b>Projet: </b> Site ' . $this->info_devis['projet'];
+            $projet = '<span style="color:#C81414; padding:5px;">' . $this->info_devis['projet'] . '</span>';
             $height = $this->getLastH();
-
             $this->SetTopMargin($height + $this->GetY() + 5);
-            $this->writeHTMLCell(100, 0, 16, '', $projet, 1, 0, 0, true, 'L', true);
+            //writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
+            $this->setCellPadding(1);
+            $this->writeHTMLCell('', '', 16, '', $projet, 1, 0, 0, true, 'L', true);
         }
 
         //Header Table proudct
@@ -302,42 +303,57 @@ if ($pdf->info_complement != null) {
 $pdf->lastPage();
 $obj = new nuts($pdf->info_facture['total_ttc'], "FCFA");
 $ttc_lettre = $obj->convert("fr-FR");
-$remise_valeur = $pdf->info_devis['valeur_remise'] == null ? '-' : $pdf->info_devis['valeur_remise'];
+
+$block_ttc = '<tr>
+                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>TVA 18%</strong></td>
+                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_tva'].'</strong></td>
+                </tr>
+                <tr>
+                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Total TTC</strong></td>
+                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_ttc'].'</strong></td>
+                </tr>';                
+
+$block_ttc    = $pdf->info_facture['total_tva'] == 0 ? null : $block_ttc;
+$titl_ht = $pdf->info_facture['total_tva'] == 0 ? 'Total' : 'Total HT';
+
+
+
 $block_sum = '<div></div>
+<style>
+p {
+    line-height: 0.6;
+
+}
+.alignRight { text-align: right; }
+
+</style>
 <table style="width: 685px;" cellpadding="2">
-    <tr align="right">
-        <td width="50%" align="left" style="background-color: #eeecec; color:#6B6868;">
-            Arrêté la Facture à la somme de :<br>
-            <strong>' . $ttc_lettre . ' </strong>
+    <tr>
+        <td width="50%" align="left">
+            
         </td>
-        <td>
+        <td width="50%">
            <table class="table" cellspacing="2" cellpadding="2"  style="width: 300px; border:1pt solid black;" >
             <tbody>
+               
                 <tr>
-                    <td style="width:35%;"><strong>Total HT</strong></td>
-                    <td style="width:5%;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['total_ht'] . '</strong></td>
+                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>'.$titl_ht.'</strong></td>
+                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_ht'].'</strong></td>
                 </tr>
-                <tr>
-                    <td style="width:35%;"><strong>Total Tva</strong></td>
-                    <td style="width:5%;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['total_tva'] . '</strong></td>
-                   </tr>
-                <tr>
-                    <td style="width:35%;"><strong>Total TTC</strong></td>
-                    <td style="width:5%;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['total_ttc'] . '</strong></td>
+                '.$block_ttc.'
+                     <tr>
+                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong> Total payé </strong></td>
+                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_paye'].'</strong></td>
                 </tr>
-                <tr>
-                    <td style="width:35%;"><strong>Total payé</strong></td>
-                    <td style="width:5%;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['total_paye'] . '</strong></td>
+                 <tr>
+                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong> Reste à payer </strong></td>
+                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['reste'].'</strong></td>
                 </tr>
-                <tr>
-                    <td style="width:35%;"><strong>Reste à payer</strong></td>
-                    <td style="width:5%;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>' . $pdf->info_facture['reste'] . '</strong></td>
-                </tr>               
                 
             </tbody>
         </table> 
@@ -345,23 +361,30 @@ $block_sum = '<div></div>
 </tr>
 <tr>
     <td colspan="2" style="color: #E99222;font-family: sans-serif;font-weight: bold;">
-        
-        <strong>Conditions générales:</strong>
-        
+        Arrêté le présent Devis à la somme de :
     </td>
 </tr>
 <tr>
     <td colspan="2" style="color:#6B6868; width: 650px; border:1pt solid black; background-color: #eeecec; padding: 5px;">
-        ' . $pdf->info_contrat['commentaire'] . '
-     <br>
-     Merci de nous avoir consulter.
- </td>
+        <strong>'.$ttc_lettre.'</strong>    
+    </td>
+</tr>
+<tr>
+    <td colspan="2" style="color: #E99222;font-family: sans-serif;font-weight: bold;">       
+        <strong>Conditions générales:</strong>        
+    </td>
+</tr>
+
+<tr>
+    <td colspan="2" style="color:#6B6868; width: 650px; border:1pt solid black; background-color: #eeecec; padding: 5px;">
+        '.$pdf->info_devis['claus_comercial'].'
+    </td>
 </tr>
 
 <tr>
     <td colspan="2" align="right" style="font: underline; padding-right: 200px;">
         <br><br><br><br>
-        <strong>Responsable Commercial</strong>
+        <strong> Direction </strong>
     </td>
 </tr>
 </table>';
@@ -369,7 +392,7 @@ $html = $block_sum;
 $pdf->writeHTML($html, true, false, true, false, '');
 // Close and output PDF document
 // This method has several options, check the source code documentation for more information.
-$pdf->Output($file_export, 'F');
+$pdf->Output($file_export,'F');
 
 
 //============================================================+
