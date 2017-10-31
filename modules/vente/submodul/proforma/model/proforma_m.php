@@ -222,7 +222,7 @@ class Mproforma
         $colms .= " REPLACE(FORMAT($table.qte,0),',',' '), ";
         $colms .= " REPLACE(FORMAT($table.prix_unitaire,0),',',' '), ";
         //$colms .= " $table.type_remise, ";
-        $colms .= " REPLACE(FORMAT($table.remise_valeur,0),',',' '), ";
+        $colms .= " $table.remise_valeur, ";
         
         $colms .= " REPLACE(FORMAT($table.total_ht,0),',',' '), ";
         $colms .= " REPLACE(FORMAT($table.total_tva,0),',',' '), ";

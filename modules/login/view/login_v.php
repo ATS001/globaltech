@@ -5,7 +5,7 @@
 
 		<span class="white"><?php //echo SYS_TITRE?></span>
 	</h1>
-	<h4 class="blue"><?php echo CLIENT_TITRE?></h4>
+	<!-- <h4 class="blue"><?php echo CLIENT_TITRE?></h4> -->
 </div>
 </div>
 

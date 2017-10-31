@@ -18,7 +18,7 @@ $hard_code_pri_u_ht .= '<span class="help-block returned_span">...</span>';
 //Réference
 $form->input('Réference', 'ref_produit', 'text' ,3, null, Null, $hard_code_pri_u_ht, 1);
 //Remise
-$hard_code_remis = '<label style="margin-left:15px;margin-right : 20px;">Valeur remise: </label><input id="remise_valeur_d" name="remise_valeur_d" class="input-large alignRight" value="0" type="text">';
+$hard_code_remis = '<label style="margin-left:15px;margin-right : 20px;">Valeur remise: </label><input id="remise_valeur_d" name="remise_valeur_d" class="input-large alignRight numeric" value="0" type="text">';
 //Type Remise
 //select($input_desc, $input_id, $input_class, $options, $indx = NULL ,$selected = NULL, $multi = NULL, $hard_code = null )
 $typ_remise = array('P' => 'Pourcentage' , 'M' => 'Montant' );
@@ -43,6 +43,7 @@ $form->render();
 <script type="text/javascript">
 //On change produit get all informations.
 $(document).ready(function() {
+    
     //Get TVA value from main TVA select 
     $('#tva_d').val($('#tva').val()); 
 	 //called when key is pressed in textbox

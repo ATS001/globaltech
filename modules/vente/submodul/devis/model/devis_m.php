@@ -144,7 +144,7 @@ class Mdevis
         , ref_pays.pays
         , ref_ville.ville
         , ref_devise.abreviation as devise
-        , CONCAT(users_sys.fnom,' ',users_sys.lnom) as comercial
+        , services.service as comercial
         FROM
         devis
         INNER JOIN clients 
@@ -157,6 +157,8 @@ class Mdevis
         ON (clients.id_devise = ref_devise.id)
         INNER JOIN users_sys
         ON (devis.creusr = users_sys.id)
+        INNER JOIN services
+        ON (users_sys.service = services.id)
         WHERE devis.id = ".$this->id_devis;
         if(!$db->Query($req_sql))
         {
@@ -239,7 +241,7 @@ class Mdevis
         $colms .= " REPLACE(FORMAT($table.qte,0),',',' '), ";
         $colms .= " REPLACE(FORMAT($table.prix_unitaire,0),',',' '), ";
         //$colms .= " $table.type_remise, ";
-        $colms .= " REPLACE(FORMAT($table.remise_valeur,0),',',' '), ";
+        $colms .= " $table.remise_valeur, ";
         
         $colms .= " REPLACE(FORMAT($table.total_ht,0),',',' '), ";
         $colms .= " REPLACE(FORMAT($table.total_tva,0),',',' '), ";
@@ -256,7 +258,7 @@ class Mdevis
         
         $headers = array(
             'Item'        => '5[#]center',
-            'Réf'         => '15[#]center',
+            'Réf'         => '17[#]center',
             'Description' => '30[#]', 
             'Qte'         => '5[#]center', 
             'P.U'         => '10[#]alignRight', 
@@ -558,14 +560,17 @@ class Mdevis
 
     private function Calculate_devis_d($prix_u, $qte, $type_remise, $value_remise, $tva)
     {
+        
+        $val_remise = $value_remise == null ? '0' : $value_remise;
+        
     	if($type_remise == 'P')
     	{
-    		$prix_u_remised = $prix_u - ($prix_u * $value_remise) / 100;
-            $this->valeur_remis_d = $value_remise;
+    		$prix_u_remised = $prix_u - ($prix_u * $val_remise) / 100;
+            $this->valeur_remis_d = $val_remise;
 
     	}else if($type_remise == 'M'){
-    		$prix_u_remised = $prix_u - $value_remise;
-            $this->valeur_remis_d = ($value_remise * 100) / $prix_u;
+    		$prix_u_remised = $prix_u - $val_remise;
+            $this->valeur_remis_d = ($val_remise * 100) / $prix_u;
     	}else{
     		$prix_u_remised = $prix_u;
     	}
@@ -581,7 +586,11 @@ class Mdevis
     	}else{
             $this->total_tva_d = ($this->total_ht_d * $tva_value) / 100; 
         }
-        $this->total_ttc = $this->total_ht_d + $this->total_tva_d;
+        $this->total_ttc_d = $this->total_ht_d + $this->total_tva_d;
+
+        /*$arr = array('Pu' => $prix_u, 'qte' => $qte, 'typ_remise' => $type_remise, 'val_remise' => $val_remise, 'prix_u_remised' => $prix_u_remised, 'tva' => $tva, 'total_tva' => $this->total_tva_d, 'total_ht_d' => $this->total_ht_d, 'total_ttc_d' => $this->total_ttc_d);
+        var_dump($arr);
+        exit();*/
         return true;
 
     }
@@ -835,10 +844,11 @@ class Mdevis
             $produit->id_produit = MySQL::SQLValue($this->_data['id_produit']);
             $produit->get_produit();
 
-            $ref_produit         = $produit->produit_info['ref'];
+            $ref_produit         = $produit->produit_info['reference'];
             $designation         = $produit->produit_info['designation'];
         //Valeu finance
             $total_ht            = $this->total_ht_d;
+
             $total_tva           = $this->total_tva_d;
             $total_ttc           = $this->total_ttc_d;
             $valeur_remis_d      = $this->valeur_remis_d;
@@ -851,11 +861,11 @@ class Mdevis
             $values["qte"]           = MySQL::SQLValue($this->_data['qte']);
             $values["prix_unitaire"] = MySQL::SQLValue($this->_data['prix_unitaire']);
             $values["type_remise"]   = MySQL::SQLValue($this->_data['type_remise_d']);
-            $values["remise_valeur"] = MySQL::SQLValue($this->valeur_remis_d);
+            $values["remise_valeur"] = MySQL::SQLValue($valeur_remis_d);
             $values["tva"]           = MySQL::SQLValue($this->_data['tva_d']);
-            $values["total_ht"]      = MySQL::SQLValue($this->total_ht);
-            $values["total_ttc"]     = MySQL::SQLValue($this->total_ttc);
-            $values["total_tva"]     = MySQL::SQLValue($this->total_tva);
+            $values["total_ht"]      = MySQL::SQLValue($total_ht);
+            $values["total_ttc"]     = MySQL::SQLValue($total_ttc);
+            $values["total_tva"]     = MySQL::SQLValue($total_tva);
             $values["updusr"]        = MySQL::SQLValue(session::get('userid'));
             $values["upddat"]        = ' CURRENT_TIMESTAMP ';
             $wheres["id"]            = MySQL::SQLValue($this->id_devis_d);
@@ -877,7 +887,7 @@ class Mdevis
                     //log if is edit main devis
                     if($this->devis_d_info['id_devis'] != null)
                     {
-                        if(!Mlog::log_exec($table, $this->id_devis, 'Modification Détail Devis '.$this->devis_d_info['id_devis'], 'Update'))
+                        if(!Mlog::log_exec($this->table, $this->id_devis, 'Modification Détail Devis '.$this->devis_d_info['id_devis'], 'Update'))
                         {
                             $this->log .= '</br>Un problème de log ';
                         
@@ -1482,6 +1492,9 @@ class Mdevis
         date_default_timezone_set('Etc/UTC');
         //Create a new PHPMailer instance
         $mail = new PHPMailer;
+        $mail->Username = Msetting::get_set('mail_comercial','user');
+        $mail->Password = Msetting::get_set('mail_comercial','pass');
+        
         //Tell PHPMailer to use SMTP
         $mail->isSMTP();
 

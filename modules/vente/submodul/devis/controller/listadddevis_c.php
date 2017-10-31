@@ -38,7 +38,7 @@ $array_column = array(
     ),
   array(
         'column' => 'd_devis.remise_valeur',
-        'type'   => 'int',
+        'type'   => '',
         'alias'  => 'remise_valeur',
         'width'  => '10',
     ),

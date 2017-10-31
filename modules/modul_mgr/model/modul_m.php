@@ -1348,7 +1348,7 @@ class Mmodul {
 		$services = str_replace('"', '-', $services);
 		$services = str_replace('-,-', '-', $services);
 		$message = '<span class="label label-sm label-'.$this->_data['message_class'] .'">'.$this->_data['etat_desc'].'</span>';
-        $id = MD5($description.'0def');
+        $idf = MD5($description.'0def');
         $this->check_exist_idf($idf); 
 		global $db;
 		//$service               = '-'.session::get('service').'-';

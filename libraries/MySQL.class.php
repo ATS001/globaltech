@@ -838,10 +838,24 @@ class MySQL
 		static public function make_table_head($headers = null)
 		{
 
+			$style = '<style type="text/css">
+				.row1
+				{
+					background-color: #eaebed;
+					border:1pt solid black;
+				}
+				.row0{
+					border:1px solid black;
+				}
+				.alignRight { text-align: right; }
+				.center{ text-align: center; }
+				</style>';
 			$html = "";
+			$html .= $style;
 			$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px;\">\n";
 
 			$html .= "\t<tr style=\"background-color: #495375; color: #fff; font-weight: bold;  padding:15px; \">\n";
+
 			foreach ($headers as $key => $value) {
 
 
@@ -867,7 +881,7 @@ class MySQL
 				}
 
 
-				$html .= "\t\t<td $width $align>" . htmlspecialchars($key) . "</td>\n";
+				$html .= "\t\t<td $width class=\"center\">" . htmlspecialchars($key) . "</td>\n";
 			}
 			$html .= "\t</tr>\n";
 			$html .= "</table>";
@@ -929,12 +943,12 @@ class MySQL
 			if ($this->RowCount() > 0) {
 				$html = "";
 				$style = '<style type="text/css">
-				.row1
+				.row0
 				{
 					background-color: #eaebed;
 					border:1pt solid black;
 				}
-				.row0{
+				.row1{
 					border:1px solid black;
 				}
 				.alignRight { text-align: right; }
