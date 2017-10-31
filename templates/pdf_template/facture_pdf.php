@@ -23,7 +23,8 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $facture->get_facture()) {
     exit('0#<br>Les informations pour cette template sont erronées, contactez l\'administrateur');
 }
 
-
+//var_dump($facture);
+//var_dump($this->info_devis);
 
 //Execute Pdf render
 
@@ -132,8 +133,11 @@ class MYPDF extends TCPDF {
                 </strong></td>
 		<td style="width:5%;">:</td>
 		<td style="width:60%; background-color: #eeecec; ">' . $this->info_facture['date_facture'] . '</td>
-		</tr>
-                <tr>
+		</tr>';
+        if( $this->info_facture['base_fact'] == 'C')
+        {
+        $detail_devis .= '
+        <tr>
 		<td style="width:40%; color:#A1A0A0;"><strong>Réf contrat
                 </strong></td>
 		<td style="width:5%;">:</td>
@@ -147,6 +151,25 @@ class MYPDF extends TCPDF {
 		</tr>
                ' . $per . '
 		</table>';
+        }
+        else if( $this->info_facture['base_fact'] == 'D')
+        {
+        $detail_devis .= '
+        <tr>
+        <td style="width:40%; color:#A1A0A0;"><strong>Réf Devis
+                </strong></td>
+        <td style="width:5%;">:</td>
+        <td style="width:60%; background-color: #eeecec; ">' . $this->info_devis['reference'] . '</td>
+        </tr>
+                <tr>
+        <td style="width:40%; color:#A1A0A0;"><strong>Date Devis
+                </strong></td>
+        <td style="width:5%;">:</td>
+        <td style="width:60%; background-color: #eeecec; ">' . $this->info_devis['date_devis'] . '</td>
+        </tr>
+               ' . $per . '
+        </table>';
+        }
         $this->writeHTMLCell(0, 0, 122, 23, $detail_devis, '', 0, 0, true, 'L', true);
         //Info Client
         $nif = null;

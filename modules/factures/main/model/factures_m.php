@@ -1026,20 +1026,23 @@ class Mfacture {
         
         $this->Get_detail_facture_show();
         $devis_info = $this->devis_info;
+       // var_dump($devis_info);
 
         $this->get_facture_info();
         $info_facture = $this->facture_info;
 
+if($this->facture_info['base_fact'] == 'C')
+{
         $this->get_contrat($this->facture_info['idcontrat']);
         $info_contrat = $this->contrat_info;
-
+}
         
 
         $colms = null;
         $colms .= " d_factures.id item, ";
         $colms .= " d_factures.ref_produit, ";
         $colms .= " d_factures.designation, ";
-        $colms .= " CONCAT(REPLACE(FORMAT(d_factures.qte,0),',',' '),' ',d_factures.qte_designation) as qte, ";
+        $colms .= " CONCAT(REPLACE(FORMAT(d_factures.qte,0),',',' '),' ',IFNULL(d_factures.qte_designation,' ')) as qte, ";
         $colms .= " REPLACE(FORMAT(d_factures.prix_unitaire,0),',',' '), ";
         $colms .= " REPLACE(FORMAT(d_factures.total_ht,0),',', ' ') ";
 
@@ -1095,17 +1098,27 @@ class Mfacture {
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
                 $this->devis_info = $db->RowArray();
+                
                 $this->error = true;
             }
         }
     }
 
     public function get_id_devis() {
-        global $db;
+        /*var_dump('testtttt');
+        var_dump($this->facture_info['iddevis']);
 
-        $sql = "SELECT iddevis as id FROM 
-    		contrats WHERE  contrats.id = " . $this->facture_info['idcontrat'];
+        var_dump($this->facture_info['idcontrat']);
+        var_dump($this->facture_info['base_fact']);
+    */    global $db;
+        //var_dump($this->facture_info['idcontrat']); 
+        $contrat = $this->facture_info['idcontrat'] == NULL ? 'NULL' : $this->facture_info['idcontrat'];
+        $devis   = $this->facture_info['iddevis']   == NULL ? 'NULL' : $this->facture_info['iddevis'];
 
+        $sql = "SELECT id as id FROM 
+    		devis WHERE  devis.id =if( '" . $this->facture_info['base_fact']. "'='C', $contrat, $devis)";
+               //$sql = "SELECT id as id FROM devis WHERE  devis.id =". $this->facture_info['iddevis'];
+      // var_dump($sql);
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
@@ -1115,6 +1128,7 @@ class Mfacture {
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
                 $this->id_devis = $db->RowArray();
+                //var_dump($this->id_devis);
                 $this->error = true;
             }
         }
