@@ -25,6 +25,14 @@ $array_column = array(
         'header' => 'Type',
         'align'  => 'L'
     ),
+     array(
+        'column' => 'ref_categories_produits.categorie_produit',
+        'type'   => '',
+        'alias'  => 'cat_prod',
+        'width'  => '10',
+        'header' => 'Catégorie produit',
+        'align'  => 'L'
+    ),
   
     array(
         'column' => 'produits.designation',
@@ -55,9 +63,9 @@ $array_column = array(
 //Creat new instance
 $list_data_table = new Mdatatable();
 //Set tabels used in Query
-$list_data_table->tables = array('produits', 'ref_types_produits');
+$list_data_table->tables = array('produits', 'ref_types_produits','ref_categories_produits');
 //Set Jointure
-$list_data_table->joint = 'produits.idtype=ref_types_produits.id';
+$list_data_table->joint = 'produits.idtype=ref_types_produits.id AND produits.idcategorie=ref_categories_produits.id';
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query

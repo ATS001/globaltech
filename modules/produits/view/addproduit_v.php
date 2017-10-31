@@ -40,14 +40,15 @@ $form->select('Catégorie', 'idcategorie', 3, $opt_categ, $indx = NULL ,$selecte
 $uv_array[] = array('required', 'true', 'Choisir une unité de vente');
 $form->select_table('Unité de vente', 'iduv', 6, 'ref_unites_vente', 'id', 'unite_vente', 'unite_vente', $indx = '------', $selected = NULL, $multi = NULL, $where = 'etat= 1', $uv_array);
 
-//prix vente
-$pv_array[]  = array('number', 'true', 'Entrez un nombre valide' );
-$form->input('Prix de vente', 'prix_vente', 'text', 6, null, $pv_array);
-
 //Désignation
 $designation_array[] = array('required', 'true', 'Insérez une désignation');
 $designation_array[] = array('minlength', '2', 'Minimum 2 caractères');
 $form->input('Désignation', 'designation', 'text', 6, null, $designation_array);
+
+//prix vente
+$pv_array[]  = array('number', 'true', 'Entrez un nombre valide' );
+$form->input('Prix de vente', 'prix_vente', 'text', 6, null, $pv_array);
+
 
 //stock minimale
 $stock_min_array[] = array('number', 'true', 'Entrez un nombre valide');
