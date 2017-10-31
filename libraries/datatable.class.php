@@ -286,8 +286,15 @@ class Mdatatable
             array_push($columns, 'notif');
             $this->order_notif = TableTools::order_bloc($params['order'][0]['column']);
     	}
+        $order_column = $order_dir = $order_by = null;
+        if(array_key_exists('order', $params)){
+            $order_column = $columns[$params['order'][0]['column']];
+            $order_dir    = $params['order'][0]['dir'];
+            $order_by = ' ORDER BY ';
+        }
+        
     	$order_notif = $this->order_notif;
-    	$sqlRec .=  " ORDER BY $order_notif ". $columns[$params['order'][0]['column']]."   ".$params['order'][0]['dir']."  LIMIT ".$params['start']." ,".$params['length']." ";
+    	$sqlRec .=  " $order_by $order_notif  $order_column   $order_dir  LIMIT ".$params['start']." ,".$params['length']." ";
         //Istance od DB connexion
         global $db;
     	if (!$db->Query($sqlTot)){

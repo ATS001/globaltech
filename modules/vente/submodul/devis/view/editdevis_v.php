@@ -61,7 +61,7 @@ $form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$info_devis->g(
 //Projet if client have more project
 $form->input('Projet', 'projet', 'text' ,'6', $info_devis->g('projet'), null , null, null);
 //Table 
-$columns = array('id' => '1' ,'Item' => '5' , 'Réference'=>'10', 'Produit' => '30', 'P.U HT' => '10', 'T.Rem' => '5', 'V.Remise' => '10', 'Qte' => '5', 'Total HT' => '10', 'TVA' => '7', 'Total' =>'10', '#' =>'3'   );
+$columns = array('id' => '1' ,'Item' => '3' , 'Réference'=>'14', 'Produit' => '30', 'P.U HT' => '10', 'T.Rem' => '5', 'V.Remise' => '5', 'Qte' => '5', 'Total HT' => '10', 'TVA' => '7', 'Total' =>'10', '#' =>'3'   );
 $js_addfunct = 'var column = t.column(0);
      column.visible( ! column.visible() );';
 $verif_value = $info_devis->g('tkn_frm');    
@@ -180,6 +180,14 @@ $(document).ready(function() {
 
                             }
                         });
+                    }else{
+                        var $totaltva = parseFloat($('#totaltva').val());
+                        if( $totaltva == 0){
+                            $('#tva').val('N'); 
+                        }else{
+                           $('#tva').val('O');                          
+                        }
+                        $('#tva').trigger("chosen:updated");
                     }
 
 
@@ -190,6 +198,7 @@ $(document).ready(function() {
         }
 
     });
+
 
 
     $('#table_details_devis tbody ').on('click', 'tr .edt_det', function() {
@@ -225,17 +234,7 @@ $(document).ready(function() {
     $('#type_remise').on('change', function () {
         $('#valeur_remise').trigger('input');
     });
-    $('#tva').on('change', function () {
-        var table = $('#table_details_devis').DataTable();
-
-        if (table.data().count() && $(this).val() == 'O' ) {
-            window.setTimeout( function(){
-                        ajax_loadmessage('La TVA sera appliquée sur l\'ensemble des lignes détails', 'nok');
-                        }, 10 );
-            
-        }
-    });
-
+    
     $('#id_client').on('input change', function () {
                 
         var $id_client = $(this).val();

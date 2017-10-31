@@ -42,7 +42,7 @@ $form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$selected = NUL
 //Projet if client have more project
 $form->input('Projet', 'projet', 'text' ,'6', NULL, null, null, null);
 //Table 
-$columns = array('id' => '1' ,'Item' => '5' , 'Réference'=>'10', 'Produit' => '30', 'P.U HT' => '10', 'T.Rem' => '5', 'V.Remise' => '10', 'Qte' => '5', 'Total HT' => '10', 'TVA' => '7', 'Total' =>'10', '#' =>'3'   );
+$columns = array('id' => '1' ,'Item' => '3' , 'Réference'=>'14', 'Produit' => '30', 'P.U HT' => '10', 'T.Rem' => '5', 'V.Remise' => '5', 'Qte' => '5', 'Total HT' => '10', 'TVA' => '7', 'Total' =>'10', '#' =>'3'   );
 $js_addfunct = 'var column = t.column(0);
      column.visible( ! column.visible() );';
 /*$ssid = 'f_v'.$this->_id_form;
@@ -65,7 +65,7 @@ $hard_code_prices .= '<label style="margin-left:15px;margin-right : 20px;">Prix 
 $form->input('Prix Global HT', 'totalht', 'text' ,'3 is-number alignRight', '0', $prixht_array, $hard_code_prices, 'readonly');
 //Validité
 $vie_opt = array('30' => '30 Jours' , '60' => '60 Jours', '90' => '90 Jours' );
-$form->select('Validité', 'vie', 3, $vie_opt, $indx = NULL ,$selected = NULL, $multi = NULL);
+$form->select('Validité', 'vie', 3, $vie_opt, $indx = '-----' ,$selected = NULL, $multi = NULL);
 //Conditions commercial
 $clauses = 'Paiement 100% à la commande';
 $form->input_editor('Conditions commerciales', 'claus_comercial', 8, $clauses, $js_array = null,  $input_height = 50);
@@ -137,7 +137,7 @@ $(document).ready(function() {
     });
     
 
-    $('#valeur_remise, #tva').bind('input change',function() {
+    $('#valeur_remise').bind('input change',function() {
     	// Calcul values
     	var totalht       = parseInt($('#sum_table').val());
     	var type_remise   = $('#type_remise').val();
@@ -154,10 +154,11 @@ $(document).ready(function() {
     	}
     	calculat_devis(totalht, type_remise, remise_valeur, tva, 'totalht', 'totaltva', 'totalttc');
         
-    })
-
+    });
+     
     $('#tva').on('change', function () {
         var table = $('#table_details_devis').DataTable();
+        var $tva_option;
 
         if (table.data().count()) {
 
@@ -185,13 +186,17 @@ $(document).ready(function() {
 
                             }
                         });
+                    }else{
+                        var $totaltva = parseFloat($('#totaltva').val());
+                        if( $totaltva == 0){
+                           $('#tva').val('N'); 
+                        }else{
+                           $('#tva').val('O');
+                        }
+                        $('#tva').trigger("chosen:updated");
                     }
-
-
-                });  
-            
-            
-            
+                }
+            );  
         }
 
     });
@@ -214,6 +219,8 @@ $(document).ready(function() {
                 //info client après               
                 $('#tva').val(data['tva_brut']);
                 $('#tva').trigger("chosen:updated");
+                $('#tva').trigger("change");
+                
 
             }
         });

@@ -53,26 +53,26 @@ if(MInit::form_verif('editdevis', false))
       $empty_list .= "<li>Durée de validité</li>";
       $checker = 1;
     }
-	if($posted_data['type_remise'] == NULL OR !in_array($posted_data['type_remise'],  array( 'P','M' ))){
+	if($posted_data['totalttc'] == NULL OR !is_numeric($posted_data['totalttc']) OR $posted_data['totalttc'] == 0){
 
-		$empty_list .= "<li>Type remise est incorrecte</li>";
-		$checker = 1;
-	}
-	if($posted_data['totalttc'] == NULL){
+      $empty_list .= "<li>Total TTC</li>";
+      $checker = 1;
+    }
+    if($posted_data['valeur_remise'] == NULL OR !is_numeric($posted_data['valeur_remise'])){
 
-		$empty_list .= "<li>Total TTC</li>";
-		$checker = 1;
-	}
-	if($posted_data['totaltva'] == NULL){
+      $empty_list .= "<li>Valeur Remise</li>";
+      $checker = 1;
+    }
+    if($posted_data['totaltva'] == NULL OR !is_numeric($posted_data['totaltva'])){
 
-		$empty_list .= "<li>Total TVA</li>";
-		$checker = 1;
-	}
-	if($posted_data['totalht'] == NULL){
+      $empty_list .= "<li>Total TVA</li>";
+      $checker = 1;
+    }
+    if($posted_data['totalht'] == NULL OR !is_numeric($posted_data['totalht']) OR $posted_data['totalht'] == 0){
 
-		$empty_list .= "<li>Total HT</li>";
-		$checker = 1;
-	}
+      $empty_list .= "<li>Total HT</li>";
+      $checker = 1;
+    }
 	if($posted_data['claus_comercial'] == NULL){
 
 		$empty_list .= "<li>Clauses commerciales</li>";

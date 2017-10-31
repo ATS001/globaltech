@@ -35,10 +35,10 @@ if(!$devis->Get_detail_devis_pdf())
 global $db;
 $headers = array(
             '#'           => '5[#]C',
-            'Réf'         => '15[#]C',
-            'Description' => '35[#]', 
+            'Réf'         => '17[#]C',
+            'Description' => '33[#]', 
             'Qte'         => '5[#]C', 
-            'P.U'         => '10[#]R', 
+            'P.Unitaire'  => '10[#]R', 
             'Remise'      => '10[#]C',
             'Total HT'    => '15[#]R',
 
@@ -109,7 +109,7 @@ class MYPDF extends TCPDF {
 		$detail_client = '<table cellspacing="3" cellpadding="2" border="0">
 		<tbody>
 		<tr style="background-color:#495375; font-size:14; font-weight:bold; color:#fff;">
-		<td colspan="3"><strong>Info. client</strong></td>
+		<td colspan="3"><strong>Informations client</strong></td>
 		</tr>
 		<tr>
 		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Dénomination</td>
@@ -131,18 +131,21 @@ class MYPDF extends TCPDF {
 		</table>';
 		$this->writeHTMLCell(100, 0, 99, 40, $detail_client, 0, 0, 0, true, 'L', true);
 		if($this->info_devis['projet'] != null){
-			$projet = '<b>Projet: </b> <span style="color:#C81414">'.$this->info_devis['projet'].'</span>';
+			$projet = '<span style="color:#C81414; padding:5px;">'.$this->info_devis['projet'].'</span>';
 		    $height = $this->getLastH();
 		    $this->SetTopMargin($height + $this->GetY() + 5);
-		    $this->writeHTMLCell(100, 0, 15, '', $projet, 1, 0, 0, true, 'L', true);
+		    //writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
+		    $this->setCellPadding(1);
+		    $this->writeHTMLCell('', '', 16, '', $projet, 1, 0, 0, true, 'L', true);
 		}
-		
+		$height = $this->getLastH();
+		$this->SetTopMargin($height + $this->GetY());
 		//Info général
 		$tableau_head = $this->Table_head;
-		$this->writeHTMLCell('', '', 15, 83, $tableau_head, 0, 0, 0, true, 'L', true);
+		$this->writeHTMLCell('', '', 14, '', $tableau_head, 0, 0, 0, true, 'L', true);
 		$height = $this->getLastH();
        
-        $this->SetTopMargin($height + $this->GetY());
+        $this->SetTopMargin($height + $this->GetY() -1);
 		//$pdf->writeHTMLCell('', '','' , '', $html , 0, 0, 0, true, 'L', true);
 
 	}
@@ -266,11 +269,16 @@ $signature = $pdf->info_devis['comercial'];
 
 
 $block_sum = '<div></div>
+<style>
+p {
+    line-height: 0.6;
+}
+
+</style>
 <table style="width: 685px;" cellpadding="2">
-    <tr align="right">
-        <td width="50%" align="left" style="background-color: #eeecec; color:#6B6868;">
-            Arrêté le présent Devis à la somme de :<br>
-            <strong>'.$ttc_lettre.' </strong>
+    <tr>
+        <td width="50%" align="left">
+            
         </td>
         <td width="50%">
            <table class="table" cellspacing="2" cellpadding="2"  style="width: 300px; border:1pt solid black;" >
@@ -289,17 +297,24 @@ $block_sum = '<div></div>
 </tr>
 <tr>
     <td colspan="2" style="color: #E99222;font-family: sans-serif;font-weight: bold;">
-        
-        <strong>Conditions générales:</strong>
-        
+        Arrêté le présent Devis à la somme de :
     </td>
 </tr>
 <tr>
     <td colspan="2" style="color:#6B6868; width: 650px; border:1pt solid black; background-color: #eeecec; padding: 5px;">
+        <strong>'.$ttc_lettre.'</strong>    
+    </td>
+</tr>
+<tr>
+    <td colspan="2" style="color: #E99222;font-family: sans-serif;font-weight: bold;">       
+        <strong>Conditions générales:</strong>        
+    </td>
+</tr>
+
+<tr>
+    <td colspan="2" style="color:#6B6868; width: 650px; border:1pt solid black; background-color: #eeecec; padding: 5px;">
         '.$pdf->info_devis['claus_comercial'].'
-     <br>
-     Merci de nous avoir consulter.
- </td>
+    </td>
 </tr>
 
 <tr>

@@ -60,6 +60,7 @@ $form->render();
 <script type="text/javascript">
 //On change produit get all informations.
 $(document).ready(function() {
+    
     //Get TVA value from main TVA select 
     $('#tva_d').val($('#tva').val());
 	 //called when key is pressed in textbox
