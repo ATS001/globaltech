@@ -20,7 +20,7 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_proforma->Get_detail_proforma_sho
 		<div class="btn-group btn-overlap">
 
 			<?php 
-
+            TableTools::btn_action('proforma', $info_proforma->id_proforma, 'viewproforma');
 			TableTools::btn_add('proforma','Liste des proforma', Null, $exec = NULL, 'reply'); 
 
 			?>

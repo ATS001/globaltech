@@ -667,7 +667,7 @@ class PHPMailer
         $this->SMTPAuth = MCfg::get('mail_auth');
         $this->Port     = MCfg::get('mail_port');
         $this->From     = MCfg::get('admin_mail');
-        $this->FromName     = MCfg::get('sys_titre').' '.MCfg::get('admin_name');
+        $this->FromName = MCfg::get('sys_titre').' '.MCfg::get('admin_name');
     }
 
     /**

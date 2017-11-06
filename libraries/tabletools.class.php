@@ -88,15 +88,26 @@ class TableTools
 		return $render ;
 
 	}
+    static public function btn_action($task, $id, $go_to)
+	{
+		//$output = '<button id="btn_action" href="#" rel="'.$task.'" data="'.MInit::crypt_tp('id', $id).'" class=" btn btn-white btn-info btn-bold dropdown-toggle  spaced" data-toggle="dropdown"><span><i class="ace-icon fa fa-bars smaller-90"></i> Actions </span></a>';
+		$output = '<div id="btn_action" class="btn-group" rel="'.$task.'" data_id="'.$id.'" data="'.MInit::crypt_tp('id', $id).'" go_to="'.$go_to.'"><button  data-toggle="dropdown" class="btn btn-white btn-info btn-bold dropdown-toggle  spaced"><span><i class="ace-icon fa fa-bars smaller-90"></i> Actions </span></button></div>';
+
+
+		$render = print ($output);
+
+
+		return $render ;
+	}
     /**
      * [btn_csv description]
      * @param  [type] $app  [description]
      * @param  [type] $text [description]
      * @return [type]       [description]
      */
-	static public function btn_csv($app, $text)
+	static public function btn_csv($app)
 	{
-		$output = '<a title="Export XLS" href="#"  class="ColVis_Button ColVis_MasterButton btn btn-white btn-info btn-bold export_csv"><span><i class="fa fa-file-excel-o fa-lg" style="color:green"></i></span></a>';
+		$output = '<a title="Export XLS" rel="'.$app.'" href="#"  class="ColVis_Button ColVis_MasterButton btn btn-white btn-info btn-bold export_csv"><span><i class="fa fa-file-excel-o fa-lg" style="color:green"></i></span></a>';
 
 
 		$render = print ($output);

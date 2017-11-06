@@ -1,11 +1,10 @@
 <?php
 //Get all Devis info 
 $info_devis = new Mdevis();
-//$action = new TableTools();
+$action = new TableTools();
 $info_devis->id_devis = Mreq::tp('id');
-//$info_devis->get_devis();
-//$action->line_data = $info_devis->devis_info;
-//$actions = $action->action_profil_view('devis', 'devis', Minit::crypt_tp('id', Mreq::tp('id')), $info_devis->g('creusr') , 'deletedevis');
+$info_devis->get_devis();
+
 //Set ID of Module with POST id
 $info_devis->id_devis = Mreq::tp('id');
 //Check if Post ID <==> Post idc or get_modul return false. 
@@ -21,9 +20,9 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->Get_detail_devis_show())
 		<div class="btn-group btn-overlap">
 
 			<?php 
-
+            TableTools::btn_action('devis', $info_devis->id_devis, 'viewdevis');
 			TableTools::btn_add('devis','Liste des Devis', Null, $exec = NULL, 'reply'); 
-
+            
 			?>
 
 		</div>
@@ -39,7 +38,9 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->Get_detail_devis_show())
 	</div><!-- /.page-header -->
 	<!-- /.page-header -->
 	<div class="row">
-<?php Mmodul::get_statut_etat_line('devis', $info_devis->g('etat'))?>
+<?php Mmodul::get_statut_etat_line('devis', $info_devis->g('etat'));
+//echo $actions;
+?>
 		<div>
 			<div id="user-profile-2" class="user-profile">
 				<div class="tabbable">
@@ -253,8 +254,9 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->Get_detail_devis_show())
 	</div><!-- /.produit-profile -->
 	
 
-		<!-- page specific plugin scripts -->
-		<script type="text/javascript">
+<!-- page specific plugin scripts -->
+<script type="text/javascript">
 
-		</script>
+  
+</script>
 

@@ -5,7 +5,7 @@
 
 		<span class="white"><?php //echo SYS_TITRE?></span>
 	</h1>
-	<h4 class="blue"><?php echo CLIENT_TITRE?></h4>
+	<!-- <h4 class="blue"><?php echo CLIENT_TITRE?></h4> -->
 </div>
 </div>
 
@@ -25,7 +25,7 @@
 				<?php if(MReq::tp('alg')){ ?>
 				
 					<div class="alert alert-danger">
-					vous avez été deconnecté du serveur pour une inactivité de plus de <?php echo Mlogin::get_ses_time_autologout(MReq::tp('alg'));?>.
+					vous avez été deconnecté du serveur pour une inactivité de plus de <?php echo MLogin::get_ses_time_autologout(MReq::tp('alg'));?>.
 						<br>
 					</div>
 				<?php } ?>

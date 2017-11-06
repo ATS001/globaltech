@@ -59,14 +59,15 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_produit->get_produit()) {
                 $uv_array[] = array('required', 'true', 'Choisir une unité de vente');
                 $form->select_table('Unité de vente', 'iduv', 6, 'ref_unites_vente', 'id', 'unite_vente', 'unite_vente', $indx = '------', $info_produit->Shw('iduv', 1), $multi = NULL, $where = NULL, $uv_array);
 
-                //prix vente
-                $pv_array[] = array('number', 'true', 'Entrez un nombre valide');
-                $form->input('Prix de vente', 'prix_vente', 'text', 6, $info_produit->Shw('prix_vente', 1), $pv_array);
-
+                
                 //Désignation
                 $designation_array[] = array('required', 'true', 'Insérez une désignation');
                 $designation_array[] = array('minlength', '2', 'Minimum 2 caractères');
                 $form->input('Désignation', 'designation', 'text', 6, $info_produit->Shw('designation', 1), $designation_array);
+
+                //prix vente
+                $pv_array[] = array('number', 'true', 'Entrez un nombre valide');
+                $form->input('Prix de vente', 'prix_vente', 'text', 6, $info_produit->Shw('prix_vente', 1), $pv_array);
 
                 //stock minimale
                 $stock_min_array[] = array('number', 'true', 'Entrez un nombre valide');

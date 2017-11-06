@@ -35,12 +35,12 @@ if(MInit::form_verif('edit_detailproforma',false))
 		$empty_list .= "<li>Produit / Service</li>";
 		$checker = 1;
 	}
-	if($posted_data['qte'] == NULL){
+	if($posted_data['qte'] == NULL OR !is_numeric($posted_data['qte'])){
 
 		$empty_list .= "<li>Quantité</li>";
 		$checker = 1;
 	}
-	if($posted_data['prix_unitaire'] == NULL OR $posted_data['prix_unitaire'] == '0' ){
+	if($posted_data['prix_unitaire'] == NULL OR $posted_data['prix_unitaire'] == '0' OR !is_numeric($posted_data['prix_unitaire']) ){
 
 		$empty_list .= "<li>Prix unitaire</li>";
 		$checker = 1;
@@ -48,6 +48,11 @@ if(MInit::form_verif('edit_detailproforma',false))
 	if($posted_data['type_remise_d'] == NULL OR !in_array($posted_data['type_remise_d'],  array( 'P','M' ))){
 
 		$empty_list .= "<li>Type de remise</li>";
+		$checker = 1;
+	}
+	if($posted_data['remise_valeur_d'] == NULL OR !is_numeric($posted_data['remise_valeur_d']) ){
+
+		$empty_list .= "<li>Valeur de remise</li>";
 		$checker = 1;
 	}
 	if($posted_data['tva_d'] == NULL OR !in_array($posted_data['tva_d'],  array( 'O','N' ))){

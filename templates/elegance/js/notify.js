@@ -86,11 +86,11 @@ $(document).ready(function(){
         });
 	}
 
-	/*var start = new Date;
+	var start = new Date;
 
 	setInterval(function() {
 		get_notif_list();
-	}, 15000);*/
+	}, 15000);
     
 
 })

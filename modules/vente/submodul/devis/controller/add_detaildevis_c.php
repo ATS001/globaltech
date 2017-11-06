@@ -23,12 +23,32 @@ if(MInit::form_verif('add_detaildevis',false))
 		$empty_list .= "<li>Produit / Service</li>";
 		$checker = 1;
 	}
-	if($posted_data['qte'] == NULL){
+	if($posted_data['qte'] == NULL OR !is_numeric($posted_data['qte'])){
 
 		$empty_list .= "<li>Quantité</li>";
 		$checker = 1;
 	}
-	if($posted_data['prix_unitaire'] == NULL OR $posted_data['prix_unitaire'] == '0' ){
+	if($posted_data['total_tva'] == NULL OR !is_numeric($posted_data['total_tva'])){
+
+		$empty_list .= "<li>Total TVA</li>";
+		$checker = 1;
+	}
+	if($posted_data['remise_valeur_d'] == NULL OR !is_numeric($posted_data['remise_valeur_d'])){
+
+		$empty_list .= "<li>Valeur Remise</li>";
+		$checker = 1;
+	}
+	if($posted_data['total_ht'] == NULL OR !is_numeric($posted_data['total_ht']) OR $posted_data['total_ht'] == 0){
+
+      $empty_list .= "<li>Total HT</li>";
+      $checker = 1;
+    }
+    if($posted_data['total_ttc'] == NULL OR !is_numeric($posted_data['total_ttc']) OR $posted_data['total_ttc'] == 0){
+
+      $empty_list .= "<li>Total TTC</li>";
+      $checker = 1;
+    }
+	if($posted_data['prix_unitaire'] == NULL OR $posted_data['prix_unitaire'] == '0' OR !is_numeric($posted_data['prix_unitaire'])){
 
 		$empty_list .= "<li>Prix unitaire</li>";
 		$checker = 1;

@@ -40,7 +40,7 @@ $form->select_table('Client ', 'id_client', 8, 'clients', 'id', 'denomination' ,
 $tva_opt = array('O' => 'OUI' , 'N' => 'NON' );
 $form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$selected = NULL, $multi = NULL);
 //Table 
-$columns = array('id' => '1' ,'Item' => '5' , 'Réference'=>'10', 'Produit' => '30', 'P.U HT' => '10', 'T.Rem' => '5', 'V.Remise' => '10', 'Qte' => '5', 'Total HT' => '10', 'TVA' => '7', 'Total' =>'10', '#' =>'3'   );
+$columns = array('id' => '1' ,'Item' => '3' , 'Réference'=>'15', 'Produit' => '30', 'P.U HT' => '10', 'T.Rem' => '5', 'V.Remise' => '5', 'Qte' => '5', 'Total HT' => '10', 'TVA' => '7', 'Total' =>'10', '#' =>'3'   );
 $js_addfunct = 'var column = t.column(0);
      column.visible( ! column.visible() );';
 /*$ssid = 'f_v'.$this->_id_form;
@@ -48,7 +48,7 @@ $js_addfunct = 'var column = t.column(0);
 $verif_value = md5(session::get('f_vaddproforma'));    
 $form->draw_datatabe_form('table_details_proforma', $verif_value, $columns, 'addproforma', 'add_detailproforma', 'Ajouter détails proforma', $js_addfunct);
 //Finance bloc
-$form->bloc_title('Zone totaux');
+$form->bloc_title('Plus d\'information');
 //Type Remise
 //$form->input('Total des articles enregistrés', 'sum_table', 'text' ,'4 is-number alignRight', '0', null, null, 'readonly');
 //$hard_code_remise = '<label style="margin-left:15px;margin-right : 20px;">Valeur remise: </label><input id="valeur_remise" name="valeur_remise" class="input-small alignRight" value="0" type="text"><span class="help-block">Cette remise sera appliquée sur le total H.T de proforma</span>';
@@ -131,7 +131,7 @@ $(document).ready(function() {
     });
     
 
-    $('#valeur_remise, #tva').bind('input change',function() {
+    $('#valeur_remise').bind('input change',function() {
         // Calcul values
         var totalht       = parseInt($('#sum_table').val());
         var type_remise   = $('#type_remise').val();
@@ -152,13 +152,14 @@ $(document).ready(function() {
 
     $('#tva').on('change', function () {
         var table = $('#table_details_proforma').DataTable();
+        var $tva_option;
 
         if (table.data().count()) {
 
             bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de TVA sera appliqué sur l'ensemble des lignes détails, voulez vous vous continuer ?</span>", 
                 function(result){
                     if(result == true){
-                        
+                        var $tkn_frm = $(this).attr('tkn_frm');
                         $.ajax({
 
                             cache: false,
@@ -179,13 +180,17 @@ $(document).ready(function() {
 
                             }
                         });
+                    }else{
+                        var $totaltva = parseFloat($('#totaltva').val());
+                        if( $totaltva == 0){
+                           $('#tva').val('N'); 
+                        }else{
+                           $('#tva').val('O');
+                        }
+                        $('#tva').trigger("chosen:updated");
                     }
-
-
-                });  
-            
-            
-            
+                }
+            );  
         }
 
     });

@@ -181,19 +181,20 @@ $(document).ready(function() {
     });
     $('#tva').on('change', function () {
         var table = $('#table_details_proforma').DataTable();
+        var $tva_option;
 
         if (table.data().count()) {
 
             bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de TVA sera appliqué sur l'ensemble des lignes détails, voulez vous vous continuer ?</span>", 
                 function(result){
                     if(result == true){
-                        
+                        var $tkn_frm = $(this).attr('tkn_frm');
                         $.ajax({
 
                             cache: false,
                             url  : '?_tsk=add_detailproforma&ajax=1'+'&act=1&<?php echo MInit::crypt_tp('exec', 'set_tva')?>',
                             type : 'POST',
-                            data : $('#editproforma').serialize(),
+                            data : $('#addproforma').serialize(),
                             dataType:"JSON",
                             success: function(data){
 
@@ -208,21 +209,38 @@ $(document).ready(function() {
 
                             }
                         });
+                    }else{
+                        var $totaltva = parseFloat($('#totaltva').val());
+                        if( $totaltva == 0){
+                           $('#tva').val('N'); 
+                        }else{
+                           $('#tva').val('O');
+                        }
+                        $('#tva').trigger("chosen:updated");
                     }
-
-
-                });  
-            
-            
-            
+                }
+            );  
         }
 
     });
 
-    $('#id_client').on('change', function () {
-        
-        var $adresse = '<div class="form-group>"><address><strong>Twitter, Inc.</strong><br>795 Folsom Ave, Suite 600<br>San Francisco, CA 94107<br><abbr title="Phone">P:</abbr>(123) 456-7890</address></div>';
-        $(this).parent('div').after($adresse);
+    $('#id_client').on('input change', function () {
+                
+        var $id_client = $(this).val();
+        $.ajax({
+
+            cache: false,
+            url  : '?_tsk=add_detailproforma&ajax=1',
+            type : 'POST',
+            data : '&act=1&<?php echo MInit::crypt_tp('exec', 'info_client') ?>&id='+$id_client,
+            dataType:"JSON",
+            success: function(data){
+                //info client après               
+                $('#tva').val(data['tva_brut']);
+                $('#tva').trigger("chosen:updated");
+
+            }
+        });
 
     });
     $('#table_details_proforma tbody ').on('click', 'tr .del_det', function() {

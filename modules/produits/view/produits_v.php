@@ -38,6 +38,9 @@
                                                         <th>
 								Type
 							</th>
+                                                        <th>
+								Catégorie
+							</th>
 	                                                <th>
 								Désignation
 							</th>                                              
@@ -72,12 +75,13 @@
 			
 	                aoColumns: [
 	                    {"sClass": "center","sWidth":"5%"}, // Identifiant 
-	                    {"sClass": "left","sWidth":"15%"}, 
-                            {"sClass": "left","sWidth":"10%"},
-	                    {"sClass": "left","sWidth":"20%"},   
-	                    {"sClass": "left","sWidth":"10%"},
-	                    {"sClass": "center","sWidth":"10%"}, // Statut
-	                    {"sClass": "center","sWidth":"10%"}, // Action
+	                    {"sClass": "left","sWidth":"13%"}, 
+                            {"sClass": "left","sWidth":"13%"},
+                            {"sClass": "left","sWidth":"13%"},
+	                    {"sClass": "left","sWidth":"25%"},   
+	                    {"sClass": "left","sWidth":"8%"},
+	                    {"sClass": "center","sWidth":"13%"}, // Statut
+	                    {"sClass": "center","sWidth":"6%"}, // Action
 	                    ],
 	                });	        
 	    

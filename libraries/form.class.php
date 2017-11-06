@@ -737,9 +737,9 @@ if($js_array != null)
              <div class="clearfix">
                  <select '.$multiple.'  id="'.$input_id.'" name="'.$input_id.'" class="chosen-select col-xs-12 col-sm-'.$input_class.' " chosen-class="'.$class_chosen.'" >';
 
-                     $idex = $indx != NULL ? '<option value="">'.$indx.'</option>' : NULL;
+                     $index = $indx != NULL ? '<option value="">'.$indx.'</option>' : NULL;
 
-                     $output .= $indx;
+                     $output .= $index;
                      foreach($options as $value => $text):
                       if($selected != NULL){  
                        $select =  $value == $selected ? "selected":""; 
@@ -832,7 +832,7 @@ public function draw_datatabe_form($id_table, $verif_value, $columns = array(), 
   });";
   $button_add_row = '<a id="addRow" href="#" rel="'.$url_addrow.'" data="&tkn='.$verif_value.'" data_titre="'.$titr_addrow.'" class=" btn btn-white btn-info btn-bold  spaced "><span><i class="fa fa-plus"></i> Ajouter une ligne</span></a><input type="hidden" name="tkn_frm" value="'.$verif_value.'">';
   $js_table = "var t = $('#".$id_table."').DataTable({";
-  $js_table .= "bProcessing: true, serverSide: true, ajax_url:'".$url_data."', extra_data:'tkn_frm=".$verif_value."',aoColumns: [";
+  $js_table .= "bSort: false, bProcessing: true, serverSide: true, ajax_url:'".$url_data."', extra_data:'tkn_frm=".$verif_value."',aoColumns: [";
   $table = '<div class="space-2"></div>';
   $table .= '<div class="col-xs-12 '.$id_table.'">'.$button_add_row.'<table id="'.$id_table.'" class="display table table-bordered table-condensed table-hover table-striped dataTable no-footer" cellspacing="0">';
   $table .= '<thead><tr>';

@@ -33,11 +33,10 @@ if (!$facture->Get_detail_facture_pdf()) {
 global $db;
 $headers = array(
     'Item' => '5[#]C',
-    'Réf' => '18[#]L',
+    'Référence' => '18[#]L',
     'Description' => '35[#]L',
-    //'Qte' => '5[#]C',
-    //'P.U' => '10[#]R',
-    //'Remise' => '7[#]C',
+    'Qte' => '10[#]L',
+    'Prix Unitaire' => '12[#]R',
     'Total HT' => '15[#]R',
 );
 
@@ -49,6 +48,7 @@ $headers2 = array(
 );
 
 $devis_info = $facture->devis_info;
+
 $tableau_head_product = MySQL::make_table_head($headers);
 $tableau_body_product = $db->GetMTable_pdf($headers);
 
@@ -57,7 +57,6 @@ $facture->get_complement_by_facture();
 $complement_info = $facture->complement_info;
 $tableau_head_complement = MySQL::make_table_head($headers2);
 $tableau_body_complement = $db->GetMTable_pdf($headers2);
-
 
 // Extend the TCPDF class to create custom Header and Footer
 class MYPDF extends TCPDF {
@@ -71,10 +70,9 @@ class MYPDF extends TCPDF {
     var $info_facture = array();
     var $info_contrat = array();
     var $info_complement = array();
+    var $facture_details_info = array();
     var $periode = null;
-     var $qr = false;
-     
-     
+    var $qr = false;
 
     //Page header
     public function Header() {
@@ -112,18 +110,17 @@ class MYPDF extends TCPDF {
         $this->writeHTMLCell(0, 0, 140, 10, $titre_doc, 'B', 0, 0, true, 'R', true);
         $this->SetTextColor(0, 0, 0);
         $this->SetFont('helvetica', '', 9);
-        
-        $per=NULL;
-        if($this->info_facture['periode'] != NULL)
-        {
-               $per=' <tr>
+
+        $per = NULL;
+        if ($this->info_facture['periode'] != NULL) {
+            $per = ' <tr>
 		<td style="width:40%; color:#A1A0A0;"><strong>Période facturée
                 </strong></td>
 		<td style="width:5%;">:</td>
-		<td style="width:60%; background-color: #eeecec; ">' .$this->info_facture['periode'] . '</td>
+		<td style="width:60%; background-color: #eeecec; ">' . $this->info_facture['periode'] . '</td>
 		</tr>';
         }
-               
+
         $detail_devis = '<table cellspacing="3" cellpadding="2" border="0">
 		<tr>
 		<td style="width:40%; color:#A1A0A0;"><strong>Référence</strong></td>
@@ -140,7 +137,7 @@ class MYPDF extends TCPDF {
 		<td style="width:40%; color:#A1A0A0;"><strong>Réf contrat
                 </strong></td>
 		<td style="width:5%;">:</td>
-		<td style="width:60%; background-color: #eeecec; ">' . $this->info_contrat['reference']  . '</td>
+		<td style="width:60%; background-color: #eeecec; ">' . $this->info_contrat['reference'] . '</td>
 		</tr>
                 <tr>
 		<td style="width:40%; color:#A1A0A0;"><strong>Date contrat
@@ -148,7 +145,7 @@ class MYPDF extends TCPDF {
 		<td style="width:5%;">:</td>
 		<td style="width:60%; background-color: #eeecec; ">' . $this->info_contrat['date_contrat'] . '</td>
 		</tr>
-               '.$per.'
+               ' . $per . '
 		</table>';
         $this->writeHTMLCell(0, 0, 122, 23, $detail_devis, '', 0, 0, true, 'L', true);
         //Info Client
@@ -185,14 +182,13 @@ class MYPDF extends TCPDF {
 		</tbody>
 		</table>';
         $this->writeHTMLCell(100, 0, 99, 55, $detail_client, 0, 0, 0, true, 'L', true);
-        
+
         if ($this->info_devis['projet'] != null) {
             $projet = '<b>Projet: </b> Site ' . $this->info_devis['projet'];
             $height = $this->getLastH();
-            
+
             $this->SetTopMargin($height + $this->GetY() + 5);
             $this->writeHTMLCell(100, 0, 16, '', $projet, 1, 0, 0, true, 'L', true);
-
         }
 
         //Header Table proudct
@@ -203,7 +199,7 @@ class MYPDF extends TCPDF {
         $height = $this->getLastH();
         $this->SetTopMargin($height + $this->GetY());
 
-        
+
         //$pdf->writeHTMLCell('', '','' , '', $html , 0, 0, 0, true, 'L', true);
     }
 
@@ -227,11 +223,12 @@ class MYPDF extends TCPDF {
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
 $pdf->Table_head = $tableau_head_product;
-$pdf->Table_head2=$tableau_head_complement;
+$pdf->Table_head2 = $tableau_head_complement;
 $pdf->info_devis = $devis_info;
+
 $pdf->info_facture = $facture->facture_info;
 $pdf->info_contrat = $facture->contrat_info;
-$pdf->info_complement=$facture->complement_info;
+$pdf->info_complement = $facture->complement_info;
 
 
 // set document information
@@ -288,17 +285,16 @@ $pdf->Table_body2 = $tableau_body_complement;
 $html2 = $pdf->Table_body2;
 
 
-if($pdf->info_complement != null)
-{
-  
-$pdf->writeHTMLCell('', '', 15,'', '<strong>Tableau des compléments</strong>', 0, 0, 0, true, 'L', true);
-$height = $pdf->getY();
-$pdf->SetY($height + 5);
+if ($pdf->info_complement != null) {
+
+    $pdf->writeHTMLCell('', '', 15, '', '<strong>Tableau des compléments</strong>', 0, 0, 0, true, 'L', true);
+    $height = $pdf->getY();
+    $pdf->SetY($height + 5);
 //$pdf->writeHTML('<strong>Tableau des compléments</strong>', true, false, true, false, '');
-$pdf->writeHTMLCell('', '', 14,'', $tableau_head_complement, 0, 0, 0, true, 'L', true);
-$height = $pdf->getY();
-$pdf->SetY($height + 5);    
-$pdf->writeHTML($html2, true, false, true, false, '');
+    $pdf->writeHTMLCell('', '', 14, '', $tableau_head_complement, 0, 0, 0, true, 'L', true);
+    $height = $pdf->getY();
+    $pdf->SetY($height + 5);
+    $pdf->writeHTML($html2, true, false, true, false, '');
 }
 // ---------------------------------------------------------
 //$pdf->writeHTMLCell('', '','' , '', $html , 0, 0, 0, true, 'L', true);
