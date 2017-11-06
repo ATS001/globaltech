@@ -36,11 +36,10 @@ global $db;
 $headers = array(
             '#'           => '5[#]C',
             'Réf'         => '17[#]C',
-            'Description' => '33[#]', 
+            'Description' => '43[#]', 
             'Qte'         => '5[#]C', 
-            'P.Unitaire'  => '10[#]R', 
-            'Remise'      => '10[#]C',
-            'Total HT'    => '15[#]R',
+            'P.Unitaire'  => '10[#]R',
+            'Total'       => '15[#]R',
 
         );
 $devis_info   = $devis->devis_info;
@@ -102,7 +101,7 @@ class MYPDF extends TCPDF {
 	    	$nif = '<tr>
 		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">NIF</td>
 		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
-		<td style="width: 65%; background-color: #eeecec;">'.$this->info_devis['nif'].'hh</td>
+		<td style="width: 65%; background-color: #eeecec;">'.$this->info_devis['nif'].'</td>
 		</tr>';
 	    }
 	    
@@ -142,7 +141,7 @@ class MYPDF extends TCPDF {
 		$this->SetTopMargin($height + $this->GetY());
 		//Info général
 		$tableau_head = $this->Table_head;
-		$this->writeHTMLCell('', '', 14, '', $tableau_head, 0, 0, 0, true, 'L', true);
+		$this->writeHTMLCell('', '', 15, '', $tableau_head, 0, 0, 0, true, 'L', true);
 		$height = $this->getLastH();
        
         $this->SetTopMargin($height + $this->GetY() -1);

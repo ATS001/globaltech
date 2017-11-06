@@ -20,6 +20,7 @@ class Mproforma
     var $reference       = null; // Reference proforma
     var $error           = true; //Error bol changed when an error is occured
     var $valeur_remis_d  = null;//
+    var $prix_u_final   = null;//
     var $total_ht_d      = null; //
     var $total_tva_d     = null;//
     var $total_ttc_d     = null;//
@@ -127,7 +128,7 @@ class Mproforma
         , ref_pays.pays
         , ref_ville.ville
         , ref_devise.abreviation as devise
-        , CONCAT(users_sys.fnom,' ',users_sys.lnom) as comercial
+        , services.service as comercial
         FROM
         proforma
         INNER JOIN clients 
@@ -140,6 +141,8 @@ class Mproforma
         ON (clients.id_devise = ref_devise.id)
         INNER JOIN users_sys
         ON (proforma.creusr = users_sys.id)
+        INNER JOIN services
+        ON (users_sys.service = services.id)
         WHERE proforma.id = ".$this->id_proforma;
         if(!$db->Query($req_sql))
         {
@@ -185,7 +188,7 @@ class Mproforma
         $colms .= " REPLACE(FORMAT($table.qte,0),',',' '), ";
         $colms .= " REPLACE(FORMAT($table.prix_unitaire,0),',',' '), ";
         //$colms .= " $table.type_remise, ";
-        $colms .= " CONCAT(REPLACE(FORMAT($table.remise_valeur,0),',',' '),'%'), ";
+        //$colms .= " CONCAT(REPLACE(FORMAT($table.remise_valeur,0),',',' '),'%'), ";
         
        // $colms .= " REPLACE(FORMAT($table.total_ht,0),',',' '), ";
        // $colms .= " REPLACE(FORMAT($table.total_tva,0),',',' '), ";
@@ -528,6 +531,7 @@ class Mproforma
         }
         //TVA value get from app setting
         $tva_value = Mcfg::get('tva');
+        $this->prix_u_final = $prix_u_remised;
 
       //Total HT 
         $this->total_ht_d = $prix_u_remised * $qte;
@@ -681,10 +685,11 @@ class Mproforma
             $ref_produit         = $produit->produit_info['reference'];
             $designation         = $produit->produit_info['designation'];
           //Valeu finance
-            $total_ht            = $this->total_ht_d;
-            $total_tva           = $this->total_tva_d;
-            $total_ttc           = $this->total_ttc_d;
-            $valeur_remis_d      = $this->valeur_remis_d;
+            $total_ht       = $this->total_ht_d;
+            $total_tva      = $this->total_tva_d;
+            $total_ttc      = $this->total_ttc_d;
+            $valeur_remis_d = $this->valeur_remis_d;
+            $prix_u_final   = $this->prix_u_final;
           //Get order line into proforma
             $this->get_order_detail($tkn_frm);
             $order_detail = $this->order_detail;
@@ -699,6 +704,7 @@ class Mproforma
             $values["designation"]   = MySQL::SQLValue($designation);
             $values["qte"]           = MySQL::SQLValue($this->_data['qte']);
             $values["prix_unitaire"] = MySQL::SQLValue($this->_data['prix_unitaire']);
+            $values["prix_ht"]       = MySQL::SQLValue($prix_u_final);
             $values["type_remise"]   = MySQL::SQLValue($this->_data['type_remise_d']);
             $values["remise_valeur"] = MySQL::SQLValue($valeur_remis_d);
             $values["tva"]           = MySQL::SQLValue($this->_data['tva_d']);
@@ -769,10 +775,11 @@ class Mproforma
             $ref_produit         = $produit->produit_info['ref'];
             $designation         = $produit->produit_info['designation'];
         //Valeu finance
-            $total_ht            = $this->total_ht_d;
-            $total_tva           = $this->total_tva_d;
-            $total_ttc           = $this->total_ttc_d;
-            $valeur_remis_d      = $this->valeur_remis_d;
+            $total_ht       = $this->total_ht_d;
+            $total_tva      = $this->total_tva_d;
+            $total_ttc      = $this->total_ttc_d;
+            $valeur_remis_d = $this->valeur_remis_d;
+            $prix_u_final   = $this->prix_u_final;
         //Format values for Insert query 
             global $db;
 
@@ -782,6 +789,7 @@ class Mproforma
             $values["qte"]           = MySQL::SQLValue($this->_data['qte']);
             $values["prix_unitaire"] = MySQL::SQLValue($this->_data['prix_unitaire']);
             $values["type_remise"]   = MySQL::SQLValue($this->_data['type_remise_d']);
+            $values["prix_ht"]       = MySQL::SQLValue($prix_u_final);
             $values["remise_valeur"] = MySQL::SQLValue($this->valeur_remis_d);
             $values["tva"]           = MySQL::SQLValue($this->_data['tva_d']);
             $values["total_ht"]      = MySQL::SQLValue($this->total_ht);

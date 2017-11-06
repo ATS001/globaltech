@@ -4,8 +4,7 @@ $info_devis = new Mdevis();
 $action = new TableTools();
 $info_devis->id_devis = Mreq::tp('id');
 $info_devis->get_devis();
-$action->line_data = $info_devis->devis_info;
-$actions = $action->action_profil_view('devis', 'devis', Minit::crypt_tp('id', Mreq::tp('id')), $info_devis->g('creusr') , 'deletedevis');
+
 //Set ID of Module with POST id
 $info_devis->id_devis = Mreq::tp('id');
 //Check if Post ID <==> Post idc or get_modul return false. 

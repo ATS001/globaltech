@@ -34,13 +34,12 @@ if(!$proforma->Get_detail_proforma_pdf())
 }
 global $db;
 $headers = array(
-            ' #'          => '4[#]C',
-            'Réf'         => '16[#]C',
-            'Description' => '41[#]', 
+            '#'           => '5[#]C',
+            'Réf'         => '17[#]C',
+            'Description' => '43[#]', 
             'Qte'         => '5[#]C', 
-            'P.U'         => '10[#]R', 
-            'Remise'      => '7[#]C',
-            'Total HT'    => '12[#]R',
+            'P.Unitaire'  => '10[#]R',
+            'Total'       => '15[#]R',
 
         );
 $proforma_info   = $proforma->proforma_info;

@@ -25,7 +25,7 @@
 				<?php if(MReq::tp('alg')){ ?>
 				
 					<div class="alert alert-danger">
-					vous avez été deconnecté du serveur pour une inactivité de plus de <?php echo Mlogin::get_ses_time_autologout(MReq::tp('alg'));?>.
+					vous avez été deconnecté du serveur pour une inactivité de plus de <?php echo MLogin::get_ses_time_autologout(MReq::tp('alg'));?>.
 						<br>
 					</div>
 				<?php } ?>
