@@ -168,20 +168,26 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->Get_detail_devis_show())
 												<ul class="list-unstyled  spaced">
 													<li>
 														<i class="ace-icon fa fa-caret-right green"></i>
-														Total hors Taxes: 
-														<b class="blue pull-right"><?php $info_devis->s('totalht')?></b>
+														Total: 
+														<b class="blue pull-right"><?php $info_devis->s('total'); echo ' ';$info_devis->s('devise') ?></b>
 													</li>
-
 													<li>
 														<i class="ace-icon fa fa-caret-right green"></i>
-														Total Remises: 
-														<b class="blue pull-right"><?php $info_devis->s('valeur_remise')?></b>
+														Total Remises <?php $info_devis->s('valeur_remise')?> %: 
+														<b class="blue pull-right"><?php $info_devis->s('total_remise'); echo ' ';$info_devis->s('devise')?></b>
 													</li>
+													<li>
+														<i class="ace-icon fa fa-caret-right green"></i>
+														Total hors Taxes: 
+														<b class="blue pull-right"><?php $info_devis->s('totalht'); echo ' ';$info_devis->s('devise')?></b>
+													</li>
+
+													
 
 													<li>
 														<i class="ace-icon fa fa-caret-right green"></i>
 														Total TVA: 
-														<b class="blue pull-right"><?php $info_devis->s('totaltva')?></b>
+														<b class="blue pull-right"><?php $info_devis->s('totaltva'); echo ' ';$info_devis->s('devise')?></b>
 													</li>
 
 													
@@ -189,7 +195,7 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->Get_detail_devis_show())
 													<li>
 														<i class="ace-icon fa fa-caret-right green"></i>
 														Total TTC: 
-														<b class="blue pull-right"><?php $info_devis->s('totalttc')?></b>
+														<b class="blue pull-right"><?php $info_devis->s('totalttc'); echo ' ';$info_devis->s('devise')?></b>
 													</li>
 												</ul>
 											</div>

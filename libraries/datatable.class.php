@@ -435,7 +435,8 @@ class Mdatatable
             $data  = array_key_exists('data', $arr) ? $arr['data'] : '';
             
             $html  = "\t<div class=\"pull-right tableTools-container\">\n\t<div class=\"btn-group btn-overlap\">";
-            $html .= $this->btn_add($task, $title, $data, $exec = NULL, 'reply');   
+            
+            $html .='<a href="#" rel="'.$task.'&'.$data.'" class=" btn btn-white this_url btn-info btn-bold  spaced"><span><i class="fa fa-reply"></i> '.$title.'</span></a>'; 
             $html .= "\t</div>\n\t</div>\n";
         }
 

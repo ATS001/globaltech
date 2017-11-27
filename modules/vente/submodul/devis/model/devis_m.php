@@ -20,6 +20,7 @@ class Mdevis
     var $reference      = null;// Reference Devis
     var $error          = true;//Error bol changed when an error is occured
     var $valeur_remis_d = null;//
+    var $total_remise   = null;//
     var $prix_u_final   = null;//
     var $total_ht_d     = null;//
     var $total_tva_d    = null;//
@@ -135,6 +136,8 @@ class Mdevis
         ,  REPLACE(FORMAT(devis.totalht,0),',',' ') as totalht
         ,  REPLACE(FORMAT(devis.totaltva,0),',',' ') as totaltva
         ,  REPLACE(FORMAT(devis.totalttc,0),',',' ') as totalttc
+        ,  REPLACE(FORMAT(devis.total_remise,0),',',' ') as total_remise
+        ,  REPLACE(FORMAT(devis.total_remise + devis.totalht ,0),',',' ') as total
         , clients.reference as reference_client
         , clients.denomination
         , clients.adresse
@@ -408,6 +411,7 @@ class Mdevis
         	$totaltva = $this->total_tva_t;
         	$totalttc = $this->total_ttc_t;
             $valeur_remise = $this->valeur_remis_t;
+            $total_remise = $this->total_remise;
 
 
         	$values["reference"]       = MySQL::SQLValue($this->reference);
@@ -420,6 +424,7 @@ class Mdevis
             $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
             $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
             $values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
+            $values["total_remise"]    = MySQL::SQLValue($total_remise);
             $values["projet"]          = MySQL::SQLValue($this->_data['projet']);
             $values["vie"]             = MySQL::SQLValue($this->_data['vie']);
             $values["claus_comercial"] = MySQL::SQLValue($this->_data['claus_comercial']);
@@ -496,7 +501,7 @@ class Mdevis
     	$totalht  = $this->total_ht_t;
     	$totaltva = $this->total_tva_t;
     	$totalttc = $this->total_ttc_t;
-        $valeur_remise = $this->valeur_remis_t;
+        $valeur_remise = number_format($this->valeur_remis_t, 2,'.', '');
         $this->reference = $this->devis_info['reference'];
 
 
@@ -602,10 +607,12 @@ class Mdevis
     	{
     		$totalht_remised = $totalht - ($totalht * $value_remise) / 100;
             $this->valeur_remis_t = $value_remise;
+            $this->total_remise = ($totalht * $value_remise) / 100;
 
     	}elseif($type_remise == 'M'){
     		$totalht_remised = $totalht - $value_remise;
             $this->valeur_remis_t = ($value_remise * 100) / $totalht;
+            $this->total_remise = $value_remise;
 
     	}else{
     		$totalht_remised = $totalht;
@@ -616,7 +623,7 @@ class Mdevis
       //Total HT 
     	$this->total_ht_t = $totalht_remised;
       //TVA value get from app setting
-        $tva_value = Mcfg::get('tva');
+        $tva_value = Msetting::get_set('tva');
       //Calculate TVA
     	if($tva == 'N')
     	{
