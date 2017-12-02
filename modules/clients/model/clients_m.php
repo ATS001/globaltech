@@ -149,7 +149,15 @@ class Mclients {
 
     	$this->check_non_exist('ref_pays','id', $this->_data['id_pays'], 'Pays');
 
-    	$this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
+        if($this->_data['id_ville'] = '------')
+        {
+            null;
+            //var_dump('ville vide');
+        }    
+        else{
+              $this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
+        }
+
 
         $this->check_non_exist('ref_devise','id', $this->_data['id_devise'], 'Devise');
 
@@ -180,7 +188,13 @@ class Mclients {
    		$values["civilite"]      = MySQL::SQLValue($this->_data['civilite']);
    		$values["adresse"] 		 = MySQL::SQLValue($this->_data['adresse']);
     	$values["id_pays"]  	 = MySQL::SQLValue($this->_data['id_pays']);
-   		$values["id_ville"] 	 = MySQL::SQLValue($this->_data['id_ville']);
+        if($this->_data['id_ville'] = '------')
+        {
+            NULL;
+        }    
+        else{
+            $values["id_ville"]  = MySQL::SQLValue($this->_data['id_ville']);
+        }
     	$values["tel"] 		 	 = MySQL::SQLValue($this->_data['tel']);
     	$values["fax"] 			 = MySQL::SQLValue($this->_data['fax']);
    		$values["bp"] 			 = MySQL::SQLValue($this->_data['bp']);
@@ -329,7 +343,15 @@ class Mclients {
 
         $this->check_non_exist('ref_pays','id', $this->_data['id_pays'], 'Pays');
 
-        $this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
+        if($this->_data['id_ville'] = '------')
+        {
+            null;
+            //var_dump('ville vide');
+        }    
+        else{
+              $this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
+        }
+
 
         $this->check_non_exist('ref_devise','id', $this->_data['id_devise'], 'Devise');
 
@@ -360,7 +382,13 @@ class Mclients {
    		$values["civilite"]      = MySQL::SQLValue($this->_data['civilite']);
    		$values["adresse"] 		 = MySQL::SQLValue($this->_data['adresse']);
     	$values["id_pays"]  	 = MySQL::SQLValue($this->_data['id_pays']);
-   		$values["id_ville"] 	 = MySQL::SQLValue($this->_data['id_ville']);
+         if($this->_data['id_ville'] = '------')
+        {
+            NULL;
+        }    
+        else{
+            $values["id_ville"]  = MySQL::SQLValue($this->_data['id_ville']);
+        }
     	$values["tel"] 		 	 = MySQL::SQLValue($this->_data['tel']);
     	$values["fax"] 			 = MySQL::SQLValue($this->_data['fax']);
    		$values["bp"] 			 = MySQL::SQLValue($this->_data['bp']);
