@@ -532,7 +532,7 @@
 			"file": "index.php",
 			"settings":
 			{
-				"buffer_size": 1181,
+				"buffer_size": 1195,
 				"encoding": "UTF-8",
 				"line_ending": "Windows"
 			}
@@ -911,7 +911,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 1,
 			"sheets":
 			[
 				{
@@ -928,7 +928,7 @@
 						[
 							[
 								231,
-								0
+								231
 							]
 						],
 						"settings":
@@ -939,7 +939,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
@@ -948,15 +948,15 @@
 					"semi_transient": true,
 					"settings":
 					{
-						"buffer_size": 1181,
+						"buffer_size": 1195,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								309,
-								309
+								0,
+								0
 							]
 						],
 						"settings":
@@ -967,7 +967,7 @@
 						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 0,
 					"type": "text"
 				}
 			]

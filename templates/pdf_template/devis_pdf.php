@@ -135,7 +135,7 @@ class MYPDF extends TCPDF {
 		    $this->SetTopMargin($height + $this->GetY() + 5);
 		    //writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
 		    $this->setCellPadding(1);
-		    $this->writeHTMLCell('', '', 16, '', $projet, 1, 0, 0, true, 'L', true);
+		    $this->writeHTMLCell('', '', 15, '', $projet, 1, 0, 0, true, 'L', true);
 		}
 		$height = $this->getLastH();
 		$this->SetTopMargin($height + $this->GetY());
@@ -247,9 +247,9 @@ $obj = new nuts($pdf->info_devis['totalttc'], $pdf->info_devis['devise']);
 $ttc_lettre = $obj->convert("fr-FR");
 
 $block_remise = '<tr>
-                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Remise</strong></td>
+                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Remise '.$pdf->info_devis['valeur_remise'].' %</strong></td>
                     <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_devis['valeur_remise'].' %</strong></td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_devis['total_remise'].'  '.$pdf->info_devis['devise'].'</strong></td>
                 </tr>';
 $block_ttc = '<tr>
                     <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>TVA 18%</strong></td>
