@@ -11,7 +11,7 @@ $info_devis->id_devis = Mreq::tp('id');
 if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->Get_detail_devis_show())
 	{ 	
  	// returne message error red to client 
-		exit('3#'.$info_user->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+		exit('3#'.$info_devis->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 	}
 
 
