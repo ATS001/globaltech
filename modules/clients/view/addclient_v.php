@@ -56,7 +56,7 @@ $form->input('Dénomination', 'denomination', 'text' ,6 , null, $denomination_ar
 
 //Catégorie client
 $cat_array[]  = array('required', 'true', 'Sélectionnez la catégorie' );
-$form->select_table('Catégorie Client', 'id_categorie', 6, 'categorie_client', 'id', 'categorie_client' , 'categorie_client', $indx = '*****' ,
+$form->select_table('Catégorie Client', 'id_categorie', 6, 'categorie_client', 'id', 'categorie_client' , 'categorie_client', $indx = '------' ,
 	$selected=NULL,$multi=NULL, $where='etat=1', $cat_array);
 
 //Raison social
@@ -140,8 +140,8 @@ $form->step_end();
 $form->step_start(3, 'Complément Informations');
 
 // devise
-$form->select_table('Devise', 'id_devise', 6, 'ref_devise', 'id', 'devise' , 'devise', $indx = '*****' ,
-	$selected=NULL,$multi=NULL, $where='etat=1', NULL);
+$form->select_table('Devise', 'id_devise', 6, 'ref_devise', 'id', 'devise' , 'devise', $indx = '------' ,
+	$selected='1',$multi=NULL, $where='etat=1', NULL);
 
 // taxe
 $taxe_array[]  = array('Oui' , 'O' );
