@@ -26,10 +26,29 @@ $info_user->id_user = Mreq::tp('id');
 					
 		
 		<?php TableTools::btn_add('user', 'Liste Utilisateurs', Null, $exec = NULL, 'reply');   ?>
-			
+		
+	</div>
+</div>
+<div class="tableTools-container">
+	<div class="btn-group btn-overlap">
+		<?php
+$selecte_modul = "<select id='go_to_modul'>";		
+foreach ($modul_array as $key => $value) {
+	$selecte_modul .= "<option value='".$value['modul']."'>".$value['description']."</option>";
+}
+$selecte_modul .= "</select>";
+echo $selecte_modul;
+		 if($info_user->g('service') == 1) {?>
+		<input  name="form-field-checkbox" class="check-all-all ace ace-checkbox-2" type="checkbox">
+		<span class="lbl"> Donner permission à tout les les modules -GRANT-</span>	
+		<?php }
+
+		?>
+
 	</div>
 </div>
 <div class="row">
+	
 	<form novalidate="novalidate" method="post" class="form-horizontal" id="addrules" action="#"> 
 	<div class="col-xs-12" id="table-permission">
 		<!-- PAGE CONTENT BEGINS -->
@@ -63,10 +82,10 @@ if(!isset($found_service))
 foreach ($modul_array as $row) { 			
 if(strpos($row['services'], '-'.$info_user->Shw('service',1).'-') && $row['modul'] != 'Systeme'){
 			?>
-			<div class="col-xs-12 col-sm-6 widget-container-col">
-				<div class="widget-box widget-color-blue">
+			<div id="<?php echo $row['modul']; ?>" class="col-xs-12 col-sm-6 widget-container-col">
+				<div  class="widget-box widget-color-blue">
 					<!-- #section:custom/widget-box.options -->
-					<div class="widget-header">
+					<div  class="widget-header">
 						<h5 class="widget-title bigger lighter">
 							<i class="ace-icon fa fa-table"></i>
 							<?php echo $row['description']; ?>
@@ -108,8 +127,10 @@ global $db;
                     
 if (!$db->Query($query_modul->Get_action_modul($row['id'], Mreq::tp('id')))) $db->Kill($db->Error());
 while (!$db->EndOfSeek()) {
+
         $row = $db->Row();
-        $type = $row->code != '' ? ' <span class="pull-right label label-info arrowed-in-right arrowed">Lien menu</span>' : ' <span class="pull-right label label-success arrowed-in-right arrowed">Autorisation</span>'; 
+        //if(strpos($row->service, '-'.$info_user->Shw('service',1).'-')){
+        $type = $row->type == 0 ? ' <span class="pull-right label label-info arrowed-in-right arrowed">Lien menu</span>' : ' <span class="pull-right label label-success arrowed-in-right arrowed">Autorisation</span>'; 
         $etat_line = $row->type == 0 ? ' <span class="badge badge-pink">'.$row->etat_line.'</span>' : null;
 ?>
 									<tr>
@@ -137,7 +158,9 @@ while (!$db->EndOfSeek()) {
 													</label>
 										</td>
 									</tr>
-<?php } ?> 
+<?php 
+   // }//End if service
+}//End While ?> 
 									
 
 									
@@ -160,18 +183,39 @@ while (!$db->EndOfSeek()) {
 </div>
 <script>
 
-$(function () {
-    $('.check-all').on('click', function () {
-       		$(this).closest('table').find(':checkbox').prop('checked', this.checked);
-	});
+	$(function () {
+		$('.check-all').on('click', function () {
+			$(this).closest('table').find(':checkbox').prop('checked', this.checked);
+		});
 
-	$("#addrules").validate({
-    	execApp:"rules",
-    	execNext:"user",
-    });
-    $('.scrolling').ace_scroll({
-					size: 300
-	 });
+		$('.check-all-all').on('click', function () {
+			$(':checkbox').prop('checked', this.checked);
+		});
+
+		$("#addrules").validate({
+			execApp:"rules",
+			execNext:"user",
+		});
+		$('.scrolling').ace_scroll({
+			size: 300
+		});
+        
+        $('#go_to_modul').on('change', function () {
+        	
+            $('html, body').animate({
+                    scrollTop: $('#'+$(this).val()).offset().top
+                }, 1000);
+            
+        });
+		/*var $container = $('#addrules'),
+		$scrollTo = $('#row_8');
+
+		
+ 
+// Or you can animate the scrolling:
+        $container.animate({
+        	scrollTop: $scrollTo.offset().top - $container.offset().top + $container.scrollTop()
+        });​*/
 });
 
 </script>

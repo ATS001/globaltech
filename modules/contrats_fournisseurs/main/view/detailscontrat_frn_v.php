@@ -114,7 +114,7 @@ $pj     = $info_contrats_frn->contrats_frn_info['pj'];
 										<ul class="list-unstyled  spaced">
 											<li>
 												<i class="ace-icon fa fa-caret-right green"></i> Référence
-                                                   <b style="color:green"><?php echo $info_contrats_frn->s('code');?></b>
+                                                   <b style="color:green"><?php echo $info_contrats_frn->s('ref_fournisseur');?></b>
 											</li>
 
 											<li>
@@ -154,11 +154,11 @@ $pj     = $info_contrats_frn->contrats_frn_info['pj'];
 								<div class="col-sm-7 pull-left"> Extra Information </div>
 							</div>-->
 
-							<div class="space-6"></div>
+							<!-- <div class="space-6"></div>
 							<div class="well">
 								Thank you for choosing Ace Company products.
 								We believe you will be satisfied by our services.
-							</div>
+							</div> -->
 						</div>
 					</div>
 				</div>

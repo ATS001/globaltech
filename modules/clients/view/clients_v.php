@@ -33,7 +33,7 @@
 							ID
 						</th>
 						<th>
-							Code 
+							Référence 
 						</th>
 						<th>
 							Dénomination
@@ -69,7 +69,7 @@ $(document).ready(function() {
 		//ajax:{},
 		aoColumns: [
 	        {"sClass": "center","sWidth":"5%"}, //
-	        {"sClass": "center","sWidth":"10%"},
+	        {"sClass": "left","sWidth":"10%"},
 	        {"sClass": "left","sWidth":"20%"}, //
 	        {"sClass": "left","sWidth":"20%"},
 	        {"sClass": "center","sWidth":"20%"},

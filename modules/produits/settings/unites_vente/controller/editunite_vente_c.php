@@ -45,6 +45,7 @@
         }
     //Call View if no POST
     } else {
-        view::load('produits/settings/unites_vente', 'editunite_vente');
+        view::load_view('editunite_vente');
+
     }
     ?>

@@ -65,6 +65,32 @@ class Mcontrat {
         }
     }
 
+
+    //Get  liste devis
+
+    static public function select_devis($is_edit=null) {
+        global $db;
+
+        $table = 'devis';
+        $etat_devis_valid = Msetting::get_set('etat_devis','valid_client');
+        $is_edit = $is_edit == null ? null : "and devis.id <> $is_edit";
+
+        $sql = "SELECT devis.id as val, CONCAT(devis.reference,' / Client: ',clients.denomination,IF(devis.projet IS NOT NULL,CONCAT(' / Projet: ',devis.projet),' '),' / Total: ',devis.totalttc,IF(ref_devise.abreviation IS NOT NULL,CONCAT(' ',ref_devise.abreviation),' ')) as txt FROM 
+            devis,clients,ref_devise WHERE  devis.id_client=clients.id and ref_devise.id=clients.id_devise and devis.type_devis='ABN' and devis.etat = $etat_devis_valid AND  devis.id NOT IN (SELECT iddevis FROM contrats c WHERE devis.id = c.iddevis $is_edit )";
+
+        if (!$db->Query($sql)) {
+            $list_devis = $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $list_devis = false;
+            } else {
+                $list_devis = $db->RecordsSelectArray();
+                
+            }
+        }
+        return $list_devis;
+        
+    }
     //Get all info echeance contrat from database for edit form
     public function get_echeance_contrat() {
         $table_echeance = $this->table_echeance;
@@ -96,12 +122,77 @@ class Mcontrat {
     public function get_id_type_echeance($type) {
         $table_echeance = 'ref_type_echeance';
         global $db;
+        //var_dump('testt');
+        $sql = "SELECT $table_echeance.id FROM $table_echeance WHERE $table_echeance.type_echeance = '$type'";
 
-        $sql = "SELECT $table_echeance.id FROM $table_echeance WHERE $table_echeance.type_echance = '$type'";
-
+        //var_dump('testt2');
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
+            // var_dump('testt3'.$this->log);
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+                // var_dump('testt4');
+            } else {
+                $this->type_echeance_contrat_info = $db->RowArray();
+                $this->error = true;
+
+                //var_dump($this->type_echeance_contrat_info );
+            }
+        }
+
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    //Get id montant total des echaaces Autres 
+    public function get_total_echeances($tkn_frm) {
+        $table_echeance = 'echeances_contrat';
+        global $db;
+        //var_dump('testt');
+        $sql = "SELECT sum($table_echeance.montant) as montant_total FROM $table_echeance WHERE  tkn_frm = '$tkn_frm'";
+        //var_dump('testt2');
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+            // var_dump('testt3'.$this->log);
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+                //var_dump('testt4');
+            } else {
+                $this->type_echeance_contrat_info = $db->RowArray();
+                $this->error = true;
+
+                //var_dump($this->type_echeance_contrat_info );
+            }
+        }
+
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    //Get id montant total des echaaces Autres 
+    public function get_total_devis($iddevis) {
+        $table_echeance = 'devis';
+        global $db;
+        //var_dump('testt');
+        $sql = "SELECT $table_echeance.totalttc FROM $table_echeance WHERE  id = " . $iddevis;
+
+        //var_dump('testt2');
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+            // var_dump('testt3'.$this->log);
         } else {
             if ($db->RowCount() == 0) {
                 $this->error = false;
@@ -109,6 +200,8 @@ class Mcontrat {
             } else {
                 $this->type_echeance_contrat_info = $db->RowArray();
                 $this->error = true;
+
+                //var_dump($this->type_echeance_contrat_info );
             }
         }
 
@@ -126,6 +219,7 @@ class Mcontrat {
         $colms = null;
         $colms .= " $table.order item, ";
         $colms .= " $table.date_echeance, ";
+        $colms .= " $table.montant, ";
         $colms .= " $table.commentaire ";
 
         $req_sql = " SELECT $colms FROM $table WHERE idcontrat = $id_contrat ";
@@ -135,10 +229,10 @@ class Mcontrat {
             exit($this->log);
         }
 
-        //$style = array('5[#]center', '25[#]center', '70[#]alignLeft');
-        $headers = array('Item'  => '5[#]center', 'Date Echéance'  => '15[#]center','Commentaire' => '30[#]',);
-
+        //$style = array('5[#]center', '25[#
         //$tableau = $db->GetMTable($headers, null, $style);
+        //]center', '70[#]alignLeft');
+        $headers = array('Item' => '15[#]center', 'Date Echéance' => '25[#]center', 'Montant TTC' => '30[#]center', 'Commentaire' => '30[#]',);
         $tableau = $db->GetMTable($headers);
 
 
@@ -151,8 +245,8 @@ class Mcontrat {
             return false;
         }
         global $db;
-        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(ref, 5, LENGTH(SUBSTR(ref,5))-5))),0)+1  AS reference FROM contrats WHERE SUBSTR(ref,LENGTH(ref)-3,4)= (SELECT  YEAR(SYSDATE()))');
-        $this->reference = 'CTR-' . $max_id . '/' . date('Y');
+        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(reference, 8, LENGTH(SUBSTR(reference,8))-5))),0)+1  AS reference FROM contrats WHERE SUBSTR(reference,LENGTH(reference)-3,4)= (SELECT  YEAR(SYSDATE()))');
+        $this->reference = 'GT-CTR-' . $max_id . '/' . date('Y');
     }
 
     /////////////////////////////////////////////////////////////////////////////////
@@ -169,11 +263,18 @@ class Mcontrat {
     //Save new contrat after all check
     public function save_new_contrat() {
 
+        /*//Generate reference
+        $this->Generate_contrat_reference();*/
+        global $db;
         //Generate reference
-        $this->Generate_contrat_reference();
-
+        if(!$reference = $db->Generate_reference($this->table, 'CTR'))
+        {
+                $this->log .= '</br>Problème Réference';
+                return false;
+        }  
+        
         //Before execute do the multiple check
-        $this->Check_exist('ref', $this->reference, 'Référence contrat', null);
+        $this->Check_exist('reference', $this->reference, 'Référence contrat', null);
 
         //Check if contrat exist
         $this->Check_contrat_exist($this->_data['tkn_frm'], null);
@@ -197,7 +298,7 @@ class Mcontrat {
             //Format values for Insert query 
             global $db;
 
-            $values["ref"] = MySQL::SQLValue($this->reference);
+            $values["reference"] = MySQL::SQLValue($reference);
             $values["tkn_frm"] = MySQL::SQLValue($this->_data['tkn_frm']);
             $values["iddevis"] = MySQL::SQLValue($this->_data['iddevis']);
             $values["date_effet"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_effet'])));
@@ -205,6 +306,8 @@ class Mcontrat {
             $values["commentaire"] = MySQL::SQLValue($this->_data['commentaire']);
             $values["idtype_echeance"] = MySQL::SQLValue($this->_data['idtype_echeance']);
             $values["date_contrat"] = MySQL::SQLValue(date("Y-m-d"));
+            $values["periode_fact"] = MySQL::SQLValue($this->_data['periode_fact']);
+            $values["date_notif"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_notif'])));
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
@@ -226,9 +329,15 @@ class Mcontrat {
                 //Check $this->error = true return Green message and Bol true
                 if ($this->error == true) {
                     $this->log = '</br>Enregistrement réussie: <b>' . $this->reference . ' ID: ' . $this->last_id;
+                    $this->save_temp_detail($this->_data['tkn_frm'], $this->last_id);
+
+
+                    if (!Mlog::log_exec($this->table, $this->last_id, 'Insertion contrat abonnement', 'Insert')) {
+                        $this->log .= '</br>Un problème de log ';
+                    }
                     //Check $this->error = false return Red message and Bol false	
                 } else {
-                    $this->log .= '</br>Enregistrement réussie: <b>' . $this->reference;
+                    $this->log .= '</br>Enregistrement non réussie: <b>' . $this->reference;
 
                     $this->log .= '</br>Un problème d\'Enregistrement ';
                 }
@@ -247,7 +356,8 @@ class Mcontrat {
 
     //Edit contrat after all check
     public function edit_contrat() {
-        $this->reference = $this->_data['ref'];
+        $this->get_contrat();
+        $this->reference = $this->_data['reference'];
         //var_dump($this->_data['tkn_frm']);
         //Check if devis exist
         $this->Check_contrat_exist($this->_data['tkn_frm'], 1);
@@ -289,6 +399,8 @@ class Mcontrat {
             $values["commentaire"] = MySQL::SQLValue($this->_data['commentaire']);
             $values["date_contrat"] = MySQL::SQLValue(date("Y-m-d"));
             $values["idtype_echeance"] = MySQL::SQLValue($this->_data['idtype_echeance']);
+            $values["date_notif"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_notif'])));
+            $values["periode_fact"] = MySQL::SQLValue($this->_data['periode_fact']);
             $values["updusr"] = MySQL::SQLValue(session::get('userid'));
             $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
             $wheres["id"] = $this->id_contrat;
@@ -303,17 +415,30 @@ class Mcontrat {
 
                 $this->last_id = $this->id_contrat;
                 //If Attached required Save file to Archive
-                $this->save_file('pj', 'Justifications du contrat' . $this->_data['ref'], 'Document');
+                $this->save_file('pj', 'Justifications du contrat' . $this->_data['reference'], 'Document');
 
 
-                $this->save_file('pj_photo', 'Photo' . $this->_data['ref'], 'image');
+                $this->save_file('pj_photo', 'Photo' . $this->_data['reference'], 'image');
+
 
                 //Check $this->error = true return Green message and Bol true
                 if ($this->error == true) {
-                    $this->log = '</br>Modification réussie: <b>' . $this->_data['ref'] . ' ID: ' . $this->last_id;
+                    $this->log = '</br>Modification réussie: <b>' . $this->_data['reference'] . ' ID: ' . $this->last_id;
                     $this->save_temp_detail($this->_data['tkn_frm'], $this->id_contrat);
+
+
+                    if (!Mlog::log_exec($this->table, $this->id_contrat, 'Modification contrat abonnement', 'Update')) {
+                        $this->log .= '</br>Un problème de log ';
+                    }
+
+
+                    //Esspionage
+                    if (!$db->After_update($this->table, $this->id_contrat, $values, $this->contrat_info)) {
+                        $this->log .= '</br>Problème Esspionage';
+                        $this->error = false;
+                    }
                 } else {
-                    $this->log .= '</br>Modification réussie: <b>' . $this->_data['ref'];
+                    $this->log .= '</br>Modification non réussie: <b>' . $this->_data['reference'];
                     $this->log .= '</br>Un problème d\'Enregistrement ';
                 }
             }
@@ -396,6 +521,7 @@ class Mcontrat {
             $values["tkn_frm"] = MySQL::SQLValue($this->_data['tkn_frm']);
             $values["order"] = MySQL::SQLValue($order_echeance);
             $values["date_echeance"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_echeance'])));
+            $values["montant"] = MySQL::SQLValue($this->_data['montant']);
             $values["commentaire"] = MySQL::SQLValue($this->_data['commentaire']);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
@@ -415,6 +541,10 @@ class Mcontrat {
                 //Check $this->error = true return Green message and Bol true
                 if ($this->error == true) {
                     $this->log = '</br>Enregistrement réussie: <b>' . $this->_data['date_echeance'] . ' ID: ' . $this->last_id;
+
+                    if (!Mlog::log_exec($this->table_echeance, $this->last_id, 'Insertion échéance contrat abonnement', 'Insert')) {
+                        $this->log .= '</br>Un problème de log ';
+                    }
 
                     //Check $this->error = false return Red message and Bol false   
                 } else {
@@ -452,6 +582,7 @@ class Mcontrat {
 
 
             $values["date_echeance"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_echeance'])));
+            $values["montant"] = MySQL::SQLValue($this->_data['montant']);
             $values["commentaire"] = MySQL::SQLValue($this->_data['commentaire']);
             $values["updusr"] = MySQL::SQLValue(session::get('userid'));
             $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
@@ -467,6 +598,17 @@ class Mcontrat {
                 if ($this->error == true) {
                     $this->log = '</br>Modification réussie: <b>' . $this->_data['date_echeance'] . ' ID: ' . $this->id_echeance_contrat;
 
+
+                    if (!Mlog::log_exec($this->table_echeance, $this->id_echeance_contrat, 'Modification échéance contrat abonnement', 'Update')) {
+                        $this->log .= '</br>Un problème de log ';
+                    }
+
+
+                    //Esspionage
+                    if (!$db->After_update($this->table_echeance, $this->id_echeance_contrat, $values, $this->echeance_contrat_info)) {
+                        $this->log .= '</br>Problème Esspionage';
+                        $this->error = false;
+                    }
 
                     //Check $this->error = false return Red message and Bol false   
                 } else {
@@ -487,34 +629,34 @@ class Mcontrat {
     }
 
     //activer ou desactiver un contrat
-   /* public function valid_contrat($etat = 0) {
+    /* public function valid_contrat($etat = 0) {
 
-        global $db;
-        //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
-        $etat = $etat == 0 ? 1 : 0;
-        //Format value for requet
-        $values["etat"] = MySQL::SQLValue($etat);
-        $values["updusr"] = MySQL::SQLValue(session::get('userid'));
-        $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
-        $where["id"] = $this->id_contrat;
+      global $db;
+      //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
+      $etat = $etat == 0 ? 1 : 0;
+      //Format value for requet
+      $values["etat"] = MySQL::SQLValue($etat);
+      $values["updusr"] = MySQL::SQLValue(session::get('userid'));
+      $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+      $where["id"] = $this->id_contrat;
 
-        // Execute the update and show error case error
-        if (!$result = $db->UpdateRows($this->table, $values, $where)) {
-            $this->log .= '</br>Impossible de changer le statut!';
-            $this->log .= '</br>' . $db->Error();
-            $this->error = false;
-        } else {
-            $this->log .= '</br>Statut changé! ';
-            $this->error = true;
-        }
-        if ($this->error == false) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-    
-    */
+      // Execute the update and show error case error
+      if (!$result = $db->UpdateRows($this->table, $values, $where)) {
+      $this->log .= '</br>Impossible de changer le statut!';
+      $this->log .= '</br>' . $db->Error();
+      $this->error = false;
+      } else {
+      $this->log .= '</br>Statut changé! ';
+      $this->error = true;
+      }
+      if ($this->error == false) {
+      return false;
+      } else {
+      return true;
+      }
+      }
+
+     */
 
     // afficher les infos d'un contrat
     public function printattribute($attibute) {
@@ -546,6 +688,19 @@ class Mcontrat {
             }
 
             echo $this->echeance_contrat_info[$key];
+        } else {
+            echo "";
+        }
+    }
+
+    //get les type echeance 
+    public function Shw_type($key, $no_echo = "") {
+        if ($this->type_echeance_contrat_info[$key] != null) {
+            if ($no_echo != null) {
+                return $this->type_echeance_contrat_info[$key];
+            }
+
+            echo $this->type_echeance_contrat_info[$key];
         } else {
             echo "";
         }
@@ -599,6 +754,10 @@ class Mcontrat {
 
             $this->error = true;
             $this->log .= '</br>Suppression réussie ';
+
+            if (!Mlog::log_exec($this->table, $this->id_contrat, 'Suppression contrat abonnement', 'Delete')) {
+                $this->log .= '</br>Un problème de log ';
+            }
         }
         //check if last error is true then return true else rturn false.
         if ($this->error == false) {
@@ -630,6 +789,10 @@ class Mcontrat {
 
             $this->error = true;
             $this->log .= '</br>Suppression réussie ';
+
+            if (!Mlog::log_exec($this->table_echeance, $this->id_echeance_contrat, 'Suppression échéance contrat abonnement', 'Delete')) {
+                $this->log .= '</br>Un problème de log ';
+            }
         }
         //check if last error is true then return true else rturn false.
         if ($this->error == false) {
@@ -745,7 +908,7 @@ class Mcontrat {
         }
     }
 
-     public function get_contrat_info() {
+    public function get_contrat_info() {
         global $db;
 
         $table = $this->table;
@@ -774,12 +937,9 @@ class Mcontrat {
         }
     }
 
-
-  
     //////////////////////////////////////////////////////////////////////////////
-  
-     public function Valid_contrat($etat)
-    {
+
+    public function Valid_contrat($etat) {
         global $db;
         $table = $this->table;
         $id_contrat = $this->id_contrat;
@@ -789,97 +949,148 @@ class Mcontrat {
             $this->log .= "Erreur Validation";
             return false;
         }
-        
-        if(!$this->Get_detail_contrat_pdf())
-        {
+
+        if (!$this->Get_detail_contrat_pdf()) {
             $this->log .= $this->log;
             return false;
-
-        }else{
+        } else {
             $this->log .= "Validation réussie";
+
+            if (!Mlog::log_exec($this->table, $this->id_contrat, 'Validation contrat abonnement', 'Validate')) {
+                $this->log .= '</br>Un problème de log ';
+            }
             return true;
-        }        
+        }
     }
-   
-  
-  
-///////////////////////////////////////////////////////////////////////////
-    
-    public function Get_detail_contrat_pdf()
-    {
+
+    //activer ou desactiver un contrats_frn
+    public function valid_contrats($etat) {
+
         global $db;
-        
-        
+        //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
+        //$etat = $etat == 0 ? 1 : 0;
+        if ($etat == 0) {
+            $etat = 1;
+        } else if ($etat == 1) {
+            $etat = 0;
+        } else {
+            $etat = $etat;
+        }
+        //Format value for requet
+        $values["etat"] = MySQL::SQLValue($etat);
+        $values["updusr"] = MySQL::SQLValue(session::get('userid'));
+        $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+
+        $where["id"] = $this->id_contrat;
+
+        // Execute the update and show error case error
+        if (!$result = $db->UpdateRows($this->table, $values, $where)) {
+            $this->log .= '</br>Impossible de changer le statut!';
+            $this->log .= '</br>' . $db->Error();
+            $this->error = false;
+        } else {
+
+            if (!$this->Get_detail_contrat_pdf()) {
+                $this->log .= $this->log;
+                return false;
+            }
+
+            $this->log .= '</br>Statut changé! ';
+
+            if (!Mlog::log_exec($this->table, $this->id_contrat, 'Validation contrat abonnement', 'Validate')) {
+                $this->log .= '</br>Un problème de log ';
+            }
+            $this->error = true;
+        }
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+///////////////////////////////////////////////////////////////////////////
+
+    public function Get_detail_contrat_pdf() {
+        global $db;
+
+
         $id_contrat = $this->id_contrat;
         $table = $this->table;
         $this->get_contrat();
-        $contrat_info=$this->contrat_info;  
-              
-        $file_export = MPATH_TEMP.'contrats'.'_' .date('d_m_Y_H_i_s').'.pdf';
+        $contrat_info = $this->contrat_info;
+
+        $file_export = MPATH_TEMP . 'contrats' . '_' . date('d_m_Y_H_i_s') . '.pdf';
 
         //Load template 
-        include_once MPATH_THEMES.'pdf_template/contrats_pdf.php';
-        $new_file_target = MPATH_UPLOAD.'contrats'.date('m_Y');
+        include_once MPATH_THEMES . 'pdf_template/contrats_pdf.php';
+        $new_file_target = MPATH_UPLOAD . 'contrats' . date('m_Y');
 
-        if(file_exists($file_export))
-        {
-              
-            if(!Minit::save_file_upload($file_export, 'contrats_'.$id_contrat, $new_file_target, $id_contrat, 'contrats '.$id_contrat, 'contrats', 'contrats', 'contrats_pdf', 'document', $edit = null))
-            {
+        if (file_exists($file_export)) {
+
+            if (!Minit::save_file_upload($file_export, 'contrats_' . $id_contrat, $new_file_target, $id_contrat, 'contrats ' . $id_contrat, 'contrats', 'contrats', 'contrats_pdf', 'document', $edit = null)) {
                 $this->error = false;
                 $this->log .= "Erreur Archivage contrat";
-
             }
-            
-        }else{
+        } else {
             $this->error = false;
             $this->log .= "Erreur création template contrat";
         }
 
-        if($this->error == false)
-        {
+        if ($this->error == false) {
             return false;
-        }else{
-            return true ;
+        } else {
+            return true;
         }
-                
     }
-    
-    public function get_devis_info()
-    {
-    	$table = "devis";
-    	global $db;
 
-    	$sql = "SELECT $table.*,
+    public function get_devis_info() {
+        $table = "devis";
+        global $db;
+
+        $sql = "SELECT $table.*,
 		clients.denomination AS client , 
 		clients.tel as tel , DATE_FORMAT($table.date_devis,'%d-%m-%Y') AS date_devis "
                 . "FROM $table,clients "
-                . "WHERE $table.id_client=clients.id  AND $table.id = ".$this->id_devis;
+                . "WHERE $table.id_client=clients.id  AND $table.id = " . $this->id_devis;
 
-    	if(!$db->Query($sql))
-    	{
-    		$this->error = false;
-    		$this->log  .= $db->Error();
-    	}else{
-    		if ($db->RowCount() == 0)
-    		{
-    			$this->error = false;
-    			$this->log .= 'Aucun enregistrement trouvé ';
-    		} else {
-    			$this->devis_info = $db->RowArray();
-    			$this->error = true;
-    		}
-
-
-    	}
-    	//return Array
-    	if($this->error == false)
-    	{
-    		return false;
-    	}else{
-    		return true ;
-    	}
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->devis_info = $db->RowArray();
+                $this->error = true;
+            }
+        }
+        //return Array
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
     }
-    
+
+    //Get all info echeance contrat from database for edit form
+    public function verif_date_echeance($tkn_frm, $date,$id) {
+        $table_echeance = $this->table_echeance;
+        global $db;
+
+        $sql = "SELECT $table_echeance.* FROM $table_echeance WHERE $table_echeance.tkn_frm = '$tkn_frm' AND $table_echeance.date_echeance = '$date' AND $table_echeance.id <> $id ";
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                return FALSE;
+            } else {
+                return TRUE;
+            }
+        }
+    }
+
 }
-    

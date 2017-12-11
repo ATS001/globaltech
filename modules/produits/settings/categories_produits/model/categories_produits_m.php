@@ -10,7 +10,8 @@
 		var $last_id; //return last ID after insert command
 		var $log = NULL; //Log of all opération.
 		var $error = true; //Error bol changed when an error is occured
-	    var $id_categorie_produit; // categorie_produit ID append when request
+                var $id_categorie_produit; // categorie_produit ID append when request
+                var $id_type_produit; // Type produit ID
 		var $token; //user for recovery function
 		var $categorie_produit_info; //Array stock all categorie_produit info
 		var $app_action; //Array action for each 
@@ -99,6 +100,7 @@
 
 		
 			global $db;
+                        $values["type_produit"]     = MySQL::SQLValue($this->_data['type_produit']);
 			$values["categorie_produit"]     = MySQL::SQLValue($this->_data['categorie_produit']);
 			$values["creusr"]     = MySQL::SQLValue(session::get('userid'));
 	                 $values["credat"]     = MySQL::SQLValue(date("Y-m-d H:i:s"));
@@ -116,6 +118,11 @@
 
 					$this->last_id = $result;
 					$this->log .='</br>Enregistrement  réussie '. $this->_data['categorie_produit'] .' - '.$this->last_id.' -';
+
+                    if(!Mlog::log_exec($this->table, $this->last_id , 'Insertion catégorie produit', 'Insert'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
 				}
 
 
@@ -159,6 +166,12 @@
 				$this->log   .= '</br>Statut changé! ';
 				//$this->log   .= $this->table.' '.$this->id_categorie_produit.' '.$etat;
 				$this->error  = true;
+
+
+                    if(!Mlog::log_exec($this->table, $this->id_categorie_produit , 'Validation catégorie produit', 'Validate'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
 
 			}
 			if($this->error == false){
@@ -204,6 +217,7 @@
 
 			
 	    	global $db;
+                        $values["type_produit"]     = MySQL::SQLValue($this->_data['type_produit']);
 			$values["categorie_produit"]        = MySQL::SQLValue($this->_data['categorie_produit']);
 	                $values["updusr"]        = MySQL::SQLValue(session::get('userid'));
 	                $values["upddat"]        = MySQL::SQLValue(date("Y-m-d H:i:s"));
@@ -223,6 +237,19 @@
 
 					//$this->last_id = $result;
 					$this->log .='</br>Enregistrement  réussie '. $this->_data['categorie_produit'] .' - '.$this->last_id.' -';
+
+                    if(!Mlog::log_exec($this->table, $this->id_categorie_produit , 'Modification catégorie produit', 'Update'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
+
+
+                //Esspionage
+                if(!$db->After_update($this->table, $this->id_categorie_produit, $values, $this->categorie_produit_info)){
+                    $this->log .= '</br>Problème Esspionage';
+                    $this->error = false; 
+                }
+
 				}
 
 
@@ -268,6 +295,11 @@
 	    		
 	    		$this->error = true;
 	    		$this->log .='</br>Suppression réussie ';
+
+                    if(!Mlog::log_exec($this->table, $this->id_categorie_produit , 'Suppression catégorie produit', 'Delete'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
 	    	}
 	    	//check if last error is true then return true else rturn false.
 			if($this->error == false){
@@ -277,5 +309,33 @@
 			}
 	    }
 
+           public function get_all_categories()
+           {
+               global $db;
+
+        $table = $this->table;
+
+        $sql = "SELECT $table.categorie_produit FROM 
+    		$table WHERE  $table.type_produit = " . $this->id_type_produit;
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->categorie_produit_info = $db->RecordsSimplArray();
+                $this->error = true;
+            }
+        }
+        //return Array user_activities
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+           }
 	    
 	}

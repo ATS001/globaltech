@@ -130,6 +130,11 @@ class Mcategorie_client {
 
     			$this->last_id = $result;
     			$this->log .='</br>Enregistrement  réussie '. $this->_data['categorie_client'] .' - '.$this->last_id.' -';
+
+                    if(!Mlog::log_exec($this->table, $this->last_id, 'Création catégorie client', 'Insert'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
     		}
 
 
@@ -171,6 +176,11 @@ class Mcategorie_client {
 		}else{
 			$this->log .= '</br>Statut changé! ';
 			$this->error = true;
+
+                    if(!Mlog::log_exec($this->table, $this->id_categorie_client, 'Validation catégorie client', 'Validate'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
 
 		} 
 		if($this->error == false){
@@ -231,8 +241,20 @@ class Mcategorie_client {
 
     		}else{
 
+                //Esspionage
+                if(!$db->After_update($this->table, $this->id_categorie_client, $values, $this->categorie_client_info)){
+                    $this->log .= '</br>Problème Esspionage';
+                    $this->error = false; 
+                }
+                    
+
 				//$this->last_id = $result;
     			$this->log .='</br>Enregistrement  réussie '. $this->_data['categorie_client'] .' - '.$this->last_id.' -';
+
+                if(!Mlog::log_exec($this->table, $this->id_categorie_client, 'Modification catégorie client', 'Update'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
     		}
 
 
@@ -277,6 +299,12 @@ class Mcategorie_client {
     		
     		$this->error = true;
     		$this->log .='</br>Suppression réussie ';
+
+
+            if(!Mlog::log_exec($this->table, $this->id_categorie_client, 'Suppression catégorie client', 'Delete'))
+            {
+                        $this->log .= '</br>Un problème de log ';
+            }
     	}
     	//check if last error is true then return true else rturn false.
     	if($this->error == false){

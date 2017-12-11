@@ -67,8 +67,8 @@ $form->input('Déscription', 'description', 'text', 10,  $info_modul->Shw('descr
 //Tables de module
 $table_array[]  = array('required', 'true', 'Insérer au moin une table utilisée' );
 $table_array[]  = array('minlength', '3', 'Minimum 3 caractères' );
-$form->input('Tables utilisées', 'tables', 'text', 10, $info_modul->Shw('tables'), $table_array);
-$form->input_tag('tables');
+$form->input('Table principale', 'tables', 'text', 4, $info_modul->Shw('tables'), $table_array);
+//$form->input_tag('tables');
 //Titre bloc default TASK
 $form->bloc_title('Informations Application par défault');
 

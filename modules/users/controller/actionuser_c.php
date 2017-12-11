@@ -10,7 +10,7 @@ $user->get_user();
 
 $action = new TableTools();
 $action->line_data = $user->user_info;
-$action->action_line_table('user', 'users_sys', $user->user_info['creusr'], 'deleteuser');
+$action->action_line_table('user', 'users_sys', $user->user_info['creusr'], 'delete_user');
 
 ?>
 </ul>

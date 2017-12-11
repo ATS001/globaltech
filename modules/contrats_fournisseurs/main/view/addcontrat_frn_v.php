@@ -61,6 +61,9 @@ $form->input_date('Date de fin', 'date_fin', 4, date('d-m-Y'), $array_date_fin);
 //Commentaire
 $form->input_editor('Commentaire', 'commentaire', 8, $clauses=NULL , $js_array = null,  $input_height = 50);
 
+//Date notif
+$array_date_notif[] = array('required', 'true', 'Insérer la date de notification');
+$form->input_date('Date notification', 'date_notif', 4, date('d-m-Y'), $array_date_notif);
 
 //pj_id
 $form->input('Contrat fournisseur', 'pj', 'file', 6, null, null);

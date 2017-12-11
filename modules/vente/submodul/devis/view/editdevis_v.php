@@ -27,7 +27,7 @@
 			<i class="ace-icon fa fa-angle-double-right"></i>
 		</small>
 	</h1>
-</div><!-- /.page-header -->
+</div><!-- /.page-header   -->
 <!-- Bloc form Add Devis-->
 <div class="row">
 	<div class="col-xs-12">
@@ -52,14 +52,16 @@ $form->input_hidden('reference', $info_devis->g('reference'));
 //Date devis
 $array_date[]= array('required', 'true', 'Insérer la date de devis');
 $form->input_date('Date devis', 'date_devis', 4, date('d-m-Y'), $array_date);
-//Client
+//Client liste
 $client_array[]  = array('required', 'true', 'Choisir un Client');
-$form->select_table('Client ', 'id_client', 8, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' , $info_devis->g('id_client'),$multi=NULL, $where=NULL, $client_array);
+$form->select_table('Client ', 'id_client', 8, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' , $info_devis->g('id_client'),$multi=NULL, $where='etat=1', $client_array);
 //TVA
 $tva_opt = array('O' => 'OUI' , 'N' => 'NON' );
 $form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$info_devis->g('tva'), $multi = NULL);
+//Projet if client have more project
+$form->input('Projet', 'projet', 'text' ,'6', $info_devis->g('projet'), null , null, null);
 //Table 
-$columns = array('id' => '1' ,'Item' => '5' , 'Réference'=>'10', 'Produit' => '30', 'P.U HT' => '10', 'T.Rem' => '5', 'V.Remise' => '10', 'Qte' => '5', 'Total HT' => '10', 'TVA' => '7', 'Total' =>'10', '#' =>'3'   );
+$columns = array('id' => '1' ,'Item' => '3' , 'Réference'=>'14', 'Produit' => '30', 'P.U HT' => '10', 'T.Rem' => '5', 'V.Remise' => '5', 'Qte' => '5', 'Total HT' => '10', 'TVA' => '7', 'Total' =>'10', '#' =>'3'   );
 $js_addfunct = 'var column = t.column(0);
      column.visible( ! column.visible() );';
 $verif_value = $info_devis->g('tkn_frm');    
@@ -78,6 +80,9 @@ $prixht_array[]  = array('required', 'true', 'Le montant est invalid');
 $hard_code_prices = '<label style="margin-left:15px;margin-right : 20px;">TVA Calculé: </label><input id="totaltva" readonly="" name="totaltva" class="input-small is-number alignRight " value="'.$info_devis->g('totaltva').'" type="text">';
 $hard_code_prices .= '<label style="margin-left:15px;margin-right : 20px;">Prix Global TTC: </label><input readonly="" id="totalttc" name="totalttc" class="input-large is-number alignRight" value="'.$info_devis->g('totalttc').'" type="text">';
 $form->input('Prix Global HT', 'totalht', 'text' ,'3 is-number alignRight', $info_devis->g('totalht'), $prixht_array, $hard_code_prices, 'readonly');
+//Validité
+$vie_opt = array('30' => '30 Jours' , '60' => '60 Jours', '90' => '90 Jours' );
+$form->select('Validité', 'vie', 3, $vie_opt, $indx = NULL ,$selected = $info_devis->g('vie'), $multi = NULL);
 //Conditions commercial
 $clauses = 'Paiement 100% à la commande pour';
 $form->input_editor('Conditions commerciales', 'claus_comercial', 8, $info_devis->g('claus_comercial'), $js_array = null,  $input_height = 50);
@@ -102,6 +107,7 @@ $(document).ready(function() {
     	//var $type_remise    = $type_remise == null ? 'P' : $type_remise;
     	var $remise_valeur  = parseFloat($remise_valeur) ? parseFloat($remise_valeur) : 0;
     	var $tva            = $tva == null ? 'O' : $tva;
+        var $val_tva = <?php echo Mcfg::get('tva')?>
     	
     	//calculate remise
     	if($type_remise == 'P')
@@ -121,7 +127,7 @@ $(document).ready(function() {
     	{
     		var $total_tva = 0;
     	}else{
-    		var $total_tva = ($total_ht * 20) / 100; //TVA value get from app setting
+    		var $total_tva = ($total_ht * $val_tva) / 100; //TVA value get from app setting
     	}
     	var $total_ttc = $total_ht + $total_tva ;
     	$('#'+$f_total_ht).val($total_ht);
@@ -129,18 +135,71 @@ $(document).ready(function() {
     	$('#'+$f_total_ttc).val($total_ttc);  
     } 
     $('#addRow').on( 'click', function () {
-    	
+    	var table = $('#table_details_devis').DataTable();
     	if($('#id_client').val() == ''){
 
     		ajax_loadmessage('Il faut choisir un client','nok');
     		return false;
     	}
+        if(table.data().count() && $('#is_abn').val() == 'abn'){
+            ajax_loadmessage("Impossible d'insérer un abonnement avec autres produits",'nok');
+            return false;
+        }
         var $link  = $(this).attr('rel');
    		var $titre = $(this).attr('data_titre'); 
    		var $data  = $(this).attr('data'); 
         ajax_bbox_loader($link, $data, $titre, 'large')
         
     });
+    $('#tva').on('change', function () {
+        var table = $('#table_details_devis').DataTable();
+
+        if (table.data().count()) {
+
+            bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de TVA sera appliqué sur l'ensemble des lignes détails, voulez vous vous continuer ?</span>", 
+                function(result){
+                    if(result == true){
+                        var $tkn_frm = $(this).attr('tkn_frm');
+                        $.ajax({
+
+                            cache: false,
+                            url  : '?_tsk=add_detaildevis&ajax=1'+'&act=1&<?php echo MInit::crypt_tp('exec', 'set_tva')?>',
+                            type : 'POST',
+                            data : $('#editdevis').serialize(),
+                            dataType:"JSON",
+                            success: function(data){
+
+                                if(data['error']== false){
+                                    ajax_loadmessage(data['mess'],'nok',5000)
+                                }else{
+                                    ajax_loadmessage(data['mess'],'ok',3000);
+                                    var t1 = $('.dataTable').DataTable().draw();
+                                    $('#sum_table').val(data['sum']);
+                                    $('#valeur_remise').trigger('change'); 
+                                }
+
+                            }
+                        });
+                    }else{
+                        var $totaltva = parseFloat($('#totaltva').val());
+                        if( $totaltva == 0){
+                            $('#tva').val('N'); 
+                        }else{
+                           $('#tva').val('O');                          
+                        }
+                        $('#tva').trigger("chosen:updated");
+                    }
+
+
+                });  
+            
+            
+            
+        }
+
+    });
+
+
 
     $('#table_details_devis tbody ').on('click', 'tr .edt_det', function() {
         
@@ -175,11 +234,24 @@ $(document).ready(function() {
     $('#type_remise').on('change', function () {
         $('#valeur_remise').trigger('input');
     });
+    
+    $('#id_client').on('input change', function () {
+                
+        var $id_client = $(this).val();
+        $.ajax({
 
-    $('#id_client').on('change', function () {
-        
-        var $adresse = '<div class="form-group>"><address><strong>Twitter, Inc.</strong><br>795 Folsom Ave, Suite 600<br>San Francisco, CA 94107<br><abbr title="Phone">P:</abbr>(123) 456-7890</address></div>';
-        $(this).parent('div').after($adresse);
+            cache: false,
+            url  : '?_tsk=add_detaildevis&ajax=1',
+            type : 'POST',
+            data : '&act=1&<?php echo MInit::crypt_tp('exec', 'info_client') ?>&id='+$id_client,
+            dataType:"JSON",
+            success: function(data){
+                //info client après               
+                $('#tva').val(data['tva_brut']);
+                $('#tva').trigger("chosen:updated");
+
+            }
+        });
 
     });
     $('#table_details_devis tbody ').on('click', 'tr .del_det', function() {
@@ -200,6 +272,7 @@ $(document).ready(function() {
                     var t1 = $('.dataTable').DataTable().draw();
                     $('#sum_table').val(data_arry[2]);
                     $('#valeur_remise').trigger('change'); 
+                    $('#is_abn').remove();
                 }
 
             }

@@ -15,7 +15,7 @@ if($action == 'delete')
 {
 	if(!MInit::crypt_tp('id', null, 'D'))
 	{ 	
-		exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur zzzzzzzz');
+		exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 	}
 //Initialise
 	$id     = Mreq::tp('id');
@@ -32,23 +32,14 @@ if($action == 'delete')
 //Get prouduit info
 if($action == 'produit_info')
 {
+	$product = new Mdevis();
 	$id_produit = Mreq::tp('id');
-	$sql = "SELECT * FROM produits WHERE id = $id_produit LIMIT 0,1";
-
-	global $db;
-
-//exit($sqlRec);
-	if (!$db->Query($sql)) $db->Kill($db->Error()." SQLREC $sql");
-
-	$array_produit = $db->RowArray();
-	$array_product_out = array(
-		'prix_base' => '<span class="help-block red returned_span">Ce Produit était vendu à '.$array_produit['pu'].' FCFA</span>',
-		'prix'      => $array_produit['pu'],
-		'ref'       => $array_produit['ref'],
-
-		);
-
-echo json_encode($array_product_out);  // send data as json format
+	if($product->get_info_produit($id_produit ))
+	{ 
+		//send data as json format
+		echo json_encode($product->arr_prduit);
+	}
+     
 }
 
 if($action == 'info_client')
@@ -64,3 +55,50 @@ if($action == 'info_client')
 	} 
 }
 
+//update tva for lines 
+
+if($action == 'set_tva')
+{
+	$set_tva = new Mdevis();
+	$arr_return = $set_tva->set_tva_for_detail_on_change_main_tva(MReq::tp('tkn_frm'), MReq::tp('tva'));
+	if($set_tva->error == true)
+	{
+		$result = json_encode($arr_return);
+		echo $result;
+	}else{
+		echo json_encode(array('error' => false, 'mess' => 'Adaptation TVA non réussie '.$set_tva->log ));
+	}
+}
+
+
+//Load_categorie by type
+if($action == 'load_select_categ')
+{
+	$where = 'type_produit = '.MReq::tp('id');
+	$table = 'ref_categories_produits';
+	$value = 'id';
+	$text  = 'categorie_produit';
+	
+	if($output = Mform::load_select($table, $value, $text, $where)){
+		echo json_encode($output);
+	}else{
+		echo json_encode(array('error' => false, 'mess' => 'Pas de catégorie trouvée ' ));
+	}
+}
+
+//Load produit by categorie
+if($action == 'load_select_produit')
+{
+	$where = 'idcategorie = '.MReq::tp('id');
+	$table = 'produits';
+	$value = 'id';
+	$text  = 'designation';
+	
+	if($output = Mform::load_select($table, $value, $text, $where)){
+		echo json_encode($output);
+	}else{
+		echo json_encode(array('error' => false, 'mess' => 'Pas de produit trouvé' ));
+	}
+	
+	
+}

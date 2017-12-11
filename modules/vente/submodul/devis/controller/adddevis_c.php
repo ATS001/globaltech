@@ -9,10 +9,12 @@ if(MInit::form_verif('adddevis', false))
    'tkn_frm'         => Mreq::tp('tkn_frm') ,
    'date_devis'      => Mreq::tp('date_devis') ,
    'type_remise'     => Mreq::tp('type_remise') ,
-   'valeur_remise'   => Mreq::tp('remise_montant') ,
+   'valeur_remise'   => Mreq::tp('valeur_remise') ,
    'totalht'         => Mreq::tp('totalht') ,
    'totalttc'        => Mreq::tp('totalttc') ,
    'totaltva'        => Mreq::tp('totaltva') ,
+   'projet'          => Mreq::tp('projet'),
+   'vie'             => Mreq::tp('vie'),
    'claus_comercial' => Mreq::tp('claus_comercial')
 
    );
@@ -38,17 +40,27 @@ if(MInit::form_verif('adddevis', false))
       $empty_list .= "<li>Type remise est incorrecte</li>";
       $checker = 1;
     }
-    if($posted_data['totalttc'] == NULL){
+    if($posted_data['vie'] == NULL OR !in_array($posted_data['vie'],  array( '30','60', '90' ))){
+
+      $empty_list .= "<li>Durée de validité</li>";
+      $checker = 1;
+    }
+    if($posted_data['totalttc'] == NULL OR !is_numeric($posted_data['totalttc']) OR $posted_data['totalttc'] == 0){
 
       $empty_list .= "<li>Total TTC</li>";
       $checker = 1;
     }
-    if($posted_data['totaltva'] == NULL){
+    if($posted_data['valeur_remise'] == NULL OR !is_numeric($posted_data['valeur_remise'])){
+
+      $empty_list .= "<li>Valeur Remise</li>";
+      $checker = 1;
+    }
+    if($posted_data['totaltva'] == NULL OR !is_numeric($posted_data['totaltva'])){
 
       $empty_list .= "<li>Total TVA</li>";
       $checker = 1;
     }
-    if($posted_data['totalht'] == NULL){
+    if($posted_data['totalht'] == NULL OR !is_numeric($posted_data['totalht']) OR $posted_data['totalht'] == 0){
 
       $empty_list .= "<li>Total HT</li>";
       $checker = 1;

@@ -67,7 +67,7 @@ global $db;
 
 						<li>
 
-							<a href="#" class="this_url" rel="compte">
+							<a href="#" class="this_url" data="<?php echo MInit::crypt_tp('id', session::get('userid'))?>" rel="compte">
 								<i class="ace-icon fa fa-user"></i>
 								Compte
 							</a>

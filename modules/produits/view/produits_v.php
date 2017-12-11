@@ -35,12 +35,18 @@
 	                                                <th>
 								Référence
 							</th>
+                                                        <th>
+								Type
+							</th>
+                                                        <th>
+								Catégorie
+							</th>
 	                                                <th>
 								Désignation
 							</th>                                              
 	                                               
 	                                                <th>
-								Stock minimale
+								Stock
 							</th>
 	                                                
 							<th>
@@ -62,26 +68,22 @@
 		
 		var table = $('#produits_grid').DataTable({
 			bProcessing: true,
-			notifcol : 4,
+			notifcol : 5,
 			serverSide: true,
 			
 			ajax_url:"produits",
 			
 	                aoColumns: [
 	                    {"sClass": "center","sWidth":"5%"}, // Identifiant 
-	                    {"sClass": "left","sWidth":"20%"}, // Catégorie
+	                    {"sClass": "left","sWidth":"13%"}, 
+                            {"sClass": "left","sWidth":"13%"},
+                            {"sClass": "left","sWidth":"13%"},
 	                    {"sClass": "left","sWidth":"25%"},   
-	                    {"sClass": "left","sWidth":"10%"},
-	                    {"sClass": "center","sWidth":"10%"}, // Statut
-	                    {"sClass": "center","sWidth":"10%"}, // Action
+	                    {"sClass": "left","sWidth":"8%"},
+	                    {"sClass": "center","sWidth":"13%"}, // Statut
+	                    {"sClass": "center","sWidth":"6%"}, // Action
 	                    ],
-	                });
-
-	            
-	 
-	            
-	           
-	        
+	                });	        
 	    
 	$('.export_csv').on('click', function() {
 		csv_export(table, 'csv');

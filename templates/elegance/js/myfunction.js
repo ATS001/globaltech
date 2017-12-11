@@ -90,7 +90,7 @@ function ajax_loader($url,$data,$redirect){
 
 
 //AJAX load bootbox content
-function ajax_bbox_loader($url, $data, $titre, $width, $data_table){
+function ajax_bbox_loader($url, $data, $titre, $width, $data_table ){
 	//alert($url)
 	
 	$.ajax({
@@ -130,35 +130,7 @@ function ajax_bbox_loader($url, $data, $titre, $width, $data_table){
 						"label" : "Enregistrer",
 						"className" : "btn-sm btn-primary send_modal",
 						"callback": function(e) {
-							/*if(!$('#'+$url).valid()){
-								e.preventDefault();
-							}else{
-								$.ajax({
-									cache: false,
-									url  : '?_tsk='+$url+'&ajax=1',
-									type : 'POST',
-									data : $('#'+$url).serialize(),
-									dataType:"html",
-									success: function(data_f)
-									{
-										
-										var data_arry = data_f.split("#");
-										if(data_arry[0]==0){
-											ajax_loadmessage(data_arry[1],'nok',5000);
-										}else{ 
-											ajax_loadmessage(data_arry[1],'ok',5000);
-											var t1 = $('.dataTable').DataTable().draw();
-											dialog.modal('hide');
-										}
-									},
-									timeout: 30000,
-									error: function(){
-										ajax_loadmessage('Délai non attendue','nok',5000)
-										
-									}
-								});
-
-							}*/
+						
 							return false;
 						}
 					},
@@ -175,7 +147,7 @@ function ajax_bbox_loader($url, $data, $titre, $width, $data_table){
 			});
 
 			$('.bootbox-body').ace_scroll({
-				size: 300
+				size: 400
 			});
 
 
@@ -309,13 +281,17 @@ $('body').on('click', '.this_exec', function() {
 	 
 
 	 var $url = $(this).attr('rel');
-	 var $data = $(this).attr('data') != ""?$(this).attr('data'):"";
+	 var $data = $(this).attr('data') != "" ? $(this).attr('data') : "";
 	 var $the_table = $(this).closest('table').attr('id');
-	 //var $row_selected = $(this).closest('tr');
+	 var $go_to = $(this).closest('div').attr('go_to');
+	 if($go_to == null){
+	 	exec_ajax($url, $data, $confirm = 1, '', $the_table);
+	 }else{
+	 	exec_ajax_go($url, $data, $confirm = 1, '', $go_to);
+	 }
 	 
-	 exec_ajax($url, $data, $confirm = 1, '', $the_table);
-
 });
+
 
 
 function do_ajax($url, $data , $the_table){
@@ -332,19 +308,17 @@ function do_ajax($url, $data , $the_table){
                 	var data_arry = data.split("#");
                 	if(data_arry[0] == 1) {
 
-        				ajax_loadmessage(data_arry[1],'ok',50000);
+        				ajax_loadmessage(data_arry[1],'ok',5000);
         				
-        				 var table = $('#'+$the_table).DataTable();
-                         table.row('.selected').remove().draw( false );
-        				 bootbox.hideAll();
+        				var table = $('#'+$the_table).DataTable();
+                        table.row('.selected').remove().draw( false );
+        				bootbox.hideAll();
         				
         			}else{
         				
         				ajax_loadmessage(data_arry[1],'nok',50000);
         				bootbox.hideAll();
-        			}
-        			
-                  
+        			}                  
                   	          
                 },
                 timeout: 30000,
@@ -353,7 +327,6 @@ function do_ajax($url, $data , $the_table){
 		}
     });
 }
-
 //Exec function  on backdoor calling do_ajax
 function exec_ajax($url, $data, $confirm, $message_confirm , $the_table){
 
@@ -363,18 +336,64 @@ function exec_ajax($url, $data, $confirm, $message_confirm , $the_table){
 		  bootbox.confirm($message, function(result) {
             if (result) {
             	do_ajax($url, $data, $the_table); 
-                
-
-             }
+            }
           });
 	}else{
 		do_ajax($url, $data, $the_table);
 	}
-    
+   	return true;
+}
 
 
-	return true;
-	
+
+
+function do_ajax_go($url, $data , $go_to){
+	bootbox.process({
+	    		    message:'Working',
+	            });
+	$.ajax({
+                url: '?_tsk='+$url+'&ajax=1',
+                type: 'POST',
+                data: $data,
+                dataType: 'html',
+                success: function(data,e) {
+
+                	var data_arry = data.split("#");
+                	if(data_arry[0] == 1) {
+
+        				ajax_loadmessage(data_arry[1],'ok',5000);
+        				ajax_loader($go_to, $data);
+        				bootbox.hideAll();
+        				
+        			}else{
+        				
+        				ajax_loadmessage(data_arry[1],'nok',50000);
+        				bootbox.hideAll();
+        			}      			
+                },
+                timeout: 30000,
+		error: function(){
+			ajax_loadmessage('Délai non attendue','nok',5000)
+		}
+    });
+}
+
+
+//Exec function  on backdoor calling do_ajax
+function exec_ajax_go($url, $data, $confirm, $message_confirm , $go_to){
+
+	var $message = typeof $message_confirm !== 'undefined' ? 'Veuillez confirmer go!' : $message_confirm;
+   
+	if($confirm == 1){
+		  bootbox.confirm($message, function(result) {
+            if (result) {
+            	do_ajax_go($url, $data, $go_to); 
+            }
+          });
+	}else{
+		do_ajax_go($url, $data, $go_to);
+	}
+   	return true;
 }
 
 
@@ -383,20 +402,22 @@ function exec_ajax($url, $data, $confirm, $message_confirm , $the_table){
 function ajax_loadmessage($core, $class, $time) {
 	$.gritter.removeAll();
 	
-    
+	
 	$time = typeof $time !== 'undefined' ? $time : 5000;	
 
 	$laclass = $class == 'ok'?'gritter-success':'gritter-error';
 	$titre = $class == 'ok'?'Opération  réussie':'Erreur Opération';
 	
-
-	$.gritter.add({
-		title: $titre,
-		text:  $core,
-		class_name: $laclass + '  gritter-center gritter-light',
-		time:  $time,
-	});
-     
+	window.setTimeout( function(){
+		$.gritter.add({
+			title: $titre,
+			text:  $core,
+			class_name: $laclass + '  gritter-center gritter-light',
+			time:  $time,
+		});
+	}, 10 );
+	
+	
 	return false;
 
 
@@ -612,6 +633,8 @@ $(function () {
   	}
   	
   });
+ 
+
   	
   $("body").bind("DOMNodeInserted", function() {
    //$(this).find('.is-date').mask('99-99-9999');
@@ -701,6 +724,35 @@ $(document).ready(function(){
 											
 					
 				});
+				// Call report script exec template PDF
+				$('body').on('click', '.report_tplt', function() {
+
+					$.ajax({
+		                type: 'POST',
+		                url: './?_tsk=report&ajax=1',
+		                data: $(this).attr('rel')+'&'+$(this).attr('data'),
+		                timeout: 3000,
+		                dataType:'JSON',
+		                success: function(data) {
+			                	
+					        if(data['error'] == 'error'){
+					        	ajax_loadmessage('Erreur chargement Template JS','nok',3000);
+					        	return false;
+					        }else{
+					        	$.colorbox({iframe:true, width:"80%", height:"90%",href:data['file']});
+					        	return true;
+					        }
+					        
+			            },
+		                error: function() {
+			                ajax_loadmessage('Affichage Impossible #AJAX','nok',3000);
+			                return false;
+		                }
+	                });
+											
+					
+				});
+
 				//$(".iframe_pdf").colorbox({iframe:true, width:"80%", height:"90%",href:data});
 				$('body').on('click', '.show_pic', function() {
 					var $link_pic = $(this).attr('rel');
@@ -721,6 +773,16 @@ $(document).ready(function(){
 
 					ajax_bbox_loader($link, $data, $titre, 'large')
    		        });
+
+   		        $('body').on('click', '#btn_action', function() {
+   		        	var $url  = $(this).attr('rel');
+   		        	var $id = $(this).attr('data_id'); 
+   		        	 
+                    append_drop_menu($url, $id, '#btn_action');
+					
+   		        });
+
+
    		        $('body').on('click', '.del_pic', function() {
    		        	var $tester = true;
    		        	if($(this).attr('rel') == null){
@@ -741,9 +803,6 @@ $(document).ready(function(){
 									//this.reset_input;
 									//ajax_loadmessage(data_arry[1],'ok');
 									$tester = true;
-									
-
-									
 								}else{
 						            //ajax_loadmessage(data_arry[1],'ok');	
 						            ajax_loadmessage(data_arry[1],'nok');
@@ -759,10 +818,6 @@ $(document).ready(function(){
 			            	$(this).closest('li').remove();
 			            }
    		        	}
-   		        	
-   		        	
-   		        	   
-
    		        });
 //Call dashbord first time
 });
@@ -779,7 +834,7 @@ if(typeof  firsttime !== 'undefined' &&  firsttime==1)
 	bootbox.process({
 	    		    message:'Working',
 	            });
-	setTimeout(function() { ajax_loader('dbd') },2000)		
+	setTimeout(function() { ajax_loader('dbd') },1000)		
     firsttime == 2;	
 }
 
@@ -820,17 +875,10 @@ function  append_drop_menu($url, $id, $btn){
 				window.setTimeout( function(){
 					    window.location = "./";
 				        }, 5000 );
-				
-
 			
-				
-
 			}else{
 				$($btn).append(data);
 			}
-			
-			
-			
 		},
 		error: function() {
 			ajax_loadmessage('Action indisponible','nok',3000);

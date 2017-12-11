@@ -5,6 +5,7 @@
   {
   	
     $posted_data = array(
+     'type_produit'               => Mreq::tp('type_produit') ,
      'categorie_produit'               => Mreq::tp('categorie_produit') ,
       
      
@@ -15,6 +16,12 @@
     
     $checker = null;
     $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
+    
+     if($posted_data['type_produit'] == NULL){
+
+      $empty_list .= "<li>type produit</li>";
+      $checker = 1;
+    }
 
     if($posted_data['categorie_produit'] == NULL){
 
@@ -43,5 +50,6 @@
           echo("0#" . $new_categorie_produit->log);
       }
   } else {
-      view::load('produits/settings/categories_produits', 'addcategorie_produit');
+    view::load_view('addcategorie_produit');
+
   }

@@ -88,15 +88,26 @@ class TableTools
 		return $render ;
 
 	}
+    static public function btn_action($task, $id, $go_to)
+	{
+		//$output = '<button id="btn_action" href="#" rel="'.$task.'" data="'.MInit::crypt_tp('id', $id).'" class=" btn btn-white btn-info btn-bold dropdown-toggle  spaced" data-toggle="dropdown"><span><i class="ace-icon fa fa-bars smaller-90"></i> Actions </span></a>';
+		$output = '<div id="btn_action" class="btn-group" rel="'.$task.'" data_id="'.$id.'" data="'.MInit::crypt_tp('id', $id).'" go_to="'.$go_to.'"><button  data-toggle="dropdown" class="btn btn-white btn-info btn-bold dropdown-toggle  spaced"><span><i class="ace-icon fa fa-bars smaller-90"></i> Actions </span></button></div>';
+
+
+		$render = print ($output);
+
+
+		return $render ;
+	}
     /**
      * [btn_csv description]
      * @param  [type] $app  [description]
      * @param  [type] $text [description]
      * @return [type]       [description]
      */
-	static public function btn_csv($app, $text)
+	static public function btn_csv($app)
 	{
-		$output = '<a title="Export XLS" href="#"  class="ColVis_Button ColVis_MasterButton btn btn-white btn-info btn-bold export_csv"><span><i class="fa fa-file-excel-o fa-lg" style="color:green"></i></span></a>';
+		$output = '<a title="Export XLS" rel="'.$app.'" href="#"  class="ColVis_Button ColVis_MasterButton btn btn-white btn-info btn-bold export_csv"><span><i class="fa fa-file-excel-o fa-lg" style="color:green"></i></span></a>';
 
 
 		$render = print ($output);
@@ -134,7 +145,7 @@ class TableTools
 	}
 
 	//Publique Function get action for user modul
-//depent of user connected
+    //depent of user connected
 	public function action_line_table($app, $table_modul, $cre_usr = null, $task_exec = null)
 	{
 		//Etat line is null return false
@@ -161,6 +172,89 @@ class TableTools
 		$service_f     = '%-'.$service.'-%';
 
 		$sql = "SELECT task_action.code FROM 
+		task_action, task, rules_action $table_from 
+		WHERE rules_action.action_id = task_action.id 
+		AND $table_modul.etat = task_action.etat_line 
+		$and_task 
+		AND task.id = task_action.appid 
+		AND rules_action.userid = $user
+		AND rules_action.service = $service
+		AND $table_modul.etat = $etat 
+		AND $table_modul.id = $id
+		AND task_action.type = 0 ";
+        //for more secure add this AND task_action.service LIKE  '$service_f' 
+        //exit($sql);
+
+
+		if(!$db->Query($sql))
+		{
+			$this->error = false;
+			$this->log  .= $db->Error();
+			//return false;
+		}else{
+			
+			if ($db->RowCount() == false) {
+				$this->error = false;
+				$this->app_action .= 'Pas d\'action trouvée!';
+				return print($this->app_action);
+			} else {
+				//$this->log = $sql;
+				//$this->app_action = $db->RowArray();
+				
+				$this->error = true;
+				while (!$db->EndOfSeek())
+				{
+					$row = $db->Row();
+					$this->app_action .= $row->code;
+
+				}
+				$stanadr_delete = null;
+				if($etat == 0 AND ($cre_usr == session::get('userid') OR session::get('service') == 1) AND $task_exec != null)
+				{
+						$stanadr_delete = '<li class="divider"></li><li><a href="#" class="this_exec" data="'.MInit::crypt_tp('id',$id).'" rel="'.$task_exec.'"  ><i class="ace-icon fa fa-trash red bigger-100"></i> Supprimer ligne</a></li>';
+				}
+
+					$retour =  str_replace('%id%', MInit::crypt_tp('id',$id), $this->app_action);
+					return print($retour.$stanadr_delete);
+
+			}
+
+
+		}
+		//return true;
+	}
+
+	//Publique Function get action for user modul
+    //depent of user connected
+	public function action_profil_view($app, $table_modul, $add_set, $cre_usr = null, $task_exec = null)
+	{
+		//Etat line is null return false
+		if($this->line_data['id'] == null)
+		{
+			$this->app_action .= 'Pas d\'Enregistrement trouvé';
+			print($this->app_action);
+			return false;
+		}
+		//Etat line is not 
+
+		global $db;
+		$user = session::get('userid');
+
+
+		$table_from = $table_modul == 'task' ? NULL : ', '.$table_modul;
+		$and_task = $table_modul == 'task' ? NULL : ' AND task.app ="'.$app.'"';
+
+
+		$etat          = $this->line_data['etat'];
+		$id_this_modul = APP_ID;
+		$id            = $this->line_data['id'];
+		$service       = session::get('service');
+		$service_f     = '%-'.$service.'-%';
+
+		$sql = "SELECT task_action.app, task_action.descrip,
+		 task_action.mode_exec, task_action.etat_desc ,
+		 task_action.message_class, task_action.class
+		  FROM 
 		task_action, task, rules_action $table_from 
 		WHERE rules_action.action_id = task_action.id 
 		AND $table_modul.etat = task_action.etat_line 
@@ -195,17 +289,17 @@ class TableTools
 				while (!$db->EndOfSeek())
 				{
 					$row = $db->Row();
-					$this->app_action .= $row->code;
+					$this->app_action .= '<a href="#" rel="'.$row->app.'&'.$add_set.'" class=" btn btn-white '.$row->mode_exec.' btn-info btn-bold '.$row->message_class.' spaced"><span><i class="fa fa-'.$row->class.'"></i> '.$row->descrip.'</span></a>';
 
 				}
 				$stanadr_delete = null;
-				if($etat == 0 AND ($cre_usr == session::get('userid') OR session::get('service') == 1))
+				if($etat == 0 AND ($cre_usr == session::get('userid') OR session::get('service') == 1) AND $task_exec != null)
 				{
-						$stanadr_delete = '<li class="divider"></li><li><a href="#" class="this_exec" data="'.MInit::crypt_tp('id',$id).'" rel="'.$task_exec.'"  ><i class="ace-icon fa fa-trash red bigger-100"></i> Supprimer ligne</a></li>';
+						$stanadr_delete = '<a href="#" rel="'.$task_exec.'&'.MInit::crypt_tp('id',$id).'" class=" btn btn-white this_exec btn-info btn-bold '.$row->message_class.' spaced"><span><i class="fa fa-trash red bigger-100"></i> Supprimer ligne</span></a>';
 				}
 
 					$retour =  str_replace('%id%', MInit::crypt_tp('id',$id), $this->app_action);
-					return print($retour.$stanadr_delete);
+					return ($retour.$stanadr_delete);
 
 			}
 
@@ -254,7 +348,7 @@ class TableTools
     			WHEN SUM(task_action.`notif`) > 0 
     			THEN 
     			task_action.`etat_desc`                            
-    			ELSE CONCAT(task_action.`etat_desc`,'*') 
+    			ELSE CONCAT(task_action.`etat_desc`,' ') 
     			END ";
     	}else{
     			$message_etat = " CASE

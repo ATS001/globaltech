@@ -146,6 +146,7 @@ class MLogin
 				$salt = MD5($_SERVER['REMOTE_ADDR'].$_SERVER['HTTP_USER_AGENT'].$this->token);
 				$session = new session();
 
+                
 				$session->clear('Captcha');//Clear Captcha Session
 
 				$session->set('username',$this->user_info['nom']);
@@ -159,25 +160,32 @@ class MLogin
 				$session->set('key',$this->user_info['pass']);
 				$session->set('secur_ss',$salt );
 				
-				$this->photo_file = MInit::get_file_archive($this->user_info['photo']);
-				$x                = $y = 36;
 				
-				
-                $img_user = MInit::creat_thumbail($this->photo_file ,$x ,$y);
-				if($this->photo_file == false || !file_exists($img_user))
+				//exit($session->get_cookie('alg'));
+				if($this->photo_file != null)
 				{
-					$session->set('tof','img/user.jpg');
+					$this->photo_file = MInit::get_file_archive($this->user_info['photo']);
+					$x                = $y = 36;
+
+
+					$img_user = MInit::creat_thumbail($this->photo_file ,$x ,$y);
+					if($this->photo_file == false || !file_exists($img_user))
+					{
+						$session->set('tof','img/user.jpg');
+					}else{
+
+						$session->set('tof',$img_user);
+					}
+
 				}else{
-					
-					$session->set('tof',$img_user);
+					$session->set('tof','img/user.jpg');
 				}
+				
 				//Creat temporary folder for this session
 				//ion réussie
 
 
-/*Fichier créer ./upload/users/1/43ec517d68b6edd3015b3edc9a11367b36X36.png ./upload/users/1/./upload/users/1f8fe9a8cc5f68d60f8258bfca27dfd8e36X36.png
-Bienvenue Systeme Administrateur
-Vous serez rédiriger dans qulques instants*/
+
 				
 				if(!$this->creat_temp_folder()){
 					$this->log .= '</br>Unable to create Temp folder';
@@ -322,7 +330,7 @@ Vous serez rédiriger dans qulques instants*/
 
 	}
 
-	public function logout()
+	public function logout($auto = null)
 	{
 		global $db;
 		//Expire opened Session for this user
@@ -343,6 +351,8 @@ Vous serez rédiriger dans qulques instants*/
 		{
 			return false;
 		}
+		
+				
 		return true;
 	}
 
@@ -415,6 +425,19 @@ Vous serez rédiriger dans qulques instants*/
 		} else {
 			$this->log .= "Un Message avec la procédure de recupération de mot de passe est envoyé à ".$mail->hide_mail($this->user_info['mail']);
 		}
+	}
+
+	public static function get_ses_time_autologout($param)
+	{
+		$time = null;
+		$file = MPATH_TEMP.SLASH.$param.'.ses';
+		if(file_exists($file)){
+			$time = file_get_contents($file);
+			unlink($file);
+		}else{
+			$time = Mcfg::get('auto_logout').' Min';
+		}
+		return $time;
 	}
 
 

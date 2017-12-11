@@ -1,9 +1,11 @@
+<div class="login-box visible widget-box no-border">
+	<div class="widget-body">
 	<h1>
 		<img src="img/<?php echo Mcfg::get('logo')?>" width="149" height="40" />
 
-		<span class="white"><?php echo SYS_TITRE?></span>
-  </h1>
-  <h4 class="blue"><?php echo CLIENT_TITRE?></h4>
+		<span class="white"><?php //echo SYS_TITRE?></span>
+	</h1>
+	<!-- <h4 class="blue"><?php echo CLIENT_TITRE?></h4> -->
 </div>
 </div>
 
@@ -20,6 +22,13 @@
 
 
 					</h4>
+				<?php if(MReq::tp('alg')){ ?>
+				
+					<div class="alert alert-danger">
+					vous avez été deconnecté du serveur pour une inactivité de plus de <?php echo Mlogin::get_ses_time_autologout(MReq::tp('alg'));?>.
+						<br>
+					</div>
+				<?php } ?>
 
 					<div class="space-6"></div>
 					<form novalidate="novalidate" id="login" action="#" method="post" />
@@ -166,14 +175,14 @@ $(function () {
 	$('#login').validate({
 		
 		execApp:"login",
-    	execRedi: true,
-    	addFunct:function(){
-    		
-    		bootbox.process({
-	    		    message:'Working',
-	            });
-    		
-    	},
+		execRedi: true,
+		addFunct:function(){
+
+			bootbox.process({
+				message:'Working',
+			});
+
+		},
 
 		rules: {
 
@@ -190,33 +199,33 @@ $(function () {
 
 
 //Start form forgot
-	$('#forgot').validate({
-		
-		execApp:"forgot",
-    	execRedi: true,
-    	addFunct:function(){
-    		
-			$("#capimg").attr("src", "img/captcha.png.php?timestamp=" + new Date().getTime());
-			$("#captcha").val("");
+$('#forgot').validate({
+
+	execApp:"forgot",
+	execRedi: true,
+	addFunct:function(){
+
+		$("#capimg").attr("src", "img/captcha.png.php?timestamp=" + new Date().getTime());
+		$("#captcha").val("");
 			/*bootbox.process({
 	    		    message:'Working',
-	            });*/
-			
+	    		});*/
 
-		},
-		rules: {
 
-			email: "required",
-			captcha:  "required"
-		},
+	    	},
+	    	rules: {
 
-		messages: {
+	    		email: "required",
+	    		captcha:  "required"
+	    	},
 
-			email: "Insérez Email ou Pseudo",
-			captcha: "Insérez le Code"
-		},
+	    	messages: {
 
-	});	
+	    		email: "Insérez Email ou Pseudo",
+	    		captcha: "Insérez le Code"
+	    	},
+
+	    });	
 
 
 

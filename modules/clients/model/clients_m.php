@@ -115,21 +115,28 @@ class Mclients {
         }
         global $db;
           global $db;
-        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(CODE, 5, LENGTH(SUBSTR(CODE,5))-5))),0)+1  AS reference FROM clients WHERE SUBSTR(CODE,LENGTH(CODE)-3,4)= (SELECT  YEAR(SYSDATE()))');
-        $this->reference = 'CLT-' . $max_id . '/' . date('Y');
+        $max_id = $db->QuerySingleValue0('SELECT IFNULL(( MAX(SUBSTR(reference, 8, LENGTH(SUBSTR(reference,8))-5))),0)+1  AS reference FROM clients WHERE SUBSTR(reference,LENGTH(reference)-3,4)= (SELECT  YEAR(SYSDATE()))');
+        $this->reference = 'GT-CLT-' . $max_id . '/' . date('Y');
     }
 
 	 //Save new client after all check
     public function save_new_client(){
 
+      /*  //Generate reference
+        $this->Generate_client_reference();*/
+        global $db;
         //Generate reference
-        $this->Generate_client_reference();
+        if(!$reference = $db->Generate_reference($this->table, 'CLT'))
+        {
+                $this->log .= '</br>Problème Réference';
+                return false;
+        }  
 
         //Before execute do the multiple check
 
         $this->Check_exist('denomination', $this->_data['denomination'], 'Dénomination', null);
 
-        $this->Check_exist('code', $this->reference, 'Code Fournisseur', null);
+        $this->Check_exist('reference', $this->reference, 'Réference Client', null);
 
         $this->Check_exist('r_social', $this->_data['r_social'], 'Raison Sociale', null);
              
@@ -142,7 +149,17 @@ class Mclients {
 
     	$this->check_non_exist('ref_pays','id', $this->_data['id_pays'], 'Pays');
 
-    	$this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
+        if($this->_data['id_ville'] = '------')
+        {
+            null;
+            //var_dump('ville vide');
+        }    
+        else{
+              $this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
+        }
+
+
+        $this->check_non_exist('ref_devise','id', $this->_data['id_devise'], 'Devise');
 
     	  //Check if PJ attached required
         if($this->exige_pj)
@@ -160,7 +177,7 @@ class Mclients {
 			//Format values for Insert query 
     	global $db;
 
-   		$values["code"]  		 = MySQL::SQLValue($this->reference);
+   		$values["reference"]  	 = MySQL::SQLValue($reference);
    		$values["denomination"]  = MySQL::SQLValue($this->_data['denomination']);
    		$values["id_categorie"]  = MySQL::SQLValue($this->_data['id_categorie']);
    		$values["r_social"] 	 = MySQL::SQLValue($this->_data['r_social']);
@@ -171,7 +188,13 @@ class Mclients {
    		$values["civilite"]      = MySQL::SQLValue($this->_data['civilite']);
    		$values["adresse"] 		 = MySQL::SQLValue($this->_data['adresse']);
     	$values["id_pays"]  	 = MySQL::SQLValue($this->_data['id_pays']);
-   		$values["id_ville"] 	 = MySQL::SQLValue($this->_data['id_ville']);
+        if($this->_data['id_ville'] = '------')
+        {
+            NULL;
+        }    
+        else{
+            $values["id_ville"]  = MySQL::SQLValue($this->_data['id_ville']);
+        }
     	$values["tel"] 		 	 = MySQL::SQLValue($this->_data['tel']);
     	$values["fax"] 			 = MySQL::SQLValue($this->_data['fax']);
    		$values["bp"] 			 = MySQL::SQLValue($this->_data['bp']);
@@ -202,6 +225,11 @@ class Mclients {
 				if($this->error == true)
 				{
 					$this->log = '</br>Enregistrement réussie: <b>'.$this->_data['denomination'].' ID: '.$this->last_id;
+                    
+                    if(!Mlog::log_exec($this->table, $this->last_id, 'Création client', 'Insert'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
 				//Check $this->error = false return Red message and Bol false	
 				}else{
 					$this->log .= '</br>Enregistrement réussie: <b>'.$this->_data['denomination'];
@@ -245,6 +273,10 @@ class Mclients {
 		}else{
 			$this->log .= '</br>Statut changé! ';
 			$this->error = true;
+            if(!Mlog::log_exec($this->table, $this->id_client, 'Validation client', 'Validate'))
+            {
+                $this->log .= '</br>Un problème de log ';
+            }
 
 		} 
 		if($this->error == false){
@@ -307,11 +339,21 @@ class Mclients {
         $this->Check_exist('nif', $this->_data['nif'], 'N° de NIF', $this->id_client);
 
 
-        $this->check_non_exist('clients','id_categorie',$this->_data['id_categorie'] ,'Catégorie' );
+        $this->check_non_exist('categorie_client','id',$this->_data['id_categorie'] ,'Catégorie' );
 
-    	$this->check_non_exist('clients','id_pays', $this->_data['id_pays'], 'Pays');
+        $this->check_non_exist('ref_pays','id', $this->_data['id_pays'], 'Pays');
 
-    	$this->check_non_exist('clients','id_ville', $this->_data['id_ville'], 'Ville');
+        if($this->_data['id_ville'] = '------')
+        {
+            null;
+            //var_dump('ville vide');
+        }    
+        else{
+              $this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
+        }
+
+
+        $this->check_non_exist('ref_devise','id', $this->_data['id_devise'], 'Devise');
 
     	  //Check if PJ attached required
         if($this->exige_pj)
@@ -340,7 +382,13 @@ class Mclients {
    		$values["civilite"]      = MySQL::SQLValue($this->_data['civilite']);
    		$values["adresse"] 		 = MySQL::SQLValue($this->_data['adresse']);
     	$values["id_pays"]  	 = MySQL::SQLValue($this->_data['id_pays']);
-   		$values["id_ville"] 	 = MySQL::SQLValue($this->_data['id_ville']);
+         if($this->_data['id_ville'] = '------')
+        {
+            NULL;
+        }    
+        else{
+            $values["id_ville"]  = MySQL::SQLValue($this->_data['id_ville']);
+        }
     	$values["tel"] 		 	 = MySQL::SQLValue($this->_data['tel']);
     	$values["fax"] 			 = MySQL::SQLValue($this->_data['fax']);
    		$values["bp"] 			 = MySQL::SQLValue($this->_data['bp']);
@@ -367,11 +415,22 @@ class Mclients {
 					
 				
 				$this->save_file('pj_photo', 'Photo du client'.$this->_data['denomination'], 'image');
+
+                //Esspionage
+                if(!$db->After_update($this->table, $this->id_client, $values, $this->client_info)){
+                    $this->log .= '</br>Problème Esspionage';
+                    $this->error = false; 
+                }
 								
 				//Check $this->error = true return Green message and Bol true
 				if($this->error == true)
 				{
 					$this->log = '</br>Modification réussie: <b>'.$this->_data['denomination'].' ID: '.$this->last_id;
+
+                    if(!Mlog::log_exec($this->table, $this->id_client, 'Modification client', 'Update'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
 				//Check $this->error = false return Red message and Bol false	
 				}else{
 					$this->log .= '</br>Modification réussie: <b>'.$this->_data['denomination'];
@@ -416,6 +475,10 @@ class Mclients {
     		
     		$this->error = true;
     		$this->log .='</br>Suppression réussie ';
+            if(!Mlog::log_exec($this->table, $this->id_client, 'Suppression client', 'Delete'))
+            {
+                        $this->log .= '</br>Un problème de log ';
+            }
     	}
     	//check if last error is true then return true else rturn false.
     	if($this->error == false){

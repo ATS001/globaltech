@@ -16,8 +16,16 @@ if (MInit::form_verif('editecheance_contrat', false)) {
         'checker_tkn_frm' => Mreq::tp('checker_tkn_frm'),
         //'idcontrat' => Mreq::tp('idcontrat'),
         'date_echeance' => Mreq::tp('date_echeance'),
-        'commentaire' => Mreq::tp('commentaire'),
+        'montant'       => Mreq::tp('montant') ,
+        'commentaire'   => Mreq::tp('commentaire'),
     );
+
+    $date_fin=Mreq::tp('dat_fn');
+    $date_effet=Mreq::tp('dat_ef');
+    
+    $echeance=new Mcontrat();
+    $date_echeance=$echeance->verif_date_echeance($posted_data['tkn_frm'],date('Y-m-d',strtotime($posted_data['date_echeance'])),Mreq::tp('id'));
+    
 
     $checker = null;
     $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
@@ -36,13 +44,38 @@ if (MInit::form_verif('editecheance_contrat', false)) {
         $empty_list .= "<li>Date d\'échéance</li>";
         $checker = 1;
     }
+    if($posted_data['montant'] == NULL OR $posted_data['montant'] == '0'){
+
+        $empty_list .= "<li>Montant TTC à facturer</li>";
+        $checker = 1;
+    }
 
     $empty_list .= "</ul>";
     if ($checker == 1) {
         exit("0#$empty_list");
     }
 
+    if(date('Y-m-d', strtotime($posted_data['date_echeance'])) >= date('Y-m-d', strtotime($date_fin))  or date('Y-m-d', strtotime($posted_data['date_echeance'])) <= date('Y-m-d', strtotime($date_effet)) )
+    {
 
+            $date_ech = "<ul>La date d'échéance doit être supérieur de la date d'effet et  inférieur de la date de fin !!!</ul>" ;
+            $checker = 2;
+    }
+
+    if($checker == 2)
+    {
+            exit("0#$date_ech");
+    }
+
+    if( $date_echeance == TRUE)
+    {
+            $date= "<ul>Date d'échéance existe déjà</ul>";
+            $checker = 3;
+    }
+    if($checker == 3)
+    {
+            exit("0#$date");
+    }
     //End check empty element
 
 
@@ -56,7 +89,7 @@ if (MInit::form_verif('editecheance_contrat', false)) {
         exit("1#" . $exist_echeance->log);
     } else {
 
-        exit("0#" . $exist_devis_d->log);
+        exit("0#" . $exist_echeance->log);
     }
 }
 

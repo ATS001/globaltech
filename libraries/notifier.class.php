@@ -40,7 +40,7 @@ class MNotifier
     	    AND task_action.notif = 1 
     	    AND task.app = '$app' 
     	    AND task_action.id = rules_action.action_id 
-    	    AND rules_action.userid = 1
+    	    AND rules_action.userid = $user
             )AND task.app = '$app' LIMIT 0,1 ";
     	
 
@@ -69,9 +69,10 @@ class MNotifier
     		$app   = $column['app'];
     		$table = $column['table'];
             //Get notification 
-            if($count_arr = $this->count_notif($app, $table))
+            if($count_arr = $this->count_notif($app, $table) )
             {
             	//var_dump($count_arr);
+              //  exit();
             	array_push($this->notif_array, $count_arr['0']);
 
             }

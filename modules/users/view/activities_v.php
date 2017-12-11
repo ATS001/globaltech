@@ -1,91 +1,106 @@
-<div class="pull-right tableTools-container">
-	<div class="btn-group btn-overlap">
-		<?php TableTools::btn_add('compte', 'Page de profil', Null, $exec = NULL, 'reply');   ?>			
-	</div>
-</div>
-<div class="page-header">
-	<h1>
-		Liste des activités
-		<small>
-			<i class="ace-icon fa fa-angle-double-right"></i>
-		</small>
-	</h1>
-</div><!-- /.page-header -->
+<?php
+//Check if Post ID <==> Post idc or get_modul return false. 
+ if(!MInit::crypt_tp('id', null, 'D'))
+ {  
+    // returne message error red to client 
+    exit('3#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+ }
+//array colomn
+$array_column = array(
+    array(
+        'column' => '',
+        'type'   => '',
+        'alias'  => 'id',
+        'width'  => '5',
+        'header' => 'ID',
+        'align'  => 'C'
+    ),
+    array(
+        'column' => '',
+        'type'   => '',
+        'alias'  => 'operation',
+        'width'  => '35',
+        'header' => 'Operation',
+        'align'  => 'L'
+    ),
+    array(
+        'column' => '',
+        'type'   => '',
+        'alias'  => 'nom',
+        'width'  => '25',
+        'header' => 'Utilisateur',
+        'align'  => 'L'
+    ),
+    
+    array(
+        'column' => '',
+        'type'   => '',
+        'alias'  => 'date_operation',
+        'width'  => '15',
+        'header' => 'Date opération',
+        'align'  => 'C'
+    ),
+    
+ );
+//Get info utilisateur to add into title
+$user = new Musers();
+$user->id_user = Mreq::tp('id');
+$user->get_user();
+$uesr_infos = $user->g('fnom').' '.$user->g('lnom').' -'.$user->g('id').'- #'.$user->g('nom');
+//Creat new instance
+$html_data_table = new Mdatatable();
+$html_data_table->columns_html = $array_column;
+$html_data_table->title_module = "Activités de : $uesr_infos";
+$html_data_table->task = 'activities';
+$html_data_table->js_extra_data = MInit::crypt_tp('id', Mreq::tp('id'));
+//Set Button return if need
+$html_data_table->btn_return = array('task'=>'compte', 'title'=>'Page de Profil', 'data'=> MInit::crypt_tp('id', Mreq::tp('id')));
 
-<div class="row">
-	<div class="col-xs-12">
-	
-
-		<div class="table-header">
-			Liste "Activités" 
-		</div>
-		<div>
-			<table id="activities_grid" class="table table-bordered table-condensed table-hover table-striped dataTable no-footer">
-				<thead>
-					<tr>						
-						<th>
-							Id
-						</th>
-						<th>
-							Opération
-						</th>
-						<th>
-							Utilisateur
-						</th>
-						<th>
-							Date d'opération
-						</th>
-						<th>
-							#
-						</th>
-				
-					</tr>
-				</thead>
-			</table>
-		</div>
-	</div>
-</div>
-<script type="text/javascript">
-
-
-$(document).ready(function() {
-	
-	var table = $('#activities_grid').DataTable({
-
-		bProcessing: true,
-		//notifcol : 3,
-		serverSide: true,
-		//Personnalisation des collonne et style d'ordre (asc or desc) for multiple columns order we should use [[3,'desc'],[colonne,'ordre']],
-		
-		order: [[3,'desc']],
-		
-		ajax_url:"activities",
-	
-
-
-                aoColumns: [
-                    {"sClass": "left","sWidth":"5%"}, 
-                    {"sClass": "left","sWidth":"40%"},
-                    {"sClass": "left","sWidth":"30%"}, 
-                    {"sClass": "left","sWidth":"20%"}, 
-                    {"sClass": "left","sWidth":"5%"}, 
-                    ],
-                });
-      
-
-$('#activities_grid').on('click', 'tr button', function() {
-	var $row = $(this).closest('tr')
-	//alert(table.cell($row, 0).data());
-	append_drop_menu('activities', table.cell($row, 0).data(), '.btn_action')
-});
-
-$('#id_search').on('keyup', function () {
-		table.column(0).search( $(this).val() )
-		.draw();
-		
-});
+if(!$data = $html_data_table->table_html())
+{
+    exit("0#".$html_data_table->log);
+}else{
+    echo $data;
+}
 
 
-});
 
-</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

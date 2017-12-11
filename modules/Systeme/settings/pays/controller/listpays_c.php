@@ -1,129 +1,73 @@
 <?php
-//SYS MRN ERP
-// Modul: pays => Controller Liste
-	
-	global $db;
-	$params = $columns = $totalRecords = $data = array();
-
-	$params = $_REQUEST;
-	
-	//define index of column
-	$columns = array( 
-		0 =>'id_pays',
-		1 =>'libelle', 
-		2 =>'nationalite',
-		3 =>'alpha',
-		4 =>'statut',
-		
-	);
-
-	//Format all variables
-
-	$colms = $tables = $joint = $where = $where_s=$sqlTot = $sqlRec = "";
-
-    // define used table.
-	$tables .= " ref_pays ";
-    // define joint and rtable elation
-	$joint .= " ";
-	// set sherched columns.(the final colm without comma)
-	$colms .= " ref_pays.id AS id_pays, ";	
-	$colms .= " ref_pays.pays as pays, ";
-	$colms .= " ref_pays.nationalite as nationalite, ";
-	$colms .= " ref_pays.alpha as alpha, ";
-
-	//define notif culomn to concatate with any colms.
-	//this is change style of button action to red
-	$notif_colms = TableTools::line_notif_new('ref_pays', 'pays');
-	$colms .= $notif_colms;
-
-	//difine if user have rule to show line depend of etat 
-	$where_etat_line = TableTools::where_etat_line('ref_pays', 'pays');
-	
+//array colomn
+$array_column = array(
+	array(
+        'column' => 'ref_pays.id',
+        'type'   => 'int',
+        'alias'  => 'id',
+        'width'  => '5',
+        'header' => 'ID',
+        'align'  => 'C'
+    ),
+    array(
+        'column' => 'ref_pays.pays',
+        'type'   => '',
+        'alias'  => 'pays',
+        'width'  => '15',
+        'header' => 'Pays',
+        'align'  => 'L'
+    ),
+    array(
+        'column' => 'ref_pays.nationalite',
+        'type'   => '',
+        'alias'  => 'nationalite',
+        'width'  => '15',
+        'header' => 'Nationalité',
+        'align'  => 'L'
+    ),
+    array(
+        'column' => 'ref_pays.alpha',
+        'type'   => '',
+        'alias'  => 'alpha',
+        'width'  => '15',
+        'header' => 'Code du pays',
+        'align'  => 'C'
+    ),
+    array(
+        'column' => 'statut',
+        'type'   => '',
+        'alias'  => 'statut',
+        'width'  => '15',
+        'header' => 'Statut',
+        'align'  => 'C'
+    ),
     
-	// check search value exist
-	if( !empty($params['search']['value']) or Mreq::tp('id_search') != NULL)  {
-
-		$serch_value = str_replace('+',' ',$params['search']['value']);
-        //Format where in case joint isset  
-	    $where_s .= $joint == NULL? " WHERE " : " AND ";
-
-
-		$where_s .=" (ref_pays.pays LIKE '%".$serch_value."%' ";  
-		$where_s .=" OR ref_pays.nationalite LIKE '%".$serch_value."%' ";
-		$where_s .=" OR ref_pays.alpha LIKE '%".$serch_value."%' )";
-
-		$where_s .= TableTools::where_search_etat('ref_pays', 'pays', $serch_value);
-
-	}
-
-	$where .= $where_etat_line;
-	$where .= $joint;
-	$where .= $where_s == NULL ? NULL : $where_s;
-	// getting total number records without any search
-	$sql = "SELECT $colms  FROM  $tables";
-	$sqlTot .= $sql;
-	$sqlRec .= $sql;
-	//concatenate search sql if value exist
-	if(isset($where) && $where != '') {
-
-		$sqlTot .= $where;
-		$sqlRec .= $where;
-	}
-
-	//if we use notification we must ordring lines by nofication rule in first
-	//Change ('notif', status) with ('notif', column where notif code is concated)
-	//on case of order by other parametre this one is disabled 
-    $order_notif = $params['order'][0]['column'] == 0 ? " CASE WHEN LOCATE('notif', statut) = 0  THEN 0 ELSE 1 END DESC ," : NULL;
-
-    
-
- 	$sqlRec .=  " ORDER BY $order_notif ". $columns[$params['order'][0]['column']]."   ".$params['order'][0]['dir']."  LIMIT ".$params['start']." ,".$params['length']." ";
+ );
+//Creat new instance
+$list_data_table = new Mdatatable();
+//Set tabels used in Query
+$list_data_table->tables = array('ref_pays');
+//Set Jointure
+$list_data_table->joint = '';
+//Call all columns
+$list_data_table->columns = $array_column;
+//Set main table of Query
+$list_data_table->main_table = 'ref_pays';
+//Set Task used for statut line
+$list_data_table->task = 'pays';
+//Set File name for export
+$list_data_table->file_name = 'liste_pays';
+//Set Title of report
+$list_data_table->title_report = 'Liste Pays';
+//Print JSON DATA
+if(!$data = $list_data_table->Query_maker())
+{
+    exit("0#".$list_data_table->log);
+}else{
+    echo $data;
+}
 
 
-    if (!$db->Query($sqlTot)) $db->Kill($db->Error()." SQLTOT $sqlTot");
-	//
-    $totalRecords = $db->RowCount();
-
-    //Export data to CSV File
-    if( Mreq::tp('export')==1 )
-    {
-    	
-    	$file_name = 'pays_list';
-    	$title     = 'Liste des pays ';
-    	if(Mreq::tp('format')=='csv')
-    	{
-    		$header    = array('ID', 'Pays','Nationalite','Code pays' ,'Statut');
-    		Minit::Export_xls($header, $file_name, $title);
-    	}else{
-    		$header    = array('ID'=>10, 'Pays'=>35, 'Nationalite'=>35,'Code pays'=> 10, 'Statut'=>10);
-    		Minit::Export_pdf($header, $file_name, $title);
-    	}
-    	  	
-
-    }
-    
-	//exit($sqlRec);
-    if (!$db->Query($sqlRec)) $db->Kill($db->Error()." SQLREC $sqlRec");
-	//
-    
-	//iterate on results row and create new index array of data
-	 while (!$db->EndOfSeek()) {
-      $row = $db->RowValue();
-	  $data[] = $row;
-	 }
-	//while( $row = mysqli_fetch_row($queryRecords) ) { 
-		//$data[] = $row;
-	//}	
-
-	$json_data = array(
-			"draw"            => intval( $params['draw'] ),   
-			"recordsTotal"    => intval( $totalRecords ),  
-			"recordsFiltered" => intval( $totalRecords),
-			"data"            => $data   // total data array
-			);
-
-	echo json_encode($json_data);  // send data as json format
-		
 
 ?>
 	

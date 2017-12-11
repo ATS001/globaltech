@@ -838,22 +838,50 @@ class MySQL
 		static public function make_table_head($headers = null)
 		{
 
+			$style = '<style type="text/css">
+				.row1
+				{
+					background-color: #eaebed;
+					border:1pt solid black;
+				}
+				.row0{
+					border:1px solid black;
+				}
+				.alignRight { text-align: right; }
+				.center{ text-align: center; }
+				</style>';
 			$html = "";
-			$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px; border:1pt solid black;\">\n";
+			$html .= $style;
+			$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px;\">\n";
 
-			$html .= "\t<tr style=\"background-color: #4245f4; color: #fff; font-weight: bold;  padding:15px; \">\n";
+			$html .= "\t<tr style=\"background-color: #495375; color: #fff; font-weight: bold;  padding:15px; \">\n";
+
 			foreach ($headers as $key => $value) {
 
-			//
+
+			//'Re'          => '5[#]center',
+           // 'Total HT'    => '15[#]alignRight
 				if(strpos($value, '[#]')){
 					$elem  = explode("[#]", $value);
 					$align = isset($elem[1]) ? $elem[1] : '';
 					$width = isset($elem[0]) ? $elem[0] : '15';
 					$width = 'style="width:'.$width.'%;"' ;
-					$align = 'class="'.$align.'"' ;
+					switch ($align) {
+					    case 'C':
+					        $align = 'class="center"' ;						
+						    break;
+					    case 'R':
+					        $align = 'class="alignRight"' ;						
+						    break;
+					    default:
+						    $align = 'class=""' ;
+						    break;
+				    }
+					
 				}
 
-				$html .= "\t\t<td $width $align>" . htmlspecialchars($key) . "</td>\n";
+
+				$html .= "\t\t<td $width class=\"center\">" . htmlspecialchars($key) . "</td>\n";
 			}
 			$html .= "\t</tr>\n";
 			$html .= "</table>";
@@ -863,11 +891,13 @@ class MySQL
 		private function make_table_body($data, $style)
 		{
 			$html = "";
+
 			$member_array = get_object_vars($data);
 			$keys_data  = array_keys($member_array);
 			$styl_array = array_values($style);
 
 					//print_r($data);
+            
 
 			$array_styl_last = array_combine($keys_data, $styl_array);
 
@@ -878,10 +908,20 @@ class MySQL
 					$align = isset($elem[1]) ? $elem[1] : '';
 					$width = isset($elem[0]) ? $elem[0] : '15';
 					$width = 'style="width:'.$width.'%;"' ;
-					$align = 'class="'.$align.'"' ;
+					switch ($align) {
+					    case 'C':
+					        $align_f = 'class="center"' ;						
+						    break;
+					    case 'R':
+					        $align_f = 'class="alignRight"' ;						
+						    break;
+					    default:
+						    $align_f = 'class=""' ;
+						    break;
+				    }
 				}
 
-				$html .= "\t\t<td $width $align>" . htmlspecialchars($value) . "</td>\n";
+				$html .= "\t\t<td $width $align_f>" . htmlspecialchars($value) . "</td>\n";
 			}
 
 
@@ -915,14 +955,14 @@ class MySQL
 				.center{ text-align: center; }
 				</style>';
 				$html .= $style;
-				$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px; border:1pt solid black;\">\n";
+				$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px;\">\n";
 				$this->MoveFirst();
 
                 //$html .= $this->make_table_head($headers, $styleData);
 				$i = 0;
 				while ($member = mysql_fetch_object($this->last_result))
 				{					
-					$html .= "\t<tr class=\"row".($i++ & 1)."\">\n";	
+					$html .= "\t<tr nobr=\"true\" class=\"row".($i++ & 1)."\">\n";	
 					$html .= $this->make_table_body($member, $headers);
 					$html .= "\t</tr>\n";
 
@@ -939,6 +979,37 @@ class MySQL
 
 		return $html;
 	}
+
+    /**
+     * [Generate_reference  Get max or missing rank] 
+     * table must have culomn named reference else return false
+     * @param [type] $table [table of element ]
+     * @param [type] $abr   [abreviation]
+     * @return [string or false] [<description>]
+     */
+    public function Generate_reference($table, $abr) 
+    {
+        //SET Ranking value
+    	$this->QuerySingleValue0('SET @i = 1 ;');
+    	$sql_req = "SELECT MAX(IF(@i = id, @i := id + 1, @i)) AS next_ref FROM  (SELECT ( SUBSTRING_INDEX( SUBSTRING_INDEX(a.reference, '-', - 1), '/', 1 ) * 1 ) AS id  FROM $table a WHERE   SUBSTRING_INDEX(a.reference, '/', - 1) = YEAR(CURDATE())  ORDER BY id) AS refs ORDER BY id ;";
+
+    	$max_id = $this->QuerySingleValue0($sql_req);
+    	$max_id = $max_id == 0 ? 1 : $max_id;
+        //$lent
+    	if($max_id != '0')
+    	{  
+            
+            
+    		$lettre_ste = Msetting::get_set('abr_ste');
+    		$lettre_ste = $lettre_ste == null ? null : $lettre_ste.'_';
+        	$num_padded = sprintf("%04d", $max_id); //Format Number to 4 char with 0
+        	$reference = $lettre_ste.$abr.'-' . $num_padded . '/' . date('Y');
+        }else{
+        	return false;
+        }
+        
+        return $reference;
+    }
 
 		/**
 	 * This function returns the last query as an HTML table
@@ -1491,7 +1562,7 @@ class MySQL
 		$this->Query($sql);
 		if ($this->RowCount() > 0 && $this->GetColumnCount() > 0) {
 			$row = $this->RowArray(0, MYSQL_NUM);
-			$returned = $row[0] == NULL?"0":$row[0];
+			$returned = $row[0] == NULL? "0" : $row[0];
 			
 			return $returned;
 
@@ -2244,6 +2315,10 @@ class MySQL
 	 * @return boolean Returns TRUE on success or FALSE on error
 	 */
 	public function After_update($table, $id, $arr_new, $arr_old) {
+		/*var_dump($arr_new);
+		var_dump($arr_old);
+		exit();*/
+
 		$aReturn = array();
 		$error   = true;
 		$updt_id = MD5(uniqid(rand(), true));
@@ -2261,6 +2336,7 @@ class MySQL
 				}
 			}
 		}
+		
         //Exploit returned Array	
 		foreach ($aReturn as $key_g => $values) {
 			foreach ($values as $key => $value) {

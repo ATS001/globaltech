@@ -2,15 +2,23 @@
 $form = new Mform('add_detaildevis', 'add_detaildevis', '', 'devis', '0', 'is_modal');
 //token main form
 $form->input_hidden('tkn_frm', Mreq::tp('tkn'));
+$form->input_hidden('tva_d', 'O');
+//Type Produit
+
+$hard_code_type_produit = '<label style="margin-left:15px;margin-right : 20px;">Catégorie: </label><select id="categ_produit" name="categ_produit" class="chosen-select col-xs-12 col-sm-6" chosen-class="'.((6 * 100) / 12).'" ><option >----</option></select>';
+$type_produit_array[]  = array('required', 'true', 'Choisir un Type Produit');
+$form->select_table('Type Produit', 'type_produit', 3, 'ref_types_produits', 'id', 'type_produit' , 'type_produit', $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat = 1' , $type_produit_array, $hard_code_type_produit);
 //Produit
-$produit_array[]  = array('required', 'true', 'Choisir un Produit / Service');
-$form->select_table('Produit / Service', 'id_produit', 8, 'produits', 'id', 'designation' , 'designation', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $produit_array);
-$hard_code_pri_u_ht = '<label style="margin-left:15px;margin-right : 20px;">Prix Unité HT: </label><input id="prix_unitaire" name="prix_unitaire" value="0" class="input-large alignRight" type="text">';
+//$produit_array[]  = array('required', 'true', 'Choisir un Produit / Service');
+//$form->select_table('Produit / Service', 'id_produit', 8, 'produits', 'id', 'designation' , 'designation', $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat = 1' , $produit_array);
+$opt_produit = array('' => '------');
+$form->select('Produit / Service', 'id_produit', 8, $opt_produit, $indx = NULL ,$selected = NULL, $multi = NULL,  null);
+$hard_code_pri_u_ht = '<label style="margin-left:15px;margin-right : 20px;">Prix Unité HT: </label><input id="prix_unitaire" name="prix_unitaire" value="0" class="input-large alignRight" readonly="" type="text">';
 $hard_code_pri_u_ht .= '<span class="help-block returned_span">...</span>';
 //Réference
 $form->input('Réference', 'ref_produit', 'text' ,3, null, Null, $hard_code_pri_u_ht, 1);
 //Remise
-$hard_code_remis = '<label style="margin-left:15px;margin-right : 20px;">Valeur remise: </label><input id="remise_valeur_d" name="remise_valeur_d" class="input-large alignRight" value="0" type="text">';
+$hard_code_remis = '<label style="margin-left:15px;margin-right : 20px;">Valeur remise: </label><input id="remise_valeur_d" name="remise_valeur_d" class="input-large alignRight numeric" value="0" type="text">';
 //Type Remise
 //select($input_desc, $input_id, $input_class, $options, $indx = NULL ,$selected = NULL, $multi = NULL, $hard_code = null )
 $typ_remise = array('P' => 'Pourcentage' , 'M' => 'Montant' );
@@ -35,6 +43,9 @@ $form->render();
 <script type="text/javascript">
 //On change produit get all informations.
 $(document).ready(function() {
+    
+    //Get TVA value from main TVA select 
+    $('#tva_d').val($('#tva').val()); 
 	 //called when key is pressed in textbox
 	 function calculat_devis($prix_u, $qte, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc)
 	 {
@@ -55,7 +66,7 @@ $(document).ready(function() {
     	}else{
     		var $prix_u_remised = $prix_u;
     	}
-        alert($tva);
+        
     	//Total HT 
     	var $total_ht = $prix_u_remised * $qte;
     	//Calculate TVA
@@ -82,27 +93,121 @@ $(document).ready(function() {
     		url  : '?_tsk=add_detaildevis&ajax=1',
     		type : 'POST',
     		data : '&act=1&id='+$id_produit+'&<?php echo MInit::crypt_tp('exec', 'produit_info') ?>',
-    		dataType:"html",
+    		dataType:"JSON",
     		success: function(data){
-    			var data_arry = data.split("#");
-    			if(data_arry[0]==0){
-    				ajax_loadmessage(data_arry[1],'nok',5000)
+    			
+    			if(data['error']){
+    				ajax_loadmessage(data['error'] ,'nok',5000)
+                    $('#prix_unitaire').val(0);
+                    $('#ref_produit').val(null);
+                    $('#prix_unitaire').trigger('change');
+                    $('.returned_span').text('...');
+                    $('#label_qte').text('Quantité: ');
+                    return false;
     			}else{
-    				var arr = new Array();
-    				arr = JSON.parse(data);
+                                        
+                    var table = $('#table_details_devis').DataTable();
+                    var $abn = data['abn'] == true ? 'abn' : '';
 
-    				$('#ref_produit').val(arr['ref']);
-    				$('#prix_unitaire').val(arr['prix']);
-    				$('.returned_span').remove();
-    				$('#ref_produit').parent('div').after(arr['prix_base']);
-    				$('#prix_unitaire').trigger('change'); 
-    			}
+                    if (table.data().count()) {
+                        if(data['abn'] == true){
+                            ajax_loadmessage("Impossible d'insérer un abonnement avec autres produits" ,'nok',5000);
+                            return false;
+                        } 
+                    }
+                    $('#label_qte').text('Quantité: ('+data['unite_vente']+')');
+                    $('#prix_unitaire').val(data['prix_vente']);
+                    $('#ref_produit').val(data['reference']);
+                    $('.returned_span').remove();
+                    if(data['prix_vendu'] == 0){
+                     $('#ref_produit').parent('div').after('<span class="help-block returned_span">Ce produit n\' pas été vendu avant!</span>'); 
+                    }else{
+                        $('#ref_produit').parent('div').after('<span class="help-block returned_span">Ce produit étais vendu à :'+data['prix_vendu']+'</span>');
+                    }
+                    $('#prix_unitaire').trigger('change');
+                    //check if have already rox in table stop if produit is Abonnement
+                    $('#is_abn').remove();
+                    $('#addRow').after('<input id="is_abn" type="hidden" value="'+$abn+'"/>');
 
-    		}
-    	})
+                    
+                }
+            }//end success
+        });
 
     	var validator = $('#add_detaildevis').validate();
     	validator.resetForm();
+
+    });
+    $('#type_produit').change(function(e) {
+        var $type_produit = $(this).val();
+
+        if($type_produit == null){
+            return true;
+        }
+        $('#categ_produit').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
+        //$('#categ_produit').trigger('change');
+        $('#id_produit').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
+         $('#prix_unitaire').val('0').trigger('change');
+        $.ajax({
+
+            cache: false,
+            url  : '?_tsk=add_detaildevis&ajax=1',
+            type : 'POST',
+            data : '&act=1&id='+$type_produit+'&<?php echo MInit::crypt_tp('exec', 'load_select_categ') ?>',
+            dataType:"JSON",
+            success: function(data){
+               
+                if(data['error'] == false){
+                    ajax_loadmessage(data['mess'] ,'nok',5000);
+                    return false;
+                }else{
+                    $.each(data, function(key, value) {   
+                     $('#categ_produit')
+                     .append($("<option></option>")
+                         .attr("value",key)
+                         .text(value)); 
+                    });
+                    $('#categ_produit').trigger("chosen:updated");
+                   
+                }
+                
+                
+            }//end success
+        });
+    });
+    $('#categ_produit').change(function(e) {
+        var $categ_produit = $(this).val();
+
+        if($categ_produit == null){
+            return true;
+        }
+        $('#id_produit').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
+        $('#prix_unitaire').val('0').trigger('change');
+        $.ajax({
+
+            cache: false,
+            url  : '?_tsk=add_detaildevis&ajax=1',
+            type : 'POST',
+            data : '&act=1&id='+$categ_produit+'&<?php echo MInit::crypt_tp('exec', 'load_select_produit') ?>',
+            dataType:"JSON",
+            success: function(data){
+                if(data['error'] == false){
+                    ajax_loadmessage(data['mess'] ,'nok',5000);
+                    return false;
+                }else{
+                    $.each(data, function(key, value) {   
+                   $('#id_produit')
+                   .append($("<option></option>")
+                   .attr("value",key)
+                   .text(value)); 
+                   });
+                   $('#id_produit').trigger("chosen:updated");
+
+                }
+                
+                
+            }//end success
+        });
 
     });
     $('#qte, #prix_unitaire, #remise_valeur_d, #type_remise_d').bind('input change',function() {
@@ -151,10 +256,6 @@ $(document).ready(function() {
         }
 
     });
-
-
-
-    
 });	
 
 </script>

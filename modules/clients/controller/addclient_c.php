@@ -7,7 +7,7 @@ if(MInit::form_verif('addclient',false))
 {
 	
   $posted_data = array(
-   'code'           => Mreq::tp('code') ,
+   'reference'      => Mreq::tp('reference') ,
    'denomination'   => Mreq::tp('denomination') ,
    'id_categorie'   => Mreq::tp('id_categorie') ,
    'r_social'       => Mreq::tp('r_social') ,
@@ -93,11 +93,11 @@ if(MInit::form_verif('addclient',false))
     $empty_list .= "<li>Pays</li>";
     $checker = 1;
   }
-  if($posted_data['id_ville'] == NULL){
+  /*if($posted_data['id_ville'] == NULL){
 
     $empty_list .= "<li>Ville</li>";
     $checker = 1;
-  }
+  }*/
   if($posted_data['email'] == NULL){
 
     $empty_list .= "<li>Email</li>";

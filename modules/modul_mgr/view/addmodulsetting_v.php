@@ -55,8 +55,8 @@ $form->input('Déscription', 'description', 'text', 10, null, $description_array
 //Tables de module
 $table_array[]  = array('required', 'true', 'Insérer au moin une table utilisée' );
 $table_array[]  = array('minlength', '3', 'Minimum 3 caractères' );
-$form->input('Tables utilisées', 'tables', 'text', 10, null, $table_array);
-$form->input_tag('tables');
+$form->input('Table utilisées', 'tables', 'text', 4, null, $table_array);
+//$form->input_tag('tables');
 //Titre bloc default TASK
 $form->bloc_title('Informations Application par défault');
 

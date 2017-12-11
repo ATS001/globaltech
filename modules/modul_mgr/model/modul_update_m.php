@@ -26,7 +26,7 @@ class Update_modul extends Mmodul
         if(!$db->Query($sql_isert))
 		{
 			$this->error = false;
-			$this->log  .= '<li>  Erreur Store existing rules ';
+			$this->log  .= '<li>  Erreur Store existing rules <br/> No have rules on Rules table yet';
 			$this->log  .= $db->Error();
 		}else{
 			$this->error = true;
@@ -179,15 +179,6 @@ class Update_modul extends Mmodul
 	}
 	
 
-	
-
-	
-
-
-
-
-
-	
 }
 
 ?>

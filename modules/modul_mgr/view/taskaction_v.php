@@ -1,124 +1,88 @@
 <?php
-
- 
- $info_task = new Mmodul();
- $info_task->id_task = Mreq::tp('id');
- 
- if(!MInit::crypt_tp('id', null, 'D')  or !$info_task->get_task())
- { 	
- 	exit('3#'.$info_task->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+//Check if Post ID <==> Post idc or get_modul return false. 
+ if(!MInit::crypt_tp('id', null, 'D'))
+ {  
+    // returne message error red to client 
+    exit('3#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
  }
+//array colomn
+$array_column = array(
+	array(
+        'column' => '',
+        'type'   => '',
+        'alias'  => 'id',
+        'width'  => '5',
+        'header' => 'ID',
+        'align'  => 'C'
+    ),
+    array(
+        'column' => '',
+        'type'   => '',
+        'alias'  => 'descrip',
+        'width'  => '20',
+        'header' => 'Description',
+        'align'  => 'L'
+    ),
+    array(
+        'column' => '',
+        'type'   => '',
+        'alias'  => 'message_etat',
+        'width'  => '15',
+        'header' => 'Message Etat',
+        'align'  => 'L'
+    ),
+    array(
+        'column' => '',
+        'type'   => '',
+        'alias'  => 'type',
+        'width'  => '10',
+        'header' => 'Client',
+        'align'  => 'L'
+    ),
+    
+    array(
+        'column' => '',
+        'type'   => 'int',
+        'alias'  => 'etat_line',
+        'width'  => '10',
+        'header' => 'Etat Line',
+        'align'  => 'C'
+    ),
+    array(
+        'column' => '',
+        'type'   => '',
+        'alias'  => 'notif',
+        'width'  => '10',
+        'header' => 'Notification',
+        'align'  => 'C'
+    ),
+    
+ );
+//Get info utilisateur to add into title
+$info_task = new Mmodul();
+$info_task->id_task = Mreq::tp('id');
+$info_task->get_task();
+$task_name = $info_task->task_info['dscrip'];
+$id_modul = $info_task->task_info['modul'];
+//Creat new instance
+$html_data_table = new Mdatatable();
+$html_data_table->columns_html = $array_column;
+$html_data_table->title_module = "Task action pour  $task_name";
+$html_data_table->task = 'taskaction';
+$html_data_table->btn_add_data = MInit::crypt_tp('id', Mreq::tp('id'));
+$html_data_table->js_extra_data = MInit::crypt_tp('id', Mreq::tp('id'));
+//$html_data_table->js_order = '[ 0, "DESC" ]';
+//Set Button return if need
+$html_data_table->btn_return = array('task'=>'task', 'title'=>'Liste Task modul', 'data'=> MInit::crypt_tp('id', $id_modul));
 
- $id_modul = $info_task->task_info['modul'];
+if(!$data = $html_data_table->table_html())
+{
+    exit("0#".$html_data_table->log);
+}else{
+    echo $data;
+}
+?>
 
-
-
-
- ?>
-<div class="pull-right tableTools-container">
-	<div class="btn-group btn-overlap">
-					
-		<?php 
-		TableTools::btn_add('task', 'Liste Application Modul ('.$id_modul.') ', MInit::crypt_tp('id',$id_modul), $exec = NULL, 'reply'); 
-
-		?>
-
-					
-	</div>
-</div>  
-<div class="page-header">
-	<h1>
-		Liste Action application
-		<small>
-			<i class="ace-icon fa fa-angle-double-left"></i>
-		</small>
-		 <?php echo $info_task->task_info['dscrip']. ' - '. $info_task->id_task. ' - ';?>
-		<small>
-			<i class="ace-icon fa fa-angle-double-right"></i>
-		</small>
-	</h1>
-</div><!-- /.page-header -->
-
-<div class="row">
-	<div class="col-xs-12">
-		<div class="clearfix">
-			<div class="pull-right tableTools-container">
-				<div class="btn-group btn-overlap">
-					
-					<?php TableTools::btn_add('addtaskaction','Ajouter Task Action',MInit::crypt_tp('id',$info_task->id_task)); ?>
-					
-				</div>
-			</div>
-		</div>
-
-		<div class="table-header">
-			<?php  echo ACTIV_APP  ?> " <?php echo $info_task->task_info['dscrip']; ?>"
-		</div>
-<div>
-			<table id="task_action_grid" class="table table-bordered table-condensed table-hover table-striped dataTable no-footer">
-				<thead>
-					<tr>
-						
-						<th>
-							ID
-						</th>
-						<th>
-							Déscription
-						</th>
-						<th>
-							Type
-						</th>
-						<th>
-							Etat line
-						</th>
-						<th>
-							Notif
-						</th>
-						<th>
-							#
-						</th>
-					</tr>
-				</thead>
-			</table>
-		</div>
-	</div>
-</div>
-<script type="text/javascript">
-
-
-$(document).ready(function(){
-	
-	var table = $('#task_action_grid').DataTable({
-		bProcessing: true,
-		serverSide: true,
-		ajax_url:"taskaction",
-		extra_data : "id=<?php echo Mreq::tp('id');?>",
-		
-
-                aoColumns: [
-                   {"sClass": "center","sWidth":"5%"}, //
-                   
-                   {"sClass": "left","sWidth":"35%"},
-                   {"sClass": "left","sWidth":"20%"},
-                   {"sClass": "left","sWidth":"15%"},
-                   {"sClass": "left","sWidth":"20%"},
-                   {"sClass": "center","sWidth":"5%"},
-
-
-
-                   ],
-
-    });
-
-	$('#task_action_grid').on('click', 'tr button', function() {
-		var $row = $(this).closest('tr')
-	    //alert(table.cell($row, 0).data());
-	    append_drop_menu('taskaction', table.cell($row, 0).data(), '.btn_action')
-    });
-
- 
-});
-</script>
 
 
 

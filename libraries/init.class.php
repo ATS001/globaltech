@@ -275,6 +275,7 @@ static public function pub_copy_file($old_file, $new_file, $path, $mode = 0777){
 // ---------------------------------------------------   
       static public function creat_thumbail($img,$x,$y)
       {
+       
        $path_parts = pathinfo($img);
        $path       = $path_parts['dirname'];
        $image      = new Image($img);
@@ -488,7 +489,10 @@ static public function pub_copy_file($old_file, $new_file, $path, $mode = 0777){
    $file_name   = $file_name.'_' .date('d_m_Y_H_i_s');
    $file        = $db->GetCSV($header, $file_name.'.csv');
    $file_export = MPATH_TEMP.$file_name.'.xls';
-
+   $count_col   = count($header)-1;
+   $alphabet = range('A', 'Z');
+   $end_rang_header = $alphabet[$count_col];
+   
 
 
 
@@ -504,7 +508,7 @@ static public function pub_copy_file($old_file, $new_file, $path, $mode = 0777){
    $objPHPExcel = $objReader->load($file);
 
    $objPHPExcel->getActiveSheet()
-    ->getStyle('A1:D1')
+    ->getStyle('A1:'.$end_rang_header.'1')
     ->getFill()
     ->setFillType(PHPExcel_Style_Fill::FILL_SOLID)
     ->getStartColor()
@@ -522,7 +526,7 @@ static public function pub_copy_file($old_file, $new_file, $path, $mode = 0777){
 
    $objWriter = PHPExcel_IOFactory::createWriter($objPHPExcel, 'Excel5');
    $objPHPExcel->setActiveSheetIndex(0);
-   foreach(range('B','G') as $columnID) {
+   foreach(range('B',$end_rang_header) as $columnID) {
     $objPHPExcel->getActiveSheet()->getColumnDimension($columnID)
         ->setAutoSize(true);
    }
@@ -538,7 +542,7 @@ static public function pub_copy_file($old_file, $new_file, $path, $mode = 0777){
    
  }
 
- static public function Export_pdf($header, $file_name, $title = NULL)
+ static public function Export_pdf($headers, $file_name, $title = NULL)
  {
    global $db;
 
@@ -548,7 +552,11 @@ static public function pub_copy_file($old_file, $new_file, $path, $mode = 0777){
     exit("2#Le résultat dépasse 400 lignes, merci d'exporter en format XLS. ");
    }
    $file_export = MPATH_TEMP.$file_name.'_' .date('d_m_Y_H_i_s').'.pdf';
-   $html = $db->GetHTML($header, true, null, $styleHeader = null, $styleData = null);
+   
+   $tableau_head = MySQL::make_table_head($headers);
+   $tableau_body = $db->GetMTable_pdf($headers);
+   $title_report = $title;
+   $html = $tableau_body;//$db->GetHTML($header, true, null, $styleHeader = null, $styleData = null);
    //Load template 
    include_once MPATH_THEMES.'pdf_template/export_list_pdf.php';
 
@@ -561,7 +569,7 @@ static public function pub_copy_file($old_file, $new_file, $path, $mode = 0777){
    }
 
  }
-
+ 
  /**
   * Check if is REG EXPRESSION
   * return bool

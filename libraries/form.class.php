@@ -422,7 +422,7 @@ $this->gallery_bloc_js .= "$('#btn_add_pic').on('click', '.this_add_pic', functi
       $readonly_use = $readonly == null ? null : 'readonly=""';
     	$input = '<div class="space-2"></div>
     	<div class="form-group">
-         <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">'.$input_desc.':</label>
+         <label id="label_'.$input_id.'" class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">'.$input_desc.':</label>
 
          <div class="col-xs-12 col-sm-9">
              <div class="clearfix">';
@@ -737,9 +737,9 @@ if($js_array != null)
              <div class="clearfix">
                  <select '.$multiple.'  id="'.$input_id.'" name="'.$input_id.'" class="chosen-select col-xs-12 col-sm-'.$input_class.' " chosen-class="'.$class_chosen.'" >';
 
-                     $idex = $indx != NULL ? '<option value="">'.$indx.'</option>' : NULL;
+                     $index = $indx != NULL ? '<option value="">'.$indx.'</option>' : NULL;
 
-                     $output .= $indx;
+                     $output .= $index;
                      foreach($options as $value => $text):
                       if($selected != NULL){  
                        $select =  $value == $selected ? "selected":""; 
@@ -832,7 +832,7 @@ public function draw_datatabe_form($id_table, $verif_value, $columns = array(), 
   });";
   $button_add_row = '<a id="addRow" href="#" rel="'.$url_addrow.'" data="&tkn='.$verif_value.'" data_titre="'.$titr_addrow.'" class=" btn btn-white btn-info btn-bold  spaced "><span><i class="fa fa-plus"></i> Ajouter une ligne</span></a><input type="hidden" name="tkn_frm" value="'.$verif_value.'">';
   $js_table = "var t = $('#".$id_table."').DataTable({";
-  $js_table .= "bProcessing: true, serverSide: true, ajax_url:'".$url_data."', extra_data:'tkn_frm=".$verif_value."',aoColumns: [";
+  $js_table .= "bSort: false, bProcessing: true, serverSide: true, ajax_url:'".$url_data."', extra_data:'tkn_frm=".$verif_value."',aoColumns: [";
   $table = '<div class="space-2"></div>';
   $table .= '<div class="col-xs-12 '.$id_table.'">'.$button_add_row.'<table id="'.$id_table.'" class="display table table-bordered table-condensed table-hover table-striped dataTable no-footer" cellspacing="0">';
   $table .= '<thead><tr>';
@@ -851,6 +851,21 @@ public function draw_datatabe_form($id_table, $verif_value, $columns = array(), 
 
 }
 
+static public function load_select($table, $value, $text, $where = null)
+{
+  global $db;
+  $output = array();
+  $where = null ? null : ' WHERE '.$where;
+  $sql = "SELECT $value as val, $text as txt FROM $table $where order by $text limit 0,1000 ";
+  if ($db->Query($sql) && $db->RowCount()){
+      $output = $db->RecordsSelectArray();
+      
+  }else{
+    $output = $db->Error();
+  }
+  return $output;
+
+}
 
 }
 

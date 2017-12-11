@@ -15,7 +15,7 @@ if(MInit::form_verif('edit_detaildevis',false))
 		'ref_produit'     => Mreq::tp('ref_produit') ,
 		'qte'             => Mreq::tp('qte') ,
 		'prix_unitaire'   => Mreq::tp('prix_unitaire') ,
-		'tva'             => 'O' ,
+		'tva_d'           => Mreq::tp('tva_d') , 
 		'type_remise_d'   => Mreq::tp('type_remise_d') ,
 		'remise_valeur_d' => Mreq::tp('remise_valeur_d') ,
 		'total_ht'        => Mreq::tp('total_ht') ,
@@ -25,22 +25,37 @@ if(MInit::form_verif('edit_detaildevis',false))
 
 	$checker = null;
 	$empty_list = "Les champs suivants sont obligatoires:\n<ul>";
-	if($posted_data['checker_tkn_frm'] != MInit::cryptage($posted_data['tkn_frm'],1)){
-
-		$empty_list .= "<li>Le token Form est invalid</li>";
-		$checker = 1;
-	}
 	if($posted_data['id_produit'] == NULL){
 
 		$empty_list .= "<li>Produit / Service</li>";
 		$checker = 1;
 	}
-	if($posted_data['qte'] == NULL){
+	if($posted_data['qte'] == NULL OR !is_numeric($posted_data['qte'])){
 
 		$empty_list .= "<li>Quantité</li>";
 		$checker = 1;
 	}
-	if($posted_data['prix_unitaire'] == NULL OR $posted_data['prix_unitaire'] == '0' ){
+	if($posted_data['total_tva'] == NULL OR !is_numeric($posted_data['total_tva'])){
+
+		$empty_list .= "<li>Total TVA</li>";
+		$checker = 1;
+	}
+	if($posted_data['remise_valeur_d'] == NULL OR !is_numeric($posted_data['remise_valeur_d'])){
+
+		$empty_list .= "<li>Valeur Remise</li>";
+		$checker = 1;
+	}
+	if($posted_data['total_ht'] == NULL OR !is_numeric($posted_data['total_ht']) OR $posted_data['total_ht'] == 0){
+
+      $empty_list .= "<li>Total HT</li>";
+      $checker = 1;
+    }
+    if($posted_data['total_ttc'] == NULL OR !is_numeric($posted_data['total_ttc']) OR $posted_data['total_ttc'] == 0){
+
+      $empty_list .= "<li>Total TTC</li>";
+      $checker = 1;
+    }
+	if($posted_data['prix_unitaire'] == NULL OR $posted_data['prix_unitaire'] == '0' OR !is_numeric($posted_data['prix_unitaire'])){
 
 		$empty_list .= "<li>Prix unitaire</li>";
 		$checker = 1;
@@ -48,6 +63,11 @@ if(MInit::form_verif('edit_detaildevis',false))
 	if($posted_data['type_remise_d'] == NULL OR !in_array($posted_data['type_remise_d'],  array( 'P','M' ))){
 
 		$empty_list .= "<li>Type de remise</li>";
+		$checker = 1;
+	}
+	if($posted_data['tva_d'] == NULL OR !in_array($posted_data['tva_d'],  array( 'O','N' ))){
+
+		$empty_list .= "<li>TVA non valide</li>";
 		$checker = 1;
 	}
 

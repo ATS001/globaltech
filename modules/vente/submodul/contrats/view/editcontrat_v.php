@@ -8,7 +8,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_contrat->get_contrat()) {
     // returne message error red to client 
     exit('3#' . $info_contrat->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
-  $ref=$info_contrat->s('ref');
+  $ref=$info_contrat->s('reference');
 ?>
 
 <div class="pull-right tableTools-container">
@@ -44,22 +44,28 @@ $form->input_hidden('id', Mreq::tp('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
 
+
+
 //Reference
-$form->input_hidden('checker_reference', MInit::cryptage($info_contrat->s('ref'), 1));
-$form->input_hidden('ref', $info_contrat->s('ref'));
+$form->input_hidden('checker_reference', MInit::cryptage($info_contrat->s('reference'), 1));
+$form->input_hidden('ref', $info_contrat->s('reference'));
 //var_dump($info_contrat->g('ref').''.$info_contrat->s('ref').''.$info_contrat->g('date_fin'));
 //var_dump(Mreq::tp('id'));
 
 //////////////////////////////////////////////////////////////////////////////////////////
 //
 
+$list_devis = Mcontrat::select_devis($info_contrat->s('iddevis'));
+/*var_dump($list_devis);
+exit();*/
+
 //Devis
-$devis_array[]  = array('required', 'true', 'Choisir un devis');
-$form->select_table('Devis ', 'iddevis', 8, 'devis', 'id', 'reference' , 'reference', $indx = '------' , $info_contrat->s('iddevis'),$multi=NULL, $where=NULL, $devis_array);
+$form->select('Devis', 'iddevis', 8, $list_devis, '------', $info_contrat->s('iddevis'), null, null);
+
 
 //Date effet
 $array_date_effet[] = array('required', 'true', 'Insérer la date effet');
-$form->input_date('Date effet', 'date_effet', 4, $info_contrat->s('date_effet'), $array_date_effet);
+$form->input_date('Date début', 'date_effet', 4, $info_contrat->s('date_effet'), $array_date_effet);
 
 //Date fin
 $array_date_fin[] = array('required', 'true', 'Insérer la date de fin');
@@ -69,27 +75,36 @@ $form->input_date('Date de fin', 'date_fin', 4, $info_contrat->s('date_fin'), $a
 $ech_array[] = array('required', 'true', 'Choisir un type échéance');
 $form->select_table('Type échéance', 'idtype_echeance', 8, 'ref_type_echeance', 'id', 'id', 'type_echeance', $indx = '------', $info_contrat->s('idtype_echeance'), $multi = NULL, $where = NULL, $ech_array);
 
+// Facturation
+$facturation_array[]  = array('Début du mois' , 'D' );
+$facturation_array[]  = array('Fin du fin' , 'F' );
+$form->radio('Facturation', 'periode_fact', $info_contrat->s('periode_fact'), $facturation_array, '');
 
+
+//Commentaire
 $form->input_editor('Commentaire', 'commentaire', 8, $info_contrat->s('commentaire'), $js_array = null, $input_height = 50);
+
+//Date notif
+$array_date_notif[] = array('required', 'true', 'Insérer la date de notification');
+$form->input_date('Date notification', 'date_notif', 4, $info_contrat->s('date_notif'), $array_date_notif);
 
 //pj_id
 $form->input('Justification du contrat', 'pj', 'file', 6, 'Justification_client.pdf', null);
 $form->file_js('pj', 1000000, 'pdf', $info_contrat->s('pj'), 1);
 
 //pj_id
-$form->input('Photo', 'pj_photo', 'file', 6, 'Photo_client.jpeg', null);
-$form->file_js('pj_photo', 1000000, 'image', $info_contrat->s('pj_photo'), 1);
+/*$form->input('Photo', 'pj_photo', 'file', 6, 'Photo_client.jpeg', null);
+$form->file_js('pj_photo', 1000000, 'image', $info_contrat->s('pj_photo'), 1);*/
 
 //Table 
-$columns = array('id' => '1', 'Item' => '5', 'Date échéance' => '30', 'Commentaire' => '50', '#' => '5');
+$columns = array('id' => '1','Item' => '5', 'Date échéance' => '12','Montant TTC' => '20', 'Commentaire' => '52', '#' =>'5'   );
 $js_addfunct = 'var column = t.column(0);
      column.visible( ! column.visible() );';
 
 $verif_value = $info_contrat->s('tkn_frm');
-$form->draw_datatabe_form('table_echeance', $verif_value, $columns, 'addcontrat', 'addecheance_contrat', 'Ajouter une échéance', $js_addfunct);
 
-//
-///////////////////////////////////////////////////////////////////////////////////////////////
+
+$form->draw_datatabe_form('table_echeance', $verif_value, $columns, 'addcontrat', 'addecheance_contrat', 'Ajouter une échéance', $js_addfunct);
 
 
 $form->button('Enregistrer');
@@ -137,7 +152,7 @@ $form->render();
             }
             var $link = $(this).attr('rel');
             var $titre = $(this).attr('data_titre');
-            var $data = $(this).attr('data');
+            var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val();
             ajax_bbox_loader($link, $data, $titre, 'large')
 
         });
@@ -161,7 +176,7 @@ $form->render();
             }
             var $link = $(this).attr('rel');
             var $titre = 'Modifier détail contrat';
-            var $data = $(this).attr('data');
+            var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val();
             ajax_bbox_loader($link, $data, $titre, 'large')
 
         });

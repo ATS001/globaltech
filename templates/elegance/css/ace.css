@@ -8,7 +8,7 @@ body {
   padding-bottom: 0;
   font-family: 'Open Sans';
   font-size: 13px;
-  color: #393939;
+  
   line-height: 1.5;
 }
 .main-container:before {
@@ -236,6 +236,7 @@ li > ol {
 .list-unstyled,
 .list-inline {
   margin-left: 0;
+  margin-right: 50px;
 }
 .list-unstyled > li > .ace-icon:first-child,
 .list-inline > li > .ace-icon:first-child {
@@ -12372,10 +12373,14 @@ td .lbl:only-child {
   color: #ECB792;
 }
 .infobox-small {
-  width: 135px;
-  height: 52px;
+  float: left;
+  width: 16.33%;
+  height: 60px;
   text-align: left;
   padding-bottom: 5px;
+  padding-left: 8px;
+  padding-right: 8px;
+  position: relative;
 }
 .infobox-small > .infobox-icon,
 .infobox-small > .infobox-chart,
@@ -12386,6 +12391,7 @@ td .lbl:only-child {
   height: 42px;
   line-height: 38px;
   vertical-align: middle;
+  opacity: 0.5;
 }
 .infobox-small > .infobox-data {
   display: inline-block;

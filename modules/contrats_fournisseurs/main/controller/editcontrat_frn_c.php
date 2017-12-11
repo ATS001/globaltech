@@ -18,6 +18,7 @@ if (MInit::form_verif('editcontrat_frn', false)) {
    		'date_effet'       => Mreq::tp('date_effet') ,
    		'date_fin'    	   => Mreq::tp('date_fin') ,
   		'commentaire'      => Mreq::tp('commentaire') ,
+      'date_notif'       => Mreq::tp('date_notif') ,
    		'pj_id'            => Mreq::tp('pj-id')
   
    	);
@@ -47,9 +48,15 @@ if (MInit::form_verif('editcontrat_frn', false)) {
     $checker = 1;
   }
 
-  if($posted_data['commentaire'] == NULL){
+ /* if($posted_data['commentaire'] == NULL){
 
     $empty_list .= "<li>Commentaire</li>";
+    $checker = 1;
+  }*/
+
+  if($posted_data['date_notif'] == NULL){
+
+    $empty_list .= "<li>Date de notification</li>";
     $checker = 1;
   }
 
@@ -67,16 +74,28 @@ if (MInit::form_verif('editcontrat_frn', false)) {
   }
 
 
-  if($posted_data['date_fin'] <= $posted_data['date_effet']){
+  if(date('Y-m-d', strtotime($posted_data['date_fin'])) <= date('Y-m-d', strtotime($posted_data['date_effet'])) ){
 
-    $control_date = "<ul>La date de fin doit être supérieur de la date d'effet !!!</ul>";
-    $checker = 2;
-  }
+         $control_date = "<ul>La date de fin doit être supérieur de la date d'effet !!!</ul>";
+         $checker = 2;
+    }
 
-   if($checker == 2)
-  {
-    exit("0#$control_date");
-  }
+    if($checker == 2)
+    {
+         exit("0#$control_date");
+    }
+
+    if(date('Y-m-d', strtotime($posted_data['date_notif'])) >= date('Y-m-d', strtotime($posted_data['date_fin']))  or date('Y-m-d', strtotime($posted_data['date_notif'])) <= date('Y-m-d', strtotime($posted_data['date_effet'])) ){
+
+        $control_notif = "<ul>La date de notification doit être supérieur de la date d'effet et  inférieur de la date de fin !!!</ul>" ;
+        $checker = 3;
+    }
+
+    if($checker == 3)
+    {
+        exit("0#$control_notif");
+    }
+
     //End check empty element
 
 

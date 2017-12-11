@@ -50,15 +50,18 @@ $(document).ready(function(){
 					
 				}
 			},
-			error: function() {
+			error: function(reponse) {
+                reponse['responseText'] = typeof reponse['responseText'] == 'undefined'  ? '0' : reponse['responseText'];
+				var data_mes = reponse['responseText'].split('[#]')
 				bootbox.process({
 	    		    message:'Working',
 	            });
 	            $('#main-container').empty();
 	            $('#main-container').html('');
-				ajax_loadmessage('Déconnexion automatique','nok',5000)
+
+				//ajax_loadmessage('Déconnexion automatique','nok',5000)
 				window.setTimeout( function(){
-					    window.location = "./";
+					    window.location = "./?alg="+data_mes[1];
 				        }, 1000 );
 			}
 		});
@@ -87,7 +90,7 @@ $(document).ready(function(){
 
 	setInterval(function() {
 		get_notif_list();
-	}, 5000);
+	}, 15000);
     
 
 })

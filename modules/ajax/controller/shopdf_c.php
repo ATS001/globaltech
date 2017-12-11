@@ -3,7 +3,7 @@
  function shopdf($iddoc){
 
  	global $db ;	
- 	$query="select doc  from archive where id =$iddoc";
+ 	$query="select doc  from archive where id = $iddoc";
 
  	if (!$db->Query($query)) $db->Kill("0#".$db->Error());
  	$countrow=$db->RowCount();
@@ -23,7 +23,7 @@
 
  }
 //Execute
- shopdf(Mreq::tp("doc"));
+shopdf(Mreq::tp("doc"));
 
 
 

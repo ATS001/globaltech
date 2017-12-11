@@ -35,7 +35,7 @@ if(MInit::form_verif('editclient',false))
    'pj_photo_id'    => Mreq::tp('pj_photo-id')
    );
 
-  
+ /* var_dump($posted_data['id_ville']);*/
   //Check if array have empty element return list
   //for acceptable empty field do not put here
   
@@ -98,11 +98,11 @@ $checker = null;
     $empty_list .= "<li>Pays</li>";
     $checker = 1;
   }
-  if($posted_data['id_ville'] == NULL){
+  /*if($posted_data['id_ville'] == NULL){
 
     $empty_list .= "<li>Ville</li>";
     $checker = 1;
-  }
+  }*/
   if($posted_data['email'] == NULL){
 
     $empty_list .= "<li>Email</li>";
