@@ -122,7 +122,7 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->Get_detail_devis_show())
 													<li>
 														<i class="ace-icon fa fa-caret-right blue"></i>
 														Adresse: 
-														<b class="blue pull-right"><?php echo $info_devis->g('adresse').' BP '.$info_devis->g('bp').' '.$info_devis->g('ville').'  '.$info_devis->g('pays')?></b>
+														<b class="blue pull-right"><?php echo $info_devis->g('adresse').'  '.$info_devis->g('bp').' '.$info_devis->g('ville').'  '.$info_devis->g('pays')?></b>
 													</li>
 
 													<li>

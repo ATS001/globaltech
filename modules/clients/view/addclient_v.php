@@ -99,7 +99,7 @@ $form->radio('Civilité', 'civilite', 'Femme', $civilite_array, '');
 
 //Adresse
 $adresse_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
-$adresse_array[]  = array('required', 'true', 'Insérer Adresse' );
+//$adresse_array[]  = array('required', 'true', 'Insérer Adresse' );
 $form->input('Adresse', 'adresse', 'text', 6, null, $adresse_array);
 
 //Pays

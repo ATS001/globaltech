@@ -121,7 +121,7 @@ class Mproforma
         , clients.reference as reference_client
         , clients.denomination
         , clients.adresse
-        , clients.bp
+        , CONCAT('BP', clients.bp) as bp
         , clients.tel
         , clients.nif
         , clients.email
@@ -149,7 +149,7 @@ class Mproforma
             $this->error = false;
             $this->log  .= $db->Error();
         }else{
-            if ($db->RowCount() == 0)
+            if (!$db->RowCount())
             {
                 $this->error = false;
                 $this->log .= 'Aucun enregistrement trouvé ';
