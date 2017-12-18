@@ -141,7 +141,7 @@ class Mdevis
         , clients.reference as reference_client
         , clients.denomination
         , clients.adresse
-        , clients.bp
+        , CONCAT('BP', clients.bp) as bp
         , clients.tel
         , clients.nif
         , clients.email
