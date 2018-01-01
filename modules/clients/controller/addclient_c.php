@@ -72,11 +72,11 @@ if(MInit::form_verif('addclient',false))
     $checker = 1;
   }*/
   
-  if($posted_data['adresse'] == NULL){
+  /*if($posted_data['adresse'] == NULL){
 
     $empty_list .= "<li>Adresse</li>";
     $checker = 1;
-  }
+  }*/
   if($posted_data['tel'] == NULL){
 
     $empty_list .= "<li>Tél</li>";

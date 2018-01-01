@@ -4,15 +4,14 @@ $info_devis = new Mdevis();
 $action = new TableTools();
 $info_devis->id_devis = Mreq::tp('id');
 $info_devis->get_devis();
-$action->line_data = $info_devis->devis_info;
-$actions = $action->action_profil_view('devis', 'devis', Minit::crypt_tp('id', Mreq::tp('id')), $info_devis->g('creusr') , 'deletedevis');
+
 //Set ID of Module with POST id
 $info_devis->id_devis = Mreq::tp('id');
 //Check if Post ID <==> Post idc or get_modul return false. 
 if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->Get_detail_devis_show())
 	{ 	
  	// returne message error red to client 
-		exit('3#'.$info_user->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+		exit('3#'.$info_devis->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 	}
 
 
@@ -123,7 +122,7 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->Get_detail_devis_show())
 													<li>
 														<i class="ace-icon fa fa-caret-right blue"></i>
 														Adresse: 
-														<b class="blue pull-right"><?php echo $info_devis->g('adresse').' BP '.$info_devis->g('bp').' '.$info_devis->g('ville').'  '.$info_devis->g('pays')?></b>
+														<b class="blue pull-right"><?php echo $info_devis->g('adresse').'  '.$info_devis->g('bp').' '.$info_devis->g('ville').'  '.$info_devis->g('pays')?></b>
 													</li>
 
 													<li>
@@ -169,20 +168,26 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->Get_detail_devis_show())
 												<ul class="list-unstyled  spaced">
 													<li>
 														<i class="ace-icon fa fa-caret-right green"></i>
-														Total hors Taxes: 
-														<b class="blue pull-right"><?php $info_devis->s('totalht')?></b>
+														Total: 
+														<b class="blue pull-right"><?php $info_devis->s('total'); echo ' ';$info_devis->s('devise') ?></b>
 													</li>
-
 													<li>
 														<i class="ace-icon fa fa-caret-right green"></i>
-														Total Remises: 
-														<b class="blue pull-right"><?php $info_devis->s('valeur_remise')?></b>
+														Total Remises <?php $info_devis->s('valeur_remise')?> %: 
+														<b class="blue pull-right"><?php $info_devis->s('total_remise'); echo ' ';$info_devis->s('devise')?></b>
 													</li>
+													<li>
+														<i class="ace-icon fa fa-caret-right green"></i>
+														Total hors Taxes: 
+														<b class="blue pull-right"><?php $info_devis->s('totalht'); echo ' ';$info_devis->s('devise')?></b>
+													</li>
+
+													
 
 													<li>
 														<i class="ace-icon fa fa-caret-right green"></i>
 														Total TVA: 
-														<b class="blue pull-right"><?php $info_devis->s('totaltva')?></b>
+														<b class="blue pull-right"><?php $info_devis->s('totaltva'); echo ' ';$info_devis->s('devise')?></b>
 													</li>
 
 													
@@ -190,7 +195,7 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->Get_detail_devis_show())
 													<li>
 														<i class="ace-icon fa fa-caret-right green"></i>
 														Total TTC: 
-														<b class="blue pull-right"><?php $info_devis->s('totalttc')?></b>
+														<b class="blue pull-right"><?php $info_devis->s('totalttc'); echo ' ';$info_devis->s('devise')?></b>
 													</li>
 												</ul>
 											</div>

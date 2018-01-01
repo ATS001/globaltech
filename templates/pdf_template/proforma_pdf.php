@@ -34,13 +34,12 @@ if(!$proforma->Get_detail_proforma_pdf())
 }
 global $db;
 $headers = array(
-            ' #'          => '4[#]C',
-            'Réf'         => '16[#]C',
-            'Description' => '41[#]', 
+            '#'           => '5[#]C',
+            'Réf'         => '17[#]C',
+            'Description' => '43[#]', 
             'Qte'         => '5[#]C', 
-            'P.U'         => '10[#]R', 
-            'Remise'      => '7[#]C',
-            'Total HT'    => '12[#]R',
+            'P.Unitaire'  => '10[#]R',
+            'Total'       => '15[#]R',
 
         );
 $proforma_info   = $proforma->proforma_info;
@@ -119,7 +118,7 @@ class MYPDF extends TCPDF {
 		<tr>
 		<td align="right" style="width: 30%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Adresse</td>
 		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
-		<td style="width: 65%; background-color: #eeecec;">'.$this->info_proforma['adresse'].' BP'.$this->info_proforma['bp'].' '.$this->info_proforma['ville'].' '.$this->info_proforma['pays'].'</td>
+		<td style="width: 65%; background-color: #eeecec;">'.$this->info_proforma['adresse'].' '.$this->info_proforma['bp'].' '.$this->info_proforma['ville'].' '.$this->info_proforma['pays'].'</td>
 		</tr>
 		<tr>
 		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Contact</td>
@@ -233,9 +232,9 @@ $pdf->Table_body = $tableau_body;
 $html = $pdf->Table_body;
 // ---------------------------------------------------------
 
-$signature = $pdf->info_proforma['comercial']; 
+//$signature = $pdf->info_proforma['comercial']; 
 
-
+$signature = 'La Direction';
 $block_sum = '<div></div>
 <table style="width: 685px;" cellpadding="2">
 

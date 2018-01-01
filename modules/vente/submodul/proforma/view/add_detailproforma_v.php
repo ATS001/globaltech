@@ -41,14 +41,7 @@ $form->render();
 <script type="text/javascript">
 //On change produit get all informations.
 $(document).ready(function() {
-    $('#remise_valeur_d').mask('99.9');
-    $('#type_remise_d').change(function(e) {
-        if($('#type_remise_d').val() == 'P'){
-            $('#remise_valeur_d').mask('99.9');
-        }else{
-            $('#remise_valeur_d').unmask();
-        }
-    });
+    
     //Get TVA value from main TVA select 
     $('#tva_d').val($('#tva').val()); 
      //called when key is pressed in textbox

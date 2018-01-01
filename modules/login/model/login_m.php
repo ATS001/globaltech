@@ -427,7 +427,7 @@ class MLogin
 		}
 	}
 
-	public static function get_ses_time_autologout($param)
+	static public function get_ses_time_autologout($param)
 	{
 		$time = null;
 		$file = MPATH_TEMP.SLASH.$param.'.ses';

@@ -20,7 +20,7 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_proforma->Get_detail_proforma_sho
 		<div class="btn-group btn-overlap">
 
 			<?php 
-
+            TableTools::btn_action('proforma', $info_proforma->id_proforma, 'viewproforma');
 			TableTools::btn_add('proforma','Liste des proforma', Null, $exec = NULL, 'reply'); 
 
 			?>
@@ -117,7 +117,7 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_proforma->Get_detail_proforma_sho
 													<li>
 														<i class="ace-icon fa fa-caret-right blue"></i>
 														Adresse: 
-														<b class="blue pull-right"><?php echo $info_proforma->g('adresse').' BP '.$info_proforma->g('bp').' '.$info_proforma->g('ville').'  '.$info_proforma->g('pays')?></b>
+														<b class="blue pull-right"><?php echo $info_proforma->g('adresse').'  '.$info_proforma->g('bp').' '.$info_proforma->g('ville').'  '.$info_proforma->g('pays')?></b>
 													</li>
 
 													<li>
