@@ -64,6 +64,7 @@ $html_data_table = new Mdatatable();
 $html_data_table->columns_html = $array_column;
 $html_data_table->title_module = "Devis";
 $html_data_table->task = 'devis';
+$html_data_table->btn_return = array('task' =>'tdb');
 
 if(!$data = $html_data_table->table_html())
 {

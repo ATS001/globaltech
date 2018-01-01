@@ -899,8 +899,11 @@ class MySQL
 					//print_r($data);
             
 
-			$array_styl_last = array_combine($keys_data, $styl_array);
-
+			if(count($keys_data) != count($styl_array)){
+                $this->SetError('Error Combine Array Header => Body');
+                $this->Kill($this->Error());                
+			}
+            $array_styl_last = array_combine($keys_data, $styl_array);
 			foreach ($data as $key => $value) {
 				$style = $array_styl_last[$key];
 				if(strpos($style, '[#]')){

@@ -36,11 +36,10 @@ global $db;
 $headers = array(
             '#'           => '5[#]C',
             'Réf'         => '17[#]C',
-            'Description' => '33[#]', 
+            'Description' => '43[#]', 
             'Qte'         => '5[#]C', 
-            'P.Unitaire'  => '10[#]R', 
-            'Remise'      => '10[#]C',
-            'Total HT'    => '15[#]R',
+            'P.Unitaire'  => '10[#]R',
+            'Total'       => '15[#]R',
 
         );
 $devis_info   = $devis->devis_info;
@@ -102,7 +101,7 @@ class MYPDF extends TCPDF {
 	    	$nif = '<tr>
 		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">NIF</td>
 		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
-		<td style="width: 65%; background-color: #eeecec;">'.$this->info_devis['nif'].'hh</td>
+		<td style="width: 65%; background-color: #eeecec;">'.$this->info_devis['nif'].'</td>
 		</tr>';
 	    }
 	    
@@ -119,7 +118,7 @@ class MYPDF extends TCPDF {
 		<tr>
 		<td align="right" style="width: 30%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Adresse</td>
 		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
-		<td style="width: 65%; background-color: #eeecec;">'.$this->info_devis['adresse'].' BP'.$this->info_devis['bp'].' '.$this->info_devis['ville'].' '.$this->info_devis['pays'].'</td>
+		<td style="width: 65%; background-color: #eeecec;">'.$this->info_devis['adresse'].' '.$this->info_devis['bp'].' '.$this->info_devis['ville'].' '.$this->info_devis['pays'].'</td>
 		</tr>
 		<tr>
 		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Contact</td>
@@ -136,13 +135,13 @@ class MYPDF extends TCPDF {
 		    $this->SetTopMargin($height + $this->GetY() + 5);
 		    //writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
 		    $this->setCellPadding(1);
-		    $this->writeHTMLCell('', '', 16, '', $projet, 1, 0, 0, true, 'L', true);
+		    $this->writeHTMLCell('', '', 15, '', $projet, 1, 0, 0, true, 'L', true);
 		}
 		$height = $this->getLastH();
 		$this->SetTopMargin($height + $this->GetY());
 		//Info général
 		$tableau_head = $this->Table_head;
-		$this->writeHTMLCell('', '', 14, '', $tableau_head, 0, 0, 0, true, 'L', true);
+		$this->writeHTMLCell('', '', 15, '', $tableau_head, 0, 0, 0, true, 'L', true);
 		$height = $this->getLastH();
        
         $this->SetTopMargin($height + $this->GetY() -1);
@@ -248,9 +247,9 @@ $obj = new nuts($pdf->info_devis['totalttc'], $pdf->info_devis['devise']);
 $ttc_lettre = $obj->convert("fr-FR");
 
 $block_remise = '<tr>
-                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Remise</strong></td>
+                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Remise '.$pdf->info_devis['valeur_remise'].' %</strong></td>
                     <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_devis['valeur_remise'].' %</strong></td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_devis['total_remise'].'  '.$pdf->info_devis['devise'].'</strong></td>
                 </tr>';
 $block_ttc = '<tr>
                     <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>TVA 18%</strong></td>
@@ -265,7 +264,9 @@ $block_ttc = '<tr>
 $block_remise = $pdf->info_devis['valeur_remise'] == 0 ? null : $block_remise;   
 $block_ttc    = $pdf->info_devis['totaltva'] == 0 ? null : $block_ttc;
 $titl_ht = $pdf->info_devis['totaltva'] == 0 ? 'Total à payer' : 'Total HT';
-$signature = $pdf->info_devis['comercial']; 
+//$signature = $pdf->info_proforma['comercial']; 
+
+$signature = 'La Direction'; 
 
 
 $block_sum = '<div></div>
