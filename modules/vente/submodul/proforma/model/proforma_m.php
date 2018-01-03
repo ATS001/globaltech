@@ -688,7 +688,8 @@ class Mproforma
             $total_ht       = $this->total_ht_d;
             $total_tva      = $this->total_tva_d;
             $total_ttc      = $this->total_ttc_d;
-            $valeur_remis_d = $this->valeur_remis_d;
+            //$valeur_remis_d = $this->valeur_remis_d;
+            $valeur_remis_d = number_format($this->valeur_remis_d, 2,'.', '');
             $prix_u_final   = $this->prix_u_final;
           //Get order line into proforma
             $this->get_order_detail($tkn_frm);
@@ -778,7 +779,7 @@ class Mproforma
             $total_ht       = $this->total_ht_d;
             $total_tva      = $this->total_tva_d;
             $total_ttc      = $this->total_ttc_d;
-            $valeur_remis_d = $this->valeur_remis_d;
+            $valeur_remis_d = number_format($this->valeur_remis_d, 2,'.', '');
             $prix_u_final   = $this->prix_u_final;
         //Format values for Insert query 
             global $db;

@@ -194,7 +194,7 @@ class MYPDF extends TCPDF {
 		<tr>
 		<td align="right" style="width: 30%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Adresse</td>
 		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
-		<td style="width: 65%; background-color: #eeecec;">' . $this->info_devis['adresse'] . ' BP' . $this->info_devis['bp'] . ' ' . $this->info_devis['ville'] . ' ' . $this->info_devis['pays'] . '</td>
+		<td style="width: 65%; background-color: #eeecec;">' . $this->info_devis['adresse'] . ' ' . $this->info_devis['bp'] . ' ' . $this->info_devis['ville'] . ' ' . $this->info_devis['pays'] . '</td>
 		</tr>
 		<tr>
 		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Contact</td>

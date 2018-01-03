@@ -137,7 +137,7 @@ class Mdevis
         ,  REPLACE(FORMAT(devis.totaltva,0),',',' ') as totaltva
         ,  REPLACE(FORMAT(devis.totalttc,0),',',' ') as totalttc
         ,  REPLACE(FORMAT(devis.total_remise,0),',',' ') as total_remise
-        ,  REPLACE(FORMAT(devis.total_remise + devis.totalht ,0),',',' ') as total
+        ,  REPLACE(FORMAT(devis.total_remise + devis.totalht ,0),',',' ') as total_no_remise
         , clients.reference as reference_client
         , clients.denomination
         , clients.adresse
@@ -406,7 +406,7 @@ class Mdevis
         	}
 
 		//Format values for Insert query 
-        	
+        	$montant_remise = $this->sum_total_ht - $this->total_ht_t;
         	$totalht  = $this->total_ht_t;
         	$totaltva = $this->total_tva_t;
         	$totalttc = $this->total_ttc_t;
@@ -424,7 +424,7 @@ class Mdevis
             $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
             $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
             $values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
-            $values["total_remise"]    = MySQL::SQLValue($total_remise);
+            $values["total_remise"]    = MySQL::SQLValue($montant_remise);
             $values["projet"]          = MySQL::SQLValue($this->_data['projet']);
             $values["vie"]             = MySQL::SQLValue($this->_data['vie']);
             $values["claus_comercial"] = MySQL::SQLValue($this->_data['claus_comercial']);
@@ -498,6 +498,7 @@ class Mdevis
         $this->get_devis();
         //Format values for Insert query 
     	global $db;
+        $montant_remise = $this->sum_total_ht - $this->total_ht_t;
     	$totalht  = $this->total_ht_t;
     	$totaltva = $this->total_tva_t;
     	$totalttc = $this->total_ttc_t;
@@ -514,6 +515,7 @@ class Mdevis
         $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
         $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
         $values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
+        $values["total_remise"]   = MySQL::SQLValue($montant_remise);
         $values["projet"]          = MySQL::SQLValue($this->_data['projet']);
         $values["vie"]             = MySQL::SQLValue($this->_data['vie']);
         $values["claus_comercial"] = MySQL::SQLValue($this->_data['claus_comercial']);
@@ -763,7 +765,8 @@ class Mdevis
             $total_ht       = $this->total_ht_d;
             $total_tva      = $this->total_tva_d;
             $total_ttc      = $this->total_ttc_d;
-            $valeur_remis_d = $this->valeur_remis_d;
+            
+            $valeur_remis_d = number_format($this->valeur_remis_d, 2,'.', '');
             $prix_u_final   = $this->prix_u_final;
           //Get order line into devis
             $this->get_order_detail($tkn_frm);
@@ -861,7 +864,7 @@ class Mdevis
 
             $total_tva      = $this->total_tva_d;
             $total_ttc      = $this->total_ttc_d;
-            $valeur_remis_d = $this->valeur_remis_d;
+            $valeur_remis_d = number_format($this->valeur_remis_d, 2,'.', '');
             $prix_u_final   = $this->prix_u_final;
         //Format values for Insert query 
             global $db;
