@@ -31,16 +31,26 @@ $form = new Mform('adddevis', 'adddevis', '', 'devis', '0', null);
 
 //Date devis
 $array_date[]= array('required', 'true', 'Insérer la date de devis');
-$form->input_date('Date devis', 'date_devis', 4, date('d-m-Y'), $array_date);
+$form->input_date('Date devis', 'date_devis', 2, date('d-m-Y'), $array_date);
 //Client
 $hard_code_client = '<span class="help-block returned_span">...</span>';
 $client_array[]  = array('required', 'true', 'Choisir un Client');
-$form->select_table('Client', 'id_client', 8, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat=1', $client_array, $hard_code_client);
+$form->select_table('Client', 'id_client', 6, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat=1', $client_array, $hard_code_client);
 //TVA
 $tva_opt = array('O' => 'OUI' , 'N' => 'NON' );
 $form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$selected = NULL, $multi = NULL);
 //Projet if client have more project
 $form->input('Projet', 'projet', 'text' ,'6', NULL, null, null, null);
+
+//Commercial
+$hard_code_commercial = '<span class="help-block returned_span">...</span>';
+$commercial_array[]  = array('required', 'true', 'Choisir un Commercial');
+$form->select_table('Commercial', 'id_commercial', 6, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)' , 'CONCAT(nom," ",prenom)' , $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat=1', $commercial_array, $hard_code_commercial);
+//Commission du commercial
+$array_commission[]= array('required', 'true', 'Insérer la commission du commercial');
+$array_commission[]= array('number', 'true', 'Montant invalid' );
+$form->input('Commission du commercial', 'commission', 'text' ,'2 is-number alignRight','0', $array_commission, null, null);
+
 //Table 
 $columns = array('id' => '1' ,'Item' => '3' , 'Réference'=>'14', 'Produit' => '30', 'P.U HT' => '10', 'T.Rem' => '5', 'V.Remise' => '5', 'Qte' => '5', 'Total HT' => '10', 'TVA' => '7', 'Total' =>'10', '#' =>'3'   );
 $js_addfunct = 'var column = t.column(0);
@@ -117,6 +127,7 @@ $(document).ready(function() {
     	$('#'+$f_total_ttc).val($total_ttc);  
         
     } 
+
     $('#addRow').on( 'click', function () {
     	var table = $('#table_details_devis').DataTable();
     	if($('#id_client').val() == ''){
@@ -124,6 +135,18 @@ $(document).ready(function() {
     		ajax_loadmessage('Il faut choisir un client','nok');
     		return false;
     	}
+
+        if($('#id_commercial').val() == ''){
+
+            ajax_loadmessage('Il faut choisir un commercial','nok');
+            return false;
+        }
+
+        if($('#commission').val() == ''){
+
+            ajax_loadmessage('Il faut saisir une commission','nok');
+            return false;
+        }
 
         if(table.data().count() && $('#is_abn').val() == 'abn'){
             ajax_loadmessage("Impossible d'insérer un abonnement avec autres produits",'nok');
@@ -136,6 +159,7 @@ $(document).ready(function() {
         
     });
     
+
 
     $('#valeur_remise').bind('input change',function() {
     	// Calcul values
@@ -155,6 +179,8 @@ $(document).ready(function() {
     	calculat_devis(totalht, type_remise, remise_valeur, tva, 'totalht', 'totaltva', 'totalttc');
         
     });
+
+   
      
     $('#tva').on('change', function () {
         var table = $('#table_details_devis').DataTable();
@@ -201,6 +227,8 @@ $(document).ready(function() {
 
     });
 
+
+
     $('#type_remise').on('change', function () {
         $('#valeur_remise').trigger('input');
     });
@@ -233,6 +261,19 @@ $(document).ready(function() {
             ajax_loadmessage('Il faut choisir un client','nok');
             return false;
         }
+
+        if($('#id_commercial').val() == ''){
+
+            ajax_loadmessage('Il faut choisir un commercial','nok');
+            return false;
+        }
+
+        if($('#commission').val() == ''){
+
+            ajax_loadmessage('Il faut saisir une commission','nok');
+            return false;
+        }
+
         var $link  = $(this).attr('rel');
         var $titre = 'Modifier détail Devis'; 
         var $data  = $(this).attr('data'); 

@@ -149,6 +149,7 @@ class Mdevis
         , ref_ville.ville
         , ref_devise.abreviation as devise
         , services.service as comercial
+        , CONCAT(commerciaux.nom,' ',commerciaux.prenom) as commercial
         FROM
         devis
         INNER JOIN clients 
@@ -163,6 +164,8 @@ class Mdevis
         ON (devis.creusr = users_sys.id)
         INNER JOIN services
         ON (users_sys.service = services.id)
+        INNER JOIN commerciaux
+        ON (devis.id_commercial=commerciaux.id)
         WHERE devis.id = ".$this->id_devis;
         if(!$db->Query($req_sql))
         {
@@ -386,6 +389,9 @@ class Mdevis
         	$this->Check_exist('reference', $this->reference, 'Réference Devis', null);
 
         	$this->check_non_exist('clients','id',$this->_data['id_client'] ,'Client' );
+
+            $this->check_non_exist('commerciaux','id',$this->_data['id_commercial'] ,'Commercial' );
+
       //Get sum of details
         	$this->Get_sum_detail($this->_data['tkn_frm']); 
       //calcul values devis
@@ -420,7 +426,8 @@ class Mdevis
             $values["reference"]       = MySQL::SQLValue($reference);
         	$values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
             $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
-            $values["id_commercial"]   = MySQL::SQLValue(session::get('userid'));
+            $values["id_commercial"]   = MySQL::SQLValue($this->_data['id_commercial']);
+            $values["commission"]      = MySQL::SQLValue($this->_data['commission']);
             $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
             $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
             $values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
@@ -481,6 +488,9 @@ class Mdevis
     	$this->Check_exist('reference', $this->reference, 'Réference Devis', 1);
 
     	$this->check_non_exist('clients','id',$this->_data['id_client'] ,'Client' );
+
+        $this->check_non_exist('commerciaux','id',$this->_data['id_commercial'] ,'Commercial' );
+
         //Get sum of details
     	$this->Get_sum_detail($this->_data['tkn_frm']); 
         //calcul values devis
@@ -510,7 +520,8 @@ class Mdevis
         $values["type_devis"]      = MySQL::SQLValue($this->type_devis);
         $values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
         $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
-        $values["id_commercial"]   = MySQL::SQLValue(session::get('userid'));
+        $values["id_commercial"]   = MySQL::SQLValue($this->_data['id_commercial']);
+        $values["commission"]      = MySQL::SQLValue($this->_data['commission']);
         $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
         $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
         $values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);

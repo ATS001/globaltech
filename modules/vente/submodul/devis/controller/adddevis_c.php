@@ -15,7 +15,10 @@ if(MInit::form_verif('adddevis', false))
    'totaltva'        => Mreq::tp('totaltva') ,
    'projet'          => Mreq::tp('projet'),
    'vie'             => Mreq::tp('vie'),
-   'claus_comercial' => Mreq::tp('claus_comercial')
+   'claus_comercial' => Mreq::tp('claus_comercial'),
+   'id_commercial'   => Mreq::tp('id_commercial'),
+   'commission'      => Mreq::tp('commission')
+
 
    );
 
@@ -68,6 +71,17 @@ if(MInit::form_verif('adddevis', false))
     if($posted_data['claus_comercial'] == NULL){
 
       $empty_list .= "<li>Clauses commerciales</li>";
+      $checker = 1;
+    }
+
+    if($posted_data['id_commercial'] == NULL){
+
+      $empty_list .= "<li>Commercial</li>";
+      $checker = 1;
+    }
+    if($posted_data['commission'] == NULL OR !is_numeric($posted_data['commission']) ){
+
+      $empty_list .= "<li>Commission</li>";
       $checker = 1;
     }
     /*if($posted_data['service'] == NULL){

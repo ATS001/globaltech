@@ -46,8 +46,10 @@ $(document).ready(function() {
     
     //Get TVA value from main TVA select 
     $('#tva_d').val($('#tva').val()); 
+    //Get Commission  
+    $('#commission_d').val($('#commission').val()); 
 	 //called when key is pressed in textbox
-	 function calculat_devis($prix_u, $qte, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc)
+	 function calculat_devis($prix_u, $qte, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc,$commission)
 	 {
     	//var $prix_u_remised = $total_ht = $total_ttc = $total_tva = null;
     	var $prix_u           = parseFloat($prix_u) ? parseFloat($prix_u) : 0;
@@ -59,7 +61,7 @@ $(document).ready(function() {
     	//calculate remise
     	if($type_remise == 'P')
     	{
-    		$prix_u_remised = $prix_u - ($prix_u * $remise_valeur) / 100;
+    		$prix_u_remised = $prix_u - ($prix_u * $remise_valeur) / 100 ;
 
     	}else if($type_remise == 'M'){
     		var $prix_u_remised = $prix_u - $remise_valeur;
@@ -116,7 +118,8 @@ $(document).ready(function() {
                         } 
                     }
                     $('#label_qte').text('Quantité: ('+data['unite_vente']+')');
-                    $('#prix_unitaire').val(data['prix_vente']);
+                    //$('#prix_unitaire').val(data['prix_vente']);
+                    $('#prix_unitaire').val(parseFloat(data['prix_vente'])+ ( parseFloat(data['prix_vente']) * parseFloat($('#commission').val()) / 100 ));
                     $('#ref_produit').val(data['reference']);
                     $('.returned_span').remove();
                     if(data['prix_vendu'] == 0){
@@ -211,13 +214,14 @@ $(document).ready(function() {
 
     });
     $('#qte, #prix_unitaire, #remise_valeur_d, #type_remise_d').bind('input change',function() {
-    	var prix_unitaire = parseInt($('#prix_unitaire').val());
+    	var prix_unitaire = parseInt($('#prix_unitaire').val()) + ( parseInt($('#prix_unitaire').val())* parseFloat($('#commission').val() ) /100);
     	var qte           = parseFloat($('#qte').val());
     	var type_remise   = $('#type_remise_d').val();
     	var remise_valeur = parseFloat($('#remise_valeur_d').val());
     	var tva           = $('#tva').val();
+        var commission    = parseFloat($('#commission').val());
 
-    	calculat_devis(prix_unitaire, qte, type_remise, remise_valeur, tva, 'total_ht', 'total_tva', 'total_ttc');
+    	calculat_devis(prix_unitaire, qte, type_remise, remise_valeur, tva, 'total_ht', 'total_tva', 'total_ttc',commission);
     });
     $('.send_modal').on('click', function () {
         if(!$('#add_detaildevis').valid())
