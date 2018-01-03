@@ -72,7 +72,7 @@ $form->bloc_title('Zone totaux');
 $form->input('Total des articles enregistrés', 'sum_table', 'text' ,'4 is-number alignRight', $info_devis->g('totalht'), null, null, 'readonly');
 $hard_code_remise = '<label style="margin-left:15px;margin-right : 20px;">Valeur remise: </label><input id="valeur_remise" name="valeur_remise" class="input-small alignRight" value="'.$info_devis->g('valeur_remise').'" type="text"><span class="help-block">Cette remise sera appliquée sur le total H.T de devis</span>';
 $typ_remise = array('P' => 'Pourcentage' , 'M' => 'Montant' );
-$form->select('Remise Exept', 'type_remise', 2, $typ_remise, $indx = NULL ,$info_devis->g('type_remise'), $multi = NULL,  $hard_code_remise);
+$form->select('Remise Exept', 'type_remise', 2, $typ_remise, $indx = NULL ,'P', $multi = NULL,  $hard_code_remise);
 
 
 //Prix
@@ -287,4 +287,3 @@ $(document).ready(function() {
 });
 </script>	
 
-		

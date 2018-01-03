@@ -30,7 +30,7 @@ $hard_code_remis = '<label style="margin-left:15px;margin-right : 20px;">Valeur 
 //Type Remise
 //select($input_desc, $input_id, $input_class, $options, $indx = NULL ,$selected = NULL, $multi = NULL, $hard_code = null )
 $typ_remise = array('P' => 'Pourcentage' , 'M' => 'Montant' );
-$form->select('Nature remise', 'type_remise_d', 3, $typ_remise, $indx = NULL , $info_proforma_d->h('type_remise'), $multi = NULL,  $hard_code_remis );
+$form->select('Nature remise', 'type_remise_d', 3, $typ_remise, $indx = NULL , 'P', $multi = NULL,  $hard_code_remis );
 //Quantité
 $hard_code_pri_tt_ht = '<label style="margin-left:15px;margin-right : 20px;">Prix total HT: </label><input id="total_ht" name="total_ht" value="'.$info_proforma_d->h('total_ht').'" class="input-large alignRight" type="text" readonly="">';
 $hard_code_tva = '<label style="margin-left:15px;margin-right : 20px;">total TVA: </label><input readonly="" id="total_tva" name="total_tva" class="input-small alignRight" value="'.$info_proforma_d->h('total_tva').'" type="text">';
