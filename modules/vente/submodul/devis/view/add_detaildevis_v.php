@@ -3,6 +3,11 @@ $form = new Mform('add_detaildevis', 'add_detaildevis', '', 'devis', '0', 'is_mo
 //token main form
 $form->input_hidden('tkn_frm', Mreq::tp('tkn'));
 $form->input_hidden('tva_d', 'O');
+
+$form->input_hidden('commission', Mreq::tp('commission'));
+$form->input_hidden('pu', 0);
+var_dump(Mreq::tp('commission'));
+
 //Type Produit
 
 $hard_code_type_produit = '<label style="margin-left:15px;margin-right : 20px;">Catégorie: </label><select id="categ_produit" name="categ_produit" class="chosen-select col-xs-12 col-sm-6" chosen-class="'.((6 * 100) / 12).'" ><option >----</option></select>';
@@ -49,7 +54,7 @@ $(document).ready(function() {
     //Get Commission  
     $('#commission_d').val($('#commission').val()); 
 	 //called when key is pressed in textbox
-	 function calculat_devis($prix_u, $qte, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc,$commission)
+	 function calculat_devis($prix_u, $qte, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc)//,$commission
 	 {
     	//var $prix_u_remised = $total_ht = $total_ttc = $total_tva = null;
     	var $prix_u           = parseFloat($prix_u) ? parseFloat($prix_u) : 0;
@@ -118,7 +123,7 @@ $(document).ready(function() {
                         } 
                     }
                     $('#label_qte').text('Quantité: ('+data['unite_vente']+')');
-                    //$('#prix_unitaire').val(data['prix_vente']);
+                    $('#pu').val(data['prix_vente']);
                     $('#prix_unitaire').val(parseFloat(data['prix_vente'])+ ( parseFloat(data['prix_vente']) * parseFloat($('#commission').val()) / 100 ));
                     $('#ref_produit').val(data['reference']);
                     $('.returned_span').remove();
@@ -214,14 +219,15 @@ $(document).ready(function() {
 
     });
     $('#qte, #prix_unitaire, #remise_valeur_d, #type_remise_d').bind('input change',function() {
-    	var prix_unitaire = parseInt($('#prix_unitaire').val()) + ( parseInt($('#prix_unitaire').val())* parseFloat($('#commission').val() ) /100);
+    	//var prix_unitaire = parseInt($('#prix_unitaire').val()) + ( parseInt($('#prix_unitaire').val())* parseFloat($('#commission').val() ) /100);
+        var prix_unitaire = parseInt($('#prix_unitaire').val());
     	var qte           = parseFloat($('#qte').val());
     	var type_remise   = $('#type_remise_d').val();
     	var remise_valeur = parseFloat($('#remise_valeur_d').val());
     	var tva           = $('#tva').val();
         var commission    = parseFloat($('#commission').val());
 
-    	calculat_devis(prix_unitaire, qte, type_remise, remise_valeur, tva, 'total_ht', 'total_tva', 'total_ttc',commission);
+    	calculat_devis(prix_unitaire, qte, type_remise, remise_valeur, tva, 'total_ht', 'total_tva', 'total_ttc');//,commission
     });
     $('.send_modal').on('click', function () {
         if(!$('#add_detaildevis').valid())

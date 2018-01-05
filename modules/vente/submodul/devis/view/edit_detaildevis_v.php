@@ -18,6 +18,11 @@ $form->input_hidden('idh', Mreq::tp('idh'));
 $form->input_hidden('checker_tkn_frm',  MInit::cryptage($info_devis_d->h('tkn_frm'), 1));
 $form->input_hidden('tkn_frm', $info_devis_d->h('tkn_frm'));
 $form->input_hidden('tva_d', 'O');
+//commission commercial
+$form->input_hidden('commission', Mreq::tp('commission'));
+//prix unitaire sans commission
+$form->input_hidden('pu', $info_devis_d->h('prix_unitaire'));
+
 //Type produit old
 $form->input_hidden('type_produit_old', $info_devis_d->h('type_id'));
 $hard_code_type_produit = '<label style="margin-left:15px;margin-right : 20px;">Catégorie: </label><select id="categ_produit" name="categ_produit" class="chosen-select col-xs-12 col-sm-6" chosen-class="'.((6 * 100) / 12).'" ><option value="'.$info_devis_d->h('categ_id').'" >'.$info_devis_d->h('categorie_produit').'</option></select>';
@@ -30,7 +35,10 @@ $form->select('Produit / Service', 'id_produit', 8, $opt_produit, $indx = NULL ,
 //Produit
 //$produit_array[]  = array('required', 'true', 'Choisir un Produit / Service');
 //$form->select_table('Produit / Service', 'id_produit', 8, 'produits', 'id', 'designation' , 'designation', $indx = '------', $info_devis_d->h('id_produit'),$multi=NULL, $where='etat = 1' , $produit_array);
-$hard_code_pri_u_ht = '<label style="margin-left:15px;margin-right : 20px;">Prix Unité HT: </label><input id="prix_unitaire" name="prix_unitaire" class="input-large alignRight" type="text" readonly="" value="'.$info_devis_d->h('prix_unitaire').'">';
+
+$prix_affich=$info_devis_d->h('prix_unitaire') + ($info_devis_d->h('prix_unitaire') *  Mreq::tp('commission') / 100);
+var_dump(Mreq::tp('commission'));
+$hard_code_pri_u_ht = '<label style="margin-left:15px;margin-right : 20px;">Prix Unité HT: </label><input id="prix_unitaire" name="prix_unitaire" class="input-large alignRight" type="text" readonly="" value="'.$prix_affich.'">';
 $hard_code_pri_u_ht .= '<span class="help-block returned_span">...</span>';
 //Réference
 $form->input('Réference', 'ref_produit', 'text' ,3, $info_devis_d->h('ref_produit'), Null, $hard_code_pri_u_ht, 1);
@@ -63,6 +71,8 @@ $(document).ready(function() {
     
     //Get TVA value from main TVA select 
     $('#tva_d').val($('#tva').val());
+    //Get Commission  
+    $('#commission_d').val($('#commission').val()); 
 	 //called when key is pressed in textbox
 	 function calculat_devis($prix_u, $qte, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc)
 	 {
@@ -201,7 +211,8 @@ $(document).ready(function() {
                         } 
                     }
                     $('#label_qte').text('Quantité: ('+data['unite_vente']+')');
-                    $('#prix_unitaire').val(data['prix_vente']);
+                    $('#pu').val(data['prix_vente']);
+                    $('#prix_unitaire').val(parseFloat(data['prix_vente'])+ ( parseFloat(data['prix_vente']) * parseFloat($('#commission').val()) / 100 ));
                     $('#ref_produit').val(data['reference']);
                     $('.returned_span').remove();
                     if(data['prix_vendu'] == 0){

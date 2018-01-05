@@ -60,6 +60,17 @@ $tva_opt = array('O' => 'OUI' , 'N' => 'NON' );
 $form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$info_devis->g('tva'), $multi = NULL);
 //Projet if client have more project
 $form->input('Projet', 'projet', 'text' ,'6', $info_devis->g('projet'), null , null, null);
+
+//Commercial
+$hard_code_commercial = '<span class="help-block returned_span">...</span>';
+$commercial_array[]  = array('required', 'true', 'Choisir un Commercial');
+$form->select_table('Commercial', 'id_commercial', 6, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)' , 'CONCAT(nom," ",prenom)' , $indx = '------' ,$selected=$info_devis->g('id_commercial'),$multi=NULL, $where='etat=1', $commercial_array, $hard_code_commercial);
+//Commission du commercial
+$array_commission[]= array('required', 'true', 'Insérer la commission du commercial');
+$array_commission[]= array('number', 'true', 'Montant invalid' );
+$form->input('Commission du commercial', 'commission', 'text' ,'2 is-number alignRight',$info_devis->g('commission'), $array_commission, null, null);
+
+
 //Table 
 $columns = array('id' => '1' ,'Item' => '3' , 'Réference'=>'14', 'Produit' => '30', 'P.U HT' => '10', 'T.Rem' => '5', 'V.Remise' => '5', 'Qte' => '5', 'Total HT' => '10', 'TVA' => '7', 'Total' =>'10', '#' =>'3'   );
 $js_addfunct = 'var column = t.column(0);
@@ -147,7 +158,7 @@ $(document).ready(function() {
         }
         var $link  = $(this).attr('rel');
    		var $titre = $(this).attr('data_titre'); 
-   		var $data  = $(this).attr('data'); 
+   		var $data  = $(this).attr('data')+'&commission='+$('#commission').val(); ; 
         ajax_bbox_loader($link, $data, $titre, 'large')
         
     });
@@ -210,7 +221,7 @@ $(document).ready(function() {
         }
         var $link  = $(this).attr('rel');
         var $titre = 'Modifier détail Devis';
-        var $data  = $(this).attr('data'); 
+        var $data  = $(this).attr('data')+'&commission='+$('#commission').val(); ; 
         ajax_bbox_loader($link, $data, $titre, 'large')
         
     });

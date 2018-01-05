@@ -754,11 +754,12 @@ class Mdevis
 
     public function save_new_details_devis($tkn_frm)
     {
+
         $table_details = $this->table_details;
         $this->check_detail_exist_in_devis($tkn_frm, $this->_data['id_produit']);
         $this->check_non_exist('produits','id',$this->_data['id_produit'] ,'Réference du produit' );
         $this->check_detail_have_more_abn($tkn_frm);
-
+        //var_dump($this->_data['commission']);
         //Check $this->error (true / false)
         if($this->error == true){
         //Calcul Montant
@@ -789,7 +790,8 @@ class Mdevis
             $values["ref_produit"]   = MySQL::SQLValue($ref_produit);
             $values["designation"]   = MySQL::SQLValue($designation);
             $values["qte"]           = MySQL::SQLValue($this->_data['qte']);
-            $values["prix_unitaire"] = MySQL::SQLValue($this->_data['prix_unitaire']);
+            $values["prix_unitaire"] = MySQL::SQLValue(Mreq::tp('pu'));
+            //$this->_data['prix_unitaire']);
             $values["type_remise"]   = MySQL::SQLValue($this->_data['type_remise_d']);
             $values["prix_ht"]       = MySQL::SQLValue($prix_u_final);
             $values["remise_valeur"] = MySQL::SQLValue($valeur_remis_d);
@@ -881,7 +883,8 @@ class Mdevis
             $values["ref_produit"]   = MySQL::SQLValue($ref_produit);
             $values["designation"]   = MySQL::SQLValue($designation);
             $values["qte"]           = MySQL::SQLValue($this->_data['qte']);
-            $values["prix_unitaire"] = MySQL::SQLValue($this->_data['prix_unitaire']);
+            $values["prix_unitaire"] = MySQL::SQLValue(Mreq::tp('pu'));
+            //$values["prix_unitaire"] = MySQL::SQLValue($this->_data['prix_unitaire']);
             $values["type_remise"]   = MySQL::SQLValue($this->_data['type_remise_d']);
             $values["remise_valeur"] = MySQL::SQLValue($valeur_remis_d);
             $values["prix_ht"]       = MySQL::SQLValue($prix_u_final);

@@ -28,7 +28,7 @@
 <?php
 $tva  = Mcfg::get('tva'); 
 $form = new Mform('adddevis', 'adddevis', '', 'devis', '0', null);
-
+//$form->input_hidden('commission', Mreq::tp('commission'));
 //Date devis
 $array_date[]= array('required', 'true', 'Insérer la date de devis');
 $form->input_date('Date devis', 'date_devis', 2, date('d-m-Y'), $array_date);
@@ -154,7 +154,7 @@ $(document).ready(function() {
         }
         var $link  = $(this).attr('rel');
    		var $titre = $(this).attr('data_titre'); 
-   		var $data  = $(this).attr('data'); 
+   		var $data  = $(this).attr('data')+'&commission='+$('#commission').val();
         ajax_bbox_loader($link, $data, $titre, 'large')
         
     });
@@ -276,7 +276,7 @@ $(document).ready(function() {
 
         var $link  = $(this).attr('rel');
         var $titre = 'Modifier détail Devis'; 
-        var $data  = $(this).attr('data'); 
+        var $data  = $(this).attr('data')+'&commission='+$('#commission').val(); 
         ajax_bbox_loader($link, $data, $titre, 'large')
         
     });
