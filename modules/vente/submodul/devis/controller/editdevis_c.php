@@ -22,10 +22,10 @@ if(MInit::form_verif('editdevis', false))
 		'totalttc'          => Mreq::tp('totalttc') ,
 		'totaltva'          => Mreq::tp('totaltva') ,
 		'projet'            => Mreq::tp('projet'),
-        'vie'               => Mreq::tp('vie'),
+    'vie'               => Mreq::tp('vie'),
 		'claus_comercial'   => Mreq::tp('claus_comercial'),
-   		'id_commercial'   => Mreq::tp('id_commercial'),
-   		'commission'      => Mreq::tp('commission')
+   	'id_commercial'     => Mreq::tp('id_commercial'),
+   	'commission'       s => Mreq::tp('commission')
 
 		);
 

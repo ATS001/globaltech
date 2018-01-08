@@ -29,6 +29,7 @@
 $tva  = Mcfg::get('tva'); 
 $form = new Mform('adddevis', 'adddevis', '', 'devis', '0', null);
 //$form->input_hidden('commission', Mreq::tp('commission'));
+
 //Date devis
 $array_date[]= array('required', 'true', 'Insérer la date de devis');
 $form->input_date('Date devis', 'date_devis', 2, date('d-m-Y'), $array_date);
@@ -49,7 +50,8 @@ $form->select_table('Commercial', 'id_commercial', 6, 'commerciaux', 'id', 'CONC
 //Commission du commercial
 $array_commission[]= array('required', 'true', 'Insérer la commission du commercial');
 $array_commission[]= array('number', 'true', 'Montant invalid' );
-$form->input('Commission du commercial', 'commission', 'text' ,'2 is-number alignRight','0', $array_commission, null, null);
+$form->input('Commission du commercial (%)', 'commission', 'text' ,'2 is-number alignRight','0', $array_commission, null, null);
+
 
 //Table 
 $columns = array('id' => '1' ,'Item' => '3' , 'Réference'=>'14', 'Produit' => '30', 'P.U HT' => '10', 'T.Rem' => '5', 'V.Remise' => '5', 'Qte' => '5', 'Total HT' => '10', 'TVA' => '7', 'Total' =>'10', '#' =>'3'   );
@@ -63,14 +65,14 @@ $form->draw_datatabe_form('table_details_devis', $verif_value, $columns, 'adddev
 $form->bloc_title('Zone totaux');
 //Type Remise
 $form->input('Total des articles enregistrés', 'sum_table', 'text' ,'4 is-number alignRight', '0', null, null, 'readonly');
-$hard_code_remise = '<label style="margin-left:15px;margin-right : 20px;">Valeur remise: </label><input id="valeur_remise" name="valeur_remise" class="input-small alignRight" value="0" type="text"><span class="help-block">Cette remise sera appliquée sur le total H.T de devis</span>';
+$hard_code_remise = '<label style="margin-left:30px;margin-right : 20px;">Valeur remise: </label><input id="valeur_remise" name="valeur_remise" class="input-small alignRight" value="0" type="text">';
+$hard_code_remise .= '<label style="margin-left:15px;margin-right : 20px;">Commission   :</label><input readonly="" id="total_commission" name="total_commission" class="input-large is-number alignRight" value="0" type="text"><span class="help-block">Cette remise sera appliquée sur le total H.T de devis</span>';
 $typ_remise = array('P' => 'Pourcentage' , 'M' => 'Montant' );
-$form->select('Remise Exept', 'type_remise', 2, $typ_remise, $indx = NULL ,$selected = NULL, $multi = NULL,  $hard_code_remise);
-
+$form->select('Remise Exept', 'type_remise', 3, $typ_remise, $indx = NULL ,$selected = NULL, $multi = NULL,  $hard_code_remise);
 
 //Prix
 $prixht_array[]  = array('required', 'true', 'Le montant est invalide');
-$hard_code_prices = '<label style="margin-left:15px;margin-right : 20px;">TVA Calculé: </label><input id="totaltva" readonly="" name="totaltva" class="input-small is-number alignRight " value="0" type="text">';
+$hard_code_prices = '<label style="margin-left:15px;margin-right : 20px;"> T.V.A    Calculée     : </label><input id="totaltva" readonly="" name="totaltva" class="input-small is-number alignRight " value="0" type="text">';
 $hard_code_prices .= '<label style="margin-left:15px;margin-right : 20px;">Prix Global TTC: </label><input readonly="" id="totalttc" name="totalttc" class="input-large is-number alignRight" value="0" type="text">';
 $form->input('Prix Global HT', 'totalht', 'text' ,'3 is-number alignRight', '0', $prixht_array, $hard_code_prices, 'readonly');
 //Validité
@@ -91,7 +93,7 @@ $form->render();
 		
 <script type="text/javascript">
 $(document).ready(function() {
-    
+
     //called when key is pressed in textbox
 	 function calculat_devis($totalht, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc)
 	 {
@@ -129,7 +131,10 @@ $(document).ready(function() {
     } 
 
     $('#addRow').on( 'click', function () {
-    	var table = $('#table_details_devis').DataTable();
+        $cms = parseFloat($('#commission').val());
+        
+        var table = $('#table_details_devis').DataTable();
+
     	if($('#id_client').val() == ''){
 
     		ajax_loadmessage('Il faut choisir un client','nok');
@@ -152,6 +157,7 @@ $(document).ready(function() {
             ajax_loadmessage("Impossible d'insérer un abonnement avec autres produits",'nok');
             return false;
         }
+
         var $link  = $(this).attr('rel');
    		var $titre = $(this).attr('data_titre'); 
    		var $data  = $(this).attr('data')+'&commission='+$('#commission').val();
@@ -188,7 +194,7 @@ $(document).ready(function() {
 
         if (table.data().count()) {
 
-            bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de TVA sera appliqué sur l'ensemble des lignes détails, voulez vous vous continuer ?</span>", 
+            bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de TVA sera appliqué sur l'ensemble des lignes détails, voulez vous continuer ?</span>", 
                 function(result){
                     if(result == true){
                         var $tkn_frm = $(this).attr('tkn_frm');
@@ -220,6 +226,48 @@ $(document).ready(function() {
                            $('#tva').val('O');
                         }
                         $('#tva').trigger("chosen:updated");
+                    }
+                }
+            );  
+        }
+
+    });
+
+
+    $('#commission').on('change', function () {
+        var table = $('#table_details_devis').DataTable();
+
+        if (table.data().count()) {
+
+            bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de la commission sera appliqué sur l'ensemble des lignes détails, voulez vous continuer ?</span>", 
+                function(result){
+                    if(result == true){
+                        $cms = parseFloat($('#commission').val());
+                        var $tkn_frm = $(this).attr('tkn_frm');
+                        $.ajax({
+
+                            cache: false,
+                            url  : '?_tsk=add_detaildevis&ajax=1'+'&act=1&<?php echo MInit::crypt_tp('exec', 'set_commission')?>',
+                            type : 'POST',
+                            data : $('#adddevis').serialize(),
+                            dataType:"JSON",
+                            success: function(data){
+
+                                if(data['error']== false){
+                                    ajax_loadmessage(data['mess'],'nok',5000)
+                                }else{
+                                    ajax_loadmessage(data['mess'],'ok',3000);
+                                    var t1 = $('.dataTable').DataTable().draw();
+                                    $('#sum_table').val(data['sum']);
+                                    $('#valeur_remise').trigger('change'); 
+                                }
+
+                            }
+                        });
+                    }else{
+                      
+                      $('#commission').val($cms);
+
                     }
                 }
             );  

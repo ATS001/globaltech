@@ -575,6 +575,34 @@ class Mdevis
 
     }
 
+    public function verif_commission($tkn_frm, $commission)
+    {
+        $table_details = $this->table_details;
+        $tva_value     = Mcfg::get('tva');
+        global $db;
+        if($tva == 'N'){
+            $req_sql = "UPDATE $table_details SET total_ttc = total_ht, total_tva = 0  WHERE tkn_frm = '$tkn_frm'";
+        }else{
+            $req_sql = "UPDATE $table_details SET  total_tva = ((total_ht * $tva_value)/100), total_ttc = (total_ht + total_tva)  WHERE tkn_frm = '$tkn_frm'";
+        }
+
+        //Run adaptation
+        if(!$db->Query($req_sql))
+        {
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .= '<\br>Problème Enregistrement détails dans le devis';
+            return false;
+        }else{
+            $this->Get_sum_detail($tkn_frm);
+            $this->log .='Adaptation TVA réussie';
+        }
+        $arr_return = array('error' => $this->error, 'mess' => $this->log, 'sum' => $this->sum_total_ht);
+        return $arr_return;
+     
+    }
+
+
     private function Calculate_devis_d($prix_u, $qte, $type_remise, $value_remise, $tva)
     {
         
@@ -738,6 +766,32 @@ class Mdevis
         }else{
             $this->Get_sum_detail($tkn_frm);
             $this->log .='Adaptation TVA réussie';
+        }
+        $arr_return = array('error' => $this->error, 'mess' => $this->log, 'sum' => $this->sum_total_ht);
+        return $arr_return;
+     
+    }
+
+    //update commission in details_devis after the change of commission in the main
+    public function set_commission_for_detail_on_change_main_commission($tkn_frm, $commission)
+    {
+        //var_dump($commission);
+        $table_details = $this->table_details;
+        $tva_value     = Mcfg::get('tva');
+
+        global $db;
+        $req_sql = "UPDATE $table_details SET  prix_ht = (prix_unitaire +((prix_unitaire * $commission)/100)), total_ht = (prix_ht * qte), total_tva = ((total_ht * $tva_value)/100), total_ttc = (total_ht + total_tva)  WHERE tkn_frm = '$tkn_frm'";
+
+        //Run adaptation
+        if(!$db->Query($req_sql))
+        {
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .= '<\br>Problème Enregistrement détails dans le devis';
+            return false;
+        }else{
+            $this->Get_sum_detail($tkn_frm);
+            $this->log .='Adaptation Commission réussie';
         }
         $arr_return = array('error' => $this->error, 'mess' => $this->log, 'sum' => $this->sum_total_ht);
         return $arr_return;
