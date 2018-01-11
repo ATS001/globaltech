@@ -25,7 +25,7 @@ if(MInit::form_verif('editdevis', false))
     'vie'               => Mreq::tp('vie'),
 		'claus_comercial'   => Mreq::tp('claus_comercial'),
    	'id_commercial'     => Mreq::tp('id_commercial'),
-   	'commission'       s => Mreq::tp('commission')
+   	'commission'        => Mreq::tp('commission')
 
 		);
 
