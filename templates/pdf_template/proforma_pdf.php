@@ -122,11 +122,14 @@ class MYPDF extends TCPDF {
 		<td style="width: 65%; background-color: #eeecec;"><strong>'.$this->info_proforma['denomination'].'</strong></td>
 		</tr>';
 		
+		if($adresse.$bp.$ville.$pays != null){
 			$detail_client .= '<tr>
 	    <td align="right" style="width: 30%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Adresse</td>
 		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$adresse.' '.$bp.' '.$ville.' '.$pays.'</td>
 		</tr>';
+
+		}
 		
 		
 		if($tel != null && $email != null){
