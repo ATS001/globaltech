@@ -33,7 +33,7 @@ $form = new Mform('adddevis', 'adddevis', '', 'devis', '0', null);
 $array_date[]= array('required', 'true', 'Insérer la date de devis');
 $form->input_date('Date devis', 'date_devis', 4, date('d-m-Y'), $array_date);
 //Client
-$hard_code_client = '<span class="help-block returned_span">...</span>';
+$hard_code_client = '<a id="add_client_diver" href="#" rel="add_client_diver" data="" data_titre="Ajout Client Diver " class=" "><span class="help-block returned_span"><i class="fa fa-plus"></i> Ajouter un client divers</span></a>';
 $client_array[]  = array('required', 'true', 'Choisir un Client');
 $form->select_table('Client', 'id_client', 8, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat=1', $client_array, $hard_code_client);
 //TVA
@@ -136,6 +136,7 @@ $(document).ready(function() {
         
     });
     
+
 
     $('#valeur_remise').bind('input change',function() {
     	// Calcul values
@@ -267,7 +268,14 @@ $(document).ready(function() {
         });
     });
 
-    
+    $('#add_client_diver').on( 'click', function () {
+        
+        var $link  = $(this).attr('rel');
+        var $titre = $(this).attr('data_titre'); 
+        var $data  = $(this).attr('data'); 
+        ajax_bbox_loader($link, $data, $titre, 'large')
+        
+    });
 
 
      
