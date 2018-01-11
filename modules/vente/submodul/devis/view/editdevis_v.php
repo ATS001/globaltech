@@ -81,14 +81,15 @@ $form->draw_datatabe_form('table_details_devis', $verif_value, $columns, 'adddev
 $form->bloc_title('Zone totaux');
 //Type Remise
 $form->input('Total des articles enregistrés', 'sum_table', 'text' ,'4 is-number alignRight', $info_devis->g('totalht'), null, null, 'readonly');
-$hard_code_remise = '<label style="margin-left:15px;margin-right : 20px;">Valeur remise: </label><input id="valeur_remise" name="valeur_remise" class="input-small alignRight" value="'.$info_devis->g('valeur_remise').'" type="text"><span class="help-block">Cette remise sera appliquée sur le total H.T de devis</span>';
+$hard_code_remise = '<label style="margin-left:15px;margin-right : 20px;">Valeur remise: </label><input id="valeur_remise" name="valeur_remise" class="input-small alignRight" value="'.$info_devis->g('valeur_remise').'" type="text">';
+$hard_code_remise .= '<label style="margin-left:30px;margin-right : 20px;">Commission   :</label><input readonly="" id="total_commission" name="total_commission" class="input-large is-number alignRight" value="'.$info_devis->g('total_commission').'" type="text"><span class="help-block">Cette remise sera appliquée sur le total H.T de devis</span>';
 $typ_remise = array('P' => 'Pourcentage' , 'M' => 'Montant' );
-$form->select('Remise Exept', 'type_remise', 2, $typ_remise, $indx = NULL ,$info_devis->g('type_remise'), $multi = NULL,  $hard_code_remise);
+$form->select('Remise Exept', 'type_remise', 3, $typ_remise, $indx = NULL ,$info_devis->g('type_remise'), $multi = NULL,  $hard_code_remise);
 
 
 //Prix
 $prixht_array[]  = array('required', 'true', 'Le montant est invalid');
-$hard_code_prices = '<label style="margin-left:15px;margin-right : 20px;">TVA Calculé: </label><input id="totaltva" readonly="" name="totaltva" class="input-small is-number alignRight " value="'.$info_devis->g('totaltva').'" type="text">';
+$hard_code_prices = '<label style="margin-left:15px;margin-right : 20px;"> T.V.A    Calculée     : </label><input id="totaltva" readonly="" name="totaltva" class="input-small is-number alignRight " value="'.$info_devis->g('totaltva').'" type="text">';
 $hard_code_prices .= '<label style="margin-left:15px;margin-right : 20px;">Prix Global TTC: </label><input readonly="" id="totalttc" name="totalttc" class="input-large is-number alignRight" value="'.$info_devis->g('totalttc').'" type="text">';
 $form->input('Prix Global HT', 'totalht', 'text' ,'3 is-number alignRight', $info_devis->g('totalht'), $prixht_array, $hard_code_prices, 'readonly');
 //Validité
@@ -112,7 +113,7 @@ $(document).ready(function() {
     $cms = parseFloat($('#commission').val());
     
     //called when key is pressed in textbox
-	 function calculat_devis($totalht, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc)
+	 function calculat_devis($totalht, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc,$commission,$f_total_commission)
 	 {
     	
     	var $totalht         = parseFloat($totalht) ? parseFloat($totalht) : 0;
@@ -142,9 +143,11 @@ $(document).ready(function() {
     		var $total_tva = ($total_ht * $val_tva) / 100; //TVA value get from app setting
     	}
     	var $total_ttc = $total_ht + $total_tva ;
+        var $total_commission = ($total_ttc * $commission) / 100;
     	$('#'+$f_total_ht).val($total_ht);
     	$('#'+$f_total_tva).val($total_tva);
     	$('#'+$f_total_ttc).val($total_ttc);  
+        $('#'+$f_total_commission).val($total_commission);  
     } 
     $('#addRow').on( 'click', function () {
 
@@ -280,6 +283,18 @@ $(document).ready(function() {
             ajax_loadmessage('Il faut choisir un client','nok');
             return false;
         }
+
+        if($('#id_commercial').val() == ''){
+
+            ajax_loadmessage('Il faut choisir un commercial','nok');
+            return false;
+        }
+
+        if($('#commission').val() == ''){
+
+            ajax_loadmessage('Il faut saisir une commission','nok');
+            return false;
+        }
         var $link  = $(this).attr('rel');
         var $titre = 'Modifier détail Devis';
         var $data  = $(this).attr('data')+'&commission='+$('#commission').val(); ; 
@@ -294,14 +309,16 @@ $(document).ready(function() {
     	var remise_valeur = parseFloat($('#valeur_remise').val());
     	var tva           = $('#tva').val();
     	var dix_per_ht    = parseFloat((totalht * 10) / 100);
+        var commission    = parseFloat($("#commission").val());
+
     	if((type_remise == 'P' && remise_valeur > 10) || (type_remise == 'M' && remise_valeur > dix_per_ht)){
     		ajax_loadmessage('La remise exeptionnel ne doit pas dépasser 10% du Total des articles','nok');
     		$('#totalht').val(totalht);
     		$('#valeur_remise').val(0);
-    		calculat_devis(totalht, null, 0, tva, 'totalht', 'totaltva', 'totalttc');
+    		calculat_devis(totalht, null, 0, tva, 'totalht', 'totaltva', 'totalttc',commission,'total_commission');
     		return false;
     	}
-    	calculat_devis(totalht, type_remise, remise_valeur, tva, 'totalht', 'totaltva', 'totalttc');
+    	calculat_devis(totalht, type_remise, remise_valeur, tva, 'totalht', 'totaltva', 'totalttc',commission,'total_commission');
     })
     $('#type_remise').on('change', function () {
         $('#valeur_remise').trigger('input');
