@@ -51,11 +51,12 @@ $tableau_body = $db->GetMTable_pdf($headers);
 
 // Extend the TCPDF class to create custom Header and Footer
 class MYPDF extends TCPDF {
-     var $Table_head = null;
-     var $Table_body = null;
-     var $info_devis = array();
-     var $info_ste   = array();
-     var $qr         = false;
+     var $Table_head   = null;
+     var $no_tabl_head = true;
+     var $Table_body   = null;
+     var $info_devis   = array();
+     var $info_ste     = array();
+     var $qr           = false;
      
 	//Page header
 	public function Header() {
@@ -107,7 +108,7 @@ class MYPDF extends TCPDF {
 	    $tel = $this->info_devis['tel'] != null ? 'Tél.'.$this->info_devis['tel'] : null;
 	    $email = $this->info_devis['email'] != null ? 'Email.'.$this->info_devis['email'] : null;
 	    $adresse = $this->info_devis['adresse'] != null ? $this->info_devis['adresse'] : null;
-	    $bp = $this->info_devis['bp'] != null ? $this->info_devis['bp'] : null;
+	    $bp = $this->info_devis['bp'] != null ? 'BP. '.$this->info_devis['bp'] : null;
 	    $ville = $this->info_devis['ville'] != null ? $this->info_devis['ville'] : null;
 	    $pays = $this->info_devis['pays'] != null ? $this->info_devis['pays'] : null;
 		$detail_client = '<table cellspacing="3" cellpadding="2" border="0">
@@ -120,12 +121,16 @@ class MYPDF extends TCPDF {
 		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;"><strong>'.$this->info_devis['denomination'].'</strong></td>
 		</tr>';
-		
+
+		if($adresse.$bp.$ville.$pays != null){
 			$detail_client .= '<tr>
 	    <td align="right" style="width: 30%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Adresse</td>
 		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$adresse.' '.$bp.' '.$ville.' '.$pays.'</td>
 		</tr>';
+
+		}
+			
 		
 		
 		if($tel != null && $email != null){
@@ -139,6 +144,7 @@ class MYPDF extends TCPDF {
 		$detail_client .= $nif.'
 		</tbody>
 		</table>';
+		//$marge_after_detail_client = 
 		$this->writeHTMLCell(100, 0, 99, 40, $detail_client, 0, 0, 0, true, 'L', true);
 		if($this->info_devis['projet'] != null){
 			$projet = '<span style="color:#C81414; padding:5px;">'.$this->info_devis['projet'].'</span>';
@@ -148,17 +154,18 @@ class MYPDF extends TCPDF {
 		    $this->setCellPadding(1);
 		    $this->writeHTMLCell('', '', 16, '', $projet, 1, 0, 0, true, 'L', true);
 		}
+		$this->Ln();
 		$this->setCellPadding(0);
-		$height = $this->getLastH();
-		$this->SetTopMargin($height + $this->GetY());
+		$height = $this->getLastH() + $this->GetY();
+		//$this->SetTopMargin(10 + $this->GetY());
 		//Info général
 		$tableau_head = $this->Table_head;
-		$this->writeHTMLCell('', '', 15, '', $tableau_head, 0, 0, 0, true, 'L', true);
-		$height = $this->getLastH();
-       
-        $this->SetTopMargin($height + $this->GetY() -1);
-		//$pdf->writeHTMLCell('', '','' , '', $html , 0, 0, 0, true, 'L', true);
-
+		if($this->no_tabl_head){
+			$this->writeHTMLCell('', '', 15, $height, $tableau_head, 0, 0, 0, true, 'L', true);
+		    $height = $this->getLastH();
+            $this->SetTopMargin($height + $this->GetY());
+		}
+		
 	}
 
 	// Page footer
@@ -190,6 +197,20 @@ class MYPDF extends TCPDF {
 		// Page number
 		$this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
 	}
+	public function writeHTMLTogether($html, $ln=true, $fill=false, $reseth=false, $cell=false, $align='') {
+    $cp =  $this->getPage();
+    $this->startTransaction();
+
+    $this->writeHTML($html, $ln, $fill, $reseth, $cell, $align);
+
+    if ($this->getPage() > $cp) {
+         $this->rollbackTransaction(true);//true is very important
+         $this->AddPage();
+         $this->writeHTML($html, $ln, $fill, $reseth, $cell, $align);           
+    } else {            
+         $this->commitTransaction();            
+    }
+    }
 
 	
 }
@@ -228,7 +249,7 @@ $pdf->SetHeaderMargin(PDF_MARGIN_HEADER);
 $pdf->SetFooterMargin(30);
 
 // set auto page breaks
-$pdf->SetAutoPageBreak(TRUE, 60);
+$pdf->SetAutoPageBreak(TRUE, 30);
 
 
 // set image scale factor
@@ -254,7 +275,8 @@ $html = $pdf->Table_body;
 
 //$pdf->writeHTMLCell('', '','' , '', $html , 0, 0, 0, true, 'L', true);
 
-$pdf->lastPage();
+
+
 $obj = new nuts($pdf->info_devis['totalttc'], $pdf->info_devis['devise']);
 $ttc_lettre = $obj->convert("fr-FR");
 $total_no_remise = $pdf->info_devis['total_no_remise'];
@@ -291,6 +313,16 @@ $block_sum = '<div></div>
 <style>
 p {
     line-height: 0.6;
+    .row0
+				{
+					background-color: #eaebed;
+					border:1pt solid black;
+				}
+				.row1{
+					border:1px solid black;
+				}
+				.alignRight { text-align: right; }
+				.center{ text-align: center; }
 }
 
 </style>
@@ -339,13 +371,38 @@ p {
 
 <tr>
     <td colspan="2" align="right" style="font: underline; padding-right: 200px;">
-        <br><br><br><br>
+        <br><br>
         <strong>'.$signature.'</strong>
     </td>
 </tr>
 </table>';
-$html .= $block_sum;
+//$pdf->lastPage(); 
+
+
+
+
+
 $pdf->writeHTML($html, true, false, true, false, '');
+/*$y = $pdf->GetY();
+//No space for Sum Blok then AddPage
+if($y > 190)
+{
+	$pdf->no_tabl_head = false;
+	$pdf->AddPage();
+	$pdf->writeHTML($block_sum, true, false, true, false, '');
+
+}else{
+	$pdf->writeHTML($block_sum, true, false, true, false, '');
+}*/
+$pdf->writeHTMLTogether($block_sum, $ln=true, $fill=false, $reseth=false, $cell=false, $align='');
+/*$block_sum1 = 'Y: '.$y;
+$pdf->writeHTML($block_sum1, true, false, true, false, '');
+$pdf->writeHTML($block_sum, true, false, true, false, '');
+$y = $pdf->GetY();
+
+
+$block_sum1 = 'Y: '.$y;*/
+
 // Close and output PDF document
 // This method has several options, check the source code documentation for more information.
 $pdf->Output($file_export,'F');

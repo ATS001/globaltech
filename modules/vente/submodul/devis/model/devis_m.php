@@ -153,9 +153,9 @@ class Mdevis
         devis
         INNER JOIN clients 
         ON (devis.id_client = clients.id)
-        INNER JOIN ref_pays 
+        LEFT JOIN ref_pays 
         ON (clients.id_pays = ref_pays.id)
-        INNER JOIN ref_ville
+        LEFT JOIN ref_ville
         ON (clients.id_ville = ref_ville.id)
         INNER JOIN ref_devise
         ON (clients.id_devise = ref_devise.id)
@@ -1535,6 +1535,36 @@ class Mdevis
             $this->log .= "Devis envoyé  à ".$this->g('email');
         }
     }
+
+    public function save_new_client_diver()
+    {
+        global $db;
+
+        
+        $values["denomination"]  = MySQL::SQLValue($this->_data['denomination']);
+        $values["adresse"]       = MySQL::SQLValue($this->_data['adresse']);
+        $values["tel"]           = MySQL::SQLValue($this->_data['tel']);
+        $values["email"]         = MySQL::SQLValue($this->_data['email']);
+        $values["creusr"]        = MySQL::SQLValue(session::get('userid'));
+        
+
+        //Check if Insert Query been executed (False / True)
+        if (!$result = $db->InsertRow("clients", $values)){
+                //False => Set $this->log and $this->error = false
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .='</br>Enregistrement BD non réussie'; 
+
+        }
+
+        //check if last error is true then return true else rturn false.
+        if($this->error == false){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
 
 
 /**
