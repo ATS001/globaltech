@@ -65,8 +65,8 @@ $form->draw_datatabe_form('table_details_devis', $verif_value, $columns, 'adddev
 $form->bloc_title('Zone totaux');
 //Type Remise
 $form->input('Total des articles enregistrés', 'sum_table', 'text' ,'4 is-number alignRight', '0', null, null, 'readonly');
-$hard_code_remise = '<label style="margin-left:30px;margin-right : 20px;">Valeur remise: </label><input id="valeur_remise" name="valeur_remise" class="input-small alignRight" value="0" type="text">';
-$hard_code_remise .= '<label style="margin-left:15px;margin-right : 20px;">Commission   :</label><input readonly="" id="total_commission" name="total_commission" class="input-large is-number alignRight" value="0" type="text"><span class="help-block">Cette remise sera appliquée sur le total H.T de devis</span>';
+$hard_code_remise = '<label style="margin-left:15px;margin-right : 20px;">Valeur remise: </label><input id="valeur_remise" name="valeur_remise" class="input-small alignRight" value="0" type="text">';
+$hard_code_remise .= '<label style="margin-left:30px;margin-right : 20px;">Commission   :</label><input readonly="" id="total_commission" name="total_commission" class="input-large is-number alignRight" value="0" type="text"><span class="help-block">Cette remise sera appliquée sur le total H.T de devis</span>';
 $typ_remise = array('P' => 'Pourcentage' , 'M' => 'Montant' );
 $form->select('Remise Exept', 'type_remise', 3, $typ_remise, $indx = NULL ,$selected = NULL, $multi = NULL,  $hard_code_remise);
 
