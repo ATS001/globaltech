@@ -31,7 +31,7 @@ if(MInit::form_verif('editdevis', false))
 		);
 
 
-  //Check if array have empty element return list
+  //Check if array have empty element return list 
   //for acceptable empty field do not put here  
 
 	$checker = null;
