@@ -95,7 +95,7 @@ $form->render();
 $(document).ready(function() {
 
     //called when key is pressed in textbox
-	 function calculat_devis($totalht, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc)
+	 function calculat_devis($totalht, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc,$commission,$f_total_commission)
 	 {
     	
     	var $totalht         = parseFloat($totalht) ? parseFloat($totalht) : 0;
@@ -124,9 +124,12 @@ $(document).ready(function() {
     		var $total_tva = ($total_ht * $val_tva) / 100; //TVA value get from app setting
     	}
     	var $total_ttc = $total_ht + $total_tva ;
-    	$('#'+$f_total_ht).val($total_ht);
-    	$('#'+$f_total_tva).val($total_tva);
-    	$('#'+$f_total_ttc).val($total_ttc);  
+        var $total_commission = ($total_ttc * $commission) / 100;
+        $('#'+$f_total_ht).val($total_ht);
+        $('#'+$f_total_tva).val($total_tva);
+        $('#'+$f_total_ttc).val($total_ttc);  
+        $('#'+$f_total_commission).val($total_commission);  
+ 
         
     } 
 
@@ -173,16 +176,17 @@ $(document).ready(function() {
     	var type_remise   = $('#type_remise').val();
     	var remise_valeur = parseFloat($('#valeur_remise').val());
     	var tva           = $('#tva').val();
+        var commission    = parseFloat($("#commission").val());
 
     	var dix_per_ht    = parseFloat((totalht * 10) / 100);
     	if((type_remise == 'P' && remise_valeur > 10) || (type_remise == 'M' && remise_valeur > dix_per_ht)){
     		ajax_loadmessage('La remise exeptionnel ne doit pas dépasser 10% du Total des articles','nok');
     		$('#totalht').val(totalht);
     		$('#valeur_remise').val(0);
-    		calculat_devis(totalht, null, 0, tva, 'totalht', 'totaltva', 'totalttc');
+    		calculat_devis(totalht, null, 0, tva, 'totalht', 'totaltva', 'totalttc',commission,'total_commission');
     		return false;
     	}
-    	calculat_devis(totalht, type_remise, remise_valeur, tva, 'totalht', 'totaltva', 'totalttc');
+    	calculat_devis(totalht, type_remise, remise_valeur, tva, 'totalht', 'totaltva', 'totalttc',commission,'total_commission');
         
     });
 

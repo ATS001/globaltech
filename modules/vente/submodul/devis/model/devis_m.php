@@ -32,8 +32,13 @@ class Mdevis
     var $sum_total_ht     = null;//
     var $arr_prduit       = array();
     var $attached         = null;
+<<<<<<< HEAD
     var $type_devis       = null;//Type Devis (ABN / VNT)
     var $info_temp_client = array();
+=======
+    var $type_devis       = null;//Type Devis (ABN / VNT) 
+    var $total_commission = null;//
+>>>>>>> refs/remotes/origin/fati
     
 
 
@@ -396,7 +401,7 @@ class Mdevis
       //Get sum of details
         	$this->Get_sum_detail($this->_data['tkn_frm']); 
       //calcul values devis
-        	$this->Calculate_devis_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva']);
+        	$this->Calculate_devis_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva'],$this->_data['commission']);
             global $db;
             //Generate reference
             if(!$reference = $db->Generate_reference($this->table, 'DEV'))
@@ -419,6 +424,7 @@ class Mdevis
         	$totalttc = $this->total_ttc_t;
             $valeur_remise = $this->valeur_remis_t;
             $total_remise = $this->total_remise;
+            $total_commission=$this->total_commission;
 
 
         	$values["reference"]       = MySQL::SQLValue($this->reference);
@@ -429,6 +435,7 @@ class Mdevis
             $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
             $values["id_commercial"]   = MySQL::SQLValue($this->_data['id_commercial']);
             $values["commission"]      = MySQL::SQLValue($this->_data['commission']);
+            $values["total_commission"]= MySQL::SQLValue($total_commission);
             $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
             $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
             $values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
@@ -496,7 +503,8 @@ class Mdevis
     	$this->Get_sum_detail($this->_data['tkn_frm']); 
         //calcul values devis
         
-    	$this->Calculate_devis_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva']);
+    	$this->Calculate_devis_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva'],$this->_data['commission']);
+
 
         //Get Type devis
         $this->get_type_devis($this->_data['tkn_frm']);
@@ -513,6 +521,7 @@ class Mdevis
     	$totalht  = $this->total_ht_t;
     	$totaltva = $this->total_tva_t;
     	$totalttc = $this->total_ttc_t;
+        $total_commission=$this->total_commission;
         $valeur_remise = number_format($this->valeur_remis_t, 2,'.', '');
         $this->reference = $this->devis_info['reference'];
 
@@ -524,6 +533,7 @@ class Mdevis
         $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
         $values["id_commercial"]   = MySQL::SQLValue($this->_data['id_commercial']);
         $values["commission"]      = MySQL::SQLValue($this->_data['commission']);
+        $values["total_commission"]= MySQL::SQLValue($total_commission);
         $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
         $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
         $values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
@@ -636,6 +646,7 @@ class Mdevis
         }
         $this->total_ttc_d = $this->total_ht_d + $this->total_tva_d;
 
+        
         /*$arr = array('Pu' => $prix_u, 'qte' => $qte, 'typ_remise' => $type_remise, 'val_remise' => $val_remise, 'prix_u_remised' => $prix_u_remised, 'tva' => $tva, 'total_tva' => $this->total_tva_d, 'total_ht_d' => $this->total_ht_d, 'total_ttc_d' => $this->total_ttc_d);
         var_dump($arr);
         exit();*/
@@ -643,7 +654,7 @@ class Mdevis
 
     }
 
-    private function Calculate_devis_t($totalht, $type_remise, $value_remise, $tva)
+    private function Calculate_devis_t($totalht, $type_remise, $value_remise, $tva,$commission)
     {
     	if($type_remise == 'P')
     	{
@@ -674,6 +685,9 @@ class Mdevis
             $this->total_tva_t = ($this->total_ht_t * $tva_value) / 100; //TVA value get from app setting
         }
         $this->total_ttc_t = $this->total_ht_t + $this->total_tva_t;
+
+        //Total commission
+        $this->total_commission = ($this->total_ttc_t * $commission) / 100;
 
         return true;
     }

@@ -23,15 +23,21 @@ if(MInit::form_verif('editdevis', false))
     'totaltva'          => Mreq::tp('totaltva') ,
     'projet'            => Mreq::tp('projet'),
     'vie'               => Mreq::tp('vie'),
+<<<<<<< HEAD
     'claus_comercial'   => Mreq::tp('claus_comercial'),
     'id_commercial'     => Mreq::tp('id_commercial'),
     'commission'        => Mreq::tp('commission'),
+=======
+		'claus_comercial'   => Mreq::tp('claus_comercial'),
+   	'id_commercial'     => Mreq::tp('id_commercial'),
+   	'commission'        => Mreq::tp('commission'),
+>>>>>>> refs/remotes/origin/fati
     'total_commission'  => Mreq::tp('total_commission')
 
     );
 
 
-  //Check if array have empty element return list
+  //Check if array have empty element return list 
   //for acceptable empty field do not put here  
 
   $checker = null;
