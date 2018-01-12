@@ -9,30 +9,31 @@ class Mdevis
 	//Declared Private
 	private $_data; //data receive from form
     //Declared Variable
-    var $table          = 'devis'; //Main table of module
-    var $table_details  = 'd_devis'; //Tables détails devis
-    var $last_id        = null;//return last ID after insert command
-    var $log            = null;//Log of all opération.
-    var $id_devis       = null;// Devis ID append when request
-    var $token          = null;//user for recovery function
-    var $devis_info     = null;//Array stock all ville info
-    var $devis_d_info   = null;//
-    var $reference      = null;// Reference Devis
-    var $error          = true;//Error bol changed when an error is occured
-    var $valeur_remis_d = null;//
-    var $total_remise   = null;//
-    var $prix_u_final   = null;//
-    var $total_ht_d     = null;//
-    var $total_tva_d    = null;//
-    var $total_ttc_d    = null;//
-    var $valeur_remis_t = null;//
-    var $total_ht_t     = null;// 
-    var $total_tva_t    = null;//
-    var $order_detail   = null; //
-    var $sum_total_ht   = null;//
-    var $arr_prduit     = array();
-    var $attached       = null;
-    var $type_devis     = null;//Type Devis (ABN / VNT)
+    var $table            = 'devis'; //Main table of module
+    var $table_details    = 'd_devis'; //Tables détails devis
+    var $last_id          = null;//return last ID after insert command
+    var $log              = null;//Log of all opération.
+    var $id_devis         = null;// Devis ID append when request
+    var $token            = null;//user for recovery function
+    var $devis_info       = null;//Array stock all ville info
+    var $devis_d_info     = null;//
+    var $reference        = null;// Reference Devis
+    var $error            = true;//Error bol changed when an error is occured
+    var $valeur_remis_d   = null;//
+    var $total_remise     = null;//
+    var $prix_u_final     = null;//
+    var $total_ht_d       = null;//
+    var $total_tva_d      = null;//
+    var $total_ttc_d      = null;//
+    var $valeur_remis_t   = null;//
+    var $total_ht_t       = null;// 
+    var $total_tva_t      = null;//
+    var $order_detail     = null; //
+    var $sum_total_ht     = null;//
+    var $arr_prduit       = array();
+    var $attached         = null;
+    var $type_devis       = null;//Type Devis (ABN / VNT)
+    var $info_temp_client = array();
     
 
 
@@ -1536,25 +1537,33 @@ class Mdevis
         }
     }
 
-    public function save_new_client_diver()
+    public function save_new_client_temp()
     {
         global $db;
 
-        
-        $values["denomination"]  = MySQL::SQLValue($this->_data['denomination']);
-        $values["adresse"]       = MySQL::SQLValue($this->_data['adresse']);
-        $values["tel"]           = MySQL::SQLValue($this->_data['tel']);
-        $values["email"]         = MySQL::SQLValue($this->_data['email']);
-        $values["creusr"]        = MySQL::SQLValue(session::get('userid'));
+        if(!$reference = $db->Generate_reference('clients_temp', 'CT'))
+        {
+            $this->log .= '</br>Problème Réference';
+            return false;
+        }
+        $values["reference"]    = MySQL::SQLValue($reference);
+        $values["denomination"] = MySQL::SQLValue($this->_data['denomination']);
+        $values["adresse"]      = MySQL::SQLValue($this->_data['adresse']);
+        $values["tel"]          = MySQL::SQLValue($this->_data['tel']);
+        $values["email"]        = MySQL::SQLValue($this->_data['email']);
+        $values["creusr"]       = MySQL::SQLValue(session::get('userid'));
         
 
         //Check if Insert Query been executed (False / True)
-        if (!$result = $db->InsertRow("clients", $values)){
+        if (!$result = $db->InsertRow("clients_temp", $values)){
                 //False => Set $this->log and $this->error = false
             $this->log .= $db->Error();
             $this->error = false;
             $this->log .='</br>Enregistrement BD non réussie'; 
 
+        }else{
+            $this->info_temp_client  = array('mess' => 'Client '.$this->_data['denomination'].' a était ajouté','nom' => $this->_data['denomination'], 'id' => $result );
+            $this->error = true;
         }
 
         //check if last error is true then return true else rturn false.

@@ -6,7 +6,8 @@ if(!defined('_MEXEC'))die();
 //Created : 10-01-2018
 //Controller ADD Form
 if(MInit::form_verif('add_client', false))
-      {
+  {
+
 
           $posted_data = array(
 
@@ -23,10 +24,11 @@ if(MInit::form_verif('add_client', false))
           $checker = null;
           $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
 
-          if($posted_data["denomination"] == NULL){
+          if($posted_data["denomination"] == NULL)
+          {
             $empty_list .= "<li>Insérer le nom de client</li>";
             $checker = 1;
-      }
+          }
       
 
 
@@ -34,23 +36,27 @@ if(MInit::form_verif('add_client', false))
       if($checker == 1)
       {
          exit("0#$empty_list");
-   }
+      }
 
 
 
        //End check empty element
-   $new_client_diver = new  Mdevis($posted_data);
+      $new_client_temp = new  Mdevis($posted_data);
 
 
 
         //execute Insert returne false if error
-   if($new_client_diver->save_new_client_diver()){
+      if($new_client_temp->save_new_client_temp()){
+         
+            $result = json_encode($new_client_temp->info_temp_client);
+            echo $result;
+            exit();
 
-         exit("1#".$new_client_diver->log);
-   }else{
+      }else{
 
-         exit("0#".$new_client_diver->log);
-   }
+         echo json_encode(array('error' => false, 'mess' => 'Erreur Enregistrement Client Temporaire'.$new_client_temp->log ));
+         exit();
+      }
 
 
 }
