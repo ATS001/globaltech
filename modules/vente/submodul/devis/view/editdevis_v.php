@@ -60,6 +60,17 @@ $tva_opt = array('O' => 'OUI' , 'N' => 'NON' );
 $form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$info_devis->g('tva'), $multi = NULL);
 //Projet if client have more project
 $form->input('Projet', 'projet', 'text' ,'6', $info_devis->g('projet'), null , null, null);
+
+//Commercial
+$hard_code_commercial = '<span class="help-block returned_span">...</span>';
+$commercial_array[]  = array('required', 'true', 'Choisir un Commercial');
+$form->select_table('Commercial', 'id_commercial', 6, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)' , 'CONCAT(nom," ",prenom)' , $indx = '------' ,$selected=$info_devis->g('id_commercial'),$multi=NULL, $where='etat=1', $commercial_array, $hard_code_commercial);
+//Commission du commercial
+$array_commission[]= array('required', 'true', 'Insérer la commission du commercial');
+$array_commission[]= array('number', 'true', 'Montant invalid' );
+$form->input('Commission du commercial (%)', 'commission', 'text' ,'2 is-number alignRight',$info_devis->g('commission'), $array_commission, null, null);
+
+
 //Table 
 $columns = array('id' => '1' ,'Item' => '3' , 'Réference'=>'14', 'Produit' => '30', 'P.U HT' => '10', 'T.Rem' => '5', 'V.Remise' => '5', 'Qte' => '5', 'Total HT' => '10', 'TVA' => '7', 'Total' =>'10', '#' =>'3'   );
 $js_addfunct = 'var column = t.column(0);
@@ -98,6 +109,7 @@ $form->render();
 		
 <script type="text/javascript">
 $(document).ready(function() {
+    $cms = parseFloat($('#commission').val());
     
     //called when key is pressed in textbox
 	 function calculat_devis($totalht, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc)
@@ -135,22 +147,40 @@ $(document).ready(function() {
     	$('#'+$f_total_ttc).val($total_ttc);  
     } 
     $('#addRow').on( 'click', function () {
+
+        $cms = parseFloat($('#commission').val());
+
     	var table = $('#table_details_devis').DataTable();
+
     	if($('#id_client').val() == ''){
 
     		ajax_loadmessage('Il faut choisir un client','nok');
     		return false;
     	}
+
+        if($('#id_commercial').val() == ''){
+
+            ajax_loadmessage('Il faut choisir un commercial','nok');
+            return false;
+        }
+
+        if($('#commission').val() == ''){
+
+            ajax_loadmessage('Il faut saisir une commission','nok');
+            return false;
+        }
+
         if(table.data().count() && $('#is_abn').val() == 'abn'){
             ajax_loadmessage("Impossible d'insérer un abonnement avec autres produits",'nok');
             return false;
         }
         var $link  = $(this).attr('rel');
    		var $titre = $(this).attr('data_titre'); 
-   		var $data  = $(this).attr('data'); 
+   		var $data  = $(this).attr('data')+'&commission='+$('#commission').val(); ; 
         ajax_bbox_loader($link, $data, $titre, 'large')
         
     });
+
     $('#tva').on('change', function () {
         var table = $('#table_details_devis').DataTable();
 
@@ -199,6 +229,48 @@ $(document).ready(function() {
 
     });
 
+    $('#commission').on('change', function () {
+        var table = $('#table_details_devis').DataTable();
+
+        if (table.data().count()) {
+
+            bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de la commission sera appliqué sur l'ensemble des lignes détails, voulez vous continuer ?</span>", 
+                function(result){
+                    if(result == true){
+                        $cms = parseFloat($('#commission').val());
+                        var $tkn_frm = $(this).attr('tkn_frm');
+                        $.ajax({
+
+                            cache: false,
+                            url  : '?_tsk=add_detaildevis&ajax=1'+'&act=1&<?php echo MInit::crypt_tp('exec', 'set_commission')?>',
+                            type : 'POST',
+                            data : $('#editdevis').serialize(),
+                            dataType:"JSON",
+                            success: function(data){
+
+                                if(data['error']== false){
+                                    ajax_loadmessage(data['mess'],'nok',5000)
+                                }else{
+                                    ajax_loadmessage(data['mess'],'ok',3000);
+                                    var t1 = $('.dataTable').DataTable().draw();
+                                    $('#sum_table').val(data['sum']);
+                                    $('#valeur_remise').trigger('change'); 
+                                }
+
+                            }
+                        });
+                    }else{
+                     
+                      $('#commission').val($cms);
+                      
+                    }
+                }
+            );  
+        }
+
+    });
+
+
 
 
     $('#table_details_devis tbody ').on('click', 'tr .edt_det', function() {
@@ -210,7 +282,7 @@ $(document).ready(function() {
         }
         var $link  = $(this).attr('rel');
         var $titre = 'Modifier détail Devis';
-        var $data  = $(this).attr('data'); 
+        var $data  = $(this).attr('data')+'&commission='+$('#commission').val(); ; 
         ajax_bbox_loader($link, $data, $titre, 'large')
         
     });

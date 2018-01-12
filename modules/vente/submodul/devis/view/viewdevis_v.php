@@ -168,6 +168,12 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->Get_detail_devis_show())
 												<ul class="list-unstyled  spaced">
 													<li>
 														<i class="ace-icon fa fa-caret-right green"></i>
+														Commercial: 
+														<b class="blue pull-right"><?php $info_devis->s('commercial');?></b>
+													</li>
+
+													<li>
+														<i class="ace-icon fa fa-caret-right green"></i>
 														Total: 
 														<b class="blue pull-right"><?php $info_devis->s('total_no_remise'); echo ' ';$info_devis->s('devise') ?></b>
 													</li>
