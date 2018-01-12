@@ -32,13 +32,10 @@ class Mdevis
     var $sum_total_ht     = null;//
     var $arr_prduit       = array();
     var $attached         = null;
-<<<<<<< HEAD
     var $type_devis       = null;//Type Devis (ABN / VNT)
     var $info_temp_client = array();
-=======
-    var $type_devis       = null;//Type Devis (ABN / VNT) 
     var $total_commission = null;//
->>>>>>> refs/remotes/origin/fati
+
     
 
 
