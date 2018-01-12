@@ -1188,7 +1188,7 @@ if($this->facture_info['base_fact'] == 'C')
         , clients.reference
         , clients.denomination
         , clients.adresse
-        , clients.bp
+        , CONCAT('BP', clients.bp) as bp
         , clients.tel
         , clients.nif
         , clients.email

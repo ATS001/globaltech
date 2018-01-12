@@ -175,7 +175,7 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->Get_detail_devis_show())
 													<li>
 														<i class="ace-icon fa fa-caret-right green"></i>
 														Total: 
-														<b class="blue pull-right"><?php $info_devis->s('total'); echo ' ';$info_devis->s('devise') ?></b>
+														<b class="blue pull-right"><?php $info_devis->s('total_no_remise'); echo ' ';$info_devis->s('devise') ?></b>
 													</li>
 													<li>
 														<i class="ace-icon fa fa-caret-right green"></i>
@@ -222,14 +222,15 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->Get_detail_devis_show())
 										<div class="col-sm-5 pull-right">
 											<h4 class="pull-right">
 												Montant Total :
-												<span class="red"><?php $info_devis->s('totalttc')?> FCFA</span>
+												<span class="red"><?php $info_devis->s('totalttc'); echo ' ';$info_devis->s('devise')?></span>
 											</h4>
 										</div>
 										<div class="col-sm-7 pull-left"> 
 											<b class="red">
 												<?php 
+												$devise = $info_devis->g('devise');
 
-												$obj = new nuts($info_devis->g('totalttc'), "FCFA");
+												$obj = new nuts($info_devis->g('totalttc'), $devise);
 												$ttc_lettre = $obj->convert("fr-FR");
 												echo 'Soit: '.$ttc_lettre;
 												?>
