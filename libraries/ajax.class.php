@@ -266,7 +266,7 @@ class MAjax
 
 		}else{
 			//Update lastactive into users_sys case no app sys
-			if($this->app_array['app_sys'] == 0)
+			if($this->app_array['app_sys'] == 0 OR $this->app_array['session'] == 1)
 			{
 				$val_time['lastactive'] = 'CURRENT_TIMESTAMP';
 				$whr_user['id']         = MySQL::SQLValue(session::get('userid'));

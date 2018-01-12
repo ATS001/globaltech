@@ -44,6 +44,33 @@ class Mfacture {
     }
 
     //Get all info categorie_contrats_frn from database for edit form
+    public function get_commerciale_devis() {
+        global $db;
+        $table = $this->table;
+
+        $sql = "SELECT  d.* FROM devis d WHERE  d.id = " . $this->id_facture;
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->facture_info = $db->RowArray();
+                $this->error = true;
+            }
+        }
+        //return Array contrats_frn_info
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    //Get all info categorie_contrats_frn from database for edit form
     public function get_facture() {
         global $db;
         $table = $this->table;
@@ -386,6 +413,92 @@ class Mfacture {
                 }
             }
             //Else Error false	
+        } else {
+            $this->log .= '</br>Enregistrement non réussie';
+        }
+        //check if last error is true then return true else rturn false.
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    //Credit commercial account
+    public function credit_compte_commerciale() {
+
+        //$this->sum_encaissement_by_facture($this->_data['idfacture']);
+        $this->id_facture = $this->_data['idfacture'];
+        $this->get_facture();
+        //$total_encaissement= $this->sum_enc_fact + $this->_data['montant'];
+        //if($total_encaissement > $this->facture_info['total_ttc'])
+        if ($this->_data['montant'] > $this->facture_info['reste']) {
+            $this->error = FALSE;
+            $this->log .= '</br>Le montant doit être inférieur ou égal à ' . $this->facture_info['reste'] . ' FCFA';
+            return FALSE;
+        }
+        //$this->Generate_encaissement_reference();
+        global $db;
+        //Generate reference
+        if (!$reference = $db->Generate_reference($this->table, 'ENC')) {
+            $this->log .= '</br>Problème Réference';
+            return false;
+        }
+
+
+        //Check if PJ attached required
+        if ($this->exige_pj) {
+            $this->check_file('pj', 'Justifications du contrat.');
+        }
+
+        if ($this->error == true) {
+
+            global $db;
+            $values["reference"] = MySQL::SQLValue($reference);
+            $values["designation"] = MySQL::SQLValue($this->_data['designation']);
+            $values["idfacture"] = MySQL::SQLValue($this->_data['idfacture']);
+            $values["mode_payement"] = MySQL::SQLValue($this->_data['mode_payement']);
+            $values["ref_payement"] = MySQL::SQLValue($this->_data['ref_payement']);
+            $values["montant"] = MySQL::SQLValue($this->_data['montant']);
+            $values["date_encaissement"] = MySQL::SQLValue(date("Y-m-d"));
+            $values["creusr"] = MySQL::SQLValue(session::get('userid'));
+            $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+
+
+            //Check if Insert Query been executed (False / True)
+            if (!$result = $db->InsertRow('encaissements', $values)) {
+                //False => Set $this->log and $this->error = false
+                $this->log .= $db->Error();
+                $this->error = false;
+                $this->log .= '</br>Enregistrement BD non réussie';
+            } else {
+
+                $this->last_id = $result;
+                //If Attached required Save file to Archive
+
+                $this->save_file('pj', 'Justifications de l\'encaissement' . $this->reference, 'Document');
+
+                //Check $this->error = true return Green message and Bol true
+                if ($this->error == true) {
+                    $this->log = '</br>Enregistrement réussie: <b>' . $this->reference . ' ID: ' . $this->last_id;
+                    $this->maj_reste($this->_data['idfacture'], $this->_data['montant']);
+                    $test_enc = $this->test_first_encaissement($this->_data['idfacture']);
+                    $this->get_facture();
+
+                    if ($test_enc == true and $this->facture_info['reste'] > 0) {
+                        $this->valid_etat_facture($etat = 2, $this->_data['idfacture']);
+                    }
+
+                    if ($test_enc == false and $this->facture_info['reste'] == 0) {
+                        $this->valid_etat_facture($etat = 3, $this->_data['idfacture']);
+                    }
+                } else {
+                    $this->log .= '</br>Enregistrement réussie: <b>' . $this->reference;
+
+                    $this->log .= '</br>Un problème d\'Enregistrement ';
+                }
+            }
+            //Else Error false  
         } else {
             $this->log .= '</br>Enregistrement non réussie';
         }
@@ -1075,7 +1188,7 @@ if($this->facture_info['base_fact'] == 'C')
         , clients.reference
         , clients.denomination
         , clients.adresse
-        , clients.bp
+        , CONCAT('BP', clients.bp) as bp
         , clients.tel
         , clients.nif
         , clients.email

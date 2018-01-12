@@ -1424,7 +1424,7 @@ class Mmodul {
 			$services = str_replace('-,-', '-', $services);
 			$values["service"]   = MySQL::SQLValue($services);
 		}
-        $id = MD5($description.'0def');
+        $idf = MD5($description.'0def');
         $this->check_exist_idf($idf); 
 		//$service               = '-'.session::get('service').'-';
 		$values["appid"]         = MySQL::SQLValue($app_id);

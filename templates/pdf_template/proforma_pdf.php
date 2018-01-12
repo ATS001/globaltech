@@ -39,7 +39,7 @@ $headers = array(
             'Description' => '43[#]', 
             'Qte'         => '5[#]C', 
             'P.Unitaire'  => '10[#]R',
-            'Total'       => '15[#]R',
+            'P.Total'       => '15[#]R',
 
         );
 $proforma_info   = $proforma->proforma_info;
@@ -105,27 +105,42 @@ class MYPDF extends TCPDF {
 		</tr>';
 	    }
 	    
+		$tel = $this->info_proforma['tel'] != null ? 'Tél.'.$this->info_proforma['tel'] : null;
+	    $email = $this->info_proforma['email'] != null ? 'Email.'.$this->info_proforma['email'] : null;
+	    $adresse = $this->info_proforma['adresse'] != null ? $this->info_proforma['adresse'] : null;
+	    $bp = $this->info_proforma['bp'] != null ? $this->info_proforma['bp'] : null;
+	    $ville = $this->info_proforma['ville'] != null ? $this->info_proforma['ville'] : null;
+	    $pays = $this->info_proforma['pays'] != null ? $this->info_proforma['pays'] : null;
 		$detail_client = '<table cellspacing="3" cellpadding="2" border="0">
 		<tbody>
 		<tr style="background-color:#495375; font-size:14; font-weight:bold; color:#fff;">
-		<td colspan="3"><strong>Info. client</strong></td>
+		<td colspan="3"><strong>Informations client</strong></td>
 		</tr>
 		<tr>
 		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Dénomination</td>
 		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;"><strong>'.$this->info_proforma['denomination'].'</strong></td>
-		</tr>
-		<tr>
-		<td align="right" style="width: 30%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Adresse</td>
+		</tr>';
+		
+		if($adresse.$bp.$ville.$pays != null){
+			$detail_client .= '<tr>
+	    <td align="right" style="width: 30%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Adresse</td>
 		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
-		<td style="width: 65%; background-color: #eeecec;">'.$this->info_proforma['adresse'].' '.$this->info_proforma['bp'].' '.$this->info_proforma['ville'].' '.$this->info_proforma['pays'].'</td>
-		</tr>
-		<tr>
+		<td style="width: 65%; background-color: #eeecec;">'.$adresse.' '.$bp.' '.$ville.' '.$pays.'</td>
+		</tr>';
+
+		}
+		
+		
+		if($tel != null && $email != null){
+			$detail_client .= '<tr>
 		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Contact</td>
 		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
-		<td style="width: 65%; background-color: #eeecec;">Tél.'.$this->info_proforma['tel'].' Email.'.$this->info_proforma['email'].'</td>
+		<td style="width: 65%; background-color: #eeecec;">'.$tel.' '.$email.'</td>
 		</tr>
-		'.$nif.'
+		';
+		}
+		$detail_client .= $nif.'
 		</tbody>
 		</table>';
 		$this->writeHTMLCell(100, 0, 99, 40, $detail_client, 0, 0, 0, true, 'L', true);

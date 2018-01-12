@@ -731,7 +731,7 @@ $(document).ready(function(){
 		                type: 'POST',
 		                url: './?_tsk=report&ajax=1',
 		                data: $(this).attr('rel')+'&'+$(this).attr('data'),
-		                timeout: 3000,
+		                timeout: 30000,
 		                dataType:'JSON',
 		                success: function(data) {
 			                	
@@ -744,6 +744,7 @@ $(document).ready(function(){
 					        }
 					        
 			            },
+			            
 		                error: function() {
 			                ajax_loadmessage('Affichage Impossible #AJAX','nok',3000);
 			                return false;
