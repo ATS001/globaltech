@@ -1014,6 +1014,20 @@ class Mdevis
             return true;
         }
     }
+    private function check_client_temp($id_client)
+    {
+        global $db;
+        $type_client = $db->QuerySingleValue0("SELECT type_client FROM clients  WHERE id = $id_client");
+
+        if($type_client == 'T')
+        {
+            $this->log .='</br>Le client est temporaire</br>Vous devez complèter le profile de client ' .$type_client;
+            return false;
+        }else{
+            return true;
+        }
+
+    }
     /**
      * [validdevisclient_devis Action valid client]
      *  'creat_devis' => string '0' (length=1)
@@ -1028,6 +1042,7 @@ class Mdevis
      */
     public function validdevisclient_devis()
     {
+        $this->get_devis();
         $reponse = $this->_data['reponse'];
         $ref_bc = null;
         switch ($reponse) {
@@ -1058,7 +1073,11 @@ class Mdevis
             $this->log .= "Manque paramètre etat_devis => $etat";
             return false;
         }
-        
+        $id_client = $this->devis_info['id_client'];
+        if($etat == 'valid_client' and !$this->check_client_temp($id_client)){
+            $this->error = false;
+            return false;
+        }
         $req_sql = " UPDATE $table SET etat = $new_etat  $ref_bc WHERE id = $id_devis ";
         
         if (!$db->Query($req_sql)) {
@@ -1620,13 +1639,14 @@ class Mdevis
     {
         global $db;
 
-        if(!$reference = $db->Generate_reference('clients_temp', 'CT'))
+        if(!$reference = $db->Generate_reference('clients', 'CLT'))
         {
             $this->log .= '</br>Problème Réference';
             return false;
         }
         $values["reference"]    = MySQL::SQLValue($reference);
         $values["denomination"] = MySQL::SQLValue($this->_data['denomination']);
+        $values["type_client"]  = MySQL::SQLValue('T');
         $values["adresse"]      = MySQL::SQLValue($this->_data['adresse']);
         $values["tel"]          = MySQL::SQLValue($this->_data['tel']);
         $values["email"]        = MySQL::SQLValue($this->_data['email']);
@@ -1634,7 +1654,7 @@ class Mdevis
         
 
         //Check if Insert Query been executed (False / True)
-        if (!$result = $db->InsertRow("clients_temp", $values)){
+        if (!$result = $db->InsertRow("clients", $values)){
                 //False => Set $this->log and $this->error = false
             $this->log .= $db->Error();
             $this->error = false;
