@@ -4,7 +4,9 @@ if(!MInit::crypt_tp('exec', null, 'D'))
 { 	
 	$id     = Mreq::tp('exec');
 	$idc    = MInit::crypt_tp('exec',$id);
-	exit('0#<br>L\'action exécutée invalid contactez l\'administrateur yyyyyyy '.$id.'  '.$idc);
+
+	exit('0#<br>L\'action exécutée invalid contactez l\'administrateur '.$id.'  '.$idc);
+
 }
 //Action called from all button of this modul
 $action = Mreq::tp('exec');
@@ -55,6 +57,7 @@ if($action == 'info_client')
 	} 
 }
 
+
 //update tva for lines 
 
 if($action == 'set_tva')
@@ -70,7 +73,21 @@ if($action == 'set_tva')
 	}
 }
 
+//update commission for lines 
 
+if($action == 'set_commission')
+{
+
+	$set_commission = new Mdevis();
+	$arr_return = $set_commission->set_commission_for_detail_on_change_main_commission(MReq::tp('tkn_frm'), MReq::tp('commission'));
+	if($set_commission->error == true)
+	{
+		$result = json_encode($arr_return);
+		echo $result;
+	}else{
+		echo json_encode(array('error' => false, 'mess' => 'Adaptation Commission non réussie '.$set_commission->log ));
+	}
+}
 //Load_categorie by type
 if($action == 'load_select_categ')
 {

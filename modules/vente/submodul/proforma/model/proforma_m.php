@@ -133,9 +133,9 @@ class Mproforma
         proforma
         INNER JOIN clients 
         ON (proforma.id_client = clients.id)
-        INNER JOIN ref_pays 
+        LEFT JOIN ref_pays 
         ON (clients.id_pays = ref_pays.id)
-        INNER JOIN ref_ville
+        LEFT JOIN ref_ville
         ON (clients.id_ville = ref_ville.id)
         INNER JOIN ref_devise
         ON (clients.id_devise = ref_devise.id)

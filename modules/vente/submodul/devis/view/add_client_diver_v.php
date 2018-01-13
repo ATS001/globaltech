@@ -10,7 +10,8 @@ if(!defined('_MEXEC'))die();
 <?php
 //$form = new Mform('add_detaildevis', 'add_detaildevis', '', 'devis', '0', 'is_modal'); 
 $form = new Mform('add_client', 'add_client', '', 'devis', '0', 'is_modal');
-
+$form->input_hidden('tkn_frm', Mreq::tp('tkn'));
+$form->alert_message('Le client est temporaire,<br> il faut compléter le profile avant la facturation ','warning');
 $denomination_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
 $denomination_array[]  = array('required', 'true', 'Insérer La Dénomination' );
 $form->input('Dénomination', 'denomination', 'text' ,6 , null, $denomination_array);
@@ -44,24 +45,32 @@ $('.send_modal').on('click', function () {
                 url  : '?_tsk=add_client_diver&ajax=1',
                 type : 'POST',
                 data : $('#add_client').serialize(),
-                dataType:"html",
-                success: function(data_f)
+                dataType:"JSON",
+                success: function(data)
                 {
+                    
 
-                    var data_arry = data_f.split("#");
-                    if(data_arry[0]==0){
-                        ajax_loadmessage(data_arry[1],'nok',3000);
-                    }else{ 
 
-                        ajax_loadmessage(data_arry[1],'ok',3000);
+                    if(data['error'] == false){
+                        ajax_loadmessage(data['mess'] ,'nok',5000);
+                        return false;
+                    }else{
+                          
+                        $('#id_client')
+                        .append($("<option selected=\"selected\"></option>")
+                        .attr("value",data['id'])
+                        .text(data['nom'])); 
                         
-                        
-                    }
-                },
+                        $('#id_client').trigger("chosen:updated");
+                        $('.close_modal').trigger('click');
+                        ajax_loadmessage(data['mess'] ,'ok',3000);
+
+                    }               
+                 },
                 timeout: 30000,
-                error: function(){
-                    ajax_loadmessage('Délai non attendue','nok',5000)
-
+                error: function (xhr, ajaxOptions, thrownError) {
+                    
+                    ajax_loadmessage("Erreur opération" ,'nok',5000);
                 }
             });
 
