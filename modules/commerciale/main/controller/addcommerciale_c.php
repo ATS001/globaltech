@@ -5,7 +5,7 @@ if (!defined('_MEXEC')) die();
 // Modul: commerciale
 //Created : 30-12-2017
 //Controller ADD Form
-if (MInit::form_verif('addcommecriale', false)) {
+if (MInit::form_verif('addcommerciale', false)) {
 
     $posted_data = array(
 
@@ -80,7 +80,7 @@ if (MInit::form_verif('addcommecriale', false)) {
 }
 
 //No form posted show view
-view::load_view('addcommecriale');
+view::load_view('addcommerciale');
 
 
 ?>

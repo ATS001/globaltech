@@ -61,6 +61,11 @@ $id_commerciale = $commission->g("id_commerciale");
                 $form->input('Reste', 'reste', "text", "9", $reste[0], null, $multi = true, true);
 
 
+
+                //Objet ==>
+                $array_objet[]= array("required", "true", "Insérer objet");
+                $form->input("Object", "objet", "text" ,"9", null, $array_objet, null, $readonly = null);
+
                 //Montant
                 $mt_array[] = array("required", "true", "Saisir le montant");
                 $form->input("Montant", "debit", "text", "9", null, $mt_array, null, $readonly = null);
@@ -69,6 +74,9 @@ $id_commerciale = $commission->g("id_commerciale");
                 $methode_array  = array('Espèce' => 'Espèce', 'Chèque' => 'Chèque','Virement'=>'Virement','Autre' =>'Autre' );
                 $form->select('Méthode de Paiement', 'methode_payement', 3, $methode_array, Null,'Espèce', $multi = NULL );
 
+                //pj_id
+                $form->input('Justificatif', 'pj', 'file', 6, null, null);
+                $form->file_js('pj', 1000000, 'pdf');
 
                 $form->button('Enregistrer');
                 //Form render

@@ -16,6 +16,7 @@ $id_commerciale = $paiement->commission_info['id_commerciale'];
 $paiement->get_paiement();
 $paiements = $paiement->commission_info;
 
+//var_dump($paiements);
 ?>
 <div class="pull-right tableTools-container">
     <div class="btn-group btn-overlap">
@@ -79,38 +80,60 @@ $paiements = $paiement->commission_info;
                                     else {
                                     ?>
                                     <table class="table table-striped table-bordered table-hover" style="width: 800px">
-                                            <th>
+                                            <th align="center" style="width: 20px">
                                                 ID
                                             </th>
-                                            <th>
+                                            <th style="width:300px">
                                                 Objet
                                             </th>
-                                            <th>
+                                            <th align="center" style="width: 120px">
                                                 Montant
                                             </th>
-                                        <th>
+                                        <th align="center" style="width: 150px">
                                                 Méthode de payement
                                             </th>
+                                        <th width="50px">
+                                            Justificatif
+                                        </th>
 
                                         <?php
                                         //                                                                                         if($complements == null)
                                         //                                                                                             echo '<B>Aucun enregistrement trouvé</B> ';
+                                        //
                                         //                                                                                         else {
                                         foreach ($paiements as $cmpl) {
                                             ?>
                                             <tr>
-                                                    <td>
-                                                        <span><?php echo $cmpl['0']; ?></span>
+                                                    <td align="center" valign="top">
+                                                  <?php if ($cmpl['0'] != null) { ?>
+                                                      <span><?php echo $cmpl['0']; ?></span>
+                                                  <?php } else echo '-'; ?>
                                                     </td>
                                                     <td>
-                                                        <span><?php echo $cmpl['2']; ?></span>
+                                                        <?php if ($cmpl['2'] != null) { ?>
+                                                            <span><?php echo $cmpl['2']; ?></span>
+                                                        <?php } else echo '-'; ?>
                                                     </td>
-                                                    <td>
-                                                        <span><?php echo $cmpl['5']; ?></span>
+                                                    <td align="right" valign="top">
+                                                        <?php if ($cmpl['5'] != null) { ?>
+                                                            <span><?php echo $cmpl['5']; ?></span>
+                                                        <?php } else echo '-'; ?>
+                                                    </td>
+                                                    <td align="center" valign="top">
+                                                        <?php if ($cmpl['8'] != null) { ?>
+                                                            <span><?php echo $cmpl['8']; ?></span>
+                                                        <?php } else echo '-'; ?>
+
                                                     </td>
                                                 <td>
-                                                        <span><?php echo $cmpl['8']; ?></span>
-                                                    </td>
+                                                    <?php if($cmpl['9'] != null){ ?>
+                                                        <a href="#" class="iframe_pdf" rel=<?php echo $cmpl['9']; ?>>
+                                                <i style="display: block;margin-left:auto;margin-right:auto"
+                                                   class="ace-icon fa fa-print"></i>
+                                                </a>
+                                                    <?php }
+                                                    else echo '-';?>
+                                                </td>
 
                                                 </tr>
 
