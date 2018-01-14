@@ -15,7 +15,10 @@ if (MInit::form_verif('paycommission', false)) {
         'reste' => Mreq::tp('reste'),
         'id_commerciale' => Mreq::tp('id_commerciale'),
         'methode_payement' => Mreq::tp('methode_payement'),
+        'objet'=>Mreq::tp('objet'),
+        'pj_id' => Mreq::tp('pj-id')
     );
+
 
     $checker = null;
     $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
@@ -25,8 +28,13 @@ if (MInit::form_verif('paycommission', false)) {
         $checker = 1;
     }
 
+    if ($posted_data["objet"] == NULL) {
+        $empty_list .= "<li>Objet</li>";
+        $checker = 1;
+    }
 
-   if ($posted_data["methode_payement"] == NULL) {
+
+    if ($posted_data["methode_payement"] == NULL) {
         $empty_list .= "<li>Méthode de paiement</li>";
         $checker = 1;
     }
@@ -48,6 +56,9 @@ if (MInit::form_verif('paycommission', false)) {
 
     //End check empty element
     $commission = new Mcommission($posted_data);
+
+    //$commission->exige_pj       = false;
+
     //Set ID of row to update
     $commission->id_commission = $posted_data['id'];
 

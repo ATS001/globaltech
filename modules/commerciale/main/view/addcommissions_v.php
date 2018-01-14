@@ -17,7 +17,7 @@ if (!MInit::crypt_tp('id_commerciale', null, 'D') or !$commerciale->get_commerci
 }
 
 $id_commerciale=$commerciale->g("id");
-var_dump($id_commerciale);
+//var_dump($id_commerciale);
 
 ?>
 <div class="pull-right tableTools-container">

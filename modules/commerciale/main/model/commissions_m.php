@@ -96,7 +96,9 @@ class Mcommission
             } else {
 
                 $this->last_id = $result;
+
                 //If Attached required Save file to Archive
+
 
                 $this->log .= '</br>Enregistrement  réussie ' . $this->_data['id_commerciale'] . ' ' . $this->last_id;
                 if (!Mlog::log_exec($this->table, $this->last_id, 'Ajout Commission', 'Insert')) {
@@ -354,6 +356,7 @@ class Mcommission
     {
         //Format all parameteres
         $temp_file = $this->_data[$item . '_id'];
+
         //If nofile uploaded return kill function
         if ($temp_file == Null) {
             return true;
@@ -464,6 +467,7 @@ class Mcommission
 
             $values["id_commerciale"] = MySQL::SQLValue($this->commission_info["id_commerciale"]);
             $values["debit"] = MySQL::SQLValue($this->_data["debit"]);
+            $values["objet"] = MySQL::SQLValue($this->_data["objet"]);
             $values["methode_payement"] = MySQL::SQLValue($this->_data["methode_payement"]);
             $values["id_credit"] = MySQL::SQLValue($this->_data["id"]);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
@@ -476,7 +480,8 @@ class Mcommission
                 $this->log .= '</br>Enregistrement BD non réussie';
 
             } else {
-
+                $this->last_id = $result;
+                $this->save_file('pj', 'Justificatif.'.$values["id_credit"], 'Document');
                 //Check $this->error = true return Green message and Bol true
                 if ($this->error == true) {
                     //$this->maj_reste($this->_data['id'], $this->_data["debit"]);

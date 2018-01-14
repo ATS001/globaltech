@@ -35,7 +35,7 @@ if (!defined('_MEXEC')) die();
 
                 <?php
 
-                $form = new Mform('addcommecriale', 'addcommecriale', '', 'commerciale', '0', null);
+                $form = new Mform('addcommerciale', 'addcommerciale', '', 'commerciale', '0', null);
 
                 //Date Example
                 //$array_date[]= array('required', 'true', 'Insérer la date de ...');
