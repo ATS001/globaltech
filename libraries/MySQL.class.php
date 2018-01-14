@@ -988,14 +988,20 @@ class MySQL
      * table must have culomn named reference else return false
      * @param [type] $table [table of element ]
      * @param [type] $abr   [abreviation]
+     * @param [type] $year   [Add Year to referrence default false]
      * @return [string or false] [<description>]
      */
-    public function Generate_reference($table, $abr) 
+    public function Generate_reference($table, $abr, $year = true) 
     {
         //SET Ranking value
     	$this->QuerySingleValue0('SET @i = 1 ;');
     	$sql_req = "SELECT MAX(IF(@i = id, @i := id + 1, @i)) AS next_ref FROM  (SELECT ( SUBSTRING_INDEX( SUBSTRING_INDEX(a.reference, '-', - 1), '/', 1 ) * 1 ) AS id  FROM $table a WHERE   SUBSTRING_INDEX(a.reference, '/', - 1) = YEAR(CURDATE())  ORDER BY id) AS refs ORDER BY id ;";
 
+        if(!$year){
+        	$sql_req = "SELECT MAX(IF(@i = id, @i := id + 1, @i)) AS next_ref FROM
+                    (SELECT  ( SUBSTRING_INDEX(a.reference, '-', - 1) * 1 ) AS id 
+                    FROM  $table a ORDER BY id) AS refs ORDER BY id";
+        }
     	$max_id = $this->QuerySingleValue0($sql_req);
     	$max_id = $max_id == 0 ? 1 : $max_id;
         //$lent
@@ -1006,6 +1012,10 @@ class MySQL
     		$lettre_ste = Msetting::get_set('abr_ste');
     		$lettre_ste = $lettre_ste == null ? null : $lettre_ste.'_';
         	$num_padded = sprintf("%04d", $max_id); //Format Number to 4 char with 0
+        	if(!$year){
+        		$reference = $lettre_ste.$abr.'-' . $num_padded;
+        		return $reference;
+        	}
         	$reference = $lettre_ste.$abr.'-' . $num_padded . '/' . date('Y');
         }else{
         	return false;
