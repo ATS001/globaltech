@@ -10,6 +10,7 @@ if (MInit::form_verif('addcommissions', false)) {
     $posted_data = array(
         'credit' => Mreq::tp('credit'),
         'objet' => Mreq::tp('objet'),
+        'type'=>'Manuelle',
         'id_commerciale' => Mreq::tp('id_commerciale'),
 
     );

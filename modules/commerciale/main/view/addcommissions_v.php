@@ -50,12 +50,7 @@ $id_commerciale=$commerciale->g("id");
 <?php
  
 $form = new Mform('addcommissions', 'addcommissions', '', 'commissions&'.MInit::crypt_tp('id',$id_commerciale), '0', null);
-//$form = new Mform('addcommissions', 'addcommissions', '', 'commissions&'.MInit::crypt_tp('id',$id_commerciale), '');
-
 $form->input_hidden('id_commerciale', $id_commerciale);
-
-
-
 
 //Objet ==>
 $array_objet[]= array("required", "true", "Insérer objet");

@@ -84,7 +84,7 @@ class Mcommission
             //Add all fields for the table
             $values["objet"] = MySQL::SQLValue($this->_data["objet"]);
             $values["credit"] = MySQL::SQLValue($this->_data["credit"]);
-            //$values["methode_payement"] = MySQL::SQLValue($this->_data["methode_payement"]);
+            $values["type"] = MySQL::SQLValue($this->_data["type"]);
             $values["id_commerciale"] = MySQL::SQLValue($this->_data["id_commerciale"]);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
 
@@ -468,6 +468,7 @@ class Mcommission
             $values["id_commerciale"] = MySQL::SQLValue($this->commission_info["id_commerciale"]);
             $values["debit"] = MySQL::SQLValue($this->_data["debit"]);
             $values["objet"] = MySQL::SQLValue($this->_data["objet"]);
+            $values["date_debit"] = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_debit'])));
             $values["methode_payement"] = MySQL::SQLValue($this->_data["methode_payement"]);
             $values["id_credit"] = MySQL::SQLValue($this->_data["id"]);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
@@ -535,7 +536,7 @@ class Mcommission
 
         $table = $this->table;
 
-        $sql = "SELECT $table.* FROM 
+        $sql = "SELECT $table.*,DATE_FORMAT(date_debit,'%d-%m-%Y') as date_debit FROM 
 		$table WHERE  $table.id_credit = " . $this->id_commission;
 
         if (!$db->Query($sql)) {

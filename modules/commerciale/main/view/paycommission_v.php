@@ -57,10 +57,9 @@ $id_commerciale = $commission->g("id_commerciale");
 
                 //Reste
                 $reste = Mcommission::reste_commission(Mreq::tp('id'));
+                //var_dump(Mreq::tp('id'));
                 //Reste
-                $form->input('Reste', 'reste', "text", "9", $reste[0], null, $multi = true, true);
-
-
+                $form->input('Reste', 'reste', "text", "9", $reste[0], null, null, $readonly = true);
 
                 //Objet ==>
                 $array_objet[]= array("required", "true", "Insérer objet");
@@ -73,6 +72,10 @@ $id_commerciale = $commission->g("id_commerciale");
                 //Methode de paiement
                 $methode_array  = array('Espèce' => 'Espèce', 'Chèque' => 'Chèque','Virement'=>'Virement','Autre' =>'Autre' );
                 $form->select('Méthode de Paiement', 'methode_payement', 3, $methode_array, Null,'Espèce', $multi = NULL );
+
+                //Date paiement
+                $array_date[]= array('required', 'true', 'Insérer la date de paiement');
+                $form->input_date('Date paiement', 'date_debit', 4, date('d-m-Y'), $array_date);
 
                 //pj_id
                 $form->input('Justificatif', 'pj', 'file', 6, null, null);

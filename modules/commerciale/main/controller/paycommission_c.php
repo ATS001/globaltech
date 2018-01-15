@@ -15,6 +15,7 @@ if (MInit::form_verif('paycommission', false)) {
         'reste' => Mreq::tp('reste'),
         'id_commerciale' => Mreq::tp('id_commerciale'),
         'methode_payement' => Mreq::tp('methode_payement'),
+        'date_debit' => Mreq::tp('date_debit'),
         'objet'=>Mreq::tp('objet'),
         'pj_id' => Mreq::tp('pj-id')
     );
@@ -39,6 +40,10 @@ if (MInit::form_verif('paycommission', false)) {
         $checker = 1;
     }
 
+    if ($posted_data["date_debit"] == NULL) {
+        $empty_list .= "<li>Date de paiement</li>";
+        $checker = 1;
+    }
 
     //Check if array have empty element return list
     //for acceptable empty field do not put here
