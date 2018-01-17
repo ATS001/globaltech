@@ -75,7 +75,7 @@ $paiements = $paiement->commission_info;
                                 <span>
                                     <?php
                                     if ($paiements == null)
-                                    echo '<B>Aucun complément trouvé</B> ';
+                                    echo '<B>Aucun paiement trouvé</B> ';
                                     else {
                                     ?>
                                     <table class="table table-striped table-bordered table-hover" style="width: 820px">
@@ -132,13 +132,12 @@ $paiements = $paiement->commission_info;
 
                                                     </td>
                                                 <td align="center" valign="top">
-                                                    <?php if($cmpl['10'] != null){ ?>
+                                                    <?php if ($cmpl['10'] != null) { ?>
                                                         <a href="#" class="iframe_pdf" rel=<?php echo $cmpl['10']; ?>>
                                                 <i style="display: block;margin-left:auto;margin-right:auto"
                                                    class="ace-icon fa fa-print"></i>
                                                 </a>
-                                                    <?php }
-                                                    else echo '-';?>
+                                                    <?php } else echo '-'; ?>
                                                 </td>
 
                                                 </tr>

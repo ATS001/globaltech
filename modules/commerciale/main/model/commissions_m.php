@@ -468,7 +468,7 @@ class Mcommission
             $values["id_commerciale"] = MySQL::SQLValue($this->commission_info["id_commerciale"]);
             $values["debit"] = MySQL::SQLValue($this->_data["debit"]);
             $values["objet"] = MySQL::SQLValue($this->_data["objet"]);
-            $values["date_debit"] = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_debit'])));
+            $values["date_debit"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_debit'])));
             $values["methode_payement"] = MySQL::SQLValue($this->_data["methode_payement"]);
             $values["id_credit"] = MySQL::SQLValue($this->_data["id"]);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
@@ -482,7 +482,7 @@ class Mcommission
 
             } else {
                 $this->last_id = $result;
-                $this->save_file('pj', 'Justificatif.'.$values["id_credit"], 'Document');
+                $this->save_file('pj', 'Justificatif.' . $values["id_credit"], 'Document');
                 //Check $this->error = true return Green message and Bol true
                 if ($this->error == true) {
                     //$this->maj_reste($this->_data['id'], $this->_data["debit"]);
@@ -538,12 +538,13 @@ class Mcommission
 
         $sql = "SELECT $table.*,DATE_FORMAT(date_debit,'%d-%m-%Y') as date_debit FROM 
 		$table WHERE  $table.id_credit = " . $this->id_commission;
-
+//var_dump($sql);
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
         } else {
             if ($db->RowCount() == 0) {
+                $this->commission_info=null;
                 $this->error = false;
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
