@@ -25,6 +25,7 @@ class Mfacture {
     var $contrat_info; // Array contrat info
     var $devis_info; // Array Devis info
     var $client_info; // Array Client info
+    var $compte_commercial_info;// Array Commercial info
     var $facture_details_info; // Array details facture
     var $reference = null; // Reference 
     var $sum_enc_fact; // Somme encaissements par facture
@@ -46,9 +47,8 @@ class Mfacture {
     //Get all info categorie_contrats_frn from database for edit form
     public function get_commerciale_devis() {
         global $db;
-        $table = $this->table;
 
-        $sql = "SELECT  d.* FROM devis d WHERE  d.id = " . $this->id_facture;
+        $sql = "SELECT  c.id AS commercial, d.`commission`AS commission, f.reference as ref_facture, 'Automatique' as type_commission FROM devis d,factures f,commerciaux c WHERE  d.`id`=f.iddevis AND d.`id_commercial`=c.id AND f.id = " . $this->id_facture;
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -58,7 +58,7 @@ class Mfacture {
                 $this->error = false;
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
-                $this->facture_info = $db->RowArray();
+                $this->compte_commercial_info = $db->RowArray();
                 $this->error = true;
             }
         }
@@ -69,6 +69,7 @@ class Mfacture {
             return true;
         }
     }
+
 
     //Get all info categorie_contrats_frn from database for edit form
     public function get_facture() {
@@ -429,44 +430,29 @@ class Mfacture {
 
         //$this->sum_encaissement_by_facture($this->_data['idfacture']);
         $this->id_facture = $this->_data['idfacture'];
+      
         $this->get_facture();
-        //$total_encaissement= $this->sum_enc_fact + $this->_data['montant'];
-        //if($total_encaissement > $this->facture_info['total_ttc'])
-        if ($this->_data['montant'] > $this->facture_info['reste']) {
-            $this->error = FALSE;
-            $this->log .= '</br>Le montant doit être inférieur ou égal à ' . $this->facture_info['reste'] . ' FCFA';
-            return FALSE;
-        }
-        //$this->Generate_encaissement_reference();
+
+        $this->get_commerciale_devis();
+
         global $db;
-        //Generate reference
-        if (!$reference = $db->Generate_reference($this->table, 'ENC')) {
-            $this->log .= '</br>Problème Réference';
-            return false;
-        }
-
-
-        //Check if PJ attached required
-        if ($this->exige_pj) {
-            $this->check_file('pj', 'Justifications du contrat.');
-        }
-
+//var_dump($db);
         if ($this->error == true) {
 
             global $db;
-            $values["reference"] = MySQL::SQLValue($reference);
-            $values["designation"] = MySQL::SQLValue($this->_data['designation']);
-            $values["idfacture"] = MySQL::SQLValue($this->_data['idfacture']);
-            $values["mode_payement"] = MySQL::SQLValue($this->_data['mode_payement']);
-            $values["ref_payement"] = MySQL::SQLValue($this->_data['ref_payement']);
-            $values["montant"] = MySQL::SQLValue($this->_data['montant']);
-            $values["date_encaissement"] = MySQL::SQLValue(date("Y-m-d"));
-            $values["creusr"] = MySQL::SQLValue(session::get('userid'));
+            $objet=$this->compte_commercial_info["commission"]."% de la facture: ".$this->compte_commercial_info["ref_facture"];
+            $values["id_commerciale"] = $this->compte_commercial_info["commercial"];
+            $values["objet"] = MySQL::SQLValue($objet);
+            $values["id_facture"] = $this->id_facture;
+            $values["credit"] = (($this->_data["montant"] * $this->compte_commercial_info["commission"]) / 100) ;
+            $values["Type"] = MySQL::SQLValue($this->compte_commercial_info["type_commission"]);
+            $values["etat"] = 1;
+            $values["creusr"] = MySQL::SQLValue(session::get("userid"));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
-
             //Check if Insert Query been executed (False / True)
-            if (!$result = $db->InsertRow('encaissements', $values)) {
+            if (!$result = $db->InsertRow('compte_commerciale', $values)) {
+
                 //False => Set $this->log and $this->error = false
                 $this->log .= $db->Error();
                 $this->error = false;
@@ -474,25 +460,14 @@ class Mfacture {
             } else {
 
                 $this->last_id = $result;
-                //If Attached required Save file to Archive
-
-                $this->save_file('pj', 'Justifications de l\'encaissement' . $this->reference, 'Document');
-
+           
                 //Check $this->error = true return Green message and Bol true
                 if ($this->error == true) {
-                    $this->log = '</br>Enregistrement réussie: <b>' . $this->reference . ' ID: ' . $this->last_id;
-                    $this->maj_reste($this->_data['idfacture'], $this->_data['montant']);
-                    $test_enc = $this->test_first_encaissement($this->_data['idfacture']);
+                    $this->log = '</br>Enregistrement réussie: <b>' .'ID: ' . $this->last_id;
                     $this->get_facture();
 
-                    if ($test_enc == true and $this->facture_info['reste'] > 0) {
-                        $this->valid_etat_facture($etat = 2, $this->_data['idfacture']);
-                    }
-
-                    if ($test_enc == false and $this->facture_info['reste'] == 0) {
-                        $this->valid_etat_facture($etat = 3, $this->_data['idfacture']);
-                    }
-                } else {
+                } 
+                else {
                     $this->log .= '</br>Enregistrement réussie: <b>' . $this->reference;
 
                     $this->log .= '</br>Un problème d\'Enregistrement ';
@@ -509,6 +484,65 @@ class Mfacture {
             return true;
         }
     }
+
+     public function edit_compte_commercial() {
+
+        $this->id_facture = $this->_data['idfacture'];
+      
+        $this->get_facture();
+
+        $this->get_commerciale_devis();
+
+        $this->last_id = $this->id_compte_commerciale;
+var_dump($this->id_compte_commerciale);
+        global $db;
+        $objet=$this->compte_commercial_info["commission"]."% de la facture: ".$this->compte_commercial_info["ref_facture"];
+        $values["id_commerciale"] = $this->compte_commercial_info["commercial"];
+        $values["objet"] = MySQL::SQLValue($objet);
+        $values["id_facture"] = $this->id_facture;
+        $values["credit"] = (($this->_data["montant"] * $this->compte_commercial_info["commission"]) / 100) ;
+        $values["Type"] = MySQL::SQLValue($this->compte_commercial_info["type_commission"]);
+        $values["etat"] = 1;
+        $values["creusr"] = MySQL::SQLValue(session::get("userid"));
+        $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+        $wheres["id"] = $this->id_compte_commerciale;
+
+
+        // If we have an error
+        if ($this->error == true) {
+
+            if (!$result = $db->UpdateRows("compte_commerciale", $values, $wheres)) {
+                //$db->Kill();
+                var_dump($db);
+                $this->log .= $db->Error();
+                $this->error == false;
+                $this->log .= '</br>Enregistrement BD non réussie';
+            } else {
+
+                $this->last_id = $this->id_compte_commerciale;
+
+                //Check $this->error = true return Green message and Bol true
+                if ($this->error == true) {
+                    $this->log = '</br>Modification réussie: <b>' . $this->_data['id'] . ' ID: ' . $this->last_id;
+  
+                } else {
+                    $this->log .= '</br>Modification non réussie: <b>' . $this->_data['id'];
+                    $this->log .= '</br>Un problème d\'Enregistrement ';
+                }
+            }
+            //Else Error false  
+        } else {
+            $this->log .= '</br>Enregistrement non réussie';
+        }
+        //check if last error is true then return true else rturn false.
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
 
     public function test_first_encaissement($id_facture) {
         global $db;

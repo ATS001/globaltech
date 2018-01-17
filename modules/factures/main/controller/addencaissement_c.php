@@ -65,8 +65,16 @@
         //execute Insert returne false if error
         if ($new_encaissement->save_new_encaissement()) {
 
+            if($new_encaissement->credit_compte_commerciale()){
+
             echo("1#" . $new_encaissement->log);
-        } else {
+
+            }else {
+
+            exit("0#" . $new_encaissement->log); //Red message
+
+            }  
+        }else {
 
             echo("0#" . $new_encaissement->log);
         }
