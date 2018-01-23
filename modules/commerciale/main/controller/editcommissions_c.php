@@ -14,8 +14,8 @@ if (MInit::form_verif('editcommissions', false)) {
         'id' => Mreq::tp('id'),
         'credit' => Mreq::tp('credit'),
         'objet' => Mreq::tp('objet'),
-        'methode_payement' => Mreq::tp('methode_payement'),
-        //'id_commerciale' => Mreq::tp('id_commerciale'),
+        //'methode_payement' => Mreq::tp('methode_payement'),
+        'type'=>'Manuelle',
 
 
     );

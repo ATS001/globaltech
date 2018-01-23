@@ -10,7 +10,7 @@ if (MInit::form_verif('addcommissions', false)) {
     $posted_data = array(
         'credit' => Mreq::tp('credit'),
         'objet' => Mreq::tp('objet'),
-        'type'=>'Manuelle',
+        //'type'=>'Manuelle',
         'id_commerciale' => Mreq::tp('id_commerciale'),
 
     );
@@ -36,7 +36,7 @@ if (MInit::form_verif('addcommissions', false)) {
     }
 
 
-    $posted_data["type"]="B";
+    $posted_data["type"]="Manuelle";
 
     //End check empty element
     $new_commission = new  Mcommission($posted_data);

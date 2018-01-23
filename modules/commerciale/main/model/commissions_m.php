@@ -9,7 +9,9 @@ class Mcommission
     var $last_id = null;        //return last ID after insert command
     var $log = null;        //Log of all opération.
     var $error = true;        //Error bol changed when an error is occured
-    var $id_commission = null;        // commerciale ID append when request
+    var $id_commission = null;        // commission ID append when request
+    var $id_commerciale = null;
+    var $paiements_info = null;
     var $token = null;        //user for recovery function
     var $commission_info = array();     //Array stock all commerciale info
     var $exige_pj;
@@ -544,7 +546,7 @@ class Mcommission
             $this->log .= $db->Error();
         } else {
             if ($db->RowCount() == 0) {
-                $this->commission_info=null;
+                $this->commission_info = null;
                 $this->error = false;
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
@@ -571,8 +573,17 @@ class Mcommission
 
         $table = $this->table;
 
-        $sql = "SELECT $table.*,CONCAT(commerciaux.nom,' ',commerciaux.prenom) as commerciale FROM 
-		$table,commerciaux WHERE commerciaux.id=$table.id_commerciale AND $table.id = " . $this->id_commission;
+        $sql = "SELECT $table.*,CONCAT(commerciaux.nom,' ',commerciaux.prenom) as commerciale, 
+	            (SELECT  IFNULL (SUM(cc.debit),0) FROM compte_commerciale cc WHERE cc.`id_commerciale`=compte_commerciale.`id_commerciale`
+               AND cc.`id_credit`=compte_commerciale.id AND cc.`id_credit` IS NOT NULL) AS paye,
+          compte_commerciale.`credit`- IF( (SELECT COUNT(*) FROM compte_commerciale cpt WHERE cpt.`id_commerciale`=compte_commerciale.`id_commerciale`
+  AND cpt.`id_credit`=compte_commerciale.id AND cpt.`id_credit` IS NOT NULL)= 0, 0,  
+  ( SELECT SUM(cc.debit) FROM compte_commerciale cc WHERE cc.`id_commerciale`=compte_commerciale.`id_commerciale`
+  AND cc.`id_credit`=compte_commerciale.id AND cc.`id_credit` IS NOT NULL)) AS reste
+  FROM compte_commerciale,commerciaux
+  WHERE
+  compte_commerciale.`id_credit` IS NULL AND commerciaux.id=compte_commerciale.id_commerciale AND $table.id = " . $this->id_commission;
+
 
         if (!$db->Query($sql)) {
             //var_dump($db);
@@ -584,6 +595,82 @@ class Mcommission
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
                 $this->details_commission_info = $db->RowArray();
+                $this->error = true;
+            }
+
+
+        }
+        //return Array user_info
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    public function get_list_commission_by_commerciale()
+    {
+        global $db;
+
+        $table = $this->table;
+
+        $sql = "SELECT compte_commerciale.*,
+	            (SELECT  IFNULL (SUM(cc.debit),0) FROM compte_commerciale cc WHERE cc.`id_commerciale`=compte_commerciale.`id_commerciale`
+               AND cc.`id_credit`=compte_commerciale.id AND cc.`id_credit` IS NOT NULL) AS payé,
+          compte_commerciale.`credit`- IF( (SELECT COUNT(*) FROM compte_commerciale cpt WHERE cpt.`id_commerciale`=compte_commerciale.`id_commerciale`
+  AND cpt.`id_credit`=compte_commerciale.id AND cpt.`id_credit` IS NOT NULL)= 0, 0,  
+  ( SELECT SUM(cc.debit) FROM compte_commerciale cc WHERE cc.`id_commerciale`=compte_commerciale.`id_commerciale`
+  AND cc.`id_credit`=compte_commerciale.id AND cc.`id_credit` IS NOT NULL)) AS reste
+  FROM compte_commerciale,commerciaux
+  WHERE
+  compte_commerciale.`id_credit` IS NULL AND commerciaux.id=compte_commerciale.id_commerciale AND compte_commerciale.id_commerciale = " . $this->id_commerciale;
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->commission_info = null;
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+
+                $this->commission_info = $db->RecordsSimplArray();
+                $this->error = true;
+            }
+
+
+        }
+        //return Array user_info
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
+
+    public function get_list_paiement_by_commerciale()
+    {
+        global $db;
+
+        $table = $this->table;
+
+        $sql = "SELECT $table.*,DATE_FORMAT(date_debit,'%d-%m-%Y') as date_debit FROM 
+		$table WHERE  $table.id_commerciale = " . $this->id_commerciale;
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                //$this->paiements_info = null;
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+
+                $this->paiements_info = $db->RecordsSimplArray();
                 $this->error = true;
             }
 
