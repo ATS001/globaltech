@@ -18,10 +18,18 @@ $form->input_hidden('idh', Mreq::tp('idh'));
 $form->input_hidden('checker_tkn_frm',  MInit::cryptage($info_proforma_d->h('tkn_frm'), 1));
 $form->input_hidden('tkn_frm', $info_proforma_d->h('tkn_frm'));
 $form->input_hidden('tva_d', 'O');
+//commission commercial
+$form->input_hidden('commission', Mreq::tp('commission'));
+//prix unitaire sans commission
+$form->input_hidden('pu', $info_proforma_d->h('prix_unitaire'));
+
 //Produit
 $produit_array[]  = array('required', 'true', 'Choisir un Produit / Service');
 $form->select_table('Produit / Service', 'id_produit', 8, 'produits', 'id', 'designation' , 'designation', $indx = '------', $info_proforma_d->h('id_produit'),$multi=NULL, $where=NULL, $produit_array);
-$hard_code_pri_u_ht = '<label style="margin-left:15px;margin-right : 20px;">Prix Unité HT: </label><input id="prix_unitaire" name="prix_unitaire" class="input-large alignRight" type="text" readonly="" value="'.$info_proforma_d->h('prix_unitaire').'">';
+
+$prix_affich=$info_proforma_d->h('prix_unitaire') + ($info_proforma_d->h('prix_unitaire') *  Mreq::tp('commission') / 100);
+
+$hard_code_pri_u_ht = '<label style="margin-left:15px;margin-right : 20px;">Prix Unité HT: </label><input id="prix_unitaire" name="prix_unitaire" class="input-large alignRight" type="text" readonly="" value="'.$prix_affich.'">';
 $hard_code_pri_u_ht .= '<span class="help-block returned_span">...</span>';
 //Réference
 $form->input('Réference', 'ref_produit', 'text' ,3, $info_proforma_d->h('ref_produit'), Null, $hard_code_pri_u_ht, 1);
@@ -61,6 +69,7 @@ $(document).ready(function() {
     });
     //Get TVA value from main TVA select 
     $('#tva_d').val($('#tva').val());
+    $('#commission_d').val($('#commission').val()); 
      //called when key is pressed in textbox
      function calculat_proforma($prix_u, $qte, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc)
      {
@@ -123,7 +132,8 @@ $(document).ready(function() {
                 }else{
                                                                                                     
                     $('#label_qte').text('Quantité: ('+data['unite_vente']+')');
-                    $('#prix_unitaire').val(data['prix_vente']);
+                    $('#pu').val(data['prix_vente']);
+                    $('#prix_unitaire').val(parseFloat(data['prix_vente'])+ ( parseFloat(data['prix_vente']) * parseFloat($('#commission').val()) / 100 ));
                     $('#ref_produit').val(data['reference']);
                     $('.returned_span').remove();
                     if(data['prix_vendu'] == 0){
@@ -137,7 +147,7 @@ $(document).ready(function() {
             }//end success
         });
 
-        var validator = $('#add_detailproforma').validate();
+        var validator = $('#edit_detailproforma').validate();//1 voir avec kada
         validator.resetForm();
 
     });
