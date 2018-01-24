@@ -26,11 +26,29 @@ $array_column = array(
     ),
 
     array(
+        'column' => "compte_commerciale.objet",
+        'type' => '',
+        'alias' => 'obj',
+        'width' => '15',
+        'header' => 'Objet',
+        'align' => 'L'
+    ),
+
+    array(
+        'column' => "compte_commerciale.type",
+        'type' => '',
+        'alias' => 'type',
+        'width' => '6',
+        'header' => 'Type',
+        'align' => 'L'
+    ),
+
+    array(
         'column' => 'compte_commerciale.credit',
         'type' => '',
         'alias' => 'commission',
-        'width' => '15',
-        'header' => 'Montant Commission',
+        'width' => '10',
+        'header' => 'Commission',
         'align' => 'L'
     ),
 
@@ -40,7 +58,7 @@ $array_column = array(
                         AND cc.`id_credit`=compte_commerciale.id AND cc.`id_credit` IS NOT NULL) ',
         'type' => '',
         'alias' => 'debit',
-        'width' => '15',
+        'width' => '10',
         'header' => 'Payé',
         'align' => 'L'
     ),
@@ -53,7 +71,7 @@ $array_column = array(
   AND cc.`id_credit`=compte_commerciale.id AND cc.`id_credit` IS NOT NULL))',
         'type' => '',
         'alias' => 'reste',
-        'width' => '15',
+        'width' => '10',
         'header' => 'Reste',
         'align' => 'L'
     ),

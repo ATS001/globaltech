@@ -33,23 +33,40 @@ $array_column = array(
     ),
 
     array(
-        'column' => 'compte_commerciale.credit',
+        'column' => "compte_commerciale.objet",
         'type' => '',
-        'alias' => 'commission',
-        'width' => '15',
-        'header' => 'Montant Commission',
+        'alias' => 'obj',
+        'width' => '20',
+        'header' => 'Objet',
         'align' => 'L'
     ),
 
     array(
-        // 'column' => '(SELECT IFNULL(MAX(compte_commerciale.debit),0) FROM compte_commerciale,compte_commerciale crdt WHERE compte_commerciale.id_credit=crdt.id)',
+        'column' => "compte_commerciale.type",
+        'type' => '',
+        'alias' => 'type',
+        'width' => '6',
+        'header' => 'Type',
+        'align' => 'L'
+    ),
+
+    array(
+        'column' => 'compte_commerciale.credit',
+        'type' => '',
+        'alias' => 'commission',
+        'width' => '8',
+        'header' => 'Commission',
+        'align' => 'R'
+    ),
+
+    array(
         'column' => '( SELECT  IFNULL (SUM(cc.debit),0) FROM compte_commerciale cc WHERE cc.`id_commerciale`=compte_commerciale.`id_commerciale`
                         AND cc.`id_credit`=compte_commerciale.id AND cc.`id_credit` IS NOT NULL) ',
         'type' => '',
         'alias' => 'debit',
-        'width' => '15',
+        'width' => '8',
         'header' => 'Payé',
-        'align' => 'L'
+        'align' => 'R'
     ),
 
     array(
@@ -60,9 +77,9 @@ $array_column = array(
   AND cc.`id_credit`=compte_commerciale.id AND cc.`id_credit` IS NOT NULL))',
         'type' => '',
         'alias' => 'reste',
-        'width' => '15',
+        'width' => '8',
         'header' => 'Reste',
-        'align' => 'L'
+        'align' => 'R'
     ),
 
     array(
@@ -71,7 +88,7 @@ $array_column = array(
         'alias' => 'statut',
         'width' => '10',
         'header' => 'Statut',
-        'align' => 'L'
+        'align' => 'C'
     ),
 
 );
@@ -86,7 +103,7 @@ $html_data_table->task = 'commissions';
 $html_data_table->btn_return = array('task' => 'commerciale', 'title' => 'Retour liste commerciaux');
 $html_data_table->task = 'commissions';
 $html_data_table->js_extra_data = "id_commerciale=$id";
-$html_data_table->btn_add_data = MInit::crypt_tp('id_commerciale',$id);
+$html_data_table->btn_add_data = MInit::crypt_tp('id_commerciale', $id);
 
 
 if (!$data = $html_data_table->table_html()) {

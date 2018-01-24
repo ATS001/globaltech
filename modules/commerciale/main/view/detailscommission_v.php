@@ -16,7 +16,8 @@ $id_commerciale = $paiement->commission_info['id_commerciale'];
 $paiement->get_paiement();
 $paiements = $paiement->commission_info;
 
-//var_dump($paiements);
+var_dump($paiement->id_commission);
+
 ?>
 <div class="pull-right tableTools-container">
     <div class="btn-group btn-overlap">
@@ -60,7 +61,7 @@ $paiements = $paiement->commission_info;
 
                     <div class="widget-toolbar hidden-480">
                         <a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'decharge') ?>"
-                           data="<?php //echo MInit::crypt_tp('id', $info_facture->id_facture)?>">
+                           data="<?php  MInit::crypt_tp('id', $paiement->id_commission)?>">
                             <i class="ace-icon fa fa-print"></i>
                         </a>
                     </div>
@@ -76,10 +77,10 @@ $paiements = $paiement->commission_info;
                                 <span>
                                     <?php
                                     if ($paiements == null)
-                                    echo '<B>Aucun complément trouvé</B> ';
+                                    echo '<B>Aucun paiement trouvé</B> ';
                                     else {
                                     ?>
-                                    <table class="table table-striped table-bordered table-hover" style="width: 800px">
+                                    <table class="table table-striped table-bordered table-hover" style="width: 820px">
                                             <th align="center" style="width: 20px">
                                                 ID
                                             </th>
@@ -88,8 +89,10 @@ $paiements = $paiement->commission_info;
                                             </th>
                                             <th align="center" style="width: 120px">
                                                 Montant
+                                            </th><th align="center" style="width: 130px">
+                                                Date de paiement
                                             </th>
-                                        <th align="center" style="width: 150px">
+                                        <th align="center" style="width: 160px">
                                                 Méthode de payement
                                             </th>
                                         <th width="50px">
@@ -115,24 +118,28 @@ $paiements = $paiement->commission_info;
                                                         <?php } else echo '-'; ?>
                                                     </td>
                                                     <td align="right" valign="top">
-                                                        <?php if ($cmpl['5'] != null) { ?>
-                                                            <span><?php echo $cmpl['5']; ?></span>
+                                                        <?php if ($cmpl['6'] != null) { ?>
+                                                            <span><?php echo $cmpl['6']; ?></span>
+                                                        <?php } else echo '-'; ?>
+                                                    </td>
+                                                <td align="center" valign="top">
+                                                        <?php if ($cmpl['16'] != null) { ?>
+                                                            <span><?php echo $cmpl['16']; ?></span>
                                                         <?php } else echo '-'; ?>
                                                     </td>
                                                     <td align="center" valign="top">
-                                                        <?php if ($cmpl['8'] != null) { ?>
-                                                            <span><?php echo $cmpl['8']; ?></span>
+                                                        <?php if ($cmpl['9'] != null) { ?>
+                                                            <span><?php echo $cmpl['9']; ?></span>
                                                         <?php } else echo '-'; ?>
 
                                                     </td>
-                                                <td>
-                                                    <?php if($cmpl['9'] != null){ ?>
-                                                        <a href="#" class="iframe_pdf" rel=<?php echo $cmpl['9']; ?>>
+                                                <td align="center" valign="top">
+                                                    <?php if ($cmpl['10'] != null) { ?>
+                                                        <a href="#" class="iframe_pdf" rel=<?php echo $cmpl['10']; ?>>
                                                 <i style="display: block;margin-left:auto;margin-right:auto"
                                                    class="ace-icon fa fa-print"></i>
                                                 </a>
-                                                    <?php }
-                                                    else echo '-';?>
+                                                    <?php } else echo '-'; ?>
                                                 </td>
 
                                                 </tr>
@@ -176,16 +183,25 @@ $paiements = $paiement->commission_info;
                                             <b style="color:blue"><?php $paiement->f('objet'); ?></b>
                                         </li>
                                         <li>
-                                            <i class="ace-icon fa fa-caret-right blue"></i> Montant
-                                            <b style="color:blue"><?php $paiement->f('credit'); ?>  </b>
-
-                                        </li>
-
-
-                                        <li>
                                             <i class="ace-icon fa fa-caret-right blue"></i>
                                             Type
                                             <b style="color:blue"><?php $paiement->f('Type'); ?></b>
+                                        </li>
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right blue"></i> Montant
+                                            <b style="color:blue"><?php $paiement->f('credit'); ?>  </b>
+
+                                       </li>
+
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right blue"></i>
+                                            Payé
+                                            <b style="color:blue"><?php $paiement->f('paye'); ?></b>
+                                        </li>
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right blue"></i>
+                                            Reste
+                                            <b style="color:blue"><?php $paiement->f('reste'); ?></b>
                                         </li>
 
 

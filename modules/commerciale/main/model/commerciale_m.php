@@ -98,8 +98,6 @@ class Mcommerciale
             $values["rib"] = MySQL::SQLValue($this->_data["rib"]);
             $values["tel"] = MySQL::SQLValue($this->_data["tel"]);
             $values["email"] = MySQL::SQLValue($this->_data["email"]);
-
-
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
 
             if (!$result = $db->InsertRow($this->table, $values)) {

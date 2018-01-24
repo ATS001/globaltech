@@ -37,28 +37,6 @@ if (!defined('_MEXEC')) die();
 
                 $form = new Mform('addcommerciale', 'addcommerciale', '', 'commerciale', '0', null);
 
-                //Date Example
-                //$array_date[]= array('required', 'true', 'Insérer la date de ...');
-                //$form->input_date('Date', 'date_', 4, date('d-m-Y'), $array_date);
-                //Select Table Example
-
-
-                //$select_array[]  = array('required', 'true', 'Choisir un ....');
-                //$form->select_table('Select ', 'select', 8, 'table', 'id', 'text' , 'text', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $select_array, null);
-
-
-                //Select Simple Example
-                //$field_opt = array('O' => 'OUI' , 'N' => 'NON' );
-                //$form->select('Label Field', 'field', 2, $field_opt, $indx = NULL ,$selected = NULL, $multi = NULL);
-
-                //Separate Zone title
-                //$form->bloc_title('Zone separated');
-
-
-                //Input Example
-                //$form->input('Label field', 'field', 'text' ,'class', '0', null, null, $readonly = null);
-                //For more Example see form class
-
                 //nom ==>
                 $array_nom[] = array("required", "true", "Insérer le Nom");
                 $form->input("Nom", "nom", "text", "9", null, $array_nom, null, $readonly = null);
@@ -67,7 +45,7 @@ if (!defined('_MEXEC')) die();
                 $form->input("Prénom", "prenom", "text", "9", null, $array_prenom, null, $readonly = null);
                 //is_glbt ==>
                 $array_is_glbt = array('Oui' => 'Oui', 'Non' => 'Non');
-                $form->input("Interne", "is_glbt", "text", "9", null, $array_is_glbt, null, $readonly = null);
+                $form->select('Interne', 'is_glbt', 2, $array_is_glbt, $indx = NULL, $selected = 'Oui', $multi = NULL);
                 //cin ==>
                 $array_cin[] = array("required", "true", "Insérer le N° CIN");
                 $form->input("CIN", "cin", "text", "9", null, $array_cin, null, $readonly = null);
@@ -78,10 +56,10 @@ if (!defined('_MEXEC')) die();
                 $array_tel[] = array("required", "true", "Insérer le N° Téléphone");
                 $form->input("Téléphone", "tel", "text", "9", null, $array_tel, null, $readonly = null);
                 //email ==>
-                $form->input("E-mail", "email", "text", "9", null,null, null, $readonly = null);
+                $form->input("E-mail", "email", "text", "9", null, null, null, $readonly = null);
 
                 //Select Simple Example
-                $sexe_opt = array('M' => 'Masculin', 'F' => 'Féminin');
+                $sexe_opt = array('Masculin' => 'Masculin', 'Féminin' => 'Féminin');
                 $form->select('Sexe', 'sexe', 2, $sexe_opt, $indx = NULL, $selected = 'M', $multi = NULL);
 
                 //image

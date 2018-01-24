@@ -9,6 +9,15 @@ $commerciale = new Mcommerciale();
 $commerciale->id_commerciale = Mreq::tp('id');
 $commerciale->get_commerciale();
 
+$commission = new Mcommission();
+$commission->id_commerciale = Mreq::tp('id');
+$commission->get_list_commission_by_commerciale();
+$commissions = $commission->commission_info;
+$commission->get_list_paiement_by_commerciale();
+$paiements=$commission->paiements_info;
+
+//var_dump($paiements);
+
 if (!MInit::crypt_tp('id', null, 'D') or !$commerciale->get_commerciale()) {
     // returne message error red to client
     exit('3#' . $commerciale->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur ');
@@ -47,6 +56,18 @@ $photo = Minit::get_file_archive($commerciale->commerciale_info['photo']);
                             <a data-toggle="tab" href="#home">
                                 <i class="green ace-icon fa fa-installer bigger-120"></i>
                                 Commerciale
+                            </a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="#feed1">
+                                <i class="red ace-icon fa fa-adjust bigger-120"></i>
+                                Commissions
+                            </a>
+                        </li>
+                        <li>
+                            <a data-toggle="tab" href="#feed2">
+                                <i class="red ace-icon fa fa-adjust bigger-120"></i>
+                                Paiements
                             </a>
                         </li>
                     </ul>
@@ -107,18 +128,18 @@ $photo = Minit::get_file_archive($commerciale->commerciale_info['photo']);
                                                 <i class="ace-icon fa fa-caret-right green"></i>Sexe :
                                                 <b style="color:green"><?php $commerciale->s("sexe") ?></b>
                                             </li>
-                                            <?php if( $pj != null){
-                                            ?>
-                                            <li>
+                                            <?php if ($pj != null) {
+                                                ?>
+                                                <li>
 
 
-                                                        <i class="ace-icon fa fa-caret-right green"></i>Pièce :
-                                                        <a href="#" class="iframe_pdf" rel=<?php echo $pj; ?>>
-                                                            <i class="ace-icon fa fa-print"></i>
-                                                        </a>
+                                                    <i class="ace-icon fa fa-caret-right green"></i>Pièce :
+                                                    <a href="#" class="iframe_pdf" rel=<?php echo $pj; ?>>
+                                                        <i class="ace-icon fa fa-print"></i>
+                                                    </a>
 
 
-                                            </li>
+                                                </li>
 
                                                 <?php
                                             }
@@ -132,6 +153,179 @@ $photo = Minit::get_file_archive($commerciale->commerciale_info['photo']);
 
 
                         </div><!-- /#home -->
+
+
+                        <div id="feed1" class="tab-pane">
+
+                            <div class="profile-info-row">
+                                <div class="profile-info-value">
+                                    <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+                                    <span>
+                                    <?php
+                                    if ($commissions == null)
+                                    echo '<B>Aucune paiement trouvé</B> ';
+                                    else {
+                                    ?>
+                                        <table class="table table-striped table-bordered table-hover"
+                                               style="width: 820px">
+                                            <th align="center" style="width: 20px">
+                                                ID
+                                            </th>
+                                            <th style="width:300px">
+                                                Objet
+                                            </th>
+                                            <th align="center" style="width: 120px">
+                                                Montant
+                                            </th>
+                                            <th align="center" style="width: 120px">
+                                                Payé
+                                            </th>
+                                            <th align="center" style="width: 120px">
+                                                Reste
+                                            </th>
+                                            <th align="center" style="width: 130px">
+                                                Type
+                                            </th>
+                                            <?php
+                                            foreach ($commissions as $cmpl) {
+                                                ?>
+                                                <tr>
+                                                    <td align="center" valign="top">
+                                                  <?php if ($cmpl['0'] != null) { ?>
+                                                      <span><?php echo $cmpl['0']; ?></span>
+                                                  <?php } else echo '-'; ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php if ($cmpl['2'] != null) { ?>
+                                                            <span><?php echo $cmpl['2']; ?></span>
+                                                        <?php } else echo '-'; ?>
+                                                    </td>
+                                                    <td align="right" valign="top">
+                                                        <?php if ($cmpl['5'] != null) { ?>
+                                                            <span><?php echo $cmpl['5']; ?></span>
+                                                        <?php } else echo '-'; ?>
+                                                    </td>
+                                                <td align="center" valign="top">
+                                                        <?php if ($cmpl['16'] != null) { ?>
+                                                            <span><?php echo $cmpl['16']; ?></span>
+                                                        <?php } else echo '-'; ?>
+                                                    </td>
+                                                    <td align="center" valign="top">
+                                                        <?php if ($cmpl['17'] != null) { ?>
+                                                            <span><?php echo $cmpl['17']; ?></span>
+                                                        <?php } else echo '-'; ?>
+
+                                                    </td>
+                                                    <td align="center" valign="top">
+                                                        <?php if ($cmpl['7'] != null) { ?>
+                                                            <span><?php echo $cmpl['7']; ?></span>
+                                                        <?php } else echo '-'; ?>
+
+                                                    </td>
+
+                                                </tr>
+
+
+                                                <?php
+                                            }
+                                            }
+                                            ?>
+
+                                    </table>
+                                </span>
+                                </div>
+                            </div>
+
+
+                        </div><!-- /#feed1 -->
+
+                        <div id="feed2" class="tab-pane">
+
+                            <div class="profile-info-row">
+                                <div class="profile-info-value">
+                                    <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+                                    <span>
+                                    <?php
+                                    if ($paiements == null)
+                                    echo '<B>Aucune commission trouvée</B> ';
+                                    else {
+                                    ?>
+                                        <table class="table table-striped table-bordered table-hover"
+                                               style="width: 820px">
+                                            <th align="center" style="width: 20px">
+                                                ID
+                                            </th>
+                                            <th style="width:300px">
+                                                Objet
+                                            </th>
+                                            <th align="center" style="width: 120px">
+                                                Montant
+                                            </th>
+                                            <th align="center" style="width: 120px">
+                                                Date paiement
+                                            </th>
+                                            <th align="center" style="width: 120px">
+                                                Méthode de paiement
+                                            </th>
+                                            <th align="center" style="width: 130px">
+                                                Justificatif
+                                            </th>
+                                            <?php
+                                            foreach ($paiements as $cmpl) {
+                                                ?>
+                                                <tr>
+                                                    <td align="center" valign="top">
+                                                  <?php if ($cmpl['0'] != null) { ?>
+                                                      <span><?php echo $cmpl['0']; ?></span>
+                                                  <?php } else echo '-'; ?>
+                                                    </td>
+                                                    <td>
+                                                        <?php if ($cmpl['2'] != null) { ?>
+                                                            <span><?php echo $cmpl['2']; ?></span>
+                                                        <?php } else echo '-'; ?>
+                                                    </td>
+                                                    <td align="right" valign="top">
+                                                        <?php if ($cmpl['6'] != null) { ?>
+                                                            <span><?php echo $cmpl['6']; ?></span>
+                                                        <?php } else echo '-'; ?>
+                                                    </td>
+                                                <td align="center" valign="top">
+                                                        <?php if ($cmpl['16'] != null) { ?>
+                                                            <span><?php echo $cmpl['16']; ?></span>
+                                                        <?php } else echo '-'; ?>
+                                                    </td>
+                                                    <td align="center" valign="top">
+                                                        <?php if ($cmpl['9'] != null) { ?>
+                                                            <span><?php echo $cmpl['9']; ?></span>
+                                                        <?php } else echo '-'; ?>
+
+                                                    </td>
+                                                    <td align="center" valign="top">
+                                                    <?php if ($cmpl['10'] != null) { ?>
+                                                        <a href="#" class="iframe_pdf" rel=<?php echo $cmpl['10']; ?>>
+                                                <i style="display: block;margin-left:auto;margin-right:auto"
+                                                   class="ace-icon fa fa-print"></i>
+                                                </a>
+                                                    <?php } else echo '-'; ?>
+                                                </td>
+
+                                                </tr>
+
+
+                                                <?php
+                                            }
+                                            }
+                                            ?>
+
+                                    </table>
+                                </span>
+                                </div>
+                            </div>
+
+
+                        </div><!-- /#feed1 -->
+
+
 
                     </div><!-- /.row -->
 

@@ -40,10 +40,12 @@ if (MInit::form_verif('editcommerciale', false)) {
         $empty_list .= "<li>Prénom</li>";
         $checker = 1;
     }
+    
     if ($posted_data["is_glbt"] == NULL) {
         $empty_list .= "<li>Interne</li>";
         $checker = 1;
     }
+
     if ($posted_data["cin"] == NULL) {
         $empty_list .= "<li>CIN</li>";
         $checker = 1;
