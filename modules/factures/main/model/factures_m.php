@@ -25,7 +25,6 @@ class Mfacture {
     var $contrat_info; // Array contrat info
     var $devis_info; // Array Devis info
     var $client_info; // Array Client info
-    var $compte_commercial_info;// Array Commercial info
     var $facture_details_info; // Array details facture
     var $reference = null; // Reference 
     var $sum_enc_fact; // Somme encaissements par facture
@@ -486,26 +485,20 @@ class Mfacture {
     }
 
      public function edit_compte_commercial() {
-
-        $this->id_facture = $this->_data['idfacture'];
-      
-        $this->get_facture();
+        //Get existing data for complement
+        $this->get_encaissement();
+        $this->last_id = $this->id_encaissement;
 
         $this->get_commerciale_devis();
 
-        $this->last_id = $this->id_compte_commerciale;
-var_dump($this->id_compte_commerciale);
         global $db;
-        $objet=$this->compte_commercial_info["commission"]."% de la facture: ".$this->compte_commercial_info["ref_facture"];
+        
         $values["id_commerciale"] = $this->compte_commercial_info["commercial"];
-        $values["objet"] = MySQL::SQLValue($objet);
-        $values["id_facture"] = $this->id_facture;
         $values["credit"] = (($this->_data["montant"] * $this->compte_commercial_info["commission"]) / 100) ;
-        $values["Type"] = MySQL::SQLValue($this->compte_commercial_info["type_commission"]);
         $values["etat"] = 1;
-        $values["creusr"] = MySQL::SQLValue(session::get("userid"));
-        $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
-        $wheres["id"] = $this->id_compte_commerciale;
+        $values["updusr"] = MySQL::SQLValue(session::get("userid"));
+        $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+        $wheres["id_encaissement"] = $this->id_encaissement;
 
 
         // If we have an error
@@ -513,7 +506,7 @@ var_dump($this->id_compte_commerciale);
 
             if (!$result = $db->UpdateRows("compte_commerciale", $values, $wheres)) {
                 //$db->Kill();
-                var_dump($db);
+                //var_dump($db);
                 $this->log .= $db->Error();
                 $this->error == false;
                 $this->log .= '</br>Enregistrement BD non réussie';
@@ -820,6 +813,36 @@ var_dump($this->id_compte_commerciale);
             $this->error = true;
             $this->log .= '</br>Suppression réussie ';
             $this->update_reste_after_delete($this->encaissement_info['idfacture'], $this->encaissement_info['montant']);
+        }
+        //check if last error is true then return true else rturn false.
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function delete_compte_commercial() {
+        global $db;
+        $id_encaissement = $this->id_encaissement;
+        $this->get_encaissement();
+        //Format where clause
+        $where['id_encaissement'] = MySQL::SQLValue($id_encaissement);
+        //check if id on where clause isset
+        if ($where['id_encaissement'] == null) {
+            $this->error = false;
+            $this->log .= '</br>L\' id est vide';
+        }
+        //execute Delete Query
+        if (!$db->DeleteRows('compte_commerciale', $where)) {
+
+            $this->log .= $db->Error() . '  ' . $db->BuildSQLDelete('compte_commerciale', $where);
+            $this->error = false;
+            $this->log .= '</br>Suppression non réussie';
+        } else {
+
+            $this->error = true;
+            $this->log .= '</br>Suppression réussie ';
         }
         //check if last error is true then return true else rturn false.
         if ($this->error == false) {

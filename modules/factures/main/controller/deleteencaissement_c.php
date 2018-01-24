@@ -9,9 +9,13 @@ if (!MInit::crypt_tp('id', null, 'D')) {
 $info_encaissement = new Mfacture();
 //Set ID of Module with POST id
 $info_encaissement->id_encaissement = Mreq::tp('id');
-if ($info_encaissement->delete_encaissement()) {
-    exit("1#" . $info_encaissement->log); //Return Green Message
-} else {
-    exit("0#" . $info_encaissement->log); //Return Red Message
-}
-?>
+if ($info_encaissement->delete_encaissement()){
+	if ($info_encaissement->delete_compte_commercial()){
+        exit("1#" . $info_encaissement->log); //Green message
+        } else {
+        exit("0#" . $info_encaissement->log); //Red message
+        }
+    }else {
+        exit("0#" . $info_encaissement->log); //Red message
+    }  
+    ?>

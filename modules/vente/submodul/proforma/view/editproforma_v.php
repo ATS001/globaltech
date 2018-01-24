@@ -58,6 +58,16 @@ $form->select_table('Client ', 'id_client', 8, 'clients', 'id', 'denomination' ,
 //TVA
 $tva_opt = array('O' => 'OUI' , 'N' => 'NON' );
 $form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$info_proforma->g('tva'), $multi = NULL);
+
+//Commercial
+$hard_code_commercial = '<span class="help-block returned_span">...</span>';
+$commercial_array[]  = array('required', 'true', 'Choisir un Commercial');
+$form->select_table('Commercial', 'id_commercial', 6, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)' , 'CONCAT(nom," ",prenom)' , $indx = '------' ,$selected=$info_proforma->g('id_commercial'),$multi=NULL, $where='etat=1', $commercial_array, $hard_code_commercial);
+//Commission du commercial
+$array_commission[]= array('required', 'true', 'Insérer la commission du commercial');
+$array_commission[]= array('number', 'true', 'Montant invalid' );
+$form->input('Commission du commercial (%)', 'commission', 'text' ,'2 is-number alignRight',$info_proforma->g('commission'), $array_commission, null, null);
+
 //Table 
 $columns = array('id' => '1' ,'Item' => '5' , 'Réference'=>'10', 'Produit' => '30', 'P.U HT' => '10', 'T.Rem' => '5', 'V.Remise' => '10', 'Qte' => '5', 'Total HT' => '10', 'TVA' => '7', 'Total' =>'10', '#' =>'3'   );
 $js_addfunct = 'var column = t.column(0);
@@ -98,7 +108,7 @@ $form->render();
 $(document).ready(function() {
     
     //called when key is pressed in textbox
-     function calculat_proforma($totalht, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc)
+     function calculat_proforma($totalht, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc,$commission,$f_total_commission)
      {
         
         var $totalht         = parseFloat($totalht) ? parseFloat($totalht) : 0;
@@ -128,22 +138,80 @@ $(document).ready(function() {
             var $total_tva = ($total_ht * $val_tva) / 100; //TVA value get from app setting
         }
         var $total_ttc = $total_ht + $total_tva ;
+        var $total_commission = ($total_ttc * $commission) / 100;
         $('#'+$f_total_ht).val($total_ht);
         $('#'+$f_total_tva).val($total_tva);
-        $('#'+$f_total_ttc).val($total_ttc);  
+        $('#'+$f_total_ttc).val($total_ttc);
+        $('#'+$f_total_commission).val($total_commission);  
     } 
     $('#addRow').on( 'click', function () {
+
+        $cms = parseFloat($('#commission').val());
         
         if($('#id_client').val() == ''){
 
             ajax_loadmessage('Il faut choisir un client','nok');
             return false;
         }
+
+        if($('#id_commercial').val() == ''){
+
+            ajax_loadmessage('Il faut choisir un commercial','nok');
+            return false;
+        }
+
+        if($('#commission').val() == ''){
+
+            ajax_loadmessage('Il faut saisir une commission','nok');
+            return false;
+        }
+
         var $link  = $(this).attr('rel');
         var $titre = $(this).attr('data_titre'); 
-        var $data  = $(this).attr('data'); 
+        var $data  = $(this).attr('data')+'&commission='+$('#commission').val(); ; 
         ajax_bbox_loader($link, $data, $titre, 'large')
         
+    });
+
+    $('#commission').on('change', function () {
+        var table = $('#table_details_proforma').DataTable();
+
+        if (table.data().count()) {
+
+            bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de la commission sera appliqué sur l'ensemble des lignes détails, voulez vous continuer ?</span>", 
+                function(result){
+                    if(result == true){
+                        $cms = parseFloat($('#commission').val());
+                        var $tkn_frm = $(this).attr('tkn_frm');
+                        $.ajax({
+
+                            cache: false,
+                            url  : '?_tsk=add_detailproforma&ajax=1'+'&act=1&<?php echo MInit::crypt_tp('exec', 'set_commission')?>',
+                            type : 'POST',
+                            data : $('#editproforma').serialize(),
+                            dataType:"JSON",
+                            success: function(data){
+
+                                if(data['error']== false){
+                                    ajax_loadmessage(data['mess'],'nok',5000)
+                                }else{
+                                    ajax_loadmessage(data['mess'],'ok',3000);
+                                    var t1 = $('.dataTable').DataTable().draw();
+                                    $('#sum_table').val(data['sum']);
+                                    $('#valeur_remise').trigger('change'); 
+                                }
+
+                            }
+                        });
+                    }else{
+                     
+                      $('#commission').val($cms);
+                      
+                    }
+                }
+            );  
+        }
+
     });
 
     $('#table_details_proforma tbody ').on('click', 'tr .edt_det', function() {
@@ -153,9 +221,21 @@ $(document).ready(function() {
             ajax_loadmessage('Il faut choisir un client','nok');
             return false;
         }
+
+        if($('#id_commercial').val() == ''){
+
+            ajax_loadmessage('Il faut choisir un commercial','nok');
+            return false;
+        }
+
+        if($('#commission').val() == ''){
+
+            ajax_loadmessage('Il faut saisir une commission','nok');
+            return false;
+        }
         var $link  = $(this).attr('rel');
         var $titre = 'Modifier détail proforma';
-        var $data  = $(this).attr('data'); 
+        var $data  = $(this).attr('data')+'&commission='+$('#commission').val(); 
         ajax_bbox_loader($link, $data, $titre, 'large')
         
     });
@@ -167,14 +247,16 @@ $(document).ready(function() {
         var remise_valeur = parseFloat($('#valeur_remise').val());
         var tva           = $('#tva').val();
         var dix_per_ht    = parseFloat((totalht * 10) / 100);
+         var commission    = parseFloat($("#commission").val());
+
         if((type_remise == 'P' && remise_valeur > 10) || (type_remise == 'M' && remise_valeur > dix_per_ht)){
             ajax_loadmessage('La remise exeptionnel ne doit pas dépasser 10% du Total des articles','nok');
             $('#totalht').val(totalht);
             $('#valeur_remise').val(0);
-            calculat_proforma(totalht, null, 0, tva, 'totalht', 'totaltva', 'totalttc');
+            calculat_proforma(totalht, null, 0, tva, 'totalht', 'totaltva', 'totalttc',commission,'total_commission');
             return false;
         }
-        calculat_proforma(totalht, type_remise, remise_valeur, tva, 'totalht', 'totaltva', 'totalttc');
+        calculat_proforma(totalht, type_remise, remise_valeur, tva, 'totalht', 'totaltva', 'totalttc',commission,'total_commission');
     })
     $('#type_remise').on('change', function () {
         $('#valeur_remise').trigger('input');

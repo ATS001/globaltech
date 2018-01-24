@@ -233,7 +233,6 @@ $(document).ready(function() {
         var validator = $('#edit_detaildevis').validate();
         validator.resetForm();
 
-
     });
     $('#qte, #prix_unitaire, #remise_valeur_d, #type_remise_d').bind('input change',function() {
     	var prix_unitaire = parseInt($('#prix_unitaire').val());
