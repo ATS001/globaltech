@@ -100,7 +100,7 @@ if (MInit::form_verif('addcontrat', false)) {
     $date2=date_create(date('Y-m-d', strtotime($posted_data['date_fin'])));
     $diff=date_diff($date1,$date2);
 
- if (date('Y-m-d', strtotime($posted_data['date_effet'])) < date('Y-m-d')) {
+/* if (date('Y-m-d', strtotime($posted_data['date_effet'])) < date('Y-m-d')) {
 
         $control_date_effet .= "<li>Date d'effet doit être supérieur ou égal à la date d'aujourd'hui</li>";
         $checker = 4;
@@ -109,7 +109,7 @@ if (MInit::form_verif('addcontrat', false)) {
     if($checker == 4)
     {
         exit("0#$control_date_effet");
-    }
+    }*/
     
     $contratA = new Mcontrat($posted_data);
     $contratA->get_id_type_echeance('Annuelle');
@@ -140,12 +140,17 @@ exit();*/
 
     if ( /*($diff->format('%a') % 365) <>0 and*/ $posted_data['idtype_echeance'] == $contratA->Shw_type('id',1))
     {
-        $date_d = $posted_data['date_effet'];
+       $date_d = $posted_data['date_effet'];
        $date_f = $posted_data['date_fin'];
        $output = [];
        $output_an = [];
        $total_jr=0;
-       $time   = strtotime($date_d);
+
+       $t=new DateTime($date_d);
+       $time1= date_sub($t, date_interval_create_from_date_string('1 days'));
+       $time2   = date_format($time1, 'd-m-Y');
+
+       $time   = strtotime($time2);
        $last   = date('d-m-Y', strtotime($date_f));
        $res=0;
 
@@ -182,21 +187,30 @@ exit();*/
     {
         exit("0#$control_echeance_a");
     }
+///FORR AYOUB
+    
 //return 12 * $nbyear + $nbmonth;
     if ( /*($diff->format('%a') % 28) <>0  and */$posted_data['idtype_echeance'] == $contratM->Shw_type('id',1))
     {
        $date_d = $posted_data['date_effet'];
+       //$date_d = strtotime('-1 day',$date_dd);
        $date_f = $posted_data['date_fin'];
        $output = [];
        $output_an = [];
        $total_jr=0;
-       $time   = strtotime($date_d);
+
+       $t=new DateTime($date_d);
+       $time1= date_sub($t, date_interval_create_from_date_string('1 days'));
+       $time2   = date_format($time1, 'd-m-Y');
+
+       $time   = strtotime($time2);
        $last   = date('d-m-Y', strtotime($date_f));
        $res=0;
-
+//var_dump($time);
 
        do {
         $month = date('d-m-Y', $time);
+        $test= date('m',$time);
         $mon   = date('m', $time);
         $total = date('t', $time);
         $total_jr += $total ;
@@ -212,10 +226,28 @@ exit();*/
 
         ];
 
-        $time = strtotime('+1 month', $time);
+         $time = strtotime('+1 month', $time);
+
+         /*if (date('m',$time) == 1){
+
+         $time = strtotime('+1 month', $time);
+         $time1= date_sub($t, date_interval_create_from_date_string('1 days'));
+      */
+        $ttttt = strtotime( date('d-m-Y', mktime(0, 0, 0, '2'+1,0,date('Y',$time))));
+
+         /*} else{
+            $time = strtotime('+1 month', $time);
+         }*/
+
+var_dump('time :'. date('d-m-Y', $time) );
+var_dump('time 10:'. date('d-m-Y', $ttttt) );
 
 
            } while (date('Y-m-d', strtotime($month)) < date('Y-m-d', strtotime($last)));
+          // $time += strtotime('-1 day', $time);
+
+//var_dump($month);
+//var_dump($last);
 
         if(date('Y-m-d', strtotime($month)) <> date('Y-m-d', strtotime($last)))
         {
@@ -238,7 +270,12 @@ exit();*/
        $output = [];
        $output_an = [];
        $total_jr=0;
-       $time   = strtotime($date_d);
+
+       $t=new DateTime($date_d);
+       $time1= date_sub($t, date_interval_create_from_date_string('1 days'));
+       $time2   = date_format($time1, 'd-m-Y');
+
+       $time   = strtotime($time2);
        $last   = date('d-m-Y', strtotime($date_f));
        $res=0;
 
@@ -285,8 +322,14 @@ exit();*/
        $date_f = $posted_data['date_fin'];
        $output = [];
        $output_an = [];
+
        $total_jr=0;
-       $time   = strtotime($date_d);
+
+       $t=new DateTime($date_d);
+       $time1= date_sub($t, date_interval_create_from_date_string('1 days'));
+       $time2   = date_format($time1, 'd-m-Y');
+
+       $time   = strtotime($time2);
        $last   = date('d-m-Y', strtotime($date_f));
        $res=0;
 
