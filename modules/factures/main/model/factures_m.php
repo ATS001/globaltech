@@ -134,7 +134,7 @@ class Mfacture {
         $table_complement = $this->table_complement;
 
         $sql = "SELECT $table_complement.* FROM 
-    		$table_complement WHERE  $table_complement.id = " . $this->id_complement;
+        $table_complement WHERE  $table_complement.id = " . $this->id_complement;
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -162,8 +162,8 @@ class Mfacture {
         $table_complement = $this->table_complement;
 
         $sql = "SELECT id,designation,type,
-                REPLACE(FORMAT(montant,0),',',' ') as montant
-                FROM $table_complement WHERE  $table_complement.idfacture = " . $this->id_facture;
+        REPLACE(FORMAT(montant,0),',',' ') as montant
+        FROM $table_complement WHERE  $table_complement.idfacture = " . $this->id_facture;
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -193,7 +193,7 @@ class Mfacture {
         $table_encaissement = $this->table_encaissement;
 
         $sql = "SELECT $table_encaissement.* FROM 
-    		$table_encaissement WHERE  $table_encaissement.id = " . $this->id_encaissement;
+        $table_encaissement WHERE  $table_encaissement.id = " . $this->id_encaissement;
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -221,10 +221,10 @@ class Mfacture {
         $table_encaissement = $this->table_encaissement;
 
         $sql = "SELECT id,ref,designation,
-                REPLACE(FORMAT(montant,0),',',' ') as montant,
-                DATE_FORMAT(date_encaissement,'%d-%m-%Y') as date_encaissement                        
-                FROM 
-    		$table_encaissement WHERE  $table_encaissement.idfacture = " . $this->id_facture;
+        REPLACE(FORMAT(montant,0),',',' ') as montant,
+        DATE_FORMAT(date_encaissement,'%d-%m-%Y') as date_encaissement                        
+        FROM 
+        $table_encaissement WHERE  $table_encaissement.idfacture = " . $this->id_facture;
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -259,7 +259,7 @@ class Mfacture {
         $table = $this->table;
         $sql_edit = $edit == null ? null : " AND id <> $edit";
         $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
-		 		WHERE $table.$column = " . MySQL::SQLValue($value) . " $sql_edit ");
+           WHERE $table.$column = " . MySQL::SQLValue($value) . " $sql_edit ");
 
         if ($result != "0") {
             $this->error = false;
@@ -278,7 +278,7 @@ class Mfacture {
     private function check_non_exist($table, $column, $value, $message) {
         global $db;
         $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
-    		WHERE $table.$column = " . MySQL::SQLValue($value));
+          WHERE $table.$column = " . MySQL::SQLValue($value));
         if ($result == "0") {
             $this->error = false;
             $this->log .= '</br>' . $message . ' n\'exist pas';
@@ -544,7 +544,7 @@ class Mfacture {
 
         global $db;
         $req_sql = "UPDATE factures SET reste = reste + $montant ,"
-                . "total_ttc = total_ttc + $montant WHERE id = '$id_facture'";
+        . "total_ttc = total_ttc + $montant WHERE id = '$id_facture'";
         if (!$db->Query($req_sql)) {
 
             $this->log .= $db->Error();
@@ -945,7 +945,7 @@ class Mfacture {
 
      */
 
-    public function valid_facture() {
+      public function valid_facture() {
         global $db;
         $table = $this->table;
         $values['etat'] = ' ETAT + 1 ';
@@ -1030,7 +1030,7 @@ class Mfacture {
         $table_encaissement = $this->table_encaissement;
 
         $sql = "SELECT $table_encaissement.* , factures.reference as facture FROM 
-    		$table_encaissement,factures WHERE $table_encaissement.idfacture=factures.id AND $table_encaissement.id = " . $this->id_encaissement;
+        $table_encaissement,factures WHERE $table_encaissement.idfacture=factures.id AND $table_encaissement.id = " . $this->id_encaissement;
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -1060,19 +1060,19 @@ class Mfacture {
         $table = $this->table;
 
         $sql = "SELECT id,reference,base_fact,
-                REPLACE(FORMAT(total_ht,0),',',' ') as total_ht ,  
-                REPLACE(FORMAT(total_tva,0),',',' ') as total_tva ,         
-                REPLACE(FORMAT(total_ttc,0),',',' ') as total_ttc,           
-                REPLACE(FORMAT(total_ttc_initial,0),',',' ') as total_ttc_initial,
-                REPLACE(FORMAT(total_paye,0),',',' ') as total_paye,
-                REPLACE(FORMAT(reste,0),',',' ') as reste,               
-                client,tva,projet,ref_bc,idcontrat,
-                DATE_FORMAT(du,'%d-%m-%Y') as du,
-                DATE_FORMAT(au,'%d-%m-%Y') as au,
-                CONCAT(DATE_FORMAT(du,'%d-%m-%Y'),' Au ',DATE_FORMAT(au,'%d-%m-%Y')) as periode,
-                DATE_FORMAT(date_facture,'%d-%m-%Y') as date_facture
-                FROM 
-    		$table WHERE  $table.id = " . $this->id_facture;
+        REPLACE(FORMAT(total_ht,0),',',' ') as total_ht ,  
+        REPLACE(FORMAT(total_tva,0),',',' ') as total_tva ,         
+        REPLACE(FORMAT(total_ttc,0),',',' ') as total_ttc,           
+        REPLACE(FORMAT(total_ttc_initial,0),',',' ') as total_ttc_initial,
+        REPLACE(FORMAT(total_paye,0),',',' ') as total_paye,
+        REPLACE(FORMAT(reste,0),',',' ') as reste,               
+        client,tva,projet,ref_bc,idcontrat,
+        DATE_FORMAT(du,'%d-%m-%Y') as du,
+        DATE_FORMAT(au,'%d-%m-%Y') as au,
+        CONCAT(DATE_FORMAT(du,'%d-%m-%Y'),' Au ',DATE_FORMAT(au,'%d-%m-%Y')) as periode,
+        DATE_FORMAT(date_facture,'%d-%m-%Y') as date_facture
+        FROM 
+        $table WHERE  $table.id = " . $this->id_facture;
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -1102,11 +1102,11 @@ class Mfacture {
         d_factures.ref_produit
         , d_factures.designation
         , d_factures.qte
-       
+
         , d_factures.prix_unitaire
-       
+
         ,  REPLACE(FORMAT(d_factures.total_ht,0),',',' ') as totalht
-      
+
         FROM
         d_factures
         WHERE d_factures.id_facture = " . $id_facture;
@@ -1144,11 +1144,11 @@ class Mfacture {
         $this->get_facture_info();
         $info_facture = $this->facture_info;
 
-if($this->facture_info['base_fact'] == 'C')
-{
-        $this->get_contrat($this->facture_info['idcontrat']);
-        $info_contrat = $this->contrat_info;
-}
+        if($this->facture_info['base_fact'] == 'C')
+        {
+            $this->get_contrat($this->facture_info['idcontrat']);
+            $info_contrat = $this->contrat_info;
+        }
         
 
         $colms = null;
@@ -1159,7 +1159,7 @@ if($this->facture_info['base_fact'] == 'C')
         $colms .= " REPLACE(FORMAT(d_factures.prix_unitaire,0),',',' '), ";
         $colms .= " REPLACE(FORMAT(d_factures.total_ht,0),',', ' ') ";
 
-        $req_sql = " SELECT $colms FROM d_factures WHERE d_factures.id_facture = $id_facture ";
+        $req_sql = " SELECT $colms FROM d_devis d_factures WHERE d_factures.id_facture = $id_facture ";
         if (!$db->Query($req_sql)) {
             $this->error = false;
             $this->log .= $db->Error() . ' ' . $req_sql;
@@ -1229,7 +1229,7 @@ if($this->facture_info['base_fact'] == 'C')
         $devis   = $this->facture_info['iddevis']   == NULL ? 'NULL' : $this->facture_info['iddevis'];
 
         $sql = "SELECT id as id FROM 
-    		devis WHERE  devis.id =if( '" . $this->facture_info['base_fact']. "'='C', $contrat, $devis)";
+        devis WHERE  devis.id =if( '" . $this->facture_info['base_fact']. "'='C', $contrat, $devis)";
                //$sql = "SELECT id as id FROM devis WHERE  devis.id =". $this->facture_info['iddevis'];
       // var_dump($sql);
         if (!$db->Query($sql)) {
@@ -1259,7 +1259,7 @@ if($this->facture_info['base_fact'] == 'C')
         $table_encaissement = $this->table_encaissement;
 
         $sql = "SELECT sum(montant) FROM 
-    		$table_encaissement WHERE  $table_encaissement.idfacture = " . $id_facture;
+        $table_encaissement WHERE  $table_encaissement.idfacture = " . $id_facture;
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -1287,8 +1287,8 @@ if($this->facture_info['base_fact'] == 'C')
         global $db;
 
         $sql = "SELECT id,reference,iddevis, DATE_FORMAT(date_effet,'%d-%m-%Y') as date_effet,
-                DATE_FORMAT(date_fin,'%d-%m-%Y') as date_fin,
-                DATE_FORMAT(date_contrat,'%d-%m-%Y') as date_contrat,commentaire FROM contrats WHERE id = " . $idcontrat;
+        DATE_FORMAT(date_fin,'%d-%m-%Y') as date_fin,
+        DATE_FORMAT(date_contrat,'%d-%m-%Y') as date_contrat,commentaire FROM contrats WHERE id = " . $idcontrat;
 
         if (!$db->Query($sql)) {
             $this->error = false;
