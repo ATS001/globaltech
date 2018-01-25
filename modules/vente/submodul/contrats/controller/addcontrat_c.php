@@ -180,8 +180,6 @@ if (MInit::form_verif('addcontrat', false)) {
     if ($checker == 4) {
         exit("0#$control_echeance_a");
     }
-///FORR AYOUB
-
 //return 12 * $nbyear + $nbmonth;
     if ($posted_data['idtype_echeance'] == $contratM->Shw_type('id', 1)) {
         $date_d = $posted_data['date_effet'];
@@ -217,7 +215,7 @@ if (MInit::form_verif('addcontrat', false)) {
             ];
 
 
-            var_dump('time :' . date('d-m-Y', strtotime($time2)));
+            var_dump('time :' . date('d-m-Y', strtotime($time)));
 
 
         } while (date('Y-m-d', strtotime($month)) < date('Y-m-d', strtotime($last)));
