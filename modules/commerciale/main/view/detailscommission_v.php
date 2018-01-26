@@ -16,7 +16,6 @@ $id_commerciale = $paiement->commission_info['id_commerciale'];
 $paiement->get_paiement();
 $paiements = $paiement->commission_info;
 
-var_dump($paiement->id_commission);
 
 ?>
 <div class="pull-right tableTools-container">
