@@ -180,20 +180,26 @@ if (MInit::form_verif('addcontrat', false)) {
     if ($checker == 4) {
         exit("0#$control_echeance_a");
     }
-///FORR AYOUB
-
 //return 12 * $nbyear + $nbmonth;
     if ($posted_data['idtype_echeance'] == $contratM->Shw_type('id', 1)) {
-        $date_d = $posted_data['date_effet'];
+
+$date_d = $posted_data['date_effet'];
         $date_f = $posted_data['date_fin'];
         $output = [];
         $output_an = [];
         $total_jr = 0;
+        $day = date('d',strtotime($date_d));
+        
+
+        if ($day == '01') {
+           // var_dump('1');
 
         $last = date('d-m-Y', strtotime($date_f));
         $res = 0;
         $time = date($date_d);
 
+        
+     
         do {
 
             $time2 = date('Y-m-t', strtotime($time));
@@ -217,11 +223,53 @@ if (MInit::form_verif('addcontrat', false)) {
             ];
 
 
-            var_dump('time :' . date('d-m-Y', strtotime($time2)));
+            //var_dump('time :' . date('d-m-Y', strtotime($time)));
 
 
         } while (date('Y-m-d', strtotime($month)) < date('Y-m-d', strtotime($last)));
 
+
+        }else{
+
+            //var_dump('2');
+        $t = new DateTime($date_d);
+        $time1 = date_sub($t, date_interval_create_from_date_string('1 days'));
+        $time2 = date_format($time1, 'd-m-Y');
+
+        $time = strtotime($time2);
+        $last = date('d-m-Y', strtotime($date_f));
+        $res = 0;
+
+            do {
+            $month = date('d-m-Y', $time);
+            $mon = date('m', $time);
+            $total = date('t', $time);
+            $total_jr += $total;
+            $annee = date('L', $time);
+
+            $output[] = [
+                'month' => $month,
+                'total' => $total,
+                'tot_jr' => $total_jr,
+                'annee' => $annee,
+                'mo' => $mon,
+                'time' => $time,
+
+            ];
+
+            $time = strtotime('+1 month', $time);
+            $time1 = date_sub($t, date_interval_create_from_date_string('1 days'));
+        
+
+           
+
+            //var_dump('time :' . date('d-m-Y', $time));
+
+        } while (date('Y-m-d', strtotime($month)) < date('Y-m-d', strtotime($last)));
+
+        }
+        
+        
 
         if (date('Y-m-d', strtotime($month)) <> date('Y-m-d', strtotime($last))) {
             $control_echeance_m = "<ul>Il faut choisir une période Mensuelle, ou séléctionner le type d'échéance : Autres   !!!</ul>";
@@ -233,6 +281,7 @@ if (MInit::form_verif('addcontrat', false)) {
     if ($checker == 5) {
         exit("0#$control_echeance_m");
     }
+     //exit();
 // FIN AYOUB
 
     if ($posted_data['idtype_echeance'] == $contratT->Shw_type('id', 1)) {
