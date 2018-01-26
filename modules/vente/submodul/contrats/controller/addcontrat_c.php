@@ -285,23 +285,31 @@ $date_d = $posted_data['date_effet'];
 // FIN AYOUB
 
     if ($posted_data['idtype_echeance'] == $contratT->Shw_type('id', 1)) {
+        
         $date_d = $posted_data['date_effet'];
         $date_f = $posted_data['date_fin'];
         $output = [];
         $output_an = [];
         $total_jr = 0;
+        $day = date('d',strtotime($date_d));
+        
+
+        if ($day == '01') {
+           // var_dump('1');
 
         $last = date('d-m-Y', strtotime($date_f));
         $res = 0;
         $time = date($date_d);
 
-
+        
+     
         do {
-            //$time2 = date('Y-m-t', strtotime($time));
+
             $time = date('Y-m-d', strtotime($time . "+ 3 Month"));
             $time2 = date('Y-m-t', strtotime($time . "- 1 Month"));
 
             $month = date('d-m-Y', strtotime($time2));
+            $test = date('m', strtotime($time2));
             $mon = date('m', strtotime($time2));
             $total = date('t', strtotime($time2));
             $total_jr += $total;
@@ -313,14 +321,56 @@ $date_d = $posted_data['date_effet'];
                 'tot_jr' => $total_jr,
                 'annee' => $annee,
                 'mo' => $mon,
+                'time' => $time2,
+
+            ];
+
+
+            //var_dump('time :' . date('d-m-Y', strtotime($time)));
+
+
+        } while (date('Y-m-d', strtotime($month)) < date('Y-m-d', strtotime($last)));
+
+
+        }else{
+
+            //var_dump('2');
+        $t = new DateTime($date_d);
+        $time1 = date_sub($t, date_interval_create_from_date_string('1 days'));
+        $time2 = date_format($time1, 'd-m-Y');
+
+        $time = strtotime($time2);
+        $last = date('d-m-Y', strtotime($date_f));
+        $res = 0;
+
+            do {
+            $month = date('d-m-Y', $time);
+            $mon = date('m', $time);
+            $total = date('t', $time);
+            $total_jr += $total;
+            $annee = date('L', $time);
+
+            $output[] = [
+                'month' => $month,
+                'total' => $total,
+                'tot_jr' => $total_jr,
+                'annee' => $annee,
+                'mo' => $mon,
                 'time' => $time,
 
             ];
 
-            var_dump('time :' . date('d-m-Y', strtotime($time2)));
+            $time = strtotime('+3 month', $time);
+            $time1 = date_sub($t, date_interval_create_from_date_string('1 days'));
+        
 
+           
+
+            //var_dump('time :' . date('d-m-Y', $time));
 
         } while (date('Y-m-d', strtotime($month)) < date('Y-m-d', strtotime($last)));
+
+        }
 
         if (date('Y-m-d', strtotime($month)) <> date('Y-m-d', strtotime($last))) {
             $control_echeance_t = "<ul>Il faut choisir une période Trimestrielle, ou séléctionner le type d'échéance : Autres   !!!</ul>";
@@ -340,18 +390,25 @@ $date_d = $posted_data['date_effet'];
         $output = [];
         $output_an = [];
         $total_jr = 0;
+        $day = date('d',strtotime($date_d));
+    // var_dump('dkhel')  ; 
+
+        if ($day == '01') {
+            //var_dump('1');
 
         $last = date('d-m-Y', strtotime($date_f));
         $res = 0;
         $time = date($date_d);
 
-
+        
+     
         do {
 
             $time = date('Y-m-d', strtotime($time . "+ 6 Month"));
             $time2 = date('Y-m-t', strtotime($time . "- 1 Month"));
 
             $month = date('d-m-Y', strtotime($time2));
+            $test = date('m', strtotime($time2));
             $mon = date('m', strtotime($time2));
             $total = date('t', strtotime($time2));
             $total_jr += $total;
@@ -363,18 +420,60 @@ $date_d = $posted_data['date_effet'];
                 'tot_jr' => $total_jr,
                 'annee' => $annee,
                 'mo' => $mon,
-                'time' => $time,
+                'time' => $time2,
 
             ];
 
-            var_dump('time :' . date('d-m-Y', strtotime($time2)));
+
+            //var_dump('time :' . date('d-m-Y', strtotime($time)));
 
 
         } while (date('Y-m-d', strtotime($month)) < date('Y-m-d', strtotime($last)));
 
+
+        }else{
+
+           //var_dump('2');
+        $t = new DateTime($date_d);
+        $time1 = date_sub($t, date_interval_create_from_date_string('1 days'));
+        $time2 = date_format($time1, 'd-m-Y');
+
+        $time = strtotime($time2);
+        $last = date('d-m-Y', strtotime($date_f));
+        $res = 0;
+
+            do {
+            $month = date('d-m-Y', $time);
+            $mon = date('m', $time);
+            $total = date('t', $time);
+            $total_jr += $total;
+            $annee = date('L', $time);
+
+            $output[] = [
+                'month' => $month,
+                'total' => $total,
+                'tot_jr' => $total_jr,
+                'annee' => $annee,
+                'mo' => $mon,
+                'time' => $time,
+
+            ];
+
+            $time = strtotime('+6 month', $time);
+            $time1 = date_sub($t, date_interval_create_from_date_string('1 days'));
+        
+
+           
+
+            //var_dump('time :' . date('d-m-Y', $time));
+
+        } while (date('Y-m-d', strtotime($month)) < date('Y-m-d', strtotime($last)));
+
+        }
+
         if (date('Y-m-d', strtotime($month)) <> date('Y-m-d', strtotime($last))) {
-            $control_echeance_t = "<ul>Il faut choisir une période Semestrielle, ou séléctionner le type d'échéance : Autres   !!!</ul>";
-            $checker = 6;
+            $control_echeance_s = "<ul>Il faut choisir une période Semestrielle, ou séléctionner le type d'échéance : Autres   !!!</ul>";
+            $checker = 7;
         }
 
     }
@@ -426,8 +525,9 @@ $date_d = $posted_data['date_effet'];
         }
 
 
-    }
-
+    }/*
+var_dump('test');
+var_dump('test');*/
     if ($new_contrat->save_new_contrat()) {
 
         echo("1#" . $new_contrat->log);
