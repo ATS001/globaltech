@@ -1,5 +1,5 @@
 <?php 
-//Export Module 'commerciale' Date: 23-01-2018
+//Export Module 'commerciale' Date: 26-01-2018
 global $db;
 if(!$result_insert_modul = $db->Query("insert into modul (modul, description, rep_modul, tables, app_modul, modul_setting, is_setting, etat, services)values('commerciale', 'Commerciale','commerciale/main','commerciaux','commerciale',NULL,'0', '0', '[-1-]')")){$this->error = false; $this->log .= "<li> Error Import Modul 'commerciale' </li>";}
   //Task 'commerciale' 'Commerciale'
