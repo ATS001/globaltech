@@ -1216,7 +1216,7 @@ class Mfacture {
         $colms .= " REPLACE(FORMAT(d_factures.prix_unitaire,0),',',' '), ";
         $colms .= " REPLACE(FORMAT(d_factures.total_ht,0),',', ' ') ";
 
-        $req_sql = " SELECT $colms FROM d_devis d_factures WHERE d_factures.id_facture = $id_facture ";
+        $req_sql = " SELECT $colms FROM  d_factures WHERE d_factures.id_facture = $id_facture ";
         if (!$db->Query($req_sql)) {
             $this->error = false;
             $this->log .= $db->Error() . ' ' . $req_sql;
