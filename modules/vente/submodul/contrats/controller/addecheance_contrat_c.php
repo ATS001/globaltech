@@ -60,7 +60,7 @@ if(MInit::form_verif('addecheance_contrat',false))
             exit("0#$date");
     }
     
-    if (date('Y-m-d', strtotime($posted_data['date_echeance'])) < date('Y-m-d')) {
+/*    if (date('Y-m-d', strtotime($posted_data['date_echeance'])) < date('Y-m-d')) {
 
         $control_date_eche .= "<li>Date d'échéance doit être supérieur ou égal à la date d'aujourd'hui</li>";
         $checker = 4;
@@ -69,7 +69,7 @@ if(MInit::form_verif('addecheance_contrat',false))
     if($checker == 4)
     {
         exit("0#$control_date_eche");
-    }
+    }*/
 	  //End check empty element
 
 

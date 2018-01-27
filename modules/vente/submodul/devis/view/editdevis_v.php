@@ -300,7 +300,7 @@ $(document).ready(function() {
         }
         var $link  = $(this).attr('rel');
         var $titre = 'Modifier détail Devis';
-        var $data  = $(this).attr('data')+'&commission='+$('#commission').val(); ; 
+        var $data  = $(this).attr('data')+'&commission='+$('#commission').val();
         ajax_bbox_loader($link, $data, $titre, 'large')
         
     });

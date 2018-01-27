@@ -22,7 +22,11 @@ if(MInit::form_verif('editproforma', false))
 		'totalht'           => Mreq::tp('totalht') ,
 		'totalttc'          => Mreq::tp('totalttc') ,
 		'totaltva'          => Mreq::tp('totaltva') ,*/
-		'claus_comercial'   => Mreq::tp('claus_comercial')
+		'claus_comercial'   => Mreq::tp('claus_comercial'),
+		'id_commercial'     => Mreq::tp('id_commercial'),
+   		'commission'        => Mreq::tp('commission'),
+	    'total_commission'  => Mreq::tp('total_commission')
+
 
 		);
 
@@ -88,6 +92,23 @@ if(MInit::form_verif('editproforma', false))
       $checker = 1;
     }
     */
+     if($posted_data['id_commercial'] == NULL){
+
+      $empty_list .= "<li>Commercial</li>";
+      $checker = 1;
+    }
+    if($posted_data['commission'] == NULL OR !is_numeric($posted_data['commission']) ){
+
+      $empty_list .= "<li>Commission</li>";
+      $checker = 1;
+    }
+/*    if($posted_data['total_commission'] == NULL OR !is_numeric($posted_data['total_commission']) ){
+
+      $empty_list .= "<li>Total Commission</li>";
+      $checker = 1;
+    }
+*/
+
     
     $empty_list.= "</ul>";
     if($checker == 1)

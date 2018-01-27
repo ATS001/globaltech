@@ -29,6 +29,8 @@ class Mproforma
     var $total_tva_t     = null;//
     var $order_detail    = null; //
     var $sum_total_ht    = null;//
+    var $total_commission = null;//
+
 
 
     public function __construct($properties = array()){
@@ -129,6 +131,7 @@ class Mproforma
         , ref_ville.ville
         , ref_devise.abreviation as devise
         , services.service as comercial
+        , CONCAT(commerciaux.nom,' ',commerciaux.prenom) as commercial
         FROM
         proforma
         INNER JOIN clients 
@@ -143,6 +146,9 @@ class Mproforma
         ON (proforma.creusr = users_sys.id)
         INNER JOIN services
         ON (users_sys.service = services.id)
+        INNER JOIN commerciaux
+        ON (devis.id_commercial=commerciaux.id)
+ 
         WHERE proforma.id = ".$this->id_proforma;
         if(!$db->Query($req_sql))
         {
@@ -338,6 +344,8 @@ class Mproforma
             $this->Check_exist('reference', $this->reference, 'Réference proforma', null);
 
             $this->check_non_exist('clients','id',$this->_data['id_client'] ,'Client' );
+
+            $this->check_non_exist('commerciaux','id',$this->_data['id_commercial'] ,'Commercial' );
       //Get sum of details
             $this->Get_sum_detail($this->_data['tkn_frm']); 
       //calcul values proforma
@@ -365,22 +373,20 @@ class Mproforma
             //$totalttc = $this->total_ttc_t;
             //$valeur_remise = $this->valeur_remis_t;
 
-            
-
-
             $values["reference"]       = MySQL::SQLValue($reference);
             $values["tkn_frm"]         = MySQL::SQLValue($this->_data['tkn_frm']);
             $values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
             $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
             $values["vie"]             = MySQL::SQLValue($this->_data['vie']);
-            $values["id_commercial"]   = MySQL::SQLValue(session::get('userid'));
-            $values["date_proforma"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_proforma'])));
-            //$values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
-            //$values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
+            $values["id_commercial"]   = MySQL::SQLValue($this->_data['id_commercial']);
+            $values["date_proforma"]   = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_proforma'])));
+            //$values["type_remise"]   = MySQL::SQLValue($this->_data['type_remise']);
+            //$values["valeur_remise"] = MySQL::SQLValue($valeur_remise);
             $values["claus_comercial"] = MySQL::SQLValue($this->_data['claus_comercial']);
-            //$values["totalht"]         = MySQL::SQLValue($totalht);
-            //$values["totalttc"]        = MySQL::SQLValue($totalttc);
-            //$values["totaltva"]        = MySQL::SQLValue($totaltva);
+            //$values["totalht"]       = MySQL::SQLValue($totalht);
+            //$values["totalttc"]      = MySQL::SQLValue($totalttc);
+            //$values["totaltva"]      = MySQL::SQLValue($totaltva);
+            $values["commission"] = MySQL::SQLValue($this->_data['commission']);
             $values["creusr"]          = MySQL::SQLValue(session::get('userid'));
             $values["credat"]          = MySQL::SQLValue(date("Y-m-d H:i:s"));
         //Check if Insert Query been executed (False / True)
@@ -432,6 +438,9 @@ class Mproforma
         $this->Check_exist('reference', $this->reference, 'Réference proforma', 1);
 
         $this->check_non_exist('clients','id',$this->_data['id_client'] ,'Client' );
+
+        $this->check_non_exist('commerciaux','id',$this->_data['id_commercial'] ,'Commercial' );
+
       //Get sum of details
         $this->Get_sum_detail($this->_data['tkn_frm']); 
       //calcul values proforma
@@ -462,7 +471,9 @@ class Mproforma
         $values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
         $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
         $values["vie"]             = MySQL::SQLValue($this->_data['vie']);
-        $values["id_commercial"]   = MySQL::SQLValue(session::get('userid'));
+        $values["id_commercial"]   = MySQL::SQLValue($this->_data['id_commercial']);
+        $values["commission"]      = MySQL::SQLValue($this->_data['commission']);
+        /*$values["total_commission"]= MySQL::SQLValue($total_commission);*/
         $values["date_proforma"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_proforma'])));
         //$values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
         //$values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
@@ -515,6 +526,36 @@ class Mproforma
         }
 
     }
+   
+
+    public function verif_commission($tkn_frm, $commission)
+    {
+        $table_details = $this->table_details;
+        $tva_value     = Mcfg::get('tva');
+        global $db;
+        if($tva == 'N'){
+            $req_sql = "UPDATE $table_details SET total_ttc = total_ht, total_tva = 0  WHERE tkn_frm = '$tkn_frm'";
+        }else{
+            $req_sql = "UPDATE $table_details SET  total_tva = ((total_ht * $tva_value)/100), total_ttc = (total_ht + total_tva)  WHERE tkn_frm = '$tkn_frm'";
+        }
+
+        //Run adaptation
+        if(!$db->Query($req_sql))
+        {
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .= '<\br>Problème Enregistrement détails dans le devis';
+            return false;
+        }else{
+            $this->Get_sum_detail($tkn_frm);
+            $this->log .='Adaptation TVA réussie';
+        }
+        $arr_return = array('error' => $this->error, 'mess' => $this->log, 'sum' => $this->sum_total_ht);
+        return $arr_return;
+     
+    }
+
+
 
     private function Calculate_proforma_d($prix_u, $qte, $type_remise, $value_remise, $tva)
     {
@@ -547,7 +588,7 @@ class Mproforma
 
     }
 
-    private function Calculate_proforma_t($totalht, $type_remise, $value_remise, $tva)
+    private function Calculate_proforma_t($totalht, $type_remise, $value_remise, $tva,$commission)
     {
         if($type_remise == 'P')
         {
@@ -577,7 +618,10 @@ class Mproforma
         }
         $this->total_ttc_t = $this->total_ht_t + $this->total_tva_t;
 
+       //Total commission
+        $this->total_commission = ($this->total_ttc_t * $commission) / 100;
         return true;
+
     }
 
     private function get_order_detail($tkn_frm)
@@ -658,6 +702,34 @@ class Mproforma
         return $arr_return;
     }
 
+
+    //update commission in details_devis after the change of commission in the main
+    public function set_commission_for_detail_on_change_main_commission($tkn_frm, $commission)
+    {
+        //var_dump($commission);
+        $table_details = $this->table_details;
+        $tva_value     = Mcfg::get('tva');
+
+        global $db;
+        $req_sql = "UPDATE $table_details SET  prix_ht = (prix_unitaire +((prix_unitaire * $commission)/100)), total_ht = (prix_ht * qte), total_tva = ((total_ht * $tva_value)/100), total_ttc = (total_ht + total_tva)  WHERE tkn_frm = '$tkn_frm'";
+
+        //Run adaptation
+        if(!$db->Query($req_sql))
+        {
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .= '<\br>Problème Enregistrement détails dans le devis';
+            return false;
+        }else{
+            $this->Get_sum_detail($tkn_frm);
+            $this->log .='Adaptation Commission réussie';
+        }
+        $arr_return = array('error' => $this->error, 'mess' => $this->log, 'sum' => $this->sum_total_ht);
+        return $arr_return;
+     
+    }
+
+
     private function Get_sum_detail($tkn_frm)
     {
         $table_details = $this->table_details;
@@ -704,7 +776,7 @@ class Mproforma
             $values["ref_produit"]   = MySQL::SQLValue($ref_produit);
             $values["designation"]   = MySQL::SQLValue($designation);
             $values["qte"]           = MySQL::SQLValue($this->_data['qte']);
-            $values["prix_unitaire"] = MySQL::SQLValue($this->_data['prix_unitaire']);
+            $values["prix_unitaire"] = MySQL::SQLValue(Mreq::tp('pu'));
             $values["prix_ht"]       = MySQL::SQLValue($prix_u_final);
             $values["type_remise"]   = MySQL::SQLValue($this->_data['type_remise_d']);
             $values["remise_valeur"] = MySQL::SQLValue($valeur_remis_d);
@@ -788,7 +860,7 @@ class Mproforma
             $values["ref_produit"]   = MySQL::SQLValue($ref_produit);
             $values["designation"]   = MySQL::SQLValue($designation);
             $values["qte"]           = MySQL::SQLValue($this->_data['qte']);
-            $values["prix_unitaire"] = MySQL::SQLValue($this->_data['prix_unitaire']);
+            $values["prix_unitaire"] = MySQL::SQLValue(Mreq::tp('pu'));
             $values["type_remise"]   = MySQL::SQLValue($this->_data['type_remise_d']);
             $values["prix_ht"]       = MySQL::SQLValue($prix_u_final);
             $values["remise_valeur"] = MySQL::SQLValue($this->valeur_remis_d);
