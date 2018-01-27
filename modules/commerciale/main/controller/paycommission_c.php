@@ -68,7 +68,7 @@ if (MInit::form_verif('paycommission', false)) {
     $commission->id_commission = $posted_data['id'];
 
     if ($posted_data["debit"] > $posted_data["reste"]) {
-        $ctrl_depassement = " <ul>Le montant doit être inférieur ou égale au reste</ul>";
+        $ctrl_depassement = " <ul>Le montant doit être inférieur ou égale à <b>".$posted_data["reste"] ."</b> Franc CFA</ul>";
         $checker = 2;
     }
 
