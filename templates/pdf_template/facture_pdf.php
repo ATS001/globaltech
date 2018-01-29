@@ -160,7 +160,7 @@ class MYPDF extends TCPDF {
         }
 		'</table>';
 
-		$this->writeHTMLCell(0, 0, 110, 23, $detail_facture, '', 0, 0, true, 'L', true);
+		$this->writeHTMLCell(0, 0, 105, 23, $detail_facture, '', 0, 0, true, 'L', true);
 	    //Info Client
 	    $nif = null;
 	    if($this->info_devis['nif'] != null)
