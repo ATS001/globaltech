@@ -246,7 +246,10 @@ exit();*/
     	if($new_contrat->valid_contrats(4))
     	{
         echo("1#" . $new_contrat->log);
-        }
+        }else {
+
+        echo("0#" . $new_contrat->log);
+              }
     } else {
 
         echo("0#" . $new_contrat->log);

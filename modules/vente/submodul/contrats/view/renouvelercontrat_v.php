@@ -8,7 +8,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_contrat->get_contrat()) {
     // returne message error red to client 
     exit('3#' . $info_contrat->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
-  $ref=$info_contrat->s('ref');
+  $ref=$info_contrat->s('reference');
 ?>
 
  <div class="pull-right tableTools-container">
@@ -45,15 +45,15 @@ $form->input_hidden('id', Mreq::tp('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
 
+$list_devis = Mcontrat::select_devis($info_contrat->s('iddevis'));
+
 //Reference
-$form->input_hidden('checker_reference', MInit::cryptage($info_contrat->s('ref'), 1));
-$form->input_hidden('ref', $info_contrat->s('ref'));
+$form->input_hidden('checker_reference', MInit::cryptage($info_contrat->s('reference'), 1));
+$form->input_hidden('ref', $info_contrat->s('reference'));
 
 
 //Devis
-$devis_array[]  = array('required', 'true', 'Choisir un devis');
-$form->select_table('Devis', 'iddevis', 8, 'devis', 'id', 'reference' , 'reference', $indx = '------' ,$selected=$info_contrat->s('iddevis'),$multi=NULL,
-        $where="devis.etat=1 and devis.id=".$info_contrat->s('iddevis'), $devis_array);
+$form->select('Devis', 'iddevis', 8, $list_devis, '------', $info_contrat->s('iddevis'), null, null);
 
 
 //Date effet
