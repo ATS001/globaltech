@@ -658,7 +658,7 @@ class Mcommission
         $table = $this->table;
 
         $sql = "SELECT $table.*,DATE_FORMAT(date_debit,'%d-%m-%Y') as date_debit FROM 
-		$table WHERE  $table.id_commerciale = " . $this->id_commerciale;
+		$table WHERE compte_commerciale.`id_credit` IS NOT NULL AND $table.id_commerciale = " . $this->id_commerciale;
 
         if (!$db->Query($sql)) {
             $this->error = false;

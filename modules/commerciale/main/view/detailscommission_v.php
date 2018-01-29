@@ -170,7 +170,7 @@ $paiements = $paiement->commission_info;
                                 </div>
 
                                 <div>
-                                    <ul class="list-unstyled spaced">
+                                    <ul class="list-unstyled spaced" style="width: 500px">
                                         <li>
                                             <i class="ace-icon fa fa-caret-right blue"></i> Commerciale
                                             <b style="color:blue"> <?php $paiement->f('commerciale'); ?> </b>
