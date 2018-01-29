@@ -104,37 +104,37 @@ class MYPDF extends TCPDF {
         $per = NULL;
         if ($this->info_facture['periode'] != NULL) {
             $per = ' <tr>
-        <td style="width:40%; color:#A1A0A0;"><strong>Période facturée
+        <td style="width:25%; color:#A1A0A0;"><strong>Période facturée
                 </strong></td>
         <td style="width:5%;">:</td>
-        <td style="width:60%; background-color: #eeecec; ">' . $this->info_facture['periode'] . '</td>
+        <td style="width:75%; background-color: #eeecec; ">' . $this->info_facture['periode'] . '</td>
         </tr>';
         }
 		$detail_facture = '<table cellspacing="3" cellpadding="2" border="0">
 		<tr>
-		<td style="width:40%; color:#A1A0A0;"><strong>Réf Facture</strong></td>
+		<td style="width:25%; color:#A1A0A0;"><strong>Réf Facture</strong></td>
 		<td style="width:5%;">:</td>
-		<td style="width:60%; background-color: #eeecec;">'.$this->info_facture['reference'].'</td>
+		<td style="width:75%; background-color: #eeecec;">'.$this->info_facture['reference'].'</td>
 		</tr> 
 		<tr>
-		<td style="width:40%; color:#A1A0A0;"><strong>Date</strong></td>
+		<td style="width:25%; color:#A1A0A0;"><strong>Date</strong></td>
 		<td style="width:5%;">:</td>
-		<td style="width:60%; background-color: #eeecec; ">'.$this->info_facture['date_facture'].'</td>
+		<td style="width:75%; background-color: #eeecec; ">'.$this->info_facture['date_facture'].'</td>
 		</tr>';
         if( $this->info_facture['base_fact'] == 'C')
         {
         $detail_facture .= '
         <tr>
-        <td style="width:40%; color:#A1A0A0;"><strong>Réf contrat
+        <td style="width:25%; color:#A1A0A0;"><strong>Réf contrat
                 </strong></td>
         <td style="width:5%;">:</td>
-        <td style="width:60%; background-color: #eeecec; ">' . $this->info_contrat['reference'] . '</td>
+        <td style="width:75%; background-color: #eeecec; ">' . $this->info_contrat['reference'] . '</td>
         </tr>
                 <tr>
-        <td style="width:40%; color:#A1A0A0;"><strong>Date contrat
+        <td style="width:25%; color:#A1A0A0;"><strong>Date contrat
                 </strong></td>
         <td style="width:5%;">:</td>
-        <td style="width:60%; background-color: #eeecec; ">' . $this->info_contrat['date_contrat'] . '</td>
+        <td style="width:75%; background-color: #eeecec; ">' . $this->info_contrat['date_contrat'] . '</td>
         </tr>
                ' . $per . '
         </table>';
@@ -143,23 +143,24 @@ class MYPDF extends TCPDF {
         {
         $detail_facture .= '
         <tr>
-        <td style="width:40%; color:#A1A0A0;"><strong>Réf Devis
+        <td style="width:25%; color:#A1A0A0;"><strong>Réf Devis
                 </strong></td>
         <td style="width:5%;">:</td>
-        <td style="width:60%; background-color: #eeecec; ">' . $this->info_devis['reference'] . '</td>
+        <td style="width:75%; background-color: #eeecec; ">' . $this->info_devis['reference'] . '</td>
         </tr>
                 <tr>
-        <td style="width:40%; color:#A1A0A0;"><strong>Date Devis
+        <td style="width:25%; color:#A1A0A0;"><strong>Date Devis
                 </strong></td>
         <td style="width:5%;">:</td>
-        <td style="width:60%; background-color: #eeecec; ">' . $this->info_devis['date_devis'] . '</td>
+        <td style="width:75%; background-color: #eeecec; ">' . $this->info_devis['date_devis'] . '</td>
         </tr>
+        
                ' . $per . '
         </table>';
         }
 		'</table>';
 
-		$this->writeHTMLCell(0, 0, 140, 23, $detail_facture, '', 0, 0, true, 'L', true);
+		$this->writeHTMLCell(0, 0, 110, 23, $detail_facture, '', 0, 0, true, 'L', true);
 	    //Info Client
 	    $nif = null;
 	    if($this->info_devis['nif'] != null)
@@ -216,7 +217,8 @@ class MYPDF extends TCPDF {
 		</tbody>
 		</table>';
 		//$marge_after_detail_client = 
-		$this->writeHTMLCell(100, 0, 99, 53, $detail_client, 0, 0, 0, true, 'L', true);
+        $this->Ln();
+		$this->writeHTMLCell(100, 0, 99, null, $detail_client, 0, 0, 0, true, 'L', true);
 		if($this->info_facture['projet'] != null){
 			$projet = '<span style="color:#C81414; padding:5px;">'.$this->info_facture['projet'].'</span>';
 		    $height = $this->getLastH();
