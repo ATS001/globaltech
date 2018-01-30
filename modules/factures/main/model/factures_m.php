@@ -1209,7 +1209,7 @@ if($this->facture_info['base_fact'] == 'C')
         
 
         $colms = null;
-        $colms .= " d_factures.id item, ";
+        $colms .= " d_factures.order item, ";
         $colms .= " d_factures.ref_produit, ";
         $colms .= " d_factures.designation, ";
         $colms .= " CONCAT(REPLACE(FORMAT(d_factures.qte,0),',',' '),' ',IFNULL(d_factures.qte_designation,' ')) as qte, ";
