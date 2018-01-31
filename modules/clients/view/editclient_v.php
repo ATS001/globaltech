@@ -124,17 +124,17 @@ $adresse_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
 $form->input('Adresse', 'adresse', 'text', 6, $info_client->Shw('adresse',1), $adresse_array);
 
 //Pays
-$pays_array[]  = array('required', 'true', 'Choisir le Pays' );
-$form->select_table('Pays', 'id_pays', 6, 'ref_pays', 'id', 'pays' , 'pays', $indx = '------' ,$selected=$info_client->Shw('id_pays',1),$multi=NULL, $where='etat=1', $pays_array);
+//$pays_array[]  = array('required', 'true', 'Choisir le Pays' );
+$form->select_table('Pays', 'id_pays', 6, 'ref_pays', 'id', 'pays' , 'pays', $indx = '------' ,$selected=$info_client->Shw('id_pays',1),$multi=NULL, $where='etat=1', null);
 
 //ville
-$ville_array[]  = array('required', 'true', 'Choisir la Ville' );
-$form->select_table('Ville', 'id_ville', 6, 'ref_ville', 'id', 'ville' , 'ville', $indx = '------' ,$selected=$info_client->Shw('id_ville',1),$multi=NULL, $where=NULL, $ville_array);
+//$ville_array[]  = array('required', 'true', 'Choisir la Ville' );
+$form->select_table('Ville', 'id_ville', 6, 'ref_ville', 'id', 'ville' , 'ville', $indx = '------' ,$selected=$info_client->Shw('id_ville',1),$multi=NULL, $where=NULL, null);
 /*$opt_ville = array('' => '------');
 $form->select('Ville', 'id_ville', 6, $opt_ville, $indx = NULL ,$selected = $info_client->Shw('id_ville',1), $multi = NULL);*/
 
 // Tél
-$tel_array[]  = array('required', 'true', 'Insérer N° de téléphone' );
+//$tel_array[]  = array('required', 'true', 'Insérer N° de téléphone' );
 $tel_array[]  = array('minlength', '8', 'Le N° de téléphone doit contenir au moins 8 chiffres' );
 $tel_array[]  = array('number', 'true', 'Entrez un N° Téléphone Valid' );
 $form->input('N° Téléphone', 'tel', 'text', 6, $info_client->Shw('tel',1), $tel_array);
@@ -150,7 +150,7 @@ $form->input('Fax', 'fax', 'text', 6, $info_client->Shw('fax',1), $fax_array);
 $form->input('Boite Postale', 'bp', 'text', 6, $info_client->Shw('bp',1), '');
 
 // email
-$mail_array[]  = array('required', 'true', 'Insérer Email ' );
+//$mail_array[]  = array('required', 'true', 'Insérer Email ' );
 $mail_array[]  = array('email', 'true', 'Adresse Email non valide' );
 $form->input('Email ', 'email', 'text', 6, $info_client->Shw('email',1), $mail_array);
 

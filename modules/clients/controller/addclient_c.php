@@ -55,11 +55,11 @@ if(MInit::form_verif('addclient',false))
     $checker = 1;
   }*/
 
-  if($posted_data['id_categorie'] == NULL){
+/*  if($posted_data['id_categorie'] == NULL){
 
     $empty_list .= "<li>Catégorie client</li>";
     $checker = 1;
-  }
+  }*/
   
   /*if($posted_data['nif'] == NULL){
 
@@ -77,11 +77,11 @@ if(MInit::form_verif('addclient',false))
     $empty_list .= "<li>Adresse</li>";
     $checker = 1;
   }*/
-  if($posted_data['tel'] == NULL){
+ /* if($posted_data['tel'] == NULL){
 
     $empty_list .= "<li>Tél</li>";
     $checker = 1;
-  }
+  }*/
 
   /*if($posted_data['bp'] == NULL){
 
@@ -98,7 +98,7 @@ if(MInit::form_verif('addclient',false))
     $empty_list .= "<li>Ville</li>";
     $checker = 1;
   }*/
-  if($posted_data['email'] == NULL){
+  /*if($posted_data['email'] == NULL){
 
     $empty_list .= "<li>Email</li>";
     $checker = 1;
@@ -108,7 +108,7 @@ if(MInit::form_verif('addclient',false))
     $empty_list .= "<li>Devise</li>";
     $checker = 1;
   }
-
+*/
 
   $empty_list.= "</ul>";
   if($checker == 1)
