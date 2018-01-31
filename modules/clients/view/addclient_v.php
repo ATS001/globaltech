@@ -103,8 +103,8 @@ $adresse_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
 $form->input('Adresse', 'adresse', 'text', 6, null, $adresse_array);
 
 //Pays
-$pays_array[]  = array('required', 'true', 'Choisir le Pays' );
-$form->select_table('Pays', 'id_pays', 6, 'ref_pays', 'id', 'pays' , 'pays', $indx = '------' ,242,$multi=NULL, $where='etat=1', $pays_array);
+//$pays_array[]  = array('required', 'true', 'Choisir le Pays' );
+$form->select_table('Pays', 'id_pays', 6, 'ref_pays', 'id', 'pays' , 'pays', $indx = '------' ,242,$multi=NULL, $where='etat=1', null);
 
 //ville
 /*$ville_array[]  = array('required', 'true', 'Choisir la Ville' );
@@ -113,7 +113,7 @@ $opt_ville = array('' => '------');
 $form->select('Ville', 'id_ville', 6, $opt_ville, $indx = NULL ,$selected = null, $multi = NULL);
 
 // Tél
-$tel_array[]  = array('required', 'true', 'Insérer N° de téléphone' );
+//$tel_array[]  = array('required', 'true', 'Insérer N° de téléphone' );
 $tel_array[]  = array('minlength', '8', 'Le N° de téléphone doit contenir au moins 8 chiffres' );
 $tel_array[]  = array('number', 'true', 'Entrez un N° Téléphone Valid' );
 $form->input('N° Téléphone', 'tel', 'text', 6, null, $tel_array);
@@ -129,7 +129,7 @@ $form->input('Fax', 'fax', 'text', 6, null, $fax_array);
 $form->input('Boite Postale', 'bp', 'text', 6, null, '');
 
 // email
-$mail_array[]  = array('required', 'true', 'Insérer Email ' );
+//$mail_array[]  = array('required', 'true', 'Insérer Email ' );
 $mail_array[]  = array('email', 'true', 'Adresse Email non valide' );
 $form->input('Email ', 'email', 'text', 6, null, $mail_array);
 
