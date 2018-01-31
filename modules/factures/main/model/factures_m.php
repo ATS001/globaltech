@@ -220,7 +220,7 @@ class Mfacture {
 
         $table_encaissement = $this->table_encaissement;
 
-        $sql = "SELECT id,ref,designation,
+        $sql = "SELECT id,reference,designation,
                 REPLACE(FORMAT(montant,0),',',' ') as montant,
                 DATE_FORMAT(date_encaissement,'%d-%m-%Y') as date_encaissement                        
                 FROM 
