@@ -324,7 +324,7 @@ class Mcontrat {
 
                 $this->save_file('pj', 'Justifications du contrat' . $this->reference, 'Document');
 
-                $this->save_file('pj_photo', 'Photo' . $this->reference, 'Image');
+                //$this->save_file('pj_photo', 'Photo' . $this->reference, 'Image');
 
                 //Check $this->error = true return Green message and Bol true
                 if ($this->error == true) {
@@ -418,7 +418,7 @@ class Mcontrat {
                 $this->save_file('pj', 'Justifications du contrat' . $this->_data['reference'], 'Document');
 
 
-                $this->save_file('pj_photo', 'Photo' . $this->_data['reference'], 'image');
+                //$this->save_file('pj_photo', 'Photo' . $this->_data['reference'], 'image');
 
 
                 //Check $this->error = true return Green message and Bol true

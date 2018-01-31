@@ -68,9 +68,9 @@ if(!$info_contrat->get_devis_info())
                                                         ?></span>
 						</div>
 
-                        <?php if($info_contrat->s('contrats_pdf') != null){?>
+                        <?php if($info_contrat->s('pj') != null){?>
                          <div class="widget-toolbar hidden-480">
-							<a href="#" class="iframe_pdf" rel="<?php echo $info_contrat->s('contrats_pdf') ?>">
+							<a href="#" class="iframe_pdf" rel="<?php echo $info_contrat->s('pj') ?>">
 								<i class="ace-icon fa fa-print"></i>
 							</a>
 						</div>       
