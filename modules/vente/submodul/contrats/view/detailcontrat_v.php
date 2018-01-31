@@ -106,8 +106,7 @@ if(!$info_contrat->get_devis_info())
 											</li>
 
 											<li>
-												<i class="ace-icon fa fa-caret-right blue"></i> Type échéance
-                                                                                                <b style="color:blue"><?php echo $info_contrat->s('type_echeance');?></b>
+												
                                                 
                  <i class="ace-icon fa fa-caret-right blue"></i> Type échéance
                      <b style="color:blue"><?php if($info_contrat->s('periode_fact')=='D'){ echo $info_contrat->s('type_echeance')." => Début";}
