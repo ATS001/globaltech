@@ -37,7 +37,7 @@ $headers = array(
     'Référence'     => '18[#]C',
     'Description'   => '35[#]L',
     'Qte'           => '10[#]C',
-    'Prix Unitaire' => '12[#]R',
+    'Prix HT' => '12[#]R',
     'Total HT'      => '15[#]R',
 );
 
