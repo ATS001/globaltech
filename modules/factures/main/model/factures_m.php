@@ -1213,7 +1213,7 @@ if($this->facture_info['base_fact'] == 'C')
         $colms .= " d_factures.ref_produit, ";
         $colms .= " d_factures.designation, ";
         $colms .= " CONCAT(REPLACE(FORMAT(d_factures.qte,0),',',' '),' ',IFNULL(d_factures.qte_designation,' ')) as qte, ";
-        $colms .= " REPLACE(FORMAT(d_factures.prix_unitaire,0),',',' '), ";
+        $colms .= " REPLACE(FORMAT(d_factures.prix_ht,0),',',' '), ";
         $colms .= " REPLACE(FORMAT(d_factures.total_ht,0),',', ' ') ";
 
         $req_sql = " SELECT $colms FROM d_factures WHERE d_factures.id_facture = $id_facture ";

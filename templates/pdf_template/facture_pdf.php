@@ -38,8 +38,8 @@ $headers = array(
             'Réf'         => '17[#]C',
             'Description' => '43[#]', 
             'Qte'         => '5[#]C', 
-            'P.Unitaire'  => '10[#]R',
-            'P.Total'       => '15[#]R',
+            'P.HT'        => '10[#]R',
+            'P.Total'     => '15[#]R',
 
         );
 $headers2 = array(
