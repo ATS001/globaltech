@@ -105,6 +105,7 @@ class MYPDF extends TCPDF {
 		<td style="width: 65%; background-color: #eeecec;">'.$this->info_devis['nif'].'</td>
 		</tr>';
 	    }
+	    $ref_client = $this->info_devis['reference_client'] != null ? $this->info_devis['reference_client'] : null;
 	    $tel = $this->info_devis['tel'] != null ? 'Tél.'.$this->info_devis['tel'] : null;
 	    $email = $this->info_devis['email'] != null ? 'Email.'.$this->info_devis['email'] : null;
 	    $adresse = $this->info_devis['adresse'] != null ? $this->info_devis['adresse'] : null;
@@ -115,6 +116,11 @@ class MYPDF extends TCPDF {
 		<tbody>
 		<tr style="background-color:#495375; font-size:14; font-weight:bold; color:#fff;">
 		<td colspan="3"><strong>Informations client</strong></td>
+		</tr>
+		<tr>
+		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Réf Client</td>
+		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
+		<td style="width: 65%; background-color: #eeecec;"><strong>'.$ref_client.'</strong></td>
 		</tr>
 		<tr>
 		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Dénomination</td>

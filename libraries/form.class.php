@@ -36,6 +36,7 @@ class Mform
     var $form_subbloc          = null;
     var $verif_value           = null;
     
+    
 
 
 	/**
@@ -91,6 +92,7 @@ class Mform
                 {
                     $this->form_bloc .= '<div class="step-content pos-rel">';
                 }
+
                 $this->form_bloc .= '<fieldset>';
                 $this->form_bloc .= $this->form_fields;
                 $this->form_bloc .= '</fieldset>';
@@ -455,6 +457,24 @@ $this->gallery_bloc_js .= "$('#btn_add_pic').on('click', '.this_add_pic', functi
 
 
 }
+/**
+ * [alert_message Show message Alert ]
+ * @param  [string] $message [Message to be show]
+ * @param  [string] $style   [Style of tag 
+ * (red => danger, orange => warning , green => success, blue => info)]
+ * @return [type]          [description]
+ */
+public function alert_message($message, $style)
+{
+  $message = '<div class="alert alert-'.$style.'">
+                      <button type="button" class="close" data-dismiss="alert">
+                        <i class="ace-icon fa fa-times"></i>
+                      </button>
+                      '.$message.'
+                      <br>
+                    </div>';
+  $this->form_fields .= $message;                  
+}
 
 public function input_date($input_desc, $input_id, $input_class, $input_value = null, $js_array = null, $hard_code = null)
 {
@@ -624,8 +644,14 @@ public function radio($radio_desc, $radio_id, $radio_value = null, $array_radio,
 
                      global $db;
                      $sql = "SELECT $id_table as id, $txt_table as text FROM $table $where order by $order_by limit 0,1000 ";
-                     if (! $db->Query($sql)) $db->Kill($db->Error());
-                     while (! $db->EndOfSeek()) {
+                     if (!$db->Query($sql)){
+                       $db->Kill($db->Error());
+                     }
+                     if(!$db->RowCount()){
+                        $output .='<option value=""></option>';
+                           
+                     }else{
+                      while (! $db->EndOfSeek()) {
                       $row = $db->Row();
                       if($selected != NULL){
                         if($multiple != NULL) 
@@ -635,18 +661,21 @@ public function radio($radio_desc, $radio_id, $radio_value = null, $array_radio,
                             if(in_array($row->id, $array_exist))
                             {
                              $bloc_multipl_show .= ' '.$row->text.' - '; 
-                         }
+                            }
 
-                     }else{
-                        $select =  $row->id == $selected ? "selected":"";
+                        }else{
+                            $select =  $row->id == $selected ? "selected":"";
+                        }
+
+
+                      }else{
+                        $select ="";
+                      }
+                      $output .= '<option '.$select.' value="'.$row->id.'">'.$row->text.'</option>';               
                     }
 
-
-                }else{
-                   $select ="";
-               }
-               $output .= '<option '.$select.' value="'.$row->id.'">'.$row->text.'</option>';               
-           }
+                     } 
+                     
            $output .='</select>';
            $output .= $hard_code;
         //If select multipl selected add this bloc to show existing elements
@@ -740,14 +769,21 @@ if($js_array != null)
                      $index = $indx != NULL ? '<option value="">'.$indx.'</option>' : NULL;
 
                      $output .= $index;
-                     foreach($options as $value => $text):
+                     if(!$options){
+                      $output .='<option  value=""></option>';
+
+                     }else{
+                      foreach($options as $value => $text):
                       if($selected != NULL){  
                        $select =  $value == $selected ? "selected":""; 
                    }else{
                        $select="";
                    }
-            $output .='<option '.$select.' value="'.$value.'">'.$text.'</option>'; //close your tags!!
-            endforeach;
+                    $output .='<option '.$select.' value="'.$value.'">'.$text.'</option>'; //close your tags!!
+                    endforeach;
+
+                     }
+                     
 
 
 

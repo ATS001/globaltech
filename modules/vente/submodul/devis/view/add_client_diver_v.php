@@ -11,6 +11,7 @@ if(!defined('_MEXEC'))die();
 //$form = new Mform('add_detaildevis', 'add_detaildevis', '', 'devis', '0', 'is_modal'); 
 $form = new Mform('add_client', 'add_client', '', 'devis', '0', 'is_modal');
 $form->input_hidden('tkn_frm', Mreq::tp('tkn'));
+$form->alert_message('Le client est temporaire,<br> il faut compléter le profile avant la facturation ','warning');
 $denomination_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
 $denomination_array[]  = array('required', 'true', 'Insérer La Dénomination' );
 $form->input('Dénomination', 'denomination', 'text' ,6 , null, $denomination_array);
@@ -56,10 +57,7 @@ $('.send_modal').on('click', function () {
                     }else{
                           
                         $('#id_client')
-                        .find('option')
-                        .remove()
-                        .end()
-                        .append($("<option></option>")
+                        .append($("<option selected=\"selected\"></option>")
                         .attr("value",data['id'])
                         .text(data['nom'])); 
                         

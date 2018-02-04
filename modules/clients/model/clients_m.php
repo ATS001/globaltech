@@ -259,6 +259,7 @@ class Mclients {
 		$etat = $etat == 0 ? 1 : 0;
 		//Format value for requet
 		$values["etat"] 		= MySQL::SQLValue($etat);
+    $values["type_client"]     = MySQL::SQLValue('D');
 		$values["updusr"]       = MySQL::SQLValue(session::get('userid'));
 	    $values["upddat"]       = MySQL::SQLValue(date("Y-m-d H:i:s"));
 

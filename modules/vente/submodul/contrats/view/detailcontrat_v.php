@@ -68,9 +68,9 @@ if(!$info_contrat->get_devis_info())
                                                         ?></span>
 						</div>
 
-                        <?php if($info_contrat->s('contrats_pdf') != null){?>
+                        <?php if($info_contrat->s('pj') != null){?>
                          <div class="widget-toolbar hidden-480">
-							<a href="#" class="iframe_pdf" rel="<?php echo $info_contrat->s('contrats_pdf') ?>">
+							<a href="#" class="iframe_pdf" rel="<?php echo $info_contrat->s('pj') ?>">
 								<i class="ace-icon fa fa-print"></i>
 							</a>
 						</div>       
@@ -106,8 +106,15 @@ if(!$info_contrat->get_devis_info())
 											</li>
 
 											<li>
-												<i class="ace-icon fa fa-caret-right blue"></i> Type échéance
-                                                                                                <b style="color:blue"><?php echo $info_contrat->s('type_echeance');?></b> 
+												
+                                                
+                 <i class="ace-icon fa fa-caret-right blue"></i> Type échéance
+                     <b style="color:blue"><?php if($info_contrat->s('periode_fact')=='D'){ echo $info_contrat->s('type_echeance')." => Début";}
+                     else {
+                         echo $info_contrat->s('type_echeance')." => Fin";
+                     }
+                     ?></b>
+                                                 
 											</li>											
 
 											<li>

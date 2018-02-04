@@ -60,11 +60,11 @@ $checker = null;
     $checker = 1;
   }*/
 
-  if($posted_data['id_categorie'] == NULL){
+  /*if($posted_data['id_categorie'] == NULL){
 
     $empty_list .= "<li>Catégorie client</li>";
     $checker = 1;
-  }
+  }*/
  
   /*if($posted_data['nif'] == NULL){
 
@@ -82,27 +82,27 @@ $checker = null;
     $empty_list .= "<li>Adresse</li>";
     $checker = 1;
   }*/
-  if($posted_data['tel'] == NULL){
+  /*if($posted_data['tel'] == NULL){
 
     $empty_list .= "<li>Tél</li>";
     $checker = 1;
-  }
+  }*/
 
   /*if($posted_data['bp'] == NULL){
 
     $empty_list .= "<li>Boite Postal</li>";
     $checker = 1;
   }  */
-  if($posted_data['id_pays'] == NULL){
+/*  if($posted_data['id_pays'] == NULL){
 
     $empty_list .= "<li>Pays</li>";
     $checker = 1;
   }
-  /*if($posted_data['id_ville'] == NULL){
+  if($posted_data['id_ville'] == NULL){
 
     $empty_list .= "<li>Ville</li>";
     $checker = 1;
-  }*/
+  }
   if($posted_data['email'] == NULL){
 
     $empty_list .= "<li>Email</li>";
@@ -112,7 +112,7 @@ $checker = null;
 
     $empty_list .= "<li>Devise</li>";
     $checker = 1;
-  }
+  }*/
 
 
   $empty_list.= "</ul>";

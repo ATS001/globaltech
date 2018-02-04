@@ -36,7 +36,7 @@ $form->input_date('Date devis', 'date_devis', 2, date('d-m-Y'), $array_date);
 //Client
 $hard_code_client = '<a id="add_client_diver" href="#" rel="add_client_diver" data="" data_titre="Ajout Client Diver " class=" "><span class="help-block returned_span"><i class="fa fa-plus"></i> Ajouter un client divers</span></a>';
 $client_array[]  = array('required', 'true', 'Choisir un Client');
-$form->select_table('Client', 'id_client', 6, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat=1', $client_array, $hard_code_client);
+$form->select_table('Client', 'id_client', 6, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat=1 or type_client=\'T\'', $client_array, $hard_code_client);
 //TVA
 $tva_opt = array('O' => 'OUI' , 'N' => 'NON' );
 $form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$selected = NULL, $multi = NULL);
@@ -177,10 +177,10 @@ $(document).ready(function() {
     	var remise_valeur = parseFloat($('#valeur_remise').val());
     	var tva           = $('#tva').val();
         var commission    = parseFloat($("#commission").val());
-
-    	var dix_per_ht    = parseFloat((totalht * 10) / 100);
-    	if((type_remise == 'P' && remise_valeur > 10) || (type_remise == 'M' && remise_valeur > dix_per_ht)){
-    		ajax_loadmessage('La remise exeptionnel ne doit pas dépasser 10% du Total des articles','nok');
+        var percentage_othorized = 100;
+    	var dix_per_ht    = parseFloat((totalht * percentage_othorized) / 100);
+    	if((type_remise == 'P' && remise_valeur > percentage_othorized) || (type_remise == 'M' && remise_valeur > dix_per_ht)){
+    		ajax_loadmessage('La remise exeptionnel ne doit pas dépasser '+percentage_othorized+'% du Total des articles','nok');
     		$('#totalht').val(totalht);
     		$('#valeur_remise').val(0);
     		calculat_devis(totalht, null, 0, tva, 'totalht', 'totaltva', 'totalttc',commission,'total_commission');

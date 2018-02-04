@@ -87,7 +87,7 @@ class Mproduit {
         global $db;
         //Generate reference
         //$this->Generate_produit_reference();
-    if(!$reference = $db->Generate_reference($this->table, 'PRD'))
+    if(!$reference = $db->Generate_reference($this->table, 'PRD', false))
         {
                 $this->log .= '</br>Problème Réference';
                 return false;
