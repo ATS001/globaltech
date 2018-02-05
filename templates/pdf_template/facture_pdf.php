@@ -38,7 +38,7 @@ $headers = array(
             'Réf'         => '17[#]C',
             'Description' => '43[#]', 
             'Qte'         => '5[#]C', 
-            'P.HT'        => '10[#]R',
+            'P.Unitaire'  => '10[#]R',
             'P.Total'     => '15[#]R',
 
         );
@@ -123,20 +123,7 @@ class MYPDF extends TCPDF {
 		</tr>';
         if( $this->info_facture['base_fact'] == 'C')
         {
-        $detail_facture .= '
-        <tr>
-        <td style="width:25%; color:#A1A0A0;"><strong>Réf contrat
-                </strong></td>
-        <td style="width:5%;">:</td>
-        <td style="width:75%; background-color: #eeecec; ">' . $this->info_contrat['reference'] . '</td>
-        </tr>
-                <tr>
-        <td style="width:25%; color:#A1A0A0;"><strong>Date contrat
-                </strong></td>
-        <td style="width:5%;">:</td>
-        <td style="width:75%; background-color: #eeecec; ">' . $this->info_contrat['date_contrat'] . '</td>
-        </tr>
-               ' . $per . '
+        $detail_facture .=  $per . '
         </table>';
         }
         else if( $this->info_facture['base_fact'] == 'D')
@@ -148,14 +135,7 @@ class MYPDF extends TCPDF {
         <td style="width:5%;">:</td>
         <td style="width:75%; background-color: #eeecec; ">' . $this->info_devis['reference'] . '</td>
         </tr>
-                <tr>
-        <td style="width:25%; color:#A1A0A0;"><strong>Date Devis
-                </strong></td>
-        <td style="width:5%;">:</td>
-        <td style="width:75%; background-color: #eeecec; ">' . $this->info_devis['date_devis'] . '</td>
-        </tr>
-        
-               ' . $per . '
+        ' . $per . '
         </table>';
         }
 		'</table>';
@@ -220,7 +200,7 @@ class MYPDF extends TCPDF {
         $this->Ln();
 		$this->writeHTMLCell(100, 0, 99, null, $detail_client, 0, 0, 0, true, 'L', true);
 		if($this->info_facture['projet'] != null){
-			$projet = '<span style="color:#C81414; padding:5px;">'.$this->info_facture['projet'].'</span>';
+			$projet = '<span style="padding:5px;">'.$this->info_facture['projet'].'</span>';
 		    $height = $this->getLastH();
 		    $this->SetTopMargin($height + $this->GetY() + 5);
 		    //writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
