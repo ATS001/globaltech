@@ -1293,21 +1293,22 @@ if($this->facture_info['base_fact'] == 'C')
         var_dump($this->facture_info['idcontrat']);
         var_dump($this->facture_info['base_fact']);
     */    global $db;
-        //var_dump($this->facture_info['idcontrat']); 
+        
         $contrat = $this->facture_info['idcontrat'] == NULL ? 'NULL' : $this->facture_info['idcontrat'];
         $devis   = $this->facture_info['iddevis']   == NULL ? 'NULL' : $this->facture_info['iddevis'];
-
-        $sql = "SELECT id as id FROM 
-    		devis WHERE  devis.id =if( '" . $this->facture_info['base_fact']. "'='C', $contrat, $devis)";
+//var_dump($contrat); 
+//var_dump($devis); 
+        $sql = "SELECT IF('" . $this->facture_info['base_fact']. "'='C', (SELECT iddevis FROM contrats WHERE id=$contrat), id ) as id FROM 
+    		devis WHERE  devis.id =if( '" . $this->facture_info['base_fact']. "'='C', (SELECT iddevis FROM contrats WHERE id=$contrat), $devis)";
                //$sql = "SELECT id as id FROM devis WHERE  devis.id =". $this->facture_info['iddevis'];
-      // var_dump($sql);
+      //var_dump($sql);
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
         } else {
             if ($db->RowCount() == 0) {
                 $this->error = false;
-                $this->log .= 'Aucun enregistrement trouvé ';
+                $this->log .= 'Aucun enregistrement trouvé !!!!!!!rkeg ';
             } else {
                 $this->id_devis = $db->RowArray();
                 //var_dump($this->id_devis);
@@ -1355,9 +1356,15 @@ if($this->facture_info['base_fact'] == 'C')
 
         global $db;
 
-        $sql = "SELECT id,reference,iddevis, DATE_FORMAT(date_effet,'%d-%m-%Y') as date_effet,
-                DATE_FORMAT(date_fin,'%d-%m-%Y') as date_fin,
-                DATE_FORMAT(date_contrat,'%d-%m-%Y') as date_contrat,commentaire FROM contrats WHERE id = " . $idcontrat;
+        $sql = "SELECT contrats.id,contrats.reference,contrats.iddevis, DATE_FORMAT(contrats.date_effet,'%d-%m-%Y') AS date_effet,
+            DATE_FORMAT(contrats.date_fin,'%d-%m-%Y') AS date_fin,
+            DATE_FORMAT(contrats.date_contrat,'%d-%m-%Y') AS date_contrat,contrats.commentaire,
+            devis.`reference` as ref_devis, DATE_FORMAT(devis.`date_devis`,'%d-%m-%Y') as date_devis
+            FROM contrats ,devis 
+            WHERE contrats.iddevis=devis.`id` AND contrats.id = " . $idcontrat;
+
+ 
+
 
         if (!$db->Query($sql)) {
             $this->error = false;
