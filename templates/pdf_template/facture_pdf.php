@@ -123,7 +123,24 @@ class MYPDF extends TCPDF {
 		</tr>';
         if( $this->info_facture['base_fact'] == 'C')
         {
+<<<<<<< HEAD
         $detail_facture .=  $per . '
+=======
+        $detail_facture .= '
+        <tr>
+        <td style="width:25%; color:#A1A0A0;"><strong>Réf Devis
+                </strong></td>
+        <td style="width:5%;">:</td>
+        <td style="width:75%; background-color: #eeecec; ">' . $this->info_contrat['ref_devis'] . '</td>
+        </tr>
+                <tr>
+        <td style="width:25%; color:#A1A0A0;"><strong>Date Devis
+                </strong></td>
+        <td style="width:5%;">:</td>
+        <td style="width:75%; background-color: #eeecec; ">' . $this->info_contrat['date_devis'] . '</td>
+        </tr>
+               ' . $per . '
+>>>>>>> origin/last
         </table>';
         }
         else if( $this->info_facture['base_fact'] == 'D')
@@ -200,12 +217,17 @@ class MYPDF extends TCPDF {
         $this->Ln();
 		$this->writeHTMLCell(100, 0, 99, null, $detail_client, 0, 0, 0, true, 'L', true);
 		if($this->info_facture['projet'] != null){
+<<<<<<< HEAD
 			$projet = '<span style="padding:5px;">'.$this->info_facture['projet'].'</span>';
+=======
+			$projet = '<span style="width: 65%;font-family: sans-serif;ont-weight: bold;font-size: 10pt;"><strong>'.$this->info_facture['projet'].'</strong></span>';
+
+>>>>>>> origin/last
 		    $height = $this->getLastH();
 		    $this->SetTopMargin($height + $this->GetY() + 5);
 		    //writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
 		    $this->setCellPadding(1);
-		    $this->writeHTMLCell('', '', 16, '', $projet, 1, 0, 0, true, 'L', true);
+		    $this->writeHTMLCell(183, '', 15.6, '', $projet, 1, 0, 0, true, 'L', true);
 		}
 		//$this->Ln();
 		$this->setCellPadding(0);
