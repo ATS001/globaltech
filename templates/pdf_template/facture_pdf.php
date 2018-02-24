@@ -123,6 +123,7 @@ class MYPDF extends TCPDF {
 		</tr>';
         if( $this->info_facture['base_fact'] == 'C')
         {
+
         $detail_facture .= '
         <tr>
         <td style="width:25%; color:#A1A0A0;"><strong>Réf Devis
@@ -137,6 +138,7 @@ class MYPDF extends TCPDF {
         <td style="width:75%; background-color: #eeecec; ">' . $this->info_contrat['date_devis'] . '</td>
         </tr>
                ' . $per . '
+
         </table>';
         }
         else if( $this->info_facture['base_fact'] == 'D')
@@ -148,14 +150,7 @@ class MYPDF extends TCPDF {
         <td style="width:5%;">:</td>
         <td style="width:75%; background-color: #eeecec; ">' . $this->info_devis['reference'] . '</td>
         </tr>
-                <tr>
-        <td style="width:25%; color:#A1A0A0;"><strong>Date Devis
-                </strong></td>
-        <td style="width:5%;">:</td>
-        <td style="width:75%; background-color: #eeecec; ">' . $this->info_devis['date_devis'] . '</td>
-        </tr>
-        
-               ' . $per . '
+        ' . $per . '
         </table>';
         }
 		'</table>';
@@ -220,7 +215,9 @@ class MYPDF extends TCPDF {
         $this->Ln();
 		$this->writeHTMLCell(100, 0, 99, null, $detail_client, 0, 0, 0, true, 'L', true);
 		if($this->info_facture['projet'] != null){
+
 			$projet = '<span style="width: 65%;font-family: sans-serif;ont-weight: bold;font-size: 10pt;"><strong>'.$this->info_facture['projet'].'</strong></span>';
+
 
 		    $height = $this->getLastH();
 		    $this->SetTopMargin($height + $this->GetY() + 5);
