@@ -104,7 +104,7 @@ class MYPDF extends TCPDF {
 		<td style="width: 65%; background-color: #eeecec;">'.$this->info_proforma['nif'].'</td>
 		</tr>';
 	    }
-	    
+	    $ref_client = $this->info_proforma['reference_client'] != null ? $this->info_proforma['reference_client'] : null;
 		$tel = $this->info_proforma['tel'] != null ? 'Tél.'.$this->info_proforma['tel'] : null;
 	    $email = $this->info_proforma['email'] != null ? 'Email.'.$this->info_proforma['email'] : null;
 	    $adresse = $this->info_proforma['adresse'] != null ? $this->info_proforma['adresse'] : null;
@@ -115,6 +115,11 @@ class MYPDF extends TCPDF {
 		<tbody>
 		<tr style="background-color:#495375; font-size:14; font-weight:bold; color:#fff;">
 		<td colspan="3"><strong>Informations client</strong></td>
+		</tr>
+		<tr>
+		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Réf Client</td>
+		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
+		<td style="width: 65%; background-color: #eeecec;"><strong>'.$ref_client.'</strong></td>
 		</tr>
 		<tr>
 		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Dénomination</td>
@@ -145,7 +150,9 @@ class MYPDF extends TCPDF {
 		</table>';
 		$this->writeHTMLCell(100, 0, 99, 40, $detail_client, 0, 0, 0, true, 'L', true);
 		
-		
+		$this->Ln();
+		$this->setCellPadding(0);
+		$height = $this->getLastH() + $this->GetY();
 		//Info général
 		$tableau_head = $this->Table_head;
 		$this->writeHTMLCell('', '', 15, 83, $tableau_head, 0, 0, 0, true, 'L', true);
@@ -185,6 +192,20 @@ class MYPDF extends TCPDF {
 		// Page number
 		$this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
 	}
+	public function writeHTMLTogether($html, $ln=true, $fill=false, $reseth=false, $cell=false, $align='') {
+    $cp =  $this->getPage();
+    $this->startTransaction();
+
+    $this->writeHTML($html, $ln, $fill, $reseth, $cell, $align);
+
+    if ($this->getPage() > $cp) {
+         $this->rollbackTransaction(true);//true is very important
+         $this->AddPage();
+         $this->writeHTML($html, $ln, $fill, $reseth, $cell, $align);           
+    } else {            
+         $this->commitTransaction();            
+    }
+    }
 
 	
 }
@@ -275,11 +296,12 @@ $block_sum = '<div></div>
     </td>
 </tr>
 </table>';
-$html .= $block_sum;
+
 
 
 
 $pdf->writeHTML($html, true, false, true, false, '');
+$pdf->writeHTMLTogether($block_sum, $ln=true, $fill=false, $reseth=false, $cell=false, $align='');
 // Close and output PDF document
 // This method has several options, check the source code documentation for more information.
 $pdf->Output($file_export,'F');

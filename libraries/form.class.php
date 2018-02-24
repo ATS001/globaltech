@@ -36,6 +36,7 @@ class Mform
     var $form_subbloc          = null;
     var $verif_value           = null;
     
+    
 
 
 	/**
@@ -91,6 +92,7 @@ class Mform
                 {
                     $this->form_bloc .= '<div class="step-content pos-rel">';
                 }
+
                 $this->form_bloc .= '<fieldset>';
                 $this->form_bloc .= $this->form_fields;
                 $this->form_bloc .= '</fieldset>';
@@ -454,6 +456,24 @@ $this->gallery_bloc_js .= "$('#btn_add_pic').on('click', '.this_add_pic', functi
 
 
 
+}
+/**
+ * [alert_message Show message Alert ]
+ * @param  [string] $message [Message to be show]
+ * @param  [string] $style   [Style of tag 
+ * (red => danger, orange => warning , green => success, blue => info)]
+ * @return [type]          [description]
+ */
+public function alert_message($message, $style)
+{
+  $message = '<div class="alert alert-'.$style.'">
+                      <button type="button" class="close" data-dismiss="alert">
+                        <i class="ace-icon fa fa-times"></i>
+                      </button>
+                      '.$message.'
+                      <br>
+                    </div>';
+  $this->form_fields .= $message;                  
 }
 
 public function input_date($input_desc, $input_id, $input_class, $input_value = null, $js_array = null, $hard_code = null)
