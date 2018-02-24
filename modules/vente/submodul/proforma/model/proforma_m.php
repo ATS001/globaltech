@@ -147,7 +147,7 @@ class Mproforma
         INNER JOIN services
         ON (users_sys.service = services.id)
         INNER JOIN commerciaux
-        ON (devis.id_commercial=commerciaux.id)
+        ON (proforma.id_commercial=commerciaux.id)
  
         WHERE proforma.id = ".$this->id_proforma;
         if(!$db->Query($req_sql))
