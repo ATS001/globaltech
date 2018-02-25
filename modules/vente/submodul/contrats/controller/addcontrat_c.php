@@ -141,11 +141,11 @@ if (MInit::form_verif('addcontrat', false)) {
         $output_an = [];
         $total_jr = 0;
 
-        //$t = new DateTime($date_d);
-        //$time1 = date_sub($t, date_interval_create_from_date_string('1 days'));
-        //$time2 = date_format($time1, 'd-m-Y');
+        $t = new DateTime($date_d);
+        $time1 = date_sub($t, date_interval_create_from_date_string('1 days'));
+        $time2 = date_format($time1, 'd-m-Y');
 
-        $time = strtotime($date_d);
+        $time = strtotime($time2);
         $last = date('d-m-Y', strtotime($date_f));
         $res = 0;
 
@@ -166,7 +166,7 @@ if (MInit::form_verif('addcontrat', false)) {
                 'time' => $time,
 
             ];
-            
+
             $time = strtotime('+1 year', $time);
 
 
