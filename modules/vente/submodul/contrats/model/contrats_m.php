@@ -501,6 +501,57 @@ class Mcontrat {
         }
     }
 
+public function save_echeance($debut,$fin,$perdiode_fact)
+{
+    $table_echeance = $this->table_echeance;
+
+     if ($this->error == true) {
+  global $db;
+
+
+            $values["date_debut"] = MySQL::SQLValue(date('Y-m-d', strtotime($debut)));
+            $values["date_fin"] = MySQL::SQLValue(date('Y-m-d', strtotime($fin)));
+            $values["date_echeance"] = MySQL::SQLValue(date('Y-m-d', strtotime($perdiode_fact)));
+            $values["creusr"] = MySQL::SQLValue(session::get('userid'));
+            $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+
+
+
+            //Check if Insert Query been executed (False / True)
+            if (!$result = $db->InsertRow($table_echeance, $values)) {
+                //False => Set $this->log and $this->error = false
+                $this->log .= $db->Error();
+                $this->error = false;
+                $this->log .= '</br>Enregistrement BD non réussie';
+            } else {
+
+                $this->last_id = $result;
+
+                //Check $this->error = true return Green message and Bol true
+                if ($this->error == true) {
+                    $this->log = '</br>Enregistrement réussie: <b>';
+                    if (!Mlog::log_exec($this->table_echeance, $this->last_id, 'Insertion échéance contrat abonnement', 'Insert')) {
+                        $this->log .= '</br>Un problème de log ';
+                    }
+
+                    //Check $this->error = false return Red message and Bol false   
+                } else {
+                    $this->log .= '</br>Enregistrement réussie: <b>';
+                    $this->log .= '</br>Un problème d\'Enregistrement ';
+                }
+            }
+            //Else Error false  
+        } else {
+            $this->log .= '</br>Enregistrement non réussie';
+        }
+        //check if last error is true then return true else rturn false.
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     //Insert new echeance
     public function save_new_echeance($tkn_frm) {
         $table_echeance = $this->table_echeance;
