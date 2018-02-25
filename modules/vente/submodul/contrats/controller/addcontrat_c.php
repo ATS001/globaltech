@@ -168,7 +168,7 @@ if (MInit::form_verif('addcontrat', false)) {
             ];
 
             $time = strtotime('+1 year', $time);
-
+            
 
         } while (date('Y-m-d', strtotime($month)) < date('Y-m-d', strtotime($last)));
 
