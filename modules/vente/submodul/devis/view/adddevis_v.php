@@ -177,10 +177,10 @@ $(document).ready(function() {
     	var remise_valeur = parseFloat($('#valeur_remise').val());
     	var tva           = $('#tva').val();
         var commission    = parseFloat($("#commission").val());
-
-    	var dix_per_ht    = parseFloat((totalht * 10) / 100);
-    	if((type_remise == 'P' && remise_valeur > 10) || (type_remise == 'M' && remise_valeur > dix_per_ht)){
-    		ajax_loadmessage('La remise exeptionnel ne doit pas dépasser 10% du Total des articles','nok');
+        var percentage_othorized = 100;
+    	var dix_per_ht    = parseFloat((totalht * percentage_othorized) / 100);
+    	if((type_remise == 'P' && remise_valeur > percentage_othorized) || (type_remise == 'M' && remise_valeur > dix_per_ht)){
+    		ajax_loadmessage('La remise exeptionnel ne doit pas dépasser '+percentage_othorized+'% du Total des articles','nok');
     		$('#totalht').val(totalht);
     		$('#valeur_remise').val(0);
     		calculat_devis(totalht, null, 0, tva, 'totalht', 'totaltva', 'totalttc',commission,'total_commission');

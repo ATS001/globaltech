@@ -25,7 +25,7 @@ $array_column = array(
         'width'  => '10',
     ),
   array(
-        'column' => 'd_devis.prix_unitaire',
+        'column' => 'd_devis.prix_ht',
         'type'   => 'int',
         'alias'  => 'prix_unitaire',
         'width'  => '10',

@@ -220,7 +220,7 @@ class Mfacture {
 
         $table_encaissement = $this->table_encaissement;
 
-        $sql = "SELECT id,ref,designation,
+        $sql = "SELECT id,reference,designation,
                 REPLACE(FORMAT(montant,0),',',' ') as montant,
                 DATE_FORMAT(date_encaissement,'%d-%m-%Y') as date_encaissement                        
                 FROM 
@@ -1209,7 +1209,7 @@ if($this->facture_info['base_fact'] == 'C')
         
 
         $colms = null;
-        $colms .= " d_factures.id item, ";
+        $colms .= " d_factures.order item, ";
         $colms .= " d_factures.ref_produit, ";
         $colms .= " d_factures.designation, ";
         $colms .= " CONCAT(REPLACE(FORMAT(d_factures.qte,0),',',' '),' ',IFNULL(d_factures.qte_designation,' ')) as qte, ";
@@ -1234,15 +1234,14 @@ if($this->facture_info['base_fact'] == 'C')
         $id_devis = $this->id_devis['id'];
         global $db;
         $req_sql = "SELECT
-        devis.reference
-        , devis.date_devis
-        , devis.valeur_remise
+        devis.*
+        , DATE_FORMAT(devis.date_devis,'%d-%m-%Y') as date_devis
         ,  REPLACE(FORMAT(devis.totalht,0),',',' ') as totalht
         ,  REPLACE(FORMAT(devis.totaltva,0),',',' ') as totaltva
         ,  REPLACE(FORMAT(devis.totalttc,0),',',' ') as totalttc
-        , devis.claus_comercial
-        , devis.projet
-        , clients.reference
+        ,  REPLACE(FORMAT(devis.total_remise,0),',',' ') as total_remise
+        ,  REPLACE(FORMAT(devis.total_remise + devis.totalht ,0),',',' ') as total_no_remise
+        , clients.reference as reference_client
         , clients.denomination
         , clients.adresse
         , CONCAT('BP', clients.bp) as bp
@@ -1251,19 +1250,32 @@ if($this->facture_info['base_fact'] == 'C')
         , clients.email
         , ref_pays.pays
         , ref_ville.ville
+        , ref_devise.abreviation as devise
+        , services.service as comercial
+        , CONCAT(commerciaux.nom,' ',commerciaux.prenom) as commercial
         FROM
         devis
         INNER JOIN clients 
         ON (devis.id_client = clients.id)
-        INNER JOIN ref_pays 
+        LEFT JOIN ref_pays 
         ON (clients.id_pays = ref_pays.id)
-        INNER JOIN ref_ville
+        LEFT JOIN ref_ville
+        ON (clients.id_ville = ref_ville.id)
+        INNER JOIN ref_devise
+        ON (clients.id_devise = ref_devise.id)
+        INNER JOIN users_sys
+        ON (devis.creusr = users_sys.id)
+        INNER JOIN services
+        ON (users_sys.service = services.id)
+        INNER JOIN commerciaux
+        ON (devis.id_commercial=commerciaux.id)
         WHERE devis.id = " . $id_devis;
+        
         if (!$db->Query($req_sql)) {
             $this->error = false;
             $this->log .= $db->Error();
         } else {
-            if ($db->RowCount() == 0) {
+            if (!$db->RowCount()) {
                 $this->error = false;
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
@@ -1281,21 +1293,22 @@ if($this->facture_info['base_fact'] == 'C')
         var_dump($this->facture_info['idcontrat']);
         var_dump($this->facture_info['base_fact']);
     */    global $db;
-        //var_dump($this->facture_info['idcontrat']); 
+        
         $contrat = $this->facture_info['idcontrat'] == NULL ? 'NULL' : $this->facture_info['idcontrat'];
         $devis   = $this->facture_info['iddevis']   == NULL ? 'NULL' : $this->facture_info['iddevis'];
-
-        $sql = "SELECT id as id FROM 
-    		devis WHERE  devis.id =if( '" . $this->facture_info['base_fact']. "'='C', $contrat, $devis)";
+//var_dump($contrat); 
+//var_dump($devis); 
+        $sql = "SELECT IF('" . $this->facture_info['base_fact']. "'='C', (SELECT iddevis FROM contrats WHERE id=$contrat), id ) as id FROM 
+    		devis WHERE  devis.id =if( '" . $this->facture_info['base_fact']. "'='C', (SELECT iddevis FROM contrats WHERE id=$contrat), $devis)";
                //$sql = "SELECT id as id FROM devis WHERE  devis.id =". $this->facture_info['iddevis'];
-      // var_dump($sql);
+      //var_dump($sql);
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
         } else {
             if ($db->RowCount() == 0) {
                 $this->error = false;
-                $this->log .= 'Aucun enregistrement trouvé ';
+                $this->log .= 'Aucun enregistrement trouvé !!!!!!!rkeg ';
             } else {
                 $this->id_devis = $db->RowArray();
                 //var_dump($this->id_devis);
@@ -1343,9 +1356,15 @@ if($this->facture_info['base_fact'] == 'C')
 
         global $db;
 
-        $sql = "SELECT id,reference,iddevis, DATE_FORMAT(date_effet,'%d-%m-%Y') as date_effet,
-                DATE_FORMAT(date_fin,'%d-%m-%Y') as date_fin,
-                DATE_FORMAT(date_contrat,'%d-%m-%Y') as date_contrat,commentaire FROM contrats WHERE id = " . $idcontrat;
+        $sql = "SELECT contrats.id,contrats.reference,contrats.iddevis, DATE_FORMAT(contrats.date_effet,'%d-%m-%Y') AS date_effet,
+            DATE_FORMAT(contrats.date_fin,'%d-%m-%Y') AS date_fin,
+            DATE_FORMAT(contrats.date_contrat,'%d-%m-%Y') AS date_contrat,contrats.commentaire,
+            devis.`reference` as ref_devis, DATE_FORMAT(devis.`date_devis`,'%d-%m-%Y') as date_devis
+            FROM contrats ,devis 
+            WHERE contrats.iddevis=devis.`id` AND contrats.id = " . $idcontrat;
+
+ 
+
 
         if (!$db->Query($sql)) {
             $this->error = false;

@@ -249,7 +249,7 @@ class Mdevis
         $colms .= " $table.ref_produit, ";
         $colms .= " $table.designation, ";
         $colms .= " REPLACE(FORMAT($table.qte,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.prix_unitaire,0),',',' '), ";
+        $colms .= " REPLACE(FORMAT($table.prix_ht,0),',',' '), ";
         //$colms .= " $table.type_remise, ";
         $colms .= " $table.remise_valeur, ";
         
@@ -1097,7 +1097,7 @@ class Mdevis
             $this->get_devis();
             //If TYPE Devis is VNT then Generate Facture
             
-            if($this->g('type_devis') == 'VNT')
+            if($this->g('type_devis') == 'VNT' && $reponse == 'valid')
             {
                 $this->generate_facture($this->id_devis);
             }
