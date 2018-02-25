@@ -320,6 +320,7 @@ class Mcontrat {
             } else {
 
                 $this->last_id = $result;
+                $this->id_contrat=$last_id;
                 //If Attached required Save file to Archive
 
                 $this->save_file('pj', 'Justifications du contrat' . $this->reference, 'Document');
