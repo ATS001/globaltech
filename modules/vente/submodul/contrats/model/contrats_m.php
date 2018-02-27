@@ -320,7 +320,7 @@ class Mcontrat {
             } else {
 
                 $this->last_id = $result;
-                $this->id_contrat=$last_id;
+                $this->id_contrat=$this->last_id;
                 //If Attached required Save file to Archive
 
                 $this->save_file('pj', 'Justifications du contrat' . $this->reference, 'Document');
@@ -543,6 +543,7 @@ public function save_echeance($debut,$fin,$perdiode_fact)
             $values["date_debut"] = MySQL::SQLValue(date('Y-m-d', strtotime($debut)));
             $values["date_fin"] = MySQL::SQLValue(date('Y-m-d', strtotime($fin)));
             $values["date_echeance"] = MySQL::SQLValue(date('Y-m-d', strtotime($perdiode_fact)));
+            $values["idcontrat"] = MySQL::SQLValue($this->id_contrat);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
