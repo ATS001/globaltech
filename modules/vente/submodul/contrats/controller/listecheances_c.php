@@ -80,7 +80,7 @@ $list_data_table->task = 'echeances';
 //Set File name for export
 $list_data_table->file_name = 'echeances';
 //Set Title of report
-$list_data_table->title_report = 'Liste echeances';
+$list_data_table->title_report = 'Liste des échéances';
 
 //var_dump($list_data_table->debug=true);
 

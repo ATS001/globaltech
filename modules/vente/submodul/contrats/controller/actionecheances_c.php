@@ -7,15 +7,14 @@ if(!defined('_MEXEC'))die();
 //Controller
 
 echo '<ul class="dropdown-menu dropdown-menu-right">';
-$contrats = new Mcontrats();
-$contrats->id_contrats = Mreq::tp('id');
-$contrats->get_contrats();
+$contrat = new Mcontrat();
+$contrat->id_echeance_contrat= Mreq::tp('id');
+$contrat->get_echeance_contrat();
 
 
 
 $action = new TableTools();
-$action->line_data = $contrats->contrats_info;
-$action->action_line_table('contrats', 'contrats', $contrats->contrats_info['creusr'], 'deletecontrats');
-
+$action->line_data = $contrat->echeance_contrat_info;
+$action->action_line_table('echeances', 'echeances_contrat',$contrat->contrat_info['creusr'],'');
 
 echo '</ul>';
