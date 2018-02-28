@@ -419,6 +419,7 @@ class Mcontrat {
             } else {
 
                 $this->last_id = $this->id_contrat;
+                
                 //If Attached required Save file to Archive
                 $this->save_file('pj', 'Justifications du contrat' . $this->_data['reference'], 'Document');
 
@@ -535,7 +536,7 @@ class Mcontrat {
 public function save_echeance($debut,$fin,$perdiode_fact)
 {
     $table_echeance = $this->table_echeance;
-
+    
      if ($this->error == true) {
   global $db;
 
@@ -552,6 +553,7 @@ public function save_echeance($debut,$fin,$perdiode_fact)
             //Check if Insert Query been executed (False / True)
             if (!$result = $db->InsertRow($table_echeance, $values)) {
                 //False => Set $this->log and $this->error = false
+                var_dump($db);
                 $this->log .= $db->Error();
                 $this->error = false;
                 $this->log .= '</br>Enregistrement BD non réussie';
@@ -561,6 +563,7 @@ public function save_echeance($debut,$fin,$perdiode_fact)
 
                 //Check $this->error = true return Green message and Bol true
                 if ($this->error == true) {
+                     var_dump($db);
                     $this->log = '</br>Enregistrement réussie: <b>';
                     if (!Mlog::log_exec($this->table_echeance, $this->last_id, 'Insertion échéance contrat abonnement', 'Insert')) {
                         $this->log .= '</br>Un problème de log ';
@@ -886,7 +889,42 @@ public function save_echeance($debut,$fin,$perdiode_fact)
             return true;
         }
     }
+    
+    public function delete_echeances() {
+        global $db;
+        $id_contrat = $this->id_contrat;
+        $this->get_contrat();
+        //Format where clause
+        $where['idcontrat'] = MySQL::SQLValue($id_contrat);
+        //check if id on where clause isset
+        if ($where['idcontrat'] == null) {
+            $this->error = false;
+            $this->log .= '</br>L\' id est vide';
+        }
+        //execute Delete Query
+        if (!$db->DeleteRows('echeances_contrat', $where)) {
+            //var_dump($db);
+            $this->log .= $db->Error() . '  ' . $db->BuildSQLDelete('echeances_contrat', $where);
+            $this->error = false;
+            $this->log .= '</br>Suppression non réussie';
+        } else {
+ //var_dump($db);
+            $this->error = true;
+            $this->log .= '</br>Suppression réussie ';
 
+            if (!Mlog::log_exec($this->table, $this->id_contrat, 'Suppression échéance abonnement', 'Delete')) {
+                $this->log .= '</br>Un problème de log ';
+            }
+        }
+        //check if last error is true then return true else rturn false.
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    
     /**
      * [check_exist Check if one entrie already exist on table]
      * @param  [string] $column  [Column of field on main table]
