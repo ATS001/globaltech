@@ -61,19 +61,25 @@
        
         $new_encaissement = new Mfacture($posted_data);
         $new_encaissement->exige_pj=false;
-        
+
+        $fact = new Mfacture();
+        $fact->id_facture = Mreq::tp('idfacture');
+        $fact->get_commerciale_devis();
+//var_dump(Mreq::tp('idfacture'));
+//var_dump($fact->compte_commercial_info['commission']);
         //execute Insert returne false if error
         if ($new_encaissement->save_new_encaissement()) {
+            if($fact->compte_commercial_info['commission']!=0){
+                if($new_encaissement->credit_compte_commerciale()){
 
-            if($new_encaissement->credit_compte_commerciale()){
+                echo("1#" . $new_encaissement->log);
 
-            echo("1#" . $new_encaissement->log);
+                }else {
 
-            }else {
+                exit("0#" . $new_encaissement->log); //Red message
 
-            exit("0#" . $new_encaissement->log); //Red message
-
-            }  
+                } 
+            } 
         }else {
 
             echo("0#" . $new_encaissement->log);
