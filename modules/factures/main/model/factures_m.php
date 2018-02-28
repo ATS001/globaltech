@@ -446,6 +446,7 @@ class Mfacture {
             $values["id_commerciale"] = $this->compte_commercial_info["commercial"];
             $values["objet"] = MySQL::SQLValue($objet);
             $values["id_facture"] = $this->id_facture;
+            $values["id_encaissement"]=$this->last_id;
             $values["credit"] = (($this->_data["montant"] * $this->compte_commercial_info["commission"]) / 100) ;
             $values["Type"] = MySQL::SQLValue($this->compte_commercial_info["type_commission"]);
             $values["etat"] = 1;
