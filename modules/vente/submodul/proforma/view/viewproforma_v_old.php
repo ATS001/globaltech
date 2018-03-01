@@ -81,9 +81,11 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_proforma->Get_detail_proforma_sho
 
 							
 							<div class="widget-toolbar hidden-480">
-
+								<?php if($info_proforma->g('proforma_pdf') == null){?>
 								<a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'proforma') ?>" data="<?php echo MInit::crypt_tp('id', $info_proforma->id_proforma) ?>">
-									
+									<?php }else{?>
+									<a href="#" class="iframe_pdf" rel="<?php echo $info_proforma->g('proforma_pdf').'&'.MInit::crypt_tp('doc',$info_proforma->g('proforma_pdf')) ?>" >
+										<?php }?>
 										<i class="ace-icon fa fa-print"></i>
 									</a>
 
