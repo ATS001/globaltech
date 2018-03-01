@@ -192,7 +192,7 @@ class Mproforma
         $colms .= " $table.ref_produit, ";
         $colms .= " $table.designation, ";
         $colms .= " REPLACE(FORMAT($table.qte,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.prix_unitaire,0),',',' '), ";
+        $colms .= " REPLACE(FORMAT($table.prix_ht,0),',',' '), ";
         //$colms .= " $table.type_remise, ";
         //$colms .= " CONCAT(REPLACE(FORMAT($table.remise_valeur,0),',',' '),'%'), ";
         
@@ -229,7 +229,7 @@ class Mproforma
         $colms .= " $table.ref_produit, ";
         $colms .= " $table.designation, ";
         $colms .= " REPLACE(FORMAT($table.qte,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.prix_unitaire,0),',',' '), ";
+        $colms .= " REPLACE(FORMAT($table.prix_ht,0),',',' '), ";
         //$colms .= " $table.type_remise, ";
         $colms .= " $table.remise_valeur, ";
         
