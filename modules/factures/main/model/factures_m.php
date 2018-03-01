@@ -47,7 +47,10 @@ class Mfacture {
     public function get_commerciale_devis() {
         global $db;
 
-        $sql = "SELECT  c.id AS commercial, d.`commission`AS commission, f.reference as ref_facture, 'Automatique' as type_commission FROM devis d,factures f,commerciaux c WHERE  d.`id`=f.iddevis AND d.`id_commercial`=c.id AND f.id = " . $this->id_facture;
+        $sql = "SELECT  c.id AS commercial, IFNULL(d.commission,0) AS commission, f.reference AS ref_facture, 'Automatique' AS type_commission 
+            FROM devis d,factures f,commerciaux c WHERE  
+            d.id= IF(f.`base_fact`='C',(SELECT ctr.iddevis FROM contrats ctr WHERE ctr.id=f.`idcontrat`),f.`iddevis`)
+            AND d.`id_commercial`=c.id AND f.id  = " . $this->id_facture;
 
         if (!$db->Query($sql)) {
             $this->error = false;

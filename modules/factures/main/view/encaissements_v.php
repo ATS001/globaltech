@@ -74,9 +74,9 @@
                             <th>
                                 Date
                             </th>
-                            <th>
+                           <!--  <th>
                                 Etat
-                            </th>
+                            </th> -->
                             <th>
                                 #
                             </th>
@@ -93,7 +93,7 @@
 
             var table = $('#encs_grid').DataTable({
                 bProcessing: true,
-                notifcol: 5,
+                /*notifcol: 5,*/
                 serverSide: true,
 
                 ajax_url: "encaissements",
@@ -105,8 +105,8 @@
                     {"sClass": "left", "sWidth": "20%"},
                      {"sClass": "left", "sWidth": "15%"},
                       {"sClass": "left", "sWidth": "15%"},
-                      {"sClass": "left", "sWidth": "10%"},
-                    {"sClass": "left", "sWidth": "10%"},
+                      {"sClass": "left", "sWidth": "15%"},
+                    //{"sClass": "left", "sWidth": "10%"},
                     {"sClass": "center", "sWidth": "5%"}, // Action
                 ],
             });
