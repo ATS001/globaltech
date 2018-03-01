@@ -84,6 +84,7 @@ if (MInit::form_verif('editencaissement', false)) {//If form is Posted do Action
                     exit("0#" . $new_encaissement->log); //Red message
                 }
         } 
+        echo("1#" . $new_encaissement->log);
         
     }else {
         exit("0#" . $new_encaissement->log); //Red message
