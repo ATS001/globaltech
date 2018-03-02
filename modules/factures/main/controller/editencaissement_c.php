@@ -69,13 +69,23 @@ if (MInit::form_verif('editencaissement', false)) {//If form is Posted do Action
     $new_encaissement = new Mfacture($posted_data);
 
     $new_encaissement->id_encaissement = $posted_data['id'];
+
+    $fact = new Mfacture();
+    $fact->id_facture = Mreq::tp('idfacture');
+    $fact->get_commerciale_devis();
+//var_dump(Mreq::tp('idfacture'));
+//var_dump($fact->compte_commercial_info['commission']);
     //execute Edit returne false if error
     if ($new_encaissement->edit_encaissement()) {
-        if ($new_encaissement->edit_compte_commercial()) {
-        exit("1#" . $new_encaissement->log); //Green message
-        } else {
-        exit("0#" . $new_encaissement->log); //Red message
-        }
+        if($fact->compte_commercial_info['commission']!=0){
+                if ($new_encaissement->edit_compte_commercial()) {
+                    exit("1#" . $new_encaissement->log); //Green message
+                } else {
+                    exit("0#" . $new_encaissement->log); //Red message
+                }
+        } 
+        echo("1#" . $new_encaissement->log);
+        
     }else {
         exit("0#" . $new_encaissement->log); //Red message
     }  
