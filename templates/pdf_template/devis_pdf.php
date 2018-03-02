@@ -176,7 +176,7 @@ class MYPDF extends TCPDF {
 
 	// Page footer
 	public function Footer() {
-		if($this->qr == true){
+		//if($this->qr == true){
 // QRCODE,H : QR-CODE Best error correction
 			$qr_content = $this->info_devis['reference']."\n".$this->info_devis['denomination']."\n".$this->info_devis['date_devis'];
 			$style = array(
@@ -187,11 +187,11 @@ class MYPDF extends TCPDF {
 	            'bgcolor' => false, //array(255,255,255)
 	            'module_width' => 1, // width of a single module in points
 	            'module_height' => 1 // height of a single module in points
-            );
+           );
 	//write2DBarcode($code, $type, $x='', $y='', $w='', $h='', $style='', $align='', $distort=false)
 	        $this->SetY(-30);
 			$this->write2DBarcode($qr_content, 'QRCODE,H', 15, '', 25, 25, $style, 'N');
-		}
+		//}
 		$ste_c = new MSte_info();
         $this->SetY(-30);
 		$ste = $ste_c->get_ste_info_report_footer(1);

@@ -29,7 +29,7 @@ if(!MInit::crypt_tp('id', null, 'D') or !$facture->get_facture())
 
 if(!$facture->Get_detail_facture_pdf())
 {
-    exit("0#".$facture->log);
+	exit("0#".$facture->log);
 
 }
 global $db;
@@ -77,30 +77,30 @@ class MYPDF extends TCPDF {
     var $periode = null;
     var $qr = false;
     var $no_tabl_head = true; 
-    //Page header
-    public function Header() {
-        //writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
+	//Page header
+	public function Header() {
+		//writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
+		
+		// Logo
+		$image_file = MPATH_IMG.MCfg::get('logo');
+		$this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
+		$this->Image($image_file, 22, 6, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
+		
+		//Get info ste from DB
+		$ste_c = new MSte_info();
         
-        // Logo
-        $image_file = MPATH_IMG.MCfg::get('logo');
-        $this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
-        $this->Image($image_file, 22, 6, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
-        
-        //Get info ste from DB
-        $ste_c = new MSte_info();
-        
-        $ste = $ste_c->get_ste_info_report_head(1);
-        $this->writeHTMLCell(0, 0, '', 30, $ste , '', 0, 0, true, 'L', true);
-        $this->SetTextColor(0, 50, 127);
-        // Set font
-        $this->SetFont('helvetica', 'B', 22);
-        //Ste
-        
-        // Title
-        $titre_doc = '<h1 style="letter-spacing: 2px;color;#495375;font-size: 20pt;">FACTURE</h1>';
-        $this->writeHTMLCell(0, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true);
-        $this->SetTextColor(0, 0, 0);
-        $this->SetFont('helvetica', '', 9);
+		$ste = $ste_c->get_ste_info_report_head(1);
+		$this->writeHTMLCell(0, 0, '', 30, $ste , '', 0, 0, true, 'L', true);
+		$this->SetTextColor(0, 50, 127);
+		// Set font
+		$this->SetFont('helvetica', 'B', 22);
+		//Ste
+		
+		// Title
+		$titre_doc = '<h1 style="letter-spacing: 2px;color;#495375;font-size: 20pt;">FACTURE</h1>';
+		$this->writeHTMLCell(0, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true);
+		$this->SetTextColor(0, 0, 0);
+		$this->SetFont('helvetica', '', 9);
         $per = NULL;
         if ($this->info_facture['periode'] != NULL) {
             $per = ' <tr>
@@ -110,17 +110,17 @@ class MYPDF extends TCPDF {
         <td style="width:75%; background-color: #eeecec; ">' . $this->info_facture['periode'] . '</td>
         </tr>';
         }
-        $detail_facture = '<table cellspacing="3" cellpadding="2" border="0">
-        <tr>
-        <td style="width:25%; color:#A1A0A0;"><strong>Réf Facture</strong></td>
-        <td style="width:5%;">:</td>
-        <td style="width:75%; background-color: #eeecec;">'.$this->info_facture['reference'].'</td>
-        </tr> 
-        <tr>
-        <td style="width:25%; color:#A1A0A0;"><strong>Date</strong></td>
-        <td style="width:5%;">:</td>
-        <td style="width:75%; background-color: #eeecec; ">'.$this->info_facture['date_facture'].'</td>
-        </tr>';
+		$detail_facture = '<table cellspacing="3" cellpadding="2" border="0">
+		<tr>
+		<td style="width:25%; color:#A1A0A0;"><strong>Réf Facture</strong></td>
+		<td style="width:5%;">:</td>
+		<td style="width:75%; background-color: #eeecec;">'.$this->info_facture['reference'].'</td>
+		</tr> 
+		<tr>
+		<td style="width:25%; color:#A1A0A0;"><strong>Date</strong></td>
+		<td style="width:5%;">:</td>
+		<td style="width:75%; background-color: #eeecec; ">'.$this->info_facture['date_facture'].'</td>
+		</tr>';
         if( $this->info_facture['base_fact'] == 'C')
         {
 
@@ -153,122 +153,122 @@ class MYPDF extends TCPDF {
         ' . $per . '
         </table>';
         }
-        '</table>';
+		'</table>';
 
-        $this->writeHTMLCell(0, 0, 105, 23, $detail_facture, '', 0, 0, true, 'L', true);
-        //Info Client
-        $nif = null;
-        if($this->info_devis['nif'] != null)
-        {
-            $nif = '<tr>
-        <td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">NIF</td>
-        <td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
-        <td style="width: 65%; background-color: #eeecec;">'.$this->info_devis['nif'].'</td>
-        </tr>';
-        }
-        $ref_client = $this->info_devis['reference_client'] != null ? $this->info_devis['reference_client'] : null;
-        $tel = $this->info_devis['tel'] != null ? 'Tél.'.$this->info_devis['tel'] : null;
-        $email = $this->info_devis['email'] != null ? 'Email.'.$this->info_devis['email'] : null;
-        $adresse = $this->info_devis['adresse'] != null ? $this->info_devis['adresse'] : null;
-        $bp = $this->info_devis['bp'] != null ? 'BP. '.$this->info_devis['bp'] : null;
-        $ville = $this->info_devis['ville'] != null ? $this->info_devis['ville'] : null;
-        $pays = $this->info_devis['pays'] != null ? $this->info_devis['pays'] : null;
-        $detail_client = '<table cellspacing="3" cellpadding="2" border="0">
-        <tbody>
-        <tr style="background-color:#495375; font-size:14; font-weight:bold; color:#fff;">
-        <td colspan="3"><strong>Informations client</strong></td>
-        </tr>
-        <tr>
-        <td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Réf Client</td>
-        <td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
-        <td style="width: 65%; background-color: #eeecec;"><strong>'.$ref_client.'</strong></td>
-        </tr>
-        <tr>
-        <td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Dénomination</td>
-        <td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
-        <td style="width: 65%; background-color: #eeecec;"><strong>'.$this->info_devis['denomination'].'</strong></td>
-        </tr>';
+		$this->writeHTMLCell(0, 0, 105, 23, $detail_facture, '', 0, 0, true, 'L', true);
+	    //Info Client
+	    $nif = null;
+	    if($this->info_devis['nif'] != null)
+	    {
+	    	$nif = '<tr>
+		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">NIF</td>
+		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
+		<td style="width: 65%; background-color: #eeecec;">'.$this->info_devis['nif'].'</td>
+		</tr>';
+	    }
+	    $ref_client = $this->info_devis['reference_client'] != null ? $this->info_devis['reference_client'] : null;
+	    $tel = $this->info_devis['tel'] != null ? 'Tél.'.$this->info_devis['tel'] : null;
+	    $email = $this->info_devis['email'] != null ? 'Email.'.$this->info_devis['email'] : null;
+	    $adresse = $this->info_devis['adresse'] != null ? $this->info_devis['adresse'] : null;
+	    $bp = $this->info_devis['bp'] != null ? 'BP. '.$this->info_devis['bp'] : null;
+	    $ville = $this->info_devis['ville'] != null ? $this->info_devis['ville'] : null;
+	    $pays = $this->info_devis['pays'] != null ? $this->info_devis['pays'] : null;
+		$detail_client = '<table cellspacing="3" cellpadding="2" border="0">
+		<tbody>
+		<tr style="background-color:#495375; font-size:14; font-weight:bold; color:#fff;">
+		<td colspan="3"><strong>Informations client</strong></td>
+		</tr>
+		<tr>
+		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Réf Client</td>
+		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
+		<td style="width: 65%; background-color: #eeecec;"><strong>'.$ref_client.'</strong></td>
+		</tr>
+		<tr>
+		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Dénomination</td>
+		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
+		<td style="width: 65%; background-color: #eeecec;"><strong>'.$this->info_devis['denomination'].'</strong></td>
+		</tr>';
 
-        if($adresse.$bp.$ville.$pays != null){
-            $detail_client .= '<tr>
-        <td align="right" style="width: 30%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Adresse</td>
-        <td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
-        <td style="width: 65%; background-color: #eeecec;">'.$adresse.' '.$bp.' '.$ville.' '.$pays.'</td>
-        </tr>';
+		if($adresse.$bp.$ville.$pays != null){
+			$detail_client .= '<tr>
+	    <td align="right" style="width: 30%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Adresse</td>
+		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
+		<td style="width: 65%; background-color: #eeecec;">'.$adresse.' '.$bp.' '.$ville.' '.$pays.'</td>
+		</tr>';
 
-        }
-            
-        
-        
-        if($tel != null && $email != null){
-            $detail_client .= '<tr>
-        <td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Contact</td>
-        <td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
-        <td style="width: 65%; background-color: #eeecec;">'.$tel.' '.$email.'</td>
-        </tr>
-        ';
-        }
-        $detail_client .= $nif.'
-        </tbody>
-        </table>';
-        //$marge_after_detail_client = 
+		}
+			
+		
+		
+		if($tel != null && $email != null){
+			$detail_client .= '<tr>
+		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Contact</td>
+		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
+		<td style="width: 65%; background-color: #eeecec;">'.$tel.' '.$email.'</td>
+		</tr>
+		';
+		}
+		$detail_client .= $nif.'
+		</tbody>
+		</table>';
+		//$marge_after_detail_client = 
         $this->Ln();
-        $this->writeHTMLCell(100, 0, 99, null, $detail_client, 0, 0, 0, true, 'L', true);
-        if($this->info_facture['projet'] != null){
+		$this->writeHTMLCell(100, 0, 99, null, $detail_client, 0, 0, 0, true, 'L', true);
+		if($this->info_facture['projet'] != null){
 
-            $projet = '<span style="width: 65%;font-family: sans-serif;ont-weight: bold;font-size: 10pt;"><strong>'.$this->info_facture['projet'].'</strong></span>';
+			$projet = '<span style="width: 65%;font-family: sans-serif;ont-weight: bold;font-size: 10pt;"><strong>'.$this->info_facture['projet'].'</strong></span>';
 
 
-            $height = $this->getLastH();
-            $this->SetTopMargin($height + $this->GetY() + 5);
-            //writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
-            $this->setCellPadding(1);
-            $this->writeHTMLCell(183, '', 15.6, '', $projet, 1, 0, 0, true, 'L', true);
-        }
-        //$this->Ln();
-        $this->setCellPadding(0);
-        $height = $this->getLastH() + $this->GetY();
-        //$this->SetTopMargin(10 + $this->GetY());
-        //Info général
-        $tableau_head = $this->Table_head;
-        if($this->no_tabl_head){
-            $this->writeHTMLCell('', '', 15, $height, $tableau_head, 0, 0, 0, true, 'L', true);
-            $height = $this->getLastH();
+		    $height = $this->getLastH();
+		    $this->SetTopMargin($height + $this->GetY() + 5);
+		    //writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
+		    $this->setCellPadding(1);
+		    $this->writeHTMLCell(183, '', 15.6, '', $projet, 1, 0, 0, true, 'L', true);
+		}
+		//$this->Ln();
+		$this->setCellPadding(0);
+		$height = $this->getLastH() + $this->GetY();
+		//$this->SetTopMargin(10 + $this->GetY());
+		//Info général
+		$tableau_head = $this->Table_head;
+		if($this->no_tabl_head){
+			$this->writeHTMLCell('', '', 15, $height, $tableau_head, 0, 0, 0, true, 'L', true);
+		    $height = $this->getLastH();
             $this->SetTopMargin($height + $this->GetY());
-        }
-        
-    }
+		}
+		
+	}
 
-    // Page footer
-    public function Footer() {
-        if($this->qr == true){
+	// Page footer
+	public function Footer() {
+		//if($this->qr == true){
 // QRCODE,H : QR-CODE Best error correction
-            $qr_content = $this->info_facture['reference']."\n".$this->info_facture['denomination']."\n".$this->info_facture['date_devis'];
-            $style = array(
-                'border' => 1,
-                'vpadding' => 'auto',
-                'hpadding' => 'auto',
-                'fgcolor' => array(0,0,0),
-                'bgcolor' => false, //array(260,255,255)
-                'module_width' => 1, // width of a single module in points
-                'module_height' => 1 // height of a single module in points
+			$qr_content = $this->info_facture['reference']."\n".$this->info_devis['denomination']."\n".$this->info_facture['date_facture'];
+			$style = array(
+				'border' => 1,
+				'vpadding' => 'auto',
+				'hpadding' => 'auto',
+				'fgcolor' => array(0,0,0),
+	            'bgcolor' => false, //array(260,255,255)
+	            'module_width' => 1, // width of a single module in points
+	            'module_height' => 1 // height of a single module in points
             );
-    //write2DBarcode($code, $type, $x='', $y='', $w='', $h='', $style='', $align='', $distort=false)
-            $this->SetY(-30);
-            $this->write2DBarcode($qr_content, 'QRCODE,H', 15, '', 25, 25, $style, 'N');
-        }
-        $ste_c = new MSte_info();
+	//write2DBarcode($code, $type, $x='', $y='', $w='', $h='', $style='', $align='', $distort=false)
+	        $this->SetY(-30);
+			$this->write2DBarcode($qr_content, 'QRCODE,H', 15, '', 25, 25, $style, 'N');
+		//}
+		$ste_c = new MSte_info();
         $this->SetY(-30);
-        $ste = $ste_c->get_ste_info_report_footer(1);
-        $this->writeHTMLCell(0, 0, '', '', $ste , '', 0, 0, true, 'C', true);
-        // Position at 15 mm from bottom
-        $this->SetY(-15);
-        // Set font
-        $this->SetFont('helvetica', 'I', 8);
-        // Page number
-        $this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
-    }
-    public function writeHTMLTogether($html, $ln=true, $fill=false, $reseth=false, $cell=false, $align='') {
+		$ste = $ste_c->get_ste_info_report_footer(1);
+		$this->writeHTMLCell(0, 0, '', '', $ste , '', 0, 0, true, 'C', true);
+		// Position at 15 mm from bottom
+		$this->SetY(-15);
+		// Set font
+		$this->SetFont('helvetica', 'I', 8);
+		// Page number
+		$this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
+	}
+	public function writeHTMLTogether($html, $ln=true, $fill=false, $reseth=false, $cell=false, $align='') {
     $cp =  $this->getPage();
     $this->startTransaction();
 
@@ -283,7 +283,7 @@ class MYPDF extends TCPDF {
     }
     }
 
-    
+	
 }
 
 
@@ -404,15 +404,15 @@ $block_sum = '<div></div>
 p {
     line-height: 0.6;
     .row0
-                {
-                    background-color: #eaebed;
-                    border:1pt solid black;
-                }
-                .row1{
-                    border:1px solid black;
-                }
-                .alignRight { text-align: right; }
-                .center{ text-align: center; }
+				{
+					background-color: #eaebed;
+					border:1pt solid black;
+				}
+				.row1{
+					border:1px solid black;
+				}
+				.alignRight { text-align: right; }
+				.center{ text-align: center; }
 }
 
 </style>
@@ -486,12 +486,12 @@ $pdf->writeHTML($html, true, false, true, false, '');
 //No space for Sum Blok then AddPage
 if($y > 190)
 {
-    $pdf->no_tabl_head = false;
-    $pdf->AddPage();
-    $pdf->writeHTML($block_sum, true, false, true, false, '');
+	$pdf->no_tabl_head = false;
+	$pdf->AddPage();
+	$pdf->writeHTML($block_sum, true, false, true, false, '');
 
 }else{
-    $pdf->writeHTML($block_sum, true, false, true, false, '');
+	$pdf->writeHTML($block_sum, true, false, true, false, '');
 }*/
 $pdf->writeHTMLTogether($block_sum, $ln=true, $fill=false, $reseth=false, $cell=false, $align='');
 /*$block_sum1 = 'Y: '.$y;
