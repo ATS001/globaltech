@@ -148,7 +148,6 @@ if (MInit::form_verif('addcontrat', false)) {
         $total_jr = 0;
         $day = date('d',strtotime($date_d));
         
-        
         if ($day == '01') {
            // var_dump('1');
 
@@ -160,10 +159,13 @@ if (MInit::form_verif('addcontrat', false)) {
      
         do {
 
-            $time2 = date('Y-m-t', strtotime($time));
-            $time = date('Y-m-d', strtotime($time . "+ 1 Year"));
-
+          
+            $time = date('Y-m-d', strtotime($time . "+1 year"));
+            $time2 = date('Y-m-t', strtotime($time ."-1 month"));
+            
+                        
             $month = date('d-m-Y', strtotime($time2));
+            
             $test = date('m', strtotime($time2));
             $mon = date('m', strtotime($time2));
             $total = date('t', strtotime($time2));
@@ -171,7 +173,7 @@ if (MInit::form_verif('addcontrat', false)) {
             $annee = date('L', strtotime($time2));
             
             $waw=date('d-m-Y',$datt);
-
+           
             $output[] = [
                 'month' => $month,
                 'total' => $total,
@@ -181,8 +183,8 @@ if (MInit::form_verif('addcontrat', false)) {
                 'time' => $time2,
 
             ];
-            $datt = strtotime('+1 Year', $datt);
-                        
+            $datt = strtotime('+1 year', $datt);
+                         
            $tab_echeance['debut']= date('d-m-Y', strtotime($waw));
            $tab_echeance['fin']=date('d-m-Y', strtotime($month));
            
@@ -739,7 +741,7 @@ $waw=date('d-m-Y',$datt);
     }
 
     if ($new_contrat->save_new_contrat()) {
-        var_dump($tab);
+        //var_dump($tab);
         foreach ($tab as  $value) {
               $new_contrat->save_echeance($value['debut'],$value['fin'],$value['periode_fact']);
           }
