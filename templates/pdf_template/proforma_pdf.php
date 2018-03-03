@@ -290,7 +290,7 @@ $block_sum = '<div></div>
 </tr>
 
 <tr>
-    <td colspan="2" align="right" style="font: underline; padding-right: 200px;">
+    <td colspan="2" align="right" style="font: underline; width: 550px; padding-right: 200px;">
         <br><br><br><br>
         <strong>'.$signature.'</strong>
     </td>
