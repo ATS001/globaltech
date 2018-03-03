@@ -13,6 +13,7 @@ class Mcontrat {
     var $log = NULL; //Log of all opération.
     var $error = true; //Error bol changed when an error is occured
     var $id_contrat; // Contrat ID append when request
+    //var $id_echeance_contrat; // Contrat ID append when request
     var $id_devis; // Devis ID
     var $reference = null; // Reference contrat
     var $token; //user for recovery function
@@ -20,6 +21,7 @@ class Mcontrat {
     var $devis_info; //Array stock devis info by id contrat
     var $echeance_contrat_info; //Array stock all echeance contrat info
     var $type_echeance_contrat_info; //Array stock all type echeance contrat info
+    var $facture_info; //Array stock all facture info
 
     public function __construct($properties = array()) {
         $this->_data = $properties;
@@ -107,6 +109,35 @@ class Mcontrat {
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
                 $this->echeance_contrat_info = $db->RowArray();
+                $this->error = true;
+            }
+        }
+
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    //Get all info facture  from database 
+    public function get_facture() {
+        global $db;
+
+        $sql = "SELECT f.* FROM factures f WHERE f.id_echeance = " . $this->id_echeance_contrat;
+
+        if (!$db->Query($sql)) {
+
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+
+                $this->facture_info = $db->RowArray();
                 $this->error = true;
             }
         }
@@ -238,6 +269,31 @@ class Mcontrat {
 
         return $tableau;
     }
+
+    //Generate a facture for an echeance
+    public function generate_facture($id_echeance)
+    {
+        global $db;
+        $tva = Msetting::get_set('tva');
+        $sql_req = " CALL manuel_generate_facturation($tva,$id_echeance)";
+
+        if (!$db->Query($sql_req)) {
+            $this->error = false;
+            $this->log .= '</br>Erreur génération de facture'.$sql_req;
+            return false;
+        } else {
+
+            $this->log .= '</br>Facture générée';
+            $this->error = true;
+        }
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
 
     //Generate contrat reference
     private function Generate_contrat_reference() {
