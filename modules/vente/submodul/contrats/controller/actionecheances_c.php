@@ -15,6 +15,6 @@ $contrat->get_echeance_contrat();
 
 $action = new TableTools();
 $action->line_data = $contrat->echeance_contrat_info;
-$action->action_line_table('echeances', 'echeances_contrat',$contrat->contrat_info['creusr'],'');
+$action->action_line_table('echeances', 'echeances_contrat',$contrat->echeance_contrat_info['creusr'],'');
 
 echo '</ul>';
