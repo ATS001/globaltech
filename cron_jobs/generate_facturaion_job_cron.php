@@ -4,7 +4,7 @@ $tva = Msetting::get_set('tva');
 
 global $db;
 
-$sql = "call generate_fact($tva);";
+$sql = "call generate_facturation($tva);";
 
 
 if($db->Query($sql))
