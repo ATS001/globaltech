@@ -73,7 +73,7 @@
                 
                 if($new_encaissement->credit_compte_commerciale()){
 
-                echo("1#" . $new_encaissement->log);
+                exit("1#" . $new_encaissement->log); //Green message
 
                 }else {
 
@@ -81,10 +81,10 @@
 
                 } 
             } 
-            echo("1#" . $new_encaissement->log);
+            exit("1#" . $new_encaissement->log); //Green message
         }else {
 
-            echo("0#" . $new_encaissement->log);
+            exit("0#" . $new_encaissement->log); //Red message
         }
 
     } else {
