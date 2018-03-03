@@ -26,39 +26,18 @@ if(!MInit::crypt_tp('id', null, 'D') or !$facture->get_facture())
 $type_echeance = new Mfacture();
 $type_echeance->id_facture = Mreq::tp('id');
 $type_echeance->get_facture_type_echeance();
-//var_dump($facture->facture_info['base_fact']);
-//var_dump($type_echeance->type_echeance_info['type_echeance']);
+
 
 //Execute Pdf render
 
+if(!$facture->Get_detail_facture_pdf())
+{
+	exit("0#".$facture->log);
 
-
-//var_dump('test');
+}
 global $db;
-if($facture->facture_info['base_fact']=='C'){
 
-	if ($type_echeance->type_echeance_info['type_echeance'] == 'Autres'){
-			if(!$facture->Get_detail_facture_autres_pdf())
-			{
-				exit("0#".$facture->log);
-
-			}
-
-		$headers = array(
-            '#'           => '5[#]C',
-            'Réf'         => '17[#]C',
-            'Description' => '73[#]', 
-
-        );
-	}else
-	{
-		if(!$facture->Get_detail_facture_pdf())
-		{
-			exit("0#".$facture->log);
-
-		}
-
-		$headers = array(
+$headers = array(
             '#'           => '5[#]C',
             'Réf'         => '17[#]C',
             'Description' => '43[#]', 
@@ -66,30 +45,8 @@ if($facture->facture_info['base_fact']=='C'){
             'P.Unitaire'  => '10[#]R',
             'P.Total'     => '15[#]R',
 
-        );
-	}
+);
 
-
-}
-else{
-		if(!$facture->Get_detail_facture_pdf())
-		{
-			exit("0#".$facture->log);
-
-		}
-
-		$headers = array(
-            '#'           => '5[#]C',
-            'Réf'         => '17[#]C',
-            'Description' => '43[#]', 
-            'Qte'         => '5[#]C', 
-            'P.Unitaire'  => '10[#]R',
-            'P.Total'     => '15[#]R',
-
-        );
-}
-
-//var_dump('test2');
 $headers2 = array(
     'ID'          => '5[#]C',
     'Désignation' => '30[#]L',
