@@ -144,9 +144,9 @@ $form->select_table('Devise', 'id_devise', 6, 'ref_devise', 'id', 'devise' , 'de
 	$selected='1',$multi=NULL, $where='etat=1', NULL);
 
 // taxe
-$taxe_array[]  = array('Oui' , 'O' );
-$taxe_array[]  = array('Non' , 'N' );
-$form->radio('TVA', 'tva', 'O', $taxe_array, '');
+$taxe_array[]  = array('Oui' , 'OUI' );
+$taxe_array[]  = array('Non' , 'NON' );
+$form->radio('TVA', 'tva', 'OUI', $taxe_array, '');
 
 
 //pj_id
