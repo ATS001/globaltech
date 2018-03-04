@@ -42,7 +42,7 @@
 							Date Contrat
 						</th>
 						<th>
-							Projet
+							Client
 						</th>
 						<th>
 							Date début
@@ -75,14 +75,14 @@ $(document).ready(function() {
 		
                 aoColumns: [
                     {"sClass": "center","sWidth":"5%"}, 
-                    {"sClass": "left","sWidth":"10%"},//
-                    {"sClass": "left","sWidth":"10%"},
+                    {"sClass": "left","sWidth":"11%"},//
+                    {"sClass": "left","sWidth":"13%"},
                     {"sClass": "center","sWidth":"7%"},
-                    {"sClass": "left","sWidth":"19%"},
+                    {"sClass": "left","sWidth":"17%"},
                     {"sClass": "center","sWidth":"7%"},
                     {"sClass": "center","sWidth":"7%"},
                     {"sClass": "center","sWidth":"10%"},
-                    {"sClass": "center","sWidth":"5%"},
+                    {"sClass": "center","sWidth":"4%"},
                     ],
     });
      /*var column = table.column(0);
