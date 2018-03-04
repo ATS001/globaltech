@@ -57,7 +57,7 @@ $form->input('Dénomination', 'denomination', 'text' ,6 , null, $denomination_ar
 //Catégorie client
 $cat_array[]  = array('required', 'true', 'Sélectionnez la catégorie' );
 $form->select_table('Catégorie Client', 'id_categorie', 6, 'categorie_client', 'id', 'categorie_client' , 'categorie_client', $indx = '------' ,
-	$selected=NULL,$multi=NULL, $where='etat=1', $cat_array);
+	$selected=2,$multi=NULL, $where='etat=1', $cat_array);
 
 //Raison social
 //$rsocial_array[]  = array('required', 'true', 'Insérer Raison Social ' );
@@ -144,9 +144,9 @@ $form->select_table('Devise', 'id_devise', 6, 'ref_devise', 'id', 'devise' , 'de
 	$selected='1',$multi=NULL, $where='etat=1', NULL);
 
 // taxe
-$taxe_array[]  = array('Oui' , 'OUI' );
-$taxe_array[]  = array('Non' , 'NON' );
-$form->radio('TVA', 'tva', 'OUI', $taxe_array, '');
+$taxe_array[]  = array('Oui' , 'Oui' );
+$taxe_array[]  = array('Non' , 'Non' );
+$form->radio('TVA', 'tva', 'Oui', $taxe_array, '');
 
 
 //pj_id
