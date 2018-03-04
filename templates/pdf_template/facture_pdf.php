@@ -89,9 +89,16 @@ else{
         );
 }
 
-//var_dump('test2');
+/*//var_dump('test2');
 $headers2 = array(
     'ID'          => '5[#]C',
+    'Désignation' => '30[#]L',
+    'Type'        => '15[#]C',
+    'Montant'     => '10[#]R',
+);*/
+
+//var_dump('test2');
+$headers2 = array(
     'Désignation' => '30[#]L',
     'Type'        => '15[#]C',
     'Montant'     => '10[#]R',
@@ -513,7 +520,7 @@ p {
 
 <tr>
     <td colspan="2" align="right" style="font: underline; width: 550px;  padding-right: 200px;">
-        <br><br>
+        <br><br><br><br><br>
         <strong>'.$signature.'</strong>
     </td>
 </tr>
