@@ -404,18 +404,6 @@ $pdf->Table_body2 = $tableau_body_complement;
 $html2 = $pdf->Table_body2;
 
 
-if ($pdf->info_complement != null) {
-
-    $pdf->writeHTMLCell('', '', 15, '', '<strong>Tableau des compléments</strong>', 0, 0, 0, true, 'L', true);
-    $height = $pdf->getY();
-    $pdf->SetY($height + 5);
-//$pdf->writeHTML('<strong>Tableau des compléments</strong>', true, false, true, false, '');
-    $pdf->writeHTMLCell('', '', 14, '', $tableau_head_complement, 0, 0, 0, true, 'L', true);
-    $height = $pdf->getY();
-    $pdf->SetY($height + 5);
-    $pdf->writeHTML($html2, true, false, true, false, '');
-}
-
 
 
 $obj = new nuts($pdf->info_facture['total_ttc'], $pdf->info_devis['devise']);
@@ -448,9 +436,13 @@ $titl_ht = $pdf->info_facture['total_tva'] == 0 ? 'Total à payer' : 'Total HT';
 //$signature = $pdf->info_proforma['comercial']; 
 
 $signature = 'La Direction'; 
-
-
-$block_sum = '<div></div>
+$table_complement = null;
+if ($pdf->info_complement != null)
+{
+	$table_complement =  '<strong>Tableau des compléments</strong><br>'.$tableau_head_complement.$html2;
+}
+$block_sum = $table_complement;
+$block_sum .= '<div></div>
 <style>
 p {
     line-height: 0.6;
