@@ -164,11 +164,14 @@ $form->step_start(3, 'Complément Informations');
 $form->select_table('Devise', 'id_devise', 6, 'ref_devise', 'id', 'devise' , 'devise', $indx = '*****' ,
 	$selected=$info_client->Shw('id_devise',1),$multi=NULL, $where='etat=1', NULL);
 
-
+//var_dump($info_client->Shw('tva',1));
 // taxe
-$taxe_array[]  = array('Oui' , 'O' );
-$taxe_array[]  = array('Non' , 'N' );
+$taxe_array[]  = array('Oui' , 'OUI' );
+$taxe_array[]  = array('Non' , 'NON' );
 $form->radio('TVA', 'tva', $info_client->Shw('tva',1), $taxe_array, '');
+
+
+
 
 //pj_id
 $form->input('Justifications du client', 'pj', 'file', 6, 'Justification_client.pdf', null);

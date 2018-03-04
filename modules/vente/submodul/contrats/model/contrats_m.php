@@ -609,7 +609,7 @@ public function save_echeance($debut,$fin,$perdiode_fact)
             //Check if Insert Query been executed (False / True)
             if (!$result = $db->InsertRow($table_echeance, $values)) {
                 //False => Set $this->log and $this->error = false
-                var_dump($db);
+                //var_dump($db);
                 $this->log .= $db->Error();
                 $this->error = false;
                 $this->log .= '</br>Enregistrement BD non réussie';
@@ -619,7 +619,7 @@ public function save_echeance($debut,$fin,$perdiode_fact)
 
                 //Check $this->error = true return Green message and Bol true
                 if ($this->error == true) {
-                     var_dump($db);
+                    // var_dump($db);
                     $this->log = '</br>Enregistrement réussie: <b>';
                     if (!Mlog::log_exec($this->table_echeance, $this->last_id, 'Insertion échéance contrat abonnement', 'Insert')) {
                         $this->log .= '</br>Un problème de log ';

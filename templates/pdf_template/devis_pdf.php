@@ -153,12 +153,12 @@ class MYPDF extends TCPDF {
 		//$marge_after_detail_client = 
 		$this->writeHTMLCell(100, 0, 99, 40, $detail_client, 0, 0, 0, true, 'L', true);
 		if($this->info_devis['projet'] != null){
-			$projet = '<span style="color:#C81414; padding:5px;">'.$this->info_devis['projet'].'</span>';
+			$projet = '<span style="width: 65%;font-family: sans-serif;ont-weight: bold;font-size: 10pt;"><strong>'.$this->info_devis['projet'].'</span>';
 		    $height = $this->getLastH();
 		    $this->SetTopMargin($height + $this->GetY() + 5);
 		    //writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
 		    $this->setCellPadding(1);
-		    $this->writeHTMLCell('', '', 16, '', $projet, 1, 0, 0, true, 'L', true);
+		    $this->writeHTMLCell(183, '', 15.6, '', $projet, 1, 0, 0, true, 'L', true);
 		}
 		$this->Ln();
 		$this->setCellPadding(0);

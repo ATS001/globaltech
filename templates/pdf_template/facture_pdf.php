@@ -274,6 +274,7 @@ class MYPDF extends TCPDF {
 		    $this->writeHTMLCell(183, '', 15.6, '', $projet, 1, 0, 0, true, 'L', true);
 		}
 		//$this->Ln();
+		//Comment fati 04/03 pour probleme tableau complement
 		$this->setCellPadding(0);
 		$height = $this->getLastH() + $this->GetY();
 		//$this->SetTopMargin(10 + $this->GetY());
@@ -283,6 +284,8 @@ class MYPDF extends TCPDF {
 			$this->writeHTMLCell('', '', 15, $height, $tableau_head, 0, 0, 0, true, 'L', true);
 		    $height = $this->getLastH();
             $this->SetTopMargin($height + $this->GetY());
+        //end comment fati
+
 		}
 		
 	}
