@@ -2,7 +2,7 @@
     <?php
    
     defined('_MEXEC') or die;
-    if (MInit::form_verif('addencaissement', false)) {
+    if (MInit::form_verif('addencaissements', false)) {
 
         $posted_data = array(       
             'designation' => Mreq::tp('designation'),
@@ -88,5 +88,5 @@
         }
 
     } else {
-        view::load_view('addencaissement');
+        view::load_view('addencaissements');
     }

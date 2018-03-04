@@ -149,13 +149,78 @@ if (MInit::form_verif('editcontrat', false)) {
 
 
 
+   
     if ( /*($diff->format('%a') % 365) <>0 and*/
         $posted_data['idtype_echeance'] == $contratA->Shw_type('id', 1)) {
+        
+        $tab=array();
+        
         $date_d = $posted_data['date_effet'];
         $date_f = $posted_data['date_fin'];
         $output = [];
         $output_an = [];
         $total_jr = 0;
+        $day = date('d',strtotime($date_d));
+        
+        if ($day == '01') {
+           // var_dump('1');
+
+        $last = date('d-m-Y', strtotime($date_f));
+        $res = 0;
+        $time = date($date_d);
+
+        $datt=strtotime($date_d);
+     
+        do {
+
+          
+            $time = date('Y-m-d', strtotime($time . "+1 year"));
+            $time2 = date('Y-m-t', strtotime($time ."-1 month"));
+            
+                        
+            $month = date('d-m-Y', strtotime($time2));
+            
+            $test = date('m', strtotime($time2));
+            $mon = date('m', strtotime($time2));
+            $total = date('t', strtotime($time2));
+            $total_jr += $total;
+            $annee = date('L', strtotime($time2));
+            
+            $waw=date('d-m-Y',$datt);
+           
+            $output[] = [
+                'month' => $month,
+                'total' => $total,
+                'tot_jr' => $total_jr,
+                'annee' => $annee,
+                'mo' => $mon,
+                'time' => $time2,
+
+            ];
+            $datt = strtotime('+1 year', $datt);
+                         
+           $tab_echeance['debut']= date('d-m-Y', strtotime($waw));
+           $tab_echeance['fin']=date('d-m-Y', strtotime($month));
+           
+           if($posted_data['periode_fact'] == 'D')
+           {
+            $tab_echeance['periode_fact']=date('d-m-Y', strtotime($waw));
+        }
+           else{
+            if($posted_data['periode_fact'] == 'F')
+            $tab_echeance['periode_fact']=date('d-m-Y', strtotime($month));           
+           }
+
+           array_push($tab,$tab_echeance);  
+           
+            //var_dump('waw :' . date('d-m-Y', strtotime($waw)));
+            //var_dump('time :' . date('d-m-Y', strtotime($month)));
+
+
+        } while (date('Y-m-d', strtotime($month)) < date('Y-m-d', strtotime($last)));
+
+
+        }else{
 
         $t = new DateTime($date_d);
         $time1 = date_sub($t, date_interval_create_from_date_string('1 days'));
@@ -165,9 +230,9 @@ if (MInit::form_verif('editcontrat', false)) {
         $time = strtotime('+1 year', $time);
         $last = date('d-m-Y', strtotime($date_f));
         $res = 0;
-/*
+
         $dattt= new DateTime($date_d);
-        $datttt=date_format($dattt, 'd-m-Y');*/
+        $datttt=date_format($dattt, 'd-m-Y');
        
         $datt=strtotime($date_d);
 
@@ -212,14 +277,11 @@ $tab=array();
             $tab_echeance['periode_fact']=date('d-m-Y', strtotime($month));           
            }
 
-
            array_push($tab,$tab_echeance);
-
             
 
         } while (date('Y-m-d', strtotime($month)) < date('Y-m-d', strtotime($last)));
-        
-
+        }
         if (date('Y-m-d', strtotime($month)) <> date('Y-m-d', strtotime($last))) {
             $control_echeance_a = "<ul>Il faut choisir une période Annuelle, ou séléctionner le type d'échéance : Autres  !!!</ul>";
             $checker = 4;
@@ -232,7 +294,7 @@ $tab=array();
 
 //return 12 * $nbyear + $nbmonth;
     if ($posted_data['idtype_echeance'] == $contratM->Shw_type('id', 1)) {
-
+$tab=array();
 $date_d = $posted_data['date_effet'];
         $date_f = $posted_data['date_fin'];
         $output = [];
@@ -248,7 +310,7 @@ $date_d = $posted_data['date_effet'];
         $res = 0;
         $time = date($date_d);
 
-        
+        $datt=strtotime($date_d);
      
         do {
 
@@ -261,6 +323,8 @@ $date_d = $posted_data['date_effet'];
             $total = date('t', strtotime($time2));
             $total_jr += $total;
             $annee = date('L', strtotime($time2));
+            
+            $waw=date('d-m-Y',$datt);
 
             $output[] = [
                 'month' => $month,
@@ -271,9 +335,24 @@ $date_d = $posted_data['date_effet'];
                 'time' => $time2,
 
             ];
+            $datt = strtotime('+1 month', $datt);
+                        
+           $tab_echeance['debut']= date('d-m-Y', strtotime($waw));
+           $tab_echeance['fin']=date('d-m-Y', strtotime($month));
+           
+           if($posted_data['periode_fact'] == 'D')
+           {
+            $tab_echeance['periode_fact']=date('d-m-Y', strtotime($waw));
+        }
+           else{
+            if($posted_data['periode_fact'] == 'F')
+            $tab_echeance['periode_fact']=date('d-m-Y', strtotime($month));           
+           }
 
-
-            //var_dump('time :' . date('d-m-Y', strtotime($time)));
+           array_push($tab,$tab_echeance);  
+           
+            //var_dump('waw :' . date('d-m-Y', strtotime($waw)));
+            //var_dump('time :' . date('d-m-Y', strtotime($month)));
 
 
         } while (date('Y-m-d', strtotime($month)) < date('Y-m-d', strtotime($last)));
@@ -292,7 +371,7 @@ $date_d = $posted_data['date_effet'];
         $res = 0;
 
          $datt=strtotime($date_d);
-$tab=array();
+        $tab=array();
             do {
             $month = date('d-m-Y', $time);
             $mon = date('m', $time);
@@ -351,7 +430,7 @@ $tab=array();
 // FIN AYOUB
 
     if ($posted_data['idtype_echeance'] == $contratT->Shw_type('id', 1)) {
-        
+        $tab=array();
         $date_d = $posted_data['date_effet'];
         $date_f = $posted_data['date_fin'];
         $output = [];
@@ -367,7 +446,7 @@ $tab=array();
         $res = 0;
         $time = date($date_d);
 
-        
+        $datt=strtotime($date_d);
      
         do {
 
@@ -381,6 +460,8 @@ $tab=array();
             $total_jr += $total;
             $annee = date('L', strtotime($time2));
 
+            $waw=date('d-m-Y',$datt);
+            
             $output[] = [
                 'month' => $month,
                 'total' => $total,
@@ -390,6 +471,24 @@ $tab=array();
                 'time' => $time2,
 
             ];
+$datt = strtotime('+3 month', $datt);
+                        
+           $tab_echeance['debut']= date('d-m-Y', strtotime($waw));
+           $tab_echeance['fin']=date('d-m-Y', strtotime($month));
+           
+           if($posted_data['periode_fact'] == 'D')
+           {
+            $tab_echeance['periode_fact']=date('d-m-Y', strtotime($waw));
+        }
+           else{
+            if($posted_data['periode_fact'] == 'F')
+            $tab_echeance['periode_fact']=date('d-m-Y', strtotime($month));           
+           }
+
+           array_push($tab,$tab_echeance);  
+           
+            //var_dump('waw :' . date('d-m-Y', strtotime($waw)));
+            //var_dump('time :' . date('d-m-Y', strtotime($month)));
 
 
             //var_dump('time :' . date('d-m-Y', strtotime($time)));
@@ -473,6 +572,7 @@ $waw=date('d-m-Y',$datt);
     }
 
     if ($posted_data['idtype_echeance'] == $contratS->Shw_type('id', 1)) {
+        $tab=array();
         $date_d = $posted_data['date_effet'];
         $date_f = $posted_data['date_fin'];
         $output = [];
@@ -489,6 +589,8 @@ $waw=date('d-m-Y',$datt);
         $time = date($date_d);
 
     
+        $datt=strtotime($date_d);
+     
      
         do {
 
@@ -502,6 +604,8 @@ $waw=date('d-m-Y',$datt);
             $total_jr += $total;
             $annee = date('L', strtotime($time2));
 
+            $waw=date('d-m-Y',$datt);
+            
             $output[] = [
                 'month' => $month,
                 'total' => $total,
@@ -512,6 +616,21 @@ $waw=date('d-m-Y',$datt);
 
             ];
 
+            $datt = strtotime('+6 month', $datt);
+                        
+           $tab_echeance['debut']= date('d-m-Y', strtotime($waw));
+           $tab_echeance['fin']=date('d-m-Y', strtotime($month));
+           
+           if($posted_data['periode_fact'] == 'D')
+           {
+            $tab_echeance['periode_fact']=date('d-m-Y', strtotime($waw));
+        }
+           else{
+            if($posted_data['periode_fact'] == 'F')
+            $tab_echeance['periode_fact']=date('d-m-Y', strtotime($month));           
+           }
+
+           array_push($tab,$tab_echeance); 
 
             //var_dump('time :' . date('d-m-Y', strtotime($time)));
 
@@ -640,7 +759,7 @@ $waw=date('d-m-Y',$datt);
 
     //execute Insert returne false if error
     if ($contrat->edit_contrat()) {
-var_dump($tab);
+//var_dump($tab);
 $contrat->delete_echeances();
         foreach ($tab as  $value) {
               $contrat->save_echeance($value['debut'],$value['fin'],$value['periode_fact']);
