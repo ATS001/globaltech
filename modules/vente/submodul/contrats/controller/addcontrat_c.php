@@ -123,6 +123,7 @@ if (MInit::form_verif('addcontrat', false)) {
     $contratS->get_id_type_echeance('Simestrielle');
 
 
+
     /*var_dump( $diff->format('%y'));
     var_dump( $diff->format('%m'));
     var_dump( $diff->format('%a')); */
@@ -711,14 +712,14 @@ $waw=date('d-m-Y',$datt);
         $new_contrat1 = new Mcontrat($posted_data);
         $new_contrat1->get_total_devis($posted_data['iddevis']);
 
-        //var_dump($new_contrat1->Shw_type('totalttc',1));
+       // var_dump($new_contrat1->Shw_type('totalttc',1));
 
-        //var_dump($posted_data['tkn_frm']);
+        //var_dump($new_contrat2->Shw_type('montant_total', 1));
 
         $new_contrat2 = new Mcontrat($posted_data);
         $new_contrat2->get_total_echeances($posted_data['tkn_frm']);
-
         //var_dump($new_contrat2->Shw_type('montant_total',1));
+
         if ($new_contrat1->Shw_type('totalttc', 1) > $new_contrat2->Shw_type('montant_total', 1)) {
             $montant_echeance = "<ul>Le montant total du devis est supérieur au montant total des échéances, Il faut compléter le montant !!!</ul>";
             $checker = 8;
@@ -741,15 +742,23 @@ $waw=date('d-m-Y',$datt);
     }
 
     if ($new_contrat->save_new_contrat()) {
-        //var_dump($tab);
-        foreach ($tab as  $value) {
-              $new_contrat->save_echeance($value['debut'],$value['fin'],$value['periode_fact']);
-          }
-        echo("1#" . $new_contrat->log);
-    } else {
+        if ($posted_data['idtype_echeance'] != $new_contrat->Shw_type('id', 1)){
 
-        echo("0#" . $new_contrat->log);
+            //var_dump($tab);
+             foreach ($tab as  $value) {
+              $new_contrat->save_echeance($value['debut'],$value['fin'],$value['periode_fact']);
+             }
+             echo("1#" . $new_contrat->log);
+        } else {
+
+            echo("0#" . $new_contrat->log);
+        }
+            echo("1#" . $new_contrat->log);
+    }else {
+
+            echo("0#" . $new_contrat->log);
     }
+
 } else {
     view::load_view('addcontrat');
 }
