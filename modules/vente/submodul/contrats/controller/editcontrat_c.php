@@ -757,19 +757,25 @@ $waw=date('d-m-Y',$datt);
     }
 
 
-    //execute Insert returne false if error
+    //execute update returne false if error
     if ($contrat->edit_contrat()) {
-//var_dump($tab);
-$contrat->delete_echeances();
-        foreach ($tab as  $value) {
+        if ($posted_data['idtype_echeance'] != $contrat->Shw_type('id', 1)){
+            //var_dump($tab);
+            $contrat->delete_echeances();
+            foreach ($tab as  $value) {
               $contrat->save_echeance($value['debut'],$value['fin'],$value['periode_fact']);
-          }
-        echo("1#" . $contrat->log);
-    } else {
+            }
+            echo("1#" . $contrat->log);
+        } else {
 
-        echo("0#" . $contrat->log);
+            $contrat->update_echeances_autres($contrat->id_contrat,$posted_data['date_fin']);
+        }
+        echo("1#" . $contrat->log);
+    }else {
+
+            echo("0#" . $contrat->log);
     }
+
 } else {
     view::load_view('editcontrat');
 }
-?>
