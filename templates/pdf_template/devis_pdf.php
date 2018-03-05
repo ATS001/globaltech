@@ -399,7 +399,7 @@ $block_sum .= '
 <td colspan="2" align="right" style="font: underline; width: 600px;  padding-right: 200px;">
         <br>
         <span class="profile-picture">
-			<img width="150" height="150" class="editable img-responsive" alt="logo_global.png" id="avatar2" src="C:\wamp\www\globaltech\img\signature_ali.jpg" />
+			<img width="150" height="150" class="editable img-responsive" alt="logo_global.png" id="avatar2" src="c:\wamp\www\globaltech\img\signature_ali.jpg" />
 		</span>	
 
     </td>
