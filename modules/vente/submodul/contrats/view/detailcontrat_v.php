@@ -165,11 +165,15 @@ if(!$info_contrat->get_devis_info())
 							if ($info_contrat->contrat_info['type_echeance'] == "Autres"){
 							?>
 							<div>
-							<?php print $info_contrat->Gettable_echeance_contrat();?>
+							<?php print $info_contrat->Gettable_echeance_contrat_autres();?>
 
 								
 							</div>
-							<?php } ?>
+							<?php }else { ?> <div>
+							<?php print $info_contrat->Gettable_echeance_contrat();?>
+
+								
+							</div> <?php } ?>
 
 							<div class="hr hr8 hr-double hr-dotted"></div>
 
