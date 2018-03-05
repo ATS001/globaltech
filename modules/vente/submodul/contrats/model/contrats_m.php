@@ -483,9 +483,9 @@ class Mcontrat {
                     $this->log = '</br>Modification réussie: <b>' . $this->_data['reference'] . ' ID: ' . $this->last_id;
                     $this->save_temp_detail($this->_data['tkn_frm'], $this->id_contrat);
 
-                    if($values["idtype_echeance"]== 4){
+                    /*if($values["idtype_echeance"]== 4){
                     $this->update_echeances_autres($this->id_contrat,$values["date_fin"]);
-                    }
+                    }*/
 
 
                     if (!Mlog::log_exec($this->table, $this->id_contrat, 'Modification contrat abonnement', 'Update')) {
@@ -515,20 +515,26 @@ class Mcontrat {
         }
     }
 
-    public function update_echeances_autres($id_contrat, $date_fin) {
+    public function update_echeances_autres($id_contrat, $date_fin,$date_debut) {
 
         $date_f=date('Y-m-d', strtotime($date_fin));
+        $date_d=date('Y-m-d', strtotime($date_debut));
+        
 //var_dump($date_f);
 
         $table_echeance = $this->table_echeance;
         global $db;
-        $req_sql = "UPDATE  echeances_contrat ec, (SELECT IF((SELECT  DATE_ADD(ech.date_echeance, INTERVAL -1 DAY)
+        $req_sql = "UPDATE  echeances_contrat ec, (SELECT IF((SELECT  ech.date_echeance
+        FROM echeances_contrat ech WHERE e.id <> ech.id  AND ech.`idcontrat`=e.`idcontrat` AND ech.date_echeance < e.date_echeance ORDER BY ech.`date_echeance` LIMIT 1) IS NULL,
+        '$date_d', 
+        e.`date_echeance` )
+         AS du ,IF((SELECT  DATE_ADD(ech.date_echeance, INTERVAL -1 DAY)
         FROM echeances_contrat ech WHERE e.id <> ech.id  AND ech.`idcontrat`=e.`idcontrat` AND ech.date_echeance > e.date_echeance ORDER BY ech.`date_echeance` LIMIT 1) IS NULL,
         '$date_f',
         (SELECT  DATE_ADD(ech.date_echeance, INTERVAL -1 DAY) 
         FROM echeances_contrat ech WHERE e.id <> ech.id  AND ech.`idcontrat`=e.`idcontrat` AND ech.date_echeance > e.date_echeance ORDER BY ech.`date_echeance` LIMIT 1) 
         )AS au ,date_echeance, idcontrat, id  FROM echeances_contrat e)AS ech
-        SET ec.`date_fin`= ech.au
+        SET ec.`date_fin`= ech.au, ec.`date_debut`=ech.du
         WHERE  ech.`idcontrat`=ec.`idcontrat`  AND ec.`id`= ech.id 
         AND ec.`idcontrat`='$id_contrat'";
 

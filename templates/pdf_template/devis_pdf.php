@@ -382,9 +382,9 @@ p {
     </td>
 </tr>';
 //$pdf->lastPage(); 
+$block_sum .= '</table>';
 
-
-$d = new Mdevis();
+/*$d = new Mdevis();
 $d->id_devis = Mreq::tp('id');
 $d->get_devis();
 
@@ -407,7 +407,7 @@ $block_sum .= '
 </tr>
 </table>';
 }
-
+*/
 
 $pdf->writeHTML($html, true, false, true, false, '');
 /*$y = $pdf->GetY();
