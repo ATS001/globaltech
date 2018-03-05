@@ -525,8 +525,9 @@ p {
     </td>
 </tr>';
 //$pdf->lastPage(); 
+$block_sum .= '</table>';
 
-$f = new Mfacture();
+/*$f = new Mfacture();
 $f->id_facture = Mreq::tp('id');
 $f->get_facture();
 //var_dump($f->facture_info['etat']);
@@ -547,7 +548,7 @@ $block_sum .= '
     </td>
 </tr>
 </table>';
-}
+}*/
 
 
 $pdf->writeHTML($html, true, false, true, false, '');
