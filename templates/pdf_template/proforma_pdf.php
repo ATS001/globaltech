@@ -166,7 +166,7 @@ class MYPDF extends TCPDF {
 	// Page footer
 	public function Footer() {
 		$ste_c = new MSte_info();
-		if($this->qr == true){
+		//if($this->qr == true){
 // QRCODE,H : QR-CODE Best error correction
 			$qr_content = $this->info_proforma['reference']."\n".$this->info_proforma['denomination']."\n".$this->info_proforma['date_proforma'];
 			$style = array(
@@ -181,7 +181,7 @@ class MYPDF extends TCPDF {
 	//write2DBarcode($code, $type, $x='', $y='', $w='', $h='', $style='', $align='', $distort=false)
 	        $this->SetY(-30);
 			$this->write2DBarcode($qr_content, 'QRCODE,H', 15, '', 25, 25, $style, 'N');
-		}
+		//}
         $this->SetY(-30);
 		$ste = $ste_c->get_ste_info_report_footer(1);
 		$this->writeHTMLCell(0, 0, '', '', $ste , '', 0, 0, true, 'C', true);
