@@ -243,13 +243,15 @@ class Mcontrat {
         }
     }
 
-    public function Gettable_echeance_contrat() {
+    public function Gettable_echeance_contrat_autres() {
         global $db;
         $id_contrat = $this->id_contrat;
         $table = $this->table_echeance;
         $colms = null;
-        $colms .= " $table.order item, ";
-        $colms .= " $table.date_echeance, ";
+        //$colms .= " $table.order item, ";
+        $colms .= " DATE_FORMAT($table.date_echeance,'%d-%m-%Y') AS date_echeance, ";
+        $colms .= " DATE_FORMAT($table.date_debut,'%d-%m-%Y') AS date_debut, ";
+        $colms .= " DATE_FORMAT($table.date_fin,'%d-%m-%Y') AS date_fin ,";
         $colms .= " $table.montant, ";
         $colms .= " $table.commentaire ";
 
@@ -263,7 +265,48 @@ class Mcontrat {
         //$style = array('5[#]center', '25[#
         //$tableau = $db->GetMTable($headers, null, $style);
         //]center', '70[#]alignLeft');
-        $headers = array('Item' => '15[#]center', 'Date Echéance' => '25[#]center', 'Montant TTC' => '30[#]center', 'Commentaire' => '30[#]',);
+        $headers = array(//'Item' => '15[#]center',
+                         'Date Echéance' => '18[#]center',
+                         'Date Début' => '18[#]center',
+                         'Date Fin' => '18[#]center',
+                         'Montant TTC' => '20[#]center', 
+                         'Commentaire' => '30[#]',);
+        $tableau = $db->GetMTable($headers);
+       
+
+
+        return $tableau;
+    }
+    
+    public function Gettable_echeance_contrat() {
+        global $db;
+        $id_contrat = $this->id_contrat;
+        $table = $this->table_echeance;
+        $colms = null;
+        //$colms .= " $table.order item, ";
+        $colms .= " DATE_FORMAT($table.date_echeance,'%d-%m-%Y') AS date_echeance, ";
+         $colms .= " DATE_FORMAT($table.date_debut,'%d-%m-%Y') AS date_debut, ";
+        $colms .= " DATE_FORMAT($table.date_fin,'%d-%m-%Y') AS date_fin ";
+        //$colms .= " $table.montant, ";
+        //$colms .= " $table.commentaire ";
+
+        $req_sql = " SELECT $colms FROM $table WHERE idcontrat = $id_contrat ";
+        if (!$db->Query($req_sql)) {
+            $this->error = false;
+            $this->log .= $db->Error() . ' ' . $req_sql;
+            exit($this->log);
+        }
+
+        //$style = array('5[#]center', '25[#
+        //$tableau = $db->GetMTable($headers, null, $style);
+        //]center', '70[#]alignLeft');
+        $headers = array(//'Item' => '15[#]center', 
+                         'Date Echéance' => '25[#]center', 
+                         'Date Début' => '25[#]center',
+                         'Date Fin' => '25[#]center',
+                         //'Montant TTC' => '30[#]center', 
+                         //'Commentaire' => '30[#]',
+                            );
         $tableau = $db->GetMTable($headers);
 
 
@@ -1096,7 +1139,7 @@ public function save_echeance($debut,$fin,$perdiode_fact)
 
         $table = $this->table;
 
-        $sql = "SELECT $table.* , ref_type_echeance.type_echeance AS type_echeance "
+        $sql = "SELECT $table.* ,DATE_FORMAT($table.date_contrat,'%d-%m-%Y') AS date_contrat , DATE_FORMAT($table.date_effet,'%d-%m-%Y') AS date_effet ,DATE_FORMAT($table.date_fin,'%d-%m-%Y') AS date_fin , ref_type_echeance.type_echeance AS type_echeance "
                 . "FROM $table,ref_type_echeance "
                 . "WHERE  $table.idtype_echeance=ref_type_echeance.id AND $table.id = " . $this->id_contrat;
 
