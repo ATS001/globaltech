@@ -290,14 +290,34 @@ $block_sum = '<div></div>
 </tr>
 
 <tr>
-    <td colspan="2" align="right" style="font: underline; padding-right: 200px;">
-        <br><br><br><br>
+    <td colspan="2" align="right" style="font: underline; width: 550px; padding-right: 200px;">
+        <br><br><br><br><br>
         <strong>'.$signature.'</strong>
+    </td>
+</tr>';
+
+$p = new Mproforma();
+$p->id_proforma = Mreq::tp('id');
+$p->get_proforma();
+
+if($p->proforma_info['etat'] == 0){
+	//var_dump('ohhh 0');
+$block_sum .= '</table>';
+
+}else{
+	//var_dump(' 0');	
+$block_sum .= '
+<tr>
+<td colspan="2" align="right" style="font: underline; width: 600px;  padding-right: 200px;">
+        <br>
+        <span class="profile-picture">
+			<img width="150" height="150" class="editable img-responsive" alt="logo_global.png" id="avatar2" src="C:\wamp\www\globaltech\img\signature_ali.jpg" />
+		</span>	
+
     </td>
 </tr>
 </table>';
-
-
+}
 
 
 $pdf->writeHTML($html, true, false, true, false, '');

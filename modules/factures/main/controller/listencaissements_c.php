@@ -44,7 +44,7 @@ $array_column = array(
     ),
      array(
         'column' => 'encaissements.date_encaissement',
-        'type'   => '',
+        'type'   => 'date',
         'alias'  => 'date',
         'width'  => '15',
         'header' => 'Date',

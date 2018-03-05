@@ -2,7 +2,7 @@
     <?php
    
     defined('_MEXEC') or die;
-    if (MInit::form_verif('addencaissement', false)) {
+    if (MInit::form_verif('addencaissements', false)) {
 
         $posted_data = array(       
             'designation' => Mreq::tp('designation'),
@@ -73,7 +73,7 @@
                 
                 if($new_encaissement->credit_compte_commerciale()){
 
-                echo("1#" . $new_encaissement->log);
+                exit("1#" . $new_encaissement->log); //Green message
 
                 }else {
 
@@ -81,12 +81,12 @@
 
                 } 
             } 
-            echo("1#" . $new_encaissement->log);
+            exit("1#" . $new_encaissement->log); //Green message
         }else {
 
-            echo("0#" . $new_encaissement->log);
+            exit("0#" . $new_encaissement->log); //Red message
         }
 
     } else {
-        view::load_view('addencaissement');
+        view::load_view('addencaissements');
     }
