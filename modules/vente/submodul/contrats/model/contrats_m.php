@@ -388,11 +388,6 @@ class Mcontrat {
                     $this->log = '</br>Enregistrement réussie: <b>' . $this->reference . ' ID: ' . $this->last_id;
                     $this->save_temp_detail($this->_data['tkn_frm'], $this->last_id);
 
-                    if($values["idtype_echeance"]== 4){
-                    $this->update_echeances_autres($this->id_contrat,$values["date_fin"]);
-                    }
-
-
                     if (!Mlog::log_exec($this->table, $this->last_id, 'Insertion contrat abonnement', 'Insert')) {
                         $this->log .= '</br>Un problème de log ';
                     }
@@ -520,13 +515,16 @@ class Mcontrat {
         }
     }
 
-    private function update_echeances_autres($id_contrat,$date_f) {
+    public function update_echeances_autres($id_contrat, $date_fin) {
+
+        $date_f=date('Y-m-d', strtotime($date_fin));
+//var_dump($date_f);
 
         $table_echeance = $this->table_echeance;
         global $db;
         $req_sql = "UPDATE  echeances_contrat ec, (SELECT IF((SELECT  DATE_ADD(ech.date_echeance, INTERVAL -1 DAY)
         FROM echeances_contrat ech WHERE e.id <> ech.id  AND ech.`idcontrat`=e.`idcontrat` AND ech.date_echeance > e.date_echeance ORDER BY ech.`date_echeance` LIMIT 1) IS NULL,
-        $date_f,
+        '$date_f',
         (SELECT  DATE_ADD(ech.date_echeance, INTERVAL -1 DAY) 
         FROM echeances_contrat ech WHERE e.id <> ech.id  AND ech.`idcontrat`=e.`idcontrat` AND ech.date_echeance > e.date_echeance ORDER BY ech.`date_echeance` LIMIT 1) 
         )AS au ,date_echeance, idcontrat, id  FROM echeances_contrat e)AS ech
