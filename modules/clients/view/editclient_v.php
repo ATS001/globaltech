@@ -77,8 +77,9 @@ $form->input('Dénomination', 'denomination', 'text' ,6 , $info_client->Shw('den
 
 //Catégorie client
 $cat_array[]  = array('required', 'true', 'Sélectionnez la catégorie' );
-$form->select_table('Catégorie Client', 'id_categorie', 6, 'categorie_client', 'id', 'categorie_client' , 'categorie_client', $indx = '*****' ,
+$form->select_table('Catégorie Client', 'id_categorie', 6, 'categorie_client', 'id', 'categorie_client' , 'categorie_client', $indx = '------' ,
 	$selected=$info_client->Shw('id_categorie',1),$multi=NULL, $where='etat=1', $cat_array);
+
 
 //Raison social
 //$rsocial_array[]  = array('required', 'true', 'Insérer Raison Social ' );
@@ -164,11 +165,14 @@ $form->step_start(3, 'Complément Informations');
 $form->select_table('Devise', 'id_devise', 6, 'ref_devise', 'id', 'devise' , 'devise', $indx = '*****' ,
 	$selected=$info_client->Shw('id_devise',1),$multi=NULL, $where='etat=1', NULL);
 
-
+//var_dump($info_client->Shw('tva',1));
 // taxe
-$taxe_array[]  = array('Oui' , 'O' );
-$taxe_array[]  = array('Non' , 'N' );
+$taxe_array[]  = array('Oui' , 'Oui' );
+$taxe_array[]  = array('Non' , 'Non' );
 $form->radio('TVA', 'tva', $info_client->Shw('tva',1), $taxe_array, '');
+
+
+
 
 //pj_id
 $form->input('Justifications du client', 'pj', 'file', 6, 'Justification_client.pdf', null);

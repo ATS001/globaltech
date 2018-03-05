@@ -29,13 +29,14 @@ class Mclients {
 		: null
 		;
 	}
-		//Get all info categorie_client from database for edit form
+
+	//Get all info categorie_client from database for edit form
 
 	public function get_client()
 	{
 		global $db;
 
-		$sql = "SELECT  c.*,cat.categorie_client as categorie_client, p.pays as pays,v.ville as ville, d.devise as devise, (IF(c.tva='O','OUI','NON')) AS tva,c.tva as tva_brut FROM  clients c
+		$sql = "SELECT  c.*,cat.categorie_client as categorie_client, p.pays as pays,v.ville as ville, d.devise as devise, IF(c.tva='O','Oui','Non') AS tva,c.tva as tva_brut FROM  clients c
              LEFT JOIN categorie_client cat on c.id_categorie=cat.id 
              LEFT JOIN ref_pays p on c.id_pays=p.id 
              LEFT JOIN ref_ville v on c.id_ville=v.id
@@ -125,6 +126,7 @@ class Mclients {
       /*  //Generate reference
         $this->Generate_client_reference();*/
         global $db;
+
         //Generate reference
         if(!$reference = $db->Generate_reference($this->table, 'CLT'))
         {
@@ -149,15 +151,10 @@ class Mclients {
 
     	$this->check_non_exist('ref_pays','id', $this->_data['id_pays'], 'Pays');
 
-        if($this->_data['id_ville'] = '------')
+        if($this->_data['id_ville'] != NULL)
         {
-            null;
-            //var_dump('ville vide');
-        }    
-        else{
               $this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
         }
-
 
         $this->check_non_exist('ref_devise','id', $this->_data['id_devise'], 'Devise');
 
@@ -188,22 +185,37 @@ class Mclients {
    		$values["civilite"]      = MySQL::SQLValue($this->_data['civilite']);
    		$values["adresse"] 		 = MySQL::SQLValue($this->_data['adresse']);
     	$values["id_pays"]  	 = MySQL::SQLValue($this->_data['id_pays']);
-        if($this->_data['id_ville'] = '------')
+        $values["id_ville"]  = MySQL::SQLValue($this->_data['id_ville']);
+        /*
+        if($this->_data['id_ville'] == '------')
         {
             NULL;
         }    
         else{
             $values["id_ville"]  = MySQL::SQLValue($this->_data['id_ville']);
         }
+         * 
+         */
     	$values["tel"] 		 	 = MySQL::SQLValue($this->_data['tel']);
     	$values["fax"] 			 = MySQL::SQLValue($this->_data['fax']);
    		$values["bp"] 			 = MySQL::SQLValue($this->_data['bp']);
    		$values["email"]	     = MySQL::SQLValue($this->_data['email']);
    		$values["rib"]  		 = MySQL::SQLValue($this->_data['rib']);
     	$values["id_devise"]  	 = MySQL::SQLValue($this->_data['id_devise']);
-        $values["tva"]           = MySQL::SQLValue($this->_data['tva']);
+      if($this->_data['tva']=='Oui'){
+      
+      $values["tva"]           = MySQL::SQLValue('O');
+      
+      }else{
+
+      $values["tva"]           = MySQL::SQLValue('N');
+
+      }
+
     	$values["creusr"]      	 = MySQL::SQLValue(session::get('userid'));
     	$values["credat"]      	 = MySQL::SQLValue(date("Y-m-d H:i:s"));
+/*       var_dump($this->_data);
+       var_dump($values["tva"]);*/
 
     	//Check if Insert Query been executed (False / True)
 			if (!$result = $db->InsertRow($this->table, $values)){
@@ -344,12 +356,10 @@ class Mclients {
 
         $this->check_non_exist('ref_pays','id', $this->_data['id_pays'], 'Pays');
 
-        if($this->_data['id_ville'] = '------')
+      
+
+        if($this->_data['id_ville'] != NULL)
         {
-            null;
-            //var_dump('ville vide');
-        }    
-        else{
               $this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
         }
 
@@ -383,20 +393,23 @@ class Mclients {
    		$values["civilite"]      = MySQL::SQLValue($this->_data['civilite']);
    		$values["adresse"] 		 = MySQL::SQLValue($this->_data['adresse']);
     	$values["id_pays"]  	 = MySQL::SQLValue($this->_data['id_pays']);
-         if($this->_data['id_ville'] = '------')
-        {
-            NULL;
-        }    
-        else{
-            $values["id_ville"]  = MySQL::SQLValue($this->_data['id_ville']);
-        }
+      $values["id_ville"]  = MySQL::SQLValue($this->_data['id_ville']);
+
     	$values["tel"] 		 	 = MySQL::SQLValue($this->_data['tel']);
     	$values["fax"] 			 = MySQL::SQLValue($this->_data['fax']);
    		$values["bp"] 			 = MySQL::SQLValue($this->_data['bp']);
    		$values["email"]	     = MySQL::SQLValue($this->_data['email']);
    		$values["rib"]  		 = MySQL::SQLValue($this->_data['rib']);
     	$values["id_devise"]     = MySQL::SQLValue($this->_data['id_devise']);
-        $values["tva"]           = MySQL::SQLValue($this->_data['tva']);
+      if($this->_data['tva']=='Oui'){
+      
+      $values["tva"]           = MySQL::SQLValue('O');
+      
+      }else{
+
+      $values["tva"]           = MySQL::SQLValue('N');
+
+      }
     	$values["updusr"]        = MySQL::SQLValue(session::get('userid'));
     	$values["upddat"]        = MySQL::SQLValue(date("Y-m-d H:i:s"));
     	$wheres["id"]            = $this->id_client;

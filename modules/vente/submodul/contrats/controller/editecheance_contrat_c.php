@@ -55,7 +55,7 @@ if (MInit::form_verif('editecheance_contrat', false)) {
         exit("0#$empty_list");
     }
 
-    if(date('Y-m-d', strtotime($posted_data['date_echeance'])) >= date('Y-m-d', strtotime($date_fin))  or date('Y-m-d', strtotime($posted_data['date_echeance'])) <= date('Y-m-d', strtotime($date_effet)) )
+    if(date('Y-m-d', strtotime($posted_data['date_echeance'])) > date('Y-m-d', strtotime($date_fin))  or date('Y-m-d', strtotime($posted_data['date_echeance'])) < date('Y-m-d', strtotime($date_effet)) )
     {
 
             $date_ech = "<ul>La date d'échéance doit être supérieur de la date d'effet et  inférieur de la date de fin !!!</ul>" ;

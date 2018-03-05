@@ -26,6 +26,7 @@ class Mfacture {
     var $devis_info; // Array Devis info
     var $client_info; // Array Client info
     var $facture_details_info; // Array details facture
+    var $type_echeance_info; // Array details facture
     var $reference = null; // Reference 
     var $sum_enc_fact; // Somme encaissements par facture
 
@@ -100,6 +101,37 @@ class Mfacture {
         }
     }
 
+
+    //Get facture type echeance
+    public function get_facture_type_echeance() {
+        global $db;
+        $table = $this->table;
+
+        $sql = "SELECT ech.`type_echeance` FROM factures f, contrats ctr, ref_type_echeance ech   
+                WHERE f.idcontrat=ctr.id AND  ctr.idtype_echeance=ech.id
+                AND f.id=" . $this->id_facture;
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->type_echeance_info = $db->RowArray();
+                $this->error = true;
+            }
+        }
+        //return Array contrats_frn_info
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
     //Get all info complement from database for edit form
     public function get_client() {
 
@@ -164,7 +196,10 @@ class Mfacture {
 
         $table_complement = $this->table_complement;
 
-        $sql = "SELECT id,designation,type,
+       /* $sql = "SELECT id,designation,type,
+                REPLACE(FORMAT(montant,0),',',' ') as montant
+                FROM $table_complement WHERE  $table_complement.idfacture = " . $this->id_facture;*/
+         $sql = "SELECT designation,type,
                 REPLACE(FORMAT(montant,0),',',' ') as montant
                 FROM $table_complement WHERE  $table_complement.idfacture = " . $this->id_facture;
 
@@ -1219,6 +1254,52 @@ if($this->facture_info['base_fact'] == 'C')
         $colms .= " CONCAT(REPLACE(FORMAT(d_factures.qte,0),',',' '),' ',IFNULL(d_factures.qte_designation,' ')) as qte, ";
         $colms .= " REPLACE(FORMAT(d_factures.prix_ht,0),',',' '), ";
         $colms .= " REPLACE(FORMAT(d_factures.total_ht,0),',', ' ') ";
+
+        $req_sql = " SELECT $colms FROM d_factures WHERE d_factures.id_facture = $id_facture ";
+        if (!$db->Query($req_sql)) {
+            $this->error = false;
+            $this->log .= $db->Error() . ' ' . $req_sql;
+            exit($this->log);
+        }
+
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function Get_detail_facture_autres_pdf() {
+        global $db;
+
+        $id_facture = $this->id_facture;
+        $this->get_id_devis();
+        $id_devis = $this->id_devis['id'];
+        $id_facture = $this->id_facture;
+        
+        //$this->get_d_facture($this->id_facture);
+        $facture_details_info= $this->facture_details_info;
+        
+        $table = $this->table_details;
+        
+        $this->Get_detail_facture_show();
+        $devis_info = $this->devis_info;
+       // var_dump($devis_info);
+
+        $this->get_facture_info();
+        $info_facture = $this->facture_info;
+
+if($this->facture_info['base_fact'] == 'C')
+{
+        $this->get_contrat($this->facture_info['idcontrat']);
+        $info_contrat = $this->contrat_info;
+}
+        
+
+        $colms = null;
+        $colms .= " d_factures.order item, ";
+        $colms .= " d_factures.ref_produit, ";
+        $colms .= " d_factures.designation ";
 
         $req_sql = " SELECT $colms FROM d_factures WHERE d_factures.id_facture = $id_facture ";
         if (!$db->Query($req_sql)) {

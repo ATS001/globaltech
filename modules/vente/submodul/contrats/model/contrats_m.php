@@ -13,6 +13,7 @@ class Mcontrat {
     var $log = NULL; //Log of all opération.
     var $error = true; //Error bol changed when an error is occured
     var $id_contrat; // Contrat ID append when request
+    //var $id_echeance_contrat; // Contrat ID append when request
     var $id_devis; // Devis ID
     var $reference = null; // Reference contrat
     var $token; //user for recovery function
@@ -20,6 +21,7 @@ class Mcontrat {
     var $devis_info; //Array stock devis info by id contrat
     var $echeance_contrat_info; //Array stock all echeance contrat info
     var $type_echeance_contrat_info; //Array stock all type echeance contrat info
+    var $facture_info; //Array stock all facture info
 
     public function __construct($properties = array()) {
         $this->_data = $properties;
@@ -107,6 +109,35 @@ class Mcontrat {
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
                 $this->echeance_contrat_info = $db->RowArray();
+                $this->error = true;
+            }
+        }
+
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    //Get all info facture  from database 
+    public function get_facture() {
+        global $db;
+
+        $sql = "SELECT f.* FROM factures f WHERE f.id_echeance = " . $this->id_echeance_contrat;
+
+        if (!$db->Query($sql)) {
+
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+
+                $this->facture_info = $db->RowArray();
                 $this->error = true;
             }
         }
@@ -239,6 +270,31 @@ class Mcontrat {
         return $tableau;
     }
 
+    //Generate a facture for an echeance
+    public function generate_facture($id_echeance)
+    {
+        global $db;
+        $tva = Msetting::get_set('tva');
+        $sql_req = " CALL manuel_generate_facturation($tva,$id_echeance)";
+
+        if (!$db->Query($sql_req)) {
+            $this->error = false;
+            $this->log .= '</br>Erreur génération de facture'.$sql_req;
+            return false;
+        } else {
+
+            $this->log .= '</br>Facture générée';
+            $this->error = true;
+        }
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+
+
     //Generate contrat reference
     private function Generate_contrat_reference() {
         if ($this->error == false) {
@@ -320,17 +376,17 @@ class Mcontrat {
             } else {
 
                 $this->last_id = $result;
+                $this->id_contrat=$this->last_id;
                 //If Attached required Save file to Archive
 
                 $this->save_file('pj', 'Justifications du contrat' . $this->reference, 'Document');
 
-                //$this->save_file('pj_photo', 'Photo' . $this->reference, 'Image');
+                $this->save_file('pj_photo', 'Photo' . $this->reference, 'Image');
 
                 //Check $this->error = true return Green message and Bol true
                 if ($this->error == true) {
                     $this->log = '</br>Enregistrement réussie: <b>' . $this->reference . ' ID: ' . $this->last_id;
                     $this->save_temp_detail($this->_data['tkn_frm'], $this->last_id);
-
 
                     if (!Mlog::log_exec($this->table, $this->last_id, 'Insertion contrat abonnement', 'Insert')) {
                         $this->log .= '</br>Un problème de log ';
@@ -414,17 +470,22 @@ class Mcontrat {
             } else {
 
                 $this->last_id = $this->id_contrat;
+                
                 //If Attached required Save file to Archive
                 $this->save_file('pj', 'Justifications du contrat' . $this->_data['reference'], 'Document');
 
 
-                //$this->save_file('pj_photo', 'Photo' . $this->_data['reference'], 'image');
+                $this->save_file('pj_photo', 'Photo' . $this->_data['reference'], 'image');
 
 
                 //Check $this->error = true return Green message and Bol true
                 if ($this->error == true) {
                     $this->log = '</br>Modification réussie: <b>' . $this->_data['reference'] . ' ID: ' . $this->last_id;
                     $this->save_temp_detail($this->_data['tkn_frm'], $this->id_contrat);
+
+                    if($values["idtype_echeance"]== 4){
+                    $this->update_echeances_autres($this->id_contrat,$values["date_fin"]);
+                    }
 
 
                     if (!Mlog::log_exec($this->table, $this->id_contrat, 'Modification contrat abonnement', 'Update')) {
@@ -453,6 +514,31 @@ class Mcontrat {
             return true;
         }
     }
+
+    public function update_echeances_autres($id_contrat, $date_fin) {
+
+        $date_f=date('Y-m-d', strtotime($date_fin));
+//var_dump($date_f);
+
+        $table_echeance = $this->table_echeance;
+        global $db;
+        $req_sql = "UPDATE  echeances_contrat ec, (SELECT IF((SELECT  DATE_ADD(ech.date_echeance, INTERVAL -1 DAY)
+        FROM echeances_contrat ech WHERE e.id <> ech.id  AND ech.`idcontrat`=e.`idcontrat` AND ech.date_echeance > e.date_echeance ORDER BY ech.`date_echeance` LIMIT 1) IS NULL,
+        '$date_f',
+        (SELECT  DATE_ADD(ech.date_echeance, INTERVAL -1 DAY) 
+        FROM echeances_contrat ech WHERE e.id <> ech.id  AND ech.`idcontrat`=e.`idcontrat` AND ech.date_echeance > e.date_echeance ORDER BY ech.`date_echeance` LIMIT 1) 
+        )AS au ,date_echeance, idcontrat, id  FROM echeances_contrat e)AS ech
+        SET ec.`date_fin`= ech.au
+        WHERE  ech.`idcontrat`=ec.`idcontrat`  AND ec.`id`= ech.id 
+        AND ec.`idcontrat`='$id_contrat'";
+
+        if (!$db->Query($req_sql)) {
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .= '<br>Problème Modification échéance';
+        }
+    }
+
 
     private function save_temp_detail($tkn_frm, $id_devis) {
 
@@ -501,6 +587,60 @@ class Mcontrat {
         }
     }
 
+public function save_echeance($debut,$fin,$perdiode_fact)
+{
+    $table_echeance = $this->table_echeance;
+    
+     if ($this->error == true) {
+  global $db;
+
+
+            $values["date_debut"] = MySQL::SQLValue(date('Y-m-d', strtotime($debut)));
+            $values["date_fin"] = MySQL::SQLValue(date('Y-m-d', strtotime($fin)));
+            $values["date_echeance"] = MySQL::SQLValue(date('Y-m-d', strtotime($perdiode_fact)));
+            $values["idcontrat"] = MySQL::SQLValue($this->id_contrat);
+            $values["creusr"] = MySQL::SQLValue(session::get('userid'));
+            $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+
+
+
+            //Check if Insert Query been executed (False / True)
+            if (!$result = $db->InsertRow($table_echeance, $values)) {
+                //False => Set $this->log and $this->error = false
+                //var_dump($db);
+                $this->log .= $db->Error();
+                $this->error = false;
+                $this->log .= '</br>Enregistrement BD non réussie';
+            } else {
+
+                $this->last_id = $result;
+
+                //Check $this->error = true return Green message and Bol true
+                if ($this->error == true) {
+                    // var_dump($db);
+                    $this->log = '</br>Enregistrement réussie: <b>';
+                    if (!Mlog::log_exec($this->table_echeance, $this->last_id, 'Insertion échéance contrat abonnement', 'Insert')) {
+                        $this->log .= '</br>Un problème de log ';
+                    }
+
+                    //Check $this->error = false return Red message and Bol false   
+                } else {
+                    $this->log .= '</br>Enregistrement réussie: <b>';
+                    $this->log .= '</br>Un problème d\'Enregistrement ';
+                }
+            }
+            //Else Error false  
+        } else {
+            $this->log .= '</br>Enregistrement non réussie';
+        }
+        //check if last error is true then return true else rturn false.
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
     //Insert new echeance
     public function save_new_echeance($tkn_frm) {
         $table_echeance = $this->table_echeance;
@@ -521,6 +661,7 @@ class Mcontrat {
             $values["tkn_frm"] = MySQL::SQLValue($this->_data['tkn_frm']);
             $values["order"] = MySQL::SQLValue($order_echeance);
             $values["date_echeance"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_echeance'])));
+            $values["date_debut"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_echeance'])));
             $values["montant"] = MySQL::SQLValue($this->_data['montant']);
             $values["commentaire"] = MySQL::SQLValue($this->_data['commentaire']);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
@@ -582,6 +723,7 @@ class Mcontrat {
 
 
             $values["date_echeance"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_echeance'])));
+            $values["date_debut"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_echeance'])));
             $values["montant"] = MySQL::SQLValue($this->_data['montant']);
             $values["commentaire"] = MySQL::SQLValue($this->_data['commentaire']);
             $values["updusr"] = MySQL::SQLValue(session::get('userid'));
@@ -801,7 +943,42 @@ class Mcontrat {
             return true;
         }
     }
+    
+    public function delete_echeances() {
+        global $db;
+        $id_contrat = $this->id_contrat;
+        $this->get_contrat();
+        //Format where clause
+        $where['idcontrat'] = MySQL::SQLValue($id_contrat);
+        //check if id on where clause isset
+        if ($where['idcontrat'] == null) {
+            $this->error = false;
+            $this->log .= '</br>L\' id est vide';
+        }
+        //execute Delete Query
+        if (!$db->DeleteRows('echeances_contrat', $where)) {
+            //var_dump($db);
+            $this->log .= $db->Error() . '  ' . $db->BuildSQLDelete('echeances_contrat', $where);
+            $this->error = false;
+            $this->log .= '</br>Suppression non réussie';
+        } else {
+ //var_dump($db);
+            $this->error = true;
+            $this->log .= '</br>Suppression réussie ';
 
+            if (!Mlog::log_exec($this->table, $this->id_contrat, 'Suppression échéance abonnement', 'Delete')) {
+                $this->log .= '</br>Un problème de log ';
+            }
+        }
+        //check if last error is true then return true else rturn false.
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    
     /**
      * [check_exist Check if one entrie already exist on table]
      * @param  [string] $column  [Column of field on main table]
