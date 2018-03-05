@@ -296,7 +296,8 @@ $block_sum = '<div></div>
     </td>
 </tr>';
 
-$p = new Mproforma();
+$block_sum .= '</table>';
+/*$p = new Mproforma();
 $p->id_proforma = Mreq::tp('id');
 $p->get_proforma();
 
@@ -317,7 +318,7 @@ $block_sum .= '
     </td>
 </tr>
 </table>';
-}
+}*/
 
 
 $pdf->writeHTML($html, true, false, true, false, '');

@@ -382,9 +382,9 @@ p {
     </td>
 </tr>';
 //$pdf->lastPage(); 
+$block_sum .= '</table>';
 
-
-$d = new Mdevis();
+/*$d = new Mdevis();
 $d->id_devis = Mreq::tp('id');
 $d->get_devis();
 
@@ -399,14 +399,15 @@ $block_sum .= '
 <td colspan="2" align="right" style="font: underline; width: 600px;  padding-right: 200px;">
         <br>
         <span class="profile-picture">
-			<img width="150" height="150" class="editable img-responsive" alt="logo_global.png" id="avatar2" src="C:\wamp\www\globaltech\img\signature_ali.jpg" />
+			<img width="150" height="150" class="editable img-responsive" alt="logo_global.png" id="avatar2" src="/home/globatxd/app.globaltech.td/globaltech/img/signature_ali.jpg
+" />
 		</span>	
 
     </td>
 </tr>
 </table>';
 }
-
+*/
 
 $pdf->writeHTML($html, true, false, true, false, '');
 /*$y = $pdf->GetY();

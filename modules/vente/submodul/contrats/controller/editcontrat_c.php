@@ -768,7 +768,7 @@ $waw=date('d-m-Y',$datt);
             echo("1#" . $contrat->log);
         } else {
 
-            $contrat->update_echeances_autres($contrat->id_contrat,$posted_data['date_fin']);
+            $contrat->update_echeances_autres($contrat->id_contrat,$posted_data['date_fin'],$posted_data['date_effet']);
         }
         echo("1#" . $contrat->log);
     }else {
