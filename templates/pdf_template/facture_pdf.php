@@ -523,12 +523,31 @@ p {
         <br><br><br><br><br>
         <strong>'.$signature.'</strong>
     </td>
-</tr>
-</table>';
+</tr>';
 //$pdf->lastPage(); 
 
+$f = new Mfacture();
+$f->id_facture = Mreq::tp('id');
+$f->get_facture();
+//var_dump($f->facture_info['etat']);
+if($f->facture_info['etat'] == 0){
+	//var_dump('ohhh 0');
+$block_sum .= '</table>';
 
+}else{
+	//var_dump(' 0');	
+$block_sum .= '
+<tr>
+<td colspan="2" align="right" style="font: underline; width: 600px;  padding-right: 200px;">
+        <br>
+        <span class="profile-picture">
+			<img width="150" height="150" class="editable img-responsive" alt="logo_global.png" id="avatar2" src="C:\wamp\www\globaltech\img\signature_ali.jpg" />
+		</span>	
 
+    </td>
+</tr>
+</table>';
+}
 
 
 $pdf->writeHTML($html, true, false, true, false, '');
