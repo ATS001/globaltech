@@ -239,17 +239,21 @@ exit();*/
     }
 
 
+ $contrat = new Mcontrat($posted_data);
+ $contrat->id_contrat = $posted_data['id'];
+ $contrat->get_contrat();
 
     //execute Insert returne false if error
     if ($new_contrat->save_new_contrat()) {
 
-    	if($new_contrat->valid_contrats(4))
+    	if($contrat->valid_contrats(4))
     	{
-        echo("1#" . $new_contrat->log);
+        echo("1#" . $contrat->log);
         }else {
 
-        echo("0#" . $new_contrat->log);
+        echo("0#" . $contrat->log);
               }
+              
     } else {
 
         echo("0#" . $new_contrat->log);
