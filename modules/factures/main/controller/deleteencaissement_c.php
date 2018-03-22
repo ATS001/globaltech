@@ -17,8 +17,8 @@ if ($info_encaissement->delete_encaissement()){
             exit("0#" . $info_encaissement->log); //Red message
         }
     } 
-            exit("1#" . $new_encaissement->log); //Green message
+            exit("1#" . $info_encaissement->log); //Green message
     }else {
-        exit("0#" . $new_encaissement->log); //Red message
+        exit("0#" . $info_encaissement->log); //Red message
     }  
     ?>
