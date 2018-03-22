@@ -437,19 +437,16 @@ class Mfacture {
                     //$test_enc = $this->test_first_encaissement($this->_data['idfacture']);
                     //var_dump($test_enc);
                     $this->get_facture();
-                    var_dump($this->_data['idfacture']);
-                    var_dump($this->facture_info['reste']);
+                    //var_dump($this->_data['idfacture']);
+                    //var_dump($this->facture_info['reste']);
 
                     if (/*$test_enc == true and */$this->facture_info['reste'] > 0) {
-                        var_dump('test > 0 1');
+
                         $this->valid_etat_facture($etat = 2, $this->_data['idfacture']);
-                        var_dump('test > 0 2');
                     }
 
                     if (/*$test_enc == false and */$this->facture_info['reste'] == 0) {
-                        var_dump('test > 0 1');
                         $this->valid_etat_facture($etat = 3, $this->_data['idfacture']);
-                        var_dump('test > 0 2');
                     }
                 } else {
                     $this->log .= '</br>Enregistrement réussie: <b>' . $this->reference;
