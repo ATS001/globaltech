@@ -859,7 +859,6 @@ class Mfacture {
 
             $this->error = true;
             $this->log .= '</br>Suppression réussie ';
-            $this->update_reste_after_delete($this->encaissement_info['idfacture'], $this->encaissement_info['montant']);
         }
         //check if last error is true then return true else rturn false.
         if ($this->error == false) {
