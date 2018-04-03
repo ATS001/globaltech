@@ -1,0 +1,97 @@
+<?php
+
+//First check target no Hack
+if (!defined('_MEXEC'))
+    die();
+//SYS GLOBAL TECH
+// Modul: tickets
+//Created : 02-04-2018
+//Controller Liste
+$array_column = array(
+    array(
+        'column' => 'tickets.id',
+        'type' => '',
+        'alias' => 'id',
+        'width' => '5',
+        'header' => 'ID',
+        'align' => 'C'
+    ),
+    //Complete Array fields here
+    array(
+        'column' => 'clients.denomination',
+        'type' => '',
+        'alias' => 'client',
+        'width' => '15',
+        'header' => 'Client',
+        'align' => 'L'
+    ),
+    array(
+        'column' => 'tickets.projet',
+        'type' => '',
+        'alias' => 'projet',
+        'width' => '15',
+        'header' => 'Projet',
+        'align' => 'L'
+    ),
+    array(
+        'column' => 'tickets.date_previs',
+        'type' => 'date',
+        'alias' => 'date_previs',
+        'width' => '10',
+        'header' => 'Date prévisionnelle',
+        'align' => 'L'
+    ),
+    
+    array(
+        'column' => 'DATEDIFF(DATE(NOW()),DATE(tickets.credat))',
+        'type' => '',
+        'alias' => 'nbr',
+        'width' => '10',
+        'header' => 'Nbr jours',
+        'align' => 'C'
+    ),
+     
+    array(
+        'column' => 'CONCAT(users_sys.fnom," ",users_sys.lnom)',
+        'type' => '',
+        'alias' => 'idtechnicien',
+        'width' => '15',
+        'header' => 'Technicien',
+        'align' => 'L'
+    ),
+    array(
+        'column' => 'statut',
+        'type' => '',
+        'alias' => 'statut',
+        'width' => '10',
+        'header' => 'Statut',
+        'align' => 'C'
+    ),
+);
+//Creat new instance
+$list_data_table = new Mdatatable();
+//Set tabels used in Query
+$list_data_table->tables = array('tickets,clients,users_sys,ref_types_produits,ref_categories_produits');
+//Set Jointure
+$list_data_table->joint = 'clients.id=tickets.id_client AND users_sys.id=tickets.id_technicien'
+                        . ' AND ref_types_produits.id=tickets.type_produit '
+                        . ' AND ref_categories_produits.id=tickets.categorie_produit';
+//Call all columns
+$list_data_table->columns = $array_column;
+//Set main table of Query
+$list_data_table->main_table = 'tickets';
+//Set Task used for statut line
+$list_data_table->task = 'tickets';
+//Set File name for export
+$list_data_table->file_name = 'tickets';
+//Set Title of report
+$list_data_table->title_report = 'Liste tickets';
+//Print JSON DATA
+if (!$data = $list_data_table->Query_maker()) {
+    exit("0#" . $list_data_table->log);
+} else {
+    echo $data;
+}
+
+	
+
