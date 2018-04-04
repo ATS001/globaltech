@@ -43,7 +43,7 @@ $array_column = array(
     ),
     
     array(
-        'column' => 'DATEDIFF(DATE(NOW()),DATE(tickets.credat))',
+        'column' => 'IFNULL(DATEDIFF(DATE(NOW()),DATE(tickets.date_affectation)),0)',
         'type' => '',
         'alias' => 'nbr',
         'width' => '10',
@@ -71,11 +71,17 @@ $array_column = array(
 //Creat new instance
 $list_data_table = new Mdatatable();
 //Set tabels used in Query
-$list_data_table->tables = array('tickets,clients,users_sys,ref_types_produits,ref_categories_produits');
+//$list_data_table->tables = array('tickets,clients,users_sys,ref_types_produits,ref_categories_produits');
+$list_data_table->tables = array('tickets LEFT JOIN users_sys ON users_sys.id=tickets.id_technicien LEFT JOIN clients ON clients.id=tickets.id_client');
+
 //Set Jointure
+/*
 $list_data_table->joint = 'clients.id=tickets.id_client AND users_sys.id=tickets.id_technicien'
                         . ' AND ref_types_produits.id=tickets.type_produit '
                         . ' AND ref_categories_produits.id=tickets.categorie_produit';
+ * 
+ */
+$list_data_table->joint = '';
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query

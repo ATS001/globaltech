@@ -50,7 +50,7 @@ $form->input_hidden('id', $info_tickets->g('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
 
-var_dump($info_tickets);
+//var_dump($info_tickets);
 
 //For more Example see form class
 $client_array[] = array('required', 'true', 'Choisir un Client');

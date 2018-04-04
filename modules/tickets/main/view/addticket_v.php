@@ -57,8 +57,8 @@ $type_produit_array[]  = array('required', 'true', 'Choisir un Type Produit');
 $form->select_table('Type Produit', 'type_produit', 3, 'ref_types_produits', 'id', 'type_produit' , 'type_produit', $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat = 1' , $type_produit_array, $hard_code_type_produit);
 
 //Technicien ==> 
-                $array_technicien[] = array("required", "true", "Choisir un technicien");
-                $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', 'CONCAT(users_sys.lnom," ",users_sys.fnom)', $indx = '------', $selected = NULL, $multi = NULL, $where = 'etat=1', $array_technicien, NULL);
+                //$array_technicien[] = array("required", "true", "Choisir un technicien");
+                //$form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', 'CONCAT(users_sys.lnom," ",users_sys.fnom)', $indx = '------', $selected = NULL, $multi = NULL, $where = 'etat=1', $array_technicien, NULL);
 
 //Message
                 $array_message[] = array("required", "true", "Insérer un message ");

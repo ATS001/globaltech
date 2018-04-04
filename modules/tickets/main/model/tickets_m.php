@@ -45,12 +45,18 @@ class Mtickets {
 
         $table = $this->table;
 
-        $sql = "SELECT $table.* , CONCAT(users_sys.fnom,' ',users_sys.lnom) as technicien ,clients.denomination ,
-            ref_categories_produits.categorie_produit as categorie_produit ,ref_types_produits.type_produit as type_produit 
-            FROM $table , ref_categories_produits  , ref_types_produits, clients,users_sys"
-                . " WHERE ref_categories_produits.id=$table.categorie_produit"
-                . " AND ref_types_produits.id=$table.type_produit "
-                . " AND clients.id=$table.id_client AND users_sys.id=$table.id_technicien"
+        $sql = "SELECT $table.* ,
+                DATE_FORMAT($table.date_affectation,'%d-%m-%Y') as date_affectation,
+                DATE_FORMAT($table.date_previs,'%d-%m-%Y') as date_previs,
+                    DATE_FORMAT($table.date_realis,'%d-%m-%Y') as date_realis,
+                CONCAT(users_sys.fnom,' ',users_sys.lnom) as technicien ,
+                clients.denomination as client ,
+                ref_categories_produits.categorie_produit as categorie_produit ,
+                ref_types_produits.type_produit as type_produit 
+                FROM $table  LEFT JOIN ref_categories_produits  ON ref_categories_produits.id=$table.categorie_produit"
+                . " LEFT JOIN ref_types_produits ON ref_types_produits.id=$table.type_produit"
+                . " LEFT JOIN clients ON clients.id=$table.id_client"
+                . " LEFT JOIN users_sys ON users_sys.id=$table.id_technicien"
                 . " AND $table.id = " . $this->id_tickets;
         //var_dump($sql);
         if (!$db->Query($sql)) {
@@ -80,7 +86,7 @@ class Mtickets {
     public function save_new_tickets() {
 
         $this->check_non_exist('clients', 'id', $this->_data['id_client'], 'Client');
-        $this->check_non_exist('users_sys', 'id', $this->_data['id_technicien'], 'Technicien');
+        //$this->check_non_exist('users_sys', 'id', $this->_data['id_technicien'], 'Technicien');
 
         if ($this->error == true) {
             global $db;
@@ -92,7 +98,7 @@ class Mtickets {
             //$values["date_realis"] = MySQL::SQLValue($this->_data["date_realis"]);
             $values["type_produit"] = MySQL::SQLValue($this->_data["type_produit"]);
             $values["categorie_produit"] = MySQL::SQLValue($this->_data["categorie_produit"]);
-            $values["id_technicien"] = MySQL::SQLValue($this->_data["id_technicien"]);
+            //$values["id_technicien"] = MySQL::SQLValue($this->_data["id_technicien"]);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
@@ -160,8 +166,62 @@ class Mtickets {
             } else {
 
                 $this->last_id = $result;
-                $this->log .= '</br>Enregistrement  réussie ' .  $this->last_id . ' -';
+                $this->log .= '</br>Enregistrement  réussie ' . $this->last_id . ' -';
                 if (!Mlog::log_exec($this->table, $this->last_id, 'Modification tickets', 'Update')) {
+                    $this->log .= '</br>Un problème de log ';
+                    $this->error = false;
+                }
+                //Esspionage
+                if (!$db->After_update($this->table, $this->id_tickets, $values, $this->tickets_info)) {
+                    $this->log .= '</br>Problème Espionnage';
+                    $this->error = false;
+                }
+            }
+        } else {
+
+            $this->log .= '</br>Enregistrement non réussie';
+        }
+
+        //check if last error is true then return true else rturn false.
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * Edit selected Row
+     * @return Bol [send to controller]
+     */
+    public function affect_ticket() {
+
+
+        $this->check_non_exist('users_sys', 'id', $this->_data['id_technicien'], 'Technicien');
+
+
+        $this->get_tickets();
+
+        $this->last_id = $this->id_tickets;
+        // If we have an error
+        if ($this->error == true) {
+            global $db;
+            //ADD field row here
+            $values["id_technicien"] = MySQL::SQLValue($this->_data["id_technicien"]);
+            $values["date_affectation"] = MySQL::SQLValue(date('Y-m-d', strtotime(date("Y-m-d"))));
+            $wheres["id"] = $this->id_tickets;
+
+            if (!$result = $db->UpdateRows($this->table, $values, $wheres)) {
+                //$db->Kill();
+                $this->log .= $db->Error();
+                $this->error == false;
+                $this->log .= '</br>Enregistrement BD non réussie';
+            } else {
+
+                $this->last_id = $result;
+                //$this->valid_tickets($etat=1);
+                $this->log .= '</br>Enregistrement  réussie ' . $this->last_id . ' -';
+                if (!Mlog::log_exec($this->table, $this->last_id, 'Affectation tickets', 'Update')) {
                     $this->log .= '</br>Un problème de log ';
                     $this->error = false;
                 }
@@ -196,7 +256,7 @@ class Mtickets {
         global $db;
 
         //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
-        $etat = $etat == 0 ? 1 : 0;
+        //$etat = $etat == 0 ? 1 : 0;
 
         $values["etat"] = MySQL::SQLValue($etat);
         $values["updusr"] = MySQL::SQLValue(session::get('userid'));
