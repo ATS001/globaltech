@@ -99,7 +99,7 @@ $form->render();
 <script type="text/javascript">
 $(document).ready(function() {
     
-//JS bloc   
+$('#id_client').attr('readonly', false);
 
 });
 </script>	

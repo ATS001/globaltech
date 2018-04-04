@@ -44,8 +44,9 @@ class Mtickets {
         global $db;
 
         $table = $this->table;
-
+       
         $sql = "SELECT $table.* ,
+            IFNULL(DATEDIFF(DATE(NOW()),DATE(tickets.date_affectation)),0) as nbrj,
                 DATE_FORMAT($table.date_affectation,'%d-%m-%Y') as date_affectation,
                 DATE_FORMAT($table.date_previs,'%d-%m-%Y') as date_previs,
                     DATE_FORMAT($table.date_realis,'%d-%m-%Y') as date_realis,
@@ -58,7 +59,8 @@ class Mtickets {
                 . " LEFT JOIN clients ON clients.id=$table.id_client"
                 . " LEFT JOIN users_sys ON users_sys.id=$table.id_technicien"
                 . " AND $table.id = " . $this->id_tickets;
-        //var_dump($sql);
+
+        var_dump($sql);
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
@@ -68,6 +70,7 @@ class Mtickets {
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
                 $this->tickets_info = $db->RowArray();
+                var_dump($this->tickets_info);
                 $this->error = true;
             }
         }

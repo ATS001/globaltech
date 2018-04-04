@@ -3,6 +3,7 @@
 //First check target no Hack
 if (!defined('_MEXEC'))
     die();
+var_dump(Mreq::tp('id'));
 //SYS GLOBAL TECH
 // Modul: tickets
 //Created : 03-04-2018

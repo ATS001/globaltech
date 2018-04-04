@@ -1,17 +1,15 @@
 <?php
-
 defined('_MEXEC') or die;
 if(!MInit::crypt_tp('exec', null, 'D'))
 { 	
 	$id     = Mreq::tp('exec');
 	$idc    = MInit::crypt_tp('exec',$id);
-
-	exit('0#<br>L\'action exécutée invalid contactez l\'administrateur '.$id.'  '.$idc);
-
+	exit('0#<br>L\'action exécutée invalid contactez l\'administrateur yyyyyyy '.$id.'  '.$idc);
 }
-
 //Action called from all button of this modul
 $action = Mreq::tp('exec');
+
+
 //Load_categorie by type
 if ($action == 'load_select_categ') {
     $where = 'type_produit = ' . MReq::tp('id');
