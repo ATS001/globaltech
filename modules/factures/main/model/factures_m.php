@@ -1047,6 +1047,27 @@ class Mfacture {
       }
 
      */
+    
+    public function valid_send_facture() {
+        global $db;
+        $table = $this->table;
+        $values['etat'] = ' ETAT + 1 ';
+        $wheres['id'] = MySQL::SQLValue($this->id_facture);
+
+        if (!$result = $db->UpdateRows($table, $values, $wheres)) {
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .= 'Validation non réussie DB';
+        }
+
+        if (!$this->Get_detail_facture_pdf()) {
+            $this->log .= $this->log;
+            return false;
+        } else {
+            $this->log .= "Facture envoyée";
+            return true;
+        }
+    }
 
     public function valid_facture() {
         global $db;

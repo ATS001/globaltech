@@ -13,7 +13,7 @@
 	//$etat = $facture->facture_info['etat'];
 
 
-	if($facture->valid_facture())
+	if($facture->valid_send_facture())
 	{
 		exit("1#".$facture->log);
 

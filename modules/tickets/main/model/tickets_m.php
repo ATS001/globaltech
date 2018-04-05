@@ -199,6 +199,7 @@ class Mtickets {
      */
     public function affect_ticket() {
 
+        //var_dump($this->id_tickets);
 
         $this->check_non_exist('users_sys', 'id', $this->_data['id_technicien'], 'Technicien');
 
@@ -206,6 +207,7 @@ class Mtickets {
         $this->get_tickets();
 
         $this->last_id = $this->id_tickets;
+        //var_dump($this->tickets_info);
         // If we have an error
         if ($this->error == true) {
             global $db;
@@ -216,6 +218,7 @@ class Mtickets {
 
             if (!$result = $db->UpdateRows($this->table, $values, $wheres)) {
                 //$db->Kill();
+                
                 $this->log .= $db->Error();
                 $this->error == false;
                 $this->log .= '</br>Enregistrement BD non réussie';
