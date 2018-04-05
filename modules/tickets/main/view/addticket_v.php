@@ -54,7 +54,8 @@ if (!defined('_MEXEC'))
 
 $hard_code_type_produit = '<label style="margin-left:15px;margin-right : 20px;">Catégorie: </label><select id="categorie_produit" name="categorie_produit" class="chosen-select col-xs-12 col-sm-6" chosen-class="'.((6 * 100) / 12).'" ><option >----</option></select>';
 $type_produit_array[]  = array('required', 'true', 'Choisir un Type Produit');
-$form->select_table('Type Produit', 'type_produit', 3, 'ref_types_produits', 'id', 'type_produit' , 'type_produit', $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat = 1' , $type_produit_array, $hard_code_type_produit);
+$form->select_table('Type Produit', 'type_produit', 3, 'ref_types_produits', 'id', 'type_produit' , 'type_produit', 
+                     $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat = 1' , $type_produit_array, $hard_code_type_produit);
 
 //Technicien ==> 
                 //$array_technicien[] = array("required", "true", "Choisir un technicien");
@@ -84,13 +85,12 @@ $form->select_table('Type Produit', 'type_produit', 3, 'ref_types_produits', 'id
             return true;
         }
         $('#categorie_produit').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
-        //$('#categorie_produit').trigger('change');
         $('#id_produit').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
-         $('#prix_unitaire').val('0').trigger('change');
+        
         $.ajax({
 
             cache: false,
-            url  : '?_tsk=add_detaildevis&ajax=1',
+            url  : '?_tsk=addtickets&ajax=1',
             type : 'POST',
             data : '&act=1&id='+$type_produit+'&<?php echo MInit::crypt_tp('exec', 'load_select_categ') ?>',
             dataType:"JSON",
@@ -121,11 +121,10 @@ $form->select_table('Type Produit', 'type_produit', 3, 'ref_types_produits', 'id
             return true;
         }
         $('#id_produit').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
-        $('#prix_unitaire').val('0').trigger('change');
         $.ajax({
 
             cache: false,
-            url  : '?_tsk=add_detaildevis&ajax=1',
+            url  : '?_tsk=addtickets&ajax=1',
             type : 'POST',
             data : '&act=1&id='+$categorie_produit+'&<?php echo MInit::crypt_tp('exec', 'load_select_produit') ?>',
             dataType:"JSON",
