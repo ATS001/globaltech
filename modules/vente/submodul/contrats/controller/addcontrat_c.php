@@ -124,6 +124,7 @@ if (MInit::form_verif('addcontrat', false)) {
 
 
 
+
     /*var_dump( $diff->format('%y'));
     var_dump( $diff->format('%m'));
     var_dump( $diff->format('%a')); */
