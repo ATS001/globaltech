@@ -5,7 +5,7 @@ if(!defined('_MEXEC'))die();
 echo '<ul class="dropdown-menu dropdown-menu-right">';
 $tickets = new Mtickets();
 $tickets->id_tickets = Mreq::tp('id');
-var_dump($tickets->id_tickets);
+//var_dump($tickets->id_tickets);
 $tickets->get_tickets();
 //var_dump($tickets->tickets_info);
 
