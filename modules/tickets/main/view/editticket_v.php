@@ -68,8 +68,8 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_tickets->get_tickets()) {
 
 //Type Produit
 //Type produit old
-                //$form->input_hidden('type_produit_old', $info_tickets->g('type_produit'));
-                //$hard_code_type_produit = '<label style="margin-left:15px;margin-right : 20px;">Catégorie: </label><select id="categorie_produit" name="categorie_produit" class="chosen-select col-xs-12 col-sm-6" chosen-class="' . ((6 * 100) / 12) . '" ><option value="' . $info_tickets->g('categorie_produit') . '" >' . $info_tickets->g('categorie_produit') . '</option></select>';
+                $form->input_hidden('type_produit_old', $info_tickets->g('type_produit'));
+                $hard_code_type_produit = '<label style="margin-left:15px;margin-right : 20px;">Catégorie: </label><select id="categorie_produit" name="categorie_produit" class="chosen-select col-xs-12 col-sm-6" chosen-class="' . ((6 * 100) / 12) . '" ><option value="' . $info_tickets->g('categorie_produit') . '" >' . $info_tickets->g('categorie_produit') . '</option></select>';
                 $type_produit_array[] = array('required', 'true', 'Choisir un Type Produit');
                 $form->select_table('Type Produit', 'type_produit', 3, 'ref_types_produits', 'id', 'id', 'type_produit',
                         $indx = '------',$info_tickets->g('type_produit'), $multi = NULL, NULL, 
@@ -78,8 +78,8 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_tickets->get_tickets()) {
                 
                 
 //Technicien ==> 
-                $array_technicien[] = array("required", "true", "Choisir un technicien");
-                $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', 'CONCAT(users_sys.lnom," ",users_sys.fnom)', $indx = '------', $info_tickets->g('id_technicien'), $multi = NULL, $where = 'etat=1', $array_technicien, NULL);
+                //$array_technicien[] = array("required", "true", "Choisir un technicien");
+                //$form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', 'CONCAT(users_sys.lnom," ",users_sys.fnom)', $indx = '------', $info_tickets->g('id_technicien'), $multi = NULL, $where = 'etat=1', $array_technicien, NULL);
 
 //Message
                 $array_message[] = array("required", "true", "Insérer un message ");
