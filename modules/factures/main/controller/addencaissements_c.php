@@ -69,7 +69,7 @@
 //var_dump($fact->compte_commercial_info['commission']);
         //execute Insert returne false if error
         if ($new_encaissement->save_new_encaissement()) {
-            if($fact->compte_commercial_info['commission']!=0){
+           /* if($fact->compte_commercial_info['commission']!=0){
                 
                 if($new_encaissement->credit_compte_commerciale()){
 
@@ -80,7 +80,7 @@
                 exit("0#" . $new_encaissement->log); //Red message
 
                 } 
-            } 
+            } */
             exit("1#" . $new_encaissement->log); //Green message
         }else {
 
