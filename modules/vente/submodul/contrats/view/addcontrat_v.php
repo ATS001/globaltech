@@ -48,7 +48,7 @@ $form->select_table('Type échéance', 'idtype_echeance', 8, 'ref_type_echeance'
 
 // Facturation
 $facturation_array[]  = array('Début de période' , 'D' );
-$facturation_array[]  = array('Fin dde période' , 'F' );
+$facturation_array[]  = array('Fin de période' , 'F' );
 $form->radio('Facturation', 'periode_fact', 'D', $facturation_array, '');
 
 
