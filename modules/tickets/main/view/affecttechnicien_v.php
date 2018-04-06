@@ -112,6 +112,11 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
                                                             <i class="ace-icon fa fa-caret-right green"></i>Date prévisionnelle :
                                                             <b style="color:green"><?php $ticket->s("date_previs") ?></b>
                                                         </li>
+                                                        
+                                                        <li>
+                                                            <i class="ace-icon fa fa-caret-right green"></i>Déscription :
+                                                            <p><b style="color:green"><?php $ticket->s("message") ?></b></p>
+                                                        </li>
 
 
                                                     </ul>
@@ -134,8 +139,7 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
                     </div>
                 </div>
 
-
-
+                 </div>
 
                 <?php
                 $form->button('Enregistrer');
@@ -155,3 +159,12 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
     });
 </script>	
 
+<style>
+    .ayoub{
+         border-color:red ;
+         border-bottom-width: 10;
+         background-color: #ffffff;
+         color: #616161;
+    }
+    
+</style>
