@@ -57,14 +57,14 @@
         'header' => 'Date',
         'align'  => 'C'
     ),
-   /* array(
+    array(
         'column' => 'statut',
         'type'   => '',
         'alias'  => 'statut',
         'width'  => '15',
         'header' => 'Statut',
         'align'  => 'C'
-    ),*/
+    )
     
  );
     
