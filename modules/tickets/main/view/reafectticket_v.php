@@ -25,7 +25,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $ticket->get_tickets()) {
 </div>
 <div class="page-header">
     <h1>
-        Ajouter un tickets
+        Réaffecter un ticket
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
         </small>
@@ -71,43 +71,51 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
                                             <div class="col-xs-12 col-sm-6">
 
                                                 <div>
-                                                    <ul class="list-unstyled spaced">
-                                                        <?php if($ticket->s("technicien") != NULL){?>
-                                                        <li>
-                                                            <i class="ace-icon fa fa-caret-right green"></i>Technicien précèdent :
-                                                            <b style="color:green"><?php $ticket->s("technicien") ?></b>
-                                                        </li> 
-                                                        <li>
-                                                            <i class="ace-icon fa fa-caret-right green"></i>Date affectation :
-                                                            <b style="color:green"><?php $ticket->s("date_affectation") ?></b>
-                                                        </li>
-                                                        <li>
-                                                            <i class="ace-icon fa fa-caret-right green"></i>Nombre de jour :
-                                                            <b style="color:green"><?php $ticket->s("nbrj") ?></b>
-                                                        </li> 
-                                                       <?php }?>
+                                                   <ul class="list-unstyled spaced">
+                                                        <?php if ($ticket->g("technicien") != NULL) { ?>
+                                                            <li>
+                                                                <i class="ace-icon fa fa-caret-right green"></i>Technicien précèdent :
+                                                                <b style="color:green"><?php $ticket->s("technicien") ?></b>
+                                                            </li> 
+                                                            <li>
+                                                                <i class="ace-icon fa fa-caret-right green"></i>Date affectation :
+                                                                <b style="color:green"><?php $ticket->s("date_affectation") ?></b>
+                                                            </li>
+                                                            <li>
+                                                                <i class="ace-icon fa fa-caret-right green"></i>Nombre de jour :
+                                                                <b style="color:green"><?php $ticket->s("nbrj") ?></b>
+                                                            </li> 
+                                                        <?php } ?>
                                                         <li>
                                                             <i class="ace-icon fa fa-caret-right green"></i>Client :
                                                             <b style="color:green"><?php $ticket->s("client") ?></b>
                                                         </li>
-                                                        <li>
-                                                            <i class="ace-icon fa fa-caret-right green"></i>Projet :
-                                                            <b style="color:green"><?php $ticket->s("projet") ?></b>
-                                                        </li>                                                       
+                                                        <?php if ($ticket->g("projet") != NULL) { ?>
+                                                            <li>
+                                                                <i class="ace-icon fa fa-caret-right green"></i>Projet :
+                                                                <b style="color:green"><?php $ticket->s("projet") ?></b>
+                                                            </li> 
+                                                        <?php } ?>
                                                         <li>
                                                             <i class="ace-icon fa fa-caret-right green"></i>Type produit:
-                                                            <b style="color:green"><?php $ticket->s("type_produit") ?></b>
+                                                            <b style="color:green"><?php $ticket->s("typep") ?></b>
                                                         </li>
                                                         <li>
                                                             <i class="ace-icon fa fa-caret-right green"></i>Catégorie produit :
                                                             <b style="color:green"><?php $ticket->s("categorie_produit") ?></b>
                                                         </li> 
+                                                        <?php if ($ticket->g("prd") != NULL) { ?>
+                                                            <li>
+                                                                <i class="ace-icon fa fa-caret-right green"></i>Produit :
+                                                                <b style="color:green"><?php $ticket->s("prd") ?></b>
+                                                            </li>
+                                                        <?php } ?>
                                                         <li>
                                                             <i class="ace-icon fa fa-caret-right green"></i>Date prévisionnelle :
                                                             <b style="color:green"><?php $ticket->s("date_previs") ?></b>
                                                         </li>
-                                                        
-                                                                                                              
+
+
                                                     </ul>
                                                     
                                                 </div>

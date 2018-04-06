@@ -20,7 +20,8 @@ if (MInit::form_verif('editticket', false)) {
         'date_previs' => Mreq::tp('date_previs'),
         'type_produit' => Mreq::tp('type_produit'),
         'categorie_produit' => Mreq::tp('categorie_produit'),
-        'id_technicien' => Mreq::tp('id_technicien'),
+        'id_produit'=> Mreq::tp('id_produit'),
+        //'id_technicien' => Mreq::tp('id_technicien'),
     );
 
 
@@ -56,15 +57,20 @@ if (MInit::form_verif('editticket', false)) {
         $checker = 1;
     }
 
+    /*
     if ($posted_data["categorie_produit"] == NULL) {
         $empty_list .= "<li>Catégorie produit</li>";
         $checker = 1;
     }
+     * 
+     */
+    
+    /*
     if ($posted_data["id_technicien"] == NULL) {
         $empty_list .= "<li>Technicien</li>";
         $checker = 1;
     }
-
+*/
 
 
     $empty_list .= "</ul>";

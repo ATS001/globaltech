@@ -44,7 +44,7 @@ class Mtickets {
         global $db;
 
         $table = $this->table;
-       
+
         $sql = "SELECT $table.* ,
             IFNULL(DATEDIFF(DATE(NOW()),DATE(tickets.date_affectation)),0) as nbrj,
                 DATE_FORMAT($table.date_affectation,'%d-%m-%Y') as date_affectation,
@@ -53,14 +53,17 @@ class Mtickets {
                 CONCAT(users_sys.fnom,' ',users_sys.lnom) as technicien ,
                 clients.denomination as client ,
                 ref_categories_produits.categorie_produit as categorie_produit ,
-                ref_types_produits.type_produit as type_produit 
-                FROM $table  LEFT JOIN ref_categories_produits  ON ref_categories_produits.id=$table.categorie_produit"
+                ref_types_produits.type_produit as typep, 
+                produits.designation as prd
+                FROM $table LEFT JOIN produits ON produits.id=$table.id_produit "
+                . "LEFT JOIN ref_categories_produits  ON ref_categories_produits.id=$table.categorie_produit"
                 . " LEFT JOIN ref_types_produits ON ref_types_produits.id=$table.type_produit"
                 . " LEFT JOIN clients ON clients.id=$table.id_client"
                 . " LEFT JOIN users_sys ON users_sys.id=$table.id_technicien"
                 . " WHERE $table.id = " . $this->id_tickets;
 
-        
+
+
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
@@ -70,7 +73,7 @@ class Mtickets {
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
                 $this->tickets_info = $db->RowArray();
-                
+
                 $this->error = true;
             }
         }
@@ -101,6 +104,7 @@ class Mtickets {
             //$values["date_realis"] = MySQL::SQLValue($this->_data["date_realis"]);
             $values["type_produit"] = MySQL::SQLValue($this->_data["type_produit"]);
             $values["categorie_produit"] = MySQL::SQLValue($this->_data["categorie_produit"]);
+            $values["id_produit"] = MySQL::SQLValue($this->_data["id_produit"]);
             //$values["id_technicien"] = MySQL::SQLValue($this->_data["id_technicien"]);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
@@ -138,7 +142,7 @@ class Mtickets {
     public function edit_tickets() {
 
         $this->check_non_exist('clients', 'id', $this->_data['id_client'], 'Client');
-        $this->check_non_exist('users_sys', 'id', $this->_data['id_technicien'], 'Technicien');
+        //$this->check_non_exist('users_sys', 'id', $this->_data['id_technicien'], 'Technicien');
 
 
         $this->get_tickets();
@@ -154,9 +158,8 @@ class Mtickets {
             $values["date_previs"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_previs'])));
             $values["type_produit"] = MySQL::SQLValue($this->_data["type_produit"]);
             $values["categorie_produit"] = MySQL::SQLValue($this->_data["categorie_produit"]);
-            $values["id_technicien"] = MySQL::SQLValue($this->_data["id_technicien"]);
-
-
+            //$values["id_technicien"] = MySQL::SQLValue($this->_data["id_technicien"]);
+            $values["id_produit"] = MySQL::SQLValue($this->_data["id_produit"]);
             $values["updusr"] = MySQL::SQLValue(session::get('userid'));
             $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
             $wheres["id"] = $this->id_tickets;
@@ -218,7 +221,7 @@ class Mtickets {
 
             if (!$result = $db->UpdateRows($this->table, $values, $wheres)) {
                 //$db->Kill();
-                
+
                 $this->log .= $db->Error();
                 $this->error == false;
                 $this->log .= '</br>Enregistrement BD non réussie';
