@@ -8,21 +8,20 @@ if (!defined('_MEXEC'))
 // Modul: tickets
 //Created : 02-04-2018
 //Model
-/**
- * M%modul% 
- * Version 1.0
- * 
- */
+
 class Mtickets {
 
     private $_data;                      //data receive from form
     var $table = 'tickets';   //Main table of module
+    var $table_action = 'action_ticket'; //Second table of module
     var $last_id = null;        //return last ID after insert command
     var $log = null;        //Log of all opération.
     var $error = true;        //Error bol changed when an error is occured
     var $id_tickets = null;        // tickets ID append when request
     var $token = null;        //user for recovery function
     var $tickets_info = array();     //Array stock all tickets info
+    var $exige_pj;
+    var $exige_photo;
 
     public function __construct($properties = array()) {
         $this->_data = $properties;
@@ -119,6 +118,54 @@ class Mtickets {
                 $this->last_id = $result;
                 $this->log .= '</br>Enregistrement  réussie ' . $this->last_id . ' -';
                 if (!Mlog::log_exec($this->table, $this->last_id, 'Création tickets', 'Insert')) {
+                    $this->log .= '</br>Un problème de log ';
+                }
+            }
+        } else {
+
+            $this->log .= '</br>Enregistrement non réussie';
+        }
+
+        //check if last error is true then return true else rturn false.
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
+     * Save new row to main table
+     * @return [bol] [bol value send to controller]
+     */
+    public function save_new_action() {
+
+        $this->check_non_exist('tickets', 'id', $this->_data['id_ticket'], 'Ticket');
+
+        if ($this->error == true) {
+            global $db;
+            //Add all fields for the table
+            $values["message"] = MySQL::SQLValue($this->_data["message"]);
+            $values["date_action"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_action'])));
+            $values["id_ticket"] = MySQL::SQLValue($this->_data["id_ticket"]);
+            $values["creusr"] = MySQL::SQLValue(session::get('userid'));
+            $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+
+            if (!$result = $db->InsertRow($this->table_action, $values)) {
+
+                $this->log .= $db->Error();
+                $this->error = false;
+                $this->log .= '</br>Enregistrement BD non réussie';
+            } else {
+
+                $this->last_id = $result;
+
+                $this->save_file('pj', 'PJ' . $this->_data['id_ticket'], 'Document');
+
+                $this->save_file('photo', 'Photo' . $this->_data['id_ticket'], 'Image');
+                
+                $this->log .= '</br>Enregistrement  réussie ' . $this->last_id . ' -';
+                if (!Mlog::log_exec($this->table_action, $this->last_id, 'Création action', 'Insert')) {
                     $this->log .= '</br>Un problème de log ';
                 }
             }
@@ -393,6 +440,31 @@ class Mtickets {
             return $this->tickets_info[$key];
         } else {
             return null;
+        }
+    }
+
+    private function save_file($item, $titre, $type) {
+        //Format all parameteres
+        $temp_file = $this->_data[$item . '_id'];
+        //If nofile uploaded return kill function
+        if ($temp_file == Null) {
+            return true;
+        }
+
+        $new_name_file = $item . '_' . $this->last_id;
+        $folder = MPATH_UPLOAD . 'tickets' . SLASH . $this->last_id;
+        $id_line = $this->last_id;
+        $title = $titre;
+        $table = $this->table_action;
+        $column = $item;
+        $type = $type;
+
+
+
+        //Call save_file_upload from initial class
+        if (!Minit::save_file_upload($temp_file, $new_name_file, $folder, $id_line, $title, 'tickets', $table, $column, $type, $edit = null)) {
+            $this->error = false;
+            $this->log .= '</br>Enregistrement ' . $item . ' dans BD non réussie';
         }
     }
 
