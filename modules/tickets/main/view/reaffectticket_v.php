@@ -168,7 +168,7 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
   min-height: 20px;
   padding: 19px;
   margin-bottom: 20px;
-  background-color: pink;
+  background-color: DEE4EA;
   border: 1px solid #e3e3e3;
   border-radius: 4px;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
