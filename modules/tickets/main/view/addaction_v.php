@@ -14,7 +14,7 @@ if (!MInit::crypt_tp('id', null, 'D') or !$ticket->get_tickets()) {
     exit('3#' . $ticket->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
 
-$id_action=$ticket->g("id");
+$id_ticket=$ticket->g("id");
 ?>
 
 <div class="pull-right tableTools-container">
@@ -46,7 +46,7 @@ $id_action=$ticket->g("id");
 
                 <?php
                 $form = new Mform('addaction', 'addaction', '', 'tickets', '0', null);
-                $form->input_hidden('id_action', $id_action);
+                $form->input_hidden('id_ticket', $id_ticket);
 //Date action ==> 
                 $date_act[] = array('required', 'true', 'Insérer une date ');
                 $form->input_date('Date', 'date_action', 2, date('d-m-Y'), $date_act);

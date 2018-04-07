@@ -66,7 +66,7 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
                                 <div class="tab-content no-border padding-24">
                                     <div id="home" class="tab-pane in active">
                                         <div class="row">
-                                            <div class="col-xs-12 col-sm-6">
+                                            <div class="col-sm-4">
 
                                                 <div>
                                                     <ul class="list-unstyled spaced">
@@ -112,20 +112,22 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
                                                             <i class="ace-icon fa fa-caret-right green"></i>Date prévisionnelle :
                                                             <b style="color:green"><?php $ticket->s("date_previs") ?></b>
                                                         </li>
-                                                        
-                                                        <li>
-                                                            <i class="ace-icon fa fa-caret-right green"></i>Déscription :
-                                                            <p><b style="color:green"><?php $ticket->s("message") ?></b></p>
-                                                        </li>
-
-
                                                     </ul>
 
                                                 </div>
 
                                             </div><!-- /.col -->
-                                        </div>
 
+
+                                            <div class="col-sm-8">
+                                                <div>
+                                                    <div class="space-6"></div>
+                                                    <div class="ayoub">
+                                                        <?php $ticket->s("message") ?>
+                                                    </div>
+                                                </div>
+                                            </div><!-- /.col -->
+                                        </div>
 
                                     </div><!-- /#home -->
 
@@ -139,16 +141,16 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
                     </div>
                 </div>
 
-                 </div>
-
-                <?php
-                $form->button('Enregistrer');
-//Form render
-                $form->render();
-                ?>
             </div>
+
+            <?php
+            $form->button('Enregistrer');
+//Form render
+            $form->render();
+            ?>
         </div>
     </div>
+</div>
 </div>
 <!-- End Add devis bloc -->
 
@@ -160,11 +162,15 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
 </script>	
 
 <style>
-    .ayoub{
-         border-color:red ;
-         border-bottom-width: 10;
-         background-color: #ffffff;
-         color: #616161;
-    }
-    
+    .ayoub {
+  min-height: 20px;
+  padding: 19px;
+  margin-bottom: 20px;
+  background-color: #DEE4EA;
+  border: 2px solid #e3e3e3;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
 </style>

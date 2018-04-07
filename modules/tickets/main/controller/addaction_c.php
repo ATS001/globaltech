@@ -16,7 +16,7 @@ if (MInit::form_verif('addaction', false)) {
         'pj_id' => Mreq::tp('pj-id'),
         'photo_id' => Mreq::tp('photo-id'),
     );
-
+    //var_dump($posted_data);
     //Check if array have empty element return list
     //for acceptable empty field do not put here
     $checker = null;

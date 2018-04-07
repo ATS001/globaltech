@@ -163,6 +163,7 @@ class Mtickets {
                 $this->save_file('pj', 'PJ' . $this->_data['id_ticket'], 'Document');
 
                 $this->save_file('photo', 'Photo' . $this->_data['id_ticket'], 'Image');
+                
                 $this->log .= '</br>Enregistrement  réussie ' . $this->last_id . ' -';
                 if (!Mlog::log_exec($this->table_action, $this->last_id, 'Création action', 'Insert')) {
                     $this->log .= '</br>Un problème de log ';
@@ -451,17 +452,17 @@ class Mtickets {
         }
 
         $new_name_file = $item . '_' . $this->last_id;
-        $folder = MPATH_UPLOAD . 'commerciale' . SLASH . $this->last_id;
+        $folder = MPATH_UPLOAD . 'tickets' . SLASH . $this->last_id;
         $id_line = $this->last_id;
         $title = $titre;
-        $table = $this->table;
+        $table = $this->table_action;
         $column = $item;
         $type = $type;
 
 
 
         //Call save_file_upload from initial class
-        if (!Minit::save_file_upload($temp_file, $new_name_file, $folder, $id_line, $title, 'commerciale', $table, $column, $type, $edit = null)) {
+        if (!Minit::save_file_upload($temp_file, $new_name_file, $folder, $id_line, $title, 'tickets', $table, $column, $type, $edit = null)) {
             $this->error = false;
             $this->log .= '</br>Enregistrement ' . $item . ' dans BD non réussie';
         }
