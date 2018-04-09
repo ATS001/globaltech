@@ -74,7 +74,7 @@
 		<script src="<?php echo THEME_PATH ;?>/js/ace/ace.settings-skin.js"></script>
 		<script src="<?php echo THEME_PATH ;?>/js/jquery.colorbox.js"></script>
 		<script src="<?php echo THEME_PATH ;?>/js/jquery.maskedinput.js"></script>
-		<?php if(session::get('userid') AND Mcfg::get('deploy') == true){?>
+		<?php if(session::get('userid') AND Mcfg::get('deploy') == false){?>
 		<script src="<?php echo THEME_PATH ;?>/js/notify.js"></script>	
 		<?php } ?>
 		
