@@ -54,6 +54,11 @@ $checker = null;
     $empty_list .= "<li>Dénomination</li>";
     $checker = 1;
   }
+
+  if(!is_numeric($posted_data['id_ville'])){
+
+    $posted_data['id_ville']=NULL;
+  }
   /*if($posted_data['r_social'] == NULL){
 
     $empty_list .= "<li>Raison Social</li>";

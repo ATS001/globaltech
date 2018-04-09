@@ -86,11 +86,8 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->Get_detail_devis_show())
 
 							
 							<div class="widget-toolbar hidden-480">
-								<?php if($info_devis->g('devis_pdf') == null){?>
+								
 								<a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'devis') ?>" data="<?php echo MInit::crypt_tp('id', $info_devis->id_devis) ?>">
-									<?php }else{?>
-									<a href="#" class="iframe_pdf" rel="<?php echo $info_devis->g('devis_pdf').'&'.MInit::crypt_tp('doc',$info_devis->g('devis_pdf')) ?>" >
-										<?php }?>
 										<i class="ace-icon fa fa-print"></i>
 									</a>
 

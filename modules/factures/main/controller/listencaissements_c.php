@@ -44,20 +44,20 @@ $array_column = array(
     ),
      array(
         'column' => 'encaissements.date_encaissement',
-        'type'   => '',
+        'type'   => 'date',
         'alias'  => 'date',
         'width'  => '15',
         'header' => 'Date',
         'align'  => 'C'
     ),
-   /* array(
+    array(
         'column' => 'statut',
         'type'   => '',
         'alias'  => 'statut',
         'width'  => '15',
         'header' => 'Statut',
         'align'  => 'C'
-    ),*/
+    )
     
  );
 //Creat new instance

@@ -40,7 +40,7 @@ $id_facture = Mreq::tp('id');
             <div class="widget-box">
 
 <?php
-$form = new Mform('addencaissement', 'addencaissement', '', 'encaissements&' . MInit::crypt_tp('id', $id_facture), '0');
+$form = new Mform('addencaissements', 'addencaissements', '', 'encaissements&' . MInit::crypt_tp('id', $id_facture), '0');
 $form->input_hidden('idfacture', $id_facture);
 
 //Justification

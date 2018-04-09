@@ -2,7 +2,7 @@
     <?php
    
     defined('_MEXEC') or die;
-    if (MInit::form_verif('addencaissement', false)) {
+    if (MInit::form_verif('addencaissements', false)) {
 
         $posted_data = array(       
             'designation' => Mreq::tp('designation'),
@@ -61,23 +61,32 @@
        
         $new_encaissement = new Mfacture($posted_data);
         $new_encaissement->exige_pj=false;
-        
+
+        $fact = new Mfacture();
+        $fact->id_facture = Mreq::tp('idfacture');
+        $fact->get_commerciale_devis();
+//var_dump(Mreq::tp('idfacture'));
+//var_dump($fact->compte_commercial_info['commission']);
         //execute Insert returne false if error
         if ($new_encaissement->save_new_encaissement()) {
+           /* if($fact->compte_commercial_info['commission']!=0){
+                
+                if($new_encaissement->credit_compte_commerciale()){
 
-            if($new_encaissement->credit_compte_commerciale()){
+                exit("1#" . $new_encaissement->log); //Green message
 
-            echo("1#" . $new_encaissement->log);
+                }else {
 
-            }else {
+                exit("0#" . $new_encaissement->log); //Red message
 
-            exit("0#" . $new_encaissement->log); //Red message
-
-            }  
+                } 
+            } */
+            exit("1#" . $new_encaissement->log); //Green message
         }else {
 
-            echo("0#" . $new_encaissement->log);
+            exit("0#" . $new_encaissement->log); //Red message
         }
+
     } else {
-        view::load_view('addencaissement');
+        view::load_view('addencaissements');
     }

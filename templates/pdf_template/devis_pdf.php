@@ -153,12 +153,12 @@ class MYPDF extends TCPDF {
 		//$marge_after_detail_client = 
 		$this->writeHTMLCell(100, 0, 99, 40, $detail_client, 0, 0, 0, true, 'L', true);
 		if($this->info_devis['projet'] != null){
-			$projet = '<span style="color:#C81414; padding:5px;">'.$this->info_devis['projet'].'</span>';
+			$projet = '<span style="width: 65%;font-family: sans-serif;ont-weight: bold;font-size: 10pt;"><strong>'.$this->info_devis['projet'].'</span>';
 		    $height = $this->getLastH();
 		    $this->SetTopMargin($height + $this->GetY() + 5);
 		    //writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
 		    $this->setCellPadding(1);
-		    $this->writeHTMLCell('', '', 16, '', $projet, 1, 0, 0, true, 'L', true);
+		    $this->writeHTMLCell(183, '', 15.6, '', $projet, 1, 0, 0, true, 'L', true);
 		}
 		$this->Ln();
 		$this->setCellPadding(0);
@@ -176,7 +176,7 @@ class MYPDF extends TCPDF {
 
 	// Page footer
 	public function Footer() {
-		if($this->qr == true){
+		//if($this->qr == true){
 // QRCODE,H : QR-CODE Best error correction
 			$qr_content = $this->info_devis['reference']."\n".$this->info_devis['denomination']."\n".$this->info_devis['date_devis'];
 			$style = array(
@@ -187,11 +187,11 @@ class MYPDF extends TCPDF {
 	            'bgcolor' => false, //array(255,255,255)
 	            'module_width' => 1, // width of a single module in points
 	            'module_height' => 1 // height of a single module in points
-            );
+           );
 	//write2DBarcode($code, $type, $x='', $y='', $w='', $h='', $style='', $align='', $distort=false)
 	        $this->SetY(-30);
 			$this->write2DBarcode($qr_content, 'QRCODE,H', 15, '', 25, 25, $style, 'N');
-		}
+		//}
 		$ste_c = new MSte_info();
         $this->SetY(-30);
 		$ste = $ste_c->get_ste_info_report_footer(1);
@@ -376,16 +376,36 @@ p {
 </tr>
 
 <tr>
-    <td colspan="2" align="right" style="font: underline; padding-right: 200px;">
-        <br><br>
+    <td colspan="2" align="right" style="font: underline; width: 550px; padding-right: 200px;">
+        <br><br><br><br><br>
         <strong>'.$signature.'</strong>
+    </td>
+</tr>';
+//$pdf->lastPage(); 
+//$block_sum .= '</table>';
+
+$d = new Mdevis();
+$d->id_devis = Mreq::tp('id');
+$d->get_devis();
+
+if($d->devis_info['etat'] == 0){
+	//var_dump('ohhh 0');
+$block_sum .= '</table>';
+
+}else{
+	//var_dump(' 0');	
+$block_sum .= '
+<tr>
+<td colspan="2" align="right" style="font: underline; width: 620px;  padding-right: 200px;">
+        <br>
+        <span class="profile-picture">
+			<img width="170" height="170" class="editable img-responsive" alt="logo_global.png" id="avatar2" src="./upload/signature/signature_ali.jpg" />
+		</span>	
+
     </td>
 </tr>
 </table>';
-//$pdf->lastPage(); 
-
-
-
+}
 
 
 $pdf->writeHTML($html, true, false, true, false, '');

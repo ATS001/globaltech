@@ -23,17 +23,42 @@ if(!MInit::crypt_tp('id', null, 'D') or !$facture->get_facture())
    exit('0#<br>Les informations pour cette template sont erronées, contactez l\'administrateur');
 }
 
-
+$type_echeance = new Mfacture();
+$type_echeance->id_facture = Mreq::tp('id');
+$type_echeance->get_facture_type_echeance();
+//var_dump($facture->facture_info['base_fact']);
+//var_dump($type_echeance->type_echeance_info['type_echeance']);
 
 //Execute Pdf render
 
-if(!$facture->Get_detail_facture_pdf())
-{
-	exit("0#".$facture->log);
 
-}
+
+//var_dump('test');
 global $db;
-$headers = array(
+if($facture->facture_info['base_fact']=='C'){
+
+	if ($type_echeance->type_echeance_info['type_echeance'] == 'Autres'){
+			if(!$facture->Get_detail_facture_autres_pdf())
+			{
+				exit("0#".$facture->log);
+
+			}
+
+		$headers = array(
+            '#'           => '5[#]C',
+            'Réf'         => '17[#]C',
+            'Description' => '73[#]', 
+
+        );
+	}else
+	{
+		if(!$facture->Get_detail_facture_pdf())
+		{
+			exit("0#".$facture->log);
+
+		}
+
+		$headers = array(
             '#'           => '5[#]C',
             'Réf'         => '17[#]C',
             'Description' => '43[#]', 
@@ -42,8 +67,38 @@ $headers = array(
             'P.Total'     => '15[#]R',
 
         );
+	}
+
+
+}
+else{
+		if(!$facture->Get_detail_facture_pdf())
+		{
+			exit("0#".$facture->log);
+
+		}
+
+		$headers = array(
+            '#'           => '5[#]C',
+            'Réf'         => '17[#]C',
+            'Description' => '43[#]', 
+            'Qte'         => '5[#]C', 
+            'P.Unitaire'  => '10[#]R',
+            'P.Total'     => '15[#]R',
+
+        );
+}
+
+/*//var_dump('test2');
 $headers2 = array(
     'ID'          => '5[#]C',
+    'Désignation' => '30[#]L',
+    'Type'        => '15[#]C',
+    'Montant'     => '10[#]R',
+);*/
+
+//var_dump('test2');
+$headers2 = array(
     'Désignation' => '30[#]L',
     'Type'        => '15[#]C',
     'Montant'     => '10[#]R',
@@ -226,6 +281,7 @@ class MYPDF extends TCPDF {
 		    $this->writeHTMLCell(183, '', 15.6, '', $projet, 1, 0, 0, true, 'L', true);
 		}
 		//$this->Ln();
+		//Comment fati 04/03 pour probleme tableau complement
 		$this->setCellPadding(0);
 		$height = $this->getLastH() + $this->GetY();
 		//$this->SetTopMargin(10 + $this->GetY());
@@ -235,15 +291,17 @@ class MYPDF extends TCPDF {
 			$this->writeHTMLCell('', '', 15, $height, $tableau_head, 0, 0, 0, true, 'L', true);
 		    $height = $this->getLastH();
             $this->SetTopMargin($height + $this->GetY());
+        //end comment fati
+
 		}
 		
 	}
 
 	// Page footer
 	public function Footer() {
-		if($this->qr == true){
+		//if($this->qr == true){
 // QRCODE,H : QR-CODE Best error correction
-			$qr_content = $this->info_facture['reference']."\n".$this->info_facture['denomination']."\n".$this->info_facture['date_devis'];
+			$qr_content = $this->info_facture['reference']."\n".$this->info_devis['denomination']."\n".$this->info_facture['date_facture'];
 			$style = array(
 				'border' => 1,
 				'vpadding' => 'auto',
@@ -256,7 +314,7 @@ class MYPDF extends TCPDF {
 	//write2DBarcode($code, $type, $x='', $y='', $w='', $h='', $style='', $align='', $distort=false)
 	        $this->SetY(-30);
 			$this->write2DBarcode($qr_content, 'QRCODE,H', 15, '', 25, 25, $style, 'N');
-		}
+		//}
 		$ste_c = new MSte_info();
         $this->SetY(-30);
 		$ste = $ste_c->get_ste_info_report_footer(1);
@@ -353,18 +411,6 @@ $pdf->Table_body2 = $tableau_body_complement;
 $html2 = $pdf->Table_body2;
 
 
-if ($pdf->info_complement != null) {
-
-    $pdf->writeHTMLCell('', '', 15, '', '<strong>Tableau des compléments</strong>', 0, 0, 0, true, 'L', true);
-    $height = $pdf->getY();
-    $pdf->SetY($height + 5);
-//$pdf->writeHTML('<strong>Tableau des compléments</strong>', true, false, true, false, '');
-    $pdf->writeHTMLCell('', '', 14, '', $tableau_head_complement, 0, 0, 0, true, 'L', true);
-    $height = $pdf->getY();
-    $pdf->SetY($height + 5);
-    $pdf->writeHTML($html2, true, false, true, false, '');
-}
-
 
 
 $obj = new nuts($pdf->info_facture['total_ttc'], $pdf->info_devis['devise']);
@@ -397,9 +443,13 @@ $titl_ht = $pdf->info_facture['total_tva'] == 0 ? 'Total à payer' : 'Total HT';
 //$signature = $pdf->info_proforma['comercial']; 
 
 $signature = 'La Direction'; 
-
-
-$block_sum = '<div></div>
+$table_complement = null;
+if ($pdf->info_complement != null)
+{
+	$table_complement =  '<strong>Tableau des compléments</strong><br>'.$tableau_head_complement.$html2;
+}
+$block_sum = $table_complement;
+$block_sum .= '<div></div>
 <style>
 p {
     line-height: 0.6;
@@ -469,16 +519,36 @@ p {
 </tr>
 
 <tr>
-    <td colspan="2" align="right" style="font: underline; padding-right: 200px;">
-        <br><br>
+    <td colspan="2" align="right" style="font: underline; width: 550px;  padding-right: 200px;">
+        <br><br><br><br><br>
         <strong>'.$signature.'</strong>
+    </td>
+</tr>';
+//$pdf->lastPage(); 
+//$block_sum .= '</table>';
+
+$f = new Mfacture();
+$f->id_facture = Mreq::tp('id');
+$f->get_facture();
+//var_dump($f->facture_info['etat']);
+if($f->facture_info['etat'] == 0){
+	//var_dump('ohhh 0');
+$block_sum .= '</table>';
+
+}else{
+	//var_dump(' 0');	
+$block_sum .= '
+<tr>
+<td colspan="2" align="right" style="font: underline; width: 620px;  padding-right: 200px;">
+        <br>
+        <span class="profile-picture">
+			<img width="150" height="150" class="editable img-responsive" alt="logo_global.png" id="avatar2" src="./upload/signature/signature_ali.jpg" />
+		</span>	
+
     </td>
 </tr>
 </table>';
-//$pdf->lastPage(); 
-
-
-
+}
 
 
 $pdf->writeHTML($html, true, false, true, false, '');

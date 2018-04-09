@@ -34,11 +34,11 @@ $array_column = array(
         'align'  => 'C'
     ),
     array(
-        'column' => 'devis.projet',
+        'column' => 'CONCAT(clients.reference, " - ",clients.denomination)',
         'type'   => '',
-        'alias'  => 'projet',
+        'alias'  => 'client',
         'width'  => '10',
-        'header' => 'Projet',
+        'header' => 'client',
         'align'  => 'L'
     ),
     array(
@@ -70,9 +70,9 @@ $array_column = array(
 //Creat new instance
 $list_data_table = new Mdatatable();
 //Set tabels used in Query
-$list_data_table->tables = array('contrats', 'devis');
+$list_data_table->tables = array('contrats', 'devis','clients');
 //Set Jointure
-$list_data_table->joint = 'contrats.iddevis = devis.id ';
+$list_data_table->joint = 'contrats.iddevis = devis.id and clients.id = devis.id_client';
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query
