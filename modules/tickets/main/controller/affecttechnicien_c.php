@@ -3,7 +3,7 @@
 //First check target no Hack
 if (!defined('_MEXEC'))
     die();
-var_dump(Mreq::tp('id'));
+//var_dump(Mreq::tp('id'));
 //SYS GLOBAL TECH
 // Modul: tickets
 //Created : 03-04-2018
@@ -14,8 +14,7 @@ if (MInit::form_verif('affecttechnicien', false)) {
         'id' => Mreq::tp('id'),
         'id_technicien' => Mreq::tp('id_technicien'),
     );
-
-
+    
     //Check if array have empty element return list
     //for acceptable empty field do not put here
     $checker = null;
@@ -38,16 +37,21 @@ if (MInit::form_verif('affecttechnicien', false)) {
     //End check empty element
     $new_tickets = new Mtickets($posted_data);
     $new_tickets->id_tickets=$posted_data["id"];
-//******************************************************
+   
     //execute Insert returne false if error
     if ($new_tickets->affect_ticket()) {
+        if($new_tickets->valid_tickets($etat=1)){
+            exit("1#" . $new_tickets->log);
+        } else {
+            exit("0#" . $new_tickets->log);
+        }
 
         exit("1#" . $new_tickets->log);
     } else {
 
         exit("0#" . $new_tickets->log);
     }
-    //*************************************
+    
     
     
 }
