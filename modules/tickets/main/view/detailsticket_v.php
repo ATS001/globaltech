@@ -24,7 +24,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $ticket->get_tickets()) {
     // returne message error red to client
     exit('3#' . $ticket->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur ');
 }
-
+//var_dump($ticket->tickets_info);
 //$pj = $commerciale->commerciale_info['pj'];
 //$photo = Minit::get_file_archive($commerciale->commerciale_info['photo']);
 ?>
@@ -87,36 +87,55 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $ticket->get_tickets()) {
                                                 <i class="ace-icon fa fa-caret-right green"></i>Client :
                                                 <b style="color:green"><?php $ticket->s("client") ?></b>
                                             </li>
-                                            <li>
-                                                <i class="ace-icon fa fa-caret-right green"></i>Projet :
-                                                <b style="color:green"><?php $ticket->s("projet") ?></b>
-                                            </li>
+                                            <?php if ($ticket->g("projet") != NULL) { ?>
+                                                <li>
+                                                    <i class="ace-icon fa fa-caret-right green"></i>Projet :
+                                                    <b style="color:green"><?php $ticket->s("projet") ?></b>
+                                                </li>
+                                            <?php } ?>
                                             <li>
                                                 <i class="ace-icon fa fa-caret-right green"></i>Date prévisionnelle :
                                                 <b style="color:green"><?php $ticket->s("date_previs") ?></b>
                                             </li>
-                                            <li>
-                                                <i class="ace-icon fa fa-caret-right green"></i>Date_realisation :
-                                                <b style="color:green"><?php $ticket->s("date_realis") ?></b>
-                                            </li>
+                                            <?php if ($ticket->g("date_realis") != NULL) { ?>
+                                                <li>
+                                                    <i class="ace-icon fa fa-caret-right green"></i>Date_realisation :
+                                                    <b style="color:green"><?php $ticket->s("date_realis") ?></b>
+                                                </li>
+                                            <?php } ?>
                                             <li>
                                                 <i class="ace-icon fa fa-caret-right green"></i>Type produit:
-                                                <b style="color:green"><?php $ticket->s("type_produit") ?></b>
+                                                <b style="color:green"><?php $ticket->s("typep") ?></b>
                                             </li>
+
                                             <li>
                                                 <i class="ace-icon fa fa-caret-right green"></i>Catégorie produit :
                                                 <b style="color:green"><?php $ticket->s("categorie_produit") ?></b>
                                             </li>
-                                            <li>
-                                                <i class="ace-icon fa fa-caret-right green"></i>Technicien :
-                                                <b style="color:green"><?php $ticket->s("technicien") ?></b>
-                                            </li>
-                                            <li>
-                                                <i class="ace-icon fa fa-caret-right green"></i>Date affectation :
-                                                <b style="color:green"><?php $ticket->s("date_affectation") ?></b>
-                                            </li>
-                                            
+
+                                            <?php if ($ticket->g("prd") != NULL) { ?>
+                                                <li>
+                                                    <i class="ace-icon fa fa-caret-right green"></i>Produit :
+                                                    <b style="color:green"><?php $ticket->s("prd") ?></b>
+                                                </li>
+                                            <?php } ?>
+
+                                            <?php if ($ticket->g("technicien") != NULL) { ?>
+                                                <li>
+                                                    <i class="ace-icon fa fa-caret-right green"></i>Technicien :
+                                                    <b style="color:green"><?php $ticket->s("technicien") ?></b>
+                                                </li>                                            
+                                                <li>
+                                                    <i class="ace-icon fa fa-caret-right green"></i>Date affectation :
+                                                    <b style="color:green"><?php $ticket->s("date_affectation") ?></b>
+                                                </li>
+                                            <?php } ?>
+
                                         </ul>
+                                    </div>
+                                    <div class="space-6"></div>
+                                    <div class="well">
+                                        <?php $ticket->s("message") ?>
                                     </div>
 
                                 </div><!-- /.col -->

@@ -8,21 +8,20 @@ if (!defined('_MEXEC'))
 // Modul: tickets
 //Created : 02-04-2018
 //Model
-/**
- * M%modul% 
- * Version 1.0
- * 
- */
+
 class Mtickets {
 
     private $_data;                      //data receive from form
     var $table = 'tickets';   //Main table of module
+    var $table_action = 'action_ticket'; //Second table of module
     var $last_id = null;        //return last ID after insert command
     var $log = null;        //Log of all opération.
     var $error = true;        //Error bol changed when an error is occured
     var $id_tickets = null;        // tickets ID append when request
     var $token = null;        //user for recovery function
     var $tickets_info = array();     //Array stock all tickets info
+    var $exige_pj;
+    var $exige_photo;
 
     public function __construct($properties = array()) {
         $this->_data = $properties;
@@ -44,7 +43,7 @@ class Mtickets {
         global $db;
 
         $table = $this->table;
-       
+
         $sql = "SELECT $table.* ,
             IFNULL(DATEDIFF(DATE(NOW()),DATE(tickets.date_affectation)),0) as nbrj,
                 DATE_FORMAT($table.date_affectation,'%d-%m-%Y') as date_affectation,
@@ -53,14 +52,17 @@ class Mtickets {
                 CONCAT(users_sys.fnom,' ',users_sys.lnom) as technicien ,
                 clients.denomination as client ,
                 ref_categories_produits.categorie_produit as categorie_produit ,
-                ref_types_produits.type_produit as type_produit 
-                FROM $table  LEFT JOIN ref_categories_produits  ON ref_categories_produits.id=$table.categorie_produit"
+                ref_types_produits.type_produit as typep, 
+                produits.designation as prd
+                FROM $table LEFT JOIN produits ON produits.id=$table.id_produit "
+                . "LEFT JOIN ref_categories_produits  ON ref_categories_produits.id=$table.categorie_produit"
                 . " LEFT JOIN ref_types_produits ON ref_types_produits.id=$table.type_produit"
                 . " LEFT JOIN clients ON clients.id=$table.id_client"
                 . " LEFT JOIN users_sys ON users_sys.id=$table.id_technicien"
                 . " WHERE $table.id = " . $this->id_tickets;
 
-        
+
+
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
@@ -70,7 +72,7 @@ class Mtickets {
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
                 $this->tickets_info = $db->RowArray();
-                
+
                 $this->error = true;
             }
         }
@@ -101,6 +103,7 @@ class Mtickets {
             //$values["date_realis"] = MySQL::SQLValue($this->_data["date_realis"]);
             $values["type_produit"] = MySQL::SQLValue($this->_data["type_produit"]);
             $values["categorie_produit"] = MySQL::SQLValue($this->_data["categorie_produit"]);
+            $values["id_produit"] = MySQL::SQLValue($this->_data["id_produit"]);
             //$values["id_technicien"] = MySQL::SQLValue($this->_data["id_technicien"]);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
@@ -132,13 +135,61 @@ class Mtickets {
     }
 
     /**
+     * Save new row to main table
+     * @return [bol] [bol value send to controller]
+     */
+    public function save_new_action() {
+
+        $this->check_non_exist('tickets', 'id', $this->_data['id_ticket'], 'Ticket');
+
+        if ($this->error == true) {
+            global $db;
+            //Add all fields for the table
+            $values["message"] = MySQL::SQLValue($this->_data["message"]);
+            $values["date_action"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_action'])));
+            $values["id_ticket"] = MySQL::SQLValue($this->_data["id_ticket"]);
+            $values["creusr"] = MySQL::SQLValue(session::get('userid'));
+            $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+
+            if (!$result = $db->InsertRow($this->table_action, $values)) {
+
+                $this->log .= $db->Error();
+                $this->error = false;
+                $this->log .= '</br>Enregistrement BD non réussie';
+            } else {
+
+                $this->last_id = $result;
+
+                $this->save_file('pj', 'PJ' . $this->_data['id_ticket'], 'Document');
+
+                $this->save_file('photo', 'Photo' . $this->_data['id_ticket'], 'Image');
+                
+                $this->log .= '</br>Enregistrement  réussie ' . $this->last_id . ' -';
+                if (!Mlog::log_exec($this->table_action, $this->last_id, 'Création action', 'Insert')) {
+                    $this->log .= '</br>Un problème de log ';
+                }
+            }
+        } else {
+
+            $this->log .= '</br>Enregistrement non réussie';
+        }
+
+        //check if last error is true then return true else rturn false.
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    /**
      * Edit selected Row
      * @return Bol [send to controller]
      */
     public function edit_tickets() {
 
         $this->check_non_exist('clients', 'id', $this->_data['id_client'], 'Client');
-        $this->check_non_exist('users_sys', 'id', $this->_data['id_technicien'], 'Technicien');
+        //$this->check_non_exist('users_sys', 'id', $this->_data['id_technicien'], 'Technicien');
 
 
         $this->get_tickets();
@@ -154,9 +205,8 @@ class Mtickets {
             $values["date_previs"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_previs'])));
             $values["type_produit"] = MySQL::SQLValue($this->_data["type_produit"]);
             $values["categorie_produit"] = MySQL::SQLValue($this->_data["categorie_produit"]);
-            $values["id_technicien"] = MySQL::SQLValue($this->_data["id_technicien"]);
-
-
+            //$values["id_technicien"] = MySQL::SQLValue($this->_data["id_technicien"]);
+            $values["id_produit"] = MySQL::SQLValue($this->_data["id_produit"]);
             $values["updusr"] = MySQL::SQLValue(session::get('userid'));
             $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
             $wheres["id"] = $this->id_tickets;
@@ -218,7 +268,7 @@ class Mtickets {
 
             if (!$result = $db->UpdateRows($this->table, $values, $wheres)) {
                 //$db->Kill();
-                
+
                 $this->log .= $db->Error();
                 $this->error == false;
                 $this->log .= '</br>Enregistrement BD non réussie';
@@ -390,6 +440,31 @@ class Mtickets {
             return $this->tickets_info[$key];
         } else {
             return null;
+        }
+    }
+
+    private function save_file($item, $titre, $type) {
+        //Format all parameteres
+        $temp_file = $this->_data[$item . '_id'];
+        //If nofile uploaded return kill function
+        if ($temp_file == Null) {
+            return true;
+        }
+
+        $new_name_file = $item . '_' . $this->last_id;
+        $folder = MPATH_UPLOAD . 'tickets' . SLASH . $this->last_id;
+        $id_line = $this->last_id;
+        $title = $titre;
+        $table = $this->table_action;
+        $column = $item;
+        $type = $type;
+
+
+
+        //Call save_file_upload from initial class
+        if (!Minit::save_file_upload($temp_file, $new_name_file, $folder, $id_line, $title, 'tickets', $table, $column, $type, $edit = null)) {
+            $this->error = false;
+            $this->log .= '</br>Enregistrement ' . $item . ' dans BD non réussie';
         }
     }
 
