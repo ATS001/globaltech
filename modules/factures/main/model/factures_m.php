@@ -264,9 +264,10 @@ class Mfacture {
 
         $sql = "SELECT id,reference,designation,
                 REPLACE(FORMAT(montant,0),',',' ') as montant,
-                DATE_FORMAT(date_encaissement,'%d-%m-%Y') as date_encaissement                        
+                DATE_FORMAT(date_encaissement,'%d-%m-%Y') as date_encaissement ,
+                pj as pj                       
                 FROM 
-    		$table_encaissement WHERE  $table_encaissement.idfacture = " . $this->id_facture;
+    		$table_encaissement WHERE $table_encaissement.etat=1 AND  $table_encaissement.idfacture = " . $this->id_facture;
 
         if (!$db->Query($sql)) {
             $this->error = false;
