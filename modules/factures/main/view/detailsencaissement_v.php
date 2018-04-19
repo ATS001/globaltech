@@ -93,13 +93,25 @@ $justif = $info_encaissement->encaissement_info['pj'];
                                 <?php
                                 if ($justif != null) {
                                     ?>
-                                    <div class="center">
+                                    <div class="center">                                        
                                         <a class="iframe_pdf" rel="<?php $info_encaissement->printattribute('pj') ?>">
-                                            <p class="lead"><i class="ace-icon fa fa-file-pdf-o red"></i>Justification de l'encaissement : <?php $info_encaissement->printattribute('reference') ?> </p>
+                                            <p class="lead"><i class="ace-icon fa fa-file-pdf-o red"></i>
+                                                <?php $info_encaissement->printattribute('reference') ?> </p>
                                         </a>							
                                     </div>  
                                     <?php
                                 }
+                                else 
+                                { ?>
+                                    <div class="profile-info-row">
+                                    <div class="profile-info-name"> Pièce jointe </div>
+
+                                    <div class="profile-info-value">
+                                
+                                        <span>Pièce jointe non disponible</span>
+                                    </div>
+                                </div>
+                                <?php }
                                 ?> 
 
                             </div>
