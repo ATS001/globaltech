@@ -203,7 +203,7 @@ class Mfacture {
        /* $sql = "SELECT id,designation,type,
                 REPLACE(FORMAT(montant,0),',',' ') as montant
                 FROM $table_complement WHERE  $table_complement.idfacture = " . $this->id_facture;*/
-         $sql = "SELECT designation,type,
+         $sql = "SELECT id,designation,type,
                 REPLACE(FORMAT(montant,0),',',' ') as montant
                 FROM $table_complement WHERE  $table_complement.idfacture = " . $this->id_facture;
 

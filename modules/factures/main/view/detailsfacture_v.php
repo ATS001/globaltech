@@ -11,7 +11,7 @@ $info_facture->get_contrat($facture['idcontrat']);
 
 $info_facture->get_complement_by_facture();
 $complements = $info_facture->complement_info;
-
+var_dump($complements);
 $info_facture->get_all_encaissements();
 $encaissements = $info_facture->encaissement_info;
 
