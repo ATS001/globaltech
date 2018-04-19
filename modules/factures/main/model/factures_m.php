@@ -397,7 +397,7 @@ class Mfacture {
         //$this->Generate_encaissement_reference();
         global $db;
         //Generate reference
-        if (!$reference = $db->Generate_reference($this->table, 'ENC')) {
+        if (!$reference = $db->Generate_reference($this->table_encaissement, 'ENC')) {
             $this->log .= '</br>Problème Réference';
             return false;
         }
