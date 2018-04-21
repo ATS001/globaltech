@@ -45,7 +45,7 @@ $id_ticket=$ticket->g("id");
             <div class="widget-box">
 
                 <?php
-                $form = new Mform('addaction', 'addaction', '', 'tickets', '0', null);
+                $form = new Mform('addaction', 'addaction', '', 'detailsticket&'.MInit::crypt_tp('id', $id_ticket), '0', null);
                 $form->input_hidden('id_ticket', $id_ticket);
 //Date action ==> 
                 $date_act[] = array('required', 'true', 'Insérer une date ');
