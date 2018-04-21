@@ -12,14 +12,17 @@ if (!defined('_MEXEC'))
 class Mtickets {
 
     private $_data;                      //data receive from form
-    var $table = 'tickets';   //Main table of module
-    var $table_action = 'action_ticket'; //Second table of module
-    var $last_id = null;        //return last ID after insert command
-    var $log = null;        //Log of all opération.
-    var $error = true;        //Error bol changed when an error is occured
-    var $id_tickets = null;        // tickets ID append when request
-    var $token = null;        //user for recovery function
-    var $tickets_info = array();     //Array stock all tickets info
+    var $table              = 'tickets';   //Main table of module
+    var $table_action       = 'action_ticket'; //Second table of module
+    var $last_id            = null;        //return last ID after insert command
+    var $log                = null;        //Log of all opération.
+    var $error              = true;        //Error bol changed when an error is occured
+    var $id_action_ticket   = null; //action ticket ID
+    var $id_tickets         = null;        // tickets ID append when request
+    var $token              = null;        //user for recovery function
+    var $tickets_info       = array();     //Array stock all tickets info
+    var $ticket_action_info = array();
+    var $list_action        = array();// Arrauy of list action
     var $exige_pj;
     var $exige_photo;
 
@@ -72,6 +75,37 @@ class Mtickets {
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
                 $this->tickets_info = $db->RowArray();
+
+                $this->error = true;
+            }
+        }
+        //return Array user_info
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function get_ticket_action() {
+        global $db;
+
+        $table = $this->table_action;
+
+        $sql = "SELECT $table.* FROM $table "
+            . " WHERE $table.id = " . $this->id_action_ticket;
+
+
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->ticket_action_info = $db->RowArray();
 
                 $this->error = true;
             }
@@ -145,11 +179,11 @@ class Mtickets {
         if ($this->error == true) {
             global $db;
             //Add all fields for the table
-            $values["message"] = MySQL::SQLValue($this->_data["message"]);
+            $values["message"]     = MySQL::SQLValue($this->_data["message"]);
             $values["date_action"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_action'])));
-            $values["id_ticket"] = MySQL::SQLValue($this->_data["id_ticket"]);
-            $values["creusr"] = MySQL::SQLValue(session::get('userid'));
-            $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+            $values["id_ticket"]   = MySQL::SQLValue($this->_data["id_ticket"]);
+            $values["creusr"]      = MySQL::SQLValue(session::get('userid'));
+            $values["credat"]      = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
             if (!$result = $db->InsertRow($this->table_action, $values)) {
 
@@ -180,6 +214,122 @@ class Mtickets {
         } else {
             return true;
         }
+    }
+
+    /**
+     * Edit Action
+     * @return [bol] [bol value send to controller]
+     */
+    public function edit_tickets_action() {
+
+        
+        $this->get_ticket_action();
+        if ($this->error == true) {
+            global $db;
+            //Add all fields for the table
+            $values["message"]     = MySQL::SQLValue($this->_data["message"]);
+            $values["date_action"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_action'])));
+            
+            $values["updusr"]      = MySQL::SQLValue(session::get('userid'));
+            $values["upddat"]      = MySQL::SQLValue(date("Y-m-d H:i:s"));
+            $wheres["id"] =MySQL::SQLValue($this->id_action_ticket);
+
+            if (!$result = $db->UpdateRows($this->table_action, $values, $wheres)) {
+
+                $this->log .= $db->Error();
+                $this->error = false;
+                $this->log .= '</br>Enregistrement BD non réussie';
+            } else {
+
+                
+
+               /* $this->save_file('pj', 'PJ' . $this->_data['id_ticket'], 'Document');
+
+                $this->save_file('photo', 'Photo' . $this->_data['id_ticket'], 'Image');*/
+                
+                $this->log .= '</br>Enregistrement  réussie ' . $this->last_id . ' -';
+                if (!Mlog::log_exec($this->table_action, $this->last_id, 'Création action', 'Insert')) {
+                    $this->log .= '</br>Un problème de log ';
+                }
+
+                $this->last_id = $result;
+                $this->log .= '</br>Enregistrement  réussie ' . $this->last_id . ' -';
+                if (!Mlog::log_exec($this->table_action, $this->last_id, 'Modification tickets action', 'Update')) {
+                    $this->log .= '</br>Un problème de log ';
+                    $this->error = false;
+                }
+                //Esspionage
+                if (!$db->After_update($this->table_action, $this->last_id, $values, $this->tickets_info)) {
+                    $this->log .= '</br>Problème Espionnage';
+                    $this->error = false;
+                }
+            }
+        } else {
+
+            $this->log .= '</br>Enregistrement non réussie';
+        }
+
+        //check if last error is true then return true else rturn false.
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+     public function deleteactionticket()
+     {
+        global $db;
+        $id_action_ticket = $this->id_action_ticket;
+        
+        //Format where clause
+        $where['id'] = MySQL::SQLValue($id_action_ticket);
+        //check if id on where clause isset
+        if ($where['id'] == null) {
+            $this->error = false;
+            $this->log .= '</br>L\' id est vide';
+            return false;
+        }
+        //execute Delete Query
+        if (!$db->DeleteRows($this->table_action, $where)) {
+
+            $this->error = false;
+            $this->log .= '</br>Suppression non réussie';
+        } else {
+
+            $this->error = true;
+            $this->log .= '</br>Suppression réussie ';
+        }
+        //check if last error is true then return true else rturn false.
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+     }
+    public function get_action_ticket()
+    {
+        global $db;
+        $table_action = $this->table_action;
+        $sql_req = "SELECT $table_action.*, users_sys.nom FROM $table_action, users_sys WHERE users_sys.id = $table_action.creusr AND id_ticket = ".$this->id_tickets;
+        //exit($sql_req);
+        if(!$db->Query($sql_req) OR !$db->RowCount()){
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .= '</br>Pas d\'enregistrement trouvé';
+        }else{
+
+            $this->error = true;
+            $this->list_action = $db->RecordsArray();
+        }
+
+        //check if last error is true then return true else rturn false.
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+
     }
 
     /**
@@ -438,6 +588,32 @@ class Mtickets {
     public function g($key) {
         if ($this->tickets_info[$key] != null) {
             return $this->tickets_info[$key];
+        } else {
+            return null;
+        }
+    }
+
+        /**
+     * [sa Print value of entry]
+     * @param  [key array] $key [description]
+     * @return [print string]      [description]
+     */
+    public function sa($key) {
+        if ($this->ticket_action_info[$key] != null) {
+            echo $this->ticket_action_info[$key];
+        } else {
+            echo "";
+        }
+    }
+
+    /**
+     * [ga Get value of entry used into script]
+     * @param  [key array] $key [description]
+     * @return [string]      [description]
+     */
+    public function ga($key) {
+        if ($this->ticket_action_info[$key] != null) {
+            return $this->ticket_action_info[$key];
         } else {
             return null;
         }
