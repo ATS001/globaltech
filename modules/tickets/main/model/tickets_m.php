@@ -96,7 +96,6 @@ class Mtickets {
             . " WHERE $table.id = " . $this->id_action_ticket;
 
 
-
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
@@ -228,8 +227,7 @@ class Mtickets {
             global $db;
             //Add all fields for the table
             $values["message"]     = MySQL::SQLValue($this->_data["message"]);
-            $values["date_action"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_action'])));
-            
+            $values["date_action"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_action'])));            
             $values["updusr"]      = MySQL::SQLValue(session::get('userid'));
             $values["upddat"]      = MySQL::SQLValue(date("Y-m-d H:i:s"));
             $wheres["id"] =MySQL::SQLValue($this->id_action_ticket);
@@ -242,17 +240,13 @@ class Mtickets {
             } else {
 
                 
+                $this->last_id=$this->id_action_ticket;
+             
+               $this->save_file('pj', 'PJ' . $this->id_action_ticket, 'Document');
 
-               /* $this->save_file('pj', 'PJ' . $this->_data['id_ticket'], 'Document');
-
-                $this->save_file('photo', 'Photo' . $this->_data['id_ticket'], 'Image');*/
-                
-                $this->log .= '</br>Enregistrement  réussie ' . $this->last_id . ' -';
-                if (!Mlog::log_exec($this->table_action, $this->last_id, 'Création action', 'Insert')) {
-                    $this->log .= '</br>Un problème de log ';
-                }
-
-                $this->last_id = $result;
+                $this->save_file('photo', 'Photo' . $this->id_action_ticket, 'Image');
+               
+                //$this->last_id = $result;
                 $this->log .= '</br>Enregistrement  réussie ' . $this->last_id . ' -';
                 if (!Mlog::log_exec($this->table_action, $this->last_id, 'Modification tickets action', 'Update')) {
                     $this->log .= '</br>Un problème de log ';

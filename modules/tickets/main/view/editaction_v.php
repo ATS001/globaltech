@@ -16,7 +16,6 @@ if(!defined('_MEXEC'))die();
  	exit('3#'.$info_tickets->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
  }
 
-
 ?>
 
 <div class="pull-right tableTools-container">
@@ -59,12 +58,12 @@ $form->input_hidden('id_ticket', $info_tickets->ga('id_ticket'));
 
 
 //image
-                $form->input('Photo', 'photo', 'file', 9, null, null);
-                $form->file_js('photo', 1000000, 'image');
+                $form->input('Photo', 'photo', 'file', 9, "Photo", null);
+                $form->file_js('photo', 1000000, 'image',$info_tickets->ga("photo"), 1);
 
                 //PJ
-                $form->input('Pièce jointe', 'pj', 'file', 8, null, null);
-                $form->file_js('pj', 1000000, 'pdf');
+                $form->input('Pièce jointe', 'pj', 'file', 8, "Pièce jointe", null);
+                $form->file_js('pj', 1000000, 'pdf',$info_tickets->ga("pj"), 1);
 
 
 //Message

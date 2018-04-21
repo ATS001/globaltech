@@ -16,6 +16,8 @@ if(MInit::form_verif('editaction', false))
             'id'          => Mreq::tp('id') ,
             'date_action' => Mreq::tp('date_action') ,
             'message'     => Mreq::tp('message') ,
+            'pj_id' => Mreq::tp('pj-id'),
+        'photo_id' => Mreq::tp('photo-id'),
 
         );
 
