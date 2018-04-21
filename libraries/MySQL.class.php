@@ -363,7 +363,7 @@ class MySQL
 		} else {
 			$sql = self::BuildSQLDelete($tableName, $whereArray);
 			// Execute the UPDATE
-			if (! $this->Query($sql)) {
+			if (!$this->Query($sql)) {
 				return false;
 			} else {
 				return true;

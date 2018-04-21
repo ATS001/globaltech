@@ -24,9 +24,16 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $ticket->get_tickets()) {
     // returne message error red to client
     exit('3#' . $ticket->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur ');
 }
-//var_dump($ticket->tickets_info);
-//$pj = $commerciale->commerciale_info['pj'];
-//$photo = Minit::get_file_archive($commerciale->commerciale_info['photo']);
+
+if($ticket->get_action_ticket()){
+    $list_action = $ticket->list_action;
+}else{
+    $list_action = false;
+
+}
+    
+
+
 ?>
 
 <div class="pull-right tableTools-container">
@@ -57,22 +64,10 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $ticket->get_tickets()) {
                     <ul class="nav nav-tabs padding-18">
                         <li class="active">
                             <a data-toggle="tab" href="#home">
-                                <i class="green ace-icon fa fa-installer bigger-120"></i>
+                                <i class="green ace-icon fa fa-bookmark bigger-120"></i>
                                 Ticket
                             </a>
                         </li>
-                        <!--                        <li>
-                                                    <a data-toggle="tab" href="#feed1">
-                                                        <i class="red ace-icon fa fa-adjust bigger-120"></i>
-                                                        Commissions
-                                                    </a>
-                                                </li>-->
-                        <!--                        <li>
-                                                    <a data-toggle="tab" href="#feed2">
-                                                        <i class="red ace-icon fa fa-adjust bigger-120"></i>
-                                                        Paiements
-                                                    </a>
-                                                </li>-->
                     </ul>
 
                     <div class="tab-content no-border padding-24">
@@ -137,15 +132,106 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $ticket->get_tickets()) {
                                     <div class="well">
                                         <?php $ticket->s("message") ?>
                                     </div>
-
+<?php ?>
                                 </div><!-- /.col -->
                             </div>
+                            <div class="row">
+                                <div id="timeline-1">
+                                    <div class="row">
+                                        <div class="col-xs-12 col-sm-10 col-sm-offset-1">
+                                            <!-- #section:pages/timeline -->
+                                            
+                                                
 
+                                                <?php 
+                                                if(!$list_action){
+                                                    echo "Pas d'action en ce moment";
+                                                }else{?>
+                                                <div class="timeline-container">
 
+                                                <?php foreach ($list_action as $key => $value) { ?>
+                                                <div class="timeline-items cn_rmv<?php echo $value['id']?>">
+                                                    <div class="timeline-item clearfix">
+                                                        <div class="timeline-info">
+                                                            <i class="timeline-indicator ace-icon fa fa-star btn btn-warning no-hover green"></i>
+                                                        </div>
+
+                                                        <div class="widget-box transparent">
+                                                            <div class="widget-header widget-header-small">
+                                                                <h5 class="widget-title smaller"><?php echo $value['nom']?></h5>
+
+                                                                <span class="widget-toolbar no-border">
+                                                                    <i class="ace-icon fa fa-clock-o bigger-110"></i>
+                                                                    <?php echo $value['date_action']?>
+                                                                </span>
+
+                                                                <span class="widget-toolbar">
+                                                                    <!-- <a href="#" data-action="reload">
+                                                                        <i class="ace-icon fa fa-refresh"></i>
+                                                                    </a> -->
+
+                                                                    <a href="#" data-action="collapse">
+                                                                        <i class="ace-icon fa fa-chevron-up"></i>
+                                                                    </a>
+                                                                </span>
+                                                            </div>
+
+                                                            <div class="widget-body">
+                                                                <div class="widget-main">
+                                                                    <?php echo $value['message']?>
+                                                                    <div class="space-6"></div>
+
+                                                                    <div class="widget-toolbox clearfix">
+                                                                        <div class="pull-right action-buttons">
+                                                                            <div class="space-4"></div>
+
+                                                                            <div>
+                                                                                <a href="#" class="this_url"  rel="editaction" data="<?php echo Minit::crypt_tp('id', $value['id'])?>">
+                                                                                    <i class="ace-icon fa fa-pencil blue bigger-125"></i>
+                                                                                </a>
+
+                                                                                <a href="#" class="this_exec" cn_rmv="<?php echo $value['id']?>" rel="deleteactionticket" data="<?php echo Minit::crypt_tp('id', $value['id'])?>">
+                                                                                    <i class="ace-icon fa fa-times red bigger-125"></i>
+                                                                                </a>
+
+                                                                            </div>
+                                                                        </div>
+                                                                    </div>
+                                                                </div>
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                 </div><!-- /.timeline-items -->
+                                                <?php }//foreach
+                                                }//End IF 
+TableTools::btn_add('addaction', 'Ajouter une action', MInit::crypt_tp('id',Mreq::tp('id')));
+                                                ?>
+
+                                                
+                                                                        
+
+                                                    
+
+                                                    
+                                               
+                                            </div><!-- /.timeline-container -->
+
+                                            
+
+                                            
+
+                                            <!-- /section:pages/timeline -->
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
                         </div><!-- /#home -->
+                        <div id="action" class="tab-pane in">
+                            
+                        </div><!-- /#home -->
+                    </div><!-- /tab-content -->
 
 
-                    </div><!-- /.row -->
 
                 </div><!-- /#feed -->
 
@@ -159,3 +245,12 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $ticket->get_tickets()) {
 
 </div><!-- /.-profile -->
 
+<script type="text/javascript">
+    /*$('body').on('click', '.cn_rmv', function() {
+     
+     var $cosutm_noeud = $(this).attr('cn_rmv') != "" ? 'cn_rmv'+$(this).attr('cn_rmv') : "";
+
+     $('.')
+     
+});*/
+</script>
