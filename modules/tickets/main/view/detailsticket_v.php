@@ -72,11 +72,11 @@ if($ticket->get_action_ticket()){
 
                     <div class="tab-content no-border padding-24">
                         <div id="home" class="tab-pane in active">
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-6">
+                                        <div class="row">
+                                            <div class="col-sm-4">
 
-                                    <div>
-                                        <ul class="list-unstyled spaced">
+                                                <div>
+                                                    <ul class="list-unstyled spaced">
 
                                             <li>
                                                 <i class="ace-icon fa fa-caret-right green"></i>Client :
@@ -127,14 +127,25 @@ if($ticket->get_action_ticket()){
                                             <?php } ?>
 
                                         </ul>
-                                    </div>
-                                    <div class="space-6"></div>
-                                    <div class="well">
-                                        <?php $ticket->s("message") ?>
-                                    </div>
-<?php ?>
-                                </div><!-- /.col -->
-                            </div>
+
+                                                </div>
+
+                                            </div><!-- /.col -->
+
+
+                                            <div class="col-sm-8">
+                                                <div>
+                                                    <div class="space-6"></div>
+                                                    <div class="ayoub">
+                                                        <?php $ticket->s("message") ?>
+                                                    </div>
+                                                </div>
+                                            </div><!-- /.col -->
+                                        </div>
+
+                                    </div><!-- /#home -->
+                           
+                            <?php  if ($ticket->g("technicien") != NULL) { ?>
                             <div class="row">
                                 <div id="timeline-1">
                                     <div class="row">
@@ -142,7 +153,6 @@ if($ticket->get_action_ticket()){
                                             <!-- #section:pages/timeline -->
                                             
                                                 
-
                                                 <?php 
                                                 if(!$list_action){
                                                     echo "Pas d'action en ce moment";
@@ -204,7 +214,10 @@ if($ticket->get_action_ticket()){
                                                  </div><!-- /.timeline-items -->
                                                 <?php }//foreach
                                                 }//End IF 
+                                                
+                                                if($ticket->g("etat") != 3){
 TableTools::btn_add('addaction', 'Ajouter une action', MInit::crypt_tp('id',Mreq::tp('id')));
+                                                }
                                                 ?>
 
                                                 
@@ -225,6 +238,8 @@ TableTools::btn_add('addaction', 'Ajouter une action', MInit::crypt_tp('id',Mreq
                                     </div>
                                 </div>
                             </div>
+                            
+                            <?php } ?>
                         </div><!-- /#home -->
                         <div id="action" class="tab-pane in">
                             
@@ -254,3 +269,16 @@ TableTools::btn_add('addaction', 'Ajouter une action', MInit::crypt_tp('id',Mreq
      
 });*/
 </script>
+<style>
+    .ayoub {
+  min-height: 20px;
+  padding: 19px;
+  margin-bottom: 20px;
+  background-color: #e3e3e3;
+  border: 1px solid #e3e3e3;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+</style>
