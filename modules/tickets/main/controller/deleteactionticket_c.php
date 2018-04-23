@@ -14,13 +14,6 @@ if(!MInit::crypt_tp('id', null, 'D'))
    exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
 
-
-//Etat for validate row
-//$etat = $tickets->tickets_info['etat'];
-//$tickets->deleteactionticket($etat)
-//Execute Validate - delete
-
-
 if($tickets->deleteactionticket())
 {
 	exit("1#".$tickets->log);

@@ -2,8 +2,7 @@
 
 //First check target no Hack
 if (!defined('_MEXEC'))
-    die();
-//var_dump(Mreq::tp('id'));
+{die();}
 //SYS GLOBAL TECH
 // Modul: tickets
 //Created : 03-04-2018
@@ -32,8 +31,6 @@ if (MInit::form_verif('affecttechnicien', false)) {
         exit("0#$empty_list");
     }
 
-
-
     //End check empty element
     $new_tickets = new Mtickets($posted_data);
     $new_tickets->id_tickets=$posted_data["id"];
@@ -51,9 +48,7 @@ if (MInit::form_verif('affecttechnicien', false)) {
 
         exit("0#" . $new_tickets->log);
     }
-    
-    
-    
+       
 }
 
 //No form posted show view

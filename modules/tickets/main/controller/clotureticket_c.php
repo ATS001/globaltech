@@ -15,13 +15,7 @@ if(!MInit::crypt_tp('id', null, 'D')or !$tickets->get_tickets())
 }
 
 
-//Etat for validate row
-//$etat = $tickets->tickets_info['etat'];
-//$tickets->clotureticket($etat)
-//Execute Validate - delete
-
-
-if($tickets->valid_tickets(3))
+if($tickets->cloture_ticket(3))
 {
 	exit("1#".$tickets->log);
 

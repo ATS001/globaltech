@@ -33,7 +33,6 @@ if (MInit::form_verif('affecttechnicien', false)) {
     }
 
 
-
     //End check empty element
     $new_tickets = new Mtickets($posted_data);
     $new_tickets->id_tickets = $posted_data["id"];

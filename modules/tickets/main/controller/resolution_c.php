@@ -1,30 +1,52 @@
 <?php 
+
 //First check target no Hack
-if(!defined('_MEXEC'))die();
+if (!defined('_MEXEC'))
+    die();
 //SYS GLOBAL TECH
 // Modul: tickets
-//Created : 22-04-2018
-//Controller EXEC Form
-$tickets = new Mtickets();
-$tickets->id_tickets = Mreq::tp('id');
+//Created : 06-04-2018
+//Controller ADD Form
+if (MInit::form_verif('resolution', false)) {
+    
+ $posted_data = array(    
+        'id' => Mreq::tp('id'),
+        'observation' => Mreq::tp('observation'),
+        'decision' => Mreq::tp('decision')
+         );
+ 
+ 
+ $checker = null;
+    $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
 
-if(!MInit::crypt_tp('id', null, 'D')or !$tickets->get_tickets())
-{  
-   // returne message error red to tickets 
-   exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
-}
+    if ($posted_data["observation"] == NULL) {
+        $empty_list .= "<li>Observation</li>";
+        $checker = 1;
+    }
+
+    if ($posted_data["decision"] == NULL) {
+        $empty_list .= "<li>Décision</li>";
+        $checker = 1;
+    }
+
+    $empty_list .= "</ul>";
+    if ($checker == 1) {
+        exit("0#$empty_list");
+    }
+
+    //End check empty element
+    $tickets = new Mtickets($posted_data);
+    $tickets->id_tickets=$posted_data["id"];
+   
 
 
-//Etat for validate row
-//$etat = $tickets->tickets_info['etat'];
-//$tickets->resolution($etat)
-//Execute Validate - delete
-
-
-if($tickets->valid_tickets(2))
+if($tickets->resolution_ticket(2))
 {
 	exit("1#".$tickets->log);
 
 }else{
 	exit("0#".$tickets->log);
+}
+
+
 }

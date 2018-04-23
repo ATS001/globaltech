@@ -16,11 +16,10 @@ if(MInit::form_verif('editaction', false))
             'id'          => Mreq::tp('id') ,
             'date_action' => Mreq::tp('date_action') ,
             'message'     => Mreq::tp('message') ,
-            'pj_id' => Mreq::tp('pj-id'),
-        'photo_id' => Mreq::tp('photo-id'),
+            'pj_id'       => Mreq::tp('pj-id'),
+            'photo_id'    => Mreq::tp('photo-id'),
 
         );
-
 
         //Check if array have empty element return list
         //for acceptable empty field do not put here
@@ -37,15 +36,11 @@ if(MInit::form_verif('editaction', false))
                                     $checker = 1;
                               }
 
-
-
         $empty_list.= "</ul>";
         if($checker == 1)
         {
             exit("0#$empty_list");
         }
-
-
 
        //End check empty element
         $edit_tickets_action = new  Mtickets($posted_data);
@@ -62,16 +57,9 @@ if(MInit::form_verif('editaction', false))
             exit("0#".$edit_tickets_action->log);
         }
 
-
 }
 
 //No form posted show view
 view::load_view('editaction');
-
-
-
-
-
-
 
     ?>

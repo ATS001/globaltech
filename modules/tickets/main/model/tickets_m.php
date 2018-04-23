@@ -20,8 +20,8 @@ class Mtickets {
     var $id_action_ticket   = null; //action ticket ID
     var $id_tickets         = null;        // tickets ID append when request
     var $token              = null;        //user for recovery function
-    var $tickets_info       = array();     //Array stock all tickets info
-    var $ticket_action_info = array();
+    var $tickets_info       = array();     //Array ticket all tickets info
+    var $ticket_action_info = array();  //Array ticket action all tickets action info
     var $list_action        = array();// Arrauy of list action
     var $exige_pj;
     var $exige_photo;
@@ -40,7 +40,7 @@ class Mtickets {
         ;
     }
 
-    //Get all info user fro database for edit form
+    //Get all info ticket fro database for edit form
 
     public function get_tickets() {
         global $db;
@@ -388,12 +388,10 @@ class Mtickets {
     }
 
     /**
-     * Edit selected Row
+     * Affectation
      * @return Bol [send to controller]
      */
     public function affect_ticket() {
-
-        //var_dump($this->id_tickets);
 
         $this->check_non_exist('users_sys', 'id', $this->_data['id_technicien'], 'Technicien');
 
@@ -401,7 +399,7 @@ class Mtickets {
         $this->get_tickets();
 
         $this->last_id = $this->id_tickets;
-        //var_dump($this->tickets_info);
+        
         // If we have an error
         if ($this->error == true) {
             global $db;
@@ -443,6 +441,54 @@ class Mtickets {
             return true;
         }
     }
+    
+     /**
+     * Resolutions tickets
+     * @return bol send to controller
+     */
+    public function resolution_ticket($etat) {
+        //Get existing data for row
+        $this->get_tickets();
+
+        $this->last_id = $this->id_tickets;
+        global $db;
+
+        //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
+        //$etat = $etat == 0 ? 1 : 0;
+
+        $values["decision"] = MySQL::SQLValue($this->_data["decision"]);
+        $values["observation"] = MySQL::SQLValue($this->_data["observation"]);
+        $values["etat"] = MySQL::SQLValue($etat);
+        $values["updusr"] = MySQL::SQLValue(session::get('userid'));
+        $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+        $wheres['id'] = $this->id_tickets;
+
+        // Execute the update and show error case error
+        if (!$result = $db->UpdateRows($this->table, $values, $wheres)) {
+            
+            $this->log .= '</br>Impossible de changer le statut!';
+            $this->log .= '</br>' . $db->Error();
+            $this->error = false;
+        } else {
+            $this->log .= '</br>Statut changé! ';
+            $this->error = true;
+            if (!Mlog::log_exec($this->table, $this->last_id, 'Changement ETAT  tickets', 'Update')) {
+                $this->log .= '</br>Un problème de log ';
+                $this->error = false;
+            }
+            //Esspionage
+            if (!$db->After_update($this->table, $this->id_tickets, $values, $this->tickets_info)) {
+                $this->log .= '</br>Problème Espionnage';
+                $this->error = false;
+            }
+        }
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 
     /**
      * Valide tickets
@@ -461,7 +507,48 @@ class Mtickets {
         $values["etat"] = MySQL::SQLValue($etat);
         $values["updusr"] = MySQL::SQLValue(session::get('userid'));
         $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+        $wheres['id'] = $this->id_tickets;
 
+        // Execute the update and show error case error
+        if (!$result = $db->UpdateRows($this->table, $values, $wheres)) {
+            $this->log .= '</br>Impossible de changer le statut!';
+            $this->log .= '</br>' . $db->Error();
+            $this->error = false;
+        } else {
+            $this->log .= '</br>Statut changé! ';
+            $this->error = true;
+            if (!Mlog::log_exec($this->table, $this->last_id, 'Changement ETAT  tickets', 'Update')) {
+                $this->log .= '</br>Un problème de log ';
+                $this->error = false;
+            }
+            //Esspionage
+            if (!$db->After_update($this->table, $this->id_tickets, $values, $this->tickets_info)) {
+                $this->log .= '</br>Problème Espionnage';
+                $this->error = false;
+            }
+        }
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    /**
+     * Clôture ticket
+     * @return bol send to controller
+     */
+    public function cloture_ticket($etat) {
+        //Get existing data for row
+        $this->get_tickets();
+
+        $this->last_id = $this->id_tickets;
+        global $db;
+
+        $values["etat"] = MySQL::SQLValue($etat);
+        $values["date_realis"] = MySQL::SQLValue(date("Y-m-d"));
+        $values["updusr"] = MySQL::SQLValue(session::get('userid'));
+        $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
         $wheres['id'] = $this->id_tickets;
 
         // Execute the update and show error case error

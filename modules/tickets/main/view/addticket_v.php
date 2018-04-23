@@ -37,7 +37,6 @@ if (!defined('_MEXEC'))
                 <?php
                 $form = new Mform('addtickets', 'addtickets', '', 'tickets', '0', null);
 
-//For more Example see form class
 //Client ==> 
                 $client_array[] = array('required', 'true', 'Choisir un Client');
                 $form->select_table('Client', 'id_client', 6, 'clients', 'id', 'denomination', 'denomination', $indx = '------', $selected = NULL, $multi = NULL, $where = 'etat=1', $client_array, NULL);
@@ -59,11 +58,6 @@ $form->select_table('Type Produit', 'type_produit', 3, 'ref_types_produits', 'id
 
 $opt_produit = array('' => '------');
 $form->select('Produit / Service', 'id_produit', 8, $opt_produit, $indx = NULL ,$selected = NULL, $multi = NULL,  null);
-
-
-//Technicien ==> 
-                //$array_technicien[] = array("required", "true", "Choisir un technicien");
-                //$form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', 'CONCAT(users_sys.lnom," ",users_sys.fnom)', $indx = '------', $selected = NULL, $multi = NULL, $where = 'etat=1', $array_technicien, NULL);
 
 //Message
                 $array_message[] = array("required", "true", "Insérer un message ");

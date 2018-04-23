@@ -136,7 +136,7 @@ if($ticket->get_action_ticket()){
                                             <div class="col-sm-8">
                                                 <div>
                                                     <div class="space-6"></div>
-                                                    <div class="ayoub">
+                                                    <div class="sab">
                                                         <?php $ticket->s("message") ?>
                                                     </div>
                                                 </div>
@@ -155,7 +155,7 @@ if($ticket->get_action_ticket()){
                                                 
                                                 <?php 
                                                 if(!$list_action){
-                                                    echo "Pas d'action en ce moment";
+                                                    echo "</br><b>Pas d'action en ce moment    </b>";
                                                 }else{?>
                                                 <div class="timeline-container">
 
@@ -215,12 +215,12 @@ if($ticket->get_action_ticket()){
                                                 <?php }//foreach
                                                 }//End IF 
                                                 
-                                                if($ticket->g("etat") != 3){
+                                                if($ticket->g("etat") == 1){
 TableTools::btn_add('addaction', 'Ajouter une action', MInit::crypt_tp('id',Mreq::tp('id')));
                                                 }
-                                                ?>
-
                                                 
+                                                ?>
+                                            
                                                                         
 
                                                     
@@ -253,6 +253,28 @@ TableTools::btn_add('addaction', 'Ajouter une action', MInit::crypt_tp('id',Mreq
             </div>
         </div>
     </div>
+
+<?php
+
+ if($ticket->g("etat") == 1){ 
+$form = new Mform('resolution', 'resolution', '', 'tickets', '0', null);
+$form->input_hidden('id',$ticket->g("id"));
+$form->input_hidden('idc', Mreq::tp('idc'));
+$form->input_hidden('idh', Mreq::tp('idh'));
+
+$decision[]= array("required", "true", "Veuillez choisir une décision ");
+$decision = array('Motif 1' => 'Motif 1' , 'Motif 2' => 'Motif 2' ,'Motif 3'=>'Motif 3');
+$form->select('Décision', 'decision', 2, $decision, $indx = NULL ,$selected = NULL, $multi = NULL);
+
+$oserv[]= array("required", "true", "Veuillez saisir une observation ");
+$form->input("Observation", "observation", "text" ,"9", null, $oserv, null, $readonly = null);
+
+$form->button('Enregistrer');
+//Form render
+$form->render();
+ }
+
+?>
 </div>
 
 </div><!-- /.well -->
@@ -270,7 +292,7 @@ TableTools::btn_add('addaction', 'Ajouter une action', MInit::crypt_tp('id',Mreq
 });*/
 </script>
 <style>
-    .ayoub {
+    .sab {
   min-height: 20px;
   padding: 19px;
   margin-bottom: 20px;
