@@ -76,7 +76,7 @@ if($ticket->get_action_ticket()){
                                             <div class="col-sm-4">
 
                                                 <div>
-                                                    <ul class="list-unstyled spaced">
+                                           <ul class="list-unstyled ">
 
                                             <li>
                                                 <i class="ace-icon fa fa-caret-right green"></i>Client :
@@ -125,6 +125,16 @@ if($ticket->get_action_ticket()){
                                                     <b style="color:green"><?php $ticket->s("date_affectation") ?></b>
                                                 </li>
                                             <?php } ?>
+                                                 <?php if ($ticket->g("decision") != NULL AND $ticket->g("observation") ) { ?>
+                                                <li>
+                                                    <i class="ace-icon fa fa-caret-right green"></i>Décision :
+                                                    <b style="color:green"><?php $ticket->s("decision") ?></b>
+                                                </li>
+                                                <li>
+                                                    <i class="ace-icon fa fa-caret-right green"></i>Oservation :
+                                                    <b style="color:green"><?php $ticket->s("observation") ?></b>
+                                                </li>
+                                                <?php } ?>
 
                                         </ul>
 
@@ -196,6 +206,7 @@ if($ticket->get_action_ticket()){
                                                                             <div class="space-4"></div>
 
                                                                             <div>
+                                                                                <?php if($ticket->g("etat")== 1) { ?>
                                                                                 <a href="#" class="this_url"  rel="editaction" data="<?php echo Minit::crypt_tp('id', $value['id'])?>">
                                                                                     <i class="ace-icon fa fa-pencil blue bigger-125"></i>
                                                                                 </a>
@@ -203,7 +214,7 @@ if($ticket->get_action_ticket()){
                                                                                 <a href="#" class="this_exec" cn_rmv="<?php echo $value['id']?>" rel="deleteactionticket" data="<?php echo Minit::crypt_tp('id', $value['id'])?>">
                                                                                     <i class="ace-icon fa fa-times red bigger-125"></i>
                                                                                 </a>
-
+                                                                                <?php } ?>
                                                                             </div>
                                                                         </div>
                                                                     </div>
