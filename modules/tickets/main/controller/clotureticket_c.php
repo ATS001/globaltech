@@ -14,8 +14,12 @@ if(!MInit::crypt_tp('id', null, 'D')or !$tickets->get_tickets())
    exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
 
+    
+//Etat for validate row
+$etat = Msetting::get_set('tickets', 'ticket_cloturer');
 
-if($tickets->cloture_ticket(3))
+
+if($tickets->cloture_ticket($etat))
 {
 	exit("1#".$tickets->log);
 

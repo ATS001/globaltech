@@ -38,9 +38,12 @@ if (MInit::form_verif('resolution', false)) {
     $tickets = new Mtickets($posted_data);
     $tickets->id_tickets=$posted_data["id"];
    
+    
+//Etat for validate row
+$etat = Msetting::get_set('tickets', 'resolution_termine');
 
 
-if($tickets->resolution_ticket(2))
+if($tickets->resolution_ticket($etat))
 {
 	exit("1#".$tickets->log);
 

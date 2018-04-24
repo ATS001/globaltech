@@ -417,7 +417,6 @@ class Mtickets {
             } else {
 
                 $this->last_id = $result;
-                //$this->valid_tickets($etat=1);
                 $this->log .= '</br>Enregistrement  réussie ' . $this->last_id . ' -';
                 if (!Mlog::log_exec($this->table, $this->last_id, 'Affectation tickets', 'Update')) {
                     $this->log .= '</br>Un problème de log ';
@@ -452,9 +451,6 @@ class Mtickets {
 
         $this->last_id = $this->id_tickets;
         global $db;
-
-        //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
-        //$etat = $etat == 0 ? 1 : 0;
 
         $values["decision"] = MySQL::SQLValue($this->_data["decision"]);
         $values["observation"] = MySQL::SQLValue($this->_data["observation"]);
@@ -500,9 +496,6 @@ class Mtickets {
 
         $this->last_id = $this->id_tickets;
         global $db;
-
-        //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
-        //$etat = $etat == 0 ? 1 : 0;
 
         $values["etat"] = MySQL::SQLValue($etat);
         $values["updusr"] = MySQL::SQLValue(session::get('userid'));
