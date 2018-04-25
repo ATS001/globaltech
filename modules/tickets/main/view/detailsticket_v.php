@@ -208,8 +208,8 @@ if($ticket->get_action_ticket()){
 
                                                                             <div>
                                                                                 <?php 
-                                                                                   
-                                                                                if($ticket->g("etat")== 1 AND $value["etat"] == '0') { ?>
+                                                                                $etat1 = Msetting::get_set('etat_ticket', 'resolution_encours');
+                                                                                if($ticket->g("etat")== $etat AND $value["etat"] == '0') { ?>
                                                                                 <a href="#" class="this_url"  rel="editaction" data="<?php echo Minit::crypt_tp('id', $value['id'])?>">
                                                                                     <i class="ace-icon fa fa-pencil blue bigger-125"></i>
                                                                                 </a>
