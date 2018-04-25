@@ -98,7 +98,10 @@ class Mcontrat {
         $table_echeance = $this->table_echeance;
         global $db;
 
-        $sql = "SELECT e.*, c.`iddevis` FROM $table_echeance e, contrats c WHERE e.`idcontrat`=c.`id` and e.id = " . $this->id_echeance_contrat;
+           $sql = "SELECT $table_echeance.* FROM $table_echeance WHERE $table_echeance.id = " . $this->id_echeance_contrat;
+           
+        //new for stock
+        //$sql = "SELECT e.*, c.`iddevis` FROM $table_echeance e, contrats c WHERE e.`idcontrat`=c.`id` and e.id = " . $this->id_echeance_contrat;
 
         if (!$db->Query($sql)) {
             $this->error = false;

@@ -15,8 +15,6 @@ if(!MInit::crypt_tp('id', null, 'D')or !$contrat->get_echeance_contrat())
    exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
 
-if()
-{
 	if($contrat->generate_facture(Mreq::tp('id')))
 	{
 		exit("1#".$contrat->log);
@@ -24,4 +22,3 @@ if()
 	}else{
 		exit("0#".$contrat->log);
 	}
-}
