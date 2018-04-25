@@ -40,7 +40,7 @@ if (MInit::form_verif('resolution', false)) {
    
     
 //Etat for validate row
-$etat = Msetting::get_set('tickets', 'resolution_termine');
+$etat = Msetting::get_set('etat_ticket', 'resolution_termine');
 
 
 if($tickets->resolution_ticket($etat))

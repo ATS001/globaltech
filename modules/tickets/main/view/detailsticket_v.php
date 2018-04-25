@@ -155,7 +155,7 @@ if($ticket->get_action_ticket()){
 
                                     </div><!-- /#home -->
                            
-                            <?php  if ($ticket->g("technicien") != NULL) { ?>
+                            <?php  //if ($ticket->g("technicien") != NULL) { ?>
                             <div class="row">
                                 <div id="timeline-1">
                                     <div class="row">
@@ -164,6 +164,7 @@ if($ticket->get_action_ticket()){
                                             
                                                 
                                                 <?php 
+                                                        
                                                 if(!$list_action){
                                                     echo "</br><b>Pas d'action en ce moment    </b>";
                                                 }else{?>
@@ -206,7 +207,9 @@ if($ticket->get_action_ticket()){
                                                                             <div class="space-4"></div>
 
                                                                             <div>
-                                                                                <?php if($ticket->g("etat")== 1) { ?>
+                                                                                <?php 
+                                                                                   
+                                                                                if($ticket->g("etat")== 1 AND $value["etat"] == '0') { ?>
                                                                                 <a href="#" class="this_url"  rel="editaction" data="<?php echo Minit::crypt_tp('id', $value['id'])?>">
                                                                                     <i class="ace-icon fa fa-pencil blue bigger-125"></i>
                                                                                 </a>
@@ -250,7 +253,7 @@ TableTools::btn_add('addaction', 'Ajouter une action', MInit::crypt_tp('id',Mreq
                                 </div>
                             </div>
                             
-                            <?php } ?>
+                            <?php //} ?>
                         </div><!-- /#home -->
                         <div id="action" class="tab-pane in">
                             

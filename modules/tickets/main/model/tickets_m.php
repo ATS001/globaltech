@@ -12,17 +12,17 @@ if (!defined('_MEXEC'))
 class Mtickets {
 
     private $_data;                      //data receive from form
-    var $table              = 'tickets';   //Main table of module
-    var $table_action       = 'action_ticket'; //Second table of module
-    var $last_id            = null;        //return last ID after insert command
-    var $log                = null;        //Log of all opération.
-    var $error              = true;        //Error bol changed when an error is occured
-    var $id_action_ticket   = null; //action ticket ID
-    var $id_tickets         = null;        // tickets ID append when request
-    var $token              = null;        //user for recovery function
-    var $tickets_info       = array();     //Array ticket all tickets info
+    var $table = 'tickets';   //Main table of module
+    var $table_action = 'action_ticket'; //Second table of module
+    var $last_id = null;        //return last ID after insert command
+    var $log = null;        //Log of all opération.
+    var $error = true;        //Error bol changed when an error is occured
+    var $id_action_ticket = null; //action ticket ID
+    var $id_tickets = null;        // tickets ID append when request
+    var $token = null;        //user for recovery function
+    var $tickets_info = array();     //Array ticket all tickets info
     var $ticket_action_info = array();  //Array ticket action all tickets action info
-    var $list_action        = array();// Arrauy of list action
+    var $list_action = array(); // Arrauy of list action
     var $exige_pj;
     var $exige_photo;
 
@@ -93,7 +93,7 @@ class Mtickets {
         $table = $this->table_action;
 
         $sql = "SELECT $table.* FROM $table "
-            . " WHERE $table.id = " . $this->id_action_ticket;
+                . " WHERE $table.id = " . $this->id_action_ticket;
 
 
         if (!$db->Query($sql)) {
@@ -133,11 +133,9 @@ class Mtickets {
             $values["projet"] = MySQL::SQLValue($this->_data["projet"]);
             $values["message"] = MySQL::SQLValue($this->_data["message"]);
             $values["date_previs"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_previs'])));
-            //$values["date_realis"] = MySQL::SQLValue($this->_data["date_realis"]);
             $values["type_produit"] = MySQL::SQLValue($this->_data["type_produit"]);
             $values["categorie_produit"] = MySQL::SQLValue($this->_data["categorie_produit"]);
             $values["id_produit"] = MySQL::SQLValue($this->_data["id_produit"]);
-            //$values["id_technicien"] = MySQL::SQLValue($this->_data["id_technicien"]);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
@@ -147,8 +145,9 @@ class Mtickets {
                 $this->error = false;
                 $this->log .= '</br>Enregistrement BD non réussie';
             } else {
-
                 $this->last_id = $result;
+                $this->id_tickets=$db->GetLastInsertID();
+                $this->init_action("ouverture");
                 $this->log .= '</br>Enregistrement  réussie ' . $this->last_id . ' -';
                 if (!Mlog::log_exec($this->table, $this->last_id, 'Création tickets', 'Insert')) {
                     $this->log .= '</br>Un problème de log ';
@@ -178,11 +177,11 @@ class Mtickets {
         if ($this->error == true) {
             global $db;
             //Add all fields for the table
-            $values["message"]     = MySQL::SQLValue($this->_data["message"]);
+            $values["message"] = MySQL::SQLValue($this->_data["message"]);
             $values["date_action"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_action'])));
-            $values["id_ticket"]   = MySQL::SQLValue($this->_data["id_ticket"]);
-            $values["creusr"]      = MySQL::SQLValue(session::get('userid'));
-            $values["credat"]      = MySQL::SQLValue(date("Y-m-d H:i:s"));
+            $values["id_ticket"] = MySQL::SQLValue($this->_data["id_ticket"]);
+            $values["creusr"] = MySQL::SQLValue(session::get('userid'));
+            $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
             if (!$result = $db->InsertRow($this->table_action, $values)) {
 
@@ -196,7 +195,7 @@ class Mtickets {
                 $this->save_file('pj', 'PJ' . $this->_data['id_ticket'], 'Document');
 
                 $this->save_file('photo', 'Photo' . $this->_data['id_ticket'], 'Image');
-                
+
                 $this->log .= '</br>Enregistrement  réussie ' . $this->last_id . ' -';
                 if (!Mlog::log_exec($this->table_action, $this->last_id, 'Création action', 'Insert')) {
                     $this->log .= '</br>Un problème de log ';
@@ -221,16 +220,16 @@ class Mtickets {
      */
     public function edit_tickets_action() {
 
-        
+
         $this->get_ticket_action();
         if ($this->error == true) {
             global $db;
             //Add all fields for the table
-            $values["message"]     = MySQL::SQLValue($this->_data["message"]);
-            $values["date_action"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_action'])));            
-            $values["updusr"]      = MySQL::SQLValue(session::get('userid'));
-            $values["upddat"]      = MySQL::SQLValue(date("Y-m-d H:i:s"));
-            $wheres["id"] =MySQL::SQLValue($this->id_action_ticket);
+            $values["message"] = MySQL::SQLValue($this->_data["message"]);
+            $values["date_action"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_action'])));
+            $values["updusr"] = MySQL::SQLValue(session::get('userid'));
+            $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+            $wheres["id"] = MySQL::SQLValue($this->id_action_ticket);
 
             if (!$result = $db->UpdateRows($this->table_action, $values, $wheres)) {
 
@@ -239,13 +238,13 @@ class Mtickets {
                 $this->log .= '</br>Enregistrement BD non réussie';
             } else {
 
-                
-                $this->last_id=$this->id_action_ticket;
-             
-               $this->save_file('pj', 'PJ' . $this->id_action_ticket, 'Document');
+
+                $this->last_id = $this->id_action_ticket;
+
+                $this->save_file('pj', 'PJ' . $this->id_action_ticket, 'Document');
 
                 $this->save_file('photo', 'Photo' . $this->id_action_ticket, 'Image');
-               
+
                 //$this->last_id = $result;
                 $this->log .= '</br>Enregistrement  réussie ' . $this->last_id . ' -';
                 if (!Mlog::log_exec($this->table_action, $this->last_id, 'Modification tickets action', 'Update')) {
@@ -270,12 +269,11 @@ class Mtickets {
             return true;
         }
     }
-    
-     public function deleteactionticket()
-     {
+
+    public function deleteactionticket() {
         global $db;
         $id_action_ticket = $this->id_action_ticket;
-        
+
         //Format where clause
         $where['id'] = MySQL::SQLValue($id_action_ticket);
         //check if id on where clause isset
@@ -300,18 +298,18 @@ class Mtickets {
         } else {
             return true;
         }
-     }
-    public function get_action_ticket()
-    {
+    }
+
+    public function get_action_ticket() {
         global $db;
         $table_action = $this->table_action;
-        $sql_req = "SELECT $table_action.*, users_sys.nom FROM $table_action, users_sys WHERE users_sys.id = $table_action.creusr AND id_ticket = ".$this->id_tickets;
+        $sql_req = "SELECT $table_action.*, users_sys.nom FROM $table_action, users_sys WHERE users_sys.id = $table_action.creusr AND id_ticket = " . $this->id_tickets;
         //exit($sql_req);
-        if(!$db->Query($sql_req) OR !$db->RowCount()){
+        if (!$db->Query($sql_req) OR ! $db->RowCount()) {
             $this->log .= $db->Error();
             $this->error = false;
             $this->log .= '</br>Pas d\'enregistrement trouvé';
-        }else{
+        } else {
 
             $this->error = true;
             $this->list_action = $db->RecordsArray();
@@ -323,7 +321,6 @@ class Mtickets {
         } else {
             return true;
         }
-
     }
 
     /**
@@ -391,15 +388,15 @@ class Mtickets {
      * Affectation
      * @return Bol [send to controller]
      */
-    public function affect_ticket() {
+    public function affect_ticket($is_reaffect) {
 
         $this->check_non_exist('users_sys', 'id', $this->_data['id_technicien'], 'Technicien');
 
 
         $this->get_tickets();
-
+        $old_technicien= $this->tickets_info["technicien"];
         $this->last_id = $this->id_tickets;
-        
+
         // If we have an error
         if ($this->error == true) {
             global $db;
@@ -417,6 +414,11 @@ class Mtickets {
             } else {
 
                 $this->last_id = $result;
+                if($is_reaffect =! NULL)
+                $this->init_action("reaffectation",$old_technicien);
+            else {
+                 $this->init_action("affectation",$old_technicien=NULL);
+            }
                 $this->log .= '</br>Enregistrement  réussie ' . $this->last_id . ' -';
                 if (!Mlog::log_exec($this->table, $this->last_id, 'Affectation tickets', 'Update')) {
                     $this->log .= '</br>Un problème de log ';
@@ -440,8 +442,8 @@ class Mtickets {
             return true;
         }
     }
-    
-     /**
+
+    /**
      * Resolutions tickets
      * @return bol send to controller
      */
@@ -461,7 +463,7 @@ class Mtickets {
 
         // Execute the update and show error case error
         if (!$result = $db->UpdateRows($this->table, $values, $wheres)) {
-            
+
             $this->log .= '</br>Impossible de changer le statut!';
             $this->log .= '</br>' . $db->Error();
             $this->error = false;
@@ -484,7 +486,6 @@ class Mtickets {
             return true;
         }
     }
-
 
     /**
      * Valide tickets
@@ -526,7 +527,7 @@ class Mtickets {
             return true;
         }
     }
-    
+
     /**
      * Clôture ticket
      * @return bol send to controller
@@ -667,7 +668,7 @@ class Mtickets {
         }
     }
 
-        /**
+    /**
      * [sa Print value of entry]
      * @param  [key array] $key [description]
      * @return [print string]      [description]
@@ -715,6 +716,81 @@ class Mtickets {
         if (!Minit::save_file_upload($temp_file, $new_name_file, $folder, $id_line, $title, 'tickets', $table, $column, $type, $edit = null)) {
             $this->error = false;
             $this->log .= '</br>Enregistrement ' . $item . ' dans BD non réussie';
+        }
+    }
+    
+    /*Fonction qui ajoute une ligne dans la table action_ticket 
+     *après la création,l'affectation , la réaffectation et la cloture 
+     *afin de garder l'historique des technciens et spécifier 
+     * tous les actions liées au ticket
+     * 
+     */
+    public function init_action($action,$old_technicien) {
+        $this->get_tickets();
+        //var_dump($this->tickets_info);
+        
+
+        if ($this->error == true) {
+            global $db;
+            //Add all fields for the table
+            switch ($action) {
+
+                case "ouverture":
+                    $message = "Ouverture ticket";
+                    $values["message"] = MySQL::SQLValue($message);
+                    //$values["date_action"] = MySQL::SQLValue(date('Y-m-d'));
+                    //$values["id_ticket"] = MySQL::SQLValue($this->tickets_info["id"]);
+                    break;
+                case "affectation":
+                    $message = "Affectation ticket à <b>" . $this->tickets_info["technicien"] ."</b>";
+                    $values["message"] = MySQL::SQLValue($message);
+                    //$values["date_action"] = MySQL::SQLValue(date('Y-m-d'));
+                    //$values["id_ticket"] = MySQL::SQLValue($this->tickets_info["id"]);
+                    break;
+                case "reaffectation":
+                    $message = "Réaffectation ticket de <b>" .$old_technicien. "</b> à  <b>" .$this->tickets_info["technicien"] ."</b>";
+                    $values["message"] = MySQL::SQLValue($message);
+                    //$values["date_action"] = MySQL::SQLValue(date('Y-m-d'));
+                    //$values["id_ticket"] = MySQL::SQLValue($this->tickets_info["id"]);
+                    break;
+                case "cloture":
+                    $message = "Ticket clôturé";
+                    $values["message"] = MySQL::SQLValue($message);
+                    //$values["date_action"] = MySQL::SQLValue(date('Y-m-d'));
+                    //$values["id_ticket"] = MySQL::SQLValue($this->tickets_info["id"]);
+                    break;
+            }
+
+            $values["date_action"] = MySQL::SQLValue(date('Y-m-d'));
+            $values["etat"] = MySQL::SQLValue(1);
+            $values["id_ticket"] = MySQL::SQLValue($this->tickets_info["id"]);
+            $values["creusr"] = MySQL::SQLValue(session::get('userid'));
+            $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+
+            if (!$result = $db->InsertRow($this->table_action, $values)) {
+
+                $this->log .= $db->Error();
+                $this->error = false;
+                $this->log .= '</br>Enregistrement BD non réussie';
+            } else {
+
+                $this->last_id = $result;
+
+                $this->log .= '</br>Enregistrement  réussie ' . $this->last_id . ' -';
+                if (!Mlog::log_exec($this->table_action, $this->last_id, 'Création action', 'Insert')) {
+                    $this->log .= '</br>Un problème de log ';
+                }
+            }
+        } else {
+
+            $this->log .= '</br>Enregistrement non réussie';
+        }
+
+        //check if last error is true then return true else rturn false.
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
         }
     }
 

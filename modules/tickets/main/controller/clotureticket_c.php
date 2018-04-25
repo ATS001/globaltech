@@ -16,7 +16,7 @@ if(!MInit::crypt_tp('id', null, 'D')or !$tickets->get_tickets())
 
     
 //Etat for validate row
-$etat = Msetting::get_set('tickets', 'ticket_cloturer');
+$etat = Msetting::get_set('etat_ticket', 'ticket_cloturer');
 
 
 if($tickets->cloture_ticket($etat))
