@@ -32,8 +32,8 @@ CREATE TABLE `tickets` (
   `id_produit` int(11) DEFAULT NULL COMMENT 'Produit',
   `id_technicien` int(11) DEFAULT NULL COMMENT 'Technicien',
   `date_affectation` date DEFAULT NULL COMMENT 'Date affectation',
-  `observation` varchar(200) DEFAULT NULL COMMENT 'Observation',
-  `decision` varchar(200) DEFAULT NULL COMMENT 'Décision',
+  `code_cloture` int(200) DEFAULT NULL COMMENT 'Code cloture',
+  `observation` varchar(200) DEFAULT NULL COMMENT 'observation',
   `etat` int(11) DEFAULT '0',
   `creusr` int(11) DEFAULT NULL,
   `credat` datetime DEFAULT CURRENT_TIMESTAMP,
@@ -44,7 +44,7 @@ CREATE TABLE `tickets` (
   KEY `fk_cproduit_ticket` (`categorie_produit`),
   KEY `fk_tproduit_ticket` (`type_produit`),
   KEY `fk_user_ticket` (`id_technicien`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=35 DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

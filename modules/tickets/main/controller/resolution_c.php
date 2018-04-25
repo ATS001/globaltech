@@ -12,7 +12,7 @@ if (MInit::form_verif('resolution', false)) {
  $posted_data = array(    
         'id' => Mreq::tp('id'),
         'observation' => Mreq::tp('observation'),
-        'decision' => Mreq::tp('decision')
+        'code_cloture' => Mreq::tp('code_cloture')
          );
  
  
@@ -24,7 +24,7 @@ if (MInit::form_verif('resolution', false)) {
         $checker = 1;
     }
 
-    if ($posted_data["decision"] == NULL) {
+    if ($posted_data["code_cloture"] == NULL) {
         $empty_list .= "<li>Décision</li>";
         $checker = 1;
     }

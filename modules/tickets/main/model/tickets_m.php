@@ -48,24 +48,24 @@ class Mtickets {
         $table = $this->table;
 
         $sql = "SELECT $table.* ,
-            IFNULL(DATEDIFF(DATE(NOW()),DATE(tickets.date_affectation)),0) as nbrj,
+                IFNULL(DATEDIFF(DATE(NOW()),DATE(tickets.date_affectation)),0) as nbrj,
                 DATE_FORMAT($table.date_affectation,'%d-%m-%Y') as date_affectation,
                 DATE_FORMAT($table.date_previs,'%d-%m-%Y') as date_previs,
-                    DATE_FORMAT($table.date_realis,'%d-%m-%Y') as date_realis,
+                DATE_FORMAT($table.date_realis,'%d-%m-%Y') as date_realis,
                 CONCAT(users_sys.fnom,' ',users_sys.lnom) as technicien ,
                 clients.denomination as client ,
                 ref_categories_produits.categorie_produit as categorie_produit ,
-                ref_types_produits.type_produit as typep, 
-                produits.designation as prd
+                ref_types_produits.type_produit as typep , 
+                produits.designation as prd,
+                code_cloture.code_cloture as code_cloture
                 FROM $table LEFT JOIN produits ON produits.id=$table.id_produit "
                 . "LEFT JOIN ref_categories_produits  ON ref_categories_produits.id=$table.categorie_produit"
                 . " LEFT JOIN ref_types_produits ON ref_types_produits.id=$table.type_produit"
                 . " LEFT JOIN clients ON clients.id=$table.id_client"
                 . " LEFT JOIN users_sys ON users_sys.id=$table.id_technicien"
+                . " LEFT JOIN code_cloture ON code_cloture.id=$table.code_cloture"
                 . " WHERE $table.id = " . $this->id_tickets;
-
-
-
+        
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
@@ -146,9 +146,9 @@ class Mtickets {
                 $this->log .= '</br>Enregistrement BD non réussie';
             } else {
                 $this->last_id = $result;
-                $this->id_tickets=$db->GetLastInsertID();
-                $this->init_action("ouverture");
-                $this->log .= '</br>Enregistrement  réussie ' . $this->last_id . ' -';
+                $this->id_tickets = $db->GetLastInsertID();
+                $this->init_action("ouverture", $old_technicien = NULL);
+                $this->log .= '</br>Enregistrement  réussie ';
                 if (!Mlog::log_exec($this->table, $this->last_id, 'Création tickets', 'Insert')) {
                     $this->log .= '</br>Un problème de log ';
                 }
@@ -390,11 +390,12 @@ class Mtickets {
      */
     public function affect_ticket($is_reaffect) {
 
+        var_dump($is_reaffect);
+
         $this->check_non_exist('users_sys', 'id', $this->_data['id_technicien'], 'Technicien');
 
-
         $this->get_tickets();
-        $old_technicien= $this->tickets_info["technicien"];
+        $old_technicien = $this->tickets_info["technicien"];
         $this->last_id = $this->id_tickets;
 
         // If we have an error
@@ -414,11 +415,13 @@ class Mtickets {
             } else {
 
                 $this->last_id = $result;
-                if($is_reaffect =! NULL)
-                $this->init_action("reaffectation",$old_technicien);
-            else {
-                 $this->init_action("affectation",$old_technicien=NULL);
-            }
+                if ($is_reaffect == TRUE) {
+                    var_dump("REAFFECT");
+                    $this->init_action("reaffectation", $old_technicien);
+                } else {
+                    var_dump("AFFECT");
+                    $this->init_action("affectation", $old_technicien = NULL);
+                }
                 $this->log .= '</br>Enregistrement  réussie ' . $this->last_id . ' -';
                 if (!Mlog::log_exec($this->table, $this->last_id, 'Affectation tickets', 'Update')) {
                     $this->log .= '</br>Un problème de log ';
@@ -454,7 +457,7 @@ class Mtickets {
         $this->last_id = $this->id_tickets;
         global $db;
 
-        $values["decision"] = MySQL::SQLValue($this->_data["decision"]);
+        $values["code_cloture"] = MySQL::SQLValue($this->_data["code_cloture"]);
         $values["observation"] = MySQL::SQLValue($this->_data["observation"]);
         $values["etat"] = MySQL::SQLValue($etat);
         $values["updusr"] = MySQL::SQLValue(session::get('userid'));
@@ -552,6 +555,7 @@ class Mtickets {
             $this->error = false;
         } else {
             $this->log .= '</br>Statut changé! ';
+            $this->init_action("cloture", $old_technicien = NULL);
             $this->error = true;
             if (!Mlog::log_exec($this->table, $this->last_id, 'Changement ETAT  tickets', 'Update')) {
                 $this->log .= '</br>Un problème de log ';
@@ -718,17 +722,16 @@ class Mtickets {
             $this->log .= '</br>Enregistrement ' . $item . ' dans BD non réussie';
         }
     }
-    
-    /*Fonction qui ajoute une ligne dans la table action_ticket 
-     *après la création,l'affectation , la réaffectation et la cloture 
-     *afin de garder l'historique des technciens et spécifier 
+
+    /* Fonction qui ajoute une ligne dans la table action_ticket 
+     * après la création,l'affectation , la réaffectation et la cloture 
+     * afin de garder l'historique des technciens et spécifier 
      * tous les actions liées au ticket
      * 
      */
-    public function init_action($action,$old_technicien) {
+
+    public function init_action($action, $old_technicien) {
         $this->get_tickets();
-        //var_dump($this->tickets_info);
-        
 
         if ($this->error == true) {
             global $db;
@@ -738,26 +741,18 @@ class Mtickets {
                 case "ouverture":
                     $message = "Ouverture ticket";
                     $values["message"] = MySQL::SQLValue($message);
-                    //$values["date_action"] = MySQL::SQLValue(date('Y-m-d'));
-                    //$values["id_ticket"] = MySQL::SQLValue($this->tickets_info["id"]);
                     break;
                 case "affectation":
-                    $message = "Affectation ticket à <b>" . $this->tickets_info["technicien"] ."</b>";
+                    $message = "Affectation ticket à <b>" . $this->tickets_info["technicien"] . "</b>";
                     $values["message"] = MySQL::SQLValue($message);
-                    //$values["date_action"] = MySQL::SQLValue(date('Y-m-d'));
-                    //$values["id_ticket"] = MySQL::SQLValue($this->tickets_info["id"]);
                     break;
                 case "reaffectation":
-                    $message = "Réaffectation ticket de <b>" .$old_technicien. "</b> à  <b>" .$this->tickets_info["technicien"] ."</b>";
+                    $message = "Réaffectation ticket de <b>" . $old_technicien . "</b> à  <b>" . $this->tickets_info["technicien"] . "</b>";
                     $values["message"] = MySQL::SQLValue($message);
-                    //$values["date_action"] = MySQL::SQLValue(date('Y-m-d'));
-                    //$values["id_ticket"] = MySQL::SQLValue($this->tickets_info["id"]);
                     break;
                 case "cloture":
                     $message = "Ticket clôturé";
                     $values["message"] = MySQL::SQLValue($message);
-                    //$values["date_action"] = MySQL::SQLValue(date('Y-m-d'));
-                    //$values["id_ticket"] = MySQL::SQLValue($this->tickets_info["id"]);
                     break;
             }
 
@@ -775,8 +770,6 @@ class Mtickets {
             } else {
 
                 $this->last_id = $result;
-
-                $this->log .= '</br>Enregistrement  réussie ' . $this->last_id . ' -';
                 if (!Mlog::log_exec($this->table_action, $this->last_id, 'Création action', 'Insert')) {
                     $this->log .= '</br>Un problème de log ';
                 }

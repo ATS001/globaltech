@@ -125,13 +125,13 @@ if($ticket->get_action_ticket()){
                                                     <b style="color:green"><?php $ticket->s("date_affectation") ?></b>
                                                 </li>
                                             <?php } ?>
-                                                 <?php if ($ticket->g("decision") != NULL AND $ticket->g("observation") ) { ?>
+                                                 <?php if ($ticket->g("code_cloture") != NULL AND $ticket->g("observation") ) { ?>
                                                 <li>
                                                     <i class="ace-icon fa fa-caret-right green"></i>Décision :
-                                                    <b style="color:green"><?php $ticket->s("decision") ?></b>
+                                                    <b style="color:green"><?php $ticket->s("code_cloture") ?></b>
                                                 </li>
                                                 <li>
-                                                    <i class="ace-icon fa fa-caret-right green"></i>Oservation :
+                                                    <i class="ace-icon fa fa-caret-right green"></i>Observation :
                                                     <b style="color:green"><?php $ticket->s("observation") ?></b>
                                                 </li>
                                                 <?php } ?>
@@ -277,8 +277,11 @@ $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
 
 $decision[]= array("required", "true", "Veuillez choisir une décision ");
-$decision = array('Motif 1' => 'Motif 1' , 'Motif 2' => 'Motif 2' ,'Motif 3'=>'Motif 3');
-$form->select('Décision', 'decision', 2, $decision, $indx = NULL ,$selected = NULL, $multi = NULL);
+$form->select_table('Décision', 'code_cloture', 6, 'code_cloture', 'id', 'id', 'code_cloture', $indx = '------', 
+                    $selected = NULL, $multi = NULL, $where = 'etat=0', $decision, NULL);
+
+//$decision = array('Motif 1' => 'Motif 1' , 'Motif 2' => 'Motif 2' ,'Motif 3'=>'Motif 3');
+//$form->select('Décision', 'decision', 2, $decision, $indx = NULL ,$selected = NULL, $multi = NULL);
 
 $oserv[]= array("required", "true", "Veuillez saisir une observation ");
 $form->input("Observation", "observation", "text" ,"9", null, $oserv, null, $readonly = null);

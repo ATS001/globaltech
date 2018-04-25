@@ -34,7 +34,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $ticket->get_tickets()) {
 
 
 <?php
-$form = new Mform('affecttechnicien', 'affecttechnicien', '', 'tickets', '0', null);
+$form = new Mform('reaffectticket', 'reaffectticket', '', 'tickets', '0', null);
 $form->input_hidden('id', $ticket->g('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));

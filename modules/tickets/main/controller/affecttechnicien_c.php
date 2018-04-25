@@ -38,9 +38,9 @@ if (MInit::form_verif('affecttechnicien', false)) {
         
 //Etat for validate row
 $etat = Msetting::get_set('etat_ticket', 'resolution_encours');
-var_dump($etat);
+
     //execute Insert returne false if error
-    if ($new_tickets->affect_ticket()) {
+    if ($new_tickets->affect_ticket($is_reaffect=FALSE)) {
         if($new_tickets->valid_tickets($etat)){
             exit("1#" . $new_tickets->log);
         } else {
