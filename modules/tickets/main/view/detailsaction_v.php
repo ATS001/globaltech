@@ -15,7 +15,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_tickets->get_ticket_action()) {
     // returne message error red to client 
     exit('3#' . $info_tickets->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
-
+$id_ticket = $info_tickets->ticket_action_info["id_ticket"];
 ?>
 
 <div class="pull-right tableTools-container">
@@ -23,7 +23,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_tickets->get_ticket_action()) {
 
 
         <?php
-        TableTools::btn_add('tickets', 'Liste tickets', Null, $exec = NULL, 'reply');
+        TableTools::btn_add('detailsticket', 'Retour', MInit::crypt_tp('id', $id_ticket), $exec = NULL, 'reply');
         ?>		
     </div>
 </div>
@@ -43,7 +43,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_tickets->get_ticket_action()) {
 
         </div>
         <div class="table-header">
-            Formulaire: "<?php echo ACTIV_APP; ?>"
+            Page: "<?php echo ACTIV_APP; ?>"
         </div>
         <div class="widget-content">
             <div class="widget-box">
@@ -79,8 +79,8 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_tickets->get_ticket_action()) {
                                                                 <i class="ace-icon fa fa-search show_file"></i>
                                                             </a>
                                                         </li> 
-                                                        
-                                                       
+
+
                                                         <div class="col-sm-8">
                                                             <div>
                                                                 <div class="space-6"></div>
