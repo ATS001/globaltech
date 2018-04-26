@@ -1673,6 +1673,66 @@ class Mdevis
         }
     }
 
+    public function duplicate_devis()
+    {
+        global $db;
+        //Get All devis to be duplicate
+        $table = $this->table;
+        $table_details = $this->table_details;
+        global $db;
+        $ssid = 'duplicat_devis';
+        session::clear($ssid);
+        session::set($ssid,session::generate_sid());
+        $verif_value       = md5(session::get($ssid));
+        $curent_usr = session::get('userid');
+        //Generate reference
+        if(!$reference = $db->Generate_reference($this->table, 'DEV'))
+        {
+            $this->log .= '</br>Problème Réference new devis';
+            return false;
+        }
+        $date_devis = date('Y-m-d');
+
+
+        $old_devis_id = $this->id_devis;
+        //Insert duplicated Devis
+        $all_fields_f = "`tkn_frm`, `type_devis`,
+                `projet`, `id_client`, `commission`, `total_commission`, `tva`, `id_commercial`, `reference`, 
+                `date_devis`, `type_remise`, `total_remise`, `valeur_remise`, `totalht`, `totalttc`, 
+                `totaltva`, `vie`, `claus_comercial`, `ref_bc`, `scan`, `devis_pdf`, `etat`, `creusr`";
+
+        $all_fields_v = "'$verif_value', `type_devis`,
+                `projet`, `id_client`, `commission`, `total_commission`, `tva`, `id_commercial`, '$reference',
+                '$date_devis', `type_remise`, `total_remise`, `valeur_remise`, `totalht`, `totalttc`, 
+                `totaltva`, `vie`, `claus_comercial`, `ref_bc`, `scan`, `devis_pdf`, 0, '$curent_usr' ";        
+        
+        $sql_duplicat_devis = "INSERT INTO $table ($all_fields_f) SELECT  $all_fields_v FROM $table WHERE $table.id = $old_devis_id";
+
+        if(!$new_devis = $db->Query($sql_duplicat_devis))
+        {
+            $this->log .= "</br>Problème Insert devis";
+            return false;
+        }
+        
+        //Insert duplicated detail devis
+        $all_fields_d_f = "`order`, `id_devis`, `tkn_frm`, `id_produit`, `ref_produit`, `designation`, `qte`, `prix_unitaire`, `type_remise`, `remise_valeur`, `tva`, `prix_ht`, `prix_ttc`, `total_ht`, `total_ttc`, `total_tva`, `creusr`";
+        $all_fields_d_v = "`order`, '$new_devis', '$verif_value', `id_produit`, `ref_produit`, `designation`, `qte`, `prix_unitaire`, `type_remise`, `remise_valeur`, `tva`, `prix_ht`, `prix_ttc`, `total_ht`, `total_ttc`, `total_tva`, '$curent_usr'";
+
+        $sql_duplicat_devis_d = "INSERT INTO $table_details ($all_fields_d_f) SELECT  $all_fields_d_v FROM $table_details WHERE $table_details.id_devis = $old_devis_id";
+
+        if(!$new_devis_d = $db->Query($sql_duplicat_devis_d))
+        {
+            $this->log .= "</br>Problème Insert devis_d";
+            return false;
+        }
+        
+        $cryp_data = MInit::crypt_tp('id', $new_devis);
+        $this->log .= "</br>Devis crée avec succès sous réf: <b>$reference</b></br><a class='this_url' rel='editdevis' data='$cryp_data'>Modifier le nouveau Devis</a>";
+        return true;
+
+
+    }
+
 
 
 /**
