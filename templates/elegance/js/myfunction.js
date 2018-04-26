@@ -285,7 +285,7 @@ $('body').on('click', '.this_exec', function(e) {
 	 var $data = $(this).attr('data') != "" ? $(this).attr('data') : "";
 	 var $the_table = $(this).closest('table').attr('id');
 	 var $go_to = $(this).closest('div').attr('go_to');
-	 var $cosutm_noeud = $(this).attr('cn_rmv') != "" ? 'cn_rmv'+$(this).attr('cn_rmv') : "";
+	 var $cosutm_noeud = $(this).attr('cn_rmv') !== undefined ? 'cn_rmv'+$(this).attr('cn_rmv') : null;
 
 	 if($go_to == null){
 	 	exec_ajax($url, $data, $confirm = 1, '', $the_table, $cosutm_noeud);
@@ -312,11 +312,13 @@ function do_ajax($url, $data , $the_table, $cosutm_noeud){
                 	if(data_arry[0] == 1) {
 
         				ajax_loadmessage(data_arry[1],'ok',5000);
-        				if($cosutm_noeud != "")
+        				if($cosutm_noeud !== null)
         				{
+        					
         					
         					$('.'+$cosutm_noeud).remove();
         				}else{
+        					
         					var table = $('#'+$the_table).DataTable();
                             table.row('.selected').remove().draw( false );
         				}
