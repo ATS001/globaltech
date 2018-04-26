@@ -206,9 +206,11 @@ if($ticket->get_action_ticket()){
                                                                                     <i class="ace-icon fa fa-times red bigger-125"></i>
                                                                                 </a>
                                                                                 <?php } ?>
+                                                                                <?php if($value["etat"] == '0'){ ?>
                                                                                  <a href="#" class="this_url"  rel="detailsaction" data="<?php echo Minit::crypt_tp('id', $value['id'])?>">
                                                                                     <i class="ace-icon fa fa-search  blue bigger-125"></i>
                                                                                 </a>
+                                                                                <?php } ?>
                                                                             </div>
                                                                         </div>
                                                                     </div>
