@@ -39,7 +39,7 @@ $array_column = array(
         'alias' => 'date_previs',
         'width' => '10',
         'header' => 'Date prévisionnelle',
-        'align' => 'L'
+        'align' => 'C'
     ),
     
     array(

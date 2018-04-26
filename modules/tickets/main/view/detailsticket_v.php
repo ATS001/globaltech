@@ -10,16 +10,6 @@ $ticket = new Mtickets;
 $ticket->id_tickets = Mreq::tp('id');
 $ticket->get_tickets();
 
-/*
-  $commission = new Mcommission();
-  $commission->id_commerciale = Mreq::tp('id');
-  $commission->get_list_commission_by_commerciale();
-  $commissions = $commission->commission_info;
-  $commission->get_list_paiement_by_commerciale();
-  $paiements=$commission->paiements_info;
- */
-//var_dump($paiements);
-
 if (!MInit::crypt_tp('id', null, 'D') or ! $ticket->get_tickets()) {
     // returne message error red to client
     exit('3#' . $ticket->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur ');
@@ -32,8 +22,6 @@ if($ticket->get_action_ticket()){
 
 }
     
-
-
 ?>
 
 <div class="pull-right tableTools-container">
@@ -209,7 +197,7 @@ if($ticket->get_action_ticket()){
                                                                             <div>
                                                                                 <?php 
                                                                                 $etat1 = Msetting::get_set('etat_ticket', 'resolution_encours');
-                                                                                if($ticket->g("etat")== $etat AND $value["etat"] == '0') { ?>
+                                                                                if($ticket->g("etat")== $etat1 AND $value["etat"] == '0') { ?>
                                                                                 <a href="#" class="this_url"  rel="editaction" data="<?php echo Minit::crypt_tp('id', $value['id'])?>">
                                                                                     <i class="ace-icon fa fa-pencil blue bigger-125"></i>
                                                                                 </a>
@@ -218,6 +206,9 @@ if($ticket->get_action_ticket()){
                                                                                     <i class="ace-icon fa fa-times red bigger-125"></i>
                                                                                 </a>
                                                                                 <?php } ?>
+                                                                                 <a href="#" class="this_url"  rel="detailsaction" data="<?php echo Minit::crypt_tp('id', $value['id'])?>">
+                                                                                    <i class="ace-icon fa fa-search  blue bigger-125"></i>
+                                                                                </a>
                                                                             </div>
                                                                         </div>
                                                                     </div>

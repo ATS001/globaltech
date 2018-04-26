@@ -92,7 +92,7 @@ class Mtickets {
 
         $table = $this->table_action;
 
-        $sql = "SELECT $table.* FROM $table "
+        $sql = "SELECT $table.* , DATE_FORMAT($table.date_action,'%d-%m-%Y') as date_act FROM $table "
                 . " WHERE $table.id = " . $this->id_action_ticket;
 
 
