@@ -1,32 +1,26 @@
--- phpMyAdmin SQL Dump
--- version 4.1.14
--- http://www.phpmyadmin.net
---
--- Client :  127.0.0.1
--- Généré le :  Sam 21 Avril 2018 à 13:27
--- Version du serveur :  5.6.17
--- Version de PHP :  5.5.12
+/*
+SQLyog Ultimate v12.09 (64 bit)
+MySQL - 5.6.17 : Database - globaltech
+*********************************************************************
+*/
 
-SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
-SET time_zone = "+00:00";
-
-
-/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
-/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
-/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
 
---
--- Base de données :  `globaltech`
---
+/*!40101 SET SQL_MODE=''*/;
 
--- --------------------------------------------------------
+/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
+/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
+/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
+/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+CREATE DATABASE /*!32312 IF NOT EXISTS*/`globaltech` /*!40100 DEFAULT CHARACTER SET utf8 */;
 
---
--- Structure de la table `action_ticket`
---
+USE `globaltech`;
 
-CREATE TABLE IF NOT EXISTS `action_ticket` (
+/*Table structure for table `action_ticket` */
+
+DROP TABLE IF EXISTS `action_ticket`;
+
+CREATE TABLE `action_ticket` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `id_ticket` int(11) DEFAULT NULL COMMENT 'Ticket',
   `message` text COMMENT 'Description',
@@ -39,18 +33,9 @@ CREATE TABLE IF NOT EXISTS `action_ticket` (
   `updusr` int(11) DEFAULT NULL,
   `upddat` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=26 ;
+) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8;
 
---
--- Contenu de la table `action_ticket`
---
-
-INSERT INTO `action_ticket` (`id`, `id_ticket`, `message`, `date_action`, `photo`, `pj`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
-(18, 15, '<p>iiiid<br></p>', '2018-04-21', NULL, NULL, 0, 1, '2018-04-21 11:48:28', NULL, NULL),
-(20, 15, '<p>Test pour aller vers detail directement<br></p>', '2018-04-21', NULL, NULL, 0, 1, '2018-04-21 12:56:23', NULL, NULL),
-(22, 15, '<p>Test Action pour <br></p>', '2018-04-21', NULL, NULL, 0, 1, '2018-04-21 13:13:24', NULL, NULL),
-(25, 15, '<p>Test PJ<br></p>', '2018-04-21', 564, 563, 0, 1, '2018-04-21 13:20:37', NULL, NULL);
-
-/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
-/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
-/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
+/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
+/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
+/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
+/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;

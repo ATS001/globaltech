@@ -1,5 +1,5 @@
 <?php 
-//Export Module 'tickets' Date: 24-04-2018
+//Export Module 'tickets' Date: 26-04-2018
 global $db;
 if(!$result_insert_modul = $db->Query("insert into modul (modul, description, rep_modul, tables, app_modul, modul_setting, is_setting, etat, services)values('tickets', 'Gestion Tickets','tickets/main','tickets','tickets',NULL,'0', '0', '[-1-]')")){$this->error = false; $this->log .= "<li> Error Import Modul 'tickets' </li>";}
   //Task 'tickets' 'Gestion Tickets'
@@ -74,3 +74,7 @@ if(!$result_insert_modul = $db->Query("insert into modul (modul, description, re
   if(!$result_task_794 = $db->Query("INSERT INTO task (app, modul, file, rep, session, dscrip, sbclass, ajax, app_sys, etat, type_view, services)VALUES('clotureticket', $result_insert_modul, 'clotureticket','tickets/main', '1', 'Ticket cloturé', 'cogs', '1', '0', '0','exec', '[-1-]')")){$this->error = false; $this->log .= "<li> Error Import task 'Ticket cloturé' </li>";}
       // Action Task 794 - 'Ticket cloturé'
       if(!$result_action_1278 = $db->Query("INSERT INTO task_action (appid, idf, descrip, app, mode_exec, code, type, service, etat_line, notif, etat_desc, message_class, message_etat)VALUES($result_task_794, '775d77d66d847962bc363e3c8500004c', 'Ticket cloturé','clotureticket', NULL, '".NULL."', '1', '[-1-]', '0', '0', 'Attente de validation','warning','".'<span class="label label-sm label-warning">Attente de validation</span>'."')")){$this->error = false; $this->log .= "<li> Error Import task_action 'Ticket cloturé' </li>";}
+  //Task 'detailsaction' 'Détails action'
+  if(!$result_task_795 = $db->Query("INSERT INTO task (app, modul, file, rep, session, dscrip, sbclass, ajax, app_sys, etat, type_view, services)VALUES('detailsaction', $result_insert_modul, 'detailsaction','tickets/main', '1', 'Détails action', 'cogs', '1', '0', '0','profil', '[-1-]')")){$this->error = false; $this->log .= "<li> Error Import task 'Détails action' </li>";}
+      // Action Task 795 - 'Détails action'
+      if(!$result_action_1279 = $db->Query("INSERT INTO task_action (appid, idf, descrip, app, mode_exec, code, type, service, etat_line, notif, etat_desc, message_class, message_etat)VALUES($result_task_795, 'ca13381e080bc38cc9505039f618df36', 'Détails action','detailsaction', NULL, '".NULL."', '1', '[-1-]', '0', '0', 'Attente Validation','warning','".'<span class="label label-sm label-warning">Attente Validation</span>'."')")){$this->error = false; $this->log .= "<li> Error Import task_action 'Détails action' </li>";}
