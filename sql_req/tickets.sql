@@ -1,26 +1,32 @@
-/*
-SQLyog Ultimate v12.09 (64 bit)
-MySQL - 5.6.17 : Database - globaltech
-*********************************************************************
-*/
+-- phpMyAdmin SQL Dump
+-- version 4.1.14
+-- http://www.phpmyadmin.net
+--
+-- Client :  127.0.0.1
+-- Généré le :  Sam 21 Avril 2018 à 13:27
+-- Version du serveur :  5.6.17
+-- Version de PHP :  5.5.12
 
+SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET time_zone = "+00:00";
+
+
+/*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
+/*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
+/*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
 /*!40101 SET NAMES utf8 */;
 
-/*!40101 SET SQL_MODE=''*/;
+--
+-- Base de données :  `globaltech`
+--
 
-/*!40014 SET @OLD_UNIQUE_CHECKS=@@UNIQUE_CHECKS, UNIQUE_CHECKS=0 */;
-/*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
-/*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
-/*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
-CREATE DATABASE /*!32312 IF NOT EXISTS*/`globaltech` /*!40100 DEFAULT CHARACTER SET utf8 */;
+-- --------------------------------------------------------
 
-USE `globaltech`;
+--
+-- Structure de la table `tickets`
+--
 
-/*Table structure for table `tickets` */
-
-DROP TABLE IF EXISTS `tickets`;
-
-CREATE TABLE `tickets` (
+CREATE TABLE IF NOT EXISTS `tickets` (
   `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
   `id_client` int(11) DEFAULT NULL COMMENT 'Client',
   `projet` varchar(200) DEFAULT NULL COMMENT 'Projet',
@@ -42,13 +48,17 @@ CREATE TABLE `tickets` (
   KEY `fk_cproduit_ticket` (`categorie_produit`),
   KEY `fk_tproduit_ticket` (`type_produit`),
   KEY `fk_user_ticket` (`id_technicien`)
-) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=16 ;
 
-/*Data for the table `tickets` */
+--
+-- Contenu de la table `tickets`
+--
 
-insert  into `tickets`(`id`,`id_client`,`projet`,`message`,`date_previs`,`date_realis`,`type_produit`,`categorie_produit`,`id_produit`,`id_technicien`,`date_affectation`,`etat`,`creusr`,`credat`,`updusr`,`upddat`) values (13,27,'DDD','<p>XXXX<br></p>','2018-04-19',NULL,1,8,NULL,NULL,NULL,0,1,'2018-04-12 22:44:06',1,'2018-04-13 11:40:52'),(14,24,'Farcha','<p>Connexion lente<br></p><p><br><b>GOOD LUCK</b><br></p>','2018-04-20',NULL,3,0,25,NULL,NULL,0,1,'2018-04-13 11:50:15',1,'2018-04-06 19:21:24');
+INSERT INTO `tickets` (`id`, `id_client`, `projet`, `message`, `date_previs`, `date_realis`, `type_produit`, `categorie_produit`, `id_produit`, `id_technicien`, `date_affectation`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
+(13, 27, 'DDD', '<p>XXXX<br></p>', '2018-04-19', NULL, 1, 8, NULL, NULL, NULL, 0, 1, '2018-04-12 22:44:06', 1, '2018-04-13 11:40:52'),
+(14, 24, 'Farcha', '<p>Connexion lente<br></p><p><br><b>GOOD LUCK</b><br></p>', '2018-04-20', NULL, 3, 0, 25, NULL, NULL, 0, 1, '2018-04-13 11:50:15', 1, '2018-04-06 19:21:24'),
+(15, 1, 'Tandrara', '<p>    Test de ce ticket<br></p>', '2018-04-09', NULL, 3, 0, 22, 2, '2018-04-09', 1, 1, '2018-04-09 11:21:04', 1, '2018-04-09 11:22:56');
 
-/*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
-/*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;
-/*!40014 SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS */;
-/*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
+/*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
+/*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
+/*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;

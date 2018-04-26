@@ -379,6 +379,108 @@ class Mdevis
             }  
             $this->error == true;
       }
+
+      public function renew_devis()
+        {
+      //Check if devis exist
+            $this->Check_devis_exist($this->_data['tkn_frm'], null);
+      //Check if devis have détails
+            $this->Check_devis_have_details($this->_data['tkn_frm']);
+            //Check interval date devis
+            $this->check_date_devis($this->_data['date_devis']);
+        //Before execute do the multiple check
+            $this->Check_exist('reference', $this->reference, 'Réference Devis', null);
+
+            $this->check_non_exist('clients','id',$this->_data['id_client'] ,'Client' );
+
+            $this->check_non_exist('commerciaux','id',$this->_data['id_commercial'] ,'Commercial' );
+
+      //Get sum of details
+            $this->Get_sum_detail($this->_data['tkn_frm']); 
+      //calcul values devis
+            $this->Calculate_devis_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva'],$this->_data['commission']);
+            global $db;
+            //Generate reference
+            if(!$reference = $db->Generate_reference($this->table, 'DEV'))
+            {
+                $this->log .= '</br>Problème Réference';
+                return false;
+            }
+            $this->get_type_devis($this->_data['tkn_frm']);  
+      //Check $this->error (true / false)
+            if($this->error == false)
+            {
+                $this->log .='</br>Enregistrement non réussie';
+                return false;
+            }
+
+        //Format values for Insert query 
+            $montant_remise = $this->sum_total_ht - $this->total_ht_t;
+            $totalht  = $this->total_ht_t;
+            $totaltva = $this->total_tva_t;
+            $totalttc = $this->total_ttc_t;
+            $valeur_remise = $this->valeur_remis_t;
+            $total_remise = $this->total_remise;
+            $total_commission=$this->total_commission;
+
+
+            $values["reference"]       = MySQL::SQLValue($this->reference);
+            $values["tkn_frm"]         = MySQL::SQLValue($this->_data['tkn_frm']);
+            $values["type_devis"]      = MySQL::SQLValue($this->type_devis);
+            $values["reference"]       = MySQL::SQLValue($reference);
+            $values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
+            $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
+            $values["id_commercial"]   = MySQL::SQLValue($this->_data['id_commercial']);
+            $values["commission"]      = MySQL::SQLValue($this->_data['commission']);
+            $values["total_commission"]= MySQL::SQLValue($total_commission);
+            $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
+            $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
+            $values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
+            $values["total_remise"]    = MySQL::SQLValue($montant_remise);
+            $values["projet"]          = MySQL::SQLValue($this->_data['projet']);
+            $values["vie"]             = MySQL::SQLValue($this->_data['vie']);
+            $values["claus_comercial"] = MySQL::SQLValue($this->_data['claus_comercial']);
+            $values["totalht"]         = MySQL::SQLValue($totalht);
+            $values["totalttc"]        = MySQL::SQLValue($totalttc);
+            $values["totaltva"]        = MySQL::SQLValue($totaltva);
+            $values["creusr"]          = MySQL::SQLValue(session::get('userid'));
+            $values["credat"]          = MySQL::SQLValue(date("Y-m-d H:i:s"));
+        //Check if Insert Query been executed (False / True)
+            if(!$result = $db->InsertRow($this->table, $values))
+            {
+                //False => Set $this->log and $this->error = false
+                $this->log .= $db->Error();
+                $this->error = false;
+                $this->log .='</br>Enregistrement BD non réussie'; 
+            }else{
+                $this->last_id = $result;
+                //Check $this->error = true return Green message and Bol true
+                if($this->error == true)
+                {
+                    $this->log = '</br>Enregistrement réussie: <b>Réference: '.$reference;
+                    $this->save_temp_detail($this->_data['tkn_frm'], $this->last_id);
+                    //log
+                    if(!Mlog::log_exec($this->table, $this->last_id, 'Enregistrement Devis '.$this->last_id, 'Insert'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
+           //Check $this->error = false return Red message and Bol false    
+                }else{
+                 $this->log .= '</br>Enregistrement réussie: <b>'.$reference;
+                 $this->log .= '</br>Un problème d\'Enregistrement ';
+             }
+        }//Else Error false 
+        
+        //check if last error is true then return true else rturn false.
+        if($this->error == false){
+            return false;
+        }else{
+            return true;
+        }
+
+    }
+
+
     /////////////////////////////////////////////////////////////////////////////////
         public function save_new_devis()
         {
