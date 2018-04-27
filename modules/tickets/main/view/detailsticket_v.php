@@ -10,16 +10,6 @@ $ticket = new Mtickets;
 $ticket->id_tickets = Mreq::tp('id');
 $ticket->get_tickets();
 
-/*
-  $commission = new Mcommission();
-  $commission->id_commerciale = Mreq::tp('id');
-  $commission->get_list_commission_by_commerciale();
-  $commissions = $commission->commission_info;
-  $commission->get_list_paiement_by_commerciale();
-  $paiements=$commission->paiements_info;
- */
-//var_dump($paiements);
-
 if (!MInit::crypt_tp('id', null, 'D') or ! $ticket->get_tickets()) {
     // returne message error red to client
     exit('3#' . $ticket->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur ');
@@ -32,8 +22,6 @@ if($ticket->get_action_ticket()){
 
 }
     
-
-
 ?>
 
 <div class="pull-right tableTools-container">
@@ -72,11 +60,11 @@ if($ticket->get_action_ticket()){
 
                     <div class="tab-content no-border padding-24">
                         <div id="home" class="tab-pane in active">
-                            <div class="row">
-                                <div class="col-xs-12 col-sm-6">
+                                        <div class="row">
+                                            <div class="col-sm-4">
 
-                                    <div>
-                                        <ul class="list-unstyled spaced">
+                                                <div>
+                                           <ul class="list-unstyled ">
 
                                             <li>
                                                 <i class="ace-icon fa fa-caret-right green"></i>Client :
@@ -125,16 +113,37 @@ if($ticket->get_action_ticket()){
                                                     <b style="color:green"><?php $ticket->s("date_affectation") ?></b>
                                                 </li>
                                             <?php } ?>
+                                                 <?php if ($ticket->g("code_cloture") != NULL AND $ticket->g("observation") ) { ?>
+                                                <li>
+                                                    <i class="ace-icon fa fa-caret-right green"></i>Décision :
+                                                    <b style="color:green"><?php $ticket->s("code_cloture") ?></b>
+                                                </li>
+                                                <li>
+                                                    <i class="ace-icon fa fa-caret-right green"></i>Observation :
+                                                    <b style="color:green"><?php $ticket->s("observation") ?></b>
+                                                </li>
+                                                <?php } ?>
 
                                         </ul>
-                                    </div>
-                                    <div class="space-6"></div>
-                                    <div class="well">
-                                        <?php $ticket->s("message") ?>
-                                    </div>
-<?php ?>
-                                </div><!-- /.col -->
-                            </div>
+
+                                                </div>
+
+                                            </div><!-- /.col -->
+
+
+                                            <div class="col-sm-8">
+                                                <div>
+                                                    <div class="space-6"></div>
+                                                    <div class="sab">
+                                                        <?php $ticket->s("message") ?>
+                                                    </div>
+                                                </div>
+                                            </div><!-- /.col -->
+                                        </div>
+
+                                    </div><!-- /#home -->
+                           
+                            <?php  //if ($ticket->g("technicien") != NULL) { ?>
                             <div class="row">
                                 <div id="timeline-1">
                                     <div class="row">
@@ -142,10 +151,10 @@ if($ticket->get_action_ticket()){
                                             <!-- #section:pages/timeline -->
                                             
                                                 
-
                                                 <?php 
+                                                        
                                                 if(!$list_action){
-                                                    echo "Pas d'action en ce moment";
+                                                    echo "</br><b>Pas d'action en ce moment    </b>";
                                                 }else{?>
                                                 <div class="timeline-container">
 
@@ -186,6 +195,9 @@ if($ticket->get_action_ticket()){
                                                                             <div class="space-4"></div>
 
                                                                             <div>
+                                                                                <?php 
+                                                                                $etat1 = Msetting::get_set('etat_ticket', 'resolution_encours');
+                                                                                if($ticket->g("etat")== $etat1 AND $value["etat"] == '0') { ?>
                                                                                 <a href="#" class="this_url"  rel="editaction" data="<?php echo Minit::crypt_tp('id', $value['id'])?>">
                                                                                     <i class="ace-icon fa fa-pencil blue bigger-125"></i>
                                                                                 </a>
@@ -193,7 +205,12 @@ if($ticket->get_action_ticket()){
                                                                                 <a href="#" class="this_exec" cn_rmv="<?php echo $value['id']?>" rel="deleteactionticket" data="<?php echo Minit::crypt_tp('id', $value['id'])?>">
                                                                                     <i class="ace-icon fa fa-times red bigger-125"></i>
                                                                                 </a>
-
+                                                                                <?php } ?>
+                                                                                <?php if($value["etat"] == '0'){ ?>
+                                                                                 <a href="#" class="this_url"  rel="detailsaction" data="<?php echo Minit::crypt_tp('id', $value['id'])?>">
+                                                                                    <i class="ace-icon fa fa-search  blue bigger-125"></i>
+                                                                                </a>
+                                                                                <?php } ?>
                                                                             </div>
                                                                         </div>
                                                                     </div>
@@ -204,10 +221,13 @@ if($ticket->get_action_ticket()){
                                                  </div><!-- /.timeline-items -->
                                                 <?php }//foreach
                                                 }//End IF 
-TableTools::btn_add('addaction', 'Ajouter une action', MInit::crypt_tp('id',Mreq::tp('id')));
-                                                ?>
-
                                                 
+                                                if($ticket->g("etat") == 1){
+TableTools::btn_add('addaction', 'Ajouter une action', MInit::crypt_tp('id',Mreq::tp('id')));
+                                                }
+                                                
+                                                ?>
+                                            
                                                                         
 
                                                     
@@ -225,6 +245,8 @@ TableTools::btn_add('addaction', 'Ajouter une action', MInit::crypt_tp('id',Mreq
                                     </div>
                                 </div>
                             </div>
+                            
+                            <?php //} ?>
                         </div><!-- /#home -->
                         <div id="action" class="tab-pane in">
                             
@@ -238,6 +260,31 @@ TableTools::btn_add('addaction', 'Ajouter une action', MInit::crypt_tp('id',Mreq
             </div>
         </div>
     </div>
+
+<?php
+
+ if($ticket->g("etat") == 1){ 
+$form = new Mform('resolution', 'resolution', '', 'tickets', '0', null);
+$form->input_hidden('id',$ticket->g("id"));
+$form->input_hidden('idc', Mreq::tp('idc'));
+$form->input_hidden('idh', Mreq::tp('idh'));
+
+$decision[]= array("required", "true", "Veuillez choisir une décision ");
+$form->select_table('Décision', 'code_cloture', 6, 'code_cloture', 'id', 'id', 'code_cloture', $indx = '------', 
+                    $selected = NULL, $multi = NULL, $where = 'etat=0', $decision, NULL);
+
+//$decision = array('Motif 1' => 'Motif 1' , 'Motif 2' => 'Motif 2' ,'Motif 3'=>'Motif 3');
+//$form->select('Décision', 'decision', 2, $decision, $indx = NULL ,$selected = NULL, $multi = NULL);
+
+$oserv[]= array("required", "true", "Veuillez saisir une observation ");
+$form->input("Observation", "observation", "text" ,"9", null, $oserv, null, $readonly = null);
+
+$form->button('Enregistrer');
+//Form render
+$form->render();
+ }
+
+?>
 </div>
 
 </div><!-- /.well -->
@@ -254,3 +301,16 @@ TableTools::btn_add('addaction', 'Ajouter une action', MInit::crypt_tp('id',Mreq
      
 });*/
 </script>
+<style>
+    .sab {
+  min-height: 20px;
+  padding: 19px;
+  margin-bottom: 20px;
+  background-color: #e3e3e3;
+  border: 1px solid #e3e3e3;
+  border-radius: 4px;
+  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+}
+
+</style>

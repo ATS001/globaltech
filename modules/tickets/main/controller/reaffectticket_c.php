@@ -7,7 +7,7 @@ if (!defined('_MEXEC'))
 // Modul: tickets
 //Created : 03-04-2018
 //Controller ADD Form
-if (MInit::form_verif('affecttechnicien', false)) {
+if (MInit::form_verif('reaffectticket', false)) {
 
     $posted_data = array(
         'id' => Mreq::tp('id'),
@@ -33,15 +33,18 @@ if (MInit::form_verif('affecttechnicien', false)) {
     }
 
 
-
     //End check empty element
     $new_tickets = new Mtickets($posted_data);
     $new_tickets->id_tickets = $posted_data["id"];
 
+    
+//Etat for validate row
+$etat = Msetting::get_set('etat_ticket', 'resolution_encours');
+
 
     //execute Insert returne false if error
-    if ($new_tickets->affect_ticket()) {
-        if ($new_tickets->valid_tickets(1)) {
+    if ($new_tickets->affect_ticket(TRUE)) {
+        if ($new_tickets->valid_tickets($etat)) {
             exit("1#" . $new_tickets->log);
         } else {
 

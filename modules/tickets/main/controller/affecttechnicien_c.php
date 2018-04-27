@@ -2,8 +2,7 @@
 
 //First check target no Hack
 if (!defined('_MEXEC'))
-    die();
-//var_dump(Mreq::tp('id'));
+{die();}
 //SYS GLOBAL TECH
 // Modul: tickets
 //Created : 03-04-2018
@@ -32,15 +31,17 @@ if (MInit::form_verif('affecttechnicien', false)) {
         exit("0#$empty_list");
     }
 
-
-
     //End check empty element
     $new_tickets = new Mtickets($posted_data);
     $new_tickets->id_tickets=$posted_data["id"];
    
+        
+//Etat for validate row
+$etat = Msetting::get_set('etat_ticket', 'resolution_encours');
+
     //execute Insert returne false if error
-    if ($new_tickets->affect_ticket()) {
-        if($new_tickets->valid_tickets($etat=1)){
+    if ($new_tickets->affect_ticket($is_reaffect=FALSE)) {
+        if($new_tickets->valid_tickets($etat)){
             exit("1#" . $new_tickets->log);
         } else {
             exit("0#" . $new_tickets->log);
@@ -51,9 +52,7 @@ if (MInit::form_verif('affecttechnicien', false)) {
 
         exit("0#" . $new_tickets->log);
     }
-    
-    
-    
+       
 }
 
 //No form posted show view

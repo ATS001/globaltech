@@ -1,10 +1,10 @@
 <?php
+
 defined('_MEXEC') or die;
-if(!MInit::crypt_tp('exec', null, 'D'))
-{ 	
-	$id     = Mreq::tp('exec');
-	$idc    = MInit::crypt_tp('exec',$id);
-	exit('0#<br>L\'action exécutée invalid contactez l\'administrateur '.$id.'  '.$idc);
+if (!MInit::crypt_tp('exec', null, 'D')) {
+    $id = Mreq::tp('exec');
+    $idc = MInit::crypt_tp('exec', $id);
+    exit('0#<br>L\'action exécutée invalid contactez l\'administrateur ' . $id . '  ' . $idc);
 }
 //Action called from all button of this modul
 $action = Mreq::tp('exec');
