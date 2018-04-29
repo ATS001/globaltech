@@ -76,8 +76,8 @@ $hard_code_prices = '<label style="margin-left:15px;margin-right : 20px;"> T.V.A
 $hard_code_prices .= '<label style="margin-left:15px;margin-right : 20px;">Prix Global TTC: </label><input readonly="" id="totalttc" name="totalttc" class="input-large is-number alignRight" value="0" type="text">';
 $form->input('Prix Global HT', 'totalht', 'text' ,'3 is-number alignRight', '0', $prixht_array, $hard_code_prices, 'readonly');
 //Validité
-$vie_opt = array('30' => '30 Jours' , '60' => '60 Jours', '90' => '90 Jours' );
-$form->select('Validité', 'vie', 3, $vie_opt, $indx = '-----' ,$selected = NULL, $multi = NULL);
+$vie_opt = array('30' => '30 Jours' , '60' => '60 Jours', '90' => '90 Jours', '180' => 'Six mois', '365' => 'Un an');
+$form->select('Validité', 'vie', 3, $vie_opt, $indx = '-----' ,30 , $multi = NULL);
 //Conditions commercial
 $clauses = 'Paiement 100% à la commande';
 $form->input_editor('Conditions commerciales', 'claus_comercial', 8, $clauses, $js_array = null,  $input_height = 50);

@@ -96,7 +96,7 @@ $hard_code_prices = '<label style="margin-left:15px;margin-right : 20px;"> T.V.A
 $hard_code_prices .= '<label style="margin-left:15px;margin-right : 20px;">Prix Global TTC: </label><input readonly="" id="totalttc" name="totalttc" class="input-large is-number alignRight" value="'.$info_devis->g('totalttc').'" type="text">';
 $form->input('Prix Global HT', 'totalht', 'text' ,'3 is-number alignRight', $info_devis->g('totalht'), $prixht_array, $hard_code_prices, 'readonly');
 //Validité
-$vie_opt = array('30' => '30 Jours' , '60' => '60 Jours', '90' => '90 Jours' );
+$vie_opt = array('30' => '30 Jours' , '60' => '60 Jours', '90' => '90 Jours', '180' => 'Six mois', '365' => 'Un an');
 $form->select('Validité', 'vie', 3, $vie_opt, $indx = NULL ,$selected = $info_devis->g('vie'), $multi = NULL);
 //Conditions commercial
 $clauses = 'Paiement 100% à la commande pour';
