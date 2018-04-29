@@ -65,7 +65,7 @@ class Mtickets {
                 . " LEFT JOIN users_sys ON users_sys.id=$table.id_technicien"
                 . " LEFT JOIN code_cloture ON code_cloture.id=$table.code_cloture"
                 . " WHERE $table.id = " . $this->id_tickets;
-        
+
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
@@ -390,8 +390,6 @@ class Mtickets {
      */
     public function affect_ticket($is_reaffect) {
 
-        var_dump($is_reaffect);
-
         $this->check_non_exist('users_sys', 'id', $this->_data['id_technicien'], 'Technicien');
 
         $this->get_tickets();
@@ -416,10 +414,9 @@ class Mtickets {
 
                 $this->last_id = $result;
                 if ($is_reaffect == TRUE) {
-                    var_dump("REAFFECT");
                     $this->init_action("reaffectation", $old_technicien);
                 } else {
-                    var_dump("AFFECT");
+
                     $this->init_action("affectation", $old_technicien = NULL);
                 }
                 $this->log .= '</br>Enregistrement  réussie ' . $this->last_id . ' -';

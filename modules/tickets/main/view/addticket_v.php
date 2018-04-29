@@ -42,8 +42,8 @@ if (!defined('_MEXEC'))
                 $form->select_table('Client', 'id_client', 6, 'clients', 'id', 'denomination', 'denomination', $indx = '------', $selected = NULL, $multi = NULL, $where = 'etat=1', $client_array, NULL);
 
 //Projet ==> 
-                $array_projet[] = array("required", "true", "Insérer le projet");
-                $form->input("Projet", "projet", "text", "9", null, $array_projet, null, $readonly = null);
+                
+                $form->input("Projet", "projet", "text", "9", null, NULL, null, $readonly = null);
 
 //Date prévisionnelle ==> 
                 $date_prev[] = array('required', 'true', 'Insérer une date prévisionnelle');

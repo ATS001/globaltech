@@ -28,10 +28,7 @@ if (MInit::form_verif('addtickets', false)) {
         $empty_list .= "<li>Client</li>";
         $checker = 1;
     }
-    if ($posted_data["projet"] == NULL) {
-        $empty_list .= "<li>Projet</li>";
-        $checker = 1;
-    }
+    
     if ($posted_data["message"] == NULL) {
         $empty_list .= "<li>Message</li>";
         $checker = 1;

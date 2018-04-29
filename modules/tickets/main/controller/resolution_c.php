@@ -20,12 +20,12 @@ if (MInit::form_verif('resolution', false)) {
     $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
 
     if ($posted_data["observation"] == NULL) {
-        $empty_list .= "<li>Observation</li>";
+        $empty_list .= "<li>Résolution</li>";
         $checker = 1;
     }
 
     if ($posted_data["code_cloture"] == NULL) {
-        $empty_list .= "<li>Décision</li>";
+        $empty_list .= "<li>Code clôture</li>";
         $checker = 1;
     }
 
