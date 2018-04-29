@@ -3,18 +3,18 @@
 if(!defined('_MEXEC'))die();
 //SYS GLOBAL TECH
 // Modul: tickets
-//Created : 02-04-2018
+//Created : 17-04-2018
 //Controller EXEC Form
 $tickets = new Mtickets();
-$tickets->id_tickets = Mreq::tp('id');
+$tickets->id_action_ticket = Mreq::tp('id');
 
-if(!MInit::crypt_tp('id', null, 'D')or !$tickets->get_tickets())
+if(!MInit::crypt_tp('id', null, 'D'))
 {  
    // returne message error red to tickets 
    exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
 
-if($tickets->deleteticket())
+if($tickets->deleteactionticket())
 {
 	exit("1#".$tickets->log);
 

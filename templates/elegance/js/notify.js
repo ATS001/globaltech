@@ -50,7 +50,7 @@ $(document).ready(function(){
 					
 				}
 			},
-			error: function(reponse) {
+			/*error: function(reponse) {
                 reponse['responseText'] = typeof reponse['responseText'] == 'undefined'  ? '0' : reponse['responseText'];
 				var data_mes = reponse['responseText'].split('[#]')
 				bootbox.process({
@@ -63,7 +63,7 @@ $(document).ready(function(){
 				window.setTimeout( function(){
 					    window.location = "./?alg="+data_mes[1];
 				        }, 1000 );
-			}
+			}*/
 		});
 	}
 

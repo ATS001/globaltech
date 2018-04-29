@@ -2,7 +2,7 @@
 
 //First check target no Hack
 if (!defined('_MEXEC'))
-    die();
+{die();}
 //SYS GLOBAL TECH
 // Modul: tickets
 //Created : 02-04-2018
@@ -14,13 +14,10 @@ if (MInit::form_verif('addtickets', false)) {
         'projet' => Mreq::tp('projet'),
         'message' => Mreq::tp('message'),
         'date_previs' => Mreq::tp('date_previs'),
-        //'date_realis' => Mreq::tp('date_realis'),
         'type_produit' => Mreq::tp('type_produit'),
         'categorie_produit' => Mreq::tp('categorie_produit'),
         'id_produit'=> Mreq::tp('id_produit'),
-        //'id_technicien' => Mreq::tp('id_technicien'),
-    );
-
+         );
 
     //Check if array have empty element return list
     //for acceptable empty field do not put here
@@ -31,10 +28,7 @@ if (MInit::form_verif('addtickets', false)) {
         $empty_list .= "<li>Client</li>";
         $checker = 1;
     }
-    if ($posted_data["projet"] == NULL) {
-        $empty_list .= "<li>Projet</li>";
-        $checker = 1;
-    }
+    
     if ($posted_data["message"] == NULL) {
         $empty_list .= "<li>Message</li>";
         $checker = 1;
@@ -54,24 +48,7 @@ if (MInit::form_verif('addtickets', false)) {
         $empty_list .= "<li>Type produit</li>";
         $checker = 1;
     }
-    /*
-    if ($posted_data["categorie_produit"] == NULL) {
-        $empty_list .= "<li>Catégorie produit</li>";
-        $checker = 1;
-    }
-     * 
-     */
     
-    /*
-    if ($posted_data["id_technicien"] == NULL) {
-        $empty_list .= "<li>Technicien</li>";
-        $checker = 1;
-    }
-     * 
-     */
-
-
-
     $empty_list .= "</ul>";
     
     if ($checker == 1) {
@@ -81,12 +58,8 @@ if (MInit::form_verif('addtickets', false)) {
         exit("0#$control_date");
     }
 
-
-
     //End check empty element
     $new_tickets = new Mtickets($posted_data);
-
-
 
     //execute Insert returne false if error
     if ($new_tickets->save_new_tickets()) {

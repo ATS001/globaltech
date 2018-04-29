@@ -276,7 +276,8 @@ $('body').on('click', '.this_url', function() {
 
 
 
-$('body').on('click', '.this_exec', function() {
+$('body').on('click', '.this_exec', function(e) {
+	e.preventDefault();
 	 $('#gritter-notice-wrapper').remove();//remove message box
 	 
 
@@ -284,8 +285,10 @@ $('body').on('click', '.this_exec', function() {
 	 var $data = $(this).attr('data') != "" ? $(this).attr('data') : "";
 	 var $the_table = $(this).closest('table').attr('id');
 	 var $go_to = $(this).closest('div').attr('go_to');
+	 var $cosutm_noeud = $(this).attr('cn_rmv') !== undefined ? 'cn_rmv'+$(this).attr('cn_rmv') : null;
+
 	 if($go_to == null){
-	 	exec_ajax($url, $data, $confirm = 1, '', $the_table);
+	 	exec_ajax($url, $data, $confirm = 1, '', $the_table, $cosutm_noeud);
 	 }else{
 	 	exec_ajax_go($url, $data, $confirm = 1, '', $go_to);
 	 }
@@ -294,7 +297,7 @@ $('body').on('click', '.this_exec', function() {
 
 
 
-function do_ajax($url, $data , $the_table){
+function do_ajax($url, $data , $the_table, $cosutm_noeud){
 	bootbox.process({
 	    		    message:'Working',
 	            });
@@ -309,9 +312,17 @@ function do_ajax($url, $data , $the_table){
                 	if(data_arry[0] == 1) {
 
         				ajax_loadmessage(data_arry[1],'ok',5000);
+        				if($cosutm_noeud !== null)
+        				{
+        					
+        					
+        					$('.'+$cosutm_noeud).remove();
+        				}else{
+        					
+        					var table = $('#'+$the_table).DataTable();
+                            table.row('.selected').remove().draw( false );
+        				}
         				
-        				var table = $('#'+$the_table).DataTable();
-                        table.row('.selected').remove().draw( false );
         				bootbox.hideAll();
         				
         			}else{
@@ -328,18 +339,18 @@ function do_ajax($url, $data , $the_table){
     });
 }
 //Exec function  on backdoor calling do_ajax
-function exec_ajax($url, $data, $confirm, $message_confirm , $the_table){
+function exec_ajax($url, $data, $confirm, $message_confirm , $the_table, $cosutm_noeud){
 
 	var $message = typeof $message_confirm !== 'undefined' ? 'Veuillez confirmer !' : $message_confirm;
    
 	if($confirm == 1){
 		  bootbox.confirm($message, function(result) {
             if (result) {
-            	do_ajax($url, $data, $the_table); 
+            	do_ajax($url, $data, $the_table, $cosutm_noeud); 
             }
           });
 	}else{
-		do_ajax($url, $data, $the_table);
+		do_ajax($url, $data, $the_table, $cosutm_noeud);
 	}
    	return true;
 }

@@ -995,12 +995,12 @@ class MySQL
     {
         //SET Ranking value
     	$this->QuerySingleValue0('SET @i = 1 ;');
-    	$sql_req = "SELECT MAX(IF(@i = id, @i := id + 1, @i)) AS next_ref FROM  (SELECT ( SUBSTRING_INDEX( SUBSTRING_INDEX(a.reference, '-', - 1), '/', 1 ) * 1 ) AS id  FROM $table a WHERE   SUBSTRING_INDEX(a.reference, '/', - 1) = YEAR(CURDATE())  ORDER BY id) AS refs ORDER BY id ;";
+    	$sql_req = "SELECT MAX(IF(@i = id, @i := id + 1, @i)) AS next_ref FROM  (SELECT ( SUBSTRING_INDEX( SUBSTRING_INDEX(a.reference, '-', - 1), '/', 1 ) * 1 ) AS id  FROM $table a WHERE   SUBSTRING_INDEX(a.reference, '/', - 1) = YEAR(CURDATE())  ORDER BY reference LIMIT 0,99999999999) AS refs;";
 
         if(!$year){
         	$sql_req = "SELECT MAX(IF(@i = id, @i := id + 1, @i)) AS next_ref FROM
                     (SELECT  ( SUBSTRING_INDEX(a.reference, '-', - 1) * 1 ) AS id 
-                    FROM  $table a ORDER BY id) AS refs ORDER BY id";
+                    FROM  $table a ORDER BY reference LIMIT 0,99999999999) AS refs;";
         }
     	$max_id = $this->QuerySingleValue0($sql_req);
     	$max_id = $max_id == 0 ? 1 : $max_id;

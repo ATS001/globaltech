@@ -124,6 +124,7 @@ if (MInit::form_verif('addcontrat', false)) {
     $contratB->get_id_type_echeance('Bimensuelle');
 
 
+
     /*var_dump( $diff->format('%y'));
     var_dump( $diff->format('%m'));
     var_dump( $diff->format('%a')); */
