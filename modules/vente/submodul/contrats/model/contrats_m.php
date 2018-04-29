@@ -1030,7 +1030,20 @@ public function save_echeance($debut,$fin,$perdiode_fact)
         }
     }
 
-    
+    //Delete echeances with no devis
+    public function delete_null_echeances() {
+        global $db;
+        $req_sql = " delete from echeances_contrat  WHERE idcontrat is null";
+
+       if (!$db->Query($req_sql)) {
+            $this->error = false;
+            $this->log .= "Erreur Suppression";
+            return false;
+        }
+
+    }
+
+
     /**
      * [check_exist Check if one entrie already exist on table]
      * @param  [string] $column  [Column of field on main table]
@@ -1309,6 +1322,26 @@ public function save_echeance($debut,$fin,$perdiode_fact)
         global $db;
 
         $sql = "SELECT $table_echeance.* FROM $table_echeance WHERE $table_echeance.tkn_frm = '$tkn_frm' AND $table_echeance.date_echeance = '$date' AND $table_echeance.id <> $id ";
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                return FALSE;
+            } else {
+                return TRUE;
+            }
+        }
+    }
+
+
+    //Get all info echeance contrat from database for edit form
+    public function verif_date_echeance_add($date) {
+        $table_echeance = $this->table_echeance;
+        global $db;
+
+        $sql = "SELECT $table_echeance.* FROM $table_echeance WHERE $table_echeance.date_echeance = '$date' and $table_echeance.idcontrat is null";
 
         if (!$db->Query($sql)) {
             $this->error = false;
