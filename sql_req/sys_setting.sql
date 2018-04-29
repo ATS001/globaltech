@@ -16,24 +16,10 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/`globaltech` /*!40100 DEFAULT CHARACTER 
 
 USE `globaltech`;
 
-/*Table structure for table `action_ticket` */
+/*Data for the table `sys_setting` */
 
-DROP TABLE IF EXISTS `action_ticket`;
-
-CREATE TABLE `action_ticket` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `id_ticket` int(11) DEFAULT NULL COMMENT 'Ticket',
-  `message` text COMMENT 'Description',
-  `date_action` date DEFAULT NULL COMMENT 'Date',
-  `photo` int(11) DEFAULT NULL COMMENT 'Photo',
-  `pj` int(11) DEFAULT NULL COMMENT 'Pièce jointe',
-  `etat` int(11) DEFAULT '0',
-  `creusr` int(11) DEFAULT NULL,
-  `credat` datetime DEFAULT CURRENT_TIMESTAMP,
-  `updusr` int(11) DEFAULT NULL,
-  `upddat` datetime DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8;
+insert  into `sys_setting`(`id`,`key`,`value`,`comment`,`modul`,`etat`,`creusr`,`credat`,`updusr`,`upddat`) values
+(15,'etat_ticket','{\"attente_affectation\":\"0\",\"resolution_encours\":\"1\",\"resolution_termine\":\"2\",\"ticket_cloturer\":\"3\"}','tickets',133,1,'1','2018-04-24 02:22:48',NULL,NULL);
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

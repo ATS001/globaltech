@@ -25,7 +25,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $ticket->get_tickets()) {
 </div>
 <div class="page-header">
     <h1>
-        Ajouter un tickets
+        Réaffecter ticket
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
         </small>
@@ -34,14 +34,14 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $ticket->get_tickets()) {
 
 
 <?php
-$form = new Mform('affecttechnicien', 'affecttechnicien', '', 'tickets', '0', null);
+$form = new Mform('reaffectticket', 'reaffectticket', '', 'tickets', '0', null);
 $form->input_hidden('id', $ticket->g('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
 
 //Technicien ==> 
 $array_technicien[] = array("required", "true", "Choisir un technicien");
-$form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', 'CONCAT(users_sys.lnom," ",users_sys.fnom)', $indx = '------', $selected =$ticket->s('id_technicien'), $multi = NULL, $where = 'etat=1', $array_technicien, NULL);
+$form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', 'CONCAT(users_sys.lnom," ",users_sys.fnom)', $indx = '------', $selected =$ticket->g('id_technicien'), $multi = NULL, $where = 'etat=1', $array_technicien, NULL);
 
 //var_dump($ticket);
 ?>
@@ -168,7 +168,7 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
   min-height: 20px;
   padding: 19px;
   margin-bottom: 20px;
-  background-color: DEE4EA;
+  background-color: #e3e3e3;
   border: 1px solid #e3e3e3;
   border-radius: 4px;
   -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);

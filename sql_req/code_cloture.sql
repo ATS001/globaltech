@@ -16,24 +16,16 @@ CREATE DATABASE /*!32312 IF NOT EXISTS*/`globaltech` /*!40100 DEFAULT CHARACTER 
 
 USE `globaltech`;
 
-/*Table structure for table `action_ticket` */
+/*Table structure for table `code_cloture` */
 
-DROP TABLE IF EXISTS `action_ticket`;
+DROP TABLE IF EXISTS `code_cloture`;
 
-CREATE TABLE `action_ticket` (
-  `id` int(11) NOT NULL AUTO_INCREMENT COMMENT 'ID',
-  `id_ticket` int(11) DEFAULT NULL COMMENT 'Ticket',
-  `message` text COMMENT 'Description',
-  `date_action` date DEFAULT NULL COMMENT 'Date',
-  `photo` int(11) DEFAULT NULL COMMENT 'Photo',
-  `pj` int(11) DEFAULT NULL COMMENT 'Pièce jointe',
+CREATE TABLE `code_cloture` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `code_cloture` varchar(200) DEFAULT NULL,
   `etat` int(11) DEFAULT '0',
-  `creusr` int(11) DEFAULT NULL,
-  `credat` datetime DEFAULT CURRENT_TIMESTAMP,
-  `updusr` int(11) DEFAULT NULL,
-  `upddat` datetime DEFAULT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=60 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
 /*!40014 SET FOREIGN_KEY_CHECKS=@OLD_FOREIGN_KEY_CHECKS */;

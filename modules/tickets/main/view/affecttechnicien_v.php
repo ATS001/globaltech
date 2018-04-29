@@ -122,7 +122,7 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
                                             <div class="col-sm-8">
                                                 <div>
                                                     <div class="space-6"></div>
-                                                    <div class="ayoub">
+                                                    <div class="sa">
                                                         <?php $ticket->s("message") ?>
                                                     </div>
                                                 </div>
@@ -162,7 +162,7 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
 </script>	
 
 <style>
-    .ayoub {
+    .sa {
   min-height: 20px;
   padding: 19px;
   margin-bottom: 20px;

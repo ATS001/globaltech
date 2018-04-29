@@ -1,8 +1,6 @@
 <?php
-
 //First check target no Hack
-if (!defined('_MEXEC'))
-    die();
+if (!defined('_MEXEC')) {die();}
 //SYS GLOBAL TECH
 // Modul: tickets
 //Created : 06-04-2018
@@ -16,7 +14,7 @@ if (MInit::form_verif('addaction', false)) {
         'pj_id' => Mreq::tp('pj-id'),
         'photo_id' => Mreq::tp('photo-id'),
     );
-    //var_dump($posted_data);
+
     //Check if array have empty element return list
     //for acceptable empty field do not put here
     $checker = null;
@@ -37,14 +35,10 @@ if (MInit::form_verif('addaction', false)) {
         exit("0#$empty_list");
     }
 
-
-
     //End check empty element
     $new_action = new Mtickets($posted_data);
- $new_action->exige_pj=false;
+    $new_action->exige_pj=false;
     $new_action->exige_photo=false;
-
-
 
     //execute Insert returne false if error
     if ($new_action->save_new_action()) {
