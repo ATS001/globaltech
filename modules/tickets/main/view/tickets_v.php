@@ -31,7 +31,7 @@ $array_column = array(
         'type' => '',
         'alias' => 'projet',
         'width' => '15',
-        'header' => 'Projet',
+        'header' => 'Site',
         'align' => 'L'
     ),
     array(
