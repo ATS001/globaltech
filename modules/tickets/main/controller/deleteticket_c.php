@@ -14,7 +14,7 @@ if(!MInit::crypt_tp('id', null, 'D')or !$tickets->get_tickets())
    exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
 
-if($tickets->deleteticket())
+if($tickets->delete_tickets())
 {
 	exit("1#".$tickets->log);
 

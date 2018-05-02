@@ -15,14 +15,14 @@ if(!defined('_MEXEC'))die();
  	// returne message error red to client 
  	exit('3#'.$info_tickets->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
  }
-
+$id_ticket = $info_tickets->ticket_action_info["id_ticket"];
 ?>
 
 <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
-				
-		<?php TableTools::btn_add('tickets','Liste des tickets', Null, $exec = NULL, 'reply'); ?>
-            
+		 <?php
+        TableTools::btn_add('detailsticket', 'Retour', MInit::crypt_tp('id', $id_ticket), $exec = NULL, 'reply');
+        ?>
 					
 	</div>
 </div>
