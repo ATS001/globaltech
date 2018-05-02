@@ -57,7 +57,8 @@ class Mtickets {
                 ref_categories_produits.categorie_produit as categorie_produit ,
                 ref_types_produits.type_produit as typep , 
                 produits.designation as prd,
-                code_cloture.code_cloture as code_cloture
+                code_cloture.code_cloture as code_cloture,
+                $table.serial_number as serial_number
                 FROM $table LEFT JOIN produits ON produits.id=$table.id_produit "
                 . "LEFT JOIN ref_categories_produits  ON ref_categories_produits.id=$table.categorie_produit"
                 . " LEFT JOIN ref_types_produits ON ref_types_produits.id=$table.type_produit"
@@ -136,6 +137,7 @@ class Mtickets {
             $values["type_produit"] = MySQL::SQLValue($this->_data["type_produit"]);
             $values["categorie_produit"] = MySQL::SQLValue($this->_data["categorie_produit"]);
             $values["id_produit"] = MySQL::SQLValue($this->_data["id_produit"]);
+              $values["serial_number"] = MySQL::SQLValue($this->_data["serial_number"]);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
@@ -346,7 +348,7 @@ class Mtickets {
             $values["date_previs"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_previs'])));
             $values["type_produit"] = MySQL::SQLValue($this->_data["type_produit"]);
             $values["categorie_produit"] = MySQL::SQLValue($this->_data["categorie_produit"]);
-            //$values["id_technicien"] = MySQL::SQLValue($this->_data["id_technicien"]);
+             $values["serial_number"] = MySQL::SQLValue($this->_data["serial_number"]);
             $values["id_produit"] = MySQL::SQLValue($this->_data["id_produit"]);
             $values["updusr"] = MySQL::SQLValue(session::get('userid'));
             $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
