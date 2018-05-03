@@ -1201,7 +1201,7 @@ class Mdevis
             
             if($this->g('type_devis') == 'VNT' && $reponse == 'valid')
             {
-                $this->generate_facture($this->id_devis);
+                $this->generate_bl($this->id_devis);
             }
             
         }
@@ -1209,6 +1209,15 @@ class Mdevis
             return false;
         }else{
             return true;
+        }
+    }
+    Private function generate_bl($id_devis)
+    {
+        global $db;
+        $sql_req = " CALL generate_devis_bl($id_devis)";
+        if(!$db->Query($sql_req))
+        {
+            $this->log .= '</br>Erreur génération de Bon Livraison'.$sql_req;
         }
     }
     Private function generate_facture($id_devis)
