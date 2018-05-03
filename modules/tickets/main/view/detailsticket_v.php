@@ -72,8 +72,14 @@ if ($ticket->get_action_ticket()) {
                                             </li>
                                             <?php if ($ticket->g("projet") != NULL) { ?>
                                                 <li>
-                                                    <i class="ace-icon fa fa-caret-right green"></i>Projet :
+                                                    <i class="ace-icon fa fa-caret-right green"></i>Site :
                                                     <b style="color:green"><?php $ticket->s("projet") ?></b>
+                                                </li>
+                                            <?php } ?>
+                                                <?php if ($ticket->g("serial_number") != NULL) { ?>
+                                                <li>
+                                                    <i class="ace-icon fa fa-caret-right green"></i>Serial number :
+                                                    <b style="color:green"><?php $ticket->s("serial number") ?></b>
                                                 </li>
                                             <?php } ?>
                                             <li>
@@ -115,11 +121,11 @@ if ($ticket->get_action_ticket()) {
                                             <?php } ?>
                                             <?php if ($ticket->g("code_cloture") != NULL AND $ticket->g("observation")) { ?>
                                                 <li>
-                                                    <i class="ace-icon fa fa-caret-right green"></i>Décision :
+                                                    <i class="ace-icon fa fa-caret-right green"></i>Code clôture :
                                                     <b style="color:green"><?php $ticket->s("code_cloture") ?></b>
                                                 </li>
                                                 <li>
-                                                    <i class="ace-icon fa fa-caret-right green"></i>Observation :
+                                                    <i class="ace-icon fa fa-caret-right green"></i>Résolution :
                                                     <b style="color:green"><?php $ticket->s("observation") ?></b>
                                                 </li>
                                             <?php } ?>

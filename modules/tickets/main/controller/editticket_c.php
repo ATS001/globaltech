@@ -21,6 +21,7 @@ if (MInit::form_verif('editticket', false)) {
         'type_produit' => Mreq::tp('type_produit'),
         'categorie_produit' => Mreq::tp('categorie_produit'),
         'id_produit'=> Mreq::tp('id_produit'),
+        'serial_number'=>Mreq::tp('serial_number'),
       
     );
 
@@ -34,10 +35,7 @@ if (MInit::form_verif('editticket', false)) {
         $empty_list .= "<li>Client</li>";
         $checker = 1;
     }
-    if ($posted_data["projet"] == NULL) {
-        $empty_list .= "<li>Projet</li>";
-        $checker = 1;
-    }
+    
     if ($posted_data["message"] == NULL) {
         $empty_list .= "<li>Message</li>";
         $checker = 1;

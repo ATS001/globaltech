@@ -43,7 +43,10 @@ $array_column = array(
     ),
     
     array(
-        'column' => 'IFNULL(DATEDIFF(DATE(NOW()),DATE(tickets.date_affectation)),0)',
+        'column' => '(CASE
+                WHEN tickets.`etat` <> 3 THEN IFNULL(DATEDIFF(DATE(NOW()),DATE(tickets.date_affectation)),0) 
+		WHEN tickets.`etat` = 3 THEN IFNULL(DATEDIFF(DATE(tickets.date_realis),DATE(tickets.date_affectation)),0) 
+		END)',
         'type' => '',
         'alias' => 'nbr',
         'width' => '10',

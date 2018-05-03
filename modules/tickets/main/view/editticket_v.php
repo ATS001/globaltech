@@ -58,9 +58,12 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_tickets->get_tickets()) {
                 $client_array[] = array('required', 'true', 'Choisir un Client');
                 $form->select_table('Client ', 'id_client', 8, 'clients', 'id', 'id', 'denomination', $indx = '------', $info_tickets->g('id_client'), $multi = NULL, $where = 'etat=1', $client_array, NULL);
 
-//Projet ==> 
-                $array_projet[] = array("required", "true", "Insérer le projet");
-                $form->input("Projet", "projet", "text", "9", $info_tickets->g('projet'), $array_projet, null, $readonly = null);
+//Site ==> 
+                
+                $form->input("Site", "projet", "text", "9", $info_tickets->g('projet'), NULL, null, $readonly = null);
+//Serial number ==> 
+                
+                $form->input("Serial number", "serial_number", "text", "9", $info_tickets->g('serial_number'), NULL, null, $readonly = null);
 
 //Date prévisionnelle ==> 
                 $date_prev[] = array('required', 'true', 'Insérer une date prévisionnelle');
