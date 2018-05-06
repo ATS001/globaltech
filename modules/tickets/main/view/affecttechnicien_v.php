@@ -39,7 +39,7 @@ $form->input_hidden('idh', Mreq::tp('idh'));
 
 //Technicien ==> 
 $array_technicien[] = array("required", "true", "Choisir un technicien");
-$form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', 'CONCAT(users_sys.lnom," ",users_sys.fnom)', $indx = '------', $selected = NULL, $multi = NULL, $where = 'service=6 and etat=1', $array_technicien, NULL);
+$form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', 'CONCAT(users_sys.lnom," ",users_sys.fnom)', $indx = '------', $selected = NULL, $multi = NULL, $where = ' service=6 AND etat=1', $array_technicien, NULL);
 
 //var_dump($info_tickets);
 ?>
@@ -97,7 +97,7 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
                                                         <?php if ($ticket->g("serial_number") != NULL) { ?>
                                                             <li>
                                                                 <i class="ace-icon fa fa-caret-right green"></i>Serial number :
-                                                                <b style="color:green"><?php $ticket->s("serial number") ?></b>
+                                                                <b style="color:green"><?php $ticket->s("serial_number") ?></b>
                                                             </li>
                                                         <?php } ?>
                                                         <li>
