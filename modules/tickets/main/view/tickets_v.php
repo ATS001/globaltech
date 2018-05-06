@@ -31,9 +31,18 @@ $array_column = array(
         'type' => '',
         'alias' => 'projet',
         'width' => '15',
-        'header' => 'Site',
+        'header' => 'Projet',
         'align' => 'L'
     ),
+    array(
+        'column' => 'tickets.credat',
+        'type' => 'date',
+        'alias' => 'credat',
+        'width' => '10',
+        'header' => 'Date création',
+        'align' => 'C'
+    ),
+    /*
     array(
         'column' => 'tickets.date_previs',
         'type' => 'date',
@@ -42,16 +51,23 @@ $array_column = array(
         'header' => 'Date prévisionnelle',
         'align' => 'C'
     ),
-   array(
-        'column' => 'DATEDIFF(DATE(NOW()),DATE(tickets.credat))',
+     * 
+     */
+    
+    array(
+        'column' => '(CASE WHEN tickets.`etat` <> 3 
+THEN IFNULL(DATEDIFF(DATE(tickets.`date_previs`),DATE(NOW())),0) 
+WHEN tickets.`etat` = 3 
+THEN IFNULL(DATEDIFF(DATE(tickets.`date_previs`),DATE(tickets.`date_realis`)),0) END) ',
         'type' => '',
         'alias' => 'nbr',
-        'width' => '10',
+        'width' => '8',
         'header' => 'Nbr jours',
         'align' => 'C'
     ),
+     
     array(
-        'column' => 'CONCAT(user_sys.fnom," ",user_sys.lnom)',
+        'column' => 'CONCAT(users_sys.fnom," ",users_sys.lnom)',
         'type' => '',
         'alias' => 'idtechnicien',
         'width' => '15',
@@ -62,7 +78,7 @@ $array_column = array(
         'column' => 'statut',
         'type' => '',
         'alias' => 'statut',
-        'width' => '10',
+        'width' => '8',
         'header' => 'Statut',
         'align' => 'C'
     ),

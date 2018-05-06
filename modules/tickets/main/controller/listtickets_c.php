@@ -34,6 +34,15 @@ $array_column = array(
         'align' => 'L'
     ),
     array(
+        'column' => 'tickets.credat',
+        'type' => 'date',
+        'alias' => 'credat',
+        'width' => '10',
+        'header' => 'Date création',
+        'align' => 'C'
+    ),
+    /*
+    array(
         'column' => 'tickets.date_previs',
         'type' => 'date',
         'alias' => 'date_previs',
@@ -41,15 +50,17 @@ $array_column = array(
         'header' => 'Date prévisionnelle',
         'align' => 'C'
     ),
+     * 
+     */
     
     array(
-        'column' => '(CASE
-                WHEN tickets.`etat` <> 3 THEN IFNULL(DATEDIFF(DATE(NOW()),DATE(tickets.date_affectation)),0) 
-		WHEN tickets.`etat` = 3 THEN IFNULL(DATEDIFF(DATE(tickets.date_realis),DATE(tickets.date_affectation)),0) 
-		END)',
+        'column' => '(CASE WHEN tickets.`etat` <> 3 
+THEN IFNULL(DATEDIFF(DATE(tickets.`date_previs`),DATE(NOW())),0) 
+WHEN tickets.`etat` = 3 
+THEN IFNULL(DATEDIFF(DATE(tickets.`date_previs`),DATE(tickets.`date_realis`)),0) END) ',
         'type' => '',
         'alias' => 'nbr',
-        'width' => '10',
+        'width' => '8',
         'header' => 'Nbr jours',
         'align' => 'C'
     ),
@@ -66,7 +77,7 @@ $array_column = array(
         'column' => 'statut',
         'type' => '',
         'alias' => 'statut',
-        'width' => '10',
+        'width' => '8',
         'header' => 'Statut',
         'align' => 'C'
     ),
