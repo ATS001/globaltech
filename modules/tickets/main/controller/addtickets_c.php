@@ -17,6 +17,7 @@ if (MInit::form_verif('addtickets', false)) {
         'type_produit' => Mreq::tp('type_produit'),
         'categorie_produit' => Mreq::tp('categorie_produit'),
         'id_produit'=> Mreq::tp('id_produit'),
+        'serial_number'=>Mreq::tp('serial_number'),
          );
 
     //Check if array have empty element return list

@@ -20,6 +20,7 @@ if ($ticket->get_action_ticket()) {
 } else {
     $list_action = false;
 }
+
 ?>
 
 <div class="pull-right tableTools-container">
@@ -72,10 +73,20 @@ if ($ticket->get_action_ticket()) {
                                             </li>
                                             <?php if ($ticket->g("projet") != NULL) { ?>
                                                 <li>
-                                                    <i class="ace-icon fa fa-caret-right green"></i>Projet :
+                                                    <i class="ace-icon fa fa-caret-right green"></i>Site :
                                                     <b style="color:green"><?php $ticket->s("projet") ?></b>
                                                 </li>
                                             <?php } ?>
+                                                <?php if ($ticket->g("serial_number") != NULL) { ?>
+                                                <li>
+                                                    <i class="ace-icon fa fa-caret-right green"></i>Serial number :
+                                                    <b style="color:green"><?php $ticket->s("serial_number") ?></b>
+                                                </li>
+                                            <?php } ?>
+                                                 <li>
+                                                <i class="ace-icon fa fa-caret-right green"></i>Date de création :
+                                                <b style="color:green"><?php $ticket->s("credat") ?></b>
+                                            </li>
                                             <li>
                                                 <i class="ace-icon fa fa-caret-right green"></i>Date prévisionnelle :
                                                 <b style="color:green"><?php $ticket->s("date_previs") ?></b>

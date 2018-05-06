@@ -57,7 +57,9 @@ class Mtickets {
                 ref_categories_produits.categorie_produit as categorie_produit ,
                 ref_types_produits.type_produit as typep , 
                 produits.designation as prd,
-                code_cloture.code_cloture as code_cloture
+                code_cloture.code_cloture as code_cloture,
+                $table.serial_number as serial_number,
+                    DATE_FORMAT($table.credat,'%d-%m-%Y') as credat
                 FROM $table LEFT JOIN produits ON produits.id=$table.id_produit "
                 . "LEFT JOIN ref_categories_produits  ON ref_categories_produits.id=$table.categorie_produit"
                 . " LEFT JOIN ref_types_produits ON ref_types_produits.id=$table.type_produit"
@@ -136,6 +138,7 @@ class Mtickets {
             $values["type_produit"] = MySQL::SQLValue($this->_data["type_produit"]);
             $values["categorie_produit"] = MySQL::SQLValue($this->_data["categorie_produit"]);
             $values["id_produit"] = MySQL::SQLValue($this->_data["id_produit"]);
+            $values["serial_number"] = MySQL::SQLValue($this->_data["serial_number"]);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
@@ -346,7 +349,7 @@ class Mtickets {
             $values["date_previs"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_previs'])));
             $values["type_produit"] = MySQL::SQLValue($this->_data["type_produit"]);
             $values["categorie_produit"] = MySQL::SQLValue($this->_data["categorie_produit"]);
-            //$values["id_technicien"] = MySQL::SQLValue($this->_data["id_technicien"]);
+            $values["serial_number"] = MySQL::SQLValue($this->_data["serial_number"]);
             $values["id_produit"] = MySQL::SQLValue($this->_data["id_produit"]);
             $values["updusr"] = MySQL::SQLValue(session::get('userid'));
             $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
@@ -413,6 +416,7 @@ class Mtickets {
             } else {
 
                 $this->last_id = $result;
+                $this->send_ticket_mail();
                 if ($is_reaffect == TRUE) {
                     $this->init_action("reaffectation", $old_technicien);
                 } else {
@@ -781,6 +785,63 @@ class Mtickets {
             return false;
         } else {
             return true;
+        }
+    }
+
+    /**
+     * [send_devis_mail Send email to client if have email adresse]
+     * @return [bol] [fil log]
+     */
+    private function send_ticket_mail() {
+        //Get info ticket
+        $this->get_tickets();
+        $tickets_info = $this->tickets_info;
+        
+        if ($this->verif_email($tickets_info["id_technicien"]) == FALSE) {
+            $this->log .= '<br/>Ce technicien n\'a pas une adresse Mail';
+            return false;
+        }
+
+        $agent = new Musers();
+        $agent->id_user = $tickets_info["id_technicien"];
+        $agent->get_user();
+        $agent_name = $agent->g('fnom') . ' ' . $agent->g('lnom');
+        $agent_service = $agent->g('service_user');
+        $agent_tel = $agent->g('tel');
+
+        $mail = new PHPmailer();
+        $mail->isSMTP(); // Paramétrer le Mailer pour utiliser SMTP 
+        $mail->Host = 'mail.globaltech.td'; // Spécifier le serveur SMTP
+        $mail->SMTPAuth = true; // Activer authentication SMTP
+        $mail->Username = Msetting::get_set('mail_comercial', 'user');
+        $mail->Password = Msetting::get_set('mail_comercial', 'pass');
+
+        $mail->SMTPSecure = 'ssl'; // Accepter SSL
+        $mail->Port = 465;
+
+        $mail->setFrom($mail->Username, 'GlobalTech HelpDesk'); // Personnaliser l'envoyeur
+
+        $mail->addAddress($agent->g('mail'), $agent->g('lnom')." ".$agent->g('fnom'));
+       
+        $mail->isHTML(true); // Paramétrer le format des emails en HTML ou non
+
+        $mail->Subject = "Ticket Réf: #" . $tickets_info['id'];
+
+        $mail->Body = "<b> Bonjour " . $agent->g('fnom') ." ".$agent->g('lnom'). ",</br></br> Le ticket N° " . $tickets_info['id'] . " vous a été affecté. </br></br> Cordialement</b>";
+       if (!$mail->send()) {
+            $this->log .= "Mailer Error: " . $mail->ErrorInfo;
+        } else {
+            $this->log .= "Ticket envoyé  à ".$agent->g('mail');
+        }
+      }
+
+    private function verif_email($id_technicien) {
+        global $db;
+        $result = $db->QuerySingleValue0("SELECT mail FROM users_sys WHERE id=" . $id_technicien);
+        if ($result == "0") {
+            return FALSE;
+        } else {
+            return TRUE;
         }
     }
 

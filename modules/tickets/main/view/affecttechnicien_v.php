@@ -39,7 +39,7 @@ $form->input_hidden('idh', Mreq::tp('idh'));
 
 //Technicien ==> 
 $array_technicien[] = array("required", "true", "Choisir un technicien");
-$form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', 'CONCAT(users_sys.lnom," ",users_sys.fnom)', $indx = '------', $selected = NULL, $multi = NULL, $where = 'etat=1', $array_technicien, NULL);
+$form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', 'CONCAT(users_sys.lnom," ",users_sys.fnom)', $indx = '------', $selected = NULL, $multi = NULL, $where = ' service=6 AND etat=1', $array_technicien, NULL);
 
 //var_dump($info_tickets);
 ?>
@@ -90,9 +90,15 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
                                                         </li>
                                                         <?php if ($ticket->g("projet") != NULL) { ?>
                                                             <li>
-                                                                <i class="ace-icon fa fa-caret-right green"></i>Projet :
+                                                                <i class="ace-icon fa fa-caret-right green"></i>Site :
                                                                 <b style="color:green"><?php $ticket->s("projet") ?></b>
                                                             </li> 
+                                                        <?php } ?>
+                                                        <?php if ($ticket->g("serial_number") != NULL) { ?>
+                                                            <li>
+                                                                <i class="ace-icon fa fa-caret-right green"></i>Serial number :
+                                                                <b style="color:green"><?php $ticket->s("serial_number") ?></b>
+                                                            </li>
                                                         <?php } ?>
                                                         <li>
                                                             <i class="ace-icon fa fa-caret-right green"></i>Type produit:
@@ -163,14 +169,14 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
 
 <style>
     .sa {
-  min-height: 20px;
-  padding: 19px;
-  margin-bottom: 20px;
-  background-color: #DEE4EA;
-  border: 2px solid #e3e3e3;
-  border-radius: 4px;
-  -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-  box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
-}
+        min-height: 20px;
+        padding: 19px;
+        margin-bottom: 20px;
+        background-color: #DEE4EA;
+        border: 2px solid #e3e3e3;
+        border-radius: 4px;
+        -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+        box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    }
 
 </style>
