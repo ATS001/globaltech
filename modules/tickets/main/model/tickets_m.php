@@ -809,7 +809,7 @@ class Mtickets {
         $agent_service = $agent->g('service_user');
         $agent_tel = $agent->g('tel');
 
-        $mail = new PHPmailer();
+        $mail = new PHPMailer();
         $mail->isSMTP(); // Paramétrer le Mailer pour utiliser SMTP 
         $mail->Host = 'mail.globaltech.td'; // Spécifier le serveur SMTP
         $mail->SMTPAuth = true; // Activer authentication SMTP
