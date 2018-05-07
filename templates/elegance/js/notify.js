@@ -90,7 +90,7 @@ $(document).ready(function(){
 
 	setInterval(function() {
 		get_notif_list();
-	}, 15000);
+	}, 60000);
     
 
 })
