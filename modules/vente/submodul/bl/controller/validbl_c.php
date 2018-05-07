@@ -16,12 +16,9 @@ if(!MInit::crypt_tp('id', null, 'D')or !$bl->get_bl())
 
 
 //Etat for validate row
-//$etat = $bl->bl_info['etat'];
-//$bl->validbl($etat)
-//Execute Validate - delete
+$etat = $bl->bl_info['etat'];
 
-
-if($bl->validbl())
+if($bl->valid_bl($etat))
 {
 	exit("1#".$bl->log);
 
