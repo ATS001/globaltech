@@ -488,7 +488,7 @@ static public function pub_copy_file($old_file, $new_file, $path, $mode = 0777){
    
    $file_name   = $file_name.'_' .date('d_m_Y_H_i_s');
    $file        = $db->GetCSV($header, $file_name.'.csv');
-   $file_export = MPATH_TEMP.$file_name.'.xls';
+   $file_export = MPATH_PDF_REPORT.$file_name.'.xls';
    $count_col   = count($header)-1;
    $alphabet = range('A', 'Z');
    $end_rang_header = $alphabet[$count_col];
@@ -551,7 +551,7 @@ static public function pub_copy_file($old_file, $new_file, $path, $mode = 0777){
    {
     exit("2#Le résultat dépasse 400 lignes, merci d'exporter en format XLS. ");
    }
-   $file_export = MPATH_TEMP.$file_name.'_' .date('d_m_Y_H_i_s').'.pdf';
+   $file_export = MPATH_PDF_REPORT.$file_name.'_' .date('d_m_Y_H_i_s').'.pdf';
    
    $tableau_head = MySQL::make_table_head($headers);
    $tableau_body = $db->GetMTable_pdf($headers);
