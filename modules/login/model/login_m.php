@@ -321,12 +321,16 @@ class MLogin
 	private function delete_temp_folder_auto_logout($session_id)
 	{
 		$temp_folder = MPATH_TEMP.$session_id;
-		if(!MInit::deleteDir($temp_folder))
-		{		
-			$this->error = false;
-			$this->log .='</br>Unable remove temp folder';
+		if(session::get($session_id)){
+			if(!MInit::deleteDir($temp_folder))
+		    {		
+			    $this->error = false;
+			    $this->log .='</br>Unable remove temp folder';
 
+		    }
 		}
+		
+		
 
 	}
 
