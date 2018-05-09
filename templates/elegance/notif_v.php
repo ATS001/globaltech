@@ -3,6 +3,9 @@ $notifier = new MNotifier();
 $notifier->notif_list();
 $hide_notif = $notifier->sum_notif > 0 ? null : "hide";
 ?>
+<li class="grey">
+		<a href="#" title="Retour" id="call_go_back"><span><i class="fa fa-undo bigger-150"></i> </span></a>
+</li>
 <li id="zone_notif" class="purple <?php echo  $hide_notif ?>">
 	<a data-toggle="dropdown" class="dropdown-toggle" href="#">
 		<i class="ace-icon fa fa-bell icon-animated-bell"></i>
@@ -19,5 +22,9 @@ $hide_notif = $notifier->sum_notif > 0 ? null : "hide";
 				
 			</ul>
 		</ul>
+
 	</li>
+
+
+	
 

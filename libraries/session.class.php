@@ -116,13 +116,18 @@ class session
 		return ( isset( $_SESSION[$var] ) ? MInit::cryptage($_SESSION[$var],0) : FALSE );
 	}
 
-	static public function set_cookie($cok, $val, $time = 3600)
+	static public function set_cookie($cok, $val, $time = 3600, $crypt = true )
 	{
-		setcookie($cok, MInit::cryptage($val,1), time()+$time);
+		$val = !$crypt ? $val : MInit::cryptage($val,1);
+		setcookie($cok, $val, time()+3600);
 	}
 
-	static public  function get_cookie( $cok )
+	static public  function get_cookie( $cok, $crypt = true )
 	{
+		if(!$crypt){
+			return (isset( $_COOKIE[$cok]) ?  $_COOKIE[$cok] : FALSE );
+		}
+		
 		return (isset( $_COOKIE[$cok]) ? MInit::cryptage( $_COOKIE[$cok],0) : FALSE );
 	}
 
