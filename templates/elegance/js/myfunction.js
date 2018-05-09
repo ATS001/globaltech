@@ -88,7 +88,6 @@ function ajax_loader($url,$data,$redirect){
 
 }
 
-
 //AJAX load bootbox content
 function ajax_bbox_loader($url, $data, $titre, $width, $data_table ){
 	//alert($url)
@@ -267,7 +266,8 @@ $('body').on('click', '.this_url', function() {
         //
 	 	$(".active").removeClass("active");
 	 	$(this).parent("li").addClass("active");
-        
+	 	
+        $(this).parent().parent().parent().addClass("active");
 
 	 };
 	 
@@ -897,3 +897,41 @@ function  append_drop_menu($url, $id, $btn){
 		}
 	});    
 }
+
+$(document).keydown(function(e){
+	if (e.keyCode == 8) { 
+		$data_go_back =$.parseJSON(ace.cookie.get("gobak"));
+		$('#gritter-notice-wrapper').remove();//remove message box
+
+        var $url = $data_go_back['app'];
+        var $data = $data_go_back['data'] != null ? $data_go_back['data']:"";
+        var $redirect = "";
+        var $item = $data_go_back['item'];
+        ajax_loader($url,$data,$redirect);
+                //
+	 	$(".active").removeClass("active");
+	 	$("#"+$item).addClass("active");
+	 	
+	 	$("#"+$item).parent().parent().addClass("active");
+
+                
+    }
+});
+$('body').on('click', '#call_go_back', function(e) {
+
+		$data_go_back =$.parseJSON(ace.cookie.get("gobak"));
+		$('#gritter-notice-wrapper').remove();//remove message box
+
+        var $url = $data_go_back['app'] === "undefined" ? "tdb" : $data_go_back['app'];
+        var $data = $data_go_back['data'] !== null ? $data_go_back['data']:"";
+        var $redirect = "";
+        var $item = $data_go_back['item'];
+               
+        ajax_loader($url, $data, $redirect);
+                //
+	 	$(".active").removeClass("active");
+	 	$("#"+$item).addClass("active");
+	 	
+	 	$("#"+$item).parent().parent().addClass("active");
+	 
+});
