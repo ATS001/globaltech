@@ -898,7 +898,7 @@ function  append_drop_menu($url, $id, $btn){
 	});    
 }
 
-$(document).keydown(function(e){
+/*$(document).keydown(function(e){
 	if (e.keyCode == 8) { 
 		$data_go_back =$.parseJSON(ace.cookie.get("gobak"));
 		$('#gritter-notice-wrapper').remove();//remove message box
@@ -916,7 +916,7 @@ $(document).keydown(function(e){
 
                 
     }
-});
+});*/
 $('body').on('click', '#call_go_back', function(e) {
 
 		$data_go_back =$.parseJSON(ace.cookie.get("gobak"));
