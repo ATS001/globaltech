@@ -35,6 +35,7 @@ class Mform
     var $wizard_steps          = null;
     var $form_subbloc          = null;
     var $verif_value           = null;
+    var $extra_html            = null;
     
     
 
@@ -405,6 +406,15 @@ $this->gallery_bloc_js .= "$('#btn_add_pic').on('click', '.this_add_pic', functi
     {
         $input = '<input type="hidden" name="'.$input_id.'" id="'.$input_id.'" value="'.$input_value.'"  />';
         $this->form_fields .= $input;
+    }
+
+    public function extra_html($id_bloc, $html_code)
+    {
+      
+      $input = '<div id="'.$id_bloc.'" class="widget-main padding-24">'.$html_code.'</div>';
+      
+      $this->form_fields .= $input;
+
     }
 
     /**

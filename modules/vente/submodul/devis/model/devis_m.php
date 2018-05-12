@@ -1622,6 +1622,54 @@ class Mdevis
         return true;
     }
 
+    public function Gettable_detail_product_livraison()
+    {
+        global $db;
+        $table    = $this->table_details;
+        $input_qte_c = "CONCAT('<input id=\"qte_',$table.id_produit,'\" class=\"qte center  is-number\" name=\"',$table.id_produit,'[]\" type=\"text\" value=\"',$table.qte,'\"/>') as qte_c";
+        $input_qte_l = "CONCAT('<input id=\"liv_',$table.id_produit,'\" class=\"liv center  is-number\" name=\"',$table.id_produit,'[]\" type=\"text\" value=\"',$table.qte,'\"/>') as qte_l";
+        $etat_stock = "CASE WHEN d_devis.qte > qte_actuel.`qte_act` THEN 
+  CONCAT('<span class=\"badge badge-danger\">', qte_actuel.`qte_act`,'</span>')
+   ELSE  CONCAT('<span id=\"stok_',$table.id_produit,'\" class=\"badge badge-success\">', qte_actuel.`qte_act`,'</span>') END AS stock";
+        $id_devis = $this->id_devis;
+        
+        $colms = null;
+        $colms .= " $table.order item, ";
+        $colms .= " $table.ref_produit, ";
+        $colms .= " $table.designation, ";
+        $colms .= " $input_qte_c, ";
+        $colms .= " $etat_stock, ";
+        $colms .= " $input_qte_l";
+        
+        
+        $req_sql  = " SELECT $colms FROM $table, qte_actuel WHERE d_devis.id_produit = qte_actuel.id_produit AND id_devis = $id_devis ";
+        
+        if(!$db->Query($req_sql))
+        {
+            $this->error = false;
+            $this->log  .= $db->Error().' '.$req_sql;
+            exit($this->log);
+        }
+        
+        
+        $headers = array(
+            'Item'                  => '5[#]center',
+            'Réf'                   => '10[#]center',
+            'Description'           => '30[#]', 
+            'Qte commandée'         => '15[#]center', 
+            'En Stock'              => '15[#]center', 
+            'Qte à livrer'          => '15[#]center', 
+            
+            
+        );
+                 
+                
+        $tableau = $db->GetMTable($headers);
+        
+        
+        return $tableau; 
+    }
+
     /**
      * [save_file For save anattached file for entrie ]
      * @param  [string] $item  [input_name of attached file we add _id]
