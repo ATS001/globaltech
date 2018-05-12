@@ -2,8 +2,8 @@
 //First check target no Hack
 if(!defined('_MEXEC'))die();
 //SYS GLOBAL TECH
-// Modul: mouvements_stock
-//Created : 26-04-2018
+// Modul: stock_actuel
+//Created : 12-05-2018
 //View
 //array colomn
 $array_column = array(
@@ -39,40 +39,16 @@ $array_column = array(
                             'type'   => '',
                             'alias'  => 'qte',
                             'width'  => '5',
-                            'header' => 'Quantité',
+                            'header' => 'Quantité Disponible',
                             'align'  => 'R'
-                        ),
-    array(
-                            'column' => 'DATE',
-                            'type'   => 'date',
-                            'alias'  => 'DATE',
-                            'width'  => '5',
-                            'header' => 'Date',
-                            'align'  => 'C'
-                        ),
-    array(
-                            'column' => 'source',
-                            'type'   => '',
-                            'alias'  => 'source',
-                            'width'  => '15',
-                            'header' => 'Source',
-                            'align'  => 'L'
-                        ),
-    array(
-                            'column' => 'mouvement',
-                            'type'   => '',
-                            'alias'  => 'mouvement',
-                            'width'  => '4',
-                            'header' => 'Mouvement',
-                            'align'  => 'C'
                         )
+
  );
- //Creat new instance
+//Creat new instance
 $html_data_table = new Mdatatable();
 $html_data_table->columns_html = $array_column;
-$html_data_table->need_notif=false;
-$html_data_table->title_module = "mouvements_stock";
-$html_data_table->task = 'mouvements_stock';
+$html_data_table->title_module = "stock_actuel";
+$html_data_table->task = 'stock_actuel';
 
 if(!$data = $html_data_table->table_html())
 {
@@ -80,3 +56,53 @@ if(!$data = $html_data_table->table_html())
 }else{
     echo $data;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

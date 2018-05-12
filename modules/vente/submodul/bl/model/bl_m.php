@@ -15,13 +15,14 @@ class Mbl {
 	
 	private $_data;     //data receive from form
 	var $table   = 'bl';//Main table of module
-    var $table_details = 'd_bl';//Table détail 
+  var $table_details = 'd_bl';//Table détail 
 	var $last_id = null;//return last ID after insert command
 	var $log     = null;//Log of all opération.
 	var $error   = true;//Error bol changed when an error is occured
-    var $id_bl   = null;// bl ID append when request
+  var $id_bl   = null;// bl ID append when request
 	var $token   = null;//user for recovery function
 	var $bl_info = array();     //Array stock all bl info
+  var $d_bl_info = array();     //Array stock all bl details info
 	
 
 	public function __construct($properties = array()){
@@ -74,6 +75,34 @@ class Mbl {
 		}
 		
 	}
+    //Get détails BL
+      public function get_details_bl() {
+        global $db;
+
+
+         $sql = "SELECT * FROM d_bl WHERE  id_bl = " . $this->id_bl;
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->d_bl_info = $db->RecordsSimplArray();
+                
+                $this->error = true;
+            }
+        }
+        //return Array user_activities
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 	/**
 	 * Save new row to main table
 	 * @return [bol] [bol value send to controller]
@@ -449,12 +478,12 @@ class Mbl {
         
         
         $headers = array(
-            'Item'        => '3[#]center',
-            'Réf'         => '17[#]center',
-            'Description' => '32[#]', 
-            'Qte CMD'     => '16[#]center', 
-            'Qte LIV'     => '16[#]center', 
-            'Reste'       => '16[#]center',
+            'Item'          => '3[#]center',
+            'Référence'     => '17[#]center',
+            'Description'   => '32[#]', 
+            'Qte commandée' => '16[#]center', 
+            'Qte livrée'    => '16[#]center', 
+            'Reste à livrer'=> '16[#]center',
             
 
         );
