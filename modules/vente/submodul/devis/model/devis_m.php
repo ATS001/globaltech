@@ -1214,11 +1214,17 @@ class Mdevis
     Private function generate_bl($id_devis)
     {
         global $db;
-        $sql_req = " CALL generate_devis_bl($id_devis)";
-        if(!$db->Query($sql_req))
+        $ref_bl = $db->Generate_reference('BL', $table);
+        $sql_req = "INSERT INTO bl (reference, client, projet, ref_bc, iddevis, date_bl, creusr, credat) 
+            SELECT 'ref_bl', c.denomination, d.projet, d.ref_bc,
+            d.id, (SELECT NOW() FROM DUAL), 1,(SELECT NOW() FROM DUAL)
+            FROM clients c, devis d  WHERE d.id_client=c.id  AND d.id = $id_devis;";
+        if(!$new_id_bl = $db->Query($sql_req))
         {
             $this->log .= '</br>Erreur génération de Bon Livraison'.$sql_req;
+            return false;
         }
+        return $new_id_bl;
     }
     Private function generate_facture($id_devis)
     {
