@@ -26,3 +26,5 @@ return cpt_bl;
 DELIMITER ;
 
 -- --------------------------------------------------------
+--Execute and read result 
+SELECT  generate_bl(61) ;
