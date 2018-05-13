@@ -12,15 +12,21 @@ if(MInit::form_verif('validdevisclient', false))
     // returne message error red to client 
                 exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
             }
+            
+            
             $posted_data = array(
                 'id'      => Mreq::tp('id') ,
                 'reponse' => Mreq::tp('reponse') ,
                 'modcom'  => Mreq::tp('modcom') ,
                 'ref_bc'  => Mreq::tp('ref_bc') ,
                 'scan_id' => Mreq::tp('scan-id') ,
+                'line_d_d'=> MReq::tp('line_d_d'),
 
 
             );
+
+                
+            
 
             //for acceptable empty field do not put here
             $checker = null;
