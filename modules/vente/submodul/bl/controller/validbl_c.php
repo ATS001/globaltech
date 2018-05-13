@@ -17,11 +17,23 @@ if(!MInit::crypt_tp('id', null, 'D')or !$bl->get_bl())
 
 //Etat for validate row
 $etat = $bl->bl_info['etat'];
+$id_bl = $bl->bl_info['id'];
 
-if($bl->valid_bl($etat))
-{
-	exit("1#".$bl->log);
+if($bl->verif_qte_stock()){
 
-}else{
-	exit("0#".$bl->log);
+  	if($bl->mouvementer_stock()){	
+
+		if($bl->valid_bl($etat)){
+			
+			exit("1#".$bl->log);
+
+		}else{
+				exit("0#".$bl->log);
+		}
+  	}else{
+			exit("0#".$bl->log);
+	}
+}
+else{
+		exit("0#".$bl->log);
 }

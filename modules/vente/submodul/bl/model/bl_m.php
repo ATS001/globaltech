@@ -103,6 +103,67 @@ class Mbl {
         }
     }
 
+    //Vérif Stock
+    public function verif_qte_stock() {
+        global $db;
+
+
+         $sql = "SELECT * FROM qte_actuel q WHERE q.`id_produit` IN 
+                (SELECT id_produit FROM d_bl d WHERE d.`id_produit`=q.`id_produit` AND d.`qte` > q.`qte_act`AND d.`id_bl`= $this->id_bl ) ";
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = true;
+            } else {
+                
+                $this->error = false;
+                $this->log = 'Quantité à livrer non disponible !!! Veuillez approvisionner le stock ou modifier le BL.';
+            }
+        }
+        //return Array user_activities
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    //Mouvementer Stock
+    public function mouvementer_stock() {
+        global $db;
+
+
+         $sql = "INSERT INTO stock (idproduit, qte, mouvement, id_bl )
+                SELECT id_produit, - qte, 'S', id_bl FROM d_bl WHERE id_bl=". $this->id_bl;
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            $this->error = true;
+        }
+
+        //return Array user_activities
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private function generate_facture($id_bl)
+    {
+        global $db;
+        $sql_req = " CALL generate_bl_fact($id_bl)";
+        if(!$db->Query($sql_req))
+        {
+            $this->log .= '</br>Erreur génération de facture'.$sql_req;
+        }
+    }
+
 	/**
 	 * Save new row to main table
 	 * @return [bol] [bol value send to controller]
@@ -231,7 +292,7 @@ public function Gettable_d_bl()
         $table    = $this->table_details;
         $input_qte_l = "CONCAT('<input id=\"liv_',$table.id_produit,'\" class=\"liv center  is-number\" name=\"',$table.id_produit,'[]\" type=\"text\" value=\"',$table.qte,'\"/>') as qte_l";
         $etat_stock = "CASE WHEN $table.qte > qte_actuel.`qte_act` THEN 
-  CONCAT('<span class=\"badge badge-danger\">', qte_actuel.`qte_act`,'</span>')
+  CONCAT('<span id=\"stok_',$table.id_produit,'\"class=\"badge badge-danger\">', qte_actuel.`qte_act`,'</span>')
    ELSE  CONCAT('<span id=\"stok_',$table.id_produit,'\" class=\"badge badge-success\">', qte_actuel.`qte_act`,'</span>') END AS stock";
         $id_bl = $this->id_bl;
         
@@ -293,29 +354,45 @@ public function Gettable_d_bl()
 
       $wheres['id']     = $this->id_bl;
 
+     if($this->generate_facture($this->id_bl))
+     {
+      var_dump('1');
 		// Execute the update and show error case error
       if(!$result = $db->UpdateRows($this->table, $values, $wheres))
       {
+        var_dump('2');
           $this->log   .= '</br>Impossible de changer le statut!';
           $this->log   .= '</br>'.$db->Error();
           $this->error  = false;
 
       }else{
+         var_dump('3');
           $this->log   .= '</br>Statut changé! ';
           $this->error  = true;
           if(!Mlog::log_exec($this->table, $this->last_id, 'Changement ETAT  bl', 'Update'))
               {
                  $this->log .= '</br>Un problème de log ';
                  $this->error = false;
+                 var_dump('4');
              }
                //Esspionage
              if(!$db->After_update($this->table, $this->id_bl, $values, $this->bl_info)){
                  $this->log .= '</br>Problème Espionnage';
                  $this->error = false;	
+                 var_dump('5');
              }
-
-         }
-         if($this->error == false){
+var_dump('6');
+      }
+      var_dump('7');
+     }
+     else{
+      var_dump('8');
+          $this->log   .= '</br>Impossible de générer la facture';
+          $this->log   .= '</br>'.$db->Error();
+          $this->error  = false;
+     }
+      
+      if($this->error == false){
           return false;
       }else{
           return true;

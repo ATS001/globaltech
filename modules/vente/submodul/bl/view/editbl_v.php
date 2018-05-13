@@ -121,7 +121,7 @@ $('.qte, .liv').bind('input change',function() {
         var $val_liv   = parseFloat($val_liv) ? parseFloat($val_liv) : 0;
         if($val_liv > $val_stock)
         {
-        	ajax_loadmessage('La quantité à livrer n\'est pas disponible dans le stock','nok');
+        	ajax_loadmessage('La quantité à livrer n\'est pas disponible dans le stock'+ $val_liv + ' '+ $val_stock,'nok');
         	$('#liv_'+$id).val($val_stock)
     		return false;
         }
