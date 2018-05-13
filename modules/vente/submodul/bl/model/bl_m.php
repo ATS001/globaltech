@@ -229,8 +229,8 @@ public function Gettable_d_bl()
     {
         global $db;
         $table    = $this->table_details;
-        $input_qte_l = "CONCAT('<input id=\"liv_',$table.id_produit,'\" class=\"liv center  is-number\" name=\"',$table.id_produit,'[]\" type=\"text\" value=\"',$table.qte_cmd,'\"/>') as qte_l";
-        $etat_stock = "CASE WHEN $table.qte_cmd > qte_actuel.`qte_act` THEN 
+        $input_qte_l = "CONCAT('<input id=\"liv_',$table.id_produit,'\" class=\"liv center  is-number\" name=\"',$table.id_produit,'[]\" type=\"text\" value=\"',$table.qte,'\"/>') as qte_l";
+        $etat_stock = "CASE WHEN $table.qte > qte_actuel.`qte_act` THEN 
   CONCAT('<span class=\"badge badge-danger\">', qte_actuel.`qte_act`,'</span>')
    ELSE  CONCAT('<span id=\"stok_',$table.id_produit,'\" class=\"badge badge-success\">', qte_actuel.`qte_act`,'</span>') END AS stock";
         $id_bl = $this->id_bl;
@@ -255,10 +255,10 @@ public function Gettable_d_bl()
         
         $headers = array(
             'Item'                  => '5[#]center',
-            'Réf'                   => '10[#]center',
-            'Description'           => '30[#]', 
-            'En Stock'              => '15[#]center', 
-            'Qte à livrer'          => '15[#]center', 
+            'Référence'             => '10[#]center',
+            'Déscription'           => '30[#]', 
+            'Quantité Stock'        => '15[#]center', 
+            'Quantité à livrer'     => '15[#]center', 
             
             
         );
