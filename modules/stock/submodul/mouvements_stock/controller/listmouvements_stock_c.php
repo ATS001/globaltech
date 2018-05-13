@@ -19,12 +19,19 @@ $array_column = array(
         'column' => 'entrepot',
         'type'   => '',
         'alias'  => 'entrepot',
-        'width'  => '15',
+        'width'  => '14',
         'header' => 'Entrepôt',
         'align'  => 'L'
     ),
 
-     //Complete Array fields here
+    array(
+                            'column' => 'reference',
+                            'type'   => '',
+                            'alias'  => 'reference',
+                            'width'  => '11',
+                            'header' => 'Référence',
+                            'align'  => 'L'
+                        ),
     array(
                             'column' => 'designation',
                             'type'   => '',
@@ -39,7 +46,7 @@ $array_column = array(
                             'alias'  => 'qte',
                             'width'  => '5',
                             'header' => 'Quantité',
-                            'align'  => 'R'
+                            'align'  => 'C'
                         ),
     array(
                             'column' => 'DATE',

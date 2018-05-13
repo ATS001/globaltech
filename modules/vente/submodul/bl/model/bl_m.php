@@ -225,6 +225,53 @@ class Mbl {
 
  }	
 
+public function Gettable_d_bl()
+    {
+        global $db;
+        $table    = $this->table_details;
+        $input_qte_l = "CONCAT('<input id=\"liv_',$table.id_produit,'\" class=\"liv center  is-number\" name=\"',$table.id_produit,'[]\" type=\"text\" value=\"',$table.qte_cmd,'\"/>') as qte_l";
+        $etat_stock = "CASE WHEN $table.qte_cmd > qte_actuel.`qte_act` THEN 
+  CONCAT('<span class=\"badge badge-danger\">', qte_actuel.`qte_act`,'</span>')
+   ELSE  CONCAT('<span id=\"stok_',$table.id_produit,'\" class=\"badge badge-success\">', qte_actuel.`qte_act`,'</span>') END AS stock";
+        $id_bl = $this->id_bl;
+        
+        $colms = null;
+        $colms .= " $table.order item, ";
+        $colms .= " $table.ref_produit, ";
+        $colms .= " $table.designation, ";
+        $colms .= " $etat_stock, ";
+        $colms .= " $input_qte_l";
+        
+        
+        $req_sql  = " SELECT $colms FROM $table, qte_actuel WHERE $table.id_produit = qte_actuel.id_produit AND id_bl = $id_bl ";
+        
+        if(!$db->Query($req_sql))
+        {
+            $this->error = false;
+            $this->log  .= $db->Error().' '.$req_sql;
+            exit($this->log);
+        }
+        
+        
+        $headers = array(
+            'Item'                  => '5[#]center',
+            'Réf'                   => '10[#]center',
+            'Description'           => '30[#]', 
+            'En Stock'              => '15[#]center', 
+            'Qte à livrer'          => '15[#]center', 
+            
+            
+        );
+                 
+                
+        $tableau = $db->GetMTable($headers);
+        
+        
+        return $tableau; 
+    }
+
+
+
     /**
      * Valide bl
      * @return bol send to controller

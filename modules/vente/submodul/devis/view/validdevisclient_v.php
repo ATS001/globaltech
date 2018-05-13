@@ -144,5 +144,3 @@ $(document).ready(function() {
 <?php } ?>
 });
 </script>	
-
-		

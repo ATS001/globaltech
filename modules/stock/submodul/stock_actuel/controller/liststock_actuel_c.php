@@ -23,7 +23,14 @@ $array_column = array(
         'header' => 'Entrepôt',
         'align'  => 'L'
     ),
-
+    array(
+                            'column' => 'reference',
+                            'type'   => '',
+                            'alias'  => 'reference',
+                            'width'  => '11',
+                            'header' => 'Référence',
+                            'align'  => 'L'
+                        ),
      //Complete Array fields here
     array(
                             'column' => 'designation',
@@ -34,12 +41,20 @@ $array_column = array(
                             'align'  => 'L'
                         ),
     array(
+                            'column' => 'seuil',
+                            'type'   => '',
+                            'alias'  => 'seuil',
+                            'width'  => '5',
+                            'header' => 'Seuil Min',
+                            'align'  => 'C'
+                        ),
+    array(
                             'column' => 'qte',
                             'type'   => '',
                             'alias'  => 'qte',
                             'width'  => '5',
                             'header' => 'Quantité Disponible',
-                            'align'  => 'R'
+                            'align'  => 'C'
                         )
 
  );

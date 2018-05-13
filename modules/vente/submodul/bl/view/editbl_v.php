@@ -95,7 +95,7 @@ $form->input_hidden('idh', Mreq::tp('idh'));
 	$array_date_bl[]= array("required", "true", "Insérer date_bl ...");
 	$form->input("date_bl", "date_bl", "text" ,"9", $info_bl->g("date_bl"), $array_date_bl , null, $readonly = null);
 
-
+$form->extra_html('table_product', $info_bl->Gettable_d_bl());
 
 $form->button('Enregistrer');
 //Form render
