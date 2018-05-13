@@ -41,6 +41,9 @@
                                                         <th>
 								Catégorie
 							</th>
+							                           <th>
+								Entrepôt
+							</th>
 	                                                <th>
 								Désignation
 							</th>                                              
@@ -75,13 +78,15 @@
 			
 	                aoColumns: [
 	                    {"sClass": "center","sWidth":"5%"}, // Identifiant 
-	                    {"sClass": "left","sWidth":"13%"}, 
-                            {"sClass": "left","sWidth":"13%"},
-                            {"sClass": "left","sWidth":"13%"},
+	                    {"sClass": "left","sWidth":"10%"}, 
+                            {"sClass": "left","sWidth":"10%"},
+                            {"sClass": "left","sWidth":"10%"},
+
+                            {"sClass": "left","sWidth":"10%"},
 	                    {"sClass": "left","sWidth":"25%"},   
 	                    {"sClass": "left","sWidth":"8%"},
 	                    {"sClass": "center","sWidth":"13%"}, // Statut
-	                    {"sClass": "center","sWidth":"6%"}, // Action
+	                    {"sClass": "center","sWidth":"5%"}, // Action
 	                    ],
 	                });	        
 	    

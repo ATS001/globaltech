@@ -44,20 +44,11 @@ $form->input_hidden('id', Mreq::tp('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
 
-
+$list_devis = Mcontrat::select_devis($info_contrat->s('iddevis'));
 
 //Reference
 $form->input_hidden('checker_reference', MInit::cryptage($info_contrat->s('reference'), 1));
 $form->input_hidden('ref', $info_contrat->s('reference'));
-//var_dump($info_contrat->g('ref').''.$info_contrat->s('ref').''.$info_contrat->g('date_fin'));
-//var_dump(Mreq::tp('id'));
-
-//////////////////////////////////////////////////////////////////////////////////////////
-//
-
-$list_devis = Mcontrat::select_devis($info_contrat->s('iddevis'));
-/*var_dump($list_devis);
-exit();*/
 
 //Devis
 $form->select('Devis', 'iddevis', 8, $list_devis, '------', $info_contrat->s('iddevis'), null, null);

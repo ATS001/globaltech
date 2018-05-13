@@ -41,7 +41,7 @@ $option_type  = array('1' => 'Paramètre' , '2' => 'Sous Modul' );
 $form->select('Type module', 'type_modul', 3, $option_type, NULL ,$selected = NULL, $multi = NULL );
 //Nom Module
 $modul_array[]  = array('required', 'true', 'Insérer Nom de Module' );
-$modul_array[]  = array('minlength', '3', 'Minimum 3 caractères' );
+$modul_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
 $modul_array[]  = array('regex', 'true', 'Insérer Nom de Modul Valid (a_z 0-9)' );
 $form->input('Nom Module', 'modul', 'text' ,6 , null, $modul_array);
 //Répertoire Module
@@ -49,12 +49,12 @@ $form->input('Nom Module', 'modul', 'text' ,6 , null, $modul_array);
 $form->select_table('Module de Base', 'modul_setting', 5, 'modul','modul', 'modul', 'description', $indx = NULL ,$selected = NULL , NULL, ' is_setting = 0 ', NULL);
 //Déscription Module
 $description_array[]  = array('required', 'true', 'Insérer la déscription' );
-$description_array[]  = array('minlength', '3', 'Minimum 3 caractères' );
+$description_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
 $form->input('Déscription', 'description', 'text', 10, null, $description_array);
 
 //Tables de module
 $table_array[]  = array('required', 'true', 'Insérer au moin une table utilisée' );
-$table_array[]  = array('minlength', '3', 'Minimum 3 caractères' );
+$table_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
 $form->input('Table utilisées', 'tables', 'text', 4, null, $table_array);
 //$form->input_tag('tables');
 //Titre bloc default TASK
@@ -63,7 +63,7 @@ $form->bloc_title('Informations Application par défault');
 //Nom Application
 $app_array[]  = array('required', 'true', 'Insérer Nom d l'."\'".' application' );
 $app_array[]  = array('regex', 'true', 'Insérer Nom d l'."\'".' application Valid' );
-$app_array[]  = array('minlength', '3', 'Minimum 3 caractères' );
+$app_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
 //$app_array[]  = array('remote', 'app', 'Ce nom existe déja' );
 $form->input('Nom Application', 'app', 'text', 6, null, $app_array);
 

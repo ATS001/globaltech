@@ -1,8 +1,6 @@
 <?php
 
 defined('_MEXEC') or die;
-
-
 if (MInit::form_verif('addcontrat', false)) {
 
     $posted_data = array(
@@ -900,5 +898,7 @@ $date_d = $posted_data['date_effet'];
     }
 
 } else {
+    $ctr = new Mcontrat();
+    $ctr -> delete_null_echeances();
     view::load_view('addcontrat');
 }

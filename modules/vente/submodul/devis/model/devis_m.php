@@ -951,6 +951,7 @@ class Mdevis
           //Get order line into devis
             $this->get_order_detail($tkn_frm);
             $order_detail = $this->order_detail;
+            $tva = Msetting::get_set('tva');
             //Format values for Insert query 
             global $db;
 
@@ -966,7 +967,7 @@ class Mdevis
             $values["type_remise"]   = MySQL::SQLValue($this->_data['type_remise_d']);
             $values["prix_ht"]       = MySQL::SQLValue($prix_u_final);
             $values["remise_valeur"] = MySQL::SQLValue($valeur_remis_d);
-            $values["tva"]           = MySQL::SQLValue($this->_data['tva_d']);
+            $values["tva"]           = MySQL::SQLValue($tva);
             $values["total_ht"]      = MySQL::SQLValue($this->total_ht);
             $values["total_ttc"]     = MySQL::SQLValue($this->total_ttc);
             $values["total_tva"]     = MySQL::SQLValue($this->total_tva);
@@ -1047,6 +1048,7 @@ class Mdevis
             $total_ttc      = $this->total_ttc_d;
             $valeur_remis_d = number_format($this->valeur_remis_d, 2,'.', '');
             $prix_u_final   = $this->prix_u_final;
+            $tva = Msetting::get_set('tva');
         //Format values for Insert query 
             global $db;
 
@@ -1059,7 +1061,7 @@ class Mdevis
             $values["type_remise"]   = MySQL::SQLValue($this->_data['type_remise_d']);
             $values["remise_valeur"] = MySQL::SQLValue($valeur_remis_d);
             $values["prix_ht"]       = MySQL::SQLValue($prix_u_final);
-            $values["tva"]           = MySQL::SQLValue($this->_data['tva_d']);
+            $values["tva"]           = MySQL::SQLValue($tva);
             $values["total_ht"]      = MySQL::SQLValue($total_ht);
             $values["total_ttc"]     = MySQL::SQLValue($total_ttc);
             $values["total_tva"]     = MySQL::SQLValue($total_tva);
@@ -1201,7 +1203,11 @@ class Mdevis
             
             if($this->g('type_devis') == 'VNT' && $reponse == 'valid')
             {
-                $this->generate_facture($this->id_devis);
+                if($id_bl = $this->generate_bl($this->id_devis))
+                {
+                    $this->insert_d_bl($id_bl);
+                }
+                
             }
             
         }
@@ -1211,6 +1217,54 @@ class Mdevis
             return true;
         }
     }
+    Private function generate_bl($id_devis)
+    {
+        global $db;
+        $ref_bl = $db->Generate_reference('bl', 'BL');
+        $sql_req = "INSERT INTO bl (reference, client, projet, ref_bc, iddevis, date_bl, creusr, credat) 
+            SELECT '$ref_bl', c.denomination, d.projet, d.ref_bc,
+            d.id, (SELECT NOW() FROM DUAL), 1,(SELECT NOW() FROM DUAL)
+            FROM clients c, devis d  WHERE d.id_client=c.id  AND d.id = $id_devis;";
+        if(!$new_id_bl = $db->Query($sql_req))
+        {
+            $this->log .= '</br>Erreur génération de Bon Livraison'.$sql_req;
+            $this->error = false;
+            return false;
+        }
+        return $new_id_bl;
+    }
+
+
+    Private function insert_d_bl($id_bl)
+    {
+        global $db;
+        $data_d_bl   = $this->_data['line_d_d'];
+        $id_devis    = $this->id_devis;
+        $creusr      = session::get('userid');
+        $count_lines = count($data_d_bl);
+        
+        for ($i = 0 , $c  = $count_lines  ; $i < $c ; $i++  ) 
+        {
+             
+            $id_line = $data_d_bl[$i];
+            $qte_liv = MReq::tp('qte_liv_'.$id_line);
+            $id_produit = MReq::tp('id_produit_'.$id_line);
+            $sql_req_d_bl = "  INSERT INTO d_bl (`order`, id_bl, id_produit, ref_produit, designation, qte, creusr, credat) 
+            SELECT d.order, '$id_bl' , id_produit, ref_produit, designation, '$qte_liv', '$creusr', CURRENT_TIMESTAMP FROM d_devis d WHERE d.id_devis= $id_devis AND d.id_produit = $id_produit ";
+           
+            if(!$db->Query($sql_req_d_bl))
+            {
+                $this->log .= '</br>Erreur Insértion linge '.$id_line.' Produit:'.$id_produit. '  '.$sql_req_d_bl;
+                $this->error = false;
+                return false;
+            }
+        }
+        
+
+        return true;
+    }
+
+
     Private function generate_facture($id_devis)
     {
         global $db;
@@ -1611,6 +1665,54 @@ class Mdevis
             }
         }
         return true;
+    }
+
+    public function Gettable_detail_product_livraison()
+    {
+        global $db;
+        $table    = $this->table_details;
+        $input_qte_c = "CONCAT('<input type=\"hidden\" name=\"line_d_d[]\" value=\"',$table.id,'\"/><input type=\"hidden\" name=\"id_produit_',$table.id,'\" value=\"',$table.id_produit,'\"/><input id=\"qte_',$table.id_produit,'\" class=\"qte center  is-number\" name=\"',$table.id_produit,'[]\" type=\"text\" value=\"',$table.qte,'\"/>') as qte_c";
+        $input_qte_l = "CONCAT('<input id=\"liv_',$table.id_produit,'\" class=\"liv center  is-number\" name=\"qte_liv_',$table.id,'\" type=\"text\" value=\"',$table.qte,'\"/>') as qte_l";
+        $etat_stock = "CASE WHEN d_devis.qte > qte_actuel.`qte_act` THEN 
+  CONCAT('<span id=\"stok_',$table.id_produit,'\" class=\"badge badge-danger\">', qte_actuel.`qte_act`,'</span>')
+   ELSE  CONCAT('<span id=\"stok_',$table.id_produit,'\" class=\"badge badge-success\">', qte_actuel.`qte_act`,'</span>') END AS stock";
+        $id_devis = $this->id_devis;
+        
+        $colms = null;
+        $colms .= " $table.order item, ";
+        $colms .= " $table.ref_produit, ";
+        $colms .= " $table.designation, ";
+        $colms .= " $input_qte_c, ";
+        $colms .= " $etat_stock, ";
+        $colms .= " $input_qte_l";
+        
+        
+        $req_sql  = " SELECT $colms FROM $table, qte_actuel WHERE d_devis.id_produit = qte_actuel.id_produit AND id_devis = $id_devis ";
+        
+        if(!$db->Query($req_sql))
+        {
+            $this->error = false;
+            $this->log  .= $db->Error().' '.$req_sql;
+            exit($this->log);
+        }
+        
+        
+        $headers = array(
+            'Item'                  => '5[#]center',
+            'Réf'                   => '10[#]center',
+            'Description'           => '30[#]', 
+            'Qte commandée'         => '15[#]center', 
+            'En Stock'              => '15[#]center', 
+            'Qte à livrer'          => '15[#]center', 
+            
+            
+        );
+                 
+                
+        $tableau = $db->GetMTable($headers);
+        
+        
+        return $tableau; 
     }
 
     /**

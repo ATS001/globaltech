@@ -33,7 +33,14 @@ $array_column = array(
         'header' => 'Catégorie produit',
         'align'  => 'L'
     ),
-  
+   array(
+        'column' => 'entrepots.libelle',
+        'type'   => '',
+        'alias'  => 'entrepot',
+        'width'  => '10',
+        'header' => 'Entrepôt',
+        'align'  => 'L'
+    ),
     array(
         'column' => 'produits.designation',
         'type'   => '',
@@ -63,9 +70,9 @@ $array_column = array(
 //Creat new instance
 $list_data_table = new Mdatatable();
 //Set tabels used in Query
-$list_data_table->tables = array('produits', 'ref_types_produits','ref_categories_produits');
+$list_data_table->tables = array('produits', 'ref_types_produits','ref_categories_produits,entrepots');
 //Set Jointure
-$list_data_table->joint = 'produits.idtype=ref_types_produits.id AND produits.idcategorie=ref_categories_produits.id';
+$list_data_table->joint = 'produits.idtype=ref_types_produits.id AND produits.idcategorie=ref_categories_produits.id and entrepots.id=produits.id_entrepot';
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query

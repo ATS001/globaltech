@@ -87,7 +87,11 @@ $form->select('Mode communication', 'modcom', 3, $mode_opt, $indx = NULL ,$selec
 //PJ
 $form->input('Pièce jointe', 'scan', 'file', 6, null, null);
 $form->file_js('scan', 1000000, 'pdf');
-//Remarque
+//Tableau Qte
+if($info_devis->g('type_devis') == 'VNT'){
+	$form->extra_html('table_product', $info_devis->Gettable_detail_product_livraison());
+}
+
 
 $form->button('Enregistrer');
 //Form render
@@ -96,14 +100,47 @@ $form->render();
 			</div>
 		</div>
 	</div>
+	
 </div>
 <!-- End Add devis bloc -->
 		
 <script type="text/javascript">
 $(document).ready(function() {
-    
+    $('#reponse').on('change', function () {
+    	$val_reponse = $(this).val();
+    	if($val_reponse === 'valid')
+    	{
+    		$('#table_product').show();
+    		$('#modcom').closest('.form-group').show();
+    		$('#scan').closest('.form-group').show();
+    	}else{
+    		$('#table_product').hide();
+    		$('#modcom').closest('.form-group').hide();
+    		$('#scan').closest('.form-group').hide();
+    	}
+    });
 
+<?php
+	if($info_devis->g('type_devis') == 'VNT'){
+?>
+    $('.qte, .liv').bind('input change',function() {
+        var $qte_id = $(this).attr('id');
+        var $id = $qte_id.substr($qte_id.lastIndexOf("_")+1);
+        var $val_stock = $('#stok_'+$id).text();
+        var $val_stock = parseFloat($val_stock) ? parseFloat($val_stock) : 0;
+        var $val_qte   = $('#qte_'+$id).val();
+        var $val_qte   = parseFloat($val_qte) ? parseFloat($val_qte) : 0;
+        var $val_liv   = $('#liv_'+$id).val();
+        var $val_liv   = parseFloat($val_liv) ? parseFloat($val_liv) : 0;
+        if($val_liv > $val_stock)
+        {
+        	ajax_loadmessage('La quantité à livrer n\'est pas disponible dans le stock','nok');
+        	$('#liv_'+$id).val($val_stock)
+    		return false;
+        }
+        
+    });
+
+<?php } ?>
 });
 </script>	
-
-		
