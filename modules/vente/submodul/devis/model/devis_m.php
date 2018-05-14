@@ -1197,18 +1197,25 @@ class Mdevis
             }
             $this->last_id = $this->_data['id'];
             $this->save_file('scan', 'PJ réponse devis '.$this->_data['id'], 'Document');
-            $this->log .= '</br>Opération réussie ';
-            $this->get_devis();
-            //If TYPE Devis is VNT then Generate Facture
-            
             if($this->g('type_devis') == 'VNT' && $reponse == 'valid')
             {
                 if($id_bl = $this->generate_bl($this->id_devis))
                 {
                     $this->insert_d_bl($id_bl);
                 }
+                $this->check_livraison();
                 
             }
+            $id_bl = 'id='.$id_bl;
+            $task  = MInit::crypt_tp('task', 'detailsbl');
+
+
+            $this->log .= '</br>Opération réussie '.'<a left_menu="1" class="fa-double_angle_right this_url_jump" rel="seturl" title="Detail BL" data="'.$id_bl.'&'.$task.'"><b> : Détail Bon de livraison</a>';
+            //$this->get_devis();
+            //If TYPE Devis is VNT then Generate Facture
+
+            
+            
             
         }
         if($this->error == false){
@@ -1217,6 +1224,33 @@ class Mdevis
             return true;
         }
     }
+
+    Private function check_livraison()
+    {
+        global $db;
+        $id_devis = $this->id_devis;
+        $table = $this->table;
+        $req_check_livr = "SELECT COUNT(*) FROM d_devis dd WHERE dd.`id_devis`= $id_devis AND dd.`id_produit` IN (SELECT d.id_produit FROM d_bl d WHERE d.`id_produit`=dd.`id_produit` HAVING (SUM(dd.`qte`) > SUM(d.`qte`) ));";
+        $result = $db->QuerySingleValue0($req_check_livr);
+        if($result == 0){
+            $etat_devis = 'valid_client';
+
+        }else{
+            $etat_devis = 'en_livre';
+        }
+        $new_etat = Msetting::get_set('etat_devis', $etat_devis);
+        $req_sql = " UPDATE $table SET etat = etat  WHERE id = $id_devis ";
+       
+        if(!$db->Query($req_sql))
+        {
+            $this->log .= '</br>Erreur MAJ devis après BL';
+            $this->error = false;
+            return false;
+
+        }
+        return true;
+    } 
+
     Private function generate_bl($id_devis)
     {
         global $db;

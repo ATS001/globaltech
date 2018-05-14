@@ -1646,11 +1646,12 @@ class Mmodul {
     	}
 
     }
-    Private function check_exist_idf($idf)
+    Private function check_exist_idf($idf, $is_edit = false)
     {   
     	global $db;
     	$sql_req = "SELECT COUNT(id) FROM task_action WHERE idf = '$idf'";
-    	if($db->QuerySingleValue0($sql_req) > 0){
+    	$alpha = !$is_edit ? 0 : 1;
+    	if($db->QuerySingleValue0($sql_req) > $alpha){
     		$this->error = false;
     		$this->log .= '</br>La descripttion existe déjà dans la table Task Action';
     		$this->log .= '<br/>Chercher le IDF : '.$idf;
@@ -1748,7 +1749,7 @@ class Mmodul {
     	$code    = '<li><a href="#" class="'.$this->_data['mode_exec'].'" data="%id%" rel="'.$this->_data['app'].'"  ><i class="ace-icon fa fa-'.$this->_data['class'].' bigger-100"></i> '.$this->_data['description'].'</a></li>';
     	$message = '<span class="label label-sm label-'.$this->_data['message_class'] .'">'.$this->_data['etat_desc'].'</span>';
     	$idf     = MD5($this->_data['description'].$this->_data['etat_line'].$this->_data['services']);
-        $this->check_exist_idf($idf);
+        $this->check_exist_idf($idf, true);
     	global $db;
     	$values["appid"]         = MySQL::SQLValue($this->_data['id_task']);
     	$values["descrip"]       = MySQL::SQLValue($this->_data['description']);
