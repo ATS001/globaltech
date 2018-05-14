@@ -158,10 +158,21 @@ class Mbl {
     {
         global $db;
         $sql_req = " CALL generate_bl_fact($id_bl)";
+
         if(!$db->Query($sql_req))
         {
             $this->log .= '</br>Erreur génération de facture'.$sql_req;
+            $this->error = false;
+        }else{
+            $this->error = true;
         }
+
+        if($this->error == false){
+          return false;
+        }else{
+          return true;
+        }
+
     }
 
 	/**
@@ -225,64 +236,36 @@ class Mbl {
 	 * @return Bol [send to controller]
 	 */
 	public function edit_bl(){
-        //$this->check_exist($column, $value, $message, $edit = 1);
-        //$this->check_non_exist($table, $column, $value, $message)
-		//Get existing data for row
+    
 		$this->get_bl();
 		
 		$this->last_id = $this->id_bl;
-        // If we have an error
-		if($this->error == true){
-			global $db;
-		    //ADD field row here
-          $values["reference"]       = MySQL::SQLValue($this->_data["reference"]);
-          $values["client"]       = MySQL::SQLValue($this->_data["client"]);
-          $values["projet"]       = MySQL::SQLValue($this->_data["projet"]);
-          $values["ref_bc"]       = MySQL::SQLValue($this->_data["ref_bc"]);
-          $values["iddevis"]       = MySQL::SQLValue($this->_data["iddevis"]);
-          $values["date_bl"]       = MySQL::SQLValue($this->_data["date_bl"]);
-
-
-          $values["updusr"]         = MySQL::SQLValue(session::get('userid'));
-          $values["upddat"]         = MySQL::SQLValue(date("Y-m-d H:i:s"));
-          $wheres["id"]             = $this->id_bl;
-
-          if (!$result = $db->UpdateRows($this->table, $values, $wheres)) {
-				//$db->Kill();
-            $this->log .= $db->Error();
-            $this->error == false;
-            $this->log .='</br>Enregistrement BD non réussie'; 
-
-        }else{
-
-            $this->last_id = $result;
-            $this->log .='</br>Enregistrement  réussie '. $this->_data['bl'] .' - '.$this->last_id.' -';
-            if(!Mlog::log_exec($this->table, $this->last_id, 'Modification bl', 'Update'))
-                {
-                    $this->log .= '</br>Un problème de log ';
-                    $this->error = false;
-                }
-                //Esspionage
-                if(!$db->After_update($this->table, $this->id_bl, $values, $this->bl_info)){
-                    $this->log .= '</br>Problème Espionnage';
-                    $this->error = false;	
-                }
+     global $db;
+        $data_d_bl   = $this->_data['line_d_d'];
+        $id_devis    = $this->id_devis;
+        $creusr      = session::get('userid');
+        $count_lines = count($data_d_bl);
+        
+        for ($i = 0 , $c  = $count_lines  ; $i < $c ; $i++  ) 
+        {
+             
+            $id_line = $data_d_bl[$i];
+            $qte_liv = MReq::tp('qte_liv_'.$id_line);
+            $id_produit = MReq::tp('id_produit_'.$id_line);
+            $sql_req_d_bl = "  INSERT INTO d_bl (`order`, id_bl, id_produit, ref_produit, designation, qte, creusr, credat) 
+            SELECT d.order, '$id_bl' , id_produit, ref_produit, designation, '$qte_liv', '$creusr', CURRENT_TIMESTAMP FROM d_devis d WHERE d.id_devis= $id_devis AND d.id_produit = $id_produit ";
+           
+            if(!$db->Query($sql_req_d_bl))
+            {
+                $this->log .= '</br>Erreur Insértion linge '.$id_line.' Produit:'.$id_produit. '  '.$sql_req_d_bl;
+                $this->error = false;
+                return false;
             }
+        }
+        
 
-
-        }else{
-
-         $this->log .='</br>Enregistrement non réussie';
-
-     }
-
-        //check if last error is true then return true else rturn false.
-     if($this->error == false){
-         return false;
-     }else{
-         return true;
-     }
-
+        return true;
+   
 
  }	
 
@@ -356,37 +339,37 @@ public function Gettable_d_bl()
 
      if($this->generate_facture($this->id_bl))
      {
-      var_dump('1');
+
 		// Execute the update and show error case error
       if(!$result = $db->UpdateRows($this->table, $values, $wheres))
       {
-        var_dump('2');
+
           $this->log   .= '</br>Impossible de changer le statut!';
           $this->log   .= '</br>'.$db->Error();
           $this->error  = false;
 
       }else{
-         var_dump('3');
+
           $this->log   .= '</br>Statut changé! ';
           $this->error  = true;
           if(!Mlog::log_exec($this->table, $this->last_id, 'Changement ETAT  bl', 'Update'))
               {
                  $this->log .= '</br>Un problème de log ';
                  $this->error = false;
-                 var_dump('4');
+
              }
                //Esspionage
              if(!$db->After_update($this->table, $this->id_bl, $values, $this->bl_info)){
                  $this->log .= '</br>Problème Espionnage';
                  $this->error = false;	
-                 var_dump('5');
+
              }
-var_dump('6');
+
       }
-      var_dump('7');
+
      }
      else{
-      var_dump('8');
+
           $this->log   .= '</br>Impossible de générer la facture';
           $this->log   .= '</br>'.$db->Error();
           $this->error  = false;
