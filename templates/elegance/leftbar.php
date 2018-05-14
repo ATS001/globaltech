@@ -56,7 +56,7 @@ $arr_modul = $modules->left_menu_arr;
 				</div><!-- /.sidebar-shortcuts -->
 
 				<ul class="nav nav-list">
-					<li left_menu="1">
+					<li left_menu="1" id="4a37efc27391cc18714c72981d59c072">
 							<a href="#"  class="tip-right this_url" rel="dbd" title="Tableau de bord">	
 							<i class="menu-icon fa fa-tachometer"></i>
 							<span class="menu-text"> Tableau de Bord </span>
@@ -83,6 +83,7 @@ if($arr_modul){
         	$modul = $row['modul'];
         	$class = $row['class'];
         	$dscri = $row['descrip'];
+        	$md5id = md5($dscri);
         }else{
         	$modul = $row['parent'];
         	if($parent = $modules->get_modul_parent($modul))
@@ -91,6 +92,7 @@ if($arr_modul){
         			$modul = $value['modul'];
         	        $class = $value['class'];
         	        $dscri = $value['descrip'];
+        	        $md5id = md5($dscri);
         		}
 
         		 
@@ -103,9 +105,9 @@ if($arr_modul){
 	//exit($check_sub_modul);
 		if( $check_sub_modul == NULL){
 
-			$render .='<li left_menu="1"><a href="#"  class="tip-right this_url " rel="'.$row['app'].'" title="'.$row['descrip'].'"><i class="menu-icon fa fa-'.$row['class'].'"></i><span class="menu-text this_url" rel="'.$row['app'].'"> '.$row['descrip'].'</span></b></a></li>'; 
+			$render .='<li left_menu="1" id="'.md5($row['descrip']).'"><a href="#"  class="tip-right this_url " rel="'.$row['app'].'" title="'.$row['descrip'].'"><i class="menu-icon fa fa-'.$row['class'].'"></i><span class="menu-text this_url" rel="'.$row['app'].'"> '.$row['descrip'].'</span></a><b class="arrow"></b></li>'; 
 		}else{
-			$render .='<li left_menu="1" ><a href="#" class="dropdown-toggle" title="'.$dscri.'"><i class="menu-icon fa fa-'.$class.'"></i><span class="menu-text"> '.$dscri.'</span><b class="arrow fa fa-angle-down"></b></a>';
+			$render .='<li left_menu="1" id="'.$md5id.'"><a href="#" class="dropdown-toggle" title="'.$dscri.'"><i class="menu-icon fa fa-'.$class.'"></i><span class="menu-text"> '.$dscri.'</span></a><b class="arrow"></b>';
 			$render .= $check_sub_modul .'</li>';
 		}
 

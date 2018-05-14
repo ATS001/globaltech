@@ -62,7 +62,14 @@ class Mdatatable
         {
             $this->error = false;
             $this->log   = '<br\>Pas de table selectionée';
-        }
+        } 
+    }
+
+    Private function format_col_link($text, $task, $id)
+    {
+        $task = MInit::crypt_tp('task', $task);
+        $link = "CONCAT('<a href=\"#\" class=\"this_url_jump\" data=\"id=',$id,'\&$task\">',$text,'</a>')";
+        return $link;
     }
 
     private function get_list_column()
@@ -91,6 +98,9 @@ class Mdatatable
                     break;
                     case 'datetime':
                     $list_col .= " DATE_FORMAT(".$value['column'].",'%d-%m-%Y %H:%i:%s') as ".$value['alias']."$v";
+                    break;
+                    case 'link':
+                    $list_col .= $this->format_col_link($value['link'][0], $value['link'][1], $value['link'][2])."$v";
                     break;
                     default:
                     $list_col .= " ".$value['column']." as ".$value['alias']."$v";

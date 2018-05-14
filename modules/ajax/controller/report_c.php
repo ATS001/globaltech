@@ -11,7 +11,7 @@ if(!file_exists($file_tplt)){
 }
 
 //Evry thing ok load template
-$file_export  = MPATH_TEMP.Mreq::tp('tplt').'_' .date('d_m_Y_H_i_s').'.pdf';
+$file_export  = MPATH_PDF_REPORT.Mreq::tp('tplt').'_' .date('d_m_Y_H_i_s').'.pdf';
 include_once $file_tplt;
 
 $return_arr = array('error' => 'false', 'file' => $file_export );

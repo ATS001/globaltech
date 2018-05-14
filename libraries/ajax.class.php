@@ -283,6 +283,28 @@ class MAjax
 		
 	}
 
+	private function btn_go_back($item)
+	{
+		$app = $this->app_id;
+		$id =  MReq::tp('id') == null ? null : MReq::tp('id');
+		$idc = MReq::tp('idc') == null ? null : MReq::tp('idc');
+		$idh = MReq::tp('idh') == null ? null : MReq::tp('idh');
+		$item = md5($item);
+
+		if($id != null && $idc != null && $idh != null)
+		{
+			$data = 'id='.$id.'&idc='.$idc.'&idh='.$idh;
+		}else{
+			$data = null;
+		}
+        $array = array('app' => $app, 'data' => $data, 'item' => $item);
+		$val_gobak = json_encode($array);
+		$previous = session::get_cookie('this_zone', false);
+		session::set_cookie('this_zone', $val_gobak, 3600, false);
+		session::set_cookie('gobak', $previous, 3600, false);
+		return true;
+	}
+
 	public function load()
 	{
 		//exit($this->default_app);
@@ -363,11 +385,12 @@ class MAjax
 
 			    //Append tree top menu only for no appli App
 					if($this->is_appli == false && MReq::tp('cor') == 1){
-
+                        
 						$output  = '<li><i class="ace-icon fa fa-home home-icon"></i><a href="#" left_menu="1" class="tip-right this_url" rel="dbd" title="Tableau de bord">Accueil</a></li>';
 						$output .= '<li><a href="#" left_menu="1" class="fa-double_angle_right this_url" rel="'.$this->app_array['app_modul'].'" title="'.$this->app_array['modul'].'">'.$this->app_array['modul'].'</a></li>';
 						$output .= '<li class="active">'.$this->app_array['dscrip'].'</li>';
 	                $output .='#||#'; //Separator data
+	                $this->btn_go_back($this->app_array['dscrip']);
 	                print($output);
 
 	            }		    

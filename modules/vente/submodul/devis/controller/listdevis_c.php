@@ -28,7 +28,8 @@ $array_column = array(
     ),
     array(
         'column' => 'clients.denomination',
-        'type'   => '',
+        'type'   => 'link',
+        'link'   => array('clients.denomination', 'detailsclient', 'clients.id'),
         'alias'  => 'client',
         'width'  => '25',
         'header' => 'Client',
