@@ -22,13 +22,13 @@ if(!defined('_MEXEC'))die();
 <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
 				
-		<?php TableTools::btn_add('bl','Liste des bl', Null, $exec = NULL, 'reply'); ?>
+		<?php TableTools::btn_add('bl','Liste des bons de livraison', Null, $exec = NULL, 'reply'); ?>
 					
 	</div>
 </div>
 <div class="page-header">
 	<h1>
-		Modifier le bl: <?php $info_bl->s('id')?>
+		Modifier BL: <?php $info_bl->s('id')?>
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
 		</small>

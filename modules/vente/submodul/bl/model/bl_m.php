@@ -238,12 +238,12 @@ class Mbl {
 	public function edit_bl(){
     
 		$this->get_bl();
-		
-		$this->last_id = $this->id_bl;
+		var_dump('test');
+
      global $db;
         $data_d_bl   = $this->_data['line_d_d'];
-        $id_devis    = $this->id_devis;
-        $creusr      = session::get('userid');
+        $id_bl       = $this->id_bl;
+        $updusr      = session::get('userid');
         $count_lines = count($data_d_bl);
         
         for ($i = 0 , $c  = $count_lines  ; $i < $c ; $i++  ) 
@@ -252,12 +252,11 @@ class Mbl {
             $id_line = $data_d_bl[$i];
             $qte_liv = MReq::tp('qte_liv_'.$id_line);
             $id_produit = MReq::tp('id_produit_'.$id_line);
-            $sql_req_d_bl = "  INSERT INTO d_bl (`order`, id_bl, id_produit, ref_produit, designation, qte, creusr, credat) 
-            SELECT d.order, '$id_bl' , id_produit, ref_produit, designation, '$qte_liv', '$creusr', CURRENT_TIMESTAMP FROM d_devis d WHERE d.id_devis= $id_devis AND d.id_produit = $id_produit ";
+            $sql_req_d_bl = "  update d_bl set qte = $qte_liv , updusr = $updusr , upddat = CURRENT_TIMESTAMP  where id_bl = $id_bl and id = $id_line ";
            
             if(!$db->Query($sql_req_d_bl))
             {
-                $this->log .= '</br>Erreur Insértion linge '.$id_line.' Produit:'.$id_produit. '  '.$sql_req_d_bl;
+                $this->log .= '</br>Erreur Mise à jour ligne '.$id_line.' Produit:'.$id_produit. '  '.$sql_req_d_bl;
                 $this->error = false;
                 return false;
             }
@@ -273,6 +272,8 @@ public function Gettable_d_bl()
     {
         global $db;
         $table    = $this->table_details;
+        $input_qte_c = "CONCAT('<input type=\"hidden\" name=\"line_d_d[]\" value=\"',$table.id,'\"/><input type=\"hidden\" name=\"id_produit_',$table.id,'\" value=\"',$table.id_produit,'\"/><input id=\"qte_',$table.id_produit,'\" class=\"qte center  is-number\" name=\"',$table.id_produit,'[]\" type=\"text\" value=\"',$table.qte,'\"/>') as qte_c";
+     
         $input_qte_l = "CONCAT('<input id=\"liv_',$table.id_produit,'\" class=\"liv center  is-number\" name=\"',$table.id_produit,'[]\" type=\"text\" value=\"',$table.qte,'\"/>') as qte_l";
         $etat_stock = "CASE WHEN $table.qte > qte_actuel.`qte_act` THEN 
   CONCAT('<span id=\"stok_',$table.id_produit,'\"class=\"badge badge-danger\">', qte_actuel.`qte_act`,'</span>')
