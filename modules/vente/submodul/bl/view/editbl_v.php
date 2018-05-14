@@ -77,23 +77,23 @@ $('.qte, .liv').bind('input change',function() {
         var $val_qte   = $('#qte_'+$id).val();
         var $val_qte   = parseFloat($val_qte) ? parseFloat($val_qte) : 0;
 
-        var $val_qte_bl= $('#qte_bl_'+$id).val();
-        var $val_qte_bl= parseFloat($val_qte_bl) ? parseFloat($val_qte_bl) : 0;
+/*      var $val_qte_bl= $('#qte_bl_'+$id).val();
+        var $val_qte_bl= parseFloat($val_qte_bl) ? parseFloat($val_qte_bl) : 0;*/
 
         var $val_liv   = $('#liv_'+$id).val();
         var $val_liv   = parseFloat($val_liv) ? parseFloat($val_liv) : 0;
 
         if($val_liv > $val_stock)
         {
-        	ajax_loadmessage('La quantité à livrer n\'est pas disponible dans le stock'+ $val_liv + ' '+ $val_stock,'nok');
+        	ajax_loadmessage('La quantité à livrer n\'est pas disponible dans le stock: '+ $val_stock,'nok');
         	$('#liv_'+$id).val($val_stock)
     		return false;
         }
-        if($val_liv > $val_stock)
+       if($val_liv > $val_qte)
         {
-        	ajax_loadmessage('La quantité à livrer n\'est pas disponible dans le stock'+ $val_liv + ' '+ $val_stock,'nok');
-        	$('#liv_'+$id).val($val_stock)
-    		return false;
+        	ajax_loadmessage('La quantité à livrer ne doit pas dépasser la quantité commandée: '+ $val_qte,'nok');
+            $('#liv_'+$id).val($val_qte)
+            return false;
         }
         
  });
