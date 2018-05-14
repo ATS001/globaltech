@@ -123,12 +123,12 @@ $(document).ready(function() {
 <?php
 	if($info_devis->g('type_devis') == 'VNT'){
 ?>
-    $('.qte, .liv').bind('input change',function() {
+    $('.liv').bind('input change',function() {
         var $qte_id = $(this).attr('id');
         var $id = $qte_id.substr($qte_id.lastIndexOf("_")+1);
         var $val_stock = $('#stok_'+$id).text();
         var $val_stock = parseFloat($val_stock) ? parseFloat($val_stock) : 0;
-        var $val_qte   = $('#qte_'+$id).val();
+        var $val_qte   = $('#qte_'+$id).text();
         var $val_qte   = parseFloat($val_qte) ? parseFloat($val_qte) : 0;
         var $val_liv   = $('#liv_'+$id).val();
         var $val_liv   = parseFloat($val_liv) ? parseFloat($val_liv) : 0;
@@ -137,6 +137,12 @@ $(document).ready(function() {
         	ajax_loadmessage('La quantité à livrer n\'est pas disponible dans le stock','nok');
         	$('#liv_'+$id).val($val_stock)
     		return false;
+        }
+        if($val_liv > $val_qte)
+        {
+            ajax_loadmessage('La quantité à livrer ne doit pas dépasser la quantité commandée','nok');
+            $('#liv_'+$id).val($val_qte )
+            return false;
         }
         
     });
