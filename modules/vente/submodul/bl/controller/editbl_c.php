@@ -17,7 +17,8 @@ if(MInit::form_verif('editbl', false))
             'line_d_d'  => MReq::tp('line_d_d'),
         );
 
-       
+       //var_dump('C: ');
+       //var_dump(MReq::tp('line_d_d'));
         $edit_bl = new  Mbl($posted_data);
 
         //Set ID of row to update
