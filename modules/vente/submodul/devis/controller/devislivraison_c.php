@@ -14,6 +14,7 @@ if(MInit::form_verif('devislivraison', false))
     }
         $posted_data = array(
             'id'                => Mreq::tp('id') ,
+            'line_d_d'=> MReq::tp('line_d_d'),
             //Add posted data fields  here
             
 

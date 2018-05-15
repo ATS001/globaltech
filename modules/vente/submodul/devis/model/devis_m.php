@@ -1225,13 +1225,42 @@ class Mdevis
         }
     }
 
+    public function devislivraison_devis($value='')
+    {
+        $this->get_devis();
+        if($this->g('type_devis') == 'VNT')
+        {
+            if($id_bl = $this->generate_bl($this->id_devis))
+            {
+                $this->insert_d_bl($id_bl);
+            }
+            $this->check_livraison();
+                
+        }
+        
+        $id_bl = 'id='.$id_bl;
+        $task  = MInit::crypt_tp('task', 'detailsbl');
+
+
+        $this->log .= '</br>Opération réussie '.'<a left_menu="1" class="fa-double_angle_right this_url_jump" rel="seturl" title="Detail BL" data="'.$id_bl.'&'.$task.'"><b> : Détail Bon de livraison</a>';
+            //$this->get_devis();
+         
+        if($this->error == false){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
     Private function check_livraison()
     {
         global $db;
         $id_devis = $this->id_devis;
         $table = $this->table;
-        $req_check_livr = "SELECT COUNT(*) FROM d_devis dd WHERE dd.`id_devis`= $id_devis AND dd.`id_produit` IN (SELECT d.id_produit FROM d_bl d WHERE d.`id_produit`=dd.`id_produit` HAVING (SUM(dd.`qte`) > SUM(d.`qte`) ));";
+        $req_check_livr = "SELECT (SELECT SUM(qte) FROM d_devis WHERE id_devis = 156) -
+        (SELECT SUM(b.qte) FROM  d_bl b,bl WHERE  bl.iddevis = 156 AND b.id_bl = bl.id) AS rest;";
         $result = $db->QuerySingleValue0($req_check_livr);
+        
         if($result == 0){
             $etat_devis = 'valid_client';
 
@@ -1239,7 +1268,7 @@ class Mdevis
             $etat_devis = 'en_livre';
         }
         $new_etat = Msetting::get_set('etat_devis', $etat_devis);
-        $req_sql = " UPDATE $table SET etat = etat  WHERE id = $id_devis ";
+        $req_sql = " UPDATE $table SET etat = $new_etat  WHERE id = $id_devis ";
        
         if(!$db->Query($req_sql))
         {
@@ -1738,6 +1767,59 @@ class Mdevis
             'Description'           => '30[#]', 
             'Qte commandée'         => '15[#]center', 
             'En Stock'              => '15[#]center', 
+            'Qte à livrer'          => '15[#]center', 
+            
+            
+        );
+                 
+                
+        $tableau = $db->GetMTable($headers);
+        
+        
+        return $tableau; 
+    }
+
+    public function Gettable_detail_product_add_livraison()
+    {
+        global $db;
+        $table    = $this->table_details;
+        $input_qte_c = "CONCAT('<input type=\"hidden\" name=\"line_d_d[]\" value=\"',$table.id,'\"/><input type=\"hidden\" name=\"id_produit_',$table.id,'\" value=\"',$table.id_produit,'\"/>
+        <span id=\"qte_',$table.id_produit,'\" class=\"badge badge-info\">',$table.qte,'</span>') as qte_c";
+        $input_qte_l = "CONCAT('<input id=\"liv_',$table.id_produit,'\" class=\"liv center  is-number\" name=\"qte_liv_',$table.id,'\" type=\"text\" value=\"',$table.`qte` - SUM(d_bl.qte),'\"/>') as qte_l";
+        $etat_stock = "CASE WHEN d_devis.qte > qte_actuel.`qte_act` THEN 
+  CONCAT('<span id=\"stok_',$table.id_produit,'\" class=\"badge badge-danger\">', qte_actuel.`qte_act`,'</span>')
+   ELSE  CONCAT('<span id=\"stok_',$table.id_produit,'\" class=\"badge badge-success\">', qte_actuel.`qte_act`,'</span>') END AS stock";
+        $id_devis = $this->id_devis;
+        
+        $colms = null;
+        $colms .= " $table.order item, ";
+        $colms .= " $table.ref_produit, ";
+        $colms .= " $table.designation, ";
+        $colms .= " $input_qte_c, ";
+        $colms .= " $etat_stock, ";
+        $colms .= " CONCAT('<span id=\"qte_dej_liv_',$table.id_produit,'\" class=\"badge badge-warrning\">',SUM(d_bl.qte),'</span>') AS qte_dej_liv, ";
+        $colms .= " $input_qte_l";
+        
+        
+        
+        $req_sql  = " SELECT $colms FROM $table, qte_actuel, d_bl, bl WHERE  d_devis.id_devis = bl.iddevis 
+                    AND d_devis.id_produit = d_bl.id_produit AND d_devis.id_devis=156 AND qte_actuel.id_produit = d_devis.id_produit   GROUP BY d_devis.id_produit ORDER BY item";
+        //exit($req_sql);
+        if(!$db->Query($req_sql))
+        {
+            $this->error = false;
+            $this->log  .= $db->Error().' '.$req_sql;
+            exit($this->log);
+        }
+        
+        
+        $headers = array(
+            'Item'                  => '5[#]center',
+            'Réf'                   => '10[#]center',
+            'Description'           => '30[#]', 
+            'Qte commandée'         => '15[#]center', 
+            'En Stock'              => '15[#]center', 
+            'Qte déjà livrée'       => '15[#]center', 
             'Qte à livrer'          => '15[#]center', 
             
             

@@ -77,7 +77,9 @@ $form->input_hidden('idh', Mreq::tp('idh'));
 //For more Example see form class
 
 //Add fields input here
-
+if($info_devis->g('type_devis') == 'VNT'){
+	$form->extra_html('table_product', $info_devis->Gettable_detail_product_add_livraison());
+}
 
 $form->button('Enregistrer');
 //Form render
@@ -92,8 +94,37 @@ $form->render();
 <script type="text/javascript">
 $(document).ready(function() {
     
-//JS Bloc    
+<?php
+	if($info_devis->g('type_devis') == 'VNT'){
+?>
+    $('.liv').bind('input change',function() {
+		var $qte_id            = $(this).attr('id');
+        var $id                = $qte_id.substr($qte_id.lastIndexOf("_")+1);
+        var $val_stock         = $('#stok_'+$id).text();
+        var $val_stock         = parseFloat($val_stock) ? parseFloat($val_stock) : 0;
+        var $val_qte           = $('#qte_'+$id).text();
+        var $val_qte           = parseFloat($val_qte) ? parseFloat($val_qte) : 0;
+        var $val_qte_dej_liv   = $('#qte_dej_liv_'+$id).text();
+        var $val_qte_dej_liv   = parseFloat($val_qte_dej_liv) ? parseFloat($val_qte_dej_liv) : 0;
+        var $val_rest_a_liv        = $val_qte - $val_qte_dej_liv;
+        var $val_liv           = $('#liv_'+$id).val();
+        var $val_liv           = parseFloat($val_liv) ? parseFloat($val_liv) : 0;
+        if($val_liv > $val_stock)
+        {
+        	ajax_loadmessage('La quantité à livrer n\'est pas disponible dans le stock','nok');
+        	$('#liv_'+$id).val($val_stock)
+    		return false;
+        }
+        if($val_liv > $val_rest_a_liv)
+        {
+            ajax_loadmessage('La quantité à livrer ne doit pas dépasser la quantité restée à livrer','nok');
+            $('#liv_'+$id).val($val_rest_a_liv )
+            return false;
+        }
+        
+    });
 
+<?php } ?>
 });
 </script>	
 

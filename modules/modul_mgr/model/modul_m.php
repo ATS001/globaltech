@@ -1673,7 +1673,7 @@ class Mmodul {
 
     	$code    = '<li><a href="#" class="'.$this->_data['mode_exec'].'" data="%id%" rel="'.$this->_data['app'].'"  ><i class="ace-icon fa fa-'.$this->_data['class'].' bigger-100"></i> '.$this->_data['description'].'</a></li>';
     	$message = '<span class="label label-sm label-'.$this->_data['message_class'] .'">'.$this->_data['etat_desc'].'</span>';
-    	$idf     = MD5($this->_data['description'].$this->_data['etat_line'].$this->_data['services']);
+    	$idf     = MD5($this->_data['description'].$this->_data['etat_line'].$services);
         $this->check_exist_idf($idf);
     	global $db;
     	$values["appid"]         = MySQL::SQLValue($this->_data['id_task']);
@@ -1748,7 +1748,7 @@ class Mmodul {
 
     	$code    = '<li><a href="#" class="'.$this->_data['mode_exec'].'" data="%id%" rel="'.$this->_data['app'].'"  ><i class="ace-icon fa fa-'.$this->_data['class'].' bigger-100"></i> '.$this->_data['description'].'</a></li>';
     	$message = '<span class="label label-sm label-'.$this->_data['message_class'] .'">'.$this->_data['etat_desc'].'</span>';
-    	$idf     = MD5($this->_data['description'].$this->_data['etat_line'].$this->_data['services']);
+    	$idf     = MD5($this->_data['description'].$this->_data['etat_line'].$services);
         $this->check_exist_idf($idf, true);
     	global $db;
     	$values["appid"]         = MySQL::SQLValue($this->_data['id_task']);
