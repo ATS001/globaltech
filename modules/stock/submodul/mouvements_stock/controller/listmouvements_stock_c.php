@@ -78,7 +78,7 @@ $list_data_table = new Mdatatable();
 //Set tabels used in Query
 $list_data_table->tables = array('mouvements_stock');
 //Set Jointure
-$list_data_table->joint = '';
+$list_data_table->joint = '1=1';
 //Notif
 $list_data_table->need_notif= false;
 //Call all columns
