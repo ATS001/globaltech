@@ -65,7 +65,7 @@ $array_column = array(
                             'align'  => 'L'
                         ),
     array(
-                            'column' => 'mouvement',
+                            'column' => 'IF(mouvement="Sortie",Concat("<span class=\"badge badge-danger\">",mouvement,"</span>"),Concat("<span class=\"badge badge-success\">",mouvement,"</span>"))',
                             'type'   => '',
                             'alias'  => 'mouvement',
                             'width'  => '4',

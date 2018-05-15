@@ -41,7 +41,7 @@ $array_column = array(
                             'align'  => 'L'
                         ),
     array(
-                            'column' => 'seuil',
+                            'column' => 'Concat("<span class=\"badge badge-info\">",seuil,"</span>")',
                             'type'   => '',
                             'alias'  => 'seuil',
                             'width'  => '5',
@@ -49,7 +49,7 @@ $array_column = array(
                             'align'  => 'C'
                         ),
     array(
-                            'column' => 'qte',
+                            'column' => 'IF(qte < seuil,Concat("<span class=\"badge badge-danger\">",qte,"</span>"),IF(qte > seuil,Concat("<span class=\"badge badge-success\">",qte,"</span>"),Concat("<span class=\"badge badge-warning\">",qte,"</span>")))',
                             'type'   => '',
                             'alias'  => 'qte',
                             'width'  => '5',
