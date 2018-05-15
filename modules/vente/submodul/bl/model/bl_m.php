@@ -598,7 +598,7 @@ public function Gettable_d_bl()
             'Item'          => '3[#]center',
             'Référence'     => '17[#]center',
             'Description'   => '32[#]', 
-            'Quantité'      => '16[#]center',
+            'Quantité'  => '16[#]center',
             
         );
                  
