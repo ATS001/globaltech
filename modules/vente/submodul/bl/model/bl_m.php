@@ -581,9 +581,7 @@ public function Gettable_d_bl()
         $colms .= " $table.order item, ";
         $colms .= " $table.ref_produit, ";
         $colms .= " $table.designation, ";
-        $colms .= " REPLACE(FORMAT($table.qte_cmd,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.qte_livre,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.reliquat,0),',',' ') ";
+        $colms .= " REPLACE(FORMAT($table.qte,0),',',' ')";
 
         
         
@@ -600,11 +598,8 @@ public function Gettable_d_bl()
             'Item'          => '3[#]center',
             'Référence'     => '17[#]center',
             'Description'   => '32[#]', 
-            'Qte commandée' => '16[#]center', 
-            'Qte livrée'    => '16[#]center', 
-            'Reste à livrer'=> '16[#]center',
+            'Quantité'      => '16[#]center',
             
-
         );
                  
                 
@@ -629,9 +624,7 @@ public function Gettable_d_bl()
         $colms .= " $table.order item, ";
         $colms .= " $table.ref_produit, ";
         $colms .= " $table.designation, ";
-        $colms .= " REPLACE(FORMAT($table.qte_cmd,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.qte_livre,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.reliquat,0),',',' ') ";
+        $colms .= " REPLACE(FORMAT($table.qte,0),',',' ') ";
         
         
         $req_sql  = " SELECT $colms FROM $table WHERE id_bl = $id_bl ";
