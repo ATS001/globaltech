@@ -108,7 +108,7 @@ class Mdevis
     		$this->error = false;
     		$this->log  .= $db->Error().'  '.$sql;
     	}else{ 
-    		if ($db->RowCount() == 0)
+    		if (!$db->RowCount())
     		{
     			$this->error = false;
     			$this->log .= 'Aucun enregistrement trouvé ';
@@ -1199,6 +1199,7 @@ class Mdevis
             $this->save_file('scan', 'PJ réponse devis '.$this->_data['id'], 'Document');
             if($this->g('type_devis') == 'VNT' && $reponse == 'valid')
             {
+                $this->loop_check_qte();
                 if($id_bl = $this->generate_bl($this->id_devis))
                 {
                     $this->insert_d_bl($id_bl);
@@ -1225,25 +1226,26 @@ class Mdevis
         }
     }
 
-    public function devislivraison_devis($value='')
+    public function devislivraison_devis()
     {
         $this->get_devis();
         if($this->g('type_devis') == 'VNT')
         {
+            $this->loop_check_qte(false);
+        
+           
+        
             if($id_bl = $this->generate_bl($this->id_devis))
             {
-                $this->insert_d_bl($id_bl);
+                    $this->insert_d_bl($id_bl);
             }
             $this->check_livraison();
-                
+            $id_bl = 'id='.$id_bl;
+            $task  = MInit::crypt_tp('task', 'detailsbl');
+            $this->log .= '</br>Opération réussie '.'<a left_menu="1" class="fa-double_angle_right this_url_jump" rel="seturl" title="Detail BL" data="'.$id_bl.'&'.$task.'"><b> : Détail Bon de livraison</a>';
+                         
         }
-        
-        $id_bl = 'id='.$id_bl;
-        $task  = MInit::crypt_tp('task', 'detailsbl');
-
-
-        $this->log .= '</br>Opération réussie '.'<a left_menu="1" class="fa-double_angle_right this_url_jump" rel="seturl" title="Detail BL" data="'.$id_bl.'&'.$task.'"><b> : Détail Bon de livraison</a>';
-            //$this->get_devis();
+           //$this->get_devis();
          
         if($this->error == false){
             return false;
@@ -1252,13 +1254,95 @@ class Mdevis
         }
     }
 
+    private function loop_check_qte($first = true)
+    {
+        
+        $data_d_bl   = $this->_data['line_d_d'];
+        $id_devis    = $this->id_devis;
+        $creusr      = session::get('userid');
+        $count_lines = count($data_d_bl);
+        
+        for ($i = 0 , $c  = $count_lines  ; $i < $c ; $i++  ) 
+        {
+
+
+             
+            $id_line = $data_d_bl[$i];
+            $qte_liv = MReq::tp('qte_liv_'.$id_line);
+            $id_produit = MReq::tp('id_produit_'.$id_line);
+            $this->check_qte_by_product($id_produit, $qte_liv, $first);
+
+        }
+        return true;
+    }
+
+    private function check_qte_by_product($id_produit, $qte_input, $first = true)
+    {
+        global $db;
+        $id_devis = $this->id_devis;
+        if($first)
+        {
+            $req_check_produit = "SELECT  d_devis.ref_produit,  d_devis.designation,  d_devis.id_produit AS produit
+                ,d_devis.qte AS qte_c,  qte_actuel.`qte_act` AS stock
+                FROM d_devis, qte_actuel WHERE  d_devis.id_devis = $id_devis AND
+                qte_actuel.id_produit = d_devis.id_produit AND  d_devis.id_produit = $id_produit ";
+        }else{
+            $req_check_produit = "SELECT  d_devis.ref_produit,  d_devis.designation,  d_devis.id_produit AS produit
+                ,d_devis.qte AS qte_c,  qte_actuel.`qte_act` AS stock, SUM(d_bl.qte) AS qte_dej_liv
+                FROM d_devis, qte_actuel, d_bl, bl WHERE  d_devis.id_devis = bl.iddevis 
+                AND d_devis.id_produit = d_bl.id_produit AND d_devis.id_devis = $id_devis AND
+                qte_actuel.id_produit = d_devis.id_produit AND  d_devis.id_produit = $id_produit GROUP BY d_devis.id_produit;";
+        }
+        
+        
+        
+        if(!$db->Query($req_check_produit))
+        {
+            $this->log .= '</br>Erreur Check Qte by product';
+            exit('0#'.$this->log);
+            return false;
+
+        }else{
+            if (!$db->RowCount())
+            {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $arr_qte = $db->RowArray();
+                $produit = $arr_qte['ref_produit'];
+                if($arr_qte['qte_c'] > $arr_qte['stock'])
+                {
+                    
+                    $this->log .= "</br>L'article <b>$produit</b> dépasse la Qte en Stock !";
+                    exit('0#'.$this->log);
+                }
+                
+                if(!$first)
+                {
+                    if($arr_qte['qte_c'] < ($arr_qte['qte_dej_liv'] + $qte_input))
+                    {
+                        
+                        $this->log .= "</br>L'article <b>$produit</b> dépasse la Qte commandée !";
+                        exit('0#'.$this->log);
+                    }
+                }
+                return true;
+
+                
+            }
+
+        }
+
+    }
+
     Private function check_livraison()
     {
         global $db;
         $id_devis = $this->id_devis;
         $table = $this->table;
-        $req_check_livr = "SELECT (SELECT SUM(qte) FROM d_devis WHERE id_devis = 156) -
-        (SELECT SUM(b.qte) FROM  d_bl b,bl WHERE  bl.iddevis = 156 AND b.id_bl = bl.id) AS rest;";
+        
+        $req_check_livr = "SELECT (SELECT SUM(qte) FROM d_devis WHERE id_devis = $id_devis ) -
+        (SELECT SUM(b.qte) FROM  d_bl b,bl WHERE  bl.iddevis = $id_devis  AND b.id_bl = bl.id  ) AS rest;";
         $result = $db->QuerySingleValue0($req_check_livr);
         
         if($result == 0){
@@ -1282,6 +1366,7 @@ class Mdevis
 
     Private function generate_bl($id_devis)
     {
+
         global $db;
         $ref_bl = $db->Generate_reference('bl', 'BL');
         $sql_req = "INSERT INTO bl (reference, client, projet, ref_bc, iddevis, date_bl, creusr, credat) 
@@ -1308,10 +1393,13 @@ class Mdevis
         
         for ($i = 0 , $c  = $count_lines  ; $i < $c ; $i++  ) 
         {
+
+
              
             $id_line = $data_d_bl[$i];
             $qte_liv = MReq::tp('qte_liv_'.$id_line);
             $id_produit = MReq::tp('id_produit_'.$id_line);
+
             $sql_req_d_bl = "  INSERT INTO d_bl (`order`, id_bl, id_produit, ref_produit, designation, qte, creusr, credat) 
             SELECT d.order, '$id_bl' , id_produit, ref_produit, designation, '$qte_liv', '$creusr', CURRENT_TIMESTAMP FROM d_devis d WHERE d.id_devis= $id_devis AND d.id_produit = $id_produit ";
            
@@ -1798,12 +1886,13 @@ class Mdevis
         $colms .= " $input_qte_c, ";
         $colms .= " $etat_stock, ";
         $colms .= " CONCAT('<span id=\"qte_dej_liv_',$table.id_produit,'\" class=\"badge badge-warrning\">',SUM(d_bl.qte),'</span>') AS qte_dej_liv, ";
-        $colms .= " $input_qte_l";
+        $colms .= " $input_qte_l,";
+        $colms .= " $table.`qte` - SUM(d_bl.qte) as qte_rest ";
         
         
         
         $req_sql  = " SELECT $colms FROM $table, qte_actuel, d_bl, bl WHERE  d_devis.id_devis = bl.iddevis 
-                    AND d_devis.id_produit = d_bl.id_produit AND d_devis.id_devis=156 AND qte_actuel.id_produit = d_devis.id_produit   GROUP BY d_devis.id_produit ORDER BY item";
+                    AND d_devis.id_produit = d_bl.id_produit AND d_devis.id_devis=156 AND qte_actuel.id_produit = d_devis.id_produit   GROUP BY d_devis.id_produit HAVING qte_rest > 0 ORDER BY item";
         //exit($req_sql);
         if(!$db->Query($req_sql))
         {
@@ -1821,7 +1910,7 @@ class Mdevis
             'En Stock'              => '15[#]center', 
             'Qte déjà livrée'       => '15[#]center', 
             'Qte à livrer'          => '15[#]center', 
-            
+            'Qte_rest'              => '15[#]hidden',
             
         );
                  
