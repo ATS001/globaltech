@@ -65,7 +65,7 @@ $array_column = array(
                             'align'  => 'L'
                         ),
     array(
-                            'column' => 'mouvement',
+                            'column' => 'IF(mouvement="Sortie",Concat("<span class=\"badge badge-danger\">",mouvement,"</span>"),Concat("<span class=\"badge badge-success\">",mouvement,"</span>"))',
                             'type'   => '',
                             'alias'  => 'mouvement',
                             'width'  => '4',
@@ -78,7 +78,7 @@ $list_data_table = new Mdatatable();
 //Set tabels used in Query
 $list_data_table->tables = array('mouvements_stock');
 //Set Jointure
-$list_data_table->joint = '';
+$list_data_table->joint = '1=1';
 //Notif
 $list_data_table->need_notif= false;
 //Call all columns

@@ -103,6 +103,78 @@ class Mbl {
         }
     }
 
+    //Vérif Stock
+    public function verif_qte_stock() {
+        global $db;
+
+
+         $sql = "SELECT * FROM qte_actuel q WHERE q.`id_produit` IN 
+                (SELECT id_produit FROM d_bl d WHERE d.`id_produit`=q.`id_produit` AND d.`qte` > q.`qte_act`AND d.`id_bl`= $this->id_bl ) ";
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = true;
+            } else {
+                
+                $this->error = false;
+                $this->log = 'Quantité à livrer non disponible !!! Veuillez approvisionner le stock ou modifier le BL.';
+            }
+        }
+        //return Array user_activities
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+    
+    //Mouvementer Stock
+    public function mouvementer_stock() {
+        global $db;
+
+
+         $sql = "INSERT INTO stock (idproduit, qte, mouvement, id_bl )
+                SELECT id_produit, - qte, 'S', id_bl FROM d_bl WHERE id_bl=". $this->id_bl;
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            $this->error = true;
+        }
+
+        //return Array user_activities
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    private function generate_facture($id_bl)
+    {
+        global $db;
+        $sql_req = " CALL generate_bl_fact($id_bl)";
+
+        if(!$db->Query($sql_req))
+        {
+            $this->log .= '</br>Erreur génération de facture'.$sql_req;
+            $this->error = false;
+        }else{
+            $this->error = true;
+        }
+
+        if($this->error == false){
+          return false;
+        }else{
+          return true;
+        }
+
+    }
+
 	/**
 	 * Save new row to main table
 	 * @return [bol] [bol value send to controller]
@@ -164,74 +236,58 @@ class Mbl {
 	 * @return Bol [send to controller]
 	 */
 	public function edit_bl(){
-        //$this->check_exist($column, $value, $message, $edit = 1);
-        //$this->check_non_exist($table, $column, $value, $message)
-		//Get existing data for row
+    
 		$this->get_bl();
-		
-		$this->last_id = $this->id_bl;
-        // If we have an error
-		if($this->error == true){
-			global $db;
-		    //ADD field row here
-          $values["reference"]       = MySQL::SQLValue($this->_data["reference"]);
-          $values["client"]       = MySQL::SQLValue($this->_data["client"]);
-          $values["projet"]       = MySQL::SQLValue($this->_data["projet"]);
-          $values["ref_bc"]       = MySQL::SQLValue($this->_data["ref_bc"]);
-          $values["iddevis"]       = MySQL::SQLValue($this->_data["iddevis"]);
-          $values["date_bl"]       = MySQL::SQLValue($this->_data["date_bl"]);
 
-
-          $values["updusr"]         = MySQL::SQLValue(session::get('userid'));
-          $values["upddat"]         = MySQL::SQLValue(date("Y-m-d H:i:s"));
-          $wheres["id"]             = $this->id_bl;
-
-          if (!$result = $db->UpdateRows($this->table, $values, $wheres)) {
-				//$db->Kill();
-            $this->log .= $db->Error();
-            $this->error == false;
-            $this->log .='</br>Enregistrement BD non réussie'; 
-
-        }else{
-
-            $this->last_id = $result;
-            $this->log .='</br>Enregistrement  réussie '. $this->_data['bl'] .' - '.$this->last_id.' -';
-            if(!Mlog::log_exec($this->table, $this->last_id, 'Modification bl', 'Update'))
-                {
-                    $this->log .= '</br>Un problème de log ';
-                    $this->error = false;
-                }
-                //Esspionage
-                if(!$db->After_update($this->table, $this->id_bl, $values, $this->bl_info)){
-                    $this->log .= '</br>Problème Espionnage';
-                    $this->error = false;	
-                }
+     global $db;
+        $data_d_bl   = $this->_data['line_d_d'];
+        //var_dump('tableau');
+        //var_dump($data_d_bl);
+        $id_bl       = $this->id_bl;
+        $updusr      = session::get('userid');
+        $count_lines = count($data_d_bl);
+        //var_dump('cpt');
+        //var_dump($count_lines);
+        
+        for ($i = 0 , $c  = $count_lines  ; $i < $c ; $i++  ) 
+        {
+             
+            $id_line = $data_d_bl[$i];
+            //var_dump($id_line);
+            $qte_liv = MReq::tp('qte_liv_'.$id_line);
+            //var_dump($qte_liv);
+            $id_produit = MReq::tp('id_produit_'.$id_line);
+            $sql_req_d_bl = "  update d_bl set qte = $qte_liv , updusr = $updusr , upddat = CURRENT_TIMESTAMP  where id_bl = $id_bl and id = $id_line ";
+           
+            if(!$db->Query($sql_req_d_bl))
+            {
+                $this->log .= '</br>Erreur Mise à jour ligne '.$id_line.' Produit:'.$id_produit. '  '.$sql_req_d_bl;
+                $this->error = false;
+            }else{
+                
+                $this->error = true;
             }
+        }
+        
 
-
-        }else{
-
-         $this->log .='</br>Enregistrement non réussie';
-
-     }
-
-        //check if last error is true then return true else rturn false.
      if($this->error == false){
          return false;
      }else{
+         $this->log .='</br>Modification réussie ';
          return true;
      }
-
-
+   
  }	
 
 public function Gettable_d_bl()
     {
         global $db;
         $table    = $this->table_details;
-        $input_qte_l = "CONCAT('<input id=\"liv_',$table.id_produit,'\" class=\"liv center  is-number\" name=\"',$table.id_produit,'[]\" type=\"text\" value=\"',$table.qte,'\"/>') as qte_l";
+        $input_qte_l = "CONCAT('<input type=\"hidden\" name=\"line_d_d[]\" value=\"',$table.id,'\"/><input type=\"hidden\" name=\"id_produit_',$table.id,'\" value=\"',$table.id_produit,'\"/><input id=\"qte_',$table.id_produit,'\" type=\"hidden\" name=\"qte_bl_',$table.id,'\" value=\"',$table.qte,'\"/><input id=\"liv_',$table.id_produit,'\" class=\"qte center  is-number\" name=\"qte_liv_',$table.id,'\" type=\"text\" value=\"',$table.qte,'\"/>') as qte_l";
+
+
         $etat_stock = "CASE WHEN $table.qte > qte_actuel.`qte_act` THEN 
-  CONCAT('<span class=\"badge badge-danger\">', qte_actuel.`qte_act`,'</span>')
+  CONCAT('<span id=\"stok_',$table.id_produit,'\"class=\"badge badge-danger\">', qte_actuel.`qte_act`,'</span>')
    ELSE  CONCAT('<span id=\"stok_',$table.id_produit,'\" class=\"badge badge-success\">', qte_actuel.`qte_act`,'</span>') END AS stock";
         $id_bl = $this->id_bl;
         
@@ -293,29 +349,45 @@ public function Gettable_d_bl()
 
       $wheres['id']     = $this->id_bl;
 
+     if($this->generate_facture($this->id_bl))
+     {
+
 		// Execute the update and show error case error
       if(!$result = $db->UpdateRows($this->table, $values, $wheres))
       {
+
           $this->log   .= '</br>Impossible de changer le statut!';
           $this->log   .= '</br>'.$db->Error();
           $this->error  = false;
 
       }else{
+
           $this->log   .= '</br>Statut changé! ';
           $this->error  = true;
           if(!Mlog::log_exec($this->table, $this->last_id, 'Changement ETAT  bl', 'Update'))
               {
                  $this->log .= '</br>Un problème de log ';
                  $this->error = false;
+
              }
                //Esspionage
              if(!$db->After_update($this->table, $this->id_bl, $values, $this->bl_info)){
                  $this->log .= '</br>Problème Espionnage';
                  $this->error = false;	
+
              }
 
-         }
-         if($this->error == false){
+      }
+
+     }
+     else{
+
+          $this->log   .= '</br>Impossible de générer la facture';
+          $this->log   .= '</br>'.$db->Error();
+          $this->error  = false;
+     }
+      
+      if($this->error == false){
           return false;
       }else{
           return true;
@@ -509,9 +581,7 @@ public function Gettable_d_bl()
         $colms .= " $table.order item, ";
         $colms .= " $table.ref_produit, ";
         $colms .= " $table.designation, ";
-        $colms .= " REPLACE(FORMAT($table.qte_cmd,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.qte_livre,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.reliquat,0),',',' ') ";
+        $colms .= " REPLACE(FORMAT($table.qte,0),',',' ')";
 
         
         
@@ -528,11 +598,8 @@ public function Gettable_d_bl()
             'Item'          => '3[#]center',
             'Référence'     => '17[#]center',
             'Description'   => '32[#]', 
-            'Qte commandée' => '16[#]center', 
-            'Qte livrée'    => '16[#]center', 
-            'Reste à livrer'=> '16[#]center',
+            'Quantité'  => '16[#]center',
             
-
         );
                  
                 
@@ -557,9 +624,7 @@ public function Gettable_d_bl()
         $colms .= " $table.order item, ";
         $colms .= " $table.ref_produit, ";
         $colms .= " $table.designation, ";
-        $colms .= " REPLACE(FORMAT($table.qte_cmd,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.qte_livre,0),',',' '), ";
-        $colms .= " REPLACE(FORMAT($table.reliquat,0),',',' ') ";
+        $colms .= " REPLACE(FORMAT($table.qte,0),',',' ') ";
         
         
         $req_sql  = " SELECT $colms FROM $table WHERE id_bl = $id_bl ";

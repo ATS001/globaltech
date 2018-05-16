@@ -41,7 +41,7 @@ $array_column = array(
                             'align'  => 'L'
                         ),
     array(
-                            'column' => 'seuil',
+                            'column' => 'Concat("<span class=\"badge badge-info\">",seuil,"</span>")',
                             'type'   => '',
                             'alias'  => 'seuil',
                             'width'  => '5',
@@ -49,7 +49,7 @@ $array_column = array(
                             'align'  => 'C'
                         ),
     array(
-                            'column' => 'qte',
+                            'column' => 'IF(qte < seuil,Concat("<span class=\"badge badge-danger\">",qte,"</span>"),IF(qte > seuil,Concat("<span class=\"badge badge-success\">",qte,"</span>"),Concat("<span class=\"badge badge-warning\">",qte,"</span>")))',
                             'type'   => '',
                             'alias'  => 'qte',
                             'width'  => '5',
@@ -63,7 +63,7 @@ $list_data_table = new Mdatatable();
 //Set tabels used in Query
 $list_data_table->tables = array('mouvements_stock');
 //Set Jointure
-$list_data_table->joint = '';
+$list_data_table->joint = '1=1';
 //Notif
 $list_data_table->need_notif= false;
 //Call all columns
