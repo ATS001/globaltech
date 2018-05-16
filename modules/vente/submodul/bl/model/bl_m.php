@@ -48,7 +48,7 @@ class Mbl {
 
 		$table = $this->table;
 
-		$sql = "SELECT $table.*, devis.reference as refdevis FROM 
+		$sql = "SELECT $table.*, devis.reference as refdevis , DATE_FORMAT($table.date_bl,'%d-%m-%Y') as date_bl FROM 
 		$table , devis WHERE  devis.id = $table.iddevis AND $table.id = ".$this->id_bl;
 
 		if(!$db->Query($sql))
@@ -512,6 +512,7 @@ public function Gettable_d_bl()
         global $db;
         $req_sql = "SELECT
         bl.*
+        , DATE_FORMAT(bl.date_bl,'%d-%m-%Y') as date_bl
         , clients.reference as reference_client
         , clients.denomination
         , clients.adresse
