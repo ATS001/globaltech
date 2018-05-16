@@ -1310,7 +1310,7 @@ class Mdevis
             } else {
                 $arr_qte = $db->RowArray();
                 $produit = $arr_qte['ref_produit'];
-                if($arr_qte['stock'] <= $qte_input)
+                if($arr_qte['stock'] < $qte_input)
                 {
                     
                     $this->log .= "</br>L'article <b>$produit</b> dépasse la Qte en Stock !";
