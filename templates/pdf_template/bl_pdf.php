@@ -34,10 +34,9 @@ global $db;
 $headers = array(
             '#'           => '5[#]C',
             'Réf'         => '15[#]C',
-            'Description' => '36[#]', 
-            'Qte C'       => '13[#]C', 
-            'Qte L'       => '13[#]C',
-            'Rest'        => '13[#]C',
+            'Description' => '55[#]', 
+            'Quantité'    => '20[#]C', 
+            
             
 
         );
