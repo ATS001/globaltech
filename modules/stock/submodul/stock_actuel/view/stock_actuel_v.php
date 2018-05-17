@@ -7,16 +7,7 @@ if(!defined('_MEXEC'))die();
 //View
 //array colomn
 $array_column = array(
-    array(
-        'column' => 'id',
-        'type'   => '',
-        'alias'  => 'id',
-        'width'  => '5',
-        'header' => 'ID',
-        'align'  => 'C'
-    ),
-
-    array(
+array(
         'column' => 'entrepot',
         'type'   => '',
         'alias'  => 'entrepot',
@@ -52,9 +43,9 @@ $array_column = array(
                             'align'  => 'C'
                         ),
     array(
-                            'column' => 'qte',
+                            'column' => 'qte_stock',
                             'type'   => '',
-                            'alias'  => 'qte',
+                            'alias'  => 'qte_stock',
                             'width'  => '5',
                             'header' => 'Quantité Disponible',
                             'align'  => 'C'
@@ -73,53 +64,3 @@ if(!$data = $html_data_table->table_html())
 }else{
     echo $data;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
