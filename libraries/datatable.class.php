@@ -36,6 +36,7 @@ class Mdatatable
     var $title_module     = null;//Used in HTML View (ex. Factures) 
     var $btn_return       = null;//Used to mak button return if null we use the Main task
     var $btn_add_data     = null;//Used to set more data to Button Add 
+    var $btn_action       = true;//Swap to false if dont want show btn Action
 
 
     public function __construct($properties = array()){
@@ -376,6 +377,10 @@ class Mdatatable
         $notif_col = $this->need_notif == true ? $count_col : 0;
         $js = "<script type=\"text/javascript\">$(document).ready(function() {";
         $js .= "var table = $('#".$this->task."_grid').DataTable({";
+        if(!$this->btn_action)
+        {
+            $js .= "aoColumnDefs : '',";
+        }
         $js .= "bProcessing: true,notifcol : ".$notif_col.",serverSide: true,ajax_url:\"".$this->task."\", $extra_data $order aoColumns: [";
         
         $js_arr = $this->columns_html;
