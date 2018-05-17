@@ -1289,7 +1289,7 @@ class Mdevis
         }else{
             $req_check_produit = "SELECT  d_devis.ref_produit,  d_devis.designation,  d_devis.id_produit AS produit
                 ,d_devis.qte AS qte_c,  qte_actuel.`qte_act` AS stock, SUM(d_bl.qte) AS qte_dej_liv
-                FROM d_devis, qte_actuel, d_bl, bl WHERE  d_devis.id_devis = bl.iddevis 
+                FROM d_devis, qte_actuel, d_bl, bl WHERE bl.id = d_bl.id_bl AND  d_devis.id_devis = bl.iddevis 
                 AND d_devis.id_produit = d_bl.id_produit AND d_devis.id_devis = $id_devis AND
                 qte_actuel.id_produit = d_devis.id_produit AND  d_devis.id_produit = $id_produit GROUP BY d_devis.id_produit;";
         }
@@ -1328,7 +1328,7 @@ class Mdevis
                     if($arr_qte['qte_c'] < ($arr_qte['qte_dej_liv'] + $qte_input))
                     {
                         
-                        $this->log .= "</br>L'article <b>$produit</b> dépasse la Qte commandée !";
+                        $this->log .= "</br>L'article <b>$produit</b> dépasse la Qte commandée !" ;
                         exit('0#'.$this->log);
                     }
                 }
@@ -1897,9 +1897,8 @@ class Mdevis
         
         
         
-        $req_sql  = " SELECT $colms FROM $table, qte_actuel, d_bl, bl WHERE  d_devis.id_devis = bl.iddevis 
-                    AND d_devis.id_produit = d_bl.id_produit AND d_devis.id_devis=156 AND qte_actuel.id_produit = d_devis.id_produit   GROUP BY d_devis.id_produit HAVING qte_rest > 0 ORDER BY item";
-        //exit($req_sql);
+        $req_sql  = " SELECT $colms FROM $table, qte_actuel, d_bl, bl WHERE  d_devis.id_devis = bl.iddevis AND d_bl.id_bl = bl.id AND d_devis.id_produit = d_bl.id_produit AND d_devis.id_devis=156 AND qte_actuel.id_produit = d_devis.id_produit   GROUP BY d_devis.id_produit HAVING qte_rest > 0 ORDER BY item";
+        
         if(!$db->Query($req_sql))
         {
             $this->error = false;
