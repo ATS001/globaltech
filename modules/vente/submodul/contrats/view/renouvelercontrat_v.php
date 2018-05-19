@@ -47,10 +47,10 @@ $form->input_hidden('idh', Mreq::tp('idh'));
 
 $list_devis = Mcontrat::select_devis($info_contrat->s('iddevis'));
 
-//Reference
+/*//Reference
 $form->input_hidden('checker_reference', MInit::cryptage($info_contrat->s('reference'), 1));
 $form->input_hidden('ref', $info_contrat->s('reference'));
-
+*/
 
 //Devis
 $form->select('Devis', 'iddevis', 8, $list_devis, '------', $info_contrat->s('iddevis'), null, null);
@@ -66,16 +66,16 @@ $form->input_date('Date de fin', 'date_fin', 4, date('d-m-Y'), $array_date_fin);
 
 //Type échéance
 $ech_array[]  = array('required', 'true', 'Choisir un type échéance');
-$form->select_table('Type échéance', 'idtype_echeance', 8, 'ref_type_echeance', 'id', 'id' , 'type_echeance', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $ech_array);
+$form->select_table('Type échéance', 'idtype_echeance', 8, 'ref_type_echeance', 'id', 'id' , 'type_echeance', $indx = '------' ,$selected=$info_contrat->s('idtype_echeance'),$multi=NULL, $where=NULL, $ech_array);
 
 // Facturation
-$facturation_array[]  = array('Début du mois' , 'D' );
-$facturation_array[]  = array('Fin du fin' , 'F' );
-$form->radio('Facturation', 'periode_fact', 'D', $facturation_array, '');
+$facturation_array[]  = array('Début de période' , 'D' );
+$facturation_array[]  = array('Fin de période' , 'F' );
+$form->radio('Facturation', 'periode_fact', $info_contrat->s('periode_fact'), $facturation_array, '');
 
 
 //commentaire
-$form->input_editor('Commentaire', 'commentaire', 8, $clauses=NULL , $js_array = null,  $input_height = 50);
+$form->input_editor('Commentaire', 'commentaire', 8, $info_contrat->s('commentaire') , $js_array = null,  $input_height = 50);
 
 //Date notif
 $array_date_notif[] = array('required', 'true', 'Insérer la date de notification');
@@ -92,7 +92,7 @@ $form->file_js('pj_photo', 1000000, 'image');*/
 
 
 //Table 
-$columns = array('id' => '1','Item' => '5', 'Date échéance' => '14','Montant TTC' => '30', 'Commentaire' => '40', '#' =>'5'   );
+$columns = array('id' => '1','Item' => '5', 'Date échéance' => '12','Montant TTC' => '20', 'Commentaire' => '52', '#' =>'5'   );
 $js_addfunct = 'var column = t.column(0);
      column.visible( ! column.visible() );';
    
@@ -147,9 +147,8 @@ $(document).ready(function() {
         }
         var $link  = $(this).attr('rel');
         var $titre = $(this).attr('data_titre'); 
-        var $data  = $(this).attr('data'); 
+        var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val();
         ajax_bbox_loader($link, $data, $titre, 'large')
-        
     });
 
   
@@ -170,7 +169,7 @@ $(document).ready(function() {
         }
         var $link  = $(this).attr('rel');
         var $titre = 'Modifier détail contrat'; 
-        var $data  = $(this).attr('data'); 
+        var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val();
         ajax_bbox_loader($link, $data, $titre, 'large')
         
     });
@@ -199,10 +198,7 @@ $(document).ready(function() {
 
     
 
-
-     
+   
 
 });
-</script>   
-
-        
+</script>        

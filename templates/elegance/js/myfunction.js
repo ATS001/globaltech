@@ -935,3 +935,30 @@ $('body').on('click', '#call_go_back', function(e) {
 	 	$("#"+$item).parent().parent().addClass("active");
 	 
 });
+
+$('body').on('click', '.this_url_jump', function(e) {
+	    $data_go_back =$.parseJSON(ace.cookie.get("gobak"));
+		$('#gritter-notice-wrapper').remove();//remove message box
+		var $data = $(this).attr('data');
+
+		$.ajax({
+                url: '?_tsk=seturl&ajax=1',
+                type: 'POST',
+                data: $data,
+                dataType: 'JSON',
+                success: function(data,e) {
+                	
+                	if(data['error'] == 'false'){
+                		ajax_loadmessage('Data lost','nok',50000);
+                	}else{
+                		var $go_to = data['task'];
+                		var $data = data['data'];
+                		ajax_loader($go_to, $data);
+                	}     			
+                },
+                timeout: 30000,
+		    error: function(){
+		    	ajax_loadmessage('Délai non attendue','nok',5000)
+		    }
+        });
+});

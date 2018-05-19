@@ -36,6 +36,7 @@ class Mdatatable
     var $title_module     = null;//Used in HTML View (ex. Factures) 
     var $btn_return       = null;//Used to mak button return if null we use the Main task
     var $btn_add_data     = null;//Used to set more data to Button Add 
+    var $btn_action       = true;//Swap to false if dont want show btn Action
 
 
     public function __construct($properties = array()){
@@ -62,7 +63,14 @@ class Mdatatable
         {
             $this->error = false;
             $this->log   = '<br\>Pas de table selectionée';
-        }
+        } 
+    }
+
+    Private function format_col_link($text, $task, $id)
+    {
+        $task = MInit::crypt_tp('task', $task);
+        $link = "CONCAT('<a href=\"#\" class=\"this_url_jump\" data=\"id=',$id,'\&$task\">',$text,'</a>')";
+        return $link;
     }
 
     private function get_list_column()
@@ -91,6 +99,9 @@ class Mdatatable
                     break;
                     case 'datetime':
                     $list_col .= " DATE_FORMAT(".$value['column'].",'%d-%m-%Y %H:%i:%s') as ".$value['alias']."$v";
+                    break;
+                    case 'link':
+                    $list_col .= $this->format_col_link($value['link'][0], $value['link'][1], $value['link'][2])."$v";
                     break;
                     default:
                     $list_col .= " ".$value['column']." as ".$value['alias']."$v";
@@ -366,6 +377,10 @@ class Mdatatable
         $notif_col = $this->need_notif == true ? $count_col : 0;
         $js = "<script type=\"text/javascript\">$(document).ready(function() {";
         $js .= "var table = $('#".$this->task."_grid').DataTable({";
+        if(!$this->btn_action)
+        {
+            $js .= "aoColumnDefs : '',";
+        }
         $js .= "bProcessing: true,notifcol : ".$notif_col.",serverSide: true,ajax_url:\"".$this->task."\", $extra_data $order aoColumns: [";
         
         $js_arr = $this->columns_html;

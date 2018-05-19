@@ -11,6 +11,7 @@
             'prix_vente' => Mreq::tp('prix_vente'),
             'iduv' => Mreq::tp('iduv'),
             'idtype' => Mreq::tp('idtype'),
+            'id_entrepot' => Mreq::tp('id_entrepot'),
         );
 
         //Check if array have empty element return list
@@ -42,7 +43,11 @@
             $empty_list .= "<li>Type produit</li>";
             $checker = 1;
         }
-        
+        if ($posted_data['id_entrepot'] == NULL) {
+
+            $empty_list .= "<li>Entrepôt</li>";
+            $checker = 1;
+        }   
         
 
         $empty_list .= "</ul>";

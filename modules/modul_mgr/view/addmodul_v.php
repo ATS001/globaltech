@@ -37,7 +37,7 @@ $form = new Mform('addmodul', 'addmodul','',  'modul', '');
 $form->bloc_title('Informations Module');
 //Nom Module
 $modul_array[]  = array('required', 'true', 'Insérer Nom de Module' );
-$modul_array[]  = array('minlength', '3', 'Minimum 3 caractères' );
+$modul_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
 $modul_array[]  = array('regex', 'true', 'Insérer Nom de Modul Valid (a_z 0-9)' );
 $form->input('Nom Module', 'modul', 'text' ,6 , null, $modul_array);
 //Répertoire Module
@@ -52,7 +52,7 @@ $form->input('Répertoire Module', 'rep_modul', 'text' ,6 , null, $modul_rep_arr
 //$form->input_editor('Editor de test', 'editor', 'text' ,6 , null, null);
 //Déscription Module
 $description_array[]  = array('required', 'true', 'Insérer la déscription' );
-$description_array[]  = array('minlength', '3', 'Minimum 3 caractères' );
+$description_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
 $form->input('Déscription', 'description', 'text', 10, null, $description_array);
 
 //Tables de module
@@ -66,7 +66,7 @@ $form->bloc_title('Informations Application par défault');
 //Nom Application
 $app_array[]  = array('required', 'true', 'Insérer Nom d l'."\'".' application' );
 $app_array[]  = array('regex', 'true', 'Insérer Nom d l'."\'".' application Valid' );
-$app_array[]  = array('minlength', '3', 'Minimum 3 caractères' );
+$app_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
 //$app_array[]  = array('remote', 'app', 'Ce nom existe déja' );
 $form->input('Nom Application', 'app', 'text', 6, null, $app_array);
 

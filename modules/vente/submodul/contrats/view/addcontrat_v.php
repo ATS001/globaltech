@@ -70,7 +70,7 @@ $form->file_js('pj_photo', 1000000, 'image');*/
 
 
 //Table 
-$columns = array('id' => '1','Item' => '5', 'Date échéance' => '14','Montant TTC' => '30', 'Commentaire' => '40', '#' =>'5'   );
+$columns = array('id' => '1','Item' => '5', 'Date échéance' => '12','Montant TTC' => '20', 'Commentaire' => '52', '#' =>'5'   );
 $js_addfunct = 'var column = t.column(0);
      column.visible( ! column.visible() );';
    
@@ -131,8 +131,6 @@ $form->render();
         });
 
 
-
-
         $('#iddevis').on('change', function () {
 
             //var $adresse = '<div class="form-group>"><address><strong>Twitter, Inc.</strong><br>795 Folsom Ave, Suite 600<br>San Francisco, CA 94107<br><abbr title="Phone">P:</abbr>(123) 456-7890</address></div>';
@@ -183,4 +181,3 @@ $form->render();
 
     });
 </script>
-		

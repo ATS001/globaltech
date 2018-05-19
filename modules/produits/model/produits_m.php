@@ -105,6 +105,7 @@ class Mproduit {
         $values["iduv"] = MySQL::SQLValue($this->_data['iduv']);
         $values["idtype"] = MySQL::SQLValue($this->_data['idtype']);
         $values["prix_vente"] = MySQL::SQLValue($this->_data['prix_vente']);
+        $values["id_entrepot"] = MySQL::SQLValue($this->_data['id_entrepot']);
         $values["creusr"] = MySQL::SQLValue(session::get('userid'));
         $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
@@ -187,6 +188,7 @@ class Mproduit {
         $values["iduv"] = MySQL::SQLValue($this->_data['iduv']);
         $values["idtype"] = MySQL::SQLValue($this->_data['idtype']);
         $values["prix_vente"] = MySQL::SQLValue($this->_data['prix_vente']);
+        $values["id_entrepot"] = MySQL::SQLValue($this->_data['id_entrepot']);
         $values["updusr"] = MySQL::SQLValue(session::get('userid'));
         $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
         $wheres["id"] = $this->id_produit;

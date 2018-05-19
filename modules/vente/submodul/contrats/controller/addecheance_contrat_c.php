@@ -13,7 +13,7 @@ if(MInit::form_verif('addecheance_contrat',false))
     $date_effet=Mreq::tp('dat_ef');
 
     $echeance=new Mcontrat();
-    $date_echeance=$echeance->verif_date_echeance($posted_data['tkn_frm'],date('Y-m-d',strtotime($posted_data['date_echeance'])),null);
+    $date_echeance=$echeance->verif_date_echeance_add(date('Y-m-d',strtotime($posted_data['date_echeance'])));
     
     
 	$checker = null;

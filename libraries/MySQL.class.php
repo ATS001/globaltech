@@ -1113,7 +1113,7 @@ class MySQL
 							$align = 'class="'.$align.'"' ;
 
 
-							$html .= "\t\t<td $width $align>" . htmlspecialchars($value) . "</td>\n";
+							$html .= "\t\t<td $width $align>" . ($value) . "</td>\n";
 						}
 						$html .= "\t</tr>\n";
 					}
