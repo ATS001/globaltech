@@ -1897,7 +1897,7 @@ class Mdevis
         
         
         
-        $req_sql  = " SELECT $colms FROM $table, qte_actuel, d_bl, bl WHERE  d_devis.id_devis = bl.iddevis AND d_bl.id_bl = bl.id AND d_devis.id_produit = d_bl.id_produit AND d_devis.id_devis=156 AND qte_actuel.id_produit = d_devis.id_produit   GROUP BY d_devis.id_produit HAVING qte_rest > 0 ORDER BY item";
+        $req_sql  = " SELECT $colms FROM $table, qte_actuel, d_bl, bl WHERE  d_devis.id_devis = bl.iddevis AND d_bl.id_bl = bl.id AND d_devis.id_produit = d_bl.id_produit AND d_devis.id_devis = $id_devis AND qte_actuel.id_produit = d_devis.id_produit   GROUP BY d_devis.id_produit HAVING qte_rest > 0 ORDER BY item";
         
         if(!$db->Query($req_sql))
         {
