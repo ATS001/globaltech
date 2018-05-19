@@ -284,34 +284,38 @@ class Mbl {
             $qte_liv = MReq::tp('qte_liv_'.$id_line);
             //var_dump($qte_liv);
             $id_produit = MReq::tp('id_produit_'.$id_line);
-          if( !$this-> verif_qte_stock_ligne($id_produit,$qte_liv)){
+            $verif= $this-> verif_qte_stock_ligne($id_produit,$qte_liv);
+            //var_dump($verif);
+          if( $verif == true){
 
             $sql_req_d_bl = "  update d_bl set qte = $qte_liv , updusr = $updusr , upddat = CURRENT_TIMESTAMP  where id_bl = $id_bl and id = $id_line ";
            
-            if(!$db->Query($sql_req_d_bl))
-            {
+             if(!$db->Query($sql_req_d_bl))
+             {
                 $this->log .= '</br>Erreur Mise à jour ligne '.$id_line.' Produit:'.$id_produit. '  '.$sql_req_d_bl;
                 $this->error = false;
-            }else{
+             }else{
                 
                 $this->error = true;
-            }
+             }
           }else{
-                exit ;
+            //var_dump("errr");
+                $this->log = 'Quantité à livrer '. $qte_liv.' non disponible !!! Veuillez approvisionner le stock du produit '.$id_produit.' ou modifier le BL.';
                 $this->error = false;
+
+                
           }
-
-        }
-        
-
-     if($this->error == false){
-      $this->log .='</br>KO ';
+          if($this->error == false){
+      //var_dump('dkhel');
+      //$this->log .='</br>KO ';
          return false;
+         exit;
      }else{
          $this->log .='</br>Modification réussie ';
          return true;
      }
-   
+
+        }  
  }	
 
 public function Gettable_d_bl()
