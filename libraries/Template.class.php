@@ -125,7 +125,7 @@ class Template {
         $render_sub_modul .= '';
         foreach ($sub_modul as $row_s)
         {
-          $render_sub_modul .= '<li left_menu="1">
+          $render_sub_modul .= '<li left_menu="1" id="'.md5($row_s['descrip']).'">
           <a href="#" class="this_url" rel="'.$row_s['app'].'" title="'.$row_s['descrip'].'">
           <i class="menu-icon fa fa-'.$row_s['class'].'"></i>
           '.$row_s['descrip'].'

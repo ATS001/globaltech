@@ -46,6 +46,9 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_produit->get_produit()) {
                 $form->input_hidden('idc', Mreq::tp('idc'));
                 $form->input_hidden('idh', Mreq::tp('idh'));
 
+                //Entrepôt de produit
+                $entrepot_array[] = array('required', 'true', 'Choisir un entrepôt');
+                $form->select_table('Entrepôt', 'id_entrepot', 6, 'entrepots', 'id', 'libelle', 'libelle', $indx = '------', $selected =$info_produit->Shw('id_entrepot', 1), $multi = NULL, $where = 'etat= 1', $entrepot_array);
 
                 //Type de produit
                 $type_array[] = array('required', 'true', 'Choisir un type');

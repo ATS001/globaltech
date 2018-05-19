@@ -159,6 +159,8 @@ class MLogin
 				$session->set('defapp',$this->user_info['defapp']);
 				$session->set('key',$this->user_info['pass']);
 				$session->set('secur_ss',$salt );
+				session::clear_cookie('gobak');
+				session::clear_cookie('this_zone');
 				
 				
 				//exit($session->get_cookie('alg'));
@@ -321,12 +323,16 @@ class MLogin
 	private function delete_temp_folder_auto_logout($session_id)
 	{
 		$temp_folder = MPATH_TEMP.$session_id;
-		if(!MInit::deleteDir($temp_folder))
-		{		
-			$this->error = false;
-			$this->log .='</br>Unable remove temp folder';
+		if(session::get($session_id)){
+			if(!MInit::deleteDir($temp_folder))
+		    {		
+			    $this->error = false;
+			    $this->log .='</br>Unable remove temp folder';
 
+		    }
 		}
+		
+		
 
 	}
 
@@ -347,6 +353,8 @@ class MLogin
 		}
 		$this->delete_temp_folder_auto_logout($this->token);
 		$session = new session();
+		session::clear_cookie('gobak');
+		session::clear_cookie('this_zone');
 		if(!$session->stop())
 		{
 			return false;

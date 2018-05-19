@@ -57,7 +57,7 @@ $list_data_table = new Mdatatable();
 //Set tabels used in Query
 $list_data_table->tables = array('stock', 'produits');
 //Set Jointure
-$list_data_table->joint = 'stock.idproduit=produits.id AND stock.idproduit ='.Mreq::tp('id');
+$list_data_table->joint = 'stock.idproduit=produits.id and stock.mouvement= "E" AND stock.idproduit ='.Mreq::tp('id');
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query
