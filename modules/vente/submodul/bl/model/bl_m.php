@@ -130,6 +130,33 @@ class Mbl {
             return true;
         }
     }
+    public function verif_qte_stock_ligne($id_produit,$qte_liv) {
+        global $db;
+
+
+         $sql = "SELECT * FROM qte_actuel q WHERE q.`id_produit`=$id_produit 
+                and  q.`id_produit` IN 
+                (SELECT id_produit FROM d_bl d WHERE d.`id_produit`=q.`id_produit` AND $qte_liv > q.`qte_act`AND d.`id_bl`= $this->id_bl ) ";
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = true;
+            } else {
+                
+                $this->error = false;
+                $this->log = 'Quantité à livrer '. $qte_liv.' non disponible !!! Veuillez approvisionner le stock du produit '.$id_produit.' ou modifier le BL.';
+            }
+        }
+        //return Array user_activities
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
     
     //Mouvementer Stock
     public function mouvementer_stock() {
@@ -257,6 +284,8 @@ class Mbl {
             $qte_liv = MReq::tp('qte_liv_'.$id_line);
             //var_dump($qte_liv);
             $id_produit = MReq::tp('id_produit_'.$id_line);
+          if( !$this-> verif_qte_stock_ligne($id_produit,$qte_liv)){
+
             $sql_req_d_bl = "  update d_bl set qte = $qte_liv , updusr = $updusr , upddat = CURRENT_TIMESTAMP  where id_bl = $id_bl and id = $id_line ";
            
             if(!$db->Query($sql_req_d_bl))
@@ -267,10 +296,16 @@ class Mbl {
                 
                 $this->error = true;
             }
+          }else{
+                exit ;
+                $this->error = false;
+          }
+
         }
         
 
      if($this->error == false){
+      $this->log .='</br>KO ';
          return false;
      }else{
          $this->log .='</br>Modification réussie ';
