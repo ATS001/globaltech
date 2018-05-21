@@ -57,6 +57,7 @@ $html_data_table = new Mdatatable();
 $html_data_table->columns_html = $array_column;
 $html_data_table->title_module = "stock_actuel";
 $html_data_table->task = 'stock_actuel';
+//$html_data_table->btn_action = false;
 
 if(!$data = $html_data_table->table_html())
 {
