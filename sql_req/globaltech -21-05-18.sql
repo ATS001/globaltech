@@ -909,7 +909,7 @@ update contrats_frn c set c.`etat`= 2 where (SELECT date(NOW()) FROM DUAL)=c.`da
 update contrats_frn c set c.`etat`= 3 where (SELECT date(NOW()) FROM DUAL)=(c.`date_fin`+1) ;
     END$$
 
-CREATE DEFINER=`root`@`localhost` PROCEDURE `refresh_stock`()
+CREATE DEFINER=`root`@`localhost` PROCEDURE `refresh_products`()
 BEGIN
 UPDATE produits p SET  etat= IF((SELECT qte_act FROM qte_actuel q WHERE q.id_produit=p.id)> p.stock_min , 1,
 			 IF((SELECT qte_act FROM qte_actuel q WHERE q.id_produit = p.id)= p.stock_min, 2, 
