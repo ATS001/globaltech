@@ -917,7 +917,7 @@ UPDATE produits p SET  etat= IF((SELECT qte_act FROM qte_actuel q WHERE q.id_pro
 			 etat
 			   )
 			   )
-				) WHERE idtype=1 ;
+				), updusr=1, upddat= (SELECT DATE(NOW()) FROM DUAL) WHERE idtype=1 ;
     END$$
 
 DELIMITER ;
