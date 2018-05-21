@@ -173,12 +173,41 @@ class Mbl {
             $this->error = true;
         }
 
+        if($this->refresh_products())
+        {
+          $this->error = true;
+        }else{
+          $this->error = false;
+          $this->log .= $db->Error();
+        }
+
         //return Array user_activities
         if ($this->error == false) {
             return false;
         } else {
             return true;
         }
+    }
+
+    private function refresh_products()
+    {
+        global $db;
+        $sql_req = " CALL refresh_products()";
+
+        if(!$db->Query($sql_req))
+        {
+            $this->log .= '</br>Erreur actualisation de produits'.$sql_req;
+            $this->error = false;
+        }else{
+            $this->error = true;
+        }
+
+        if($this->error == false){
+          return false;
+        }else{
+          return true;
+        }
+
     }
 
     private function generate_facture($id_bl)
