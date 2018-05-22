@@ -731,9 +731,8 @@ $date_d = $posted_data['date_effet'];
      
         do {
 
-                    
-$time = date('Y-m-d', strtotime($time . "+ 2 Month"));
-            $time2 = date('Y-m-t', strtotime($time . "- 1 Month"));
+            $time2 = date('Y-m-t', strtotime($time));
+            $time = date('Y-m-d', strtotime($time . "+ 2 Month"));
 
             $month = date('d-m-Y', strtotime($time2));
             $test = date('m', strtotime($time2));

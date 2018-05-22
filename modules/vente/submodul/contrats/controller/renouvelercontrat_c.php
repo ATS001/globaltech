@@ -711,11 +711,8 @@ $date_d = $posted_data['date_effet'];
      
         do {
 
-            //$time2 = date('Y-m-t', strtotime($time));
-            //$time = date('Y-m-d', strtotime($time . "+ 2 Month"));
-         
-$time = date('Y-m-d', strtotime($time . "+ 2 Month"));
-            $time2 = date('Y-m-t', strtotime($time . "- 1 Month"));
+            $time2 = date('Y-m-t', strtotime($time));
+            $time = date('Y-m-d', strtotime($time . "+ 2 Month"));
 
             $month = date('d-m-Y', strtotime($time2));
             $test = date('m', strtotime($time2));
@@ -817,8 +814,6 @@ $time = date('Y-m-d', strtotime($time . "+ 2 Month"));
         
 
         if (date('Y-m-d', strtotime($month)) <> date('Y-m-d', strtotime($last))) {
-            //var_dump(date('Y-m-d', strtotime($month)));
-            //var_dump(date('Y-m-d', strtotime($last)));
             $control_echeance_b = "<ul>Il faut choisir une période Bimensuelle, ou séléctionner le type d'échéance : Autres   !!!</ul>";
             $checker = 20;
         }
