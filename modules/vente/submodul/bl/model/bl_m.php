@@ -330,9 +330,8 @@ class Mbl {
           }else{
             //var_dump("errr");
                 $this->log = 'Quantité à livrer '. $qte_liv.' non disponible !!! Veuillez approvisionner le stock du produit '.$id_produit.' ou modifier le BL.';
-                $this->error = false;
-
-                
+                $this->error = false; 
+                exit;            
           }
 
         }  
