@@ -6,14 +6,6 @@ if(!defined('_MEXEC'))die();
 //Created : 12-05-2018
 //Controller Liste
 $array_column = array(
-    array(
-        'column' => 'id',
-        'type'   => '',
-        'alias'  => 'id',
-        'width'  => '5',
-        'header' => 'ID',
-        'align'  => 'C'
-    ),
 
     array(
         'column' => 'entrepot',
@@ -49,9 +41,9 @@ $array_column = array(
                             'align'  => 'C'
                         ),
     array(
-                            'column' => 'IF(qte < seuil,Concat("<span class=\"badge badge-danger\">",qte,"</span>"),IF(qte > seuil,Concat("<span class=\"badge badge-success\">",qte,"</span>"),Concat("<span class=\"badge badge-warning\">",qte,"</span>")))',
+                            'column' => 'IF(qte_stock < seuil,Concat("<span class=\"badge badge-danger\">",qte_stock,"</span>"),IF(qte_stock > seuil,Concat("<span class=\"badge badge-success\">",qte_stock,"</span>"),Concat("<span class=\"badge badge-warning\">",qte_stock,"</span>")))',
                             'type'   => '',
-                            'alias'  => 'qte',
+                            'alias'  => 'qte_stock',
                             'width'  => '5',
                             'header' => 'Quantité Disponible',
                             'align'  => 'C'
@@ -61,7 +53,7 @@ $array_column = array(
 //Creat new instance
 $list_data_table = new Mdatatable();
 //Set tabels used in Query
-$list_data_table->tables = array('mouvements_stock');
+$list_data_table->tables = array('stock_actuel');
 //Set Jointure
 $list_data_table->joint = '1=1';
 //Notif
@@ -69,7 +61,7 @@ $list_data_table->need_notif= false;
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query
-$list_data_table->main_table = 'mouvements_stock';
+$list_data_table->main_table = 'stock_actuel';
 //Set Task used for statut line
 $list_data_table->task = 'stock_actuel';
 //Set File name for export
