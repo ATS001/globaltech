@@ -112,6 +112,14 @@ class Mdatatable
                             $list_col .= $this->format_col_link($value['link'][0], $value['link'][1], $value['link'][2])."$v";
                         }
                     break;
+                    case 'html':
+                        if(Mreq::tp('export') == 1)
+                        {
+                            $list_col .= " ".($value['column'])." as ".$value['alias']."$v";
+                        }else{
+                            $list_col .= " ".($value['html'])." as ".$value['alias']."$v";
+                        }
+                    break;
                     default:
                     $list_col .= " ".$value['column']." as ".$value['alias']."$v";
                     
