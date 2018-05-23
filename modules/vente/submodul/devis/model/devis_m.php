@@ -268,14 +268,14 @@ class Mdevis
         
         $headers = array(
             'Item'        => '5[#]center',
-            'Réf'         => '17[#]center',
-            'Description' => '30[#]', 
+            'Réf'         => '7[#]center',
+            'Description' => '29[#]', 
             'Qte'         => '5[#]center', 
             'P.U'         => '10[#]alignRight', 
             'Re'          => '5[#]center',
-            'Total HT'    => '12[#]alignRight',
-            'TVA'         => '8[#]alignRight',
-            'Total TTC'   => '15[#]alignRight',
+            'Total HT'    => '10[#]alignRight',
+            'TVA'         => '10[#]alignRight',
+            'Total TTC'   => '10[#]alignRight',
 
         );
                  
