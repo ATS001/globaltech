@@ -334,17 +334,18 @@ class Mbl {
 
                 
           }
-          if($this->error == false){
+
+        }  
+
+      if($this->error == false){
       //var_dump('dkhel');
       //$this->log .='</br>KO ';
          return false;
          exit;
-     }else{
+      }else{
          $this->log .='</br>Modification réussie ';
          return true;
-     }
-
-        }  
+      }
  }	
 
 public function Gettable_d_bl()
