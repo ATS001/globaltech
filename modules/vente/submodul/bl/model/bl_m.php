@@ -338,7 +338,7 @@ class Mbl {
 
       if($this->error == false){
       //var_dump('dkhel');
-      //$this->log .='</br>KO ';
+      $this->log .='</br>KO ';
          return false;
          exit;
       }else{
