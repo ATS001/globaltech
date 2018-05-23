@@ -250,6 +250,7 @@ class TableTools
 		$id            = $this->line_data['id'];
 		$service       = session::get('service');
 		$service_f     = '%-'.$service.'-%';
+		
 
 		$sql = "SELECT task_action.app, task_action.descrip,
 		 task_action.mode_exec, task_action.etat_desc ,
