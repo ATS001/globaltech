@@ -1148,6 +1148,16 @@ class Mdevis
     {
         $this->get_devis();
         $reponse = $this->_data['reponse'];
+        if($this->g('type_devis') == 'VNT' && $reponse == 'valid')
+        {
+            $this->loop_check_qte();
+            if($id_bl = $this->generate_bl($this->id_devis))
+            {
+                $this->insert_d_bl($id_bl);
+            }
+            $this->check_livraison();
+                
+        }
         $ref_bc = null;
         switch ($reponse) {
             case 'valid':
@@ -1170,7 +1180,7 @@ class Mdevis
         global $db;
         $table = $this->table;
         $id_devis = $this->id_devis;
-        $new_etat = Msetting::get_set('etat_devis', $etat);
+        $new_etat = $this->g('type_devis') == 'VNT' ? 'etat = etat' : 'etat = '.Msetting::get_set('etat_devis', $etat) ;
         if($etat == null)
         {
             $this->error = false;
@@ -1182,7 +1192,7 @@ class Mdevis
             $this->error = false;
             return false;
         }
-        $req_sql = " UPDATE $table SET etat = $new_etat  $ref_bc WHERE id = $id_devis ";
+        $req_sql = " UPDATE $table SET  $new_etat  $ref_bc WHERE id = $id_devis ";
         
         if (!$db->Query($req_sql)) {
             $this->error = false;
@@ -1197,21 +1207,17 @@ class Mdevis
             }
             $this->last_id = $this->_data['id'];
             $this->save_file('scan', 'PJ réponse devis '.$this->_data['id'], 'Document');
-            if($this->g('type_devis') == 'VNT' && $reponse == 'valid')
+            if($this->g('type_devis') == 'VNT')
             {
-                $this->loop_check_qte();
-                if($id_bl = $this->generate_bl($this->id_devis))
-                {
-                    $this->insert_d_bl($id_bl);
-                }
-                $this->check_livraison();
-                
+                $id_bl = 'id='.$id_bl;
+                $task  = MInit::crypt_tp('task', 'detailsbl');
+
+
+                $this->log .= '</br>Opération réussie '.'<a left_menu="1" class="fa-double_angle_right this_url_jump" rel="seturl" title="Detail BL" data="'.$id_bl.'&'.$task.'"><b> : Détail Bon de livraison</a>';
+            }else{
+                $this->log .= '</br>Opération réussie: <b> '.$message;
             }
-            $id_bl = 'id='.$id_bl;
-            $task  = MInit::crypt_tp('task', 'detailsbl');
-
-
-            $this->log .= '</br>Opération réussie '.'<a left_menu="1" class="fa-double_angle_right this_url_jump" rel="seturl" title="Detail BL" data="'.$id_bl.'&'.$task.'"><b> : Détail Bon de livraison</a>';
+            
             //$this->get_devis();
             //If TYPE Devis is VNT then Generate Facture
 
@@ -1284,12 +1290,13 @@ class Mdevis
     {
         global $db;
         $id_devis = $this->id_devis;
-        $req_sql = " SELECT COUNT(id) FROM bl WHERE bl.iddevis = $id_devis AND etat = $etat ";
+        $req_sql = " SELECT bl.reference FROM bl WHERE bl.iddevis = $id_devis AND etat = $etat ";
         $count  = $db->QuerySingleValue0($req_sql);
-        if($count != 0)
+       
+        if($count != '0')
         {
             
-            $result = '<div class="alert alert-danger"><strong>Impossible de gènerer nouveau BL, il faut valider <b>'.$count.'</b> Bon de Livraison pour le même devis.</strong></div>';
+            $result = '<div class="alert alert-danger">Impossible de gènerer nouveau BL, il faut valider BL Réf: <b>#'.$count.'</b> Bon de Livraison pour le même devis.</div>';
             print($result);
             exit();
         }
