@@ -1261,7 +1261,7 @@ class Mdevis
         $id_devis    = $this->id_devis;
         $creusr      = session::get('userid');
         $count_lines = count($data_d_bl);
-        
+        $all_liv_qte = 0;
         for ($i = 0 , $c  = $count_lines  ; $i < $c ; $i++  ) 
         {
 
@@ -1271,9 +1271,29 @@ class Mdevis
             $qte_liv = MReq::tp('qte_liv_'.$id_line);
             $id_produit = MReq::tp('id_produit_'.$id_line);
             $this->check_qte_by_product($id_produit, $qte_liv, $first);
+            $all_liv_qte += $qte_liv;
 
         }
+        if($all_liv_qte == 0){
+            exit('0#Impossible de génerer un BL sans quantité à livrer');
+        }
         return true;
+    }
+
+    public function check_exist_no_validate_bl($etat = 0)
+    {
+        global $db;
+        $id_devis = $this->id_devis;
+        $req_sql = " SELECT COUNT(id) FROM bl WHERE bl.iddevis = $id_devis AND etat = $etat ";
+        $count  = $db->QuerySingleValue0($req_sql);
+        if($count != 0)
+        {
+            
+            $result = '<div class="alert alert-danger"><strong>Impossible de gènerer nouveau BL, il faut valider <b>'.$count.'</b> Bon de Livraison pour le même devis.</strong></div>';
+            print($result);
+            exit();
+        }
+
     }
 
     private function check_qte_by_product($id_produit, $qte_input, $first = true)
@@ -1287,11 +1307,25 @@ class Mdevis
                 FROM d_devis, qte_actuel WHERE  d_devis.id_devis = $id_devis AND
                 qte_actuel.id_produit = d_devis.id_produit AND  d_devis.id_produit = $id_produit ";
         }else{
-            $req_check_produit = "SELECT  d_devis.ref_produit,  d_devis.designation,  d_devis.id_produit AS produit
+            /*$req_check_produit = "SELECT  d_devis.ref_produit,  d_devis.designation,  d_devis.id_produit AS produit
                 ,d_devis.qte AS qte_c,  qte_actuel.`qte_act` AS stock, SUM(d_bl.qte) AS qte_dej_liv
                 FROM d_devis, qte_actuel, d_bl, bl WHERE bl.id = d_bl.id_bl AND  d_devis.id_devis = bl.iddevis 
                 AND d_devis.id_produit = d_bl.id_produit AND d_devis.id_devis = $id_devis AND
-                qte_actuel.id_produit = d_devis.id_produit AND  d_devis.id_produit = $id_produit GROUP BY d_devis.id_produit;";
+                qte_actuel.id_produit = d_devis.id_produit AND  d_devis.id_produit = $id_produit GROUP BY d_devis.id_produit;";*/
+
+            $req_check_produit = "SELECT  d_devis.ref_produit,  d_devis.designation, d_devis.qte AS qte_c,
+            qte_actuel.qte_act AS  stock, 
+            ( SELECT IFNULL(SUM(d_bl.qte),0) FROM d_bl, bl
+            WHERE d_devis.id_devis = bl.iddevis AND d_devis.id_devis = bl.iddevis AND d_bl.id_bl = bl.id 
+            AND d_devis.id_produit = d_bl.id_produit ) AS qte_dej_liv, 
+            d_devis.qte - ( SELECT IFNULL(SUM(d_bl.qte),0)  FROM d_bl, bl
+            WHERE d_devis.id_devis = bl.iddevis AND d_devis.id_devis = bl.iddevis AND d_bl.id_bl = bl.id 
+            AND d_devis.id_produit = d_bl.id_produit )  AS qte_l, d_devis.qte - ( SELECT IFNULL(SUM(d_bl.qte),0) FROM d_bl, bl
+            WHERE d_devis.id_devis = bl.iddevis  AND d_devis.id_devis = bl.iddevis AND d_bl.id_bl = bl.id 
+            AND d_devis.id_produit = d_bl.id_produit ) AS qte_rest  
+            FROM d_devis, qte_actuel, d_bl, bl 
+            WHERE d_devis.id_devis = $id_devis AND qte_actuel.id_produit = d_devis.id_produit  
+            AND  d_devis.id_produit = $id_produit  GROUP BY d_devis.id_produit " ;     
         }
         
         
@@ -1306,7 +1340,7 @@ class Mdevis
             if (!$db->RowCount())
             {
                 $this->error = false;
-                $this->log .= 'Aucun enregistrement trouvé ';
+                $this->log .= 'Aucun enregistrement trouvé xx';
             } else {
                 $arr_qte = $db->RowArray();
                 $produit = $arr_qte['ref_produit'];
@@ -1405,16 +1439,22 @@ class Mdevis
             $id_line = $data_d_bl[$i];
             $qte_liv = MReq::tp('qte_liv_'.$id_line);
             $id_produit = MReq::tp('id_produit_'.$id_line);
-
+            
             $sql_req_d_bl = "  INSERT INTO d_bl (`order`, id_bl, id_produit, ref_produit, designation, qte, creusr, credat) 
-            SELECT d.order, '$id_bl' , id_produit, ref_produit, designation, '$qte_liv', '$creusr', CURRENT_TIMESTAMP FROM d_devis d WHERE d.id_devis= $id_devis AND d.id_produit = $id_produit ";
-           
-            if(!$db->Query($sql_req_d_bl))
+                SELECT d.order, '$id_bl' , id_produit, ref_produit, designation, '$qte_liv', '$creusr', CURRENT_TIMESTAMP FROM d_devis d WHERE d.id_devis= $id_devis AND d.id_produit = $id_produit ";
+            if($qte_liv > 0)
             {
-                $this->log .= '</br>Erreur Insértion linge '.$id_line.' Produit:'.$id_produit. '  '.$sql_req_d_bl;
-                $this->error = false;
-                return false;
+                if(!$db->Query($sql_req_d_bl))
+                {
+                    $this->log .= '</br>Erreur Insértion linge '.$id_line.' Produit:'.$id_produit. '  '.$sql_req_d_bl;
+                    $this->error = false;
+                    return false;
+                }
             }
+                
+            
+
+            
         }
         
 
@@ -1895,10 +1935,30 @@ class Mdevis
         $colms .= " $input_qte_l,";
         $colms .= " $table.`qte` - SUM(d_bl.qte) as qte_rest ";
         
+        $req_sql = "SELECT  d_devis.order item,  d_devis.ref_produit,  d_devis.designation,
+            CONCAT('<input name=\"line_d_d[]\" value=\"',d_devis.id,'\" type=\"hidden\"><input name=\"id_produit_',
+            d_devis.id,'\" value=\"',d_devis.id_produit,'\" type=\"hidden\"><span id=\"qte_',d_devis.id_produit,
+            '\" class=\"badge badge-info\">',d_devis.qte,'</span>') AS qte_c,
+            CASE WHEN d_devis.qte > qte_actuel.`qte_act` THEN
+            CONCAT('<span id=\"stok_',d_devis.id_produit,'\" class=\"badge badge-danger\">', qte_actuel.`qte_act`,'</span>')
+            ELSE  CONCAT('<span id=\"stok_',d_devis.id_produit,'\" class=\"badge badge-success\">', qte_actuel.`qte_act`,'</span>') END AS             stock, 
+            CONCAT('<span id=\"qte_dej_liv_',d_devis.id_produit,'\" class=\"badge badge-warrning\">',
+            ( SELECT IFNULL(SUM(d_bl.qte),0) FROM d_bl, bl
+            WHERE d_devis.id_devis = bl.iddevis AND d_devis.id_devis = bl.iddevis AND d_bl.id_bl = bl.id 
+            AND d_devis.id_produit = d_bl.id_produit ),'</span>') AS qte_dej_liv,
+            CONCAT('<input id=\"liv_',d_devis.id_produit,'\" class=\"liv center  is-number\" name=\"qte_liv_',d_devis.id,'\" value=\"',
+            d_devis.`qte` - ( SELECT IFNULL(SUM(d_bl.qte),0)  FROM d_bl, bl
+            WHERE d_devis.id_devis = bl.iddevis AND d_devis.id_devis = bl.iddevis AND d_bl.id_bl = bl.id 
+            AND d_devis.id_produit = d_bl.id_produit ) ,'\" type=\"text\">') AS qte_l, d_devis.`qte` - ( SELECT IFNULL(SUM(d_bl.qte),0)              FROM d_bl, bl
+            WHERE d_devis.id_devis = bl.iddevis  AND d_devis.id_devis = bl.iddevis AND d_bl.id_bl = bl.id 
+            AND d_devis.id_produit = d_bl.id_produit ) AS qte_rest  
+            FROM d_devis, qte_actuel, d_bl, bl 
+            WHERE d_devis.id_devis = $id_devis AND qte_actuel.id_produit = d_devis.id_produit   
+            GROUP BY d_devis.id_produit HAVING qte_rest > 0 ORDER BY item " ;  
         
         
-        $req_sql  = " SELECT $colms FROM $table, qte_actuel, d_bl, bl WHERE  d_devis.id_devis = bl.iddevis AND d_bl.id_bl = bl.id AND d_devis.id_produit = d_bl.id_produit AND d_devis.id_devis = $id_devis AND qte_actuel.id_produit = d_devis.id_produit   GROUP BY d_devis.id_produit HAVING qte_rest > 0 ORDER BY item";
-        
+        /*$req_sql  = " SELECT $colms FROM $table, qte_actuel, d_bl, bl WHERE  d_devis.id_devis = bl.iddevis AND d_bl.id_bl = bl.id AND d_devis.id_produit = d_bl.id_produit AND d_devis.id_devis = $id_devis AND qte_actuel.id_produit = d_devis.id_produit   GROUP BY d_devis.id_produit HAVING qte_rest > 0 ORDER BY item";
+        exit($req_sql);*/
         if(!$db->Query($req_sql))
         {
             $this->error = false;
