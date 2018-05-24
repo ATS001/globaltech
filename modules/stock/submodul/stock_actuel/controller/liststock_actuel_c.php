@@ -33,16 +33,18 @@ $array_column = array(
                             'align'  => 'L'
                         ),
     array(
-                            'column' => 'Concat("<span class=\"badge badge-info\">",seuil,"</span>")',
-                            'type'   => '',
+                            'column' => 'seuil',
+                            'type'   => 'html',
+                            'html'   => 'Concat("<span class=\"badge badge-info\">",seuil,"</span>")',
                             'alias'  => 'seuil',
                             'width'  => '5',
                             'header' => 'Seuil Min',
                             'align'  => 'C'
                         ),
     array(
-                            'column' => 'IF(qte_stock < seuil,Concat("<span class=\"badge badge-danger\">",qte_stock,"</span>"),IF(qte_stock > seuil,Concat("<span class=\"badge badge-success\">",qte_stock,"</span>"),Concat("<span class=\"badge badge-warning\">",qte_stock,"</span>")))',
-                            'type'   => '',
+                            'column' => 'seuil',
+                            'type'   => 'html',
+                            'html'   => 'IF(qte_stock < seuil,Concat("<span class=\"badge badge-danger\">",qte_stock,"</span>"),IF(qte_stock > seuil,Concat("<span class=\"badge badge-success\">",qte_stock,"</span>"),Concat("<span class=\"badge badge-warning\">",qte_stock,"</span>")))',
                             'alias'  => 'qte_stock',
                             'width'  => '5',
                             'header' => 'Quantité Disponible',

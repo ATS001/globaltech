@@ -77,8 +77,8 @@ $('.qte, .liv').bind('input change',function() {
         var $val_qte   = $('#qte_'+$id).val();
         var $val_qte   = parseFloat($val_qte) ? parseFloat($val_qte) : 0;
 
-/*      var $val_qte_bl= $('#qte_bl_'+$id).val();
-        var $val_qte_bl= parseFloat($val_qte_bl) ? parseFloat($val_qte_bl) : 0;*/
+        var $val_devis = $('#qte_devis_'+$id).val();
+        var $val_devis = parseFloat($val_devis) ? parseFloat($val_devis) : 0;
 
         var $val_liv   = $('#liv_'+$id).val();
         var $val_liv   = parseFloat($val_liv) ? parseFloat($val_liv) : 0;
@@ -89,10 +89,10 @@ $('.qte, .liv').bind('input change',function() {
         	$('#liv_'+$id).val($val_stock)
     		return false;
         }
-       if($val_liv > $val_qte)
+       if($val_liv > $val_devis)
         {
-        	ajax_loadmessage('La quantité à livrer ne doit pas dépasser la quantité commandée: '+ $val_qte,'nok');
-            $('#liv_'+$id).val($val_qte)
+        	ajax_loadmessage('La quantité à livrer ne doit pas dépasser le reste à livrer: '+ $val_devis,'nok');
+            $('#liv_'+$id).val($val_devis)
             return false;
         }
         
