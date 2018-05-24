@@ -314,6 +314,23 @@ class Mbl {
             //var_dump($qte_liv);
             $id_produit = MReq::tp('id_produit_'.$id_line);
             $verif= $this-> verif_qte_stock_ligne($id_produit,$qte_liv);
+
+          //Delete Null lignes
+          if($qte_liv == 0){
+
+            $sql_req_d_bl = "  delete from d_bl where id_bl = $id_bl and id = $id_line ";
+           
+             if(!$db->Query($sql_req_d_bl))
+             {
+                $this->log .= '</br>Erreur Suppression
+                 ligne '.$id_line.' Produit:'.$id_produit. '  '.$sql_req_d_bl;
+                $this->error = false;
+             }else{
+                
+                $this->error = true;
+             }
+          }
+
             //var_dump($verif);
           if( $verif == true){
 
@@ -331,6 +348,7 @@ class Mbl {
             //var_dump("errr");
                 $this->log = 'Quantité à livrer '. $qte_liv.' non disponible !!! Veuillez approvisionner le stock du produit '.$id_produit.' ou modifier le BL.';
                 $this->error = false; 
+                return false;
                 exit;            
           }
 
@@ -338,7 +356,7 @@ class Mbl {
 
       if($this->error == false){
       //var_dump('dkhel');
-      $this->log .='</br>KO ';
+      //$this->log .='</br>KO ';
          return false;
          exit;
       }else{
@@ -351,7 +369,8 @@ public function Gettable_d_bl()
     {
         global $db;
         $table    = $this->table_details;
-        $input_qte_l = "CONCAT('<input type=\"hidden\" name=\"line_d_d[]\" value=\"',$table.id,'\"/><input type=\"hidden\" name=\"id_produit_',$table.id,'\" value=\"',$table.id_produit,'\"/><input id=\"qte_',$table.id_produit,'\" type=\"hidden\" name=\"qte_bl_',$table.id,'\" value=\"',$table.qte,'\"/><input id=\"liv_',$table.id_produit,'\" class=\"qte center  is-number\" name=\"qte_liv_',$table.id,'\" type=\"text\" value=\"',$table.qte,'\"/>') as qte_l";
+        $input_qte_l = "CONCAT('<input type=\"hidden\" name=\"line_d_d[]\" value=\"',$table.id,'\"/><input type=\"hidden\" name=\"id_produit_',$table.id,'\" value=\"',$table.id_produit,'\"/><input id=\"qte_',$table.id_produit,'\" type=\"hidden\" name=\"qte_bl_',$table.id,'\" value=\"',$table.qte,'\"/><input id=\"qte_devis_',$table.id_produit,'\" type=\"hidden\" name=\"qte_devis_',$table.id,'\" value=\"',d.qte - 
+(SELECT SUM(d_bl1.qte) FROM bl bl1, d_bl d_bl1 WHERE bl1.iddevis=d.id_devis AND bl1.id=d_bl1.`id_bl` AND d_bl1.id_produit=d.id_produit  ),'\"/><input id=\"liv_',$table.id_produit,'\" class=\"qte center  is-number\" name=\"qte_liv_',$table.id,'\" type=\"text\" value=\"',$table.qte,'\"/>') as qte_l";
 
 
         $etat_stock = "CASE WHEN $table.qte > qte_actuel.`qte_act` THEN 
@@ -367,7 +386,7 @@ public function Gettable_d_bl()
         $colms .= " $input_qte_l";
         
         
-        $req_sql  = " SELECT $colms FROM $table, qte_actuel WHERE $table.id_produit = qte_actuel.id_produit AND id_bl = $id_bl ";
+        $req_sql  = " SELECT $colms FROM $table, qte_actuel, d_devis d, bl WHERE $table.id_produit = qte_actuel.id_produit AND d.id_produit=$table.id_produit and bl.iddevis=d.id_devis and bl.id=$table.id_bl and id_bl = $id_bl ";
         
         if(!$db->Query($req_sql))
         {
