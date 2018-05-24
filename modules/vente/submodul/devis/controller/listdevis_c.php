@@ -33,7 +33,8 @@ $array_column = array(
         'alias'  => 'client',
         'width'  => '25',
         'header' => 'Client',
-        'align'  => 'L'
+        'align'  => 'L',
+        'export' => 'clients.denomination',
     ),
     array(
         'column' => 'devis.totalht',

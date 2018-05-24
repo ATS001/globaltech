@@ -80,7 +80,9 @@ class Mdatatable
     	$list_col = null;
     	
     	$cont_columns = count($arr_columns);
+
     	$i = 0;
+
     	foreach ($arr_columns as $key => $value) {
     		
     		if(++$i === $cont_columns && $this->need_notif == false)
@@ -89,6 +91,8 @@ class Mdatatable
     		}else{
     			$v = ', ';
     		}
+
+            
             if($value['column'] !== 'statut'){
                 switch ($value['type']) {
                     case 'int':
@@ -101,10 +105,24 @@ class Mdatatable
                     $list_col .= " DATE_FORMAT(".$value['column'].",'%d-%m-%Y %H:%i:%s') as ".$value['alias']."$v";
                     break;
                     case 'link':
-                    $list_col .= $this->format_col_link($value['link'][0], $value['link'][1], $value['link'][2])."$v";
+                        if(Mreq::tp('export') == 1)
+                        {
+                            $list_col .= " ".($value['column'])." as ".$value['alias']."$v";
+                        }else{
+                            $list_col .= $this->format_col_link($value['link'][0], $value['link'][1], $value['link'][2])."$v";
+                        }
+                    break;
+                    case 'html':
+                        if(Mreq::tp('export') == 1)
+                        {
+                            $list_col .= " ".($value['column'])." as ".$value['alias']."$v";
+                        }else{
+                            $list_col .= " ".($value['html'])." as ".$value['alias']."$v";
+                        }
                     break;
                     default:
                     $list_col .= " ".$value['column']." as ".$value['alias']."$v";
+                    
                     break;
                 }
 
@@ -112,6 +130,7 @@ class Mdatatable
     		
     		
     	}
+       
     	if($this->need_notif && $this->task != null)
     	{
     		$notif_colms = TableTools::line_notif_new($this->main_table, $this->task);
@@ -349,11 +368,12 @@ class Mdatatable
     		"recordsFiltered" => intval( $totalRecords),
 			"data"            => $data   // total data array
 		);
+        //var_dump($data);exit();
         if($this->error == false)
         {
             return false;
         }
-
+        
     	return json_encode($json_data);
     }
 
@@ -364,7 +384,13 @@ class Mdatatable
         foreach ($header_table as $key => $value) {
             $this->list_col .="\t<th>\n\t$value\t</th>\n";
         }
-        $this->list_col .="\t<th>\n\t#\t</th>\n";
+        /*$statu_header = $this->btn_action ? '#' : 'Statut';
+        $this->list_col .="\t<th>\n\t$statu_header\t</th>\n";*/
+        if($this->btn_action)
+        {
+            $this->list_col .="\t<th>\n\t#\t</th>\n";
+        }
+        
     }
 
 
@@ -400,7 +426,11 @@ class Mdatatable
             $sWidth = !is_numeric($value['width']) ? 10 : $value['width'];
             $js .= "{\"sClass\": \"$aling\",\"sWidth\":\"$sWidth%\"},";
         }
-        $js .= "{\"sClass\": \"center\",\"sWidth\":\"5%\"},],});";
+        if($this->btn_action){
+            $js .= "{\"sClass\": \"center\",\"sWidth\":\"5%\"},";
+        }
+        
+        $js .= "],});";
         //last blocjs
         $js .= "$('.export_csv').on('click', function() {csv_export(table, 'csv');});";
         $js .= "$('.export_pdf').on('click', function() {csv_export(table, 'pdf');});";
@@ -435,7 +465,7 @@ class Mdatatable
         $this->js_render();
         $html .= $this->js_code;
         return $html;
-
+        
    
     }
 
