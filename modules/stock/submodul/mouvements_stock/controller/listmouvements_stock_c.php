@@ -19,7 +19,7 @@ $array_column = array(
         'column' => 'entrepot',
         'type'   => '',
         'alias'  => 'entrepot',
-        'width'  => '14',
+        'width'  => '11',
         'header' => 'Entrepôt',
         'align'  => 'L'
     ),
@@ -28,7 +28,7 @@ $array_column = array(
                             'column' => 'reference',
                             'type'   => '',
                             'alias'  => 'reference',
-                            'width'  => '11',
+                            'width'  => '10',
                             'header' => 'Référence',
                             'align'  => 'L'
                         ),
@@ -52,7 +52,7 @@ $array_column = array(
                             'column' => 'DATE',
                             'type'   => 'date',
                             'alias'  => 'DATE',
-                            'width'  => '5',
+                            'width'  => '10',
                             'header' => 'Date',
                             'align'  => 'C'
                         ),
@@ -60,7 +60,7 @@ $array_column = array(
                             'column' => 'source',
                             'type'   => '',
                             'alias'  => 'source',
-                            'width'  => '15',
+                            'width'  => '12',
                             'header' => 'Source',
                             'align'  => 'L'
                         ),
