@@ -113,7 +113,7 @@ class Mbl {
 
         if (!$db->Query($sql)) {
             $this->error = false;
-            $this->log .= $db->Error();
+            $this->log .= 'Check Qte Stock '.$db->Error();
         } else {
             if (!$db->RowCount()) {
                 $this->error = true;
@@ -168,7 +168,7 @@ class Mbl {
 
         if (!$db->Query($sql)) {
             $this->error = false;
-            $this->log .= $db->Error();
+            $this->log .= 'Mouvement Stock : '.$db->Error();
         } else {
             $this->error = true;
         }
