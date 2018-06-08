@@ -80,6 +80,7 @@ $html_data_table->task = 'encaissements';
 //si t as besoin d'envoyer data ajoute key data Ã  Array ex: 'data' => 'id=$id'
 $html_data_table->btn_return = array('task' => 'factures', 'title' => 'Retour liste factures');
 $html_data_table->task = 'encaissements';
+$html_data_table->btn_add_check = true;
 if(Mreq::tp('id') != null){
     $html_data_table->js_extra_data = "id=$id_facture";
     $html_data_table->btn_add_data = MInit::crypt_tp('id', $id_facture);
