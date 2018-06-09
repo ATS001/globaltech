@@ -89,6 +89,86 @@ class MHighchart
         
     }
 
+    public function column_render($table_vue, $width = 6)
+    {
+    	global $db;
+    	$db->Query("SET lc_time_names = 'fr_FR';");
+		$sql = "SELECT * FROM $table_vue";
+		if(!$db->Query($sql)){
+			var_dump($db->Error());
+		}else{
+			if($db->RowCount())
+			{
+				$brut_array       = $db->RecordsArray();
+
+                //Format Y and nbr to float value
+                $axes = array();
+                $data = array();
+				foreach($brut_array as $k=>$arr)
+				{
+					
+					
+                    array_push($axes, $arr['y']);
+
+                    number_format($arr['nbr']);
+                    array_push($data, (float) $arr['nbr']);
+
+					/*$brut_array[$k]['y']    = $arr['y'];
+					$brut_array[$k]['nbr']  = (float) $arr['nbr'];  */   
+
+				}
+                
+				$arr_nbr_sta = $brut_array;
+
+			}else{
+				exit('no data yet');
+			}
+
+
+		}
+
+
+		$chart = new Highchart();
+		$this->container = MD5(uniqid(rand(), true));
+		$this->width = $width;
+		
+
+
+		$chart->chart->renderTo = $this->container;
+		$chart->chart->type = "column";
+		$chart->chart->plotBackgroundColor = null;
+		$chart->chart->plotBorderWidth = null;
+		$chart->chart->plotShadow = false;
+		$chart->title->text = $this->titre;
+		$chart->subtitle->text = null;
+		$chart->xAxis->categories = $axes;
+		$chart->yAxis->min = 0;
+		$chart->yAxis->title->text = "Recette (FCFA)";
+		$chart->legend->layout = "vertical";
+		$chart->legend->backgroundColor = "#FFFFFF";
+		$chart->legend->align = "left";
+		$chart->legend->verticalAlign = "top";
+		$chart->legend->x = 100;
+		$chart->legend->y = 70;
+		$chart->legend->floating = 1;
+		$chart->legend->shadow = 1; 
+
+		
+		$chart->tooltip->formatter = new HighchartJsExpr("function() {
+			return Highcharts.numberFormat(this.y, 0)+' Fcfa';}"
+            );
+
+		
+
+		$chart->series[] = array(
+			'name' => date('Y'),
+			'data' => $data
+		);
+        $this->chart_generated = $chart->render();
+        $this->Graph_render();
+        return print ($this->chart_rended);
+    }
+
     /**
      * [Graph_render Generate HTML code include js rended]
      */
