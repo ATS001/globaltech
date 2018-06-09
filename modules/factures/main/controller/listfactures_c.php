@@ -53,7 +53,7 @@ $array_column = array(
         'align'  => 'R'
     ),
     array(
-        'column' => 'CONCAT(c.reference, " - ",factures.client)',
+        'column' => 'CONCAT((SELECT c.reference FROM clients c WHERE c.denomination=factures.client), " - ",factures.client)',
         'type'   => '',
         'alias'  => 'con_clt',
         'width'  => '17',
@@ -81,11 +81,9 @@ $array_column = array(
 //Creat new instance
 $list_data_table = new Mdatatable();
 //Set tabels used in Query
-$list_data_table->tables = array('factures,clients c,devis d');
+$list_data_table->tables = array('factures');
 //Set Jointure
-$list_data_table->joint = 'IF(factures.`base_fact`="C",
-( factures.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE factures.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client=c.id ) ), 
-(factures.iddevis=d.id AND d.id_client=c.id))';
+$list_data_table->joint = ' 1=1 ';
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query
