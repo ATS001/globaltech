@@ -992,7 +992,7 @@ class Mfacture {
                 //Check $this->error = true return Green message and Bol true
                 if ($this->error == true) {
                     $this->log = '</br>Modification réussie: <b>' . $this->_data['id'] . ' ID: ' . $this->last_id;
-                    $this->update_reste($this->_data['idfacture'], $mt_init, $this->_data['montant']);
+                    //$this->update_reste($this->_data['idfacture'], $mt_init, $this->_data['montant']);
 
 //                    if($this->facture_info['reste'] > 0 and $this->facture_info['reste'] == 4)
 //                    {
