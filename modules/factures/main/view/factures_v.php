@@ -60,7 +60,7 @@ $array_column = array(
         'align'  => 'C'
     ),
     array(
-        'column' => 'IF(base_fact="C",CONCAT("<b>DU</b> ",factures.du," <b>AU</b> ",factures.au)," ")',
+        'column' => 'IF(base_fact="C",CONCAT("<b>DU</b> ", DATE_FORMAT(factures.du,"%d-%m-%Y")," <b>AU</b> ",DATE_FORMAT(factures.au,"%d-%m-%Y"))," ")',
         'type'   => '',
         'alias'  => 'clt',
         'width'  => '15',
