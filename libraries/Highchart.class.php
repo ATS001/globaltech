@@ -23,6 +23,7 @@ class MHighchart
 		$sql = "SELECT * FROM $table_vue";
 		if(!$db->Query($sql)){
 			var_dump($db->Error());
+			return false;
 		}else{
 			if($db->RowCount())
 			{
@@ -96,6 +97,7 @@ class MHighchart
 		$sql = "SELECT * FROM $table_vue";
 		if(!$db->Query($sql)){
 			var_dump($db->Error());
+			return false;
 		}else{
 			if($db->RowCount())
 			{
