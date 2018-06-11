@@ -61,9 +61,10 @@ $array_column = array(
         'align'  => 'C'
     ),
     array(
-        'column' => 'IF(base_fact="C",CONCAT("<b>DU</b> ", DATE_FORMAT(factures.du,"%d-%m-%Y")," <b>AU</b> ",DATE_FORMAT(factures.au,"%d-%m-%Y"))," ")',
-        'type'   => '',
-        'alias'  => 'clt',
+        'column' => 'IF(base_fact="C",CONCAT(" DU ", DATE_FORMAT(factures.du,"%d-%m-%Y")," AU ",DATE_FORMAT(factures.au,"%d-%m-%Y"))," ")',
+        'type'   => 'html',
+        'html'   => 'IF(base_fact="C",CONCAT("<b>DU</b> ", DATE_FORMAT(factures.du,"%d-%m-%Y")," <b>AU</b> ",DATE_FORMAT(factures.au,"%d-%m-%Y"))," ")',
+        'alias'  => 'periode',
         'width'  => '18',
         'header' => 'Période facturée',
         'align'  => 'C'
