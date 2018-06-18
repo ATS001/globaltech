@@ -35,7 +35,8 @@ class Mdatatable
     var $js_order         = null;//Used when we want ordering table by column start form 0 ex:[ 3, "desc" ]
     var $title_module     = null;//Used in HTML View (ex. Factures) 
     var $btn_return       = null;//Used to mak button return if null we use the Main task
-    var $btn_add_data     = null;//Used to set more data to Button Add 
+    var $btn_add_data     = null;//Used to set more data to Button Add
+    var $btn_add_check    = false;//Used in submodul check if no btn add data then remove defalut add btn 
     var $btn_action       = true;//Swap to false if dont want show btn Action
 
 
@@ -452,7 +453,10 @@ class Mdatatable
         $html .= "\t<div class=\"row\">\n\t<div class=\"col-xs-12\"\n>\t<div class=\"clearfix\">\n";
         $html .= "\t<div class=\"pull-right tableTools-container\">\n";
         $html .= "\t<div class=\"btn-group btn-overlap\">\n";
-        $html .= $this->btn_add('add'.$this->task,'Ajouter '.$this->title_module, $this->btn_add_data);
+        if($this->btn_add_data != null or !$this->btn_add_check){
+            $html .= $this->btn_add('add'.$this->task,'Ajouter '.$this->title_module, $this->btn_add_data);
+        }
+        
         $html .= $this->btn_csv($this->task,'Exporter Liste');
         $html .= $this->btn_pdf($this->task,'Exporter Liste');
         $html .= "\t</div>\n\t</div>\n\t</div>\n";

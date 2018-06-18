@@ -74,7 +74,9 @@ $list_data_table = new Mdatatable();
 //Set tabels used in Query
 $list_data_table->tables = array('encaissements', 'factures');
 //Set Jointure
-$list_data_table->joint = 'encaissements.idfacture=factures.id AND encaissements.idfacture = '.Mreq::tp('id');
+//Where id facture is null then show all encaissement
+$where = Mreq::tp('id') == null ? null : 'AND encaissements.idfacture = '.Mreq::tp('id');
+$list_data_table->joint = 'encaissements.idfacture=factures.id '.$where;
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query
