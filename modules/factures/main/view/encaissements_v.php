@@ -1,10 +1,13 @@
-
-    <?php
+<?php
+if(Mreq::tp('id') != null)
+{
     $info_facture = new Mfacture();
     $info_facture->id_facture = Mreq::tp('id');
     $info_facture->get_facture();
     $id_facture = Mreq::tp('id');
     $id_facture_c = MInit::crypt_tp('id', $id_facture);
+}
+    
     
 
     $array_column = array(
@@ -77,8 +80,12 @@ $html_data_table->task = 'encaissements';
 //si t as besoin d'envoyer data ajoute key data Ã  Array ex: 'data' => 'id=$id'
 $html_data_table->btn_return = array('task' => 'factures', 'title' => 'Retour liste factures');
 $html_data_table->task = 'encaissements';
-$html_data_table->js_extra_data = "id=$id_facture";
-$html_data_table->btn_add_data = MInit::crypt_tp('id', $id_facture);
+$html_data_table->btn_add_check = true;
+if(Mreq::tp('id') != null){
+    $html_data_table->js_extra_data = "id=$id_facture";
+    $html_data_table->btn_add_data = MInit::crypt_tp('id', $id_facture);
+}
+
 
 if(!$data = $html_data_table->table_html())
 {
