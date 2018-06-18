@@ -11,6 +11,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_encaissement->get_encaissement(
     // returne message error red to client 
     exit('3#' . $info_encaissement->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
+
 ?>
 <div class="pull-right tableTools-container">
     <div class="btn-group btn-overlap">
@@ -55,13 +56,17 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_encaissement->get_encaissement(
                 $form->input('Justification', 'pj', 'file', 6, 'Justif_enc.pdf', null);
                 $form->file_js('pj', 1000000, 'pdf', $info_encaissement->Shw('pj', 1), 1);
 
+                //Depositaire
+                $depos_array[] = array('required', 'true', 'Insérez le dépositaire');
+                $form->input('Dépositaire', 'depositaire', 'text', 6, $info_encaissement->Shw('depositaire', 1), $depos_array);
+
 //Désignation
                 $des_array[] = array('required', 'true', 'Insérez la désignation');
                 $form->input('Désignation', 'designation', 'text', 6, $info_encaissement->Shw('designation', 1), $des_array);
 
                 //mode de payment
                 $mode_array = array('Espèce' => 'Espèce', 'Chèque' => 'Chèque', 'Virement' => 'Virement');
-                $form->select('Mode de payement', 'mode_payement', 3, $mode_array, Null, $info_encaissement->Shw2('mode_payement', 1), $multi = NULL);
+                $form->select('Mode de payement', 'mode_payement', 3, $mode_array, Null, $info_encaissement->g('mode_payement'), $multi = NULL);
 
 //Réf de la pièce de payement
                 $form->input('Référence', 'ref_payement', 'text', 6, $info_encaissement->Shw('ref_payement', 1), NULL);

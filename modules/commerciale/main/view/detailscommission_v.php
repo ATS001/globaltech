@@ -22,7 +22,9 @@ $paiements = $paiement->commission_info;
     <div class="btn-group btn-overlap">
 
 
-        <?php TableTools::btn_add('commissions', 'Liste des commissions', MInit::crypt_tp('id', $id_commerciale), $exec = NULL, 'reply'); ?>
+        <?php 
+         TableTools::btn_action('commissions', $paiement->id_commission, 'detailscommission');
+        TableTools::btn_add('commissions', 'Liste des commissions', MInit::crypt_tp('id', $id_commerciale), $exec = NULL, 'reply'); ?>
 
     </div>
 </div>

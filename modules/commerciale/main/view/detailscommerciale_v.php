@@ -31,6 +31,7 @@ $photo = Minit::get_file_archive($commerciale->commerciale_info['photo']);
 
 
         <?php
+         TableTools::btn_action('commerciale', $commerciale->id_commerciale, 'detailscommerciale');
         TableTools::btn_add('commerciale', 'Liste commerciale', Null, $exec = NULL, 'reply');
         ?>
     </div>

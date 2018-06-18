@@ -41,7 +41,7 @@
                 <div class="widget-box">
 
     <?php
-    $form = new Mform('editbuyproduct', 'editbuyproduct', $info_achat->Shw('id', 1), 'buyproducts&' . MInit::crypt_tp('id', $info_achat->Shw('idproduit', 1)), '0');
+    $form = new Mform('editbuyproduct', 'editbuyproduct', $info_achat->Shw('id', 1), 'buyproduct&' . MInit::crypt_tp('id', $info_achat->Shw('idproduit', 1)), '0');
     $form->input_hidden('idproduit', $info_achat->Shw('idproduit', 1));
     $form->input_hidden('id', $info_achat->Shw('id', 1));
     $form->input_hidden('idc', Mreq::tp('idc'));

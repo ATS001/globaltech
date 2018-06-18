@@ -267,7 +267,7 @@ class Mfacture {
                 DATE_FORMAT(date_encaissement,'%d-%m-%Y') as date_encaissement ,
                 pj as pj                       
                 FROM 
-    		$table_encaissement WHERE $table_encaissement.etat=1 AND  $table_encaissement.idfacture = " . $this->id_facture;
+    		$table_encaissement WHERE  $table_encaissement.idfacture = " . $this->id_facture;
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -417,6 +417,7 @@ class Mfacture {
             $values["mode_payement"] = MySQL::SQLValue($this->_data['mode_payement']);
             $values["ref_payement"] = MySQL::SQLValue($this->_data['ref_payement']);
             $values["montant"] = MySQL::SQLValue($this->_data['montant']);
+            $values["depositaire"] = MySQL::SQLValue($this->_data['depositaire']);
             $values["date_encaissement"] = MySQL::SQLValue(date("Y-m-d"));
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
@@ -750,6 +751,21 @@ class Mfacture {
     }
 
     /**
+     * [g Get value of entry used into script]
+     * @param  [key array] $key [description]
+     * @return [string]      [description]
+     */
+    public function g($key)
+    {
+        if ($this->encaissement_info[$key] != null) {
+            return $this->encaissement_info[$key];
+        } else {
+            return null;
+        }
+
+    }
+    
+    /**
      * [save_file For save anattached file for entrie ]
      * @param  [string] $item  [input_name of attached file we add _id]
      * @param  [string] $titre [Title stored for file on Archive DB]
@@ -968,6 +984,7 @@ class Mfacture {
         $values["mode_payement"] = MySQL::SQLValue($this->_data['mode_payement']);
         $values["ref_payement"] = MySQL::SQLValue($this->_data['ref_payement']);
         $values["montant"] = MySQL::SQLValue($this->_data['montant']);
+        $values["depositaire"] = MySQL::SQLValue($this->_data['depositaire']);
         $values["date_encaissement"] = MySQL::SQLValue(date("Y-m-d"));
         $values["updusr"] = MySQL::SQLValue(session::get('userid'));
         $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
@@ -1554,6 +1571,51 @@ if($this->facture_info['base_fact'] == 'C')
             return true;
         }
         
+    }
+    
+    
+    public function Get_detail_encaissement_show()
+    {
+        global $db;
+        $req_sql = "SELECT
+        encaissements.*,factures.reste,factures.client
+        , DATE_FORMAT(encaissements.date_encaissement,'%d-%m-%Y') as date_encaissement
+        , factures.reference as reference_facture
+        ,encaissements.montant
+		,encaissements.mode_payement AS mode_payement
+		,encaissements.ref_payement       
+        , CONCAT(users_sys.fnom,' ',users_sys.lnom) as commercial
+        FROM
+        encaissements
+        INNER JOIN factures 
+        ON (encaissements.idfacture = factures.id)
+        LEFT JOIN users_sys 
+        ON (encaissements.creusr = users_sys.id)
+        WHERE encaissements.id = ".$this->id_encaissement;
+        
+        if(!$db->Query($req_sql))
+        {
+            $this->error = false;
+            $this->log  .= $db->Error();
+        }else{
+            if ($db->RowCount() == 0)
+            {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->encaissement_info = $db->RowArray();
+                $this->error = true;
+            }
+
+
+        }
+        if($this->error == false)
+        {
+            return false;
+        }else{
+            return true ;
+        }
+
     }
     
 }

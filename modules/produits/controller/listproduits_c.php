@@ -45,7 +45,7 @@ $array_column = array(
         'column' => 'produits.designation',
         'type'   => '',
         'alias'  => 'des',
-        'width'  => '10',
+        'width'  => '15',
         'header' => 'Désignation',
         'align'  => 'L'
     ),
@@ -53,7 +53,7 @@ $array_column = array(
         'column' => '(SELECT qte_act FROM qte_actuel WHERE id_produit = produits.id)',
         'type'   => '',
         'alias'  => 'stmin',
-        'width'  => '15',
+        'width'  => '10',
         'header' => 'Stock',
         'align'  => 'C'
     ),

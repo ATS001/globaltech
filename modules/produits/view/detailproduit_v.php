@@ -8,6 +8,7 @@
 
 
             <?php
+            TableTools::btn_action('produits', $info_produit->id_produit, 'detailproduit');
             TableTools::btn_add('produits', 'Liste des produits', Null, $exec = NULL, 'reply');
             ?>		
         </div>

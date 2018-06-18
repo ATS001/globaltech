@@ -91,6 +91,22 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_produit->get_produit()) {
  <script type="text/javascript">
 $(document).ready(function() {
 
+ $('#prix_vente').attr('readonly', true);
+ 
+ $('#idtype').on('change',function() {
+
+        if($("#idtype option:selected").text() != 'Produit'){
+
+            $('#prix_vente').attr('readonly', false);
+            
+        }else{
+
+            $('#prix_vente').attr('readonly', true).val('');
+           
+        }
+
+    });
+    
  $('#idtype').change(function(e) {
         var $idtype = $(this).val();
 
@@ -103,7 +119,7 @@ $(document).ready(function() {
         $.ajax({
 
             cache: false,
-            url  : '?_tsk=addproduit&ajax=1',
+            url  : '?_tsk=addproduits&ajax=1',
             type : 'POST',
             data : '&act=1&id='+$idtype+'&<?php echo MInit::crypt_tp('exec', 'load_select_categ') ?>',
             dataType:"JSON",

@@ -26,7 +26,7 @@
                 <div class="widget-box">
 
                     <?php
-                    $form = new Mform('addproduit', 'addproduit', '', 'produits', '0');
+                    $form = new Mform('addproduit', 'addproduits', '', 'produits', '0');
 //Entrepôt de produit
 $entrepot_array[] = array('required', 'true', 'Choisir un entrepôt');
 $form->select_table('Entrepôt', 'id_entrepot', 6, 'entrepots', 'id', 'libelle', 'libelle', $indx = '------', $selected =1, $multi = NULL, $where = 'etat= 1', $entrepot_array);
@@ -102,7 +102,7 @@ $(document).ready(function() {
         $.ajax({
 
             cache: false,
-            url  : '?_tsk=addproduit&ajax=1',
+            url  : '?_tsk=addproduits&ajax=1',
             type : 'POST',
             data : '&act=1&id='+$idtype+'&<?php echo MInit::crypt_tp('exec', 'load_select_categ') ?>',
             dataType:"JSON",

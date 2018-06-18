@@ -2,23 +2,23 @@
 
 	 
 	 $info_produit = new Mproduit();
-	 $info_produit->id_produit = Mreq::tp('id');
+	 $info_produit->id_produit = Mreq::tp('id_produit');
 	 
 	 
-	if(!MInit::crypt_tp('id', null, 'D')  or !$info_produit->get_produit())
+	if(!MInit::crypt_tp('id_produit', null, 'D')  or !$info_produit->get_produit())
 	 { 	
 
-	 	exit('0#'.$info_produit->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur ');
+	 	exit('0#'.$info_produit->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 	 }
 
-	    $id_produit = Mreq::tp('id');
+	    $id_produit = Mreq::tp('id_produit');
 	   
 	?>
 
 	<div class="pull-right tableTools-container">
 		<div class="btn-group btn-overlap">
 						
-			<?php TableTools::btn_add('buyproducts','Liste des achats', MInit::crypt_tp('id', $id_produit), $exec = NULL, 'reply'); ?>
+			<?php TableTools::btn_add('buyproduct','Liste des achats', MInit::crypt_tp('id', $id_produit), $exec = NULL, 'reply'); ?>
 						
 		</div>
 	</div>
@@ -44,9 +44,9 @@
 					
 	<?php
 
-	$form = new Mform('addbuyproduct', 'addbuyproduct','', 'buyproducts&'.MInit::crypt_tp('id', $id_produit), '0');
+	$form = new Mform('addbuyproduct', 'addbuyproduct','', 'buyproduct&'.MInit::crypt_tp('id', $id_produit), '0');
 	$form->input_hidden('idproduit',   $id_produit);
-
+        
 	//quantité
 	$qte_array[]  = array('number', 'true', 'Entrez un nombre valide' );
 	$form->input('Quantité', 'qte', 'text' ,6, null, $qte_array);

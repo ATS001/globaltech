@@ -16,6 +16,14 @@
         'header' => 'ID',
         'align'  => 'C'
     ),
+        array(
+        'column' => 'factures.client',
+        'type'   => '',
+        'alias'  => 'client',
+        'width'  => '15',
+        'header' => 'Client',
+        'align'  => 'L'
+    ),
     array(
         'column' => 'encaissements.reference',
         'type'   => '',
@@ -28,7 +36,7 @@
         'column' => 'encaissements.designation',
         'type'   => '',
         'alias'  => 'des',
-        'width'  => '10',
+        'width'  => '15',
         'header' => 'Désignation',
         'align'  => 'L'
     ),
@@ -45,7 +53,7 @@
         'column' => 'encaissements.montant',
         'type'   => '',
         'alias'  => 'mt',
-        'width'  => '15',
+        'width'  => '10',
         'header' => 'Montant',
         'align'  => 'C'
     ),
@@ -53,7 +61,7 @@
         'column' => 'encaissements.date_encaissement',
         'type'   => 'date',
         'alias'  => 'date',
-        'width'  => '15',
+        'width'  => '10',
         'header' => 'Date',
         'align'  => 'C'
     ),
