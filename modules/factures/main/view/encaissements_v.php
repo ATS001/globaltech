@@ -94,6 +94,11 @@ if(Mreq::tp('id') != null){
     $html_data_table->btn_add_data = MInit::crypt_tp('id', $id_facture);
 }
 
+if($info_facture->facture_info['etat'] == 4)
+{
+    $html_data_table->btn_add_data=NULL;
+}
+
 
 if(!$data = $html_data_table->table_html())
 {

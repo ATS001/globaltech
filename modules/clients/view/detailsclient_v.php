@@ -20,7 +20,7 @@ $photo   = Minit::get_file_archive($client->client_info['pj_photo']);
 <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
 
-		<?php 
+		<?php TableTools::btn_action('clients', $client->id_client, 'detailsclient');
               TableTools::btn_add('clients', 'Liste Clients', Null, $exec = NULL, 'reply');      
 		 ?>	
          
