@@ -673,7 +673,7 @@ public function Gettable_d_bl()
 
         
         
-        $req_sql  = " SELECT $colms FROM $table WHERE id_bl = $id_bl ";
+        $req_sql  = " SELECT $colms FROM $table WHERE id_bl = $id_bl order by item";
         if(!$db->Query($req_sql))
         {
             $this->error = false;
@@ -715,7 +715,7 @@ public function Gettable_d_bl()
         $colms .= " REPLACE(FORMAT($table.qte,0),',',' ') ";
         
         
-        $req_sql  = " SELECT $colms FROM $table WHERE id_bl = $id_bl ";
+        $req_sql  = " SELECT $colms FROM $table WHERE id_bl = $id_bl order by item";
         if(!$db->Query($req_sql))
         {
             $this->error = false;
