@@ -313,7 +313,7 @@ p {
 <tr>
     <td  style="font: underline; width: 550px; padding-right: 200px;">
         <br><br><br><br><br>
-        <strong>Le Client:</strong>
+        <strong>Le Client</strong>
     </td>
     <td  style="font: underline; width: 550px; padding-right: 200px;">
         <br><br><br><br><br>
