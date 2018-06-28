@@ -12,6 +12,7 @@ $commerciale->id_commerciale = Mreq::tp('id');
 $commerciale->get_commerciale();
 $id = Mreq::tp('id');
 
+//var_dump($id);
 //array colomn
 $array_column = array(
     array(
@@ -102,7 +103,7 @@ $html_data_table->task = 'commissions';
 //si t as besoin d'envoyer data ajoute key data Ã  Array ex: 'data' => 'id=$id'
 $html_data_table->btn_return = array('task' => 'commerciale', 'title' => 'Retour liste commerciaux');
 $html_data_table->task = 'commissions';
-$html_data_table->js_extra_data = "id_commerciale=$id";
+$html_data_table->js_extra_data = "id=$id";
 $html_data_table->btn_add_data = MInit::crypt_tp('id_commerciale', $id);
 
 

@@ -1,3 +1,4 @@
+
 <?php
 //First check target no Hack
 if (!defined('_MEXEC')) die();
@@ -13,8 +14,8 @@ $paiement2 = $paiement->details_commission_info;
 
 $paiement->get_commission();
 $id_commerciale = $paiement->commission_info['id_commerciale'];
-$paiement->get_paiement();
-$paiements = $paiement->commission_info;
+$paiement->get_list_paiement_by_commission();
+$paiements = $paiement->paiements_info;
 
 
 ?>
@@ -99,6 +100,9 @@ $paiements = $paiement->commission_info;
                                         <th width="50px">
                                             Justificatif
                                         </th>
+                                        <th width="50px">
+                                            Décharge
+                                        </th>
 
                                         <?php
                                         //                                                                                         if($complements == null)
@@ -109,34 +113,43 @@ $paiements = $paiement->commission_info;
                                             ?>
                                             <tr>
                                                     <td align="center" valign="top">
-                                                  <?php if ($cmpl['0'] != null) { ?>
-                                                      <span><?php echo $cmpl['0']; ?></span>
+                                                  <?php if ($cmpl['id'] != null) { ?>
+                                                      <span><?php echo $cmpl['id']; ?></span>
                                                   <?php } else echo '-'; ?>
                                                     </td>
                                                     <td>
-                                                        <?php if ($cmpl['2'] != null) { ?>
-                                                            <span><?php echo $cmpl['2']; ?></span>
+                                                        <?php if ($cmpl['objet'] != null) { ?>
+                                                            <span><?php echo $cmpl['objet']; ?></span>
                                                         <?php } else echo '-'; ?>
                                                     </td>
                                                     <td align="right" valign="top">
-                                                        <?php if ($cmpl['6'] != null) { ?>
-                                                            <span><?php echo $cmpl['6']; ?></span>
+                                                        <?php if ($cmpl['debit'] != null) { ?>
+                                                            <span><?php echo $cmpl['debit']; ?></span>
                                                         <?php } else echo '-'; ?>
                                                     </td>
                                                 <td align="center" valign="top">
-                                                        <?php if ($cmpl['16'] != null) { ?>
-                                                            <span><?php echo $cmpl['16']; ?></span>
+                                                        <?php if ($cmpl['date_debit'] != null) { ?>
+                                                            <span><?php echo $cmpl['date_debit']; ?></span>
                                                         <?php } else echo '-'; ?>
                                                     </td>
                                                     <td align="center" valign="top">
-                                                        <?php if ($cmpl['9'] != null) { ?>
-                                                            <span><?php echo $cmpl['9']; ?></span>
+                                                        <?php if ($cmpl['methode_payement'] != null) { ?>
+                                                            <span><?php echo $cmpl['methode_payement']; ?></span>
                                                         <?php } else echo '-'; ?>
 
                                                     </td>
                                                 <td align="center" valign="top">
-                                                    <?php if ($cmpl['10'] != null) { ?>
-                                                        <a href="#" class="iframe_pdf" rel=<?php echo $cmpl['10']; ?>>
+                                                    <?php if ($cmpl['pj'] != null) { ?>
+                                                        <a href="#" class="iframe_pdf" rel=<?php echo $cmpl['pj']; ?>>
+                                                <i style="display: block;margin-left:auto;margin-right:auto"
+                                                   class="ace-icon fa fa-print"></i>
+                                                </a>
+                                                    <?php } else echo '-'; ?>
+                                                </td>
+                                                
+                                                <td align="center" valign="top">
+                                                    <?php if ($cmpl['decharge'] != null) { ?>
+                                                        <a href="#" class="iframe_pdf" rel=<?php echo $cmpl['decharge']; ?>>
                                                 <i style="display: block;margin-left:auto;margin-right:auto"
                                                    class="ace-icon fa fa-print"></i>
                                                 </a>

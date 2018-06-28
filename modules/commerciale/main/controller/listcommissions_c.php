@@ -86,13 +86,13 @@ $array_column = array(
     ),
 
 );
-
+//var_dump(Mreq::tp('id'));
 //Creat new instance
 $list_data_table = new Mdatatable();
 //Set tabels used in Query
 $list_data_table->tables = array('compte_commerciale,commerciaux');
 //Set Jointure
-$list_data_table->joint = "compte_commerciale.`id_credit` IS NULL AND commerciaux.id=compte_commerciale.id_commerciale AND compte_commerciale.id_commerciale = ".Mreq::tp('id_commerciale');
+$list_data_table->joint = "compte_commerciale.`id_credit` IS NULL AND commerciaux.id=compte_commerciale.id_commerciale AND compte_commerciale.id_commerciale = ".Mreq::tp('id');
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query
