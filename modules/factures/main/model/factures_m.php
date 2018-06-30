@@ -1330,7 +1330,7 @@ if($this->facture_info['base_fact'] == 'C')
         $colms .= " d_factures.ref_produit, ";
         $colms .= " d_factures.designation ";
 
-        $req_sql = " SELECT $colms FROM d_factures WHERE d_factures.id_facture = $id_facture  order by item";
+        $req_sql = " SELECT $colms FROM d_factures WHERE d_factures.id_facture = $id_facture order by item";
         if (!$db->Query($req_sql)) {
             $this->error = false;
             $this->log .= $db->Error() . ' ' . $req_sql;
