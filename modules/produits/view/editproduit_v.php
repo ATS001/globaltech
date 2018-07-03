@@ -91,7 +91,9 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_produit->get_produit()) {
  <script type="text/javascript">
 $(document).ready(function() {
 
+ if($("#idtype option:selected").text() == 'Produit'){
  $('#prix_vente').attr('readonly', true);
+ }
  
  $('#idtype').on('change',function() {
 

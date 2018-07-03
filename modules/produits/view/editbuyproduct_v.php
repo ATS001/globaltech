@@ -11,13 +11,17 @@
         // returne message error red to client 
         exit('3#' . $info_achat->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
     }
+    
+    $id_produit = $info_achat->achat_info["idproduit"];
+    
+    
     ?>
     <div class="pull-right tableTools-container">
         <div class="btn-group btn-overlap">
 
     <?php 
-            TableTools::btn_add('buyproducts', 'Liste des achats', MInit::crypt_tp('id', $info_achat->Shw('idproduit', 1)), $exec = NULL, 'reply'); ?>
-
+           TableTools::btn_add('buyproduct','Liste des achats', MInit::crypt_tp('id', $id_produit), $exec = NULL, 'reply'); 
+	?>
         </div>
     </div>
     <div class="page-header">
