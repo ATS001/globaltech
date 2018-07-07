@@ -19,6 +19,14 @@ if(Mreq::tp('id') != null)
         'header' => 'ID',
         'align'  => 'C'
     ),
+        array(
+        'column' => 'factures.client',
+        'type'   => '',
+        'alias'  => 'client',
+        'width'  => '15',
+        'header' => 'Client',
+        'align'  => 'L'
+    ),
     array(
         'column' => 'encaissements.reference',
         'type'   => '',
@@ -31,7 +39,7 @@ if(Mreq::tp('id') != null)
         'column' => 'encaissements.designation',
         'type'   => '',
         'alias'  => 'des',
-        'width'  => '10',
+        'width'  => '15',
         'header' => 'Désignation',
         'align'  => 'L'
     ),
@@ -48,7 +56,7 @@ if(Mreq::tp('id') != null)
         'column' => 'encaissements.montant',
         'type'   => '',
         'alias'  => 'mt',
-        'width'  => '15',
+        'width'  => '10',
         'header' => 'Montant',
         'align'  => 'C'
     ),
@@ -56,7 +64,7 @@ if(Mreq::tp('id') != null)
         'column' => 'encaissements.date_encaissement',
         'type'   => 'date',
         'alias'  => 'date',
-        'width'  => '15',
+        'width'  => '10',
         'header' => 'Date',
         'align'  => 'C'
     ),
@@ -84,6 +92,11 @@ $html_data_table->btn_add_check = true;
 if(Mreq::tp('id') != null){
     $html_data_table->js_extra_data = "id=$id_facture";
     $html_data_table->btn_add_data = MInit::crypt_tp('id', $id_facture);
+}
+
+if($info_facture->facture_info['etat'] == 4)
+{
+    $html_data_table->btn_add_data=NULL;
 }
 
 

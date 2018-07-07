@@ -18,7 +18,8 @@ $pj     = $info_contrats_frn->contrats_frn_info['pj'];
 <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
 
-		<?php TableTools::btn_add('contrats_fournisseurs','Liste des contrats fournisseurs', Null, $exec = NULL, 'reply'); ?>
+		<?php TableTools::btn_action('contrats_fournisseurs', $info_contrats_frn->id_contrats_frn, 'detailscontrat_frn');
+                TableTools::btn_add('contrats_fournisseurs','Liste des contrats fournisseurs', Null, $exec = NULL, 'reply'); ?>
          
 
 	</div>

@@ -20,6 +20,7 @@ $encaissements = $info_facture->encaissement_info;
     <div class="btn-group btn-overlap">
 
         <?php
+        TableTools::btn_action('factures', $info_facture->id_facture, 'detailsfacture');
         TableTools::btn_add('factures', 'Liste des factures', NULL, $exec = NULL, 'reply');
         ?>        
 

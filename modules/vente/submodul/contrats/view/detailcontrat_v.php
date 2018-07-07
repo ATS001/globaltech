@@ -25,7 +25,8 @@ if(!$info_contrat->get_devis_info())
 <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
 
-		<?php TableTools::btn_add('contrats','Liste des contrats', Null, $exec = NULL, 'reply'); ?>
+		<?php TableTools::btn_action('contrats', $info_contrat->id_contrat, 'detailcontrat');
+                TableTools::btn_add('contrats','Liste des contrats', Null, $exec = NULL, 'reply'); ?>
          
 
 	</div>

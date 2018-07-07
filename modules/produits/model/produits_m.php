@@ -13,6 +13,7 @@ class Mproduit {
     var $id_produit; // Produit ID append when request
     var $token; //user for recovery function
     var $produit_info; //Array stock all produit info
+    var $mouvement_info; //Array mouvement info
     var $app_action; //Array action for each 
     static $etat_produit;
 
@@ -143,8 +144,12 @@ class Mproduit {
     //activer ou valider une produit
     public function valid_produit($etat = 0) {
         global $db;
-
-        $etat = $etat == 0 ? 1 : 0;
+        $this->get_produit();
+        if($this->produit_info["idtype"] == "2" OR $this->produit_info["idtype"] == "3")
+        {
+            $etat = 10;
+        }else{
+        $etat = $etat == 0 ? 1 : 0;}
 
         $values["etat"] = MySQL::SQLValue($etat);
         $values["updusr"] = MySQL::SQLValue(session::get('userid'));
@@ -317,4 +322,30 @@ class Mproduit {
         }
     }
 
+    public function get_mouvement_info() {
+        global $db;
+        $table = $this->table;
+       
+        $sql = "SELECT mouvements_stock.*,DATE_FORMAT(DATE,'%d-%m-%Y') as DATE,IF(mouvement='Sortie',CONCAT('<span class=\"badge badge-danger\">',mouvement,'</span>'),CONCAT('<span class=\"badge badge-success\">',mouvement,'</span>')) AS mouvement
+                        FROM  mouvements_stock where mouvements_stock.id_produit = " . $this->id_produit;
+        
+    if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->mouvement_info = $db->RecordsArray();
+                $this->error = true;
+            }
+        }
+        //return Array prm_info
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

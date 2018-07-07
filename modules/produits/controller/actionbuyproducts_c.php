@@ -8,7 +8,7 @@
 
 	$action = new TableTools();
 	$action->line_data = $achat->achat_info;
-	$action->action_line_table('buyproducts', 'stock',$achat->achat_info['creusr'],'deletebuyproduct');
+	$action->action_line_table('buyproduct', 'stock',$achat->achat_info['creusr'],'deletebuyproduct');
 
 
 	?>

@@ -1,140 +1,89 @@
+<?php
+//First check target no Hack
+if (!defined('_MEXEC')) die();
 
-    <?php
-    $info_produit = new Mproduit();
-    $info_produit->id_produit = Mreq::tp('id');
-    $info_produit->get_produit();
+$produit = new Mproduit();
+//Set ID of Module with POST id
+$produit->id_produit = Mreq::tp('id');
+$produit->get_produit();
+$id = Mreq::tp('id');
 
+//array colomn
+$array_column = array(
+	array(
+        'column' => 'stock.id',
+        'type'   => '',
+        'alias'  => 'id',
+        'width'  => '5',
+        'header' => 'ID',
+        'align'  => 'C'
+    ),
+    array(
+        'column' => 'produits.reference',
+        'type'   => '',
+        'alias'  => 'reference',
+        'width'  => '10',
+        'header' => 'Référence',
+        'align'  => 'L'
+    ),
+    array(
+        'column' => 'stock.qte',
+        'type'   => '',
+        'alias'  => 'qte',
+        'width'  => '10',
+        'header' => 'Quantité',
+        'align'  => 'L'
+    ),
+  
+    array(
+        'column' => 'stock.prix_achat',
+        'type'   => '',
+        'alias'  => 'pa',
+        'width'  => '10',
+        'header' => 'Prix achat',
+        'align'  => 'L'
+    ),
+    array(
+        'column' => 'stock.prix_vente',
+        'type'   => '',
+        'alias'  => 'pv',
+        'width'  => '15',
+        'header' => 'Prix vente',
+        'align'  => 'C'
+    ),
+    array(
+        'column' => 'stock.date_achat',
+        'type'   => 'date',
+        'alias'  => 'da',
+        'width'  => '15',
+        'header' => 'Date achat',
+        'align'  => 'C'
+    ),
+    array(
+        'column' => 'statut',
+        'type'   => '',
+        'alias'  => 'statut',
+        'width'  => '15',
+        'header' => 'Statut',
+        'align'  => 'C'
+    ),
+    
+ );
 
-    if (!MInit::crypt_tp('id', null, 'D') or ! $info_produit->get_produit()) {
+//Creat new instance
+$html_data_table = new Mdatatable();
+$html_data_table->columns_html = $array_column;
+$html_data_table->title_module = "Achat";
+$html_data_table->task = 'buyproduct';
 
-        exit('0#' . $info_produit->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur ');
-    }
+//si t as besoin d'envoyer data ajoute key data Ã  Array ex: 'data' => 'id=$id'
+$html_data_table->btn_return = array('task' => 'produits', 'title' => 'Retour liste produits');
+$html_data_table->task = 'buyproduct';
+$html_data_table->js_extra_data = "id_produit=$id";
+$html_data_table->btn_add_data = MInit::crypt_tp('id_produit', $id);
 
-    $id_produit = Mreq::tp('id');
-    $id_produit_c = MInit::crypt_tp('id', $id_produit);
-    ?> 
-
-    <div class="pull-right tableTools-container">
-        <div class="btn-group btn-overlap">
-
-            <?php TableTools::btn_add('produits', 'Liste des produits', Null, $exec = NULL, 'reply'); ?>
-
-
-        </div>
-    </div> 
-
-    <div class="page-header">
-        <h1>
-            Gestion des achats
-            <small>
-                <i class="ace-icon fa fa-angle-double-right"></i>
-            </small>
-        </h1>
-    </div><!-- /.page-header -->
-
-    <div class="row">
-        <div class="col-xs-12">
-            <div class="clearfix">
-                <div class="pull-right tableTools-container">
-                    <div class="btn-group btn-overlap">
-                        <?php {
-                            TableTools::btn_add('addbuyproduct', 'Ajouter achat', MInit::crypt_tp('id', Mreq::tp('id')));
-                        }
-                        ?>     
-
-
-                        <?php TableTools::btn_csv('buyproduct', 'Exporter Liste'); ?>
-                        <?php TableTools::btn_pdf('buyproduct', 'Exporter Liste'); ?>
-
-                    </div>
-                </div>
-            </div>
-
-            <div class="table-header">
-                Liste "Achats" 
-            </div>
-            <div>
-                <table id="achat_grid" class="table table-bordered table-condensed table-hover table-striped dataTable no-footer">
-                    <thead>
-                        <tr>
-
-                            <th>
-                                ID
-                            </th>
-                            <th>
-                                Produit
-                            </th>
-                            <th>
-                                Qte
-                            </th>
-                            <th>
-                                Prix d'achat
-                            </th>
-                            <th>
-                                Prix de vente
-                            </th>
-                            <th>
-                                Etat
-                            </th>
-                            <th>
-                                #
-                            </th>
-                        </tr>
-                    </thead>
-                </table>
-            </div>
-        </div>
-    </div>
-    <script type="text/javascript">
-
-
-        $(document).ready(function () {
-
-            var table = $('#achat_grid').DataTable({
-                bProcessing: true,
-                notifcol: 5,
-                serverSide: true,
-
-                ajax_url: "buyproducts",
-                extra_data: "id=<?php echo Mreq::tp('id'); ?>",
-
-                aoColumns: [
-                    {"sClass": "center", "sWidth": "5%"}, // Identifiant 
-                    {"sClass": "left", "sWidth": "25%"},
-                    {"sClass": "left", "sWidth": "20%"},
-                     {"sClass": "left", "sWidth": "15%"},
-                      {"sClass": "left", "sWidth": "15%"},
-                    {"sClass": "left", "sWidth": "10%"},
-                    {"sClass": "center", "sWidth": "5%"}, // Action
-                ],
-            });
-
-
-
-
-
-
-
-            $('.export_csv').on('click', function () {
-                csv_export(table, 'csv');
-            });
-            $('.export_pdf').on('click', function () {
-                csv_export(table, 'pdf');
-            });
-
-            $('#achat_grid').on('click', 'tr button', function () {
-                var $row = $(this).closest('tr')
-                append_drop_menu('buyproducts', table.cell($row, 0).data(), '.btn_action')
-            });
-
-            $('#id_search').on('keyup', function () {
-                table.column(0).search($(this).val())
-                        .draw();
-
-            });
-
-
-
-        });
-
-    </script>
+if (!$data = $html_data_table->table_html()) {
+    exit("0#" . $html_data_table->log);
+} else {
+    echo $data;
+}

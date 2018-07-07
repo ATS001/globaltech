@@ -11,6 +11,7 @@
             'ref_payement' => Mreq::tp('ref_payement'),
             'montant' => Mreq::tp('montant'),
             'pj_id'          => Mreq::tp('pj-id'),
+            'depositaire' => Mreq::tp('depositaire'),
             );
         
         
@@ -50,6 +51,12 @@
         if ($posted_data['montant'] == NULL) {
 
             $empty_list .= "<li>Montant</li>";
+            $checker = 1;
+        }
+        
+         if($posted_data['depositaire'] == NULL ){
+
+            $empty_list .= "<li>depositaire</li>";
             $checker = 1;
         }
                    
