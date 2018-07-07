@@ -757,7 +757,7 @@ class Mcommission {
          * 
          */
         
-        var_dump($req_sql);
+        //var_dump($req_sql);
         if(!$db->Query($req_sql))
         {
             
