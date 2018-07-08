@@ -11,8 +11,6 @@ $commission = new Mcommission();
 $commission->id_commission = Mreq::tp('id');
 $commission->get_commission();
 
-
-
 $action = new TableTools();
 $action->line_data = $commission->commission_info;
 //$action->action_line_table('commissions', 'compte_commerciale', $commission->commission_info['creusr'], 'deletecommerciale');

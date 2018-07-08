@@ -14,6 +14,7 @@ $bl->get_bl();
 
 
 		<?php 
+                TableTools::btn_action('bl', $bl->id_bl, 'detailbl');
 		TableTools::btn_add('bl', 'Liste bl', Null, $exec = NULL, 'reply');      
 		?>		
 	</div>

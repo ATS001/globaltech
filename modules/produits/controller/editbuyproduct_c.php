@@ -25,6 +25,7 @@
         $checker = null;
         $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
 
+         $empty_list_prix = "** Attention ** \n<ul>";
        
 
         if($posted_data['prix_achat'] == NULL OR !is_numeric($posted_data['prix_achat'])){
@@ -51,7 +52,11 @@
             $checker = 1;
         }
         
-       
+       if($posted_data['prix_vente'] < $posted_data['prix_achat']){
+
+            $empty_list_prix .= "<li>Le prix de vente ne doit pas être inférieur au prix d'achat </li>";
+            $checker = 2;
+        }
         
         
 
@@ -60,6 +65,10 @@
             exit("0#$empty_list");
         }
 
+        $empty_list_prix .= "</ul>";
+        if ($checker == 2) {
+            exit("0#$empty_list_prix");
+        }
        
         //End Checker
         //Call Model
