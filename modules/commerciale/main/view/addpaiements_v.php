@@ -49,7 +49,7 @@ $id_paiement=Mreq::tp('id_commission');
             <div class="widget-box">
 
                 <?php
-                $form = new Mform('addpaiements', 'addpaiements', '', 'commissions&'.MInit::crypt_tp('id', $id_commerciale), '0', null);
+                $form = new Mform('addpaiements', 'addpaiements', '', 'paiements&'.MInit::crypt_tp('id', $id_paiement), '0', null);
                 $form->input_hidden('id', $commission->g('id'));
                 //$form->input_hidden('idc', Mreq::tp('idc'));
                 //$form->input_hidden('idh', Mreq::tp('idh'));

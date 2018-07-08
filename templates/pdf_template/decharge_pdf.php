@@ -35,7 +35,7 @@ class MYPDF extends TCPDF {
     
     //Page header
     public function Header() {
-        var_dump($this->info_paiement);
+       
         //writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
         // Logo
         $image_file = MPATH_IMG . MCfg::get('logo');
