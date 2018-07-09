@@ -13,6 +13,7 @@ class Mproduit {
     var $id_produit; // Produit ID append when request
     var $token; //user for recovery function
     var $produit_info; //Array stock all produit info
+    var $mouvement_info; //Array mouvement info
     var $app_action; //Array action for each 
     static $etat_produit;
 
@@ -140,11 +141,15 @@ class Mproduit {
         }
     }
 
-    //activer ou valider une produit
-    public function valid_produit($etat = 0) {
+    //activer ou valider un produit
+    public function valid_produit($etat) {
         global $db;
-
-        $etat = $etat == 0 ? 1 : 0;
+        $this->get_produit();
+        if($this->produit_info["idtype"] == "2" OR $this->produit_info["idtype"] == "3")
+        {
+            $etat = Msetting::get_set('etat_produit', 'produit_validé_ap');
+        }else{
+        $etat = Msetting::get_set('etat_produit', 'produit_validé_p');}
 
         $values["etat"] = MySQL::SQLValue($etat);
         $values["updusr"] = MySQL::SQLValue(session::get('userid'));
@@ -172,6 +177,41 @@ class Mproduit {
             return true;
         }
     }
+    
+    //activer ou valider un produit
+    public function desactiver_produit() {
+        global $db;
+        $this->get_produit();
+       
+            $etat = Msetting::get_set('etat_produit', 'attente_validation');
+       
+        $values["etat"] = MySQL::SQLValue($etat);
+        $values["updusr"] = MySQL::SQLValue(session::get('userid'));
+        $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+        $wheres['id'] = $this->id_produit;
+
+        // Execute the update and show error case error
+        if (!$result = $db->UpdateRows($this->table, $values, $wheres)) {
+            $this->log .= '</br>Impossible de changer le statut!';
+            $this->log .= '</br>' . $db->Error();
+            $this->error = false;
+        } else {
+            $this->log .= '</br>Statut changé! ';
+            //$this->log   .= $this->table.' '.$this->id_produit.' '.$etat;
+            $this->error = true;
+
+                    if(!Mlog::log_exec($this->table, $this->id_produit , 'Validation produit', 'Validate'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
+        }
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 
     //Edit produit after all check
     public function edit_produit() {
@@ -317,4 +357,30 @@ class Mproduit {
         }
     }
 
+    public function get_mouvement_info() {
+        global $db;
+        $table = $this->table;
+       
+        $sql = "SELECT mouvements_stock.*,DATE_FORMAT(DATE,'%d-%m-%Y') as DATE,IF(mouvement='Sortie',CONCAT('<span class=\"badge badge-danger\">',mouvement,'</span>'),CONCAT('<span class=\"badge badge-success\">',mouvement,'</span>')) AS mouvement
+                        FROM  mouvements_stock where mouvements_stock.id_produit = " . $this->id_produit;
+        
+    if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->mouvement_info = $db->RecordsArray();
+                $this->error = true;
+            }
+        }
+        //return Array prm_info
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }

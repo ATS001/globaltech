@@ -2,12 +2,16 @@
     $info_produit = new Mproduit();
     $info_produit->id_produit = Mreq::tp('id');
     $info_produit->get_produit_info();
+    $info_produit->get_mouvement_info();
+    $mouvement=$info_produit->mouvement_info;
+    
     ?>
     <div class="pull-right tableTools-container">
         <div class="btn-group btn-overlap">
 
 
             <?php
+            TableTools::btn_action('produits', $info_produit->id_produit, 'detailproduit');
             TableTools::btn_add('produits', 'Liste des produits', Null, $exec = NULL, 'reply');
             ?>		
         </div>
@@ -35,6 +39,15 @@
                                 Produit
                             </a>
                         </li>
+                        <?php if($info_produit->produit_info["idtype"] != "2" AND $info_produit->produit_info["idtype"] != "3"){ ?>
+        
+                        <li>
+                            <a data-toggle="tab" href="#feed1">
+                                <i class="red ace-icon fa fa-adjust bigger-120"></i>
+                                Mouvement Stock
+                            </a>
+                        </li>
+                        <?php }   ?>
                     </ul>
 
                     <div class="tab-content no-border padding-24">
@@ -94,6 +107,108 @@
 
 
                         </div><!-- /.row -->
+                        
+                         <div id="feed1" class="tab-pane">
+
+                            <div class="profile-info-row">
+                                <div class="profile-info-value">
+                                    <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+                                    <span>
+                                        <?php
+                                        if ($mouvement == null)
+                                            echo '<B>Aucune mouvement trouvé</B> ';
+                                        else {
+                                            ?>
+                                            <table class="table table-striped table-bordered table-hover"
+                                                   style="width: 820px">
+                                                <th align="center" style="width: 20px">
+                                                    ID
+                                                </th>
+                                                <th style="width:300px">
+                                                    Entrepôt
+                                                </th>
+                                                <th align="center" style="width: 120px">
+                                                    Référence
+                                                </th>
+                                                <th align="center" style="width: 800px">
+                                                    Désignation
+                                                </th>
+                                                <th align="center" style="width: 100px">
+                                                    Quantité
+                                                </th>
+                                                <th align="center" style="width: 120px">
+                                                    Date
+                                                </th>
+                                                <th align="center" style="width: 200px">
+                                                    Source
+                                                </th>
+                                                <th align="center" style="width: 120px">
+                                                    Mouvement
+                                                </th>
+                                                <?php
+                                                foreach ($mouvement as $cmpl) {
+                                                    ?>
+                                                    <tr>
+                                                        <td align="center" valign="top">
+                                                            <?php if ($cmpl['id'] != null) { ?>
+                                                                <span><?php echo $cmpl['id']; ?></span>
+        <?php } else echo '-'; ?>
+                                                        </td>
+                                                        <td>
+                                                            <?php if ($cmpl['entrepot'] != null) { ?>
+                                                                <span><?php echo $cmpl['entrepot']; ?></span>
+        <?php } else echo '-'; ?>
+                                                        </td>
+                                                        <td align="center" valign="top">
+                                                            <?php if ($cmpl['reference'] != null) { ?>
+                                                                <span><?php echo $cmpl['reference']; ?></span>
+        <?php } else echo '-'; ?>
+                                                        </td>
+                                                        <td align="center" valign="top">
+                                                            <?php if ($cmpl['designation'] != null) { ?>
+                                                                <span><?php echo $cmpl['designation']; ?></span>
+        <?php } else echo '-'; ?>
+                                                        </td>
+                                                        <td align="center" valign="top">
+                                                            <?php if ($cmpl['qte'] != null) { ?>
+                                                                <span><?php echo $cmpl['qte']; ?></span>
+        <?php } else echo '-'; ?>
+
+                                                        </td>
+                                                        <td align="center" valign="top">
+                                                            <?php if ($cmpl['DATE'] != null) { ?>
+                                                                <span><?php echo $cmpl['DATE']; ?></span>
+        <?php } else echo '-'; ?>
+
+                                                        </td>
+                                                        <td align="center" valign="top">
+                                                            <?php if ($cmpl['source'] != null) { ?>
+                                                                <span><?php echo $cmpl['source']; ?></span>
+        <?php } else echo '-'; ?>
+
+                                                        </td>
+                                                        <td align="center" valign="top">
+                                                            <?php if ($cmpl['mouvement'] != null) { ?>
+                                                                <span><?php echo $cmpl['mouvement']; ?></span>
+        <?php } else echo '-'; ?>
+
+                                                        </td>
+                                                        
+                                                    </tr>
+
+
+                                                    <?php
+                                                }
+                                            }
+                                            ?>
+
+                                        </table>
+                                    </span>
+                                </div>
+                            </div>
+
+
+                        </div><!-- /#feed1 -->
 
                     </div><!-- /#home -->
 

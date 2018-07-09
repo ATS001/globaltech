@@ -9,13 +9,12 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_facture->get_facture()) {
 }
 
 $id_facture = Mreq::tp('id');
-
 ?>
 
 <div class="pull-right tableTools-container">
     <div class="btn-group btn-overlap">
 
-<?php TableTools::btn_add('encaissements', 'Liste des encaissements', MInit::crypt_tp('id', $id_facture), $exec = NULL, 'reply'); ?>
+        <?php TableTools::btn_add('encaissements', 'Liste des encaissements', MInit::crypt_tp('id', $id_facture), $exec = NULL, 'reply'); ?>
 
     </div>
 </div>
@@ -39,37 +38,41 @@ $id_facture = Mreq::tp('id');
         <div class="widget-content">
             <div class="widget-box">
 
-<?php
-$form = new Mform('addencaissements', 'addencaissements', '', 'encaissements&' . MInit::crypt_tp('id', $id_facture), '0');
-$form->input_hidden('idfacture', $id_facture);
+                <?php
+                $form = new Mform('addencaissements', 'addencaissements', '', 'encaissements&' . MInit::crypt_tp('id', $id_facture), '0');
+                $form->input_hidden('idfacture', $id_facture);
 
 //Justification
-$form->input('Justification', 'pj', 'file', 6, null, null);
-$form->file_js('pj', 1000000, 'pdf');
+                $form->input('Justification', 'pj', 'file', 6, null, null);
+                $form->file_js('pj', 1000000, 'pdf');
+
+//Depositaire
+                $depos_array[] = array('required', 'true', 'Insérez le dépositaire');
+                $form->input('Dépositaire', 'depositaire', 'text', 6, null, $depos_array);
 
 //Désignation
-$des_array[] = array('required', 'true', 'Insérez la désignation');
-$form->input('Désignation', 'designation', 'text', 6, null, $des_array);
+                $des_array[] = array('required', 'true', 'Insérez la désignation');
+                $form->input('Désignation', 'designation', 'text', 6, null, $des_array);
 
 //mode de payment
-$mode_array  = array('Espèce' => 'Espèce', 'Chèque' => 'Chèque','Virement'=>'Virement');
-$form->select('Mode de payement', 'mode_payement', 3, $mode_array, Null,'Réduction', $multi = NULL );
+                $mode_array = array('Espèce' => 'Espèce', 'Chèque' => 'Chèque', 'Virement' => 'Virement');
+                $form->select('Mode de payement', 'mode_payement', 3, $mode_array, Null, 'Réduction', $multi = NULL);
 
 //Réf de la pièce de payement
 
-$form->input('Référence', 'ref_payement', 'text', 6, null, NULL);
+                $form->input('Référence', 'ref_payement', 'text', 6, null, NULL);
 
 //Montant
-$mt_array[] = array('required', 'true', 'Insérez le montant');
-$mt_array[] = array('number', 'true', 'Entrez un montant valide');
-$form->input('Montant', 'montant', 'text', 6, null, $mt_array);
+                $mt_array[] = array('required', 'true', 'Insérez le montant');
+                $mt_array[] = array('number', 'true', 'Entrez un montant valide');
+                $form->input('Montant', 'montant', 'text', 6, null, $mt_array);
 
 
-$form->button('Enregistrer');
+                $form->button('Enregistrer');
 
 //Form render
-$form->render();
-?>
+                $form->render();
+                ?>
             </div>
         </div>
     </div>
