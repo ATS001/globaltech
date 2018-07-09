@@ -13,7 +13,7 @@ if(!defined('_MEXEC'))die();
  if(!MInit::crypt_tp('id', null, 'D') or !$info_bl->get_bl())
  { 	
  	// returne message error red to client 
- 	exit('3#'.$info_user->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+ 	exit('3#'.$info_bl->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
  }
 
 
@@ -83,20 +83,26 @@ $('.qte, .liv').bind('input change',function() {
         var $val_liv   = $('#liv_'+$id).val();
         var $val_liv   = parseFloat($val_liv) ? parseFloat($val_liv) : 0;
 
+        var $type_p    = $('#type_'+$id).val();
+        var $type_p    = parseFloat($type_p) ? parseFloat($type_p) : 0;
+
+       if($type_p== 1)
+       {
         if($val_liv > $val_stock)
         {
         	ajax_loadmessage('La quantité à livrer n\'est pas disponible dans le stock: '+ $val_stock,'nok');
-        	/*ajax_loadmessage('qte stock '+ $val_stock + ' qte devis'+ $val_devis+' vak qte'+ $val_qte,'nok');*/
+        	//ajax_loadmessage('Type produit' + $type_p +'qte stock '+ $val_stock + ' qte devis'+ $val_devis+' vak qte'+ $val_qte,'nok');
         	$('#liv_'+$id).val($val_stock)
     		return false;
         }
-       if($val_liv > $val_devis)
+       } 
+        if($val_liv > $val_devis)
         {
         	ajax_loadmessage('La quantité à livrer ne doit pas dépasser le reste à livrer: '+ $val_devis,'nok');
             $('#liv_'+$id).val($val_devis)
             return false;
         }
-        
+       
  });
 
 });

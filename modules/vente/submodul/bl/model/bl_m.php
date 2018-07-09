@@ -189,6 +189,38 @@ class Mbl {
         }
     }
 
+    private function check_livraison()
+    {
+        global $db;
+        
+        $this->get_bl();
+        $id_devis= $this->bl_info['iddevis'];
+
+        //var_dump($this->bl_info['iddevis']);
+        
+        $req_check_livr = "SELECT (SELECT SUM(qte) FROM d_devis WHERE id_devis = $id_devis ) -
+        (SELECT SUM(b.qte) FROM  d_bl b,bl WHERE  bl.iddevis = $id_devis  AND b.id_bl = bl.id  ) AS reste;";
+        $result = $db->QuerySingleValue0($req_check_livr);
+        
+        if($result == 0){
+            $etat_devis = 'valid_client';
+
+        }else{
+            $etat_devis = 'en_livre';
+        }
+        $new_etat = Msetting::get_set('etat_devis', $etat_devis);
+        $req_sql = " UPDATE devis SET etat = $new_etat  WHERE id = $id_devis ";
+       
+        if(!$db->Query($req_sql))
+        {
+            $this->log .= '</br>Erreur MAJ devis après BL'.$req_sql;
+            $this->error = false;
+            return false;
+
+        }
+        return true;
+    } 
+
     private function refresh_products()
     {
         global $db;
@@ -354,6 +386,14 @@ class Mbl {
 
         }  
 
+      if($this->check_livraison())
+        {
+          $this->error = true;
+        }else{
+          $this->error = false;
+          $this->log .= $db->Error();
+      }
+
       if($this->error == false){
       //var_dump('dkhel');
       //$this->log .='</br>KO ';
@@ -369,7 +409,7 @@ public function Gettable_d_bl()
     {
         global $db;
         $table    = $this->table_details;
-        $input_qte_l = "CONCAT('<input type=\"hidden\" name=\"line_d_d[]\" value=\"',$table.id,'\"/><input type=\"hidden\" name=\"id_produit_',$table.id,'\" value=\"',$table.id_produit,'\"/><input id=\"qte_',$table.id_produit,'\" type=\"hidden\" name=\"qte_bl_',$table.id,'\" value=\"',$table.qte,'\"/><input id=\"qte_devis_',$table.id_produit,'\" type=\"hidden\" name=\"qte_devis_',$table.id,'\" value=\"',d.qte - 
+        $input_qte_l = "CONCAT('<input type=\"hidden\" name=\"line_d_d[]\" value=\"',$table.id,'\"/><input type=\"hidden\" name=\"id_produit_',$table.id,'\" value=\"',$table.id_produit,'\"/><input id=\"type_',$table.id_produit,'\" type=\"hidden\" name=\"type_',$table.id,'\" value=\"',qte_actuel.type,'\"/><input id=\"qte_',$table.id_produit,'\" type=\"hidden\" name=\"qte_bl_',$table.id,'\" value=\"',$table.qte,'\"/><input id=\"qte_devis_',$table.id_produit,'\" type=\"hidden\" name=\"qte_devis_',$table.id,'\" value=\"',d.qte - 
 (SELECT IFNULL(SUM(d_bl1.qte),0) FROM bl bl1, d_bl d_bl1 WHERE bl1.iddevis=d.id_devis AND bl1.id=d_bl1.`id_bl` AND d_bl1.id_produit=d.id_produit AND bl1.id <> bl.id ),'\"/><input id=\"liv_',$table.id_produit,'\" class=\"qte center  is-number\" name=\"qte_liv_',$table.id,'\" type=\"text\" value=\"',$table.qte,'\"/>') as qte_l";
 
 
