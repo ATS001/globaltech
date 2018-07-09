@@ -70,5 +70,5 @@
             echo("0#" . $new_produit->log);
         }
     } else {
-        view::load('produits', 'addproduit');
+        view::load_view('addproduit');
     }
