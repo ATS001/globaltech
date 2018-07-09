@@ -1310,18 +1310,14 @@ class Mdevis
         if($first)
         {
             $req_check_produit = "SELECT  d_devis.ref_produit,  d_devis.designation,  d_devis.id_produit AS produit
-                ,d_devis.qte AS qte_c,  qte_actuel.`qte_act` AS stock
-                FROM d_devis, qte_actuel WHERE  d_devis.id_devis = $id_devis AND
-                qte_actuel.id_produit = d_devis.id_produit AND  d_devis.id_produit = $id_produit ";
+                ,d_devis.qte AS qte_c,  qte_actuel.`qte_act` AS stock, produits.idtype
+                FROM d_devis, qte_actuel, produits WHERE  d_devis.id_devis = $id_devis AND
+                qte_actuel.id_produit = d_devis.id_produit AND  d_devis.id_produit = $id_produit AND produits.id =  d_devis.id_produit ";
         }else{
-            /*$req_check_produit = "SELECT  d_devis.ref_produit,  d_devis.designation,  d_devis.id_produit AS produit
-                ,d_devis.qte AS qte_c,  qte_actuel.`qte_act` AS stock, SUM(d_bl.qte) AS qte_dej_liv
-                FROM d_devis, qte_actuel, d_bl, bl WHERE bl.id = d_bl.id_bl AND  d_devis.id_devis = bl.iddevis 
-                AND d_devis.id_produit = d_bl.id_produit AND d_devis.id_devis = $id_devis AND
-                qte_actuel.id_produit = d_devis.id_produit AND  d_devis.id_produit = $id_produit GROUP BY d_devis.id_produit;";*/
+            
 
             $req_check_produit = "SELECT  d_devis.ref_produit,  d_devis.designation, d_devis.qte AS qte_c,
-            qte_actuel.qte_act AS  stock, 
+            qte_actuel.qte_act AS  stock, produits.idtype,
             ( SELECT IFNULL(SUM(d_bl.qte),0) FROM d_bl, bl
             WHERE d_devis.id_devis = bl.iddevis AND d_devis.id_devis = bl.iddevis AND d_bl.id_bl = bl.id 
             AND d_devis.id_produit = d_bl.id_produit ) AS qte_dej_liv, 
@@ -1330,9 +1326,9 @@ class Mdevis
             AND d_devis.id_produit = d_bl.id_produit )  AS qte_l, d_devis.qte - ( SELECT IFNULL(SUM(d_bl.qte),0) FROM d_bl, bl
             WHERE d_devis.id_devis = bl.iddevis  AND d_devis.id_devis = bl.iddevis AND d_bl.id_bl = bl.id 
             AND d_devis.id_produit = d_bl.id_produit ) AS qte_rest  
-            FROM d_devis, qte_actuel, d_bl, bl 
+            FROM d_devis, qte_actuel, d_bl, bl , produits
             WHERE d_devis.id_devis = $id_devis AND qte_actuel.id_produit = d_devis.id_produit  
-            AND  d_devis.id_produit = $id_produit  GROUP BY d_devis.id_produit " ;     
+            AND  d_devis.id_produit = $id_produit AND produits.id =  d_devis.id_produit   GROUP BY d_devis.id_produit " ;     
         }
         
         
@@ -1347,9 +1343,14 @@ class Mdevis
             if (!$db->RowCount())
             {
                 $this->error = false;
-                $this->log .= 'Aucun enregistrement trouvé xx';
+                $this->log .= 'Aucun enregistrement trouvé xx '.$req_check_produit;
             } else {
+
                 $arr_qte = $db->RowArray();
+                if($arr_qte['idtype'] == 2)
+                {
+                    return true;
+                }
                 $produit = $arr_qte['ref_produit'];
                 if($arr_qte['stock'] < $qte_input)
                 {
@@ -1403,7 +1404,7 @@ class Mdevis
        
         if(!$db->Query($req_sql))
         {
-            $this->log .= '</br>Erreur MAJ devis après BL';
+            $this->log .= '</br>Erreur MAJ devis après BL'.$req_sql;
             $this->error = false;
             return false;
 
