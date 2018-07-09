@@ -1,6 +1,6 @@
 	<?php
 
-	view::load('produits','produits');
+	view::load_view('produits');
 
 
 	?>
