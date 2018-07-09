@@ -12,69 +12,69 @@ if(!defined('_MEXEC'))die();
 */
 
 class Mbl {
-	
-	private $_data;     //data receive from form
-	var $table   = 'bl';//Main table of module
+  
+  private $_data;     //data receive from form
+  var $table   = 'bl';//Main table of module
   var $table_details = 'd_bl';//Table détail 
-	var $last_id = null;//return last ID after insert command
-	var $log     = null;//Log of all opération.
-	var $error   = true;//Error bol changed when an error is occured
+  var $last_id = null;//return last ID after insert command
+  var $log     = null;//Log of all opération.
+  var $error   = true;//Error bol changed when an error is occured
   var $id_bl   = null;// bl ID append when request
-	var $token   = null;//user for recovery function
-	var $bl_info = array();     //Array stock all bl info
+  var $token   = null;//user for recovery function
+  var $bl_info = array();     //Array stock all bl info
   var $d_bl_info = array();     //Array stock all bl details info
-	
+  
 
-	public function __construct($properties = array()){
-		$this->_data = $properties;
-	}
+  public function __construct($properties = array()){
+    $this->_data = $properties;
+  }
 
     // magic methods!
-	public function __set($property, $value){
-		return $this->_data[$property] = $value;
-	}
+  public function __set($property, $value){
+    return $this->_data[$property] = $value;
+  }
 
-	public function __get($property){
-		return array_key_exists($property, $this->_data)
-		? $this->_data[$property]
-		: null
-		;
-	}
-		//Get all info user fro database for edit form
+  public function __get($property){
+    return array_key_exists($property, $this->_data)
+    ? $this->_data[$property]
+    : null
+    ;
+  }
+    //Get all info user fro database for edit form
 
-	public function get_bl()
-	{
-		global $db;
+  public function get_bl()
+  {
+    global $db;
 
-		$table = $this->table;
+    $table = $this->table;
 
-		$sql = "SELECT $table.*, devis.reference as refdevis , DATE_FORMAT($table.date_bl,'%d-%m-%Y') as date_bl FROM 
-		$table , devis WHERE  devis.id = $table.iddevis AND $table.id = ".$this->id_bl;
+    $sql = "SELECT $table.*, devis.reference as refdevis , DATE_FORMAT($table.date_bl,'%d-%m-%Y') as date_bl FROM 
+    $table , devis WHERE  devis.id = $table.iddevis AND $table.id = ".$this->id_bl;
 
-		if(!$db->Query($sql))
-		{
-			$this->error = false;
-			$this->log  .= $db->Error();
-		}else{
-			if ($db->RowCount() == 0) {
-				$this->error = false;
-				$this->log .= 'Aucun enregistrement trouvé ';
-			} else {
-				$this->bl_info = $db->RowArray();
-				$this->error = true;
-			}
-			
-			
-		}
-		//return Array user_info
-		if($this->error == false)
-		{
-			return false;
-		}else{
-			return true ;
-		}
-		
-	}
+    if(!$db->Query($sql))
+    {
+      $this->error = false;
+      $this->log  .= $db->Error();
+    }else{
+      if ($db->RowCount() == 0) {
+        $this->error = false;
+        $this->log .= 'Aucun enregistrement trouvé ';
+      } else {
+        $this->bl_info = $db->RowArray();
+        $this->error = true;
+      }
+      
+      
+    }
+    //return Array user_info
+    if($this->error == false)
+    {
+      return false;
+    }else{
+      return true ;
+    }
+    
+  }
     //Get détails BL
       public function get_details_bl() {
         global $db;
@@ -108,7 +108,7 @@ class Mbl {
         global $db;
 
 
-         $sql = "SELECT * FROM qte_actuel q WHERE q.`id_produit` IN 
+         $sql = "SELECT * FROM qte_actuel q WHERE q.`type`=1  and q.`id_produit` IN 
                 (SELECT id_produit FROM d_bl d WHERE d.`id_produit`=q.`id_produit` AND d.`qte` > q.`qte_act`AND d.`id_bl`= $this->id_bl ) ";
 
         if (!$db->Query($sql)) {
@@ -134,7 +134,7 @@ class Mbl {
         global $db;
 
 
-         $sql = "SELECT * FROM qte_actuel q WHERE q.`id_produit`=$id_produit 
+         $sql = "SELECT * FROM qte_actuel q WHERE q.`type`=1  and q.`id_produit`=$id_produit 
                 and  q.`id_produit` IN 
                 (SELECT id_produit FROM d_bl d WHERE d.`id_produit`=q.`id_produit` AND $qte_liv > q.`qte_act`AND d.`id_bl`= $this->id_bl ) ";
 
@@ -189,6 +189,38 @@ class Mbl {
         }
     }
 
+    private function check_livraison()
+    {
+        global $db;
+        
+        $this->get_bl();
+        $id_devis= $this->bl_info['iddevis'];
+
+        //var_dump($this->bl_info['iddevis']);
+        
+        $req_check_livr = "SELECT (SELECT SUM(qte) FROM d_devis WHERE id_devis = $id_devis ) -
+        (SELECT SUM(b.qte) FROM  d_bl b,bl WHERE  bl.iddevis = $id_devis  AND b.id_bl = bl.id  ) AS reste;";
+        $result = $db->QuerySingleValue0($req_check_livr);
+        
+        if($result == 0){
+            $etat_devis = 'valid_client';
+
+        }else{
+            $etat_devis = 'en_livre';
+        }
+        $new_etat = Msetting::get_set('etat_devis', $etat_devis);
+        $req_sql = " UPDATE devis SET etat = $new_etat  WHERE id = $id_devis ";
+       
+        if(!$db->Query($req_sql))
+        {
+            $this->log .= '</br>Erreur MAJ devis après BL'.$req_sql;
+            $this->error = false;
+            return false;
+
+        }
+        return true;
+    } 
+
     private function refresh_products()
     {
         global $db;
@@ -231,20 +263,20 @@ class Mbl {
 
     }
 
-	/**
-	 * Save new row to main table
-	 * @return [bol] [bol value send to controller]
-	 */
-	public function save_new_bl(){
+  /**
+   * Save new row to main table
+   * @return [bol] [bol value send to controller]
+   */
+  public function save_new_bl(){
         //$this->check_exist($column, $value, $message, $edit = null);
         //$this->check_non_exist($table, $column, $value, $message)
-		
+    
 
 
         // If we have an error
-		if($this->error == true){
-			global $db;
-		    //Add all fields for the table
+    if($this->error == true){
+      global $db;
+        //Add all fields for the table
           $values["reference"]       = MySQL::SQLValue($this->_data["reference"]);
           $values["client"]       = MySQL::SQLValue($this->_data["client"]);
           $values["projet"]       = MySQL::SQLValue($this->_data["projet"]);
@@ -287,13 +319,13 @@ class Mbl {
 
  }
 
-	/**
-	 * Edit selected Row
-	 * @return Bol [send to controller]
-	 */
-	public function edit_bl(){
+  /**
+   * Edit selected Row
+   * @return Bol [send to controller]
+   */
+  public function edit_bl(){
     
-		$this->get_bl();
+    $this->get_bl();
 
      global $db;
         $data_d_bl   = $this->_data['line_d_d'];
@@ -354,6 +386,14 @@ class Mbl {
 
         }  
 
+      if($this->check_livraison())
+        {
+          $this->error = true;
+        }else{
+          $this->error = false;
+          $this->log .= $db->Error();
+      }
+
       if($this->error == false){
       //var_dump('dkhel');
       //$this->log .='</br>KO ';
@@ -363,19 +403,21 @@ class Mbl {
          $this->log .='</br>Modification réussie ';
          return true;
       }
- }	
+ }  
 
 public function Gettable_d_bl()
     {
         global $db;
         $table    = $this->table_details;
-        $input_qte_l = "CONCAT('<input type=\"hidden\" name=\"line_d_d[]\" value=\"',$table.id,'\"/><input type=\"hidden\" name=\"id_produit_',$table.id,'\" value=\"',$table.id_produit,'\"/><input id=\"qte_',$table.id_produit,'\" type=\"hidden\" name=\"qte_bl_',$table.id,'\" value=\"',$table.qte,'\"/><input id=\"qte_devis_',$table.id_produit,'\" type=\"hidden\" name=\"qte_devis_',$table.id,'\" value=\"',d.qte - 
-(SELECT SUM(d_bl1.qte) FROM bl bl1, d_bl d_bl1 WHERE bl1.iddevis=d.id_devis AND bl1.id=d_bl1.`id_bl` AND d_bl1.id_produit=d.id_produit  ),'\"/><input id=\"liv_',$table.id_produit,'\" class=\"qte center  is-number\" name=\"qte_liv_',$table.id,'\" type=\"text\" value=\"',$table.qte,'\"/>') as qte_l";
+        $input_qte_l = "CONCAT('<input type=\"hidden\" name=\"line_d_d[]\" value=\"',$table.id,'\"/><input type=\"hidden\" name=\"id_produit_',$table.id,'\" value=\"',$table.id_produit,'\"/><input id=\"type_',$table.id_produit,'\" type=\"hidden\" name=\"type_',$table.id,'\" value=\"',qte_actuel.type,'\"/><input id=\"qte_',$table.id_produit,'\" type=\"hidden\" name=\"qte_bl_',$table.id,'\" value=\"',$table.qte,'\"/><input id=\"qte_devis_',$table.id_produit,'\" type=\"hidden\" name=\"qte_devis_',$table.id,'\" value=\"',d.qte - 
+(SELECT IFNULL(SUM(d_bl1.qte),0) FROM bl bl1, d_bl d_bl1 WHERE bl1.iddevis=d.id_devis AND bl1.id=d_bl1.`id_bl` AND d_bl1.id_produit=d.id_produit AND bl1.id <> bl.id ),'\"/><input id=\"liv_',$table.id_produit,'\" class=\"qte center  is-number\" name=\"qte_liv_',$table.id,'\" type=\"text\" value=\"',$table.qte,'\"/>') as qte_l";
 
 
-        $etat_stock = "CASE WHEN $table.qte > qte_actuel.`qte_act` THEN 
+        $etat_stock = "CASE WHEN $table.qte > qte_actuel.`qte_act` and qte_actuel.type =1 THEN 
   CONCAT('<span id=\"stok_',$table.id_produit,'\"class=\"badge badge-danger\">', qte_actuel.`qte_act`,'</span>')
-   ELSE  CONCAT('<span id=\"stok_',$table.id_produit,'\" class=\"badge badge-success\">', qte_actuel.`qte_act`,'</span>') END AS stock";
+  WHEN $table.qte < qte_actuel.`qte_act` and qte_actuel.type =1 THEN 
+  CONCAT('<span id=\"stok_',$table.id_produit,'\"class=\"badge badge-success\">', qte_actuel.`qte_act`,'</span>')
+   ELSE  CONCAT('<span id=\"stok_',$table.id_produit,'\" class=\"badge badge-warning\">', qte_actuel.`qte_act`,'</span>') END AS stock";
         $id_bl = $this->id_bl;
         
         $colms = null;
@@ -421,13 +463,13 @@ public function Gettable_d_bl()
      */
     public function valid_bl($etat)
     {
-    	//Get existing data for row
+      //Get existing data for row
       $this->get_bl();
 
       $this->last_id = $this->id_bl;
       global $db;
 
-		//Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
+    //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
       $etat = $etat == 0 ? 1 : 0;
 
       $values["etat"]        = MySQL::SQLValue($etat);
@@ -439,7 +481,7 @@ public function Gettable_d_bl()
      if($this->generate_facture($this->id_bl))
      {
 
-		// Execute the update and show error case error
+    // Execute the update and show error case error
       if(!$result = $db->UpdateRows($this->table, $values, $wheres))
       {
 
@@ -460,7 +502,7 @@ public function Gettable_d_bl()
                //Esspionage
              if(!$db->After_update($this->table, $this->id_bl, $values, $this->bl_info)){
                  $this->log .= '</br>Problème Espionnage';
-                 $this->error = false;	
+                 $this->error = false;  
 
              }
 
@@ -483,27 +525,27 @@ public function Gettable_d_bl()
 
   }
 
-	/**
-	 *  [check_non_exist Check if one entrie not exist on referential table]
+  /**
+   *  [check_non_exist Check if one entrie not exist on referential table]
      * @param  [string] $table   [referential table]
      * @param  [string] $column  [Column bechecked on referential table]
      * @param  [string] $value   [the value to check]
      * @param  [string] $message [Returned message if not  exist]
      * @return [Setting]         [Set $this->error and $this->log]
      */
-	private function check_non_exist($table, $column, $value, $message)
-	{
-		global $db;
-		$result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
-			WHERE $table.$column = ". MySQL::SQLValue($value));
-		if ($result == "0") {
-			$this->error = false;
-			$this->log .='</br>'.$message.' n\'exist pas';
+  private function check_non_exist($table, $column, $value, $message)
+  {
+    global $db;
+    $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
+      WHERE $table.$column = ". MySQL::SQLValue($value));
+    if ($result == "0") {
+      $this->error = false;
+      $this->log .='</br>'.$message.' n\'exist pas';
 
-		}
-	}
+    }
+  }
 
-	/**
+  /**
      * [check_exist Check if one entrie already exist on table]
      * @param  [string] $column  [Column of field on main table]
      * @param  [string] $value   [the value to check]
@@ -513,16 +555,16 @@ public function Gettable_d_bl()
      */
     private function check_exist($column, $value, $message, $edit = null)
     {
-    	global $db;
-    	$table = $this->table;
-    	$sql_edit = $edit == null ? null: " AND  <> $edit";
-    	$result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
-    		WHERE $table.$column = ". MySQL::SQLValue($value) ." $sql_edit ");
+      global $db;
+      $table = $this->table;
+      $sql_edit = $edit == null ? null: " AND  <> $edit";
+      $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
+        WHERE $table.$column = ". MySQL::SQLValue($value) ." $sql_edit ");
 
-    	if ($result != "0") {
-    		$this->error = false;
-    		$this->log .='</br>'.$message.' existe déjà';
-    	}
+      if ($result != "0") {
+        $this->error = false;
+        $this->log .='</br>'.$message.' existe déjà';
+      }
     }
 
 
@@ -533,35 +575,35 @@ public function Gettable_d_bl()
      */
     public function delete_bl()
     {
-    	global $db;
-    	$id_bl = $this->id_bl;
-    	$this->get_bl();
-    	//Format where clause
-    	$where['id'] = MySQL::SQLValue($id_bl);
-    	//check if id on where clause isset
-    	if($where['id'] == null)
-    	{
-    		$this->error = false;
-    		$this->log .='</br>L\' id est vide';
-    	}
-    	//execute Delete Query
-    	if(!$db->DeleteRows($this->table, $where))
-    	{
-    		
-    		$this->error = false;
-    		$this->log .='</br>Suppression non réussie';
+      global $db;
+      $id_bl = $this->id_bl;
+      $this->get_bl();
+      //Format where clause
+      $where['id'] = MySQL::SQLValue($id_bl);
+      //check if id on where clause isset
+      if($where['id'] == null)
+      {
+        $this->error = false;
+        $this->log .='</br>L\' id est vide';
+      }
+      //execute Delete Query
+      if(!$db->DeleteRows($this->table, $where))
+      {
+        
+        $this->error = false;
+        $this->log .='</br>Suppression non réussie';
 
-    	}else{
-    		
-    		$this->error = true;
-    		$this->log .='</br>Suppression réussie ';
-    	}
-    	//check if last error is true then return true else rturn false.
-    	if($this->error == false){
-    		return false;
-    	}else{
-    		return true;
-    	}
+      }else{
+        
+        $this->error = true;
+        $this->log .='</br>Suppression réussie ';
+      }
+      //check if last error is true then return true else rturn false.
+      if($this->error == false){
+        return false;
+      }else{
+        return true;
+      }
     }
 
     /**

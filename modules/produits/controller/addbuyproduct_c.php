@@ -78,5 +78,5 @@
             echo("0#" . $new_achat->log);
         }
     } else {
-        view::load('produits', 'addbuyproduct');
+        view::load_view('addbuyproduct');
     }

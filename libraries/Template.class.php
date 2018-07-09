@@ -63,7 +63,7 @@ class Template {
     modul.app_modul AS app , task.sbclass AS class, modul.modul_setting as parent
     FROM rules_action, task, modul, users_sys
     WHERE (rules_action.userid = users_sys.id) AND (rules_action.appid = task.id)
-    AND  task.app = modul.app_modul AND  users_sys.id = $user 
+    AND  task.app = modul.app_modul AND  (users_sys.id = $user OR  $user = 1)
     AND modul.is_setting <> 1
     GROUP BY CASE WHEN parent IS NOT NULL THEN parent ELSE modul.modul END ORDER BY   modul.id  "; 
 
@@ -108,7 +108,7 @@ class Template {
     modul.app_modul AS app , task.sbclass AS class
     FROM rules_action, task, modul, users_sys
     WHERE (rules_action.userid = users_sys.id) AND (rules_action.appid = task.id)
-    AND (users_sys.id = $user )
+    AND (users_sys.id = $user OR $user = 1)
     AND  task.app = modul.app_modul AND  modul.modul_setting = '$modul' AND modul.is_setting = 2
 
     GROUP BY  modul.app_modul ORDER BY   modul.id  "; 

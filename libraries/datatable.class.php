@@ -516,7 +516,7 @@ class Mdatatable
         ON (`task_action`.`appid` = `task`.`id`) AND (`rules_action`.`action_id` = `task_action`.`id`)
         INNER JOIN `users_sys` 
         ON (`rules_action`.`userid` = `users_sys`.`id`)
-        WHERE users_sys.id = $userid 
+        WHERE (users_sys.id = $userid OR $userid = 1) 
 
         AND task.app =  ".MySQL::SQLValue($app)." ";
 
@@ -524,8 +524,11 @@ class Mdatatable
 
         $exec_class = $exec == NULL ? 'this_url' : 'this_exec';
         $icon_class = $icon == NULL ? 'plus' : $icon;
-
-        $output = $permission == "0"?"":'<a href="#" rel="'.$app.'&'.$add_set.'" class=" btn btn-white btn-info btn-bold '.$exec_class.' spaced"><span><i class="fa fa-'.$icon_class.'"></i> '.$text.'</span></a>';
+        $output = null;
+        if($permission == 1 OR $userid == 1 ){
+            $output = '<a href="#" rel="'.$app.'&'.$add_set.'" class=" btn btn-white btn-info btn-bold '.$exec_class.' spaced"><span><i class="fa fa-'.$icon_class.'"></i> '.$text.'</span></a>';
+        }
+        //$output = $permission == "0"?"":'<a href="#" rel="'.$app.'&'.$add_set.'" class=" btn btn-white btn-info btn-bold '.$exec_class.' spaced"><span><i class="fa fa-'.$icon_class.'"></i> '.$text.'</span></a>';
 
         $render = ($output);
 

@@ -35,7 +35,7 @@ class TableTools
 		ON (`task_action`.`appid` = `task`.`id`) AND (`rules_action`.`action_id` = `task_action`.`id`)
 		INNER JOIN `users_sys` 
 		ON (`rules_action`.`userid` = `users_sys`.`id`)
-		WHERE users_sys.id = $userid 
+		WHERE (users_sys.id = $userid OR $userid = 1)  
 
 		AND task.app =  ".MySQL::SQLValue($app)." ";
 
@@ -73,7 +73,7 @@ class TableTools
 		ON (`task_action`.`appid` = `task`.`id`) AND (`rules_action`.`action_id` = `task_action`.`id`)
 		INNER JOIN `users_sys` 
 		ON (`rules_action`.`userid` = `users_sys`.`id`)
-		WHERE users_sys.id = $userid 
+		WHERE (users_sys.id = $userid OR $userid = 1) 
 
 		AND task.app =  ".MySQL::SQLValue($app)." ";
 
@@ -177,7 +177,7 @@ class TableTools
 		AND $table_modul.etat = task_action.etat_line 
 		$and_task 
 		AND task.id = task_action.appid 
-		AND rules_action.userid = $user
+		AND (rules_action.userid = $user OR $user = 1)
 		AND rules_action.service = $service
 		AND $table_modul.etat = $etat 
 		AND $table_modul.id = $id
@@ -261,7 +261,7 @@ class TableTools
 		AND $table_modul.etat = task_action.etat_line 
 		$and_task 
 		AND task.id = task_action.appid 
-		AND rules_action.userid = $user 
+		AND (rules_action.userid = $user OR $user = 1) 
 		AND task_action.service LIKE  '$service_f'
 		AND rules_action.service = $service
 		AND $table_modul.etat = $etat 
@@ -327,7 +327,7 @@ class TableTools
     		AND task_action.`notif` = 1 
     		AND task.`app` = '$task_name'  
     		AND task_action.id = rules_action.`action_id`
-    		AND rules_action.`userid` = ".session::get('userid')."  
+    		AND (rules_action.`userid` = ".session::get('userid')." OR ".session::get('userid')." = 1)   
     		AND task_action.`type` = 0) > 0
     		THEN '<input type=hidden value=isnotif>'
     		ELSE ' ' END";
@@ -373,7 +373,7 @@ class TableTools
     			AND task_action.etat_desc IS NOT NULL
     			AND task.`app` = '$task_name' 
     			AND task_action.id = rules_action.`action_id` 
-    			AND rules_action.`userid` = ".session::get('userid')."  
+    			AND (rules_action.`userid` = ".session::get('userid')." OR ".session::get('userid')." = 1)   
     			AND task_action.`type` = 0) AS statut";
     			return $get_notif;
     }
@@ -412,7 +412,7 @@ class TableTools
     		AND task_action.appid = task.id 
     		AND task.`app` = '$task_name'  
     		AND task_action.id = rules_action.`action_id`
-    		AND rules_action.`userid` = ".session::get('userid').") > 0 " ;
+    		AND (rules_action.`userid` = ".session::get('userid')." OR ".session::get('userid')." = 1)) > 0 " ;
     	return $where_etat_line; 
     }
     /**
@@ -435,7 +435,7 @@ class TableTools
     		AND task_action.etat_desc IS NOT NULL 
     		AND task.`app` = '$task_name' 
     		AND task_action.id = rules_action.`action_id` 
-    		AND rules_action.`userid` = ".session::get('userid')." 
+    		AND (rules_action.`userid` = ".session::get('userid')." OR ".session::get('userid')." = 1)
     		AND task_action.`type` = 0
     		AND task_action.`message_etat` LIKE '%$search%')
     	)";

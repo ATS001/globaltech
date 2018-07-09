@@ -106,7 +106,10 @@ if($action == 'load_select_categ')
 //Load produit by categorie
 if($action == 'load_select_produit')
 {
-	$where = 'idcategorie = '.MReq::tp('id');
+
+	$etat_produit_p = Msetting::get_set('etat_produit', 'produit_valide_p');
+	$etat_produit_ap = Msetting::get_set('etat_produit', 'produit_valide_ap');
+	$where = ' etat in('.$etat_produit_p.','.$etat_produit_ap.') AND idcategorie = '.MReq::tp('id');
 	$table = 'produits';
 	$value = 'id';
 	$text  = 'designation';
