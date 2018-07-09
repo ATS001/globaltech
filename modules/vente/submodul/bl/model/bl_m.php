@@ -108,7 +108,7 @@ class Mbl {
         global $db;
 
 
-         $sql = "SELECT * FROM qte_actuel q WHERE q.`id_produit` IN 
+         $sql = "SELECT * FROM qte_actuel q WHERE q.`type`=1  and q.`id_produit` IN 
                 (SELECT id_produit FROM d_bl d WHERE d.`id_produit`=q.`id_produit` AND d.`qte` > q.`qte_act`AND d.`id_bl`= $this->id_bl ) ";
 
         if (!$db->Query($sql)) {
@@ -134,7 +134,7 @@ class Mbl {
         global $db;
 
 
-         $sql = "SELECT * FROM qte_actuel q WHERE q.`id_produit`=$id_produit 
+         $sql = "SELECT * FROM qte_actuel q WHERE q.`type`=1  and q.`id_produit`=$id_produit 
                 and  q.`id_produit` IN 
                 (SELECT id_produit FROM d_bl d WHERE d.`id_produit`=q.`id_produit` AND $qte_liv > q.`qte_act`AND d.`id_bl`= $this->id_bl ) ";
 
@@ -370,12 +370,14 @@ public function Gettable_d_bl()
         global $db;
         $table    = $this->table_details;
         $input_qte_l = "CONCAT('<input type=\"hidden\" name=\"line_d_d[]\" value=\"',$table.id,'\"/><input type=\"hidden\" name=\"id_produit_',$table.id,'\" value=\"',$table.id_produit,'\"/><input id=\"qte_',$table.id_produit,'\" type=\"hidden\" name=\"qte_bl_',$table.id,'\" value=\"',$table.qte,'\"/><input id=\"qte_devis_',$table.id_produit,'\" type=\"hidden\" name=\"qte_devis_',$table.id,'\" value=\"',d.qte - 
-(SELECT SUM(d_bl1.qte) FROM bl bl1, d_bl d_bl1 WHERE bl1.iddevis=d.id_devis AND bl1.id=d_bl1.`id_bl` AND d_bl1.id_produit=d.id_produit  ),'\"/><input id=\"liv_',$table.id_produit,'\" class=\"qte center  is-number\" name=\"qte_liv_',$table.id,'\" type=\"text\" value=\"',$table.qte,'\"/>') as qte_l";
+(SELECT IFNULL(SUM(d_bl1.qte),0) FROM bl bl1, d_bl d_bl1 WHERE bl1.iddevis=d.id_devis AND bl1.id=d_bl1.`id_bl` AND d_bl1.id_produit=d.id_produit AND bl1.id <> bl.id ),'\"/><input id=\"liv_',$table.id_produit,'\" class=\"qte center  is-number\" name=\"qte_liv_',$table.id,'\" type=\"text\" value=\"',$table.qte,'\"/>') as qte_l";
 
 
-        $etat_stock = "CASE WHEN $table.qte > qte_actuel.`qte_act` THEN 
+        $etat_stock = "CASE WHEN $table.qte > qte_actuel.`qte_act` and qte_actuel.type =1 THEN 
   CONCAT('<span id=\"stok_',$table.id_produit,'\"class=\"badge badge-danger\">', qte_actuel.`qte_act`,'</span>')
-   ELSE  CONCAT('<span id=\"stok_',$table.id_produit,'\" class=\"badge badge-success\">', qte_actuel.`qte_act`,'</span>') END AS stock";
+  WHEN $table.qte < qte_actuel.`qte_act` and qte_actuel.type =1 THEN 
+  CONCAT('<span id=\"stok_',$table.id_produit,'\"class=\"badge badge-success\">', qte_actuel.`qte_act`,'</span>')
+   ELSE  CONCAT('<span id=\"stok_',$table.id_produit,'\" class=\"badge badge-warning\">', qte_actuel.`qte_act`,'</span>') END AS stock";
         $id_bl = $this->id_bl;
         
         $colms = null;

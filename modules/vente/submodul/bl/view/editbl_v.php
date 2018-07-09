@@ -86,6 +86,7 @@ $('.qte, .liv').bind('input change',function() {
         if($val_liv > $val_stock)
         {
         	ajax_loadmessage('La quantité à livrer n\'est pas disponible dans le stock: '+ $val_stock,'nok');
+        	/*ajax_loadmessage('qte stock '+ $val_stock + ' qte devis'+ $val_devis+' vak qte'+ $val_qte,'nok');*/
         	$('#liv_'+$id).val($val_stock)
     		return false;
         }

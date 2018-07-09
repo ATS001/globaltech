@@ -90,6 +90,8 @@ class MHighchart
         
     }
 
+    
+
     public function column_render($table_vue, $width = 6)
     {
     	global $db;
