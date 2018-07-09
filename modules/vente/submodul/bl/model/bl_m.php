@@ -373,9 +373,14 @@ public function Gettable_d_bl()
 (SELECT SUM(d_bl1.qte) FROM bl bl1, d_bl d_bl1 WHERE bl1.iddevis=d.id_devis AND bl1.id=d_bl1.`id_bl` AND d_bl1.id_produit=d.id_produit  ),'\"/><input id=\"liv_',$table.id_produit,'\" class=\"qte center  is-number\" name=\"qte_liv_',$table.id,'\" type=\"text\" value=\"',$table.qte,'\"/>') as qte_l";
 
 
-        $etat_stock = "CASE WHEN $table.qte > qte_actuel.`qte_act` THEN 
+        $etat_stock = "CASE WHEN qte_actuel.type = '1' and $table.qte > qte_actuel.`qte_act` then 
   CONCAT('<span id=\"stok_',$table.id_produit,'\"class=\"badge badge-danger\">', qte_actuel.`qte_act`,'</span>')
-   ELSE  CONCAT('<span id=\"stok_',$table.id_produit,'\" class=\"badge badge-success\">', qte_actuel.`qte_act`,'</span>') END AS stock";
+  WHEN qte_actuel.type = '1' and $table.qte < qte_actuel.`qte_act` then
+  CONCAT('<span id=\"stok_',$table.id_produit,'\" class=\"badge badge-success\">', qte_actuel.`qte_act`,'</span>')
+   WHEN qte_actuel.type = '1' and $table.qte = qte_actuel.`qte_act` then
+  CONCAT('<span id=\"stok_',$table.id_produit,'\" class=\"badge badge-success\">', qte_actuel.`qte_act`,'</span>')
+   ELSE CONCAT('<span id=\"stok_',$table.id_produit,'\" class=\"badge badge-success\">', 'Consommable','</span>')
+   END AS stock";
         $id_bl = $this->id_bl;
         
         $colms = null;
