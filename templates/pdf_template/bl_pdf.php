@@ -76,8 +76,8 @@ class MYPDF extends TCPDF {
 		//Ste
 		
 		// Title
-		$titre_doc = '<h1 style="letter-spacing: 2px;color;#495375;font-size: 20pt;">Bon Livraison</h1>';
-		$this->writeHTMLCell(0, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true);
+		$titre_doc = '<h1 style="letter-spacing: 2px;color;#495375;font-size: 20pt;">Bon de Livraison</h1>';
+		$this->writeHTMLCell(0, 0, 128, 10, $titre_doc , 'B', 0, 0, true, 'R', true);
 		$this->SetTextColor(0, 0, 0);
 		$this->SetFont('helvetica', '', 9);
 		$detail_bl = '<table cellspacing="3" cellpadding="2" border="0">
@@ -282,7 +282,7 @@ $html = $pdf->Table_body;
 
 //$signature = $pdf->info_proforma['comercial']; 
 
-$signature = 'La Direction'; 
+$signature = 'Le Fournisseur'; 
 
 
 $block_sum = '<div></div>
@@ -313,7 +313,7 @@ p {
 <tr>
     <td  style="font: underline; width: 550px; padding-right: 200px;">
         <br><br><br><br><br>
-        <strong>Signature Client:</strong>
+        <strong>Le Client</strong>
     </td>
     <td  style="font: underline; width: 550px; padding-right: 200px;">
         <br><br><br><br><br>
