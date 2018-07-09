@@ -58,11 +58,11 @@ class MAjax
 			$this->error = false;
 			$this->log  .= $db->Error();
 		}else{
-			if($db->RowCount() == 0)
+			if(!$db->RowCount())
 			{
 				$this->error = false;
 				$this->degre_message = '3#';
-				$this->log .='//APP_TASK_NULL';
+				$this->log .='//APP_TASK_NULL'.$sql;
 
 
 			}else{
@@ -183,6 +183,11 @@ class MAjax
 	//Return error true
 			private function Check_user_permission()
 			{
+				//Grant to user id 1
+				$id_user = session::get('userid');
+				if($id_user == 1){
+					return true;
+				}
 				global $db;
 				$this->session_user = MySQL::SQLValue(session::get('userid'));
 

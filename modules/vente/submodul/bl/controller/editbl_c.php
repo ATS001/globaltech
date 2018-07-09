@@ -26,7 +26,6 @@ if(MInit::form_verif('editbl', false))
         
         //execute Update returne false if error
         if($edit_bl->edit_bl()){
-
             exit("1#".$edit_bl->log);
         }else{
 
