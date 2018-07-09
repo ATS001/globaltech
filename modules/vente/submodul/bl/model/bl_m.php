@@ -12,69 +12,69 @@ if(!defined('_MEXEC'))die();
 */
 
 class Mbl {
-	
-	private $_data;     //data receive from form
-	var $table   = 'bl';//Main table of module
+  
+  private $_data;     //data receive from form
+  var $table   = 'bl';//Main table of module
   var $table_details = 'd_bl';//Table détail 
-	var $last_id = null;//return last ID after insert command
-	var $log     = null;//Log of all opération.
-	var $error   = true;//Error bol changed when an error is occured
+  var $last_id = null;//return last ID after insert command
+  var $log     = null;//Log of all opération.
+  var $error   = true;//Error bol changed when an error is occured
   var $id_bl   = null;// bl ID append when request
-	var $token   = null;//user for recovery function
-	var $bl_info = array();     //Array stock all bl info
+  var $token   = null;//user for recovery function
+  var $bl_info = array();     //Array stock all bl info
   var $d_bl_info = array();     //Array stock all bl details info
-	
+  
 
-	public function __construct($properties = array()){
-		$this->_data = $properties;
-	}
+  public function __construct($properties = array()){
+    $this->_data = $properties;
+  }
 
     // magic methods!
-	public function __set($property, $value){
-		return $this->_data[$property] = $value;
-	}
+  public function __set($property, $value){
+    return $this->_data[$property] = $value;
+  }
 
-	public function __get($property){
-		return array_key_exists($property, $this->_data)
-		? $this->_data[$property]
-		: null
-		;
-	}
-		//Get all info user fro database for edit form
+  public function __get($property){
+    return array_key_exists($property, $this->_data)
+    ? $this->_data[$property]
+    : null
+    ;
+  }
+    //Get all info user fro database for edit form
 
-	public function get_bl()
-	{
-		global $db;
+  public function get_bl()
+  {
+    global $db;
 
-		$table = $this->table;
+    $table = $this->table;
 
-		$sql = "SELECT $table.*, devis.reference as refdevis , DATE_FORMAT($table.date_bl,'%d-%m-%Y') as date_bl FROM 
-		$table , devis WHERE  devis.id = $table.iddevis AND $table.id = ".$this->id_bl;
+    $sql = "SELECT $table.*, devis.reference as refdevis , DATE_FORMAT($table.date_bl,'%d-%m-%Y') as date_bl FROM 
+    $table , devis WHERE  devis.id = $table.iddevis AND $table.id = ".$this->id_bl;
 
-		if(!$db->Query($sql))
-		{
-			$this->error = false;
-			$this->log  .= $db->Error();
-		}else{
-			if ($db->RowCount() == 0) {
-				$this->error = false;
-				$this->log .= 'Aucun enregistrement trouvé ';
-			} else {
-				$this->bl_info = $db->RowArray();
-				$this->error = true;
-			}
-			
-			
-		}
-		//return Array user_info
-		if($this->error == false)
-		{
-			return false;
-		}else{
-			return true ;
-		}
-		
-	}
+    if(!$db->Query($sql))
+    {
+      $this->error = false;
+      $this->log  .= $db->Error();
+    }else{
+      if ($db->RowCount() == 0) {
+        $this->error = false;
+        $this->log .= 'Aucun enregistrement trouvé ';
+      } else {
+        $this->bl_info = $db->RowArray();
+        $this->error = true;
+      }
+      
+      
+    }
+    //return Array user_info
+    if($this->error == false)
+    {
+      return false;
+    }else{
+      return true ;
+    }
+    
+  }
     //Get détails BL
       public function get_details_bl() {
         global $db;
@@ -263,20 +263,20 @@ class Mbl {
 
     }
 
-	/**
-	 * Save new row to main table
-	 * @return [bol] [bol value send to controller]
-	 */
-	public function save_new_bl(){
+  /**
+   * Save new row to main table
+   * @return [bol] [bol value send to controller]
+   */
+  public function save_new_bl(){
         //$this->check_exist($column, $value, $message, $edit = null);
         //$this->check_non_exist($table, $column, $value, $message)
-		
+    
 
 
         // If we have an error
-		if($this->error == true){
-			global $db;
-		    //Add all fields for the table
+    if($this->error == true){
+      global $db;
+        //Add all fields for the table
           $values["reference"]       = MySQL::SQLValue($this->_data["reference"]);
           $values["client"]       = MySQL::SQLValue($this->_data["client"]);
           $values["projet"]       = MySQL::SQLValue($this->_data["projet"]);
@@ -319,13 +319,13 @@ class Mbl {
 
  }
 
-	/**
-	 * Edit selected Row
-	 * @return Bol [send to controller]
-	 */
-	public function edit_bl(){
+  /**
+   * Edit selected Row
+   * @return Bol [send to controller]
+   */
+  public function edit_bl(){
     
-		$this->get_bl();
+    $this->get_bl();
 
      global $db;
         $data_d_bl   = $this->_data['line_d_d'];
@@ -403,7 +403,7 @@ class Mbl {
          $this->log .='</br>Modification réussie ';
          return true;
       }
- }	
+ }  
 
 public function Gettable_d_bl()
     {
@@ -463,13 +463,13 @@ public function Gettable_d_bl()
      */
     public function valid_bl($etat)
     {
-    	//Get existing data for row
+      //Get existing data for row
       $this->get_bl();
 
       $this->last_id = $this->id_bl;
       global $db;
 
-		//Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
+    //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
       $etat = $etat == 0 ? 1 : 0;
 
       $values["etat"]        = MySQL::SQLValue($etat);
@@ -481,7 +481,7 @@ public function Gettable_d_bl()
      if($this->generate_facture($this->id_bl))
      {
 
-		// Execute the update and show error case error
+    // Execute the update and show error case error
       if(!$result = $db->UpdateRows($this->table, $values, $wheres))
       {
 
@@ -502,7 +502,7 @@ public function Gettable_d_bl()
                //Esspionage
              if(!$db->After_update($this->table, $this->id_bl, $values, $this->bl_info)){
                  $this->log .= '</br>Problème Espionnage';
-                 $this->error = false;	
+                 $this->error = false;  
 
              }
 
@@ -525,27 +525,27 @@ public function Gettable_d_bl()
 
   }
 
-	/**
-	 *  [check_non_exist Check if one entrie not exist on referential table]
+  /**
+   *  [check_non_exist Check if one entrie not exist on referential table]
      * @param  [string] $table   [referential table]
      * @param  [string] $column  [Column bechecked on referential table]
      * @param  [string] $value   [the value to check]
      * @param  [string] $message [Returned message if not  exist]
      * @return [Setting]         [Set $this->error and $this->log]
      */
-	private function check_non_exist($table, $column, $value, $message)
-	{
-		global $db;
-		$result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
-			WHERE $table.$column = ". MySQL::SQLValue($value));
-		if ($result == "0") {
-			$this->error = false;
-			$this->log .='</br>'.$message.' n\'exist pas';
+  private function check_non_exist($table, $column, $value, $message)
+  {
+    global $db;
+    $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
+      WHERE $table.$column = ". MySQL::SQLValue($value));
+    if ($result == "0") {
+      $this->error = false;
+      $this->log .='</br>'.$message.' n\'exist pas';
 
-		}
-	}
+    }
+  }
 
-	/**
+  /**
      * [check_exist Check if one entrie already exist on table]
      * @param  [string] $column  [Column of field on main table]
      * @param  [string] $value   [the value to check]
@@ -555,16 +555,16 @@ public function Gettable_d_bl()
      */
     private function check_exist($column, $value, $message, $edit = null)
     {
-    	global $db;
-    	$table = $this->table;
-    	$sql_edit = $edit == null ? null: " AND  <> $edit";
-    	$result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
-    		WHERE $table.$column = ". MySQL::SQLValue($value) ." $sql_edit ");
+      global $db;
+      $table = $this->table;
+      $sql_edit = $edit == null ? null: " AND  <> $edit";
+      $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
+        WHERE $table.$column = ". MySQL::SQLValue($value) ." $sql_edit ");
 
-    	if ($result != "0") {
-    		$this->error = false;
-    		$this->log .='</br>'.$message.' existe déjà';
-    	}
+      if ($result != "0") {
+        $this->error = false;
+        $this->log .='</br>'.$message.' existe déjà';
+      }
     }
 
 
@@ -575,35 +575,35 @@ public function Gettable_d_bl()
      */
     public function delete_bl()
     {
-    	global $db;
-    	$id_bl = $this->id_bl;
-    	$this->get_bl();
-    	//Format where clause
-    	$where['id'] = MySQL::SQLValue($id_bl);
-    	//check if id on where clause isset
-    	if($where['id'] == null)
-    	{
-    		$this->error = false;
-    		$this->log .='</br>L\' id est vide';
-    	}
-    	//execute Delete Query
-    	if(!$db->DeleteRows($this->table, $where))
-    	{
-    		
-    		$this->error = false;
-    		$this->log .='</br>Suppression non réussie';
+      global $db;
+      $id_bl = $this->id_bl;
+      $this->get_bl();
+      //Format where clause
+      $where['id'] = MySQL::SQLValue($id_bl);
+      //check if id on where clause isset
+      if($where['id'] == null)
+      {
+        $this->error = false;
+        $this->log .='</br>L\' id est vide';
+      }
+      //execute Delete Query
+      if(!$db->DeleteRows($this->table, $where))
+      {
+        
+        $this->error = false;
+        $this->log .='</br>Suppression non réussie';
 
-    	}else{
-    		
-    		$this->error = true;
-    		$this->log .='</br>Suppression réussie ';
-    	}
-    	//check if last error is true then return true else rturn false.
-    	if($this->error == false){
-    		return false;
-    	}else{
-    		return true;
-    	}
+      }else{
+        
+        $this->error = true;
+        $this->log .='</br>Suppression réussie ';
+      }
+      //check if last error is true then return true else rturn false.
+      if($this->error == false){
+        return false;
+      }else{
+        return true;
+      }
     }
 
     /**
