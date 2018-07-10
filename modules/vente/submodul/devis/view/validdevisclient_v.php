@@ -132,11 +132,14 @@ $(document).ready(function() {
         var $val_qte   = parseFloat($val_qte) ? parseFloat($val_qte) : 0;
         var $val_liv   = $('#liv_'+$id).val();
         var $val_liv   = parseFloat($val_liv) ? parseFloat($val_liv) : 0;
-        if($val_liv > $val_stock)
+        var $typ_prod  = $('#qte_'+$id).attr('tp');
+        
+        
+        if($val_liv > $val_stock && $typ_prod == 1 )
         {
-        	ajax_loadmessage('La quantité à livrer n\'est pas disponible dans le stock','nok');
-        	$('#liv_'+$id).val($val_stock)
-    		return false;
+            ajax_loadmessage('La quantité à livrer n\'est pas disponible dans le stock','nok');
+            $('#liv_'+$id).val($val_stock)
+            return false;
         }
         if($val_liv > $val_qte)
         {
@@ -144,6 +147,9 @@ $(document).ready(function() {
             $('#liv_'+$id).val($val_qte )
             return false;
         }
+        
+
+        
         
     });
 
