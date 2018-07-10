@@ -140,6 +140,27 @@ class Mproduit {
             return true;
         }
     }
+    
+    private function refresh_products()
+    {
+        global $db;
+        $sql_req = " CALL refresh_products()";
+
+        if(!$db->Query($sql_req))
+        {
+            $this->log .= '</br>Erreur actualisation de produits'.$sql_req;
+            $this->error = false;
+        }else{
+            $this->error = true;
+        }
+
+        if($this->error == false){
+          return false;
+        }else{
+          return true;
+        }
+
+    }
 
     //activer ou valider un produit
     public function valid_produit($etat) {
@@ -149,7 +170,8 @@ class Mproduit {
         {
             $etat = Msetting::get_set('etat_produit', 'produit_validé_ap');
         }else{
-        $etat = Msetting::get_set('etat_produit', 'produit_validé_p');}
+        $etat = Msetting::get_set('etat_produit', 'produit_validé_p');
+        }
 
         $values["etat"] = MySQL::SQLValue($etat);
         $values["updusr"] = MySQL::SQLValue(session::get('userid'));
@@ -162,8 +184,8 @@ class Mproduit {
             $this->log .= '</br>' . $db->Error();
             $this->error = false;
         } else {
+            $this->refresh_products();
             $this->log .= '</br>Statut changé! ';
-            //$this->log   .= $this->table.' '.$this->id_produit.' '.$etat;
             $this->error = true;
 
                     if(!Mlog::log_exec($this->table, $this->id_produit , 'Validation produit', 'Validate'))
