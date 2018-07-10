@@ -158,13 +158,15 @@ class Mbl {
         }
     }
     
+
+    
     //Mouvementer Stock
     public function mouvementer_stock() {
         global $db;
 
 
-         $sql = "INSERT INTO stock (idproduit, qte, mouvement, id_bl )
-                SELECT id_produit, - qte, 'S', id_bl FROM d_bl WHERE id_bl=". $this->id_bl;
+         $sql = "INSERT INTO stock (idproduit, qte, mouvement, id_bl, etat )
+                SELECT id_produit, - qte, 'S', id_bl, 1 FROM d_bl WHERE id_bl=". $this->id_bl;
 
         if (!$db->Query($sql)) {
             $this->error = false;
