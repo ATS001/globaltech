@@ -1,115 +1,89 @@
-	<div class="page-header">
-		<h1>
-			Gestion des produits
-			<small>
-				<i class="ace-icon fa fa-angle-double-right"></i>
-			</small>
-		</h1>
-	</div><!-- /.page-header -->
-
-	<div class="row">
-		<div class="col-xs-12">
-			<div class="clearfix">
-				<div class="pull-right tableTools-container">
-					<div class="btn-group btn-overlap">
-				
-							<?php TableTools::btn_add('addproduit','Ajouter Produit'); ?>
-							<?php TableTools::btn_csv('produits','Exporter Liste'); ?>
-							<?php TableTools::btn_pdf('produits','Exporter Liste'); ?>
-						
-				    </div>
-				</div>
-			</div>
-
-			<div class="table-header">
-				Liste "produits" 
-			</div>
-			<div>
-				<table id="produits_grid" class="table table-bordered table-condensed table-hover table-striped dataTable no-footer">
-					<thead>
-						<tr>
-							
-							<th>
-								ID
-							</th>
-	                                                <th>
-								Référence
-							</th>
-                                                        <th>
-								Type
-							</th>
-                                                        <th>
-								Catégorie
-							</th>
-							                           <th>
-								Entrepôt
-							</th>
-	                                                <th>
-								Désignation
-							</th>                                              
-	                                               
-	                                                <th>
-								Stock
-							</th>
-	                                                
-							<th>
-								Etat
-							</th>
-							<th>
-								#
-							</th>
-						</tr>
-					</thead>
-				</table>
-			</div>
-		</div>
-	</div>
-	<script type="text/javascript">
-
-
-	$(document).ready(function() {
-		
-		var table = $('#produits_grid').DataTable({
-			bProcessing: true,
-			notifcol : 5,
-			serverSide: true,
-			
-			ajax_url:"produits",
-			
-	                aoColumns: [
-	                    {"sClass": "center","sWidth":"5%"}, // Identifiant 
-	                    {"sClass": "left","sWidth":"10%"}, 
-                            {"sClass": "left","sWidth":"10%"},
-                            {"sClass": "left","sWidth":"10%"},
-
-                            {"sClass": "left","sWidth":"10%"},
-	                    {"sClass": "left","sWidth":"25%"},   
-	                    {"sClass": "left","sWidth":"8%"},
-	                    {"sClass": "center","sWidth":"13%"}, // Statut
-	                    {"sClass": "center","sWidth":"5%"}, // Action
-	                    ],
-	                });	        
-	    
-	$('.export_csv').on('click', function() {
-		csv_export(table, 'csv');
-	});
-	$('.export_pdf').on('click', function() {
-		csv_export(table, 'pdf');
-	});
-
-	$('#produits_grid').on('click', 'tr button', function() {
-		var $row = $(this).closest('tr')
-		append_drop_menu('produits', table.cell($row, 0).data(), '.btn_action')
-	});
-
-	$('#id_search').on('keyup', function () {
-	            	table.column(0).search( $(this).val() )
-	                     .draw();
-	            
-	});
+<?php 
+//First check target no Hack
+if(!defined('_MEXEC'))die();
+//SYS GLOBAL TECH
+// Modul: commerciale
+//Created : 30-12-2017
+//View
+//array colomn
+$array_column = array(
+	array(
+        'column' => 'produits.id',
+        'type'   => '',
+        'alias'  => 'id',
+        'width'  => '5',
+        'header' => 'ID',
+        'align'  => 'C'
+    ),
+    array(
+        'column' => 'produits.reference',
+        'type'   => '',
+        'alias'  => 'reference',
+        'width'  => '10',
+        'header' => 'Référence',
+        'align'  => 'L'
+    ),
+    array(
+        'column' => 'ref_types_produits.type_produit',
+        'type'   => '',
+        'alias'  => 'type',
+        'width'  => '10',
+        'header' => 'Type',
+        'align'  => 'L'
+    ),
+     array(
+        'column' => 'ref_categories_produits.categorie_produit',
+        'type'   => '',
+        'alias'  => 'cat_prod',
+        'width'  => '10',
+        'header' => 'Catégorie produit',
+        'align'  => 'L'
+    ),
+   array(
+        'column' => 'entrepots.libelle',
+        'type'   => '',
+        'alias'  => 'entrepot',
+        'width'  => '10',
+        'header' => 'Entrepôt',
+        'align'  => 'L'
+    ),
+    array(
+        'column' => 'produits.designation',
+        'type'   => '',
+        'alias'  => 'des',
+        'width'  => '15',
+        'header' => 'Désignation',
+        'align'  => 'L'
+    ),
+    array(
+        'column' => '(SELECT qte_act FROM qte_actuel WHERE id_produit = produits.id)',
+        'type'   => '',
+        'alias'  => 'stmin',
+        'width'  => '10',
+        'header' => 'Stock',
+        'align'  => 'C'
+    ),
+    array(
+        'column' => 'statut',
+        'type'   => '',
+        'alias'  => 'statut',
+        'width'  => '15',
+        'header' => 'Statut',
+        'align'  => 'C'
+    ),
+    
+ );
+//Creat new instance
+$html_data_table = new Mdatatable();
+$html_data_table->columns_html = $array_column;
+$html_data_table->title_module = "produits";
+$html_data_table->task = 'produits';
 
 
 
-	});
-
-	</script>
+if(!$data = $html_data_table->table_html())
+{
+    exit("0#".$html_data_table->log);
+}else{
+    echo $data;
+}

@@ -20,7 +20,7 @@ $photo   = Minit::get_file_archive($fournisseur->fournisseur_info['pj_photo']);
 <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
 
-		<?php 
+		<?php TableTools::btn_action('fournisseurs', $fournisseur->id_fournisseur, 'detailsfournisseur');
               TableTools::btn_add('fournisseurs', 'Liste fournisseurs', Null, $exec = NULL, 'reply');      
 		 ?>	
          

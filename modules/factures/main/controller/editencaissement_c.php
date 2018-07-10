@@ -15,6 +15,7 @@ if (MInit::form_verif('editencaissement', false)) {//If form is Posted do Action
         'ref_payement' => Mreq::tp('ref_payement'),
         'montant' => Mreq::tp('montant'),
         'pj_id' => Mreq::tp('pj-id'),
+         'depositaire' => Mreq::tp('depositaire'),
     );
 
 
@@ -56,6 +57,12 @@ if (MInit::form_verif('editencaissement', false)) {//If form is Posted do Action
         $empty_list .= "<li>Montant</li>";
         $checker = 1;
     }
+    
+     if($posted_data['depositaire'] == NULL ){
+
+            $empty_list .= "<li>depositaire</li>";
+            $checker = 1;
+        }
 
 
     $empty_list .= "</ul>";
@@ -77,13 +84,15 @@ if (MInit::form_verif('editencaissement', false)) {//If form is Posted do Action
 //var_dump($fact->compte_commercial_info['commission']);
     //execute Edit returne false if error
     if ($new_encaissement->edit_encaissement()) {
-        if($fact->compte_commercial_info['commission']!=0){
+       /* if($fact->compte_commercial_info['commission']!=0){
                 if ($new_encaissement->edit_compte_commercial()) {
                     exit("1#" . $new_encaissement->log); //Green message
                 } else {
                     exit("0#" . $new_encaissement->log); //Red message
                 }
         } 
+        * 
+        */
         exit("1#" . $new_encaissement->log); //Green message
         
     }else {

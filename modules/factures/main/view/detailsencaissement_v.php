@@ -7,9 +7,10 @@ $justif = $info_encaissement->encaissement_info['pj'];
 <div class="pull-right tableTools-container">
     <div class="btn-group btn-overlap">
 
-        <?php
-        TableTools::btn_add('encaissements', 'Liste des encaissements', MInit::crypt_tp('id', $info_encaissement->Shw('idfacture', 1)), $exec = NULL, 'reply');
-        ?>
+<?php
+TableTools::btn_action('encaissements', $info_encaissement->id_encaissement, 'detailsencaissement');
+TableTools::btn_add('encaissements', 'Liste des encaissements', MInit::crypt_tp('id', $info_encaissement->Shw('idfacture', 1)), $exec = NULL, 'reply');
+?>
 
 
 
@@ -39,6 +40,16 @@ $justif = $info_encaissement->encaissement_info['pj'];
                         </a>
                     </li>
 
+<?php if ($info_encaissement->encaissement_info['etat'] == 1) { ?>
+                        <div class="widget-toolbar hidden-480">
+
+                            <a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'recepisse') ?>" data="<?php echo MInit::crypt_tp('id', $info_encaissement->id_encaissement) ?>">
+                                <i class="ace-icon fa fa-print"></i>
+                            </a>
+
+                        </div>  
+<?php } ?>
+
                 </ul>
 
                 <div class="tab-content no-border padding-24">
@@ -54,6 +65,15 @@ $justif = $info_encaissement->encaissement_info['pj'];
                                     <div class="profile-info-value">
                                             <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
                                         <span><?php $info_encaissement->printattribute('reference'); ?></span>
+                                    </div>
+                                </div>
+
+                                <div class="profile-info-row">
+                                    <div class="profile-info-name"> Dépositaire </div>
+
+                                    <div class="profile-info-value">
+                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+                                        <span><?php $info_encaissement->printattribute('depositaire'); ?></span>
                                     </div>
                                 </div>
                                 <div class="profile-info-row">
@@ -83,6 +103,15 @@ $justif = $info_encaissement->encaissement_info['pj'];
                                     </div>
                                 </div>
                                 <div class="profile-info-row">
+                                    <div class="profile-info-name"> Mode Paiement </div>
+
+                                    <div class="profile-info-value">
+                                            <!--<i class="fa fa-map-marker light-orange bigger-110"></i>-->
+                                        <span><?php $info_encaissement->printattribute('mode_payement');
+?></span>
+                                    </div>
+                                </div>
+                                <div class="profile-info-row">
                                     <div class="profile-info-name"> Date </div>
 
                                     <div class="profile-info-value">
@@ -90,29 +119,28 @@ $justif = $info_encaissement->encaissement_info['pj'];
                                         <span><?php $info_encaissement->printattribute('date_encaissement'); ?></span>
                                     </div>
                                 </div>
-                                <?php
-                                if ($justif != null) {
-                                    ?>
+<?php
+if ($justif != null) {
+    ?>
                                     <div class="center">                                        
                                         <a class="iframe_pdf" rel="<?php $info_encaissement->printattribute('pj') ?>">
                                             <p class="lead"><i class="ace-icon fa fa-file-pdf-o red"></i>
-                                                <?php $info_encaissement->printattribute('reference') ?> </p>
+    <?php $info_encaissement->printattribute('reference') ?> </p>
                                         </a>							
                                     </div>  
-                                    <?php
-                                }
-                                else 
-                                { ?>
+    <?php
+} else {
+    ?>
                                     <div class="profile-info-row">
-                                    <div class="profile-info-name"> Pièce jointe </div>
+                                        <div class="profile-info-name"> Pièce jointe </div>
 
-                                    <div class="profile-info-value">
-                                
-                                        <span>Pièce jointe non disponible</span>
+                                        <div class="profile-info-value">
+
+                                            <span>Pièce jointe non disponible</span>
+                                        </div>
                                     </div>
-                                </div>
-                                <?php }
-                                ?> 
+<?php }
+?> 
 
                             </div>
 

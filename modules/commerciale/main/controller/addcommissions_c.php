@@ -10,12 +10,10 @@ if (MInit::form_verif('addcommissions', false)) {
     $posted_data = array(
         'credit' => Mreq::tp('credit'),
         'objet' => Mreq::tp('objet'),
-        //'type'=>'Manuelle',
         'id_commerciale' => Mreq::tp('id_commerciale'),
 
     );
 
-//var_dump($posted_data);
     //Check if array have empty element return list
     //for acceptable empty field do not put here
     $checker = null;

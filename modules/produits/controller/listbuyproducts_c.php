@@ -1,3 +1,4 @@
+
 <?php
 //array colomn
 $array_column = array(
@@ -43,6 +44,14 @@ $array_column = array(
         'align'  => 'C'
     ),
     array(
+        'column' => 'stock.date_achat',
+        'type'   => 'date',
+        'alias'  => 'da',
+        'width'  => '15',
+        'header' => 'Date achat',
+        'align'  => 'C'
+    ),
+    array(
         'column' => 'statut',
         'type'   => '',
         'alias'  => 'statut',
@@ -57,17 +66,19 @@ $list_data_table = new Mdatatable();
 //Set tabels used in Query
 $list_data_table->tables = array('stock', 'produits');
 //Set Jointure
-$list_data_table->joint = 'stock.idproduit=produits.id and stock.mouvement= "E" AND stock.idproduit ='.Mreq::tp('id');
+$list_data_table->joint = 'stock.idproduit=produits.id and stock.mouvement= "E" AND stock.idproduit ='.Mreq::tp('id_produit');
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query
 $list_data_table->main_table = 'stock';
 //Set Task used for statut line
-$list_data_table->task = 'buyproducts';
+$list_data_table->task = 'buyproduct';
 //Set File name for export
 $list_data_table->file_name = 'liste_buyproducts';
 //Set Title of report
 $list_data_table->title_report = 'Liste achats';
+//$list_data_table->debug = true;
+//var_dump($list_data_table);
 //Print JSON DATA
 if(!$data = $list_data_table->Query_maker())
 {
