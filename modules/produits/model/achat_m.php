@@ -158,7 +158,7 @@
                 $this->error = false;
             } else {
                 $this->log .= '</br>Statut changé! ';
-                //$this->log   .= $this->table.' '.$this->id_produit.' '.$etat;
+                $this->refresh_products();
                 $this->error = true;
 
 
@@ -173,7 +173,26 @@
                 return true;
             }
         }
+private function refresh_products()
+    {
+        global $db;
+        $sql_req = " CALL refresh_products()";
 
+        if(!$db->Query($sql_req))
+        {
+            $this->log .= '</br>Erreur actualisation de produits'.$sql_req;
+            $this->error = false;
+        }else{
+            $this->error = true;
+        }
+
+        if($this->error == false){
+          return false;
+        }else{
+          return true;
+        }
+
+    }
         //Edit produit after all check
         public function edit_achat_produit() {
 
