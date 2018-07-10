@@ -158,6 +158,8 @@ class Mbl {
         }
     }
     
+
+    
     //Mouvementer Stock
     public function mouvementer_stock() {
         global $db;
