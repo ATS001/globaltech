@@ -1820,6 +1820,7 @@ class Mdevis
         $req_sql = "SELECT 
         produits.designation,
         produits.reference,
+        produits.idtype,
         produits.prix_vente AS prix_vente,
         ref_unites_vente.unite_vente,
         ref_types_produits.type_produit,

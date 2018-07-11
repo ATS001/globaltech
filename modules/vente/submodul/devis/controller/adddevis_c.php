@@ -84,6 +84,12 @@ if(MInit::form_verif('adddevis', false))
       $empty_list .= "<li>Commission</li>";
       $checker = 1;
     }
+    $set_comission = Msetting::get_set('plafond_comission');
+    if($posted_data['commission'] > $set_comission ){
+
+      $empty_list .= "<li>Commission ne dois pas dépasser $set_comission</li>";
+      $checker = 1;
+    }
     if($posted_data['total_commission'] == NULL OR !is_numeric($posted_data['total_commission']) ){
 
       $empty_list .= "<li>Total Commission</li>";
