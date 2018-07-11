@@ -107,9 +107,14 @@ if($action == 'load_select_categ')
 if($action == 'load_select_produit')
 {
 
-	$etat_produit_p = Msetting::get_set('etat_produit', 'produit_valide_p');
+	$etat_produit_p  = Msetting::get_set('etat_produit', 'produit_valide_p');
 	$etat_produit_ap = Msetting::get_set('etat_produit', 'produit_valide_ap');
-	$where = ' etat in('.$etat_produit_p.','.$etat_produit_ap.') AND idcategorie = '.MReq::tp('id');
+	$etat_en_stock   = Msetting::get_set('etat_produit', 'en_stock');
+    $etat_stock_faible = Msetting::get_set('etat_produit', 'stock_faible');
+    $etat_stock_epuise = Msetting::get_set('etat_produit', 'stock_epuise');
+    $where = ' etat in('.$etat_produit_p.','.$etat_produit_ap.','.$etat_en_stock.','.$etat_stock_faible.','.$etat_stock_epuise.') AND idcategorie = '.MReq::tp('id');
+
+	
 	$table = 'produits';
 	$value = 'id';
 	$text  = 'designation';

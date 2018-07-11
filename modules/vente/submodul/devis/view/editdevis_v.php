@@ -235,8 +235,18 @@ $(document).ready(function() {
 
     });
 
-    $('#commission').on('change', function () {
+    $('#commission').binf('input change', function () {
         var table = $('#table_details_devis').DataTable();
+        $cms = parseFloat($('#commission').val());
+        $set_commision = parseFloat(<?php echo Msetting::get_set('plafond_comission') ?>);
+
+        if($cms > $set_commision){
+
+            ajax_loadmessage('La commission ne doit pas dépasser '+$set_commision,'nok',5000);
+            $('#commission').val(0);
+            return false;
+            
+        }
 
         if (table.data().count()) {
 
