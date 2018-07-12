@@ -50,14 +50,14 @@
                         <?php }   ?>
                     </ul>
 
-                    <div class="tab-content no-border padding-24">
+                    <div class="tab-content no-border padding-18">
                         <div id="home" class="tab-pane in active">
                             <div class="col-xs-12 col-sm-4"></div>
 
                          <div class="col-sm-4">
                                 <div class="row">
                                     <div class="col-xs-11 label label-lg label-success arrowed-in arrowed-right">
-                                        <b>Produit Info</b>
+                                        <b>Informations Produit</b>
                                     </div>
                                 </div>
 
@@ -65,38 +65,38 @@
                                     <ul class="list-unstyled  spaced">
                                         <li>
                                             <i class="ace-icon fa fa-caret-right green"></i> Type de produit
-                                            <b style="color:green"><?php $info_produit->printattribute('type_produit'); ?></b>
+                                            <b class="blue pull-right"><?php $info_produit->printattribute('type_produit'); ?></b>
                                         </li>
 
                                         <li>
                                             <i class="ace-icon fa fa-caret-right green"></i> Catégorie du produit
-                                            <b style="color:green"><?php $info_produit->printattribute('categorie_produit'); ?></b>
+                                            <b class="blue pull-right"><?php $info_produit->printattribute('categorie_produit'); ?></b>
                                         </li>
 
                                         <li>
                                             <i class="ace-icon fa fa-caret-right green"></i> Unité de vente
-                                            <b style="color:green"><?php $info_produit->printattribute('unite_vente'); ?></b>
+                                            <b class="blue pull-right"><?php $info_produit->printattribute('unite_vente'); ?></b>
                                         </li>
 
                                         <li>
                                             <i class="ace-icon fa fa-caret-right green"></i>
                                             Référence
-                                            <b style="color:green"><?php $info_produit->printattribute('reference'); ?></b>
+                                            <b class="blue pull-right"><?php $info_produit->printattribute('reference'); ?></b>
                                         </li>
                                         <li>
                                             <i class="ace-icon fa fa-caret-right green"></i>
                                             Désignation
-                                            <b style="color:green"><?php $info_produit->printattribute('designation'); ?></b>
+                                            <b class="blue pull-right"><?php $info_produit->printattribute('designation'); ?></b>
                                         </li>
                                         <li>
                                             <i class="ace-icon fa fa-caret-right green"></i>
                                             Prix de vente
-                                            <b style="color:green"><?php $info_produit->printattribute('prix_vente'); ?></b>
+                                            <b class="blue pull-right"><?php $info_produit->printattribute('prix_vente'); ?></b>
                                         </li>
                                         <li>
                                             <i class="ace-icon fa fa-caret-right green"></i>
                                             Stock minimal
-                                            <b style="color:green"><?php $info_produit->printattribute('stock_min'); ?></b>
+                                            <b class="blue pull-right"><?php $info_produit->printattribute('stock_min'); ?></b>
                                         </li>
                                         
                                     </ul>
