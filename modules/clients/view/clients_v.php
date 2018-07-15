@@ -69,12 +69,12 @@ $(document).ready(function() {
 		//ajax:{},
 		aoColumns: [
 	        {"sClass": "center","sWidth":"5%"}, //
-	        {"sClass": "left","sWidth":"10%"},
-	        {"sClass": "left","sWidth":"20%"}, //
-	        {"sClass": "left","sWidth":"20%"},
-	        {"sClass": "center","sWidth":"20%"},
-	        {"sClass": "center","sWidth":"20%"},
-	        {"sClass": "center","sWidth":"5%"},
+	        {"sClass": "left","sWidth":"13%"},
+	        {"sClass": "left","sWidth":"28%"}, //
+	        {"sClass": "left","sWidth":"29%"},
+	        {"sClass": "center","sWidth":"12%"},
+	        {"sClass": "center","sWidth":"10%"},
+	        {"sClass": "center","sWidth":"3%"},
 	        ],
 	    });
 

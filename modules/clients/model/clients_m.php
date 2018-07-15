@@ -67,6 +67,79 @@ class Mclients {
 		}
 		
 	}
+   //Return the list of a client devis
+
+    public function get_list_devis()
+    {
+      
+        $table = "devis";
+      global $db;
+
+      $sql =//"SELECT $table.*, DATE_FORMAT($table.date_devis,'%d-%m-%Y') AS date_devis from $table where $table.id_client = ".$this->id_client;
+      "SELECT d.`id`,d.`reference`,DATE_FORMAT(d.`date_devis`,'%d-%m-%Y') AS date_devis,CONCAT(c.`nom`,' ',c.`prenom`) as commercial,d.`totalht`,d.`totaltva`,d.`total_remise`,d.`totalttc` FROM devis d, commerciaux c WHERE c.`id`=d.`id_commercial` and d.`id_client` = ".$this->id_client." order by d.date_devis desc";
+
+      if(!$db->Query($sql))
+      {
+        $this->error = false;
+        $this->log  .= $db->Error();
+      }else{
+        if ($db->RowCount() == 0)
+        {
+          $this->error = false;
+          $this->log .= 'Aucun enregistrement trouvé ';
+        } else {
+          $this->client_info = $db->RecordsSimplArray();
+          $this->error = true;
+        }
+
+
+      }
+      //return Array
+      if($this->error == false)
+      {
+        return false;
+      }else{
+        return true ;
+      }
+    }
+
+    //Return the list of a client abonnement
+
+    public function get_list_abn()
+    {
+      
+        $table = "contrats";
+      global $db;
+
+      $sql ="SELECT d.`id`,d.`reference`,DATE_FORMAT(d.`date_devis`,'%d-%m-%Y') AS date_devis,CONCAT(c.`nom`,' ',c.`prenom`) as commercial,d.`totalht`,d.`totaltva`,d.`total_remise`,d.`totalttc` FROM devis d, commerciaux c WHERE c.`id`=d.`id_commercial` and d.`id_client` = ".$this->id_client." order by d.date_devis desc";
+
+      if(!$db->Query($sql))
+      {
+        $this->error = false;
+        $this->log  .= $db->Error();
+      }else{
+        if ($db->RowCount() == 0)
+        {
+          $this->error = false;
+          $this->log .= 'Aucun enregistrement trouvé ';
+        } else {
+          $this->client_info = $db->RecordsSimplArray();
+          $this->error = true;
+        }
+
+
+      }
+      //return Array
+      if($this->error == false)
+      {
+        return false;
+      }else{
+        return true ;
+      }
+    }
+
+
+  
 
 		 /**
      * [check_exist Check if one entrie already exist on table]
@@ -302,7 +375,17 @@ class Mclients {
 
     }
 
+  // afficher les infos d'un client
+    public function g($key)
+    {
+        if($this->client_info[$key] != null)
+        {
+            return $this->client_info[$key];
+        }else{
+            return null;
+        }
 
+    }
 
 	// afficher les infos d'un client
     public function s($key)
