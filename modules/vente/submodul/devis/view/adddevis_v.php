@@ -44,13 +44,14 @@ $form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$selected = NUL
 $form->input('Projet', 'projet', 'text' ,'6', NULL, null, null, null);
 
 //Commercial
-$hard_code_commercial = '<span class="help-block returned_span">...</span>';
+//$hard_code_commercial = '<span class="help-block returned_span">...</span>';
 $commercial_array[]  = array('required', 'true', 'Choisir un Commercial');
-$form->select_table('Commercial', 'id_commercial', 6, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)' , 'CONCAT(nom," ",prenom)' , $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat=1', $commercial_array, $hard_code_commercial);
+$form->select_table('Commercial', 'id_commercial', 6, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)' , 'CONCAT(nom," ",prenom)' , $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat=1', $commercial_array, null);
 //Commission du commercial
+$hard_code_commission  = '<label style="margin-left:15px;margin-right : 20px;">Prise en charge par: </label><select id="type_commission" name="type_commission" class="chosen-select col-xs-12 col-sm-3" chosen-class="'.((3 * 100) / 12).'" ><option value="C" >Client</option><option value="S" >Société</option></select>';
 $array_commission[]= array('required', 'true', 'Insérer la commission du commercial');
 $array_commission[]= array('number', 'true', 'Montant invalid' );
-$form->input('Commission du commercial (%)', 'commission', 'text' ,'2 is-number alignRight','0', $array_commission, null, null);
+$form->input('Commission du commercial (%)', 'commission', 'text' ,'2 is-number alignRight','0', $array_commission, $hard_code_commission, null);
 
 
 //Table 
@@ -76,7 +77,7 @@ $hard_code_prices = '<label style="margin-left:15px;margin-right : 20px;"> T.V.A
 $hard_code_prices .= '<label style="margin-left:15px;margin-right : 20px;">Prix Global TTC: </label><input readonly="" id="totalttc" name="totalttc" class="input-large is-number alignRight" value="0" type="text">';
 $form->input('Prix Global HT', 'totalht', 'text' ,'3 is-number alignRight', '0', $prixht_array, $hard_code_prices, 'readonly');
 //Validité
-$vie_opt = array('30' => '30 Jours' , '60' => '60 Jours', '90' => '90 Jours', '180' => 'Six mois', '365' => 'Un an');
+$vie_opt = array('30' => '1 Mois' , '60' => '2 Mois', '90' => '3 Mois', '180' => '6 Mois', '365' => '12 Mois');
 $form->select('Validité', 'vie', 3, $vie_opt, $indx = '-----' ,30 , $multi = NULL);
 //Conditions commercial
 $clauses = 'Paiement 100% à la commande';
@@ -237,10 +238,14 @@ $(document).ready(function() {
 
     });
 
-    
+      
 
 
-    $('#commission').bind('input change', function () {
+    $('#commission').focusout( function () {
+        //First check if PEC commission by US return true
+        if($('#type_commission').val() == 'S' && $(this).val() == 0){
+            return true;
+        }
         var table = $('#table_details_devis').DataTable();
         $cms = parseFloat($('#commission').val());
 
@@ -281,14 +286,18 @@ $(document).ready(function() {
                             }
                         });
                     }else{
+                        alert($cms);
                       
-                      $('#commission').val($cms);
+                        $('#commission').val($cms);
 
                     }
                 }
             );  
         }
 
+    });
+    $('#type_commission').on('change', function () {
+        $('#commission').trigger('focusout');
     });
 
 

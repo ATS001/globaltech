@@ -889,11 +889,16 @@ class Mdevis
     }
 
     //update commission in details_devis after the change of commission in the main
-    public function set_commission_for_detail_on_change_main_commission($tkn_frm, $commission)
+    public function set_commission_for_detail_on_change_main_commission($tkn_frm, $commission, $type_commission = 'C')
     {
         //var_dump($commission);
         $table_details = $this->table_details;
         $tva_value     = Mcfg::get('tva');
+
+        if($type_commission == 'S')
+        {
+            $commission = 0;
+        }
 
         global $db;
         $req_sql = "UPDATE $table_details SET  prix_ht = (prix_unitaire +((prix_unitaire * $commission)/100)), total_ht = (prix_ht * qte), total_tva = ((total_ht * $tva_value)/100), total_ttc = (total_ht + total_tva)  WHERE tkn_frm = '$tkn_frm'";
@@ -1210,7 +1215,7 @@ class Mdevis
             if($this->g('type_devis') == 'VNT')
             {
                 $id_bl = 'id='.$id_bl;
-                $task  = MInit::crypt_tp('task', 'detailsbl');
+                $task  = MInit::crypt_tp('task', 'detailbl');
 
 
                 $this->log .= '</br>Opération réussie '.'<a left_menu="1" class="fa-double_angle_right this_url_jump" rel="seturl" title="Detail BL" data="'.$id_bl.'&'.$task.'"><b> : Détail Bon de livraison</a>';
@@ -1823,7 +1828,7 @@ class Mdevis
         produits.idtype,
         produits.prix_vente AS prix_vente,
         ref_unites_vente.unite_vente,
-        ref_types_produits.type_produit,
+        ref_types_produits.type_produit, ref_types_produits.check_stock,
         IFNULL((SELECT MAX(d_devis.prix_ht) FROM d_devis WHERE d_devis.id_produit = $id_produit), 0) AS prix_vendu,
         IFNULL(SUM(stock.qte), 0) AS qte_in_stock,
         IFNULL(
@@ -1857,18 +1862,27 @@ class Mdevis
         if (!$db->Query($req_sql)) {
            
             $this->arr_prduit = array('error' => "Erreur get product info");
+            
             return false;
             
         }else{
 
             $this->arr_prduit = $db->RowArray();
-            if($this->arr_prduit['type_produit'] == 'Abonnement'){
+            if($this->arr_prduit['type_produit'] == 'Abonnement' ){
                 $this->arr_prduit['abn']= true;
+
             }
             if($this->arr_prduit['prix_vente'] == null)
             {
                 $this->arr_prduit = array('error' => "Prix de produit n'est pas enregitré");
             }
+            if($this->arr_prduit['check_stock'] == 'Y' )
+            {
+                $this->arr_prduit['qte_dispo'] = ' / Qte disponible : '. $this->arr_prduit['qte_in_stock'].' '.$this->arr_prduit['unite_vente'];
+            }else{
+                $this->arr_prduit['qte_dispo']  = '';
+            }
+            
         }
         return true;
     }

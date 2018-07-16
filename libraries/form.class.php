@@ -608,6 +608,74 @@ public function radio($radio_desc, $radio_id, $radio_value = null, $array_radio,
 
 }
 
+/**
+* Function select_option_only used generally when have load on select
+     * Generate Select options from Table 
+     
+     
+     * @param string table Table name
+     * @param string $[id_table] [<column of value option>]
+     * @param string $[order_by] [<column of order>]
+     * @param string $[txt_table] [<column of text option>]
+     * @param string $[indx] [<First option if declared default = NUll>]
+     * @param string $[selected] [<column of value option>]
+     * @return append string into form_fields [Input render]
+*/
+
+public function select_option_only($table, $id_table, $order_by , $txt_table ,$selected = NULL, $multi = NULL, $where = NULL)
+{
+  if($multi != NULL && $selected != NULL)
+  {
+    $array_exist = str_replace('[-', '"', $selected);
+    $array_exist = str_replace('-]', '"', $array_exist);
+    $array_exist = '['.str_replace('-', '","', $array_exist).']';
+    $array_exist = json_decode($array_exist,true);
+
+  }
+  $multiple = $multi == NULL ? NULL : 'multiple=""';
+  
+
+                     $output = null;
+                     $where   =  $where == NULL ? NULL: " WHERE ".$where." ";
+
+
+                     global $db;
+                     $sql = "SELECT $id_table as id, $txt_table as text FROM $table $where order by $order_by limit 0,1000 ";
+                     if (!$db->Query($sql)){
+                       $db->Kill($db->Error());
+                     }
+                     if(!$db->RowCount()){
+                        $output .='<option value=""></option>';
+                           
+                     }else{
+                      while (! $db->EndOfSeek()) {
+                      $row = $db->Row();
+                      if($selected != NULL){
+                        if($multiple != NULL) 
+                        {                    
+
+
+                            if(in_array($row->id, $array_exist))
+                            {
+                             $bloc_multipl_show .= ' '.$row->text.' - '; 
+                            }
+
+                        }else{
+                            $select =  $row->id == $selected ? "selected":"";
+                        }
+
+
+                      }else{
+                        $select ="";
+                      }
+                      $output .= '<option '.$select.' value="'.$row->id.'">'.$row->text.'</option>';               
+                    }
+
+                     }
+                     return $output;
+
+}
+
     /**
      * Function Select_table
      * Generate Select field from Table 
@@ -912,6 +980,8 @@ static public function load_select($table, $value, $text, $where = null)
   return $output;
 
 }
+
+
 
 }
 
