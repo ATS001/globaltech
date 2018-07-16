@@ -235,7 +235,7 @@ $(document).ready(function() {
 
     });
 
-    $('#commission').binf('input change', function () {
+    $('#commission').bind('input change', function () {
         var table = $('#table_details_devis').DataTable();
         $cms = parseFloat($('#commission').val());
         $set_commision = parseFloat(<?php echo Msetting::get_set('plafond_comission') ?>);
