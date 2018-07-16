@@ -10,6 +10,7 @@ $facture->get_facture();
 $action = new TableTools();
 $action->line_data = $facture->facture_info;
 
+$action->action_line_table('facturearchive', 'factures',$facture->facture_info['creusr'],NULL);
 ?>
 
 </ul>
