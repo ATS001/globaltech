@@ -1,14 +1,46 @@
 <?php 
 //SYS GLOBAL TECH
-// Modul: contrats_fournisseurs => View
+// Modul: details client => View
 
-//Get all contrats_frn info 
- $client= new Mclients();
+//Get all clients info 
+ $client  = new Mclients();
+ $client2 = new Mclients();
+ $client3 = new Mclients();
+ $client4 = new Mclients();
+ $client5 = new Mclients();
+ $client6 = new Mclients();
+ $client7 = new Mclients();
+
 //Set ID of Module with POST id
  $client->id_client = Mreq::tp('id');
+ $client->get_client();
+ $pj    = $client->client_info['pj'];
+ $photo = Minit::get_file_archive($client->client_info['pj_photo']);
 
- $client->get_list_devis();
- $client_devis = $client->client_info;
+ $client2->id_client = Mreq::tp('id');
+ $client2->get_list_devis();
+ $client_devis = $client2->client_info;
+
+ $client5->id_client = Mreq::tp('id');
+ $client5->get_total_devis();
+ $total_devis= $client5->client_info;
+
+
+ $client3->id_client = Mreq::tp('id');
+ $client3->get_list_abn();
+ $client_abn = $client3->client_info;
+
+ $client4->id_client = Mreq::tp('id');
+ $client4->get_list_factures();
+ $client_fact = $client4->client_info;
+
+ $client6->id_client = Mreq::tp('id');
+ $client6->get_total_fact();
+ $total_fact= $client6->client_info;
+
+ $client7->id_client = Mreq::tp('id');
+ $client7->get_list_encaissements();
+ $client_enc= $client7->client_info;
 
 //Check if Post ID <==> Post idc or get_modul return false. 
 if(!MInit::crypt_tp('id', null, 'D') or !$client->get_client())
@@ -16,8 +48,6 @@ if(!MInit::crypt_tp('id', null, 'D') or !$client->get_client())
     // returne message error red to client 
     exit('3#'.$client->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
-$pj      = $client->client_info['pj'];
-$photo   = Minit::get_file_archive($client->client_info['pj_photo']);
 
 ?>
 <div class="pull-right tableTools-container">
@@ -27,7 +57,6 @@ $photo   = Minit::get_file_archive($client->client_info['pj_photo']);
               TableTools::btn_add('clients', 'Liste Clients', Null, $exec = NULL, 'reply');      
          ?> 
          
-
     </div>
 </div>
 <div class="page-header">
@@ -40,14 +69,8 @@ $photo   = Minit::get_file_archive($client->client_info['pj_photo']);
 </div><!-- /.page-header -->
 <!-- ajax layout which only needs content area -->
 <div class="row">
-        <div class="col-xs-12">
         <!-- PAGE CONTENT BEGINS -->
         
-
-        <div class="hr dotted"></div>
-
-
-
         <div>
             <div id="user-profile-2" class="user-profile">
                 <div class="tabbable">
@@ -73,6 +96,13 @@ $photo   = Minit::get_file_archive($client->client_info['pj_photo']);
                             </a>
                         </li>
 
+                        <li>
+                            <a data-toggle="tab" href="#feed bl">
+                                <i class="red ace-icon fa fa-file bigger-120"></i>
+                                BLS
+                            </a>
+                        </li>
+
                          <li>
                             <a data-toggle="tab" href="#feed2">
                                 <i class="red ace-icon fa fa-file bigger-120"></i>
@@ -80,11 +110,18 @@ $photo   = Minit::get_file_archive($client->client_info['pj_photo']);
                             </a>
                         </li>
                         
+                        <li>
+                            <a data-toggle="tab" href="#feed enc">
+                                <i class="red ace-icon fa fa-file bigger-120"></i>
+                                Encaissements
+                            </a>
+                        </li>
                     </ul>
 
                     <div class="tab-content no-border padding-24">
                         <div id="home" class="tab-pane in active">
-            <div class="col-sm-10 col-sm-offset-1">
+
+                        <div class="col-sm-10 col-sm-offset-1">
                 <!-- #section:pages/invoice -->
                 <div class="widget-box transparent">
                     <div class="widget-header widget-header-large">
@@ -123,7 +160,7 @@ $photo   = Minit::get_file_archive($client->client_info['pj_photo']);
                         
 
                         <!-- /section:pages/invoice.info -->
-                    </div>
+                    </div><!-- #widget header -->
 
                     <div class="widget-body">
                         <div class="widget-main padding-24">
@@ -188,7 +225,7 @@ $photo   = Minit::get_file_archive($client->client_info['pj_photo']);
 
                                         </ul>
                                     </div>
-                                </div><!-- /.col -->
+                                </div><!-- /.col sm 6-->
 
                                 <div class="col-sm-6">
                                     <div class="row">
@@ -251,26 +288,34 @@ $photo   = Minit::get_file_archive($client->client_info['pj_photo']);
 
                                         </ul>
                                     </div>
-                                </div><!-- /.col -->
+                                </div><!-- /.col sm 6-->
                             </div><!-- /.row -->
-                        </div>
-                    </div>
-                </div>
+                        </div><!--widget main-->
+                    </div><!--widget body-->
+                </div><!--widget-box transparent-->
 
-                <div class="hr hr8 hr-double hr-dotted"></div>
-            </div><!-- /.col sm 10 -->
+                        </div><!-- /.col sm 10 -->
 
                         </div><!-- /#home -->
 
                         <div id="feed" class="tab-pane">
                             <div class="profile-feed row">
-                               
-                                      <span>
+                                   
+                                <span>
                                     <?php
                                     if ($client_devis == null)
                                         echo '<B>Aucun devis trouvé</B> ';
                                     else {
                                         ?>
+                                        <div>
+                                            <b class="blue pull-right margin-left: 30px"> <?php echo $total_devis['totalht']?></b> 
+                                            <b class="grey pull-right"> Total HT:&nbsp;&nbsp;&nbsp;</b>   
+                                            </br>
+                                            <b class="blue pull-right margin-left: 30px"> <?php echo $total_devis['totalttc']?></b> 
+                                            <b class="grey pull-right"> Total TTC:&nbsp;&nbsp;&nbsp;</b>   
+                                            </br></b> </br></b> 
+                                        </div>
+
                                         <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 ID
@@ -301,13 +346,12 @@ $photo   = Minit::get_file_archive($client->client_info['pj_photo']);
                                             </th>
 
                                     <?php
-                                            foreach ($client_devis as $devis) {
-                                                ?>
+                                            foreach ($client_devis as $devis) {?>
                                                 <tr>   
-                                                    <td style="text-align: left;">
+                                                    <td style="text-align: center;">
                                                         <span><?php echo $devis['0']; ?></span>
                                                     </td>
-                                                    <td>
+                                                    <td style="text-align: center;">
                                                         <span><?php echo $devis['1']; ?></span>
                                                     </td>
                                                     <td style="text-align: center;">
@@ -330,7 +374,7 @@ $photo   = Minit::get_file_archive($client->client_info['pj_photo']);
                                                     </td>
                                                     <td style="text-align: center;" >  
                                                         <a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'devis') ?>" data="<?php echo MInit::crypt_tp('id', $devis['0']) ?>">
-                                        <i class="ace-icon fa fa-print"></i>
+                                                            <i class="ace-icon fa fa-print"></i>
                                                         </a>
                                                     </td>
                                                 </tr>
@@ -341,13 +385,11 @@ $photo   = Minit::get_file_archive($client->client_info['pj_photo']);
                                         }
                                         ?>
 
-                                    </table>
-                                </span> 
-
-                                 
+                                        </table>
+                                </span>        
 
                             </div><!-- /. feed row -->
-
+                      
                         </div><!-- /#feed -->
 
 
@@ -356,11 +398,11 @@ $photo   = Minit::get_file_archive($client->client_info['pj_photo']);
                                
                                       <span>
                                     <?php
-                                    if ($client_devis == null)
-                                        echo '<B>Aucun devis trouvé</B> ';
+                                    if ($client_abn == null)
+                                        echo '<B>Aucun abonnement trouvé</B> ';
                                     else {
                                         ?>
-                                        <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
+                                    <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 ID
                                             </th>
@@ -371,64 +413,50 @@ $photo   = Minit::get_file_archive($client->client_info['pj_photo']);
                                                 Date
                                             </th>
                                             <th style="text-align: center;"><font color="#5C9EDB">
-                                                Commercial
+                                                Echéance
                                             </th>
                                             <th style="text-align: center;"><font color="#5C9EDB">
-                                                Total HT
+                                                Date Effet
                                             </th>
                                             <th style="text-align: center;"><font color="#5C9EDB">
-                                                Total TVA
-                                            </th>
-                                            <th style="text-align: center;"><font color="#5C9EDB">
-                                                Total Remises
-                                            </th>
-                                            <th style="text-align: center;"><font color="#5C9EDB">
-                                                Total TTC
+                                                Date Fin
                                             </th>
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 Document
                                             </th>
 
                                     <?php
-                                            foreach ($client_devis as $devis) {
+                                            foreach ($client_abn as $abn) {
                                                 ?>
                                                 <tr>   
-                                                    <td style="text-align: left;">
-                                                        <span><?php echo $devis['0']; ?></span>
-                                                    </td>
-                                                    <td>
-                                                        <span><?php echo $devis['1']; ?></span>
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $abn['0']; ?></span>
                                                     </td>
                                                     <td style="text-align: center;">
-                                                        <span><?php echo $devis['2']; ?></span>
+                                                        <span><?php echo $abn['1']; ?></span>
                                                     </td>
-                                                    <td style="text-align: left;">
-                                                        <span><?php echo $devis['3']; ?></span>
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $abn['2']; ?></span>
                                                     </td>
-                                                    <td style="text-align: right;">
-                                                        <span><?php echo $devis['4']; ?></span>
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $abn['3']; ?></span>
                                                     </td>
-                                                    <td style="text-align: right;">
-                                                        <span><?php echo $devis['5']; ?></span>
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $abn['4']; ?></span>
                                                     </td>
-                                                    <td style="text-align: right;">
-                                                        <span><?php echo $devis['6']; ?></span>
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $abn['5']; ?></span>
                                                     </td>
-                                                    <td style="text-align: right;">
-                                                        <span><?php echo $devis['7']; ?></span>
-                                                    </td>
+
                                                     <td style="text-align: center;" >  
-                                                        <a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'devis') ?>" data="<?php echo MInit::crypt_tp('id', $devis['0']) ?>">
-                                        <i class="ace-icon fa fa-print"></i>
-                                                        </a>
+                                                        <?php if( $abn['6'] != null){ ?>
+                                                           <a href="#" class="iframe_pdf" rel=<?php echo $abn[6]; ?>>
+                                                                <i class="ace-icon fa fa-print"></i>
+                                                            </a>    
+                                                            <?php } ?>
                                                     </td>
                                                 </tr>
-
-
-                                                <?php
-                                            }
-                                        }
-                                        ?>
+                                    <?php } } ?>
 
                                     </table>
                                 </span> 
@@ -441,13 +469,128 @@ $photo   = Minit::get_file_archive($client->client_info['pj_photo']);
 
                          <div id="feed2" class="tab-pane">
                             <div class="profile-feed row">
-                               
-                                      <span>
+                                
+                                <span>
                                     <?php
-                                    if ($client_devis == null)
-                                        echo '<B>Aucun devis trouvé</B> ';
+                                    if ($client_fact == null)
+                                        echo '<B>Aucune facture trouvée</B> ';
                                     else {
                                         ?>
+                                        <div>
+                                            <b class="red pull-right margin-left: 30px"> <?php echo $total_fact['reste']?></b> 
+                                            <b class="grey pull-right">&nbsp;&nbsp;&nbsp;Reste à Payer:&nbsp;&nbsp;&nbsp;</b>  
+
+                                            <b class="green pull-right margin-left: 30px"> <?php echo $total_fact['paye']?></b> 
+                                            <b class="grey pull-right">&nbsp;&nbsp;&nbsp;Total Payé:&nbsp;&nbsp;&nbsp;</b>
+
+                                            <b class="blue pull-right margin-left: 30px"> <?php echo $total_fact['totalttc']?></b> 
+                                            <b class="grey pull-right">&nbsp;&nbsp;&nbsp; Total TTC:&nbsp;&nbsp;&nbsp;</b>
+
+                                            <b class="blue pull-right margin-left: 30px"> <?php echo $total_fact['totalht']?></b> 
+                                            <b class="grey pull-right">&nbsp;&nbsp;&nbsp; Total HT:&nbsp;&nbsp;&nbsp;</b> 
+                                            
+                                            </br></b> </br></b> 
+                                        </div>
+
+                                        <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                ID
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Réference
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Date
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Base Facturation
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Total HT
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Total TVA
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Total TTC
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Total Payé
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Reste
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Document
+                                            </th>
+                                    <?php
+                                            foreach ($client_fact as $fact) {
+                                                ?>
+                                                <tr>   
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $fact['0']; ?></span>
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $fact['1']; ?></span>
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $fact['2']; ?></span>
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $fact['3']; ?></span>
+                                                    </td>
+                                                    <td style="text-align: right;">
+                                                        <span><?php echo $fact['4']; ?></span>
+                                                    </td>
+                                                    <td style="text-align: right;">
+                                                        <span><?php echo $fact['5']; ?></span>
+                                                    </td>
+                                                    <td style="text-align: right;">
+                                                        <span><?php echo $fact['6']; ?></span>
+                                                    </td>
+                                                    <td style="text-align: right;">
+                                                        <span><?php echo $fact['7']; ?></span>
+                                                    <td style="text-align: right;">
+                                                        <span><?php echo $fact['8']; ?></span>
+                                                    </td>
+                                                    <td style="text-align: center;" >  
+                                                        <a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'facture') ?>" data="<?php echo MInit::crypt_tp('id', $fact['0']) ?>">
+                                                             <i class="ace-icon fa fa-print"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+
+
+                                                <?php
+                                            }
+                                        }
+                                        ?>
+
+                                    </table>
+                                </span> 
+
+                            </div><!-- /. feed row -->
+
+                        </div><!-- /#feed 2 -->
+
+                         <div id="feed enc" class="tab-pane">
+                            <div class="profile-feed row">
+                                   
+                                <span>
+                                    <?php
+                                    if ($client_enc == null)
+                                        echo '<B>Aucun encaissement trouvé</B> ';
+                                    else {
+                                        ?>
+                                        <div>
+                                            <b class="blue pull-right margin-left: 30px"> <?php echo $total_devis['totalht']?></b> 
+                                            <b class="grey pull-right"> Total HT:&nbsp;&nbsp;&nbsp;</b>   
+                                            </br>
+                                            <b class="blue pull-right margin-left: 30px"> <?php echo $total_devis['totalttc']?></b> 
+                                            <b class="grey pull-right"> Total TTC:&nbsp;&nbsp;&nbsp;</b>   
+                                            </br></b> </br></b> 
+                                        </div>
+
                                         <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 ID
@@ -478,36 +621,33 @@ $photo   = Minit::get_file_archive($client->client_info['pj_photo']);
                                             </th>
 
                                     <?php
-                                            foreach ($client_devis as $devis) {
-                                                ?>
+                                            foreach ($client_enc as $enc) {?>
                                                 <tr>   
-                                                    <td style="text-align: left;">
-                                                        <span><?php echo $devis['0']; ?></span>
-                                                    </td>
-                                                    <td>
-                                                        <span><?php echo $devis['1']; ?></span>
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $enc['0']; ?></span>
                                                     </td>
                                                     <td style="text-align: center;">
-                                                        <span><?php echo $devis['2']; ?></span>
+                                                        <span><?php echo $enc['1']; ?></span>
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $enc['2']; ?></span>
                                                     </td>
                                                     <td style="text-align: left;">
-                                                        <span><?php echo $devis['3']; ?></span>
+                                                        <span><?php echo $enc['3']; ?></span>
                                                     </td>
                                                     <td style="text-align: right;">
-                                                        <span><?php echo $devis['4']; ?></span>
+                                                        <span><?php echo $enc['4']; ?></span>
                                                     </td>
                                                     <td style="text-align: right;">
-                                                        <span><?php echo $devis['5']; ?></span>
+                                                        <span><?php echo $enc['5']; ?></span>
                                                     </td>
                                                     <td style="text-align: right;">
-                                                        <span><?php echo $devis['6']; ?></span>
+                                                        <span><?php echo $enc['6']; ?></span>
                                                     </td>
-                                                    <td style="text-align: right;">
-                                                        <span><?php echo $devis['7']; ?></span>
-                                                    </td>
+                                                
                                                     <td style="text-align: center;" >  
-                                                        <a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'devis') ?>" data="<?php echo MInit::crypt_tp('id', $devis['0']) ?>">
-                                        <i class="ace-icon fa fa-print"></i>
+                                                        <a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'enc') ?>" data="<?php echo MInit::crypt_tp('id', $enc['0']) ?>">
+                                                            <i class="ace-icon fa fa-print"></i>
                                                         </a>
                                                     </td>
                                                 </tr>
@@ -518,21 +658,19 @@ $photo   = Minit::get_file_archive($client->client_info['pj_photo']);
                                         }
                                         ?>
 
-                                    </table>
-                                </span> 
+                                        </table>
+                                </span>        
 
-                                 
+                            </div><!-- /. feed enc row -->
+                      
+                        </div><!-- /#feed enc -->
 
-                            </div><!-- /. feed row -->
-
-                        </div><!-- /#feed 2 -->
-
-                        </div><!-- /#tab-content -->
+                    </div><!-- /#tab-content -->
                     </div><!-- /#tattable -->
                 </div>
-            </div>
+            </div><!-- /# user profile -->
+        </div>
 
-        </div><!-- /#col x12 -->
 </div><!-- /.row -->
 
 <!-- page specific plugin scripts -->

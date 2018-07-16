@@ -76,7 +76,7 @@ class Mclients {
       global $db;
 
       $sql =//"SELECT $table.*, DATE_FORMAT($table.date_devis,'%d-%m-%Y') AS date_devis from $table where $table.id_client = ".$this->id_client;
-      "SELECT d.`id`,d.`reference`,DATE_FORMAT(d.`date_devis`,'%d-%m-%Y') AS date_devis,CONCAT(c.`nom`,' ',c.`prenom`) as commercial,d.`totalht`,d.`totaltva`,d.`total_remise`,d.`totalttc` FROM devis d, commerciaux c WHERE c.`id`=d.`id_commercial` and d.`id_client` = ".$this->id_client." order by d.date_devis desc";
+      "SELECT d.`id`,d.`reference`,DATE_FORMAT(d.`date_devis`,'%d-%m-%Y') AS date_devis,CONCAT(c.`nom`,' ',c.`prenom`) as commercial,REPLACE(FORMAT(d.`totalht`,0),',',' '),REPLACE(FORMAT(d.`totaltva`,0),',',' '),REPLACE(FORMAT(d.`total_remise`,0),',',' '),REPLACE(FORMAT(d.`totalttc`,0),',',' ') FROM devis d, commerciaux c WHERE c.`id`=d.`id_commercial` and d.`id_client` = ".$this->id_client." order by d.date_devis desc";
 
       if(!$db->Query($sql))
       {
@@ -89,6 +89,75 @@ class Mclients {
           $this->log .= 'Aucun enregistrement trouvé ';
         } else {
           $this->client_info = $db->RecordsSimplArray();
+          $this->error = true;
+        }
+
+
+      }
+      //return Array
+      if($this->error == false)
+      {
+        return false;
+      }else{
+        return true ;
+      }
+    }
+
+//Return the list of a Total devis
+
+    public function get_total_devis()
+    {
+      
+        $table = "devis";
+      global $db;
+
+      $sql ="SELECT IFNULL(REPLACE(FORMAT(SUM(d.`totalht`),0),',',' '),0) as totalht,IFNULL(REPLACE(FORMAT(SUM(d.`totalttc`),0),',',' '),0)as totalttc FROM devis d WHERE d.`id_client` = ".$this->id_client;
+
+      if(!$db->Query($sql))
+      {
+        $this->error = false;
+        $this->log  .= $db->Error();
+      }else{
+        if ($db->RowCount() == 0)
+        {
+          $this->error = false;
+          $this->log .= 'Aucun enregistrement trouvé ';
+        } else {
+          $this->client_info = $db->RowArray();
+          $this->error = true;
+        }
+
+
+      }
+      //return Array
+      if($this->error == false)
+      {
+        return false;
+      }else{
+        return true ;
+      }
+    }
+//Return the list of a Total factures
+
+    public function get_total_fact()
+    {
+      
+        $table = "factures";
+      global $db;
+
+      $sql ="SELECT IFNULL(REPLACE(FORMAT(SUM(factures.`total_ht`),0),',',' '),0) as totalht,IFNULL(REPLACE(FORMAT(SUM(factures.`total_ttc`),0),',',' '),0)as totalttc,IFNULL(REPLACE(FORMAT(SUM(factures.`total_paye`),0),',',' '),0) as paye,IFNULL(REPLACE(FORMAT(SUM(factures.`reste`),0),',',' '),0)as reste FROM factures,devis d  WHERE  IF(factures.`base_fact`='C',(factures.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE factures.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client) ),(factures.iddevis=d.id )) AND d.`id_client` = ".$this->id_client;
+
+      if(!$db->Query($sql))
+      {
+        $this->error = false;
+        $this->log  .= $db->Error();
+      }else{
+        if ($db->RowCount() == 0)
+        {
+          $this->error = false;
+          $this->log .= 'Aucun enregistrement trouvé ';
+        } else {
+          $this->client_info = $db->RowArray();
           $this->error = true;
         }
 
@@ -111,7 +180,7 @@ class Mclients {
         $table = "contrats";
       global $db;
 
-      $sql ="SELECT d.`id`,d.`reference`,DATE_FORMAT(d.`date_devis`,'%d-%m-%Y') AS date_devis,CONCAT(c.`nom`,' ',c.`prenom`) as commercial,d.`totalht`,d.`totaltva`,d.`total_remise`,d.`totalttc` FROM devis d, commerciaux c WHERE c.`id`=d.`id_commercial` and d.`id_client` = ".$this->id_client." order by d.date_devis desc";
+      $sql ="SELECT c.`id`,c.`reference`,DATE_FORMAT(c.`credat`,'%d-%m-%Y') AS date_abn,e.`type_echeance`, DATE_FORMAT(c.`date_effet`,'%d-%m-%Y')AS date_effet, DATE_FORMAT(c.`date_fin`,'%d-%m-%Y') AS date_fin,c.`pj` FROM contrats c,ref_type_echeance e WHERE e.`id`=c.`idtype_echeance` AND c.`iddevis`IN(SELECT id FROM devis d WHERE d.`id_client`= ".$this->id_client.") ORDER BY c.credat DESC";
 
       if(!$db->Query($sql))
       {
@@ -138,8 +207,75 @@ class Mclients {
       }
     }
 
+    //Return the list of a client factures
 
-  
+    public function get_list_factures()
+    {
+      
+        $table = "factures";
+      global $db;
+
+      $sql ="SELECT factures.id,factures.reference,DATE_FORMAT(factures.date_facture,'%d-%m-%Y'),IF(factures.`base_fact`='C','Contrat',IF(factures.`base_fact`='D','Devis','BL')) AS base_fact,REPLACE(FORMAT(factures.total_ht,0),',',' '),REPLACE(FORMAT(factures.total_ttc,0),',',' '),REPLACE(FORMAT(factures.total_tva,0),',',' '),REPLACE(FORMAT(factures.total_paye,0),',',' '),REPLACE(FORMAT(factures.reste,0),',',' ') FROM factures,clients c,devis d WHERE   IF(factures.`base_fact`='C',( factures.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE factures.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client=c.id ) ), (factures.iddevis=d.id AND d.id_client=c.id )) and c.id=" .$this->id_client." ORDER BY factures.credat DESC";
+
+      if(!$db->Query($sql))
+      {
+        $this->error = false;
+        $this->log  .= $db->Error();
+      }else{
+        if ($db->RowCount() == 0)
+        {
+          $this->error = false;
+          $this->log .= 'Aucun enregistrement trouvé ';
+        } else {
+          $this->client_info = $db->RecordsSimplArray();
+          $this->error = true;
+        }
+
+
+      }
+      //return Array
+      if($this->error == false)
+      {
+        return false;
+      }else{
+        return true ;
+      }
+    }
+    //Return the list of a client encaissements
+
+    public function get_list_encaissements()
+    {
+      
+        $table = "encaissements";
+      global $db;
+
+      $sql ="SELECT e.id,e.`reference`,DATE_FORMAT(e.`date_encaissement`,'%d-%m-%Y'), f.`reference`, e.`mode_payement` ,IFNULL(REPLACE(FORMAT(SUM(e.`montant`),0),',',' '),0) AS montant FROM encaissements e,factures f,devis d  WHERE  f.`id`=e.`idfacture` AND IF(f.`base_fact`='C',( f.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE f.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client) ), (f.iddevis=d.id )) AND d.`id_client`" .$this->id_client." ORDER BY e.date_encaissement DESC";
+
+      if(!$db->Query($sql))
+      {
+        $this->error = false;
+        $this->log  .= $db->Error();
+      }else{
+        if ($db->RowCount() == 0)
+        {
+          $this->error = false;
+          $this->log .= 'Aucun enregistrement trouvé ';
+        } else {
+          $this->client_info = $db->RecordsSimplArray();
+          $this->error = true;
+        }
+
+
+      }
+      //return Array
+      if($this->error == false)
+      {
+        return false;
+      }else{
+        return true ;
+      }
+    }
+   
 
 		 /**
      * [check_exist Check if one entrie already exist on table]
