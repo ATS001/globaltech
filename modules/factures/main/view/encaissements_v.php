@@ -75,7 +75,7 @@ if(Mreq::tp('id') != null)
     //Creat new instance
 $html_data_table = new Mdatatable();
 $html_data_table->columns_html = $array_column;
-$html_data_table->title_module = "Encaissements - Facture :".$info_facture->facture_info["reference"];
+$html_data_table->title_module = "Encaissements - ".$info_facture->facture_info["reference"];
 $html_data_table->task = 'encaissements';
 
 //si t as besoin d'envoyer data ajoute key data Ã  Array ex: 'data' => 'id=$id'
