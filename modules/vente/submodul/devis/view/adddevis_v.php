@@ -95,6 +95,7 @@ $form->render();
 <script type="text/javascript">
 $(document).ready(function() {
 
+
     //called when key is pressed in textbox
 	 function calculat_devis($totalht, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc,$commission,$f_total_commission)
 	 {
@@ -238,10 +239,19 @@ $(document).ready(function() {
 
     });
 
-      
+     
 
+    $('#commission').focusin( function () {
+        $(this).data('exist_val_commission', $(this).val());
+        
+    });
 
     $('#commission').focusout( function () {
+         var $exist_value_commission = $(this).data('exist_val_commission');
+        //Get previous data
+        
+        //var $exist_type_commission = $('#type_commission').data('exist_type_commission');
+
         //First check if PEC commission by US return true
         if($('#type_commission').val() == 'S' && $(this).val() == 0){
             return true;
@@ -286,9 +296,9 @@ $(document).ready(function() {
                             }
                         });
                     }else{
-                        alert($cms);
-                      
-                        $('#commission').val($cms);
+                        
+                        $('#commission').val($exist_value_commission);
+                        
 
                     }
                 }
@@ -296,9 +306,86 @@ $(document).ready(function() {
         }
 
     });
+
     $('#type_commission').on('change', function () {
-        $('#commission').trigger('focusout');
+        
+        //Get previous data
+        if($(this).val() == 'C'){
+            var $exist_type_commission = 'S'
+        }else{
+            var $exist_type_commission = 'C'
+        }
+        
+
+        //First check if PEC commission by US return true
+        if($('#type_commission').val() == 'S' && $(this).val() == 0){
+            return true;
+        }
+        var table = $('#table_details_devis').DataTable();
+        $cms = parseFloat($('#commission').val());
+
+        $set_commision = parseFloat(<?php echo Msetting::get_set('plafond_comission') ?>);
+
+        if($cms > $set_commision){
+
+            ajax_loadmessage('La commission ne doit pas dépasser '+$set_commision,'nok',5000);
+            $('#commission').val(0);
+            return false;
+            
+        }
+        if (table.data().count()) {
+
+            bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de la commission sera appliqué sur l'ensemble des lignes détails, voulez vous continuer ?</span>", 
+                function(result){
+                    if(result == true){
+                        $cms = parseFloat($('#commission').val());
+                        var $tkn_frm = $(this).attr('tkn_frm');
+                        $.ajax({
+
+                            cache: false,
+                            url  : '?_tsk=add_detaildevis&ajax=1'+'&act=1&<?php echo MInit::crypt_tp('exec', 'set_commission')?>',
+                            type : 'POST',
+                            data : $('#adddevis').serialize(),
+                            dataType:"JSON",
+                            success: function(data){
+
+                                if(data['error']== false){
+                                    ajax_loadmessage(data['mess'],'nok',5000)
+                                }else{
+                                    ajax_loadmessage(data['mess'],'ok',3000);
+                                    var t1 = $('.dataTable').DataTable().draw();
+                                    $('#sum_table').val(data['sum']);
+                                    $('#valeur_remise').trigger('change'); 
+                                }
+
+                            }
+                        });
+                    }else{
+
+                        
+                            $('#type_commission').val($exist_type_commission);
+                            $('#type_commission').trigger("chosen:updated");
+                            //$('#type_commission').trigger("change");
+                                         
+                        
+                       
+                        //$("div.id_100 select").val($exist_type_commission);
+
+                    }
+                }
+            );  
+        }
+
     });
+    
+    /*$('#type_commission').on('change', function () {
+        
+        var $exist_type_commission = $(this).data('exist_type_commission');
+        if($(this).val() != $exist_type_commission ){
+            $('#commission').trigger('focusout');
+        }
+        
+    });*/
 
 
 

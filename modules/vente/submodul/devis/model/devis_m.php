@@ -537,6 +537,7 @@ class Mdevis
             $values["total_commission"]= MySQL::SQLValue($total_commission);
             $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
             $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
+            $values["type_commission"] = MySQL::SQLValue($this->_data['type_commission']);
             $values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
             $values["total_remise"]    = MySQL::SQLValue($montant_remise);
             $values["projet"]          = MySQL::SQLValue($this->_data['projet']);
@@ -640,6 +641,7 @@ class Mdevis
         $values["projet"]          = MySQL::SQLValue($this->_data['projet']);
         $values["vie"]             = MySQL::SQLValue($this->_data['vie']);
         $values["claus_comercial"] = MySQL::SQLValue($this->_data['claus_comercial']);
+        $values["type_commission"] = MySQL::SQLValue($this->_data['type_commission']);
         $values["totalht"]         = MySQL::SQLValue($totalht);
         $values["totalttc"]        = MySQL::SQLValue($totalttc);
         $values["totaltva"]        = MySQL::SQLValue($totaltva);
@@ -904,6 +906,7 @@ class Mdevis
         $req_sql = "UPDATE $table_details SET  prix_ht = (prix_unitaire +((prix_unitaire * $commission)/100)), total_ht = (prix_ht * qte), total_tva = ((total_ht * $tva_value)/100), total_ttc = (total_ht + total_tva)  WHERE tkn_frm = '$tkn_frm'";
 
         //Run adaptation
+        
         if(!$db->Query($req_sql))
         {
             $this->log .= $db->Error();

@@ -51,7 +51,7 @@ $form->input_hidden('reference', $info_devis->g('reference'));
 
 //Date devis
 $array_date[]= array('required', 'true', 'Insérer la date de devis');
-$form->input_date('Date devis', 'date_devis', 4, date('d-m-Y'), $array_date);
+$form->input_date('Date devis', 'date_devis', 4, $info_devis->g('date_devis'), $array_date);
 //Client liste
 $hard_code_client = '<a id="add_client_diver" href="#" rel="add_client_diver" data="" data_titre="Ajout Client Diver " class=" "><span class="help-block returned_span"><i class="fa fa-plus"></i> Ajouter un client divers</span></a>';
 $client_array[]  = array('required', 'true', 'Choisir un Client');
@@ -67,9 +67,12 @@ $hard_code_commercial = '<span class="help-block returned_span">...</span>';
 $commercial_array[]  = array('required', 'true', 'Choisir un Commercial');
 $form->select_table('Commercial', 'id_commercial', 6, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)' , 'CONCAT(nom," ",prenom)' , $indx = '------' ,$selected=$info_devis->g('id_commercial'),$multi=NULL, $where='etat=1', $commercial_array, $hard_code_commercial);
 //Commission du commercial
+$select_c = $info_devis->g('type_commission') == 'C' ? 'selected' : null;
+$select_s = $info_devis->g('type_commission') == 'S' ? 'selected' : null;
+$hard_code_commission  = '<label style="margin-left:15px;margin-right : 20px;">Prise en charge par: </label><select id="type_commission" name="type_commission" class="chosen-select col-xs-12 col-sm-3" chosen-class="'.((3 * 100) / 12).'" ><option value="C" '.$select_c.' >Client</option><option value="S" '.$select_s.'>Société</option></select>';
 $array_commission[]= array('required', 'true', 'Insérer la commission du commercial');
 $array_commission[]= array('number', 'true', 'Montant invalid' );
-$form->input('Commission du commercial (%)', 'commission', 'text' ,'2 is-number alignRight',$info_devis->g('commission'), $array_commission, null, null);
+$form->input('Commission du commercial (%)', 'commission', 'text' ,'2 is-number alignRight',$info_devis->g('commission'), $array_commission, $hard_code_commission, null);
 
 
 //Table 
@@ -235,9 +238,24 @@ $(document).ready(function() {
 
     });
 
-    $('#commission').bind('input change', function () {
+    $('#commission').focusin( function () {
+        $(this).data('exist_val_commission', $(this).val());
+        
+    });
+
+    $('#commission').focusout( function () {
+         var $exist_value_commission = $(this).data('exist_val_commission');
+        //Get previous data
+        
+        //var $exist_type_commission = $('#type_commission').data('exist_type_commission');
+
+        //First check if PEC commission by US return true
+        if($('#type_commission').val() == 'S'){
+            return true;
+        }
         var table = $('#table_details_devis').DataTable();
         $cms = parseFloat($('#commission').val());
+
         $set_commision = parseFloat(<?php echo Msetting::get_set('plafond_comission') ?>);
 
         if($cms > $set_commision){
@@ -247,7 +265,6 @@ $(document).ready(function() {
             return false;
             
         }
-
         if (table.data().count()) {
 
             bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de la commission sera appliqué sur l'ensemble des lignes détails, voulez vous continuer ?</span>", 
@@ -276,9 +293,81 @@ $(document).ready(function() {
                             }
                         });
                     }else{
-                     
-                      $('#commission').val($cms);
-                      
+                        
+                        $('#commission').val($exist_value_commission);
+                        
+
+                    }
+                }
+            );  
+        }
+
+    });
+
+    $('#type_commission').on('change', function () {
+        
+        //Get previous data
+        if($(this).val() == 'C'){
+            var $exist_type_commission = 'S'
+        }else{
+            var $exist_type_commission = 'C'
+        }
+        
+
+        //First check if PEC commission by US return true
+        if($('#type_commission').val() == 'S' && $(this).val() == 0){
+            return true;
+        }
+        var table = $('#table_details_devis').DataTable();
+        $cms = parseFloat($('#commission').val());
+
+        $set_commision = parseFloat(<?php echo Msetting::get_set('plafond_comission') ?>);
+
+        if($cms > $set_commision){
+
+            ajax_loadmessage('La commission ne doit pas dépasser '+$set_commision,'nok',5000);
+            $('#commission').val(0);
+            return false;
+            
+        }
+        if (table.data().count()) {
+
+            bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de la commission sera appliqué sur l'ensemble des lignes détails, voulez vous continuer ?</span>", 
+                function(result){
+                    if(result == true){
+                        $cms = parseFloat($('#commission').val());
+                        var $tkn_frm = $(this).attr('tkn_frm');
+                        $.ajax({
+
+                            cache: false,
+                            url  : '?_tsk=add_detaildevis&ajax=1'+'&act=1&<?php echo MInit::crypt_tp('exec', 'set_commission')?>',
+                            type : 'POST',
+                            data : $('#editdevis').serialize(),
+                            dataType:"JSON",
+                            success: function(data){
+
+                                if(data['error']== false){
+                                    ajax_loadmessage(data['mess'],'nok',5000)
+                                }else{
+                                    ajax_loadmessage(data['mess'],'ok',3000);
+                                    var t1 = $('.dataTable').DataTable().draw();
+                                    $('#sum_table').val(data['sum']);
+                                    $('#valeur_remise').trigger('change'); 
+                                }
+
+                            }
+                        });
+                    }else{
+
+                        
+                            $('#type_commission').val($exist_type_commission);
+                            $('#type_commission').trigger("chosen:updated");
+                            //$('#type_commission').trigger("change");
+                                         
+                        
+                       
+                        //$("div.id_100 select").val($exist_type_commission);
+
                     }
                 }
             );  

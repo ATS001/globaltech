@@ -712,7 +712,7 @@ public function select_option_only($table, $id_table, $order_by , $txt_table ,$s
 
          <div class="col-xs-12 col-sm-9">
              <div class="clearfix">
-                 <select '.$multiple.' id="'.$input_id.'" name="'.$input_id.'" class="chosen-select col-xs-12 col-sm-'.$input_class.'" chosen-class="'.$class_chosen.'" >';
+                 <select '.$multiple.' id="'.$input_id.'" name="'.$input_id.'" class="chosen-select col-xs-12 col-sm-'.$input_class.'" chosen-class="'.$class_chosen.'"  >';
 
                      $option_idex = $indx != NULL ? '<option value="">'.$indx.'</option>' : NULL;
 
@@ -792,7 +792,7 @@ if($js_array != null)
 
          <div class="col-xs-12 col-sm-9">
              <div class="clearfix">
-                 <select  id="'.$input_id.'" name="'.$input_id.'" class="chosen-select col-xs-12 col-sm-'.$input_class.'" chosen-class="'.$class_chosen.'" >';
+                 <select  id="'.$input_id.'" name="'.$input_id.'" class="chosen-select col-xs-12 col-sm-'.$input_class.'" chosen-class="'.$class_chosen.'" tabindex="1" >';
 
                      $idex = $indx != NULL ? '<option value="">'.$indx.'</option>' : NULL;
 
@@ -842,7 +842,7 @@ if($js_array != null)
 
          <div class="col-xs-12 col-sm-9">
              <div class="clearfix">
-                 <select '.$multiple.'  id="'.$input_id.'" name="'.$input_id.'" class="chosen-select col-xs-12 col-sm-'.$input_class.' " chosen-class="'.$class_chosen.'" >';
+                 <select '.$multiple.'  id="'.$input_id.'" name="'.$input_id.'" class="chosen-select col-xs-12 col-sm-'.$input_class.' " chosen-class="'.$class_chosen.'" tabindex="1" >';
 
                      $index = $indx != NULL ? '<option value="">'.$indx.'</option>' : NULL;
 
