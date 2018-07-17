@@ -168,9 +168,9 @@ class Mproduit {
         $this->get_produit();
         if($this->produit_info["idtype"] == "2" OR $this->produit_info["idtype"] == "3")
         {
-            $etat = Msetting::get_set('etat_produit', 'produit_validé_ap');
+            $etat = Msetting::get_set('etat_produit', 'produit_valide_ap');
         }else{
-        $etat = Msetting::get_set('etat_produit', 'produit_validé_p');
+        $etat = Msetting::get_set('etat_produit', 'produit_valide_p');
         }
 
         $values["etat"] = MySQL::SQLValue($etat);
