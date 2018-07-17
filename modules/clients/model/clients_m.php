@@ -9,9 +9,18 @@ class Mclients {
 	var $last_id; //return last ID after insert command
 	var $log = NULL; //Log of all opération.
 	var $error = true; //Error bol changed when an error is occured
-    var $id_client; // Ville ID append when request
+  var $id_client; // Ville ID append when request
 	var $token; //user for recovery function
-	var $client_info; //Array stock all ville info
+	var $client_info; //Array stock all client info
+  var $devis_info; //Array stock all devis info
+  var $abn_info; //Array stock all abonnement info
+  var $bl_info; //Array stock all bl info
+  var $factures_info; //Array stock all factures info
+  var $enc_info; //Array stock all encaissement info
+  var $tot_devis_info; //Array stock total devis info
+  var $tot_factures_info; //Array stock total factures info
+  var $tot_enc_info; //Array stock total encaissement info
+  
 
 
 	public function __construct($properties = array()){
@@ -36,7 +45,7 @@ class Mclients {
 	{
 		global $db;
 
-		$sql = "SELECT  c.*,cat.categorie_client as categorie_client, p.pays as pays,v.ville as ville, d.devise as devise, IF(c.tva='O','Oui','Non') AS tva,c.tva as tva_brut FROM  clients c
+		$sql = "SELECT  c.*,cat.categorie_client as categorie_client, p.pays as pays,v.ville as ville, d.devise as devise,d.abreviation as dev, IF(c.tva='O','Oui','Non') AS tva,c.tva as tva_brut FROM  clients c
              LEFT JOIN categorie_client cat on c.id_categorie=cat.id 
              LEFT JOIN ref_pays p on c.id_pays=p.id 
              LEFT JOIN ref_ville v on c.id_ville=v.id
@@ -88,7 +97,7 @@ class Mclients {
           $this->error = false;
           $this->log .= 'Aucun enregistrement trouvé ';
         } else {
-          $this->client_info = $db->RecordsSimplArray();
+          $this->devis_info = $db->RecordsSimplArray();
           $this->error = true;
         }
 
@@ -123,7 +132,7 @@ class Mclients {
           $this->error = false;
           $this->log .= 'Aucun enregistrement trouvé ';
         } else {
-          $this->client_info = $db->RowArray();
+          $this->tot_devis_info = $db->RowArray();
           $this->error = true;
         }
 
@@ -137,6 +146,42 @@ class Mclients {
         return true ;
       }
     }
+
+    //Return the list of a client bl
+
+    public function get_list_bls()
+    {
+      
+      global $db;
+
+      $sql ="SELECT bl.`id`,bl.`reference`,DATE_FORMAT(bl.`date_bl`,'%d-%m-%Y') AS date_bl,bl.`projet`FROM devis d, bl WHERE bl.`iddevis`=d.`id` AND d.`id_client` = ".$this->id_client." order by bl.date_bl desc";
+
+      if(!$db->Query($sql))
+      {
+        $this->error = false;
+        $this->log  .= $db->Error();
+      }else{
+        if ($db->RowCount() == 0)
+        {
+          $this->error = false;
+          $this->log .= 'Aucun enregistrement trouvé ';
+        } else {
+          $this->bl_info = $db->RecordsSimplArray();
+          $this->error = true;
+        }
+
+
+      }
+      //return Array
+      if($this->error == false)
+      {
+        return false;
+      }else{
+        return true ;
+      }
+    }
+
+
 //Return the list of a Total factures
 
     public function get_total_fact()
@@ -157,7 +202,7 @@ class Mclients {
           $this->error = false;
           $this->log .= 'Aucun enregistrement trouvé ';
         } else {
-          $this->client_info = $db->RowArray();
+          $this->tot_factures_info = $db->RowArray();
           $this->error = true;
         }
 
@@ -192,7 +237,7 @@ class Mclients {
           $this->error = false;
           $this->log .= 'Aucun enregistrement trouvé ';
         } else {
-          $this->client_info = $db->RecordsSimplArray();
+          $this->abn_info = $db->RecordsSimplArray();
           $this->error = true;
         }
 
@@ -227,7 +272,7 @@ class Mclients {
           $this->error = false;
           $this->log .= 'Aucun enregistrement trouvé ';
         } else {
-          $this->client_info = $db->RecordsSimplArray();
+          $this->factures_info = $db->RecordsSimplArray();
           $this->error = true;
         }
 
@@ -249,19 +294,20 @@ class Mclients {
         $table = "encaissements";
       global $db;
 
-      $sql ="SELECT e.id,e.`reference`,DATE_FORMAT(e.`date_encaissement`,'%d-%m-%Y'), f.`reference`, e.`mode_payement` ,IFNULL(REPLACE(FORMAT(SUM(e.`montant`),0),',',' '),0) AS montant FROM encaissements e,factures f,devis d  WHERE  f.`id`=e.`idfacture` AND IF(f.`base_fact`='C',( f.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE f.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client) ), (f.iddevis=d.id )) AND d.`id_client`" .$this->id_client." ORDER BY e.date_encaissement DESC";
+      $sql ="SELECT e.id,e.`reference`,designation ,depositaire ,e.`date_encaissement`,ref_payement, e.`mode_payement`,IFNULL(REPLACE(FORMAT((e.`montant`),0),',',' '),0) AS montant ,pj FROM encaissements e,factures f,devis d  WHERE  f.`id`=e.`idfacture` AND IF(f.`base_fact`='C',( f.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE f.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client) ), (f.iddevis=d.id )) AND d.`id_client`=" .$this->id_client." ORDER BY e.date_encaissement DESC";
 
       if(!$db->Query($sql))
       {
         $this->error = false;
         $this->log  .= $db->Error();
+        //var_dump($this->log );
       }else{
         if ($db->RowCount() == 0)
         {
           $this->error = false;
           $this->log .= 'Aucun enregistrement trouvé ';
         } else {
-          $this->client_info = $db->RecordsSimplArray();
+          $this->enc_info = $db->RecordsSimplArray();
           $this->error = true;
         }
 
@@ -275,7 +321,39 @@ class Mclients {
         return true ;
       }
     }
-   
+   //Return the list of a Total encaissements
+
+    public function get_total_enc()
+    {
+      
+      global $db;
+
+      $sql ="SELECT IFNULL(REPLACE(FORMAT(SUM(e.`montant`),0),',',' '),0) AS total_enc FROM encaissements e,factures f,devis d  WHERE  f.`id`=e.`idfacture` AND IF(f.`base_fact`='C',(f.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE f.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client) ),(f.iddevis=d.id )) AND d.`id_client` = ".$this->id_client;
+
+      if(!$db->Query($sql))
+      {
+        $this->error = false;
+        $this->log  .= $db->Error();
+      }else{
+        if ($db->RowCount() == 0)
+        {
+          $this->error = false;
+          $this->log .= 'Aucun enregistrement trouvé ';
+        } else {
+          $this->tot_enc_info = $db->RowArray();
+          $this->error = true;
+        }
+
+
+      }
+      //return Array
+      if($this->error == false)
+      {
+        return false;
+      }else{
+        return true ;
+      }
+    }
 
 		 /**
      * [check_exist Check if one entrie already exist on table]

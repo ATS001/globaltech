@@ -4,12 +4,6 @@
 
 //Get all clients info 
  $client  = new Mclients();
- $client2 = new Mclients();
- $client3 = new Mclients();
- $client4 = new Mclients();
- $client5 = new Mclients();
- $client6 = new Mclients();
- $client7 = new Mclients();
 
 //Set ID of Module with POST id
  $client->id_client = Mreq::tp('id');
@@ -17,31 +11,29 @@
  $pj    = $client->client_info['pj'];
  $photo = Minit::get_file_archive($client->client_info['pj_photo']);
 
- $client2->id_client = Mreq::tp('id');
- $client2->get_list_devis();
- $client_devis = $client2->client_info;
+ $client->get_list_devis();
+ $client_devis = $client->devis_info;
+ $client->get_total_devis();
+ $total_devis= $client->tot_devis_info;
 
- $client5->id_client = Mreq::tp('id');
- $client5->get_total_devis();
- $total_devis= $client5->client_info;
+ $client->get_list_abn();
+ $client_abn = $client->abn_info;
 
+ $client->get_list_factures();
+ $client_fact = $client->factures_info;
+ $client->get_total_fact();
+ $total_fact= $client->tot_factures_info;
 
- $client3->id_client = Mreq::tp('id');
- $client3->get_list_abn();
- $client_abn = $client3->client_info;
+ $client->get_list_encaissements();
+ $client_enc= $client->enc_info;
+ //var_dump($client_enc);
 
- $client4->id_client = Mreq::tp('id');
- $client4->get_list_factures();
- $client_fact = $client4->client_info;
+ $client-> get_total_enc();
+ $total_enc= $client->tot_enc_info;
 
- $client6->id_client = Mreq::tp('id');
- $client6->get_total_fact();
- $total_fact= $client6->client_info;
-
- $client7->id_client = Mreq::tp('id');
- $client7->get_list_encaissements();
- $client_enc= $client7->client_info;
-
+ $client-> get_list_bls();
+ $client_bl= $client->bl_info;
+ 
 //Check if Post ID <==> Post idc or get_modul return false. 
 if(!MInit::crypt_tp('id', null, 'D') or !$client->get_client())
 {   
@@ -84,7 +76,7 @@ if(!MInit::crypt_tp('id', null, 'D') or !$client->get_client())
 
                         <li>
                             <a data-toggle="tab" href="#feed">
-                                <i class="bleu ace-icon fa fa-money bigger-120"></i>
+                                <i class="dodger blue ace-icon fa fa-send bigger-120"></i>
                                 Devis
                             </a>
                         </li>
@@ -97,22 +89,22 @@ if(!MInit::crypt_tp('id', null, 'D') or !$client->get_client())
                         </li>
 
                         <li>
-                            <a data-toggle="tab" href="#feed bl">
-                                <i class="red ace-icon fa fa-file bigger-120"></i>
+                            <a data-toggle="tab" href="#feedbl">
+                                <i class="purple ace-icon fa fa-bookmark-o bigger-120"></i>
                                 BLS
                             </a>
                         </li>
 
                          <li>
                             <a data-toggle="tab" href="#feed2">
-                                <i class="red ace-icon fa fa-file bigger-120"></i>
+                                <i class="pink ace-icon fa fa-file bigger-120"></i>
                                 Factures
                             </a>
                         </li>
                         
                         <li>
-                            <a data-toggle="tab" href="#feed enc">
-                                <i class="red ace-icon fa fa-file bigger-120"></i>
+                            <a data-toggle="tab" href="#feedenc">
+                                <i class="red ace-icon fa fa-money bigger-120"></i>
                                 Encaissements
                             </a>
                         </li>
@@ -308,10 +300,12 @@ if(!MInit::crypt_tp('id', null, 'D') or !$client->get_client())
                                     else {
                                         ?>
                                         <div>
-                                            <b class="blue pull-right margin-left: 30px"> <?php echo $total_devis['totalht']?></b> 
+                                        	<b class="blue pull-right margin-left: 30px"> <?php echo $client->s('dev')?></b> 
+                                            <b class="blue pull-right margin-left: 30px"> <?php echo $total_devis['totalht']?>&nbsp;</b> 
                                             <b class="grey pull-right"> Total HT:&nbsp;&nbsp;&nbsp;</b>   
                                             </br>
-                                            <b class="blue pull-right margin-left: 30px"> <?php echo $total_devis['totalttc']?></b> 
+                                            <b class="blue pull-right margin-left: 30px"> <?php echo $client->s('dev')?></b> 
+                                            <b class="blue pull-right margin-left: 30px"> <?php echo $total_devis['totalttc']?>&nbsp;</b> 
                                             <b class="grey pull-right"> Total TTC:&nbsp;&nbsp;&nbsp;</b>   
                                             </br></b> </br></b> 
                                         </div>
@@ -477,16 +471,20 @@ if(!MInit::crypt_tp('id', null, 'D') or !$client->get_client())
                                     else {
                                         ?>
                                         <div>
-                                            <b class="red pull-right margin-left: 30px"> <?php echo $total_fact['reste']?></b> 
+                                        	<b class="red pull-right margin-left: 30px"> <?php echo $client->s('dev')?></b>
+                                            <b class="red pull-right margin-left: 30px"> <?php echo $total_fact['reste']?>&nbsp;</b> 
                                             <b class="grey pull-right">&nbsp;&nbsp;&nbsp;Reste à Payer:&nbsp;&nbsp;&nbsp;</b>  
 
-                                            <b class="green pull-right margin-left: 30px"> <?php echo $total_fact['paye']?></b> 
+                                            <b class="green pull-right margin-left: 30px"> <?php echo $client->s('dev')?></b>
+                                            <b class="green pull-right margin-left: 30px"> <?php echo $total_fact['paye']?>&nbsp;</b> 
                                             <b class="grey pull-right">&nbsp;&nbsp;&nbsp;Total Payé:&nbsp;&nbsp;&nbsp;</b>
 
-                                            <b class="blue pull-right margin-left: 30px"> <?php echo $total_fact['totalttc']?></b> 
+                                            <b class="blue pull-right margin-left: 30px"> <?php echo $client->s('dev')?></b>
+                                            <b class="blue pull-right margin-left: 30px"> <?php echo $total_fact['totalttc']?>&nbsp;</b> 
                                             <b class="grey pull-right">&nbsp;&nbsp;&nbsp; Total TTC:&nbsp;&nbsp;&nbsp;</b>
 
-                                            <b class="blue pull-right margin-left: 30px"> <?php echo $total_fact['totalht']?></b> 
+                                            <b class="blue pull-right margin-left: 30px"> <?php echo $client->s('dev')?></b>
+                                            <b class="blue pull-right margin-left: 30px"> <?php echo $total_fact['totalht']?>&nbsp;</b> 
                                             <b class="grey pull-right">&nbsp;&nbsp;&nbsp; Total HT:&nbsp;&nbsp;&nbsp;</b> 
                                             
                                             </br></b> </br></b> 
@@ -573,7 +571,7 @@ if(!MInit::crypt_tp('id', null, 'D') or !$client->get_client())
 
                         </div><!-- /#feed 2 -->
 
-                         <div id="feed enc" class="tab-pane">
+                         <div id="feedenc" class="tab-pane">
                             <div class="profile-feed row">
                                    
                                 <span>
@@ -583,11 +581,9 @@ if(!MInit::crypt_tp('id', null, 'D') or !$client->get_client())
                                     else {
                                         ?>
                                         <div>
-                                            <b class="blue pull-right margin-left: 30px"> <?php echo $total_devis['totalht']?></b> 
-                                            <b class="grey pull-right"> Total HT:&nbsp;&nbsp;&nbsp;</b>   
-                                            </br>
-                                            <b class="blue pull-right margin-left: 30px"> <?php echo $total_devis['totalttc']?></b> 
-                                            <b class="grey pull-right"> Total TTC:&nbsp;&nbsp;&nbsp;</b>   
+                                            <b class="blue pull-right margin-left: 30px"> <?php echo $client->s('dev')?></b> 
+                                            <b class="blue pull-right margin-left: 30px"> <?php echo $total_enc['total_enc']?>&nbsp;</b> 
+                                            <b class="grey pull-right"> Total Encaissé:&nbsp;&nbsp;&nbsp;</b>   
                                             </br></b> </br></b> 
                                         </div>
 
@@ -599,27 +595,27 @@ if(!MInit::crypt_tp('id', null, 'D') or !$client->get_client())
                                                 Réference
                                             </th>
                                             <th style="text-align: center;"><font color="#5C9EDB">
+                                                Désignation
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Dépositaire
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
                                                 Date
                                             </th>
                                             <th style="text-align: center;"><font color="#5C9EDB">
-                                                Commercial
+                                                Référence de paiement
                                             </th>
                                             <th style="text-align: center;"><font color="#5C9EDB">
-                                                Total HT
+                                                Mode de paiement
                                             </th>
                                             <th style="text-align: center;"><font color="#5C9EDB">
-                                                Total TVA
+                                                Montant payé
                                             </th>
-                                            <th style="text-align: center;"><font color="#5C9EDB">
-                                                Total Remises
-                                            </th>
-                                            <th style="text-align: center;"><font color="#5C9EDB">
-                                                Total TTC
-                                            </th>
+                                            
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 Document
                                             </th>
-
                                     <?php
                                             foreach ($client_enc as $enc) {?>
                                                 <tr>   
@@ -629,24 +625,26 @@ if(!MInit::crypt_tp('id', null, 'D') or !$client->get_client())
                                                     <td style="text-align: center;">
                                                         <span><?php echo $enc['1']; ?></span>
                                                     </td>
-                                                    <td style="text-align: center;">
+                                                    <td style="text-align: left;">
                                                         <span><?php echo $enc['2']; ?></span>
                                                     </td>
                                                     <td style="text-align: left;">
                                                         <span><?php echo $enc['3']; ?></span>
                                                     </td>
-                                                    <td style="text-align: right;">
+                                                    <td style="text-align: center;">
                                                         <span><?php echo $enc['4']; ?></span>
                                                     </td>
-                                                    <td style="text-align: right;">
+                                                    <td style="text-align: center;">
                                                         <span><?php echo $enc['5']; ?></span>
                                                     </td>
-                                                    <td style="text-align: right;">
+                                                    <td style="text-align: center;">
                                                         <span><?php echo $enc['6']; ?></span>
                                                     </td>
-                                                
+                                                    <td style="text-align: right;">
+                                                        <span><?php echo $enc['7']; ?></span>
+                                                    </td>
                                                     <td style="text-align: center;" >  
-                                                        <a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'enc') ?>" data="<?php echo MInit::crypt_tp('id', $enc['0']) ?>">
+                                                        <a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'recepisse') ?>" data="<?php echo MInit::crypt_tp('id', $enc['0']) ?>">
                                                             <i class="ace-icon fa fa-print"></i>
                                                         </a>
                                                     </td>
@@ -664,6 +662,68 @@ if(!MInit::crypt_tp('id', null, 'D') or !$client->get_client())
                             </div><!-- /. feed enc row -->
                       
                         </div><!-- /#feed enc -->
+
+                        <div id="feedbl" class="tab-pane">
+                            <div class="profile-feed row">
+                                   
+                                <span>
+                                    <?php
+                                    if ($client_bl == null)
+                                        echo '<B>Aucun BL trouvé</B> ';
+                                    else {
+                                        ?>
+                                        <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                ID
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Réference
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Date
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Projet
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Document
+                                            </th>
+
+                                    <?php
+                                            foreach ($client_bl as $bl) {?>
+                                                <tr>   
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $bl['0']; ?></span>
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $bl['1']; ?></span>
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $bl['2']; ?></span>
+                                                    </td>
+                                                    <td style="text-align: left;">
+                                                        <span><?php echo $bl['3']; ?></span>
+                                                    </td>
+                                                    
+                                                    <td style="text-align: center;" >  
+                                                        <a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'bl') ?>" data="<?php echo MInit::crypt_tp('id', $bl['0']) ?>">
+                                                            <i class="ace-icon fa fa-print"></i>
+                                                        </a>
+                                                    </td>
+                                                </tr>
+
+
+                                                <?php
+                                            }
+                                        }
+                                        ?>
+
+                                        </table>
+                                </span>        
+
+                            </div><!-- /. feed row bl -->
+                      
+                        </div><!-- /#feed bl-->
 
                     </div><!-- /#tab-content -->
                     </div><!-- /#tattable -->
