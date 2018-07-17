@@ -10,7 +10,7 @@ if (!defined('_MEXEC'))
 <div class="pull-right tableTools-container">
     <div class="btn-group btn-overlap">
 
-<?php TableTools::btn_add('ticket_frs', 'Liste des ticket_frs', Null, $exec = NULL, 'reply'); ?>
+<?php TableTools::btn_add('ticket_frs', 'Liste des tickets', Null, $exec = NULL, 'reply'); ?>
 
     </div>
 </div>
@@ -44,7 +44,7 @@ if (!defined('_MEXEC'))
 
 //Date incident ==> 
                 $date_incident[] = array('required', 'true', 'Insérer la date incident');
-                $form->input_date('Date incident', 'date_incident', 2, date('d-m-Y'), $date_incident);
+                $form->input_date('Date incident', 'date_incident', 4, date('d-m-Y'), $date_incident);
 
 //Select nature incident
                 $nature_incident = array('Coupure de connexion' => 'Coupure de connexion',
@@ -55,27 +55,22 @@ if (!defined('_MEXEC'))
                     'Bande passante' => 'Bande passante',
                     'CRC Errors' => 'CRC Errors',
                     'Autres' => 'Autres');
-                $form->select('Nature incident', 'nature_incident', 2, $nature_incident, $indx = NULL, $selected = 'Coupure de connexion', $multi = NULL);
+                $form->select('Nature incident', 'nature_incident', 4, $nature_incident, $indx = NULL, $selected = 'Coupure de connexion', $multi = NULL);
 
 
 //Prise en charge par fournisseur 
                 $pec_frs = array('Equipe Noc' => 'Equipe Noc',
                     'Autres' => 'Autres');
-                $form->select('PEC Fournisseur', 'prise_charge_frs', 2, $pec_frs, $indx = NULL, $selected = 'Equipe Noc', $multi = NULL);
+                $form->select('PEC Fournisseur', 'prise_charge_frs', 4, $pec_frs, $indx = NULL, $selected = 'Equipe Noc', $multi = NULL);
 
 //Prise en charge par Globaltech 
                 $pec_glbt = array('Support Technique' => 'Support Technique',
                     'Autres' => 'Autres');
-                $form->select('PEC Globaltech', 'prise_charge_glbt', 2, $pec_glbt, $indx = NULL, $selected = 'Equipe Noc', $multi = NULL);
-
-
-//Date prévisionnelle ==> 
-                $date_prev[] = array('required', 'true', 'Insérer une date prévisionnelle');
-                $form->input_date('Date prévisionnelle', 'date_previs', 2, date('d-m-Y'), $date_prev);
+                $form->select('PEC Globaltech', 'prise_charge_glbt', 4, $pec_glbt, $indx = NULL, $selected = 'Support Technique', $multi = NULL);
 
 //Description
                 $array_desc[] = array("required", "true", "Insérer un message ");
-                $form->input_editor('Description', 'message', 8, NULL, $array_desc, $input_height = 200);
+                $form->input_editor('Description', 'description', 8, NULL, $array_desc, $input_height = 200);
 
 
                 $form->button('Enregistrer');
