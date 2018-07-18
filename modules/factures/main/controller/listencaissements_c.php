@@ -9,14 +9,6 @@ $array_column = array(
         'header' => 'ID',
         'align'  => 'C'
     ),
-    array(
-        'column' => 'factures.client',
-        'type'   => '',
-        'alias'  => 'client',
-        'width'  => '15',
-        'header' => 'Client',
-        'align'  => 'L'
-    ),
     
     array(
         'column' => 'encaissements.reference',
@@ -26,6 +18,16 @@ $array_column = array(
         'header' => 'Référence',
         'align'  => 'L'
     ),
+    array(
+        'column' => 'factures.client',
+        'type'   => '',
+        'alias'  => 'client',
+        'width'  => '15',
+        'header' => 'Client',
+        'align'  => 'L'
+    ),
+    
+    
     array(
         'column' => 'encaissements.designation',
         'type'   => '',
