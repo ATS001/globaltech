@@ -44,14 +44,7 @@ if(Mreq::tp('id') != null)
         'align'  => 'L'
     ),
   
-    array(
-        'column' => 'factures.reference',
-        'type'   => '',
-        'alias'  => 'freference',
-        'width'  => '10',
-        'header' => 'Facture',
-        'align'  => 'L'
-    ),
+    
     array(
         'column' => 'encaissements.montant',
         'type'   => '',
@@ -82,18 +75,25 @@ if(Mreq::tp('id') != null)
     //Creat new instance
 $html_data_table = new Mdatatable();
 $html_data_table->columns_html = $array_column;
-$html_data_table->title_module = "encaissements";
+//$html_data_table->title_module = "Encaissements - ".$info_facture->facture_info["reference"];
+$html_data_table->title_module = 'Encaissements '.( !empty(Mreq::tp('id')) ? $info_facture->facture_info["reference"] : ' ');
 $html_data_table->task = 'encaissements';
-
+if(Mreq::tp('id') != null){
 //si t as besoin d'envoyer data ajoute key data Ã  Array ex: 'data' => 'id=$id'
 $html_data_table->btn_return = array('task' => 'factures', 'title' => 'Retour liste factures');
+}
 $html_data_table->task = 'encaissements';
 $html_data_table->btn_add_check = true;
 if(Mreq::tp('id') != null){
     $html_data_table->js_extra_data = "id=$id_facture";
     $html_data_table->btn_add_data = MInit::crypt_tp('id', $id_facture);
+    $_SESSION['enc'] = "1";
+}else{
+    $_SESSION['enc'] = "0";
 }
 
+
+if(!empty(Mreq::tp('id')))
 if($info_facture->facture_info['etat'] == 4)
 {
     $html_data_table->btn_add_data=NULL;
