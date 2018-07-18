@@ -130,7 +130,7 @@ $(document).ready(function() {
                     if(data['prix_vendu'] == 0){
                      $('#ref_produit').parent('div').after('<span class="help-block returned_span">Ce produit n\' pas été vendu avant!</span>'); 
                     }else{
-                        $('#ref_produit').parent('div').after('<span class="help-block returned_span">Ce produit étais vendu à :'+data['prix_vendu']+' / Qte disponible : '+data['qte_in_stock']+'</span>');
+                        $('#ref_produit').parent('div').after('<span class="help-block returned_span">Ce produit a été vendu à :'+data['prix_vendu']+' / Qte disponible : '+data['qte_in_stock']+'</span>');
                     }
                     $('#prix_unitaire').trigger('change');
                     //check if have already rox in table stop if produit is Abonnement
