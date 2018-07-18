@@ -19,15 +19,7 @@ if(Mreq::tp('id') != null)
         'header' => 'ID',
         'align'  => 'C'
     ),
-        array(
-        'column' => 'factures.client',
-        'type'   => '',
-        'alias'  => 'client',
-        'width'  => '15',
-        'header' => 'Client',
-        'align'  => 'L'
-    ),
-    array(
+         array(
         'column' => 'encaissements.reference',
         'type'   => '',
         'alias'  => 'reference',
@@ -35,6 +27,16 @@ if(Mreq::tp('id') != null)
         'header' => 'Référence',
         'align'  => 'L'
     ),
+    array(
+        'column' => 'factures.client',
+        'type'   => '',
+        'alias'  => 'client',
+        'width'  => '15',
+        'header' => 'Client',
+        'align'  => 'L'
+    ),
+    
+   
     array(
         'column' => 'encaissements.designation',
         'type'   => '',
@@ -44,12 +46,19 @@ if(Mreq::tp('id') != null)
         'align'  => 'L'
     ),
   
-    
+    array(
+        'column' => 'factures.reference',
+        'type'   => '',
+        'alias'  => 'freference',
+        'width'  => '10',
+        'header' => 'Facture',
+        'align'  => 'L'
+    ),
     array(
         'column' => 'encaissements.montant',
         'type'   => '',
         'alias'  => 'mt',
-        'width'  => '10',
+        'width'  => '8',
         'header' => 'Montant',
         'align'  => 'C'
     ),
@@ -57,7 +66,7 @@ if(Mreq::tp('id') != null)
         'column' => 'encaissements.date_encaissement',
         'type'   => 'date',
         'alias'  => 'date',
-        'width'  => '10',
+        'width'  => '8',
         'header' => 'Date',
         'align'  => 'C'
     ),
@@ -65,13 +74,12 @@ if(Mreq::tp('id') != null)
         'column' => 'statut',
         'type'   => '',
         'alias'  => 'statut',
-        'width'  => '15',
+        'width'  => '10',
         'header' => 'Statut',
         'align'  => 'C'
     )
     
  );
-    
     //Creat new instance
 $html_data_table = new Mdatatable();
 $html_data_table->columns_html = $array_column;
