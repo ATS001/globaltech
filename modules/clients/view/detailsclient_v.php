@@ -61,6 +61,9 @@ if(!MInit::crypt_tp('id', null, 'D') or !$client->get_client())
 </div><!-- /.page-header -->
 <!-- ajax layout which only needs content area -->
 <div class="row">
+<?php Mmodul::get_statut_etat_line('clients', $client->g('etat'));
+//echo $actions;
+?>
         <!-- PAGE CONTENT BEGINS -->
         
         <div>

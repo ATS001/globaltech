@@ -760,6 +760,80 @@ class Mclients {
 		}
 	}
 
+    //Bloquer client after all check
+    public function bloquer_client(){
+
+    //Get existing data for categorie_client
+      $this->get_client();
+
+      $this->last_id = $this->id_client;
+        
+      
+      $this->check_non_exist('motif_blocage_clients','id', $this->_data['id_motif_blocage'], 'Motif de Blocage');
+
+    //Check $this->error (true / false)
+    if($this->error == true){
+      //Format values for Insert query 
+      global $db;
+
+      $values["email"]     = MySQL::SQLValue($this->_data['email']);
+      $values["rib"]       = MySQL::SQLValue($this->_data['rib']);
+      $values["etat"]      = MySQL::SQLValue($this->_data['id_devise']);
+      $values["updusr"]    = MySQL::SQLValue(session::get('userid'));
+      $values["upddat"]    = MySQL::SQLValue(date("Y-m-d H:i:s"));
+      $wheres["id"]        = $this->id_client;
+
+      //Check if Insert Query been executed (False / True)
+      if (!$result = $db->UpdateRows($this->table, $values,$wheres)){
+        //False => Set $this->log and $this->error = false
+        $this->log .= $db->Error();
+        $this->error = false;
+        $this->log .='</br>Enregistrement BD non réussie'; 
+
+      }else{
+
+        $this->last_id = $this->id_client;
+        //If Attached required Save file to Archive
+        $this->save_file('pj', 'Justifications du clients'.$this->_data['denomination'], 'Document');
+          
+        
+        $this->save_file('pj_photo', 'Photo du client'.$this->_data['denomination'], 'image');
+
+                //Esspionage
+                if(!$db->After_update($this->table, $this->id_client, $values, $this->client_info)){
+                    $this->log .= '</br>Problème Esspionage';
+                    $this->error = false; 
+                }
+                
+        //Check $this->error = true return Green message and Bol true
+        if($this->error == true)
+        {
+          $this->log = '</br>Modification réussie: <b>'.$this->_data['denomination'].' ID: '.$this->last_id;
+
+                    if(!Mlog::log_exec($this->table, $this->id_client, 'Modification client', 'Update'))
+                    {
+                        $this->log .= '</br>Un problème de log ';
+                    }
+        //Check $this->error = false return Red message and Bol false 
+        }else{
+          $this->log .= '</br>Client bloqué: <b>'.$this->_data['denomination'];
+          $this->log .= '</br>Un problème d\'Enregistrement ';
+        }
+      }
+    //Else Error false  
+    }else{
+      $this->log .='</br>Enregistrement non réussie';
+    }
+        //check if last error is true then return true else rturn false.
+    if($this->error == false){
+      return false;
+    }else{
+      return true;
+    }
+  }
+
+
+
 
     public function delete_client()
     {
