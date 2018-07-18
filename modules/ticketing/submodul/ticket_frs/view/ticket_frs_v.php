@@ -1,6 +1,8 @@
-<?php 
+<?php
+
 //First check target no Hack
-if(!defined('_MEXEC'))die();
+if (!defined('_MEXEC'))
+    die();
 //SYS GLOBAL TECH
 // Modul: ticket_frs
 //Created : 15-07-2018
@@ -17,7 +19,7 @@ $array_column = array(
     ),
     //Complete Array fields here
     array(
-        'column' => 'tickets_fournisseurs.id_fournisseur',
+        'column' => 'fournisseurs.denomination',
         'type' => '',
         'alias' => 'id_fournisseur',
         'width' => '15',
@@ -26,11 +28,11 @@ $array_column = array(
     ),
     array(
         'column' => 'tickets_fournisseurs.date_incident',
-        'type' => 'Date',
+        'type' => 'date',
         'alias' => 'date_incident',
-        'width' => '15',
+        'width' => '10',
         'header' => 'Date incident',
-        'align' => 'L'
+        'align' => 'C'
     ),
     array(
         'column' => 'tickets_fournisseurs.nature_incident',
@@ -40,9 +42,8 @@ $array_column = array(
         'header' => 'Nature incident',
         'align' => 'L'
     ),
-    
     array(
-        'column' => 'tickets_fournisseurs.id_technicien',
+        'column' => 'CONCAT(users_sys.fnom," ",users_sys.lnom)',
         'type' => '',
         'alias' => 'id_technicien',
         'width' => '15',
@@ -50,21 +51,12 @@ $array_column = array(
         'align' => 'L'
     ),
     array(
-        'column' => 'tickets_fournisseurs.date_affectation',
-        'type' => '',
-        'alias' => 'date_affectation',
-        'width' => '15',
-        'header' => 'Date affectation',
-        'align' => 'L'
-    ),
-       
-    array(
         'column' => 'statut',
         'type' => '',
         'alias' => 'statut',
-        'width' => '15',
+        'width' => '10',
         'header' => 'Statut',
-        'align' => 'L'
+        'align' => 'C'
     ),
 );
 //Creat new instance
@@ -73,10 +65,9 @@ $html_data_table->columns_html = $array_column;
 $html_data_table->title_module = "Ticket Fournisseur";
 $html_data_table->task = 'ticket_frs';
 
-if(!$data = $html_data_table->table_html())
-{
-    exit("0#".$html_data_table->log);
-}else{
+if (!$data = $html_data_table->table_html()) {
+    exit("0#" . $html_data_table->log);
+} else {
     echo $data;
 }
 

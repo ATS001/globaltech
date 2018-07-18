@@ -18,7 +18,7 @@ $array_column = array(
     ),
     //Complete Array fields here
     array(
-        'column' => 'tickets_fournisseurs.id_fournisseur',
+        'column' => 'fournisseurs.denomination',
         'type' => '',
         'alias' => 'id_fournisseur',
         'width' => '15',
@@ -27,11 +27,11 @@ $array_column = array(
     ),
     array(
         'column' => 'tickets_fournisseurs.date_incident',
-        'type' => 'Date',
+        'type' => 'date',
         'alias' => 'date_incident',
-        'width' => '15',
+        'width' => '10',
         'header' => 'Date incident',
-        'align' => 'L'
+        'align' => 'C'
     ),
     array(
         'column' => 'tickets_fournisseurs.nature_incident',
@@ -41,9 +41,8 @@ $array_column = array(
         'header' => 'Nature incident',
         'align' => 'L'
     ),
-    
     array(
-        'column' => 'tickets_fournisseurs.id_technicien',
+        'column' => 'CONCAT(users_sys.fnom," ",users_sys.lnom)',
         'type' => '',
         'alias' => 'id_technicien',
         'width' => '15',
@@ -51,21 +50,12 @@ $array_column = array(
         'align' => 'L'
     ),
     array(
-        'column' => 'tickets_fournisseurs.date_affectation',
-        'type' => '',
-        'alias' => 'date_affectation',
-        'width' => '15',
-        'header' => 'Date affectation',
-        'align' => 'L'
-    ),
-       
-    array(
         'column' => 'statut',
         'type' => '',
         'alias' => 'statut',
-        'width' => '15',
+        'width' => '10',
         'header' => 'Statut',
-        'align' => 'L'
+        'align' => 'C'
     ),
 );
 //Creat new instance
@@ -74,7 +64,7 @@ $list_data_table = new Mdatatable();
 $list_data_table->tables = array('tickets_fournisseurs');
 //Set Jointure
 $list_data_table->tables = array('tickets_fournisseurs LEFT JOIN users_sys ON users_sys.id=tickets_fournisseurs.id_technicien '
-                                                    . 'LEFT JOIN fournisseurs ON fournisseurs.id=tickets_fournisseurs.id_fournisseur');
+    . 'LEFT JOIN fournisseurs ON fournisseurs.id=tickets_fournisseurs.id_fournisseur');
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query

@@ -4,13 +4,18 @@ if(!defined('_MEXEC'))die();
 //SYS GLOBAL TECH
 // Modul: ticket_frs
 //Created : 15-07-2018
-//Controller ADD Form
-if(MInit::form_verif('addticket_frs', false))
+//Controller EDIT Form
+if(MInit::form_verif('edittickets_frs', false))
 {
-
-		$posted_data = array(
-
-			'id_fournisseur'         => Mreq::tp('id_fournisseur') ,
+    if(!MInit::crypt_tp('id', null, 'D'))
+    {  
+    // returne message error red to client 
+        exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+    }
+        $posted_data = array(
+            'id'                => Mreq::tp('id') ,
+            //
+            'id_fournisseur'         => Mreq::tp('id_fournisseur') ,
 'date_incident'         => Mreq::tp('date_incident') ,
 'nature_incident'         => Mreq::tp('nature_incident') ,
 'description'         => Mreq::tp('description') ,
@@ -22,15 +27,15 @@ if(MInit::form_verif('addticket_frs', false))
 'observation'         => Mreq::tp('observation') ,
 
 
-		);
+        );
 
 
         //Check if array have empty element return list
         //for acceptable empty field do not put here
-		$checker = null;
-		$empty_list = "Les champs suivants sont obligatoires:\n<ul>";
+        $checker = null;
+        $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
 
-			if($posted_data["id_fournisseur"] == NULL){
+        	if($posted_data["id_fournisseur"] == NULL){
                                     $empty_list .= "<li>Fournisseur</li>";
                                     $checker = 1;
                               }
@@ -73,33 +78,34 @@ if(MInit::form_verif('addticket_frs', false))
 
 
 
-		$empty_list.= "</ul>";
-		if($checker == 1)
-		{
-			exit("0#$empty_list");
-		}
+        $empty_list.= "</ul>";
+        if($checker == 1)
+        {
+            exit("0#$empty_list");
+        }
 
 
 
        //End check empty element
-		$new_ticket_frs = new  Mticket_frs($posted_data);
+        $edit_ticket_frs = new  Mticket_frs($posted_data);
 
+        //Set ID of row to update
+        $edit_ticket_frs->id_ticket_frs = $posted_data['id'];
+        
+        //execute Update returne false if error
+        if($edit_ticket_frs->edit_ticket_frs()){
 
+            exit("1#".$edit_ticket_frs->log);
+        }else{
 
-        //execute Insert returne false if error
-		if($new_ticket_frs->save_new_ticket_frs()){
-
-			exit("1#".$new_ticket_frs->log);
-		}else{
-
-			exit("0#".$new_ticket_frs->log);
-		}
+            exit("0#".$edit_ticket_frs->log);
+        }
 
 
 }
 
 //No form posted show view
-view::load_view('addticket_frs');
+view::load_view('edittickets_frs');
 
 
 
@@ -107,4 +113,4 @@ view::load_view('addticket_frs');
 
 
 
-	?>
+    ?>

@@ -9,11 +9,11 @@ if (!defined('_MEXEC'))
 //Created : 02-04-2018
 //Model
 
-class Mtickets {
+class Mticket_frs {
 
     private $_data;                      //data receive from form
     var $table = 'tickets_fournisseurs';   //Main table of module
-    var $table_action = 'action_ticket'; //Second table of module
+    var $table_action = 'action_ticket_frs'; //Second table of module
     var $last_id = null;        //return last ID after insert command
     var $log = null;        //Log of all opération.
     var $error = true;        //Error bol changed when an error is occured
@@ -42,28 +42,20 @@ class Mtickets {
 
     //Get all info ticket fro database for edit form
 
-    public function get_tickets() {
+    public function get_ticket_frs() {
         global $db;
 
         $table = $this->table;
 
         $sql = "SELECT $table.* ,
-                IFNULL(DATEDIFF(DATE(NOW()),DATE(tickets.date_affectation)),0) as nbrj,
+                IFNULL(DATEDIFF(DATE(NOW()),DATE($table.date_affectation)),0) as nbrj,
                 DATE_FORMAT($table.date_affectation,'%d-%m-%Y') as date_affectation,
-                DATE_FORMAT($table.date_previs,'%d-%m-%Y') as date_previs,
-                DATE_FORMAT($table.date_realis,'%d-%m-%Y') as date_realis,
                 CONCAT(users_sys.fnom,' ',users_sys.lnom) as technicien ,
-                clients.denomination as client ,
-                ref_categories_produits.categorie_produit as categorie_produit ,
-                ref_types_produits.type_produit as typep , 
-                produits.designation as prd,
+                fournisseurs.denomination as fournisseur ,
                 code_cloture.code_cloture as code_cloture,
-                $table.serial_number as serial_number,
-                    DATE_FORMAT($table.credat,'%d-%m-%Y') as credat
-                FROM $table LEFT JOIN produits ON produits.id=$table.id_produit "
-                . "LEFT JOIN ref_categories_produits  ON ref_categories_produits.id=$table.categorie_produit"
-                . " LEFT JOIN ref_types_produits ON ref_types_produits.id=$table.type_produit"
-                . " LEFT JOIN clients ON clients.id=$table.id_client"
+                DATE_FORMAT($table.credat,'%d-%m-%Y') as credat
+                FROM $table "
+                . " LEFT JOIN fournisseurs ON fournisseurs.id=$table.id_fournisseur"
                 . " LEFT JOIN users_sys ON users_sys.id=$table.id_technicien"
                 . " LEFT JOIN code_cloture ON code_cloture.id=$table.code_cloture"
                 . " WHERE $table.id = " . $this->id_tickets;
@@ -123,22 +115,19 @@ class Mtickets {
      * Save new row to main table
      * @return [bol] [bol value send to controller]
      */
-    public function save_new_tickets() {
+    public function save_new_ticket_frs() {
 
-        $this->check_non_exist('clients', 'id', $this->_data['id_client'], 'Client');
-        //$this->check_non_exist('users_sys', 'id', $this->_data['id_technicien'], 'Technicien');
-
+        $this->check_non_exist('fournisseurs', 'id', $this->_data['id_fournisseur'], 'Fournisseur');
+       
         if ($this->error == true) {
             global $db;
             //Add all fields for the table
-            $values["id_client"] = MySQL::SQLValue($this->_data["id_client"]);
-            $values["projet"] = MySQL::SQLValue($this->_data["projet"]);
-            $values["message"] = MySQL::SQLValue($this->_data["message"]);
-            $values["date_previs"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_previs'])));
-            $values["type_produit"] = MySQL::SQLValue($this->_data["type_produit"]);
-            $values["categorie_produit"] = MySQL::SQLValue($this->_data["categorie_produit"]);
-            $values["id_produit"] = MySQL::SQLValue($this->_data["id_produit"]);
-            $values["serial_number"] = MySQL::SQLValue($this->_data["serial_number"]);
+            $values["id_fournisseur"] = MySQL::SQLValue($this->_data["id_fournisseur"]);
+            $values["description"] = MySQL::SQLValue($this->_data["description"]);
+            $values["date_incident"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_incident'])));
+            $values["nature_incident"] = MySQL::SQLValue($this->_data["nature_incident"]);
+            $values["prise_charge_frs"] = MySQL::SQLValue($this->_data["prise_charge_frs"]);
+            $values["prise_charge_glbt"] = MySQL::SQLValue($this->_data["prise_charge_glbt"]);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
@@ -151,14 +140,14 @@ class Mtickets {
                 $this->last_id = $result;
                 $this->id_tickets = $db->GetLastInsertID();
                 $this->init_action("ouverture", $old_technicien = NULL);
-                $this->log .= '</br>Enregistrement  réussie ';
+                $this->log .= '</br>Enregistrement  réussie AAAAAAA';
                 if (!Mlog::log_exec($this->table, $this->last_id, 'Création tickets', 'Insert')) {
                     $this->log .= '</br>Un problème de log ';
                 }
             }
         } else {
 
-            $this->log .= '</br>Enregistrement non réussie';
+            $this->log .= '</br>Enregistrement non réussie BBBBBB';
         }
 
         //check if last error is true then return true else rturn false.
@@ -732,10 +721,10 @@ class Mtickets {
      */
 
     public function init_action($action, $old_technicien) {
-        $this->get_tickets();
-
+        $this->get_ticket_frs();
+global $db;
         if ($this->error == true) {
-            global $db;
+            
             //Add all fields for the table
             switch ($action) {
 
@@ -759,10 +748,10 @@ class Mtickets {
 
             $values["date_action"] = MySQL::SQLValue(date('Y-m-d'));
             $values["etat"] = MySQL::SQLValue(1);
-            $values["id_ticket"] = MySQL::SQLValue($this->tickets_info["id"]);
+            $values["id_ticket_frs"] = MySQL::SQLValue($this->tickets_info["id"]);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
-
+            
             if (!$result = $db->InsertRow($this->table_action, $values)) {
 
                 $this->log .= $db->Error();
@@ -776,8 +765,8 @@ class Mtickets {
                 }
             }
         } else {
-
-            $this->log .= '</br>Enregistrement non réussie';
+            var_dump($db);
+            $this->log .= '</br>Enregistrement non réussie CCCCCC';
         }
 
         //check if last error is true then return true else rturn false.
