@@ -2238,6 +2238,115 @@ class Mdevis
 
     }
 
+    public function get_list_bl()
+    {
+        global $db;
+        
+        $add_set = array('return' => '<a href="#" class="this_url" rel="detailbl" data="%crypt%"> <i class="ace-icon fa fa-eye blue bigger-100"></i></a>', 'data' => 'id');
+        $id_devis = $this->id_devis;
+        $req_sql  = " SELECT id, reference, date_bl, '#' FROM bl WHERE iddevis = $id_devis ";
+        
+        if(!$db->Query($req_sql))
+        {
+            $this->error = false;
+            $this->log  .= $db->Error().' '.$req_sql;
+            
+        }
+        if(!$db->RowCount())
+        {
+             $output = 'Pas de Bons de Livraison enregistrés pour ce devis'; 
+             return $output;
+        }
+        
+        
+        $headers = array(
+            'ID'                  => '5[#]center',
+            'Référence'           => '10[#]center',
+            'Date création'       => '30[#]', 
+            'Voir détails'        => '15[#]center[#]crypt', 
+            
+            
+            
+        );
+                 
+                
+        $tableau = $db->GetMTable($headers, $add_set);
+        return $tableau;
+    }
+
+    public function get_list_factures()
+    {
+        global $db;
+        
+        $add_set = array('return' => '<a href="#" class="this_url" rel="detailbl" data="%crypt%"> <i class="ace-icon fa fa-eye blue bigger-100"></i></a>', 'data' => 'id');
+        $id_devis = $this->id_devis;
+        $req_sql  = " SELECT id, reference, date_bl, '#' FROM bl WHERE iddevis = $id_devis ";
+        
+        if(!$db->Query($req_sql))
+        {
+            $this->error = false;
+            $this->log  .= $db->Error().' '.$req_sql;
+            
+        }
+        if(!$db->RowCount())
+        {
+             $output = 'Pas de Bons de Livraison enregistrés pour ce devis'; 
+             return $output;
+        }
+        
+        
+        $headers = array(
+            'ID'                  => '5[#]center',
+            'Référence'           => '10[#]center',
+            'Date création'       => '30[#]', 
+            'Voir détails'        => '15[#]center[#]crypt', 
+            
+            
+            
+        );
+                 
+                
+        $tableau = $db->GetMTable($headers, $add_set);
+        return $tableau;
+    }
+
+    
+    public function get_list_encaissement()
+    {
+        global $db;
+        
+        $add_set = array('return' => '<a href="#" class="this_url" rel="detailbl" data="%crypt%"> <i class="ace-icon fa fa-eye blue bigger-100"></i></a>', 'data' => 'id');
+        $id_devis = $this->id_devis;
+        $req_sql  = " SELECT id, reference, date_bl, '#' FROM bl WHERE iddevis = $id_devis ";
+        
+        if(!$db->Query($req_sql))
+        {
+            $this->error = false;
+            $this->log  .= $db->Error().' '.$req_sql;
+            
+        }
+        if(!$db->RowCount())
+        {
+             $output = 'Pas de Bons de Livraison enregistrés pour ce devis'; 
+             return $output;
+        }
+        
+        
+        $headers = array(
+            'ID'                  => '5[#]center',
+            'Référence'           => '10[#]center',
+            'Date création'       => '30[#]', 
+            'Voir détails'        => '15[#]center[#]crypt', 
+            
+            
+            
+        );
+                 
+                
+        $tableau = $db->GetMTable($headers, $add_set);
+        return $tableau;
+    }
+
 
 
 /**

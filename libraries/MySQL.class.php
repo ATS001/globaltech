@@ -1034,12 +1034,13 @@ class MySQL
 	 * @param string $styleData (Optional) Style information for the cells
 	 * @return string HTML containing a table with all records listed
 	 */
-		public function GetMTable($headers = null) {
+		public function GetMTable($headers = null, $add_set = null) {
 			
 			$tb = 'class="table table-striped table-bordered"';
 			
 			$array_width = array();
 			$array_align = array();
+			$array_crypt = array();
 			$styleData   = array_values($headers);
 			$array_titl  = array_keys($headers);
 
@@ -1048,8 +1049,10 @@ class MySQL
 					$elem  = explode("[#]", $value);
 					$align = isset($elem[1]) ? $elem[1] : '';
 					$width = isset($elem[0]) ? $elem[0] : '15';
+					$crypt = isset($elem[2]) ? true : false;
 					array_push($array_width, $width);
 					array_push($array_align, $align);
+					array_push($array_crypt, $crypt);
 				}
 			}
 			
@@ -1101,8 +1104,10 @@ class MySQL
 
 						$array_last_width = array_combine($keys_member, $array_width);
 						$array_last_align = array_combine($keys_member, $array_align);
+						$array_last_crypt = array_combine($keys_member, $array_crypt);
 
 						
+                        
 
 						foreach ($member as $key => $value) {
 
@@ -1111,6 +1116,11 @@ class MySQL
 
 							$width = 'style="width:'.$width.'%;"' ;
 							$align = 'class="'.$align.'"' ;
+							if($array_last_crypt[$key]){
+								$value = str_replace('%crypt%', MInit::crypt_tp($add_set['data'], $member_array[$add_set['data']]), $add_set['return']);
+								//$value = $key;
+
+							}
 
 
 							$html .= "\t\t<td $width $align>" . ($value) . "</td>\n";
