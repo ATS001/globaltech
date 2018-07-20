@@ -1,5 +1,5 @@
 <?php
-//array colomn
+
 $array_column = array(
 	array(
         'column' => 'factures.id',
@@ -25,6 +25,7 @@ $array_column = array(
         'header' => 'Date',
         'align'  => 'C'
     ),
+    
     array(
         'column' => 'factures.total_ttc',
         'type'   => 'int',
@@ -52,18 +53,19 @@ $array_column = array(
         'align'  => 'R'
     ),
     array(
-        'column' => 'CONCAT(c.code, " - ",factures.client)',
+        'column' => 'CONCAT((SELECT c.reference FROM clients c WHERE c.denomination=factures.client), " - ",factures.client)',
         'type'   => '',
         'alias'  => 'con_clt',
-        'width'  => '15',
+        'width'  => '17',
         'header' => 'Client',
         'align'  => 'C'
     ),
     array(
-        'column' => 'IF(base_fact="C",CONCAT("<b>DU</b> ", DATE_FORMAT(factures.du,"%d-%m-%Y")," <b>AU</b> ",DATE_FORMAT(factures.au,"%d-%m-%Y"))," ")',
-        'type'   => '',
-        'alias'  => 'clt',
-        'width'  => '15',
+        'column' => 'IF(base_fact="C",CONCAT(" DU ", DATE_FORMAT(factures.du,"%d-%m-%Y")," AU ",DATE_FORMAT(factures.au,"%d-%m-%Y"))," ")',
+        'type'   => 'html',
+        'html'   => 'IF(base_fact="C",CONCAT("<b>DU</b> ", DATE_FORMAT(factures.du,"%d-%m-%Y")," <b>AU</b> ",DATE_FORMAT(factures.au,"%d-%m-%Y"))," ")',
+        'alias'  => 'periode',
+        'width'  => '18',
         'header' => 'Période facturée',
         'align'  => 'C'
     ),
@@ -71,26 +73,38 @@ $array_column = array(
         'column' => 'statut',
         'type'   => '',
         'alias'  => 'statut',
-        'width'  => '15',
+        'width'  => '10',
         'header' => 'Statut',
         'align'  => 'C'
     ),
     
  );
-
 //Creat new instance
-$html_data_table = new Mdatatable();
-$html_data_table->columns_html = $array_column;
-$html_data_table->title_module = "Factures";
-$html_data_table->task = 'factures';
-$html_data_table->btn_add_check=TRUE;
-$html_data_table->btn_return = array('task' => 'facturearchive', 'title' => 'Factures Archivées');
+$list_data_table = new Mdatatable();
+//Set tabels used in Query
+$list_data_table->tables = array('factures');
+//Set Jointure
+$list_data_table->joint = "etat = 100";
+//Call all columns
+$list_data_table->columns = $array_column;
+//Set main table of Query
+$list_data_table->main_table = 'factures';
+//Set Task used for statut line
+$list_data_table->task = 'facturearchive';
+//Set File name for export
+$list_data_table->file_name = 'liste_factures_expire';
+//Set Title of report
+$list_data_table->title_report = 'Liste factures expire';
 
-if(!$data = $html_data_table->table_html())
+//Print JSON DATA
+if(!$data = $list_data_table->Query_maker())
 {
-    exit("0#".$html_data_table->log);
+    exit("0#".$list_data_table->log);
 }else{
     echo $data;
 }
-?>
 
+
+
+?>
+	

@@ -1188,7 +1188,13 @@ class Mdevis
         global $db;
         $table = $this->table;
         $id_devis = $this->id_devis;
-        $new_etat = $this->g('type_devis') == 'VNT' ? 'etat = etat' : 'etat = '.Msetting::get_set('etat_devis', $etat) ;
+        if($this->g('type_devis') == 'VNT' && $reponse == 'valid')
+        {
+            $new_etat = 'etat = etat';
+        }else{
+            $new_etat = 'etat = '.Msetting::get_set('etat_devis', $etat) ;
+        }
+        //$new_etat = $this->g('type_devis') == 'VNT' ? 'etat = etat' : 'etat = '.Msetting::get_set('etat_devis', $etat) ;
         if($etat == null)
         {
             $this->error = false;
@@ -1215,7 +1221,7 @@ class Mdevis
             }
             $this->last_id = $this->_data['id'];
             $this->save_file('scan', 'PJ réponse devis '.$this->_data['id'], 'Document');
-            if($this->g('type_devis') == 'VNT')
+            if($this->g('type_devis') == 'VNT' && $reponse == 'valid')
             {
                 $id_bl = 'id='.$id_bl;
                 $task  = MInit::crypt_tp('task', 'detailbl');

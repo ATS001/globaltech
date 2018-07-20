@@ -89,20 +89,20 @@ $encaissements = $info_facture->encaissement_info;
                                     <ul class="list-unstyled spaced">
                                         <li>
                                             <i class="ace-icon fa fa-caret-right blue"></i> Référence                                                                                               
-                                            <b style="color:blue"> <?php $info_facture->printattribute_fact('reference'); ?> </b>                                                                                                          
+                                            <b class="blue pull-right"> <?php $info_facture->printattribute_fact('reference'); ?> </b>                                                                                                          
 
 
                                         </li>
 
                                         <li>
                                             <i class="ace-icon fa fa-caret-right blue"></i> Date facture
-                                            <b style="color:blue"><?php  $info_facture->printattribute_fact('date_facture'); ?>  </b>                                                                                                              
+                                            <b class="blue pull-right"><?php  $info_facture->printattribute_fact('date_facture'); ?>  </b>                                                                                                              
 
                                         </li>
 
                                         <li>
                                             <i class="ace-icon fa fa-caret-right blue"></i> Période facturée
-                                            <b style="color:blue"><?php
+                                            <b class="blue pull-right"><?php
         if ($info_facture->printattribute_fact('du') != null and $info_facture->printattribute_fact('au') != null)
             $info_facture->printattribute_fact('du');
         ?> <b>Au</b> <?php $info_facture->printattribute_fact('au'); ?></b> 
@@ -111,32 +111,32 @@ $encaissements = $info_facture->encaissement_info;
                                         <li>
                                             <i class="ace-icon fa fa-caret-right blue"></i>
                                             Total HT
-                                            <b style="color:blue"><?php $info_facture->printattribute_fact('total_ht'); ?></b>
+                                            <b class="blue pull-right"><?php $info_facture->printattribute_fact('total_ht'); ?></b>
                                         </li>
                                         <li>
                                             <i class="ace-icon fa fa-caret-right blue"></i>
                                             TVA
-                                            <b style="color:blue"><?php $info_facture->printattribute_fact('tva'); ?></b>
+                                            <b class="blue pull-right"><?php $info_facture->printattribute_fact('tva'); ?></b>
                                         </li>
                                         <li>
                                             <i class="ace-icon fa fa-caret-right blue"></i>
                                             Totale TVA
-                                            <b style="color:blue"><?php $info_facture->printattribute_fact('total_tva'); ?></b>
+                                            <b class="blue pull-right"><?php $info_facture->printattribute_fact('total_tva'); ?></b>
                                         </li>
                                         <li>
                                             <i class="ace-icon fa fa-caret-right blue"></i>
                                             Total TTC
-                                            <b style="color:blue"><?php $info_facture->printattribute_fact('total_ttc'); ?></b>
+                                            <b class="blue pull-right"><?php $info_facture->printattribute_fact('total_ttc'); ?></b>
                                         </li>
                                         <li>
                                             <i class="ace-icon fa fa-caret-right blue"></i>
                                             Total payé
-                                            <b style="color:blue"><?php $info_facture->printattribute_fact('total_paye'); ?></b>
+                                            <b class="blue pull-right"><?php $info_facture->printattribute_fact('total_paye'); ?></b>
                                         </li>
                                         <li>
                                             <i class="ace-icon fa fa-caret-right blue"></i>
                                             Reste
-                                            <b style="color:blue"><?php $info_facture->printattribute_fact('reste'); ?></b>
+                                            <b class="blue pull-right"><?php $info_facture->printattribute_fact('reste'); ?></b>
                                         </li>
                                     </ul>
                                 </div>
@@ -153,28 +153,28 @@ $encaissements = $info_facture->encaissement_info;
                                     <ul class="list-unstyled  spaced">
                                         <li>
                                             <i class="ace-icon fa fa-caret-right green"></i> Réference
-                                            <b style="color:green"><?php $info_facture->printattribute_clt('reference'); ?></b>
+                                            <b class="green pull-right"><?php $info_facture->printattribute_clt('reference'); ?></b>
                                         </li>
 
                                         <li>
                                             <i class="ace-icon fa fa-caret-right green"></i> Dénomination
-                                            <b style="color:green"><?php $info_facture->printattribute_clt('denomination'); ?></b>
+                                            <b class="green pull-right"><?php $info_facture->printattribute_clt('denomination'); ?></b>
                                         </li>
 
                                         <li>
                                             <i class="ace-icon fa fa-caret-right green"></i>Raison social
-                                            <b style="color:green"><?php $info_facture->printattribute_clt('r_social'); ?></b>
+                                            <b class="green pull-right"><?php $info_facture->printattribute_clt('r_social'); ?></b>
                                         </li>
 
                                         <li>
                                             <i class="ace-icon fa fa-caret-right green"></i>
                                             Registe de commerce
-                                            <b style="color:green"><?php echo $info_facture->printattribute_clt('r_commerce'); ?></b>
+                                            <b class="green pull-right"><?php echo $info_facture->printattribute_clt('r_commerce'); ?></b>
                                         </li>
                                         <li>
                                             <i class="ace-icon fa fa-caret-right green"></i>
                                             NIF
-                                            <b style="color:green"><?php echo $info_facture->printattribute_clt('nif'); ?></b>
+                                            <b class="green pull-right"><?php echo $info_facture->printattribute_clt('nif'); ?></b>
                                         </li>
                                     </ul>
                                 </div>
@@ -191,23 +191,23 @@ $encaissements = $info_facture->encaissement_info;
                                     <ul class="list-unstyled  spaced">
                                         <li>
                                             <i class="ace-icon fa fa-caret-right yellow"></i> Référence
-                                            <b style="color:#996633"><?php $info_facture->printattribute_ctr('reference'); ?></b>
+                                            <b class="orange2 pull-right"><?php $info_facture->printattribute_ctr('reference'); ?></b>
                                         </li>
                                         
                                         <li>
                                             <i class="ace-icon fa fa-caret-right yellow"></i>
                                             Date contrat
-                                            <b style="color:#996633"><?php echo $info_facture->printattribute_ctr('date_contrat'); ?></b>
+                                            <b class="orange2 pull-right"><?php echo $info_facture->printattribute_ctr('date_contrat'); ?></b>
                                         </li>
 
                                         <li>
                                             <i class="ace-icon fa fa-caret-right yellow"></i> Daté d'effet
-                                            <b style="color:#996633"><?php $info_facture->printattribute_ctr('date_effet'); ?></b>
+                                            <b class="orange2 pull-right"><?php $info_facture->printattribute_ctr('date_effet'); ?></b>
                                         </li>
 
                                         <li>
                                             <i class="ace-icon fa fa-caret-right yellow"></i>Date fin
-                                            <b style="color:#996633"><?php $info_facture->printattribute_ctr('date_fin'); ?></b>
+                                            <b class="orange2 pull-right"><?php $info_facture->printattribute_ctr('date_fin'); ?></b>
                                         </li>                                        
                                        
                                     </ul>

@@ -9,14 +9,6 @@ $array_column = array(
         'header' => 'ID',
         'align'  => 'C'
     ),
-    array(
-        'column' => 'factures.client',
-        'type'   => '',
-        'alias'  => 'client',
-        'width'  => '15',
-        'header' => 'Client',
-        'align'  => 'L'
-    ),
     
     array(
         'column' => 'encaissements.reference',
@@ -27,6 +19,16 @@ $array_column = array(
         'align'  => 'L'
     ),
     array(
+        'column' => 'factures.client',
+        'type'   => '',
+        'alias'  => 'client',
+        'width'  => '15',
+        'header' => 'Client',
+        'align'  => 'L'
+    ),
+    
+    
+    array(
         'column' => 'encaissements.designation',
         'type'   => '',
         'alias'  => 'des',
@@ -35,14 +37,7 @@ $array_column = array(
         'align'  => 'L'
     ),
   
-    array(
-        'column' => 'factures.reference',
-        'type'   => '',
-        'alias'  => 'freference',
-        'width'  => '10',
-        'header' => 'Facture',
-        'align'  => 'L'
-    ),
+    
     array(
         'column' => 'encaissements.montant',
         'type'   => '',

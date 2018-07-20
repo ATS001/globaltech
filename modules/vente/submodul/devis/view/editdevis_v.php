@@ -238,6 +238,7 @@ $(document).ready(function() {
 
     });
 
+<<<<<<< HEAD
     $('#commission').focusin( function () {
         $(this).data('exist_val_commission', $(this).val());
         
@@ -253,6 +254,9 @@ $(document).ready(function() {
         if($('#type_commission').val() == 'S'){
             return true;
         }
+=======
+    $('#commission').bind('input change', function () {
+>>>>>>> pre-last
         var table = $('#table_details_devis').DataTable();
         $cms = parseFloat($('#commission').val());
 
