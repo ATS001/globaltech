@@ -60,6 +60,7 @@ class Mticket_frs {
                 . " LEFT JOIN code_cloture ON code_cloture.id=$table.code_cloture"
                 . " WHERE $table.id = " . $this->id_tickets;
 
+
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
@@ -73,6 +74,8 @@ class Mticket_frs {
                 $this->error = true;
             }
         }
+
+       
         //return Array user_info
         if ($this->error == false) {
             return false;
@@ -118,7 +121,7 @@ class Mticket_frs {
     public function save_new_ticket_frs() {
 
         $this->check_non_exist('fournisseurs', 'id', $this->_data['id_fournisseur'], 'Fournisseur');
-       
+
         if ($this->error == true) {
             global $db;
             //Add all fields for the table
@@ -128,6 +131,9 @@ class Mticket_frs {
             $values["nature_incident"] = MySQL::SQLValue($this->_data["nature_incident"]);
             $values["prise_charge_frs"] = MySQL::SQLValue($this->_data["prise_charge_frs"]);
             $values["prise_charge_glbt"] = MySQL::SQLValue($this->_data["prise_charge_glbt"]);
+            $values["autre_nt"] = MySQL::SQLValue($this->_data["autre_nt"]);
+            $values["autre_pecf"] = MySQL::SQLValue($this->_data["autre_nt"]);
+            $values["autre_pecg"] = MySQL::SQLValue($this->_data["autre_pecg"]);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
@@ -140,14 +146,14 @@ class Mticket_frs {
                 $this->last_id = $result;
                 $this->id_tickets = $db->GetLastInsertID();
                 $this->init_action("ouverture", $old_technicien = NULL);
-                $this->log .= '</br>Enregistrement  réussie AAAAAAA';
+                $this->log .= '</br>Enregistrement  réussie';
                 if (!Mlog::log_exec($this->table, $this->last_id, 'Création tickets', 'Insert')) {
                     $this->log .= '</br>Un problème de log ';
                 }
             }
         } else {
 
-            $this->log .= '</br>Enregistrement non réussie BBBBBB';
+            $this->log .= '</br>Enregistrement non réussie';
         }
 
         //check if last error is true then return true else rturn false.
@@ -332,14 +338,15 @@ class Mticket_frs {
         if ($this->error == true) {
             global $db;
             //ADD field row here
-            $values["id_client"] = MySQL::SQLValue($this->_data["id_client"]);
-            $values["projet"] = MySQL::SQLValue($this->_data["projet"]);
-            $values["message"] = MySQL::SQLValue($this->_data["message"]);
-            $values["date_previs"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_previs'])));
-            $values["type_produit"] = MySQL::SQLValue($this->_data["type_produit"]);
-            $values["categorie_produit"] = MySQL::SQLValue($this->_data["categorie_produit"]);
-            $values["serial_number"] = MySQL::SQLValue($this->_data["serial_number"]);
-            $values["id_produit"] = MySQL::SQLValue($this->_data["id_produit"]);
+            $values["id_fournisseur"] = MySQL::SQLValue($this->_data["id_fournisseur"]);
+            $values["description"] = MySQL::SQLValue($this->_data["description"]);
+            $values["date_incident"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_incident'])));
+            $values["nature_incident"] = MySQL::SQLValue($this->_data["nature_incident"]);
+            $values["prise_charge_frs"] = MySQL::SQLValue($this->_data["prise_charge_frs"]);
+            $values["prise_charge_glbt"] = MySQL::SQLValue($this->_data["prise_charge_glbt"]);
+            $values["autre_nt"] = MySQL::SQLValue($this->_data["autre_nt"]);
+            $values["autre_pecf"] = MySQL::SQLValue($this->_data["autre_nt"]);
+            $values["autre_pecg"] = MySQL::SQLValue($this->_data["autre_pecg"]);
             $values["updusr"] = MySQL::SQLValue(session::get('userid'));
             $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
             $wheres["id"] = $this->id_tickets;
@@ -610,7 +617,7 @@ class Mticket_frs {
     public function delete_tickets() {
         global $db;
         $id_tickets = $this->id_tickets;
-        $this->get_tickets();
+        $this->get_ticket_frs();
         //Format where clause
         $where['id'] = MySQL::SQLValue($id_tickets);
         //check if id on where clause isset
@@ -722,9 +729,9 @@ class Mticket_frs {
 
     public function init_action($action, $old_technicien) {
         $this->get_ticket_frs();
-global $db;
+        global $db;
         if ($this->error == true) {
-            
+
             //Add all fields for the table
             switch ($action) {
 
@@ -751,7 +758,7 @@ global $db;
             $values["id_ticket_frs"] = MySQL::SQLValue($this->tickets_info["id"]);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
-            
+
             if (!$result = $db->InsertRow($this->table_action, $values)) {
 
                 $this->log .= $db->Error();
@@ -765,8 +772,8 @@ global $db;
                 }
             }
         } else {
-            var_dump($db);
-            $this->log .= '</br>Enregistrement non réussie CCCCCC';
+           
+            $this->log .= '</br>Enregistrement non réussie ';
         }
 
         //check if last error is true then return true else rturn false.
@@ -785,7 +792,7 @@ global $db;
         //Get info ticket
         $this->get_tickets();
         $tickets_info = $this->tickets_info;
-        
+
         if ($this->verif_email($tickets_info["id_technicien"]) == FALSE) {
             $this->log .= '<br/>Ce technicien n\'a pas une adresse Mail';
             return false;
@@ -810,19 +817,19 @@ global $db;
 
         $mail->setFrom($mail->Username, 'GlobalTech HelpDesk'); // Personnaliser l'envoyeur
 
-        $mail->addAddress($agent->g('mail'), $agent->g('lnom')." ".$agent->g('fnom'));
-       
+        $mail->addAddress($agent->g('mail'), $agent->g('lnom') . " " . $agent->g('fnom'));
+
         $mail->isHTML(true); // Paramétrer le format des emails en HTML ou non
 
         $mail->Subject = "Ticket Réf: #" . $tickets_info['id'];
 
-        $mail->Body = "<b> Bonjour " . $agent->g('fnom') ." ".$agent->g('lnom'). ",</br></br> Le ticket N° " . $tickets_info['id'] . " vous a été affecté. </br></br> Cordialement</b>";
-       if (!$mail->send()) {
+        $mail->Body = "<b> Bonjour " . $agent->g('fnom') . " " . $agent->g('lnom') . ",</br></br> Le ticket N° " . $tickets_info['id'] . " vous a été affecté. </br></br> Cordialement</b>";
+        if (!$mail->send()) {
             $this->log .= "Mailer Error: " . $mail->ErrorInfo;
         } else {
-            $this->log .= "Ticket envoyé  à ".$agent->g('mail');
+            $this->log .= "Ticket envoyé  à " . $agent->g('mail');
         }
-      }
+    }
 
     private function verif_email($id_technicien) {
         global $db;

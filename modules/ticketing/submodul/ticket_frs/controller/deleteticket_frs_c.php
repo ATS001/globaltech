@@ -5,8 +5,8 @@ if(!defined('_MEXEC'))die();
 // Modul: ticket_frs
 //Created : 15-07-2018
 //Controller EXEC Form
-$ticket_frs = new Mticket_frs();
-$ticket_frs->id_ticket_frs = Mreq::tp('id');
+$ticket_frs = new Mticket_frs;
+$ticket_frs->id_tickets = Mreq::tp('id');
 
 if(!MInit::crypt_tp('id', null, 'D')or !$ticket_frs->get_ticket_frs())
 {  
@@ -21,7 +21,7 @@ if(!MInit::crypt_tp('id', null, 'D')or !$ticket_frs->get_ticket_frs())
 //Execute Validate - delete
 
 
-if($ticket_frs->deletetickts_frs())
+if($ticket_frs->delete_tickets())
 {
 	exit("1#".$ticket_frs->log);
 

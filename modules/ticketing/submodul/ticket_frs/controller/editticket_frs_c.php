@@ -6,10 +6,13 @@ if (!defined('_MEXEC'))
 //SYS GLOBAL TECH
 // Modul: ticket_frs
 //Created : 15-07-2018
-//Controller ADD Form
-if (MInit::form_verif('addticket_frs', false)) {
-
+//Controller EDIT Form
+if (MInit::form_verif('editticket_frs', false)) {
+    if (!MInit::crypt_tp('id', null, 'D')) {
+              exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+    }
     $posted_data = array(
+        'id' => Mreq::tp('id'),
         'id_fournisseur' => Mreq::tp('id_fournisseur'),
         'date_incident' => Mreq::tp('date_incident'),
         'autre_nt' => Mreq::tp('autre_nt'),
@@ -22,8 +25,6 @@ if (MInit::form_verif('addticket_frs', false)) {
     );
 
 
-    //Check if array have empty element return list
-    //for acceptable empty field do not put here
     $checker = null;
     $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
 
@@ -56,20 +57,22 @@ if (MInit::form_verif('addticket_frs', false)) {
     }
 
 
-
     //End check empty element
-    $new_ticket_frs = new Mticket_frs($posted_data);
+    $edit_ticket_frs = new Mticket_frs($posted_data);
 
-    //execute Insert returne false if error
-    if ($new_ticket_frs->save_new_ticket_frs()) {
+    //Set ID of row to update
+    $edit_ticket_frs->id_tickets = $posted_data['id'];
 
-        exit("1#" . $new_ticket_frs->log);
+    //execute Update returne false if error
+    if ($edit_ticket_frs->edit_tickets()) {
+
+        exit("1#" . $edit_ticket_frs->log);
     } else {
 
-        exit("0#" . $new_ticket_frs->log);
+        exit("0#" . $edit_ticket_frs->log);
     }
 }
 
 //No form posted show view
-view::load_view('addticket_frs');
+view::load_view('editticket_frs');
 ?>
