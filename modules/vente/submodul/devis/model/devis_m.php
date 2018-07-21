@@ -537,6 +537,7 @@ class Mdevis
             $values["total_commission"]= MySQL::SQLValue($total_commission);
             $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
             $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
+            $values["type_commission"] = MySQL::SQLValue($this->_data['type_commission']);
             $values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
             $values["total_remise"]    = MySQL::SQLValue($montant_remise);
             $values["projet"]          = MySQL::SQLValue($this->_data['projet']);
@@ -640,6 +641,7 @@ class Mdevis
         $values["projet"]          = MySQL::SQLValue($this->_data['projet']);
         $values["vie"]             = MySQL::SQLValue($this->_data['vie']);
         $values["claus_comercial"] = MySQL::SQLValue($this->_data['claus_comercial']);
+        $values["type_commission"] = MySQL::SQLValue($this->_data['type_commission']);
         $values["totalht"]         = MySQL::SQLValue($totalht);
         $values["totalttc"]        = MySQL::SQLValue($totalttc);
         $values["totaltva"]        = MySQL::SQLValue($totaltva);
@@ -889,16 +891,22 @@ class Mdevis
     }
 
     //update commission in details_devis after the change of commission in the main
-    public function set_commission_for_detail_on_change_main_commission($tkn_frm, $commission)
+    public function set_commission_for_detail_on_change_main_commission($tkn_frm, $commission, $type_commission = 'C')
     {
         //var_dump($commission);
         $table_details = $this->table_details;
         $tva_value     = Mcfg::get('tva');
 
+        if($type_commission == 'S')
+        {
+            $commission = 0;
+        }
+
         global $db;
         $req_sql = "UPDATE $table_details SET  prix_ht = (prix_unitaire +((prix_unitaire * $commission)/100)), total_ht = (prix_ht * qte), total_tva = ((total_ht * $tva_value)/100), total_ttc = (total_ht + total_tva)  WHERE tkn_frm = '$tkn_frm'";
 
         //Run adaptation
+        
         if(!$db->Query($req_sql))
         {
             $this->log .= $db->Error();
@@ -1216,7 +1224,7 @@ class Mdevis
             if($this->g('type_devis') == 'VNT' && $reponse == 'valid')
             {
                 $id_bl = 'id='.$id_bl;
-                $task  = MInit::crypt_tp('task', 'detailsbl');
+                $task  = MInit::crypt_tp('task', 'detailbl');
 
 
                 $this->log .= '</br>Opération réussie '.'<a left_menu="1" class="fa-double_angle_right this_url_jump" rel="seturl" title="Detail BL" data="'.$id_bl.'&'.$task.'"><b> : Détail Bon de livraison</a>';
@@ -1829,7 +1837,7 @@ class Mdevis
         produits.idtype,
         produits.prix_vente AS prix_vente,
         ref_unites_vente.unite_vente,
-        ref_types_produits.type_produit,
+        ref_types_produits.type_produit, ref_types_produits.check_stock,
         IFNULL((SELECT MAX(d_devis.prix_ht) FROM d_devis WHERE d_devis.id_produit = $id_produit), 0) AS prix_vendu,
         IFNULL(SUM(stock.qte), 0) AS qte_in_stock,
         IFNULL(
@@ -1863,18 +1871,27 @@ class Mdevis
         if (!$db->Query($req_sql)) {
            
             $this->arr_prduit = array('error' => "Erreur get product info");
+            
             return false;
             
         }else{
 
             $this->arr_prduit = $db->RowArray();
-            if($this->arr_prduit['type_produit'] == 'Abonnement'){
+            if($this->arr_prduit['type_produit'] == 'Abonnement' ){
                 $this->arr_prduit['abn']= true;
+
             }
             if($this->arr_prduit['prix_vente'] == null)
             {
                 $this->arr_prduit = array('error' => "Prix de produit n'est pas enregitré");
             }
+            if($this->arr_prduit['check_stock'] == 'Y' )
+            {
+                $this->arr_prduit['qte_dispo'] = ' / Qte disponible : '. $this->arr_prduit['qte_in_stock'].' '.$this->arr_prduit['unite_vente'];
+            }else{
+                $this->arr_prduit['qte_dispo']  = '';
+            }
+            
         }
         return true;
     }
@@ -2225,6 +2242,115 @@ class Mdevis
         return true;
 
 
+    }
+
+    public function get_list_bl()
+    {
+        global $db;
+        
+        $add_set = array('return' => '<a href="#" class="this_url" rel="detailbl" data="%crypt%"> <i class="ace-icon fa fa-eye blue bigger-100"></i></a>', 'data' => 'id');
+        $id_devis = $this->id_devis;
+        $req_sql  = " SELECT id, reference, date_bl, '#' FROM bl WHERE iddevis = $id_devis ";
+        
+        if(!$db->Query($req_sql))
+        {
+            $this->error = false;
+            $this->log  .= $db->Error().' '.$req_sql;
+            
+        }
+        if(!$db->RowCount())
+        {
+             $output = 'Pas de Bons de Livraison enregistrés pour ce devis'; 
+             return $output;
+        }
+        
+        
+        $headers = array(
+            'ID'                  => '5[#]center',
+            'Référence'           => '10[#]center',
+            'Date création'       => '30[#]', 
+            'Voir détails'        => '15[#]center[#]crypt', 
+            
+            
+            
+        );
+                 
+                
+        $tableau = $db->GetMTable($headers, $add_set);
+        return $tableau;
+    }
+
+    public function get_list_factures()
+    {
+        global $db;
+        
+        $add_set = array('return' => '<a href="#" class="this_url" rel="detailbl" data="%crypt%"> <i class="ace-icon fa fa-eye blue bigger-100"></i></a>', 'data' => 'id');
+        $id_devis = $this->id_devis;
+        $req_sql  = " SELECT id, reference, date_bl, '#' FROM bl WHERE iddevis = $id_devis ";
+        
+        if(!$db->Query($req_sql))
+        {
+            $this->error = false;
+            $this->log  .= $db->Error().' '.$req_sql;
+            
+        }
+        if(!$db->RowCount())
+        {
+             $output = 'Pas de Bons de Livraison enregistrés pour ce devis'; 
+             return $output;
+        }
+        
+        
+        $headers = array(
+            'ID'                  => '5[#]center',
+            'Référence'           => '10[#]center',
+            'Date création'       => '30[#]', 
+            'Voir détails'        => '15[#]center[#]crypt', 
+            
+            
+            
+        );
+                 
+                
+        $tableau = $db->GetMTable($headers, $add_set);
+        return $tableau;
+    }
+
+    
+    public function get_list_encaissement()
+    {
+        global $db;
+        
+        $add_set = array('return' => '<a href="#" class="this_url" rel="detailbl" data="%crypt%"> <i class="ace-icon fa fa-eye blue bigger-100"></i></a>', 'data' => 'id');
+        $id_devis = $this->id_devis;
+        $req_sql  = " SELECT id, reference, date_bl, '#' FROM bl WHERE iddevis = $id_devis ";
+        
+        if(!$db->Query($req_sql))
+        {
+            $this->error = false;
+            $this->log  .= $db->Error().' '.$req_sql;
+            
+        }
+        if(!$db->RowCount())
+        {
+             $output = 'Pas de Bons de Livraison enregistrés pour ce devis'; 
+             return $output;
+        }
+        
+        
+        $headers = array(
+            'ID'                  => '5[#]center',
+            'Référence'           => '10[#]center',
+            'Date création'       => '30[#]', 
+            'Voir détails'        => '15[#]center[#]crypt', 
+            
+            
+            
+        );
+                 
+                
+        $tableau = $db->GetMTable($headers, $add_set);
+        return $tableau;
     }
 
 
