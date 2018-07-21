@@ -98,44 +98,44 @@ $photo   = Minit::get_file_archive($fournisseur->fournisseur_info['pj_photo']);
 										<ul class="list-unstyled spaced">
 											<li>
 												<i class="ace-icon fa fa-caret-right blue"></i> Référence                                                                                               
-                                                  <b style="color:blue"> <?php  $fournisseur->s('reference')  ?> </b>                                        
+                                                  <b class="blue pull-right"> <?php  $fournisseur->s('reference')  ?> </b>                                        
 									
 											</li>
 
 											<li>
 												<i class="ace-icon fa fa-caret-right blue"></i> Dénomination                                                                                               
-                                                  <b style="color:blue"> <?php echo $fournisseur->s('denomination');?> </b>                                        
+                                                  <b class="blue pull-right"> <?php echo $fournisseur->s('denomination');?> </b>                                        
 									
 											</li>										
 
 											<li>
 												<i class="ace-icon fa fa-caret-right blue"></i> Raison Sociale
 
-                                                    <b style="color:blue"><?php echo $fournisseur->s('r_social');?></b>
+                                                    <b class="blue pull-right"><?php echo $fournisseur->s('r_social');?></b>
 											</li>
 
 											<li>
 												<i class="ace-icon fa fa-caret-right blue"></i> Registre Commerce
 
-                                                    <b style="color:blue"><?php echo $fournisseur->s('r_commerce');?></b>
+                                                    <b class="blue pull-right"><?php echo $fournisseur->s('r_commerce');?></b>
 											</li>
 
 											<li>
 												<i class="ace-icon fa fa-caret-right blue"></i> N° Identifiant Fiscal
 
-                                                    <b style="color:blue"><?php echo $fournisseur->s('nif');?></b>
+                                                    <b class="blue pull-right"><?php echo $fournisseur->s('nif');?></b>
 											</li>
 
 											<li>
 												<i class="ace-icon fa fa-caret-right blue"></i> Pays
 
-                                                    <b style="color:blue"><?php echo $fournisseur->s('pays');?></b>
+                                                    <b class="blue pull-right"><?php echo $fournisseur->s('pays');?></b>
 											</li>
 
 											<li>
 												<i class="ace-icon fa fa-caret-right blue"></i> Ville
 
-                                                    <b style="color:blue"><?php echo $fournisseur->s('ville');?></b>
+                                                    <b class="blue pull-right"><?php echo $fournisseur->s('ville');?></b>
 											</li>
 
 										</ul>
@@ -158,42 +158,42 @@ $photo   = Minit::get_file_archive($fournisseur->fournisseur_info['pj_photo']);
 
 											<li>
 												<i class="ace-icon fa fa-caret-right green"></i> Prénom
-                                                   <b style="color:green"><?php echo $fournisseur->s('prenom');?></b>
+                                                   <b class="blue pull-right"><?php echo $fournisseur->s('prenom');?></b>
 											</li>
 
 
 											<li>
 												<i class="ace-icon fa fa-caret-right green"></i>Civilité 
-                                                    <b style="color:green"><?php echo $fournisseur->s('civilite');?></b>
+                                                    <b class="blue pull-right"><?php echo $fournisseur->s('civilite');?></b>
 											</li>
 											<li>
 												<i class="ace-icon fa fa-caret-right green"></i> Adresse 
-                                                    <b style="color:green"><?php echo $fournisseur->s('adresse');?></b>
+                                                    <b class="blue pull-right"><?php echo $fournisseur->s('adresse');?></b>
 											</li>
 
 											<li>
 												<i class="ace-icon fa fa-caret-right green"></i> Téléphone 
-                                                    <b style="color:green"><?php echo $fournisseur->s('tel');?></b>
+                                                    <b class="blue pull-right"><?php echo $fournisseur->s('tel');?></b>
 											</li>
 
 											<li>
 												<i class="ace-icon fa fa-caret-right green"></i> Fax 
-                                                    <b style="color:green"><?php echo $fournisseur->s('fax');?></b>
+                                                    <b class="blue pull-right"><?php echo $fournisseur->s('fax');?></b>
 											</li>
 
 											<li>
 												<i class="ace-icon fa fa-caret-right green"></i> Boite postale 
-                                                    <b style="color:green"><?php echo $fournisseur->s('bp');?></b>
+                                                    <b class="blue pull-right"><?php echo $fournisseur->s('bp');?></b>
 											</li>
 
 											<li>
 												<i class="ace-icon fa fa-caret-right green"></i> Email 
-                                                    <b style="color:green"><?php echo $fournisseur->s('email');?></b>
+                                                    <b class="blue pull-right"><?php echo $fournisseur->s('email');?></b>
 											</li>
 
 											<li>
 												<i class="ace-icon fa fa-caret-right green"></i> Devise 
-                                                    <b style="color:green"><?php echo $fournisseur->s('devise');?></b>
+                                                    <b class="blue pull-right"><?php echo $fournisseur->s('devise');?></b>
 											</li>
 
 										</ul>

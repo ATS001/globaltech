@@ -139,8 +139,22 @@ if(!MInit::crypt_tp('id', null, 'D') or !$client->get_client())
                             <i class="ace-icon fa fa-adress-card-o green"></i>
                             Client : <?php echo $client->s('reference')?>
                         </h3>
+                         <?php
+                                    if ($client->g('etat') == Msetting::get_set('etat_client', 'client_bloque') ) {
+                                        ?>
+                                       <div>
+                                            <b class="red pull-right margin-left: 30px"> <?php echo $client->s('date_blocage')?>&nbsp;&nbsp;&nbsp;</b> 
+                                            <b class="grey pull-right"> &nbsp;&nbsp;&nbsp;Date :&nbsp;</b>
 
-                    
+                                            <b class="red pull-right margin-left: 30px"> <?php echo $client->s('commentaire')?></b> 
+                                            <b class="grey pull-right">&nbsp;&nbsp;&nbsp; Commentaire :&nbsp;</b>
+                                           
+                                            <b class="red pull-right margin-left: 30px"> <?php echo $client->s('motif')?></b> 
+                                            <b class="grey pull-right"> Motif de blocage:&nbsp;</b>   
+                                        </div>
+                        <?php 
+                            }
+                        ?>
 
                         <?php if( $pj != null){
                         ?>
@@ -284,6 +298,7 @@ if(!MInit::crypt_tp('id', null, 'D') or !$client->get_client())
                                         </ul>
                                     </div>
                                 </div><!-- /.col sm 6-->
+
                             </div><!-- /.row -->
                         </div><!--widget main-->
                     </div><!--widget body-->

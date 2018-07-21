@@ -45,11 +45,12 @@ class Mclients {
 	{
 		global $db;
 
-		$sql = "SELECT  c.*,cat.categorie_client as categorie_client, p.pays as pays,v.ville as ville, d.devise as devise,d.abreviation as dev, IF(c.tva='O','Oui','Non') AS tva,c.tva as tva_brut FROM  clients c
+		$sql = "SELECT  c.*,cat.categorie_client as categorie_client, p.pays as pays,v.ville as ville, d.devise as devise,d.abreviation as dev, IF(c.tva='O','Oui','Non') AS tva,c.tva as tva_brut, m.motif as motif,DATE_FORMAT(c.`date_blocage`,'%d-%m-%Y') AS date_blocage FROM  clients c
              LEFT JOIN categorie_client cat on c.id_categorie=cat.id 
              LEFT JOIN ref_pays p on c.id_pays=p.id 
              LEFT JOIN ref_ville v on c.id_ville=v.id
              LEFT JOIN ref_devise d on c.id_devise=d.id
+             LEFT JOIN ref_motif_blocage m on c.id_motif_blocage=m.id and m.type='C'
              WHERE c.id = ".$this->id_client;
 
 		if(!$db->Query($sql))
@@ -390,6 +391,7 @@ class Mclients {
     	$result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
     		WHERE $table.$column = ". MySQL::SQLValue($value));
     	if ($result == "0") {
+        var_dump('here');
     		$this->error = false;
     		$this->log .='</br>'.$message.' n\'exist pas';
     		//exit('0#'.$this->log);
@@ -679,7 +681,6 @@ class Mclients {
 			//Format values for Insert query 
     	global $db;
 
-    	global $db;
     	//$values["code"]  		 = MySQL::SQLValue($this->_data['code']);
    		$values["denomination"]  = MySQL::SQLValue($this->_data['denomination']);
    		$values["id_categorie"]  = MySQL::SQLValue($this->_data['id_categorie']);
@@ -762,26 +763,28 @@ class Mclients {
 
     //Bloquer client after all check
     public function bloquer_client(){
-
+      global $db;
+    
     //Get existing data for categorie_client
-      $this->get_client();
+    $this->get_client();
+ 
 
-      $this->last_id = $this->id_client;
-        
-      
-      $this->check_non_exist('motif_blocage_clients','id', $this->_data['id_motif_blocage'], 'Motif de Blocage');
+    $this->last_id = $this->id_client;
+
+    $this->check_non_exist('ref_motif_blocage','id', $this->_data['id_motif_blocage'], 'Motif de Blocage');
 
     //Check $this->error (true / false)
     if($this->error == true){
       //Format values for Insert query 
       global $db;
 
-      $values["email"]     = MySQL::SQLValue($this->_data['email']);
-      $values["rib"]       = MySQL::SQLValue($this->_data['rib']);
-      $values["etat"]      = MySQL::SQLValue($this->_data['id_devise']);
-      $values["updusr"]    = MySQL::SQLValue(session::get('userid'));
-      $values["upddat"]    = MySQL::SQLValue(date("Y-m-d H:i:s"));
-      $wheres["id"]        = $this->id_client;
+      $values["id_motif_blocage"] = MySQL::SQLValue($this->_data['id_motif_blocage']);
+      $values["commentaire"]      = MySQL::SQLValue($this->_data['commentaire']);
+      $values["date_blocage"]     = MySQL::SQLValue(date("Y-m-d H:i:s"));
+      $values["etat"]             = Msetting::get_set('etat_client', 'client_bloque') ;
+      $values["updusr"]           = MySQL::SQLValue(session::get('userid'));
+      $values["upddat"]           = MySQL::SQLValue(date("Y-m-d H:i:s"));
+      $wheres["id"]               = $this->id_client;
 
       //Check if Insert Query been executed (False / True)
       if (!$result = $db->UpdateRows($this->table, $values,$wheres)){
@@ -794,29 +797,24 @@ class Mclients {
 
         $this->last_id = $this->id_client;
         //If Attached required Save file to Archive
-        $this->save_file('pj', 'Justifications du clients'.$this->_data['denomination'], 'Document');
-          
-        
-        $this->save_file('pj_photo', 'Photo du client'.$this->_data['denomination'], 'image');
-
-                //Esspionage
+                      //Esspionage
                 if(!$db->After_update($this->table, $this->id_client, $values, $this->client_info)){
-                    $this->log .= '</br>Problème Esspionage';
+                    $this->log .= '</br>Problème Espionage';
                     $this->error = false; 
                 }
                 
         //Check $this->error = true return Green message and Bol true
         if($this->error == true)
         {
-          $this->log = '</br>Modification réussie: <b>'.$this->_data['denomination'].' ID: '.$this->last_id;
+          $this->log = '</br>Client bloqué: <b> ID: '.$this->last_id;
 
-                    if(!Mlog::log_exec($this->table, $this->id_client, 'Modification client', 'Update'))
+                    if(!Mlog::log_exec($this->table, $this->id_client, 'Blocage client', 'Update'))
                     {
                         $this->log .= '</br>Un problème de log ';
                     }
         //Check $this->error = false return Red message and Bol false 
         }else{
-          $this->log .= '</br>Client bloqué: <b>'.$this->_data['denomination'];
+          $this->log .= '</br>Client bloqué: <b>'.$this->last_id;;
           $this->log .= '</br>Un problème d\'Enregistrement ';
         }
       }

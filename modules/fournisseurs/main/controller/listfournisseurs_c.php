@@ -13,7 +13,7 @@ $array_column = array(
         'column' => 'fournisseurs.reference',
         'type'   => '',
         'alias'  => 'reference',
-        'width'  => '10',
+        'width'  => '15',
         'header' => 'Référence',
         'align'  => 'L'
     ),
@@ -21,7 +21,7 @@ $array_column = array(
         'column' => 'fournisseurs.denomination',
         'type'   => '',
         'alias'  => 'denomination',
-        'width'  => '10',
+        'width'  => '25',
         'header' => 'Dénomination',
         'align'  => 'L'
     ),
@@ -30,7 +30,7 @@ $array_column = array(
         'column' => 'fournisseurs.r_social',
         'type'   => '',
         'alias'  => 'r_social',
-        'width'  => '10',
+        'width'  => '35',
         'header' => 'Raison Sociale',
         'align'  => 'L'
     ),
@@ -40,13 +40,13 @@ $array_column = array(
         'alias'  => 'pays',
         'width'  => '15',
         'header' => 'Pays',
-        'align'  => 'L'
+        'align'  => 'C'
     ),
     array(
         'column' => 'statut',
         'type'   => '',
         'alias'  => 'statut',
-        'width'  => '15',
+        'width'  => '10',
         'header' => 'Statut',
         'align'  => 'C'
     ),
