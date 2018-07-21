@@ -28,7 +28,7 @@
 </div>
 <div class="page-header">
     <h1>
-        Bloquer le client 
+        Bloquer Client 
         <small>
             <i class="ace-icon fa fa-aechongle-double-right"></i>
         </small>

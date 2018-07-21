@@ -765,7 +765,6 @@ class Mclients {
     public function bloquer_client(){
       global $db;
     
-    //Get existing data for categorie_client
     $this->get_client();
  
 
