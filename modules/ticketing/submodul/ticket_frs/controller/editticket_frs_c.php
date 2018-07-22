@@ -23,8 +23,12 @@ if (MInit::form_verif('editticket_frs', false)) {
         'prise_charge_glbt' => Mreq::tp('prise_charge_glbt'),
         'autre_pecg' => Mreq::tp('autre_pecg'),
     );
-
-
+    
+   /* if(strlen($posted_data["autre_nt"]) == 0)
+    var_dump("XXXXXXXXXXXXXXXX");
+    * 
+    */
+    
     $checker = null;
     $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
 
@@ -40,13 +44,29 @@ if (MInit::form_verif('editticket_frs', false)) {
         $empty_list .= "<li>Nature incident</li>";
         $checker = 1;
     }
+    
+    if ($posted_data["nature_incident"] == "Autres" && strlen($posted_data["autre_nt"]) == 0) {
+        $empty_list .= "<li>Autre nature d'incident</li>";
+        $checker = 1;
+    }
 
     if ($posted_data["prise_charge_frs"] == NULL) {
         $empty_list .= "<li>Prise en charge Fournisseur</li>";
         $checker = 1;
     }
+    
+    if ($posted_data["prise_charge_frs"] == "Autres" && strlen($posted_data["autre_pecf"]) == 0) {
+        $empty_list .= "<li>Autre Prise en charge Fournisseur</li>";
+        $checker = 1;
+    }
+    
     if ($posted_data["prise_charge_glbt"] == NULL) {
         $empty_list .= "<li>Prise en charge Globaltech</li>";
+        $checker = 1;
+    }
+    
+    if ($posted_data["prise_charge_glbt"] == "Autres" && strlen($posted_data["autre_pecg"]) == 0) {
+        $empty_list .= "<li>Autre Prise en charge Globaltech</li>";
         $checker = 1;
     }
 

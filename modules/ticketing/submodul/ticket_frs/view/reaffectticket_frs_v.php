@@ -32,14 +32,14 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $ticket->get_ticket_frs()) {
 
 
 <?php
-$form = new Mform('affectticket_frs', 'affectticket_frs', '', 'ticket_frs', '0', null);
+$form = new Mform('reaffectticket_frs', 'reaffectticket_frs', '', 'ticket_frs', '0', null);
 $form->input_hidden('id', $ticket->g('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
 
 //Technicien ==> 
 $array_technicien[] = array("required", "true", "Choisir un technicien");
-$form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', 'CONCAT(users_sys.lnom," ",users_sys.fnom)', $indx = '------', $selected = NULL, $multi = NULL, $where = ' service=6 AND etat=1', $array_technicien, NULL);
+$form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', 'CONCAT(users_sys.lnom," ",users_sys.fnom)', $indx = '------', $ticket->g("id_technicien"), $multi = NULL, $where = ' service=6 AND etat=1', $array_technicien, NULL);
 
 //var_dump($info_tickets);
 ?>

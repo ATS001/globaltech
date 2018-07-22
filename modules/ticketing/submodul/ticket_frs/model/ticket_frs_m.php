@@ -50,6 +50,7 @@ class Mticket_frs {
         $sql = "SELECT $table.* ,
                 IFNULL(DATEDIFF(DATE(NOW()),DATE($table.date_affectation)),0) as nbrj,
                 DATE_FORMAT($table.date_affectation,'%d-%m-%Y') as date_affectation,
+                     DATE_FORMAT($table.date_incident,'%d-%m-%Y') as date_incident,
                 CONCAT(users_sys.fnom,' ',users_sys.lnom) as technicien ,
                 fournisseurs.denomination as fournisseur ,
                 code_cloture.code_cloture as code_cloture,
@@ -75,7 +76,7 @@ class Mticket_frs {
             }
         }
 
-       
+
         //return Array user_info
         if ($this->error == false) {
             return false;
@@ -327,11 +328,11 @@ class Mticket_frs {
      */
     public function edit_tickets() {
 
-        $this->check_non_exist('clients', 'id', $this->_data['id_client'], 'Client');
+        $this->check_non_exist('Fournisseurs', 'id', $this->_data['id_fournisseur'], 'Fournisseur');
         //$this->check_non_exist('users_sys', 'id', $this->_data['id_technicien'], 'Technicien');
 
 
-        $this->get_tickets();
+        $this->get_ticket_frs();
 
         $this->last_id = $this->id_tickets;
         // If we have an error
@@ -345,7 +346,7 @@ class Mticket_frs {
             $values["prise_charge_frs"] = MySQL::SQLValue($this->_data["prise_charge_frs"]);
             $values["prise_charge_glbt"] = MySQL::SQLValue($this->_data["prise_charge_glbt"]);
             $values["autre_nt"] = MySQL::SQLValue($this->_data["autre_nt"]);
-            $values["autre_pecf"] = MySQL::SQLValue($this->_data["autre_nt"]);
+            $values["autre_pecf"] = MySQL::SQLValue($this->_data["autre_pecf"]);
             $values["autre_pecg"] = MySQL::SQLValue($this->_data["autre_pecg"]);
             $values["updusr"] = MySQL::SQLValue(session::get('userid'));
             $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
@@ -391,7 +392,7 @@ class Mticket_frs {
 
         $this->check_non_exist('users_sys', 'id', $this->_data['id_technicien'], 'Technicien');
 
-        $this->get_tickets();
+        $this->get_ticket_frs();
         $old_technicien = $this->tickets_info["technicien"];
         $this->last_id = $this->id_tickets;
 
@@ -412,7 +413,7 @@ class Mticket_frs {
             } else {
 
                 $this->last_id = $result;
-                $this->send_ticket_mail();
+                //$this->send_ticket_mail();
                 if ($is_reaffect == TRUE) {
                     $this->init_action("reaffectation", $old_technicien);
                 } else {
@@ -493,7 +494,7 @@ class Mticket_frs {
      */
     public function valid_tickets($etat) {
         //Get existing data for row
-        $this->get_tickets();
+        $this->get_ticket_frs();
 
         $this->last_id = $this->id_tickets;
         global $db;
@@ -772,7 +773,7 @@ class Mticket_frs {
                 }
             }
         } else {
-           
+
             $this->log .= '</br>Enregistrement non réussie ';
         }
 
@@ -790,7 +791,7 @@ class Mticket_frs {
      */
     private function send_ticket_mail() {
         //Get info ticket
-        $this->get_tickets();
+        $this->get_ticket_frs();
         $tickets_info = $this->tickets_info;
 
         if ($this->verif_email($tickets_info["id_technicien"]) == FALSE) {

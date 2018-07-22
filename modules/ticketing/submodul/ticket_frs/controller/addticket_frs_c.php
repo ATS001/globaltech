@@ -49,6 +49,18 @@ if (MInit::form_verif('addticket_frs', false)) {
         $checker = 1;
     }
 
+    if ($posted_data["nature_incident"] == "Autres" && strlen($posted_data["autre_nt"]) == 0) {
+        $empty_list .= "<li>Autre nature d'incident</li>";
+        $checker = 1;
+    }
+    if ($posted_data["prise_charge_frs"] == "Autres" && strlen($posted_data["autre_pecf"]) == 0) {
+        $empty_list .= "<li>Autre Prise en charge Fournisseur</li>";
+        $checker = 1;
+    }
+    if ($posted_data["prise_charge_glbt"] == "Autres" && strlen($posted_data["autre_pecg"]) == 0) {
+        $empty_list .= "<li>Autre Prise en charge Globaltech</li>";
+        $checker = 1;
+    }
 
     $empty_list .= "</ul>";
     if ($checker == 1) {
