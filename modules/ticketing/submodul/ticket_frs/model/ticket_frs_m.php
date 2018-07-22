@@ -93,7 +93,7 @@ class Mticket_frs {
         $sql = "SELECT $table.* , DATE_FORMAT($table.date_action,'%d-%m-%Y') as date_act FROM $table "
                 . " WHERE $table.id = " . $this->id_action_ticket;
 
-
+        
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
