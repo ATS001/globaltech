@@ -57,7 +57,7 @@ if (!defined('_MEXEC'))
                     'Bande passante' => 'Bande passante',
                     'CRC Errors' => 'CRC Errors',
                     'Autres' => 'Autres');
-                $form->select('Nature incident', 'nature_incident', 4, $nature_incident, $indx = NULL, $selected = 'Coupure de connexion', $multi = NULL);
+                $form->select('Nature incident', 'nature_incident', 4, $nature_incident, $indx = NULL, $selected = 'Coupure de connexion', $multi = NULL,$hard_code_remise);
 
 //Prise en charge par fournisseur 
                 $hard_code_remise = '<label style="margin-left:30px;margin-right : 20px;">'
@@ -71,7 +71,7 @@ if (!defined('_MEXEC'))
                         . '</label><input  id="autre_pecg" name="autre_pecg" class="input-large alignLeft" value="" type="text"><span class="help-block"></span>';
                 $pec_glbt = array('Support Technique' => 'Support Technique',
                     'Autres' => 'Autres');
-                $form->select('PEC Globaltech', 'prise_charge_glbt', 4, $pec_glbt, $indx = NULL, $selected = 'Support Technique', $multi = NULL);
+                $form->select('PEC Globaltech', 'prise_charge_glbt', 4, $pec_glbt, $indx = NULL, $selected = 'Support Technique', $multi = NULL,$hard_code_remise);
 
 //Description
                 $array_desc[] = array("required", "true", "Insérer un message ");
@@ -96,7 +96,7 @@ if (!defined('_MEXEC'))
         $('#autre_nt').hide();
         $('#autre_pecg').hide();
 
- $('#nature_incident').on('change', function () {
+        $('#nature_incident').on('change', function () {
 
             if ($("#nature_incident option:selected").text() != 'Autres') {
                 $('#autre_nt').val("");
@@ -123,7 +123,7 @@ if (!defined('_MEXEC'))
             }
 
         });
-        
+
         $('#prise_charge_glbt').on('change', function () {
 
             if ($("#prise_charge_glbt option:selected").text() != 'Autres') {
@@ -137,7 +137,7 @@ if (!defined('_MEXEC'))
             }
 
         });
-        
+
 
 
     });
