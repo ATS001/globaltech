@@ -171,14 +171,14 @@ class Mticket_frs {
      */
     public function save_new_action() {
 
-        $this->check_non_exist('tickets', 'id', $this->_data['id_ticket'], 'Ticket');
+        $this->check_non_exist('tickets_fournisseurs', 'id', $this->_data['id_ticket_frs'], 'Ticket');
 
         if ($this->error == true) {
             global $db;
             //Add all fields for the table
             $values["message"] = MySQL::SQLValue($this->_data["message"]);
             $values["date_action"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_action'])));
-            $values["id_ticket"] = MySQL::SQLValue($this->_data["id_ticket"]);
+            $values["id_ticket_frs"] = MySQL::SQLValue($this->_data["id_ticket_frs"]);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
@@ -191,9 +191,9 @@ class Mticket_frs {
 
                 $this->last_id = $result;
 
-                $this->save_file('pj', 'PJ' . $this->_data['id_ticket'], 'Document');
+                $this->save_file('pj', 'PJ' . $this->_data['id_ticket_frs'], 'Document');
 
-                $this->save_file('photo', 'Photo' . $this->_data['id_ticket'], 'Image');
+                $this->save_file('photo', 'Photo' . $this->_data['id_ticket_frs'], 'Image');
 
                 $this->log .= '</br>Enregistrement  réussie ' . $this->last_id . ' -';
                 if (!Mlog::log_exec($this->table_action, $this->last_id, 'Création action', 'Insert')) {
@@ -302,8 +302,8 @@ class Mticket_frs {
     public function get_action_ticket() {
         global $db;
         $table_action = $this->table_action;
-        $sql_req = "SELECT $table_action.*, users_sys.nom FROM $table_action, users_sys WHERE users_sys.id = $table_action.creusr AND id_ticket = " . $this->id_tickets;
-        //exit($sql_req);
+        $sql_req = "SELECT $table_action.*, users_sys.nom FROM $table_action, users_sys WHERE users_sys.id = $table_action.creusr AND id_ticket_frs = " . $this->id_tickets;
+        
         if (!$db->Query($sql_req) OR ! $db->RowCount()) {
             $this->log .= $db->Error();
             $this->error = false;
@@ -588,6 +588,7 @@ class Mticket_frs {
             $this->error = false;
             $this->log .= '</br>' . $message . ' n\'exist pas';
         }
+       
     }
 
     /**

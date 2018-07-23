@@ -11,7 +11,7 @@ if (!defined('_MEXEC')) {
 if (MInit::form_verif('addaction_frs', false)) {
 
     $posted_data = array(
-        'id_ticket' => Mreq::tp('id_ticket'),
+        'id_ticket_frs' => Mreq::tp('id_ticket_frs'),
         'message' => Mreq::tp('message'),
         'date_action' => Mreq::tp('date_action'),
         'pj_id' => Mreq::tp('pj-id'),
@@ -39,7 +39,7 @@ if (MInit::form_verif('addaction_frs', false)) {
     }
 
     //End check empty element
-    $new_action = new Mtickets($posted_data);
+    $new_action = new Mticket_frs($posted_data);
     $new_action->exige_pj = false;
     $new_action->exige_photo = false;
 

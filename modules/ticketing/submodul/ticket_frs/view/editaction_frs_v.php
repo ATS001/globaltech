@@ -2,33 +2,33 @@
 //First check target no Hack
 if(!defined('_MEXEC'))die();
 //SYS GLOBAL TECH
-// Modul: ticket_frs
-//Created : 15-07-2018
+// Modul: tickets
+//Created : 21-04-2018
 //View
-//Get all ticket_frs info 
- $info_ticket_frs = new Mticket_frs();
+//Get all tickets info 
+ $info_tickets = new Mticket_frs();
 //Set ID of Module with POST id
- $info_ticket_frs->id_ticket_frs = Mreq::tp('id');
+ $info_tickets->id_action_ticket = Mreq::tp('id');
 //Check if Post ID <==> Post idc or get_modul return false. 
- if(!MInit::crypt_tp('id', null, 'D') or !$info_ticket_frs->get_ticket_frs())
+ if(!MInit::crypt_tp('id', null, 'D') or !$info_tickets->get_ticket_action())
  { 	
  	// returne message error red to client 
- 	exit('3#'.$info_user->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+ 	exit('3#'.$info_tickets->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
  }
-
-
+$id_ticket = $info_tickets->ticket_action_info["id_ticket"];
 ?>
 
 <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
-				
-		<?php TableTools::btn_add('ticket_frs','Liste des ticket_frs', Null, $exec = NULL, 'reply'); ?>
+		 <?php
+        TableTools::btn_add('detailsticket_frs', 'Retour', MInit::crypt_tp('id', $id_ticket), $exec = NULL, 'reply');
+        ?>
 					
 	</div>
 </div>
 <div class="page-header">
 	<h1>
-		Modifier le ticket_frs: <?php $info_ticket_frs->s('id')?>
+		Modifier l'action de ticket: <?php $info_tickets->sa('id_ticket_frs')?>
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
 		</small>
@@ -47,71 +47,37 @@ if(!defined('_MEXEC'))die();
 			<div class="widget-box">
 				
 <?php
-$form = new Mform('editaction_frs', 'editaction_frs', '1', 'ticket_frs', '0', null);
-$form->input_hidden('id', $info_ticket_frs->g('id'));
+$id_ticket = $info_tickets->ga('id_ticket');
+$form = new Mform('editaction_frs', 'editaction_frs', '1', 'detailsticket_frs&'.MInit::crypt_tp('id', $id_ticket), '0', null);
+$form->input_hidden('id', $info_tickets->ga('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
+$form->input_hidden('id_ticket_frs', $info_tickets->ga('id_ticket_frs'));
+//Date action ==> 
+                $date_act[] = array('required', 'true', 'Insérer une date ');
+                $form->input_date('Date', 'date_action', 2, $info_tickets->ga('date_action'), $date_act);
 
 
-//Date Example
-//$array_date[]= array('required', 'true', 'Insérer la date de ...');
-//$form->input_date('Date', 'date_', 4, date('d-m-Y'), $array_date);
-//Select Table Example
+//image
+                $form->input('Photo', 'photo', 'file', 9, "Photo", null);
+                $form->file_js('photo', 1000000, 'image',$info_tickets->ga("photo"), 1);
+
+                //PJ
+                $form->input('Pièce jointe', 'pj', 'file', 8, "Pièce jointe", null);
+                $form->file_js('pj', 1000000, 'pdf',$info_tickets->ga("pj"), 1);
 
 
-//$select_array[]  = array('required', 'true', 'Choisir un ....');
-//$form->select_table('Select ', 'select', 8, 'table', 'id', 'text' , 'text', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $select_array, null);
-
-
-
-//Select Simple Example
-//$field_opt = array('O' => 'OUI' , 'N' => 'NON' );
-//$form->select('Label Field', 'field', 2, $field_opt, $indx = NULL ,$selected = NULL, $multi = NULL);
-
-//Separate Zone title
-//$form->bloc_title('Zone separated');
-
-
-//Input Example
-//$form->input('Label field', 'field', 'text' ,'class', '0', null, null, $readonly = null);
-//For more Example see form class
-
-//Fournisseur ==> 
-	$array_id_fournisseur[]= array("required", "true", "Insérer Fournisseur ...");
-	$form->input("Fournisseur", "id_fournisseur", "text" ,"9", $info_ticket_frs->g("id_fournisseur"), $array_id_fournisseur , null, $readonly = null);
-//Date incident ==> 
-	$array_date_incident[]= array("required", "true", "Insérer Date incident ...");
-	$form->input("Date incident", "date_incident", "text" ,"9", $info_ticket_frs->g("date_incident"), $array_date_incident , null, $readonly = null);
-//Nature incident ==> 
-	$array_nature_incident[]= array("required", "true", "Insérer Nature incident ...");
-	$form->input("Nature incident", "nature_incident", "text" ,"9", $info_ticket_frs->g("nature_incident"), $array_nature_incident , null, $readonly = null);
-//Description ==> 
-	$array_description[]= array("required", "true", "Insérer Description ...");
-	$form->input("Description", "description", "text" ,"9", $info_ticket_frs->g("description"), $array_description , null, $readonly = null);
-//Prise en charge Fournisseur ==> 
-	$array_prise_charge_frs[]= array("required", "true", "Insérer Prise en charge Fournisseur ...");
-	$form->input("Prise en charge Fournisseur", "prise_charge_frs", "text" ,"9", $info_ticket_frs->g("prise_charge_frs"), $array_prise_charge_frs , null, $readonly = null);
-//Prise en charge Globaltech ==> 
-	$array_prise_charge_glbt[]= array("required", "true", "Insérer Prise en charge Globaltech ...");
-	$form->input("Prise en charge Globaltech", "prise_charge_glbt", "text" ,"9", $info_ticket_frs->g("prise_charge_glbt"), $array_prise_charge_glbt , null, $readonly = null);
-//Technicien ==> 
-	$array_id_technicien[]= array("required", "true", "Insérer Technicien ...");
-	$form->input("Technicien", "id_technicien", "text" ,"9", $info_ticket_frs->g("id_technicien"), $array_id_technicien , null, $readonly = null);
-//Date affectation ==> 
-	$array_date_affectation[]= array("required", "true", "Insérer Date affectation ...");
-	$form->input("Date affectation", "date_affectation", "text" ,"9", $info_ticket_frs->g("date_affectation"), $array_date_affectation , null, $readonly = null);
-//Code clôture ==> 
-	$array_code_cloture[]= array("required", "true", "Insérer Code clôture ...");
-	$form->input("Code clôture", "code_cloture", "text" ,"9", $info_ticket_frs->g("code_cloture"), $array_code_cloture , null, $readonly = null);
-//Observation ==> 
-	$array_observation[]= array("required", "true", "Insérer Observation ...");
-	$form->input("Observation", "observation", "text" ,"9", $info_ticket_frs->g("observation"), $array_observation , null, $readonly = null);
+//Message
+                $array_message[] = array("required", "true", "Insérer un message ");
+                $form->input_editor('Description', 'message', 8, $info_tickets->ga('message'), $array_message, $input_height = 200);
 
 
 
-$form->button('Enregistrer');
+
+                $form->button('Enregistrer');
 //Form render
-$form->render();
+                $form->render();
+              
 ?>
 			</div>
 		</div>

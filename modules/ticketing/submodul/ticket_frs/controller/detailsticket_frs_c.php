@@ -5,4 +5,4 @@ if(!defined('_MEXEC'))die();
 // Modul: ticket_frs
 //Created : 15-07-2018
 //Controller PROFILE Form
-view::load_view('detailstickets_frs');
+view::load_view('detailsticket_frs');
