@@ -1,5 +1,5 @@
 <div class="table-header">
-            Contrat Du: 
+            Abonnement Du: 
             <?php 
             $date_debut=Mreq::tp('dat_ef'); 
             echo $date_debut; ?>
@@ -13,6 +13,17 @@ $form = new Mform('addecheance_contrat', 'addecheance_contrat', '', 'contrats', 
 $form->input_hidden('tkn_frm',Mreq::tp('tkn'));
 $form->input_hidden('dat_ef', Mreq::tp('dat_ef'));
 $form->input_hidden('dat_fn', Mreq::tp('dat_fn'));
+
+
+/*$new_contrat1 = new Mcontrat($posted_data);
+$new_contrat1->get_total_devis($posted_data['iddevis']);
+
+var_dump($new_contrat1->Shw_type('totalttc',1));
+*/
+$new_contrat2 = new Mcontrat();
+$new_contrat2->get_total_echeances(Mreq::tp('tkn'));
+
+var_dump($new_contrat2->Shw_type('montant_total', 1));
 
 //Date échéance
 $array_date_echeance[]= array('required', 'true', 'Insérer la date échéance');

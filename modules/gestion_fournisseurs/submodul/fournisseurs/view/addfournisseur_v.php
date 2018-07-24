@@ -137,7 +137,7 @@ $form->step_end();
 $form->step_start(3, 'Complément Informations');
 
 // devise
-$form->select_table('Devise', 'id_devise', 6, 'ref_devise', 'id', 'devise' , 'devise', $indx = '*****' ,
+$form->select_table('Devise', 'id_devise', 6, 'ref_devise', 'id', 'devise' , 'devise', $indx = '------' ,
 	$selected=NULL,$multi=NULL, $where='etat=1', NULL);
 
 

@@ -156,7 +156,8 @@ $form->step_end();
 $form->step_start(3, 'Complément Informations');
 
 // devise
-$form->select_table('Devise', 'id_devise', 6, 'ref_devise', 'id', 'devise' , 'devise', $indx = '*****' ,
+//var_dump($info_fournisseur->Shw('id_devise',1));
+$form->select_table('Devise', 'id_devise', 6, 'ref_devise', 'id', 'devise' , 'devise', $indx = '------' ,
 	$selected=$info_fournisseur->Shw('id_devise',1),$multi=NULL, $where='etat=1', NULL);
 
 

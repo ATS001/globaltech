@@ -7,6 +7,9 @@
 //Set ID of Module with POST id
  $fournisseur->id_fournisseur = Mreq::tp('id');
 
+ $fournisseur->get_list_contrats();
+ $fournisseur_ctr = $fournisseur->contrats_info;
+
 //Check if Post ID <==> Post idc or get_modul return false. 
 if(!MInit::crypt_tp('id', null, 'D') or !$fournisseur->get_fournisseur())
 { 	
@@ -15,6 +18,8 @@ if(!MInit::crypt_tp('id', null, 'D') or !$fournisseur->get_fournisseur())
 }
 $pj    	 = $fournisseur->fournisseur_info['pj'];
 $photo   = Minit::get_file_archive($fournisseur->fournisseur_info['pj_photo']);
+
+$tab_contrats_frn = view::tab_render('contrats_frn', 'Contrats', $add_set=NULL, 'book' , $active = true, 'contrats_frn');
 
 ?>
 <div class="pull-right tableTools-container">
@@ -37,18 +42,50 @@ $photo   = Minit::get_file_archive($fournisseur->fournisseur_info['pj_photo']);
 </div><!-- /.page-header -->
 <!-- ajax layout which only needs content area -->
 <div class="row">
-	<div class="col-xs-12">
-		<!-- PAGE CONTENT BEGINS -->
-		<div class="space-6"></div>
+<?php Mmodul::get_statut_etat_line('fournisseurs', $fournisseur->g('etat'));
+//echo $actions;
+?>
 
-		<div class="row">
-			<div class="col-sm-10 col-sm-offset-1">
-				<!-- #section:pages/invoice -->
-				<div class="widget-box transparent">
-					<div class="widget-header widget-header-large">
-						
-						<h3 class="widget-title grey lighter">
-							<?php if ($photo != null)
+ <div>
+            <div id="user-profile-2" class="user-profile">
+                <div class="tabbable">
+                    <ul class="nav nav-tabs padding-18">
+                        <li class="active">
+                            <a data-toggle="tab" href="#home">
+                                <i class="green ace-icon fa fa-user bigger-120"></i>
+                                Fournisseur 
+                            </a>
+                        </li>
+
+                        <?php
+                    	if($tab_contrats_frn['tb_rl'])
+					 	{ ?>
+                         <li>
+                            <a data-toggle="tab" href="#contrats_frn">
+                                <i class="orange ace-icon fa fa-book bigger-120"></i>
+                                Contrats
+                            </a>
+                        </li> 
+                        <?php
+                    	}
+					 	?>
+                   <!--  <?php 
+					echo $tab_details_frn['tab_index']; 
+					echo $tab_contrats_frn['tab_index']; 
+					?> -->
+
+                    </ul>
+
+            <div class="tab-content no-border padding-24">
+                        <div id="home" class="tab-pane in active">
+
+                        <div class="col-sm-10 col-sm-offset-1">
+                <!-- #section:pages/invoice -->
+                <div class="widget-box transparent">
+                    <div class="widget-header widget-header-large">
+                        
+                        <h3 class="widget-title grey lighter">
+                           <?php if ($photo != null)
 							{ 
 							?>
 
@@ -64,11 +101,25 @@ $photo   = Minit::get_file_archive($fournisseur->fournisseur_info['pj_photo']);
 							?>
 							<i class="ace-icon fa fa-adress-card-o green"></i>
 							Fournisseur : <?php echo $fournisseur->s('reference')?>
-						</h3>
+                        </h3>
+                         <?php
+                                    if ($fournisseur->g('etat') == Msetting::get_set('etat_fournisseur', 'fournisseur_bloque') ) {
+                                        ?>
+                                       <div>
+                                            <b class="red pull-right margin-left: 30px"> <?php echo $fournisseur->s('date_blocage')?>&nbsp;&nbsp;&nbsp;</b> 
+                                            <b class="grey pull-right"> &nbsp;&nbsp;&nbsp;Date :&nbsp;</b>
 
-					
+                                            <b class="red pull-right margin-left: 30px"> <?php echo $fournisseur->s('commentaire')?></b> 
+                                            <b class="grey pull-right">&nbsp;&nbsp;&nbsp; Commentaire :&nbsp;</b>
+                                           
+                                            <b class="red pull-right margin-left: 30px"> <?php echo $fournisseur->s('motif')?></b> 
+                                            <b class="grey pull-right"> Motif de blocage:&nbsp;</b>   
+                                        </div>
+                        <?php 
+                            }
+                        ?>
 
-                        <?php if( $pj != null){
+                         <?php if( $pj != null){
                         ?>
                          <div class="widget-toolbar hidden-480">
 							<a href="#" class="iframe_pdf" rel=<?php echo $pj; ?>>
@@ -78,24 +129,24 @@ $photo   = Minit::get_file_archive($fournisseur->fournisseur_info['pj_photo']);
                        <?php 
                    							    } 
                    	   ?>
-						
+                        
 
-						<!-- /section:pages/invoice.info -->
-					</div>
+                        <!-- /section:pages/invoice.info -->
+                    </div><!-- #widget header -->
 
-					<div class="widget-body">
-						<div class="widget-main padding-24">
-							<div class="row">
-								<div class="col-sm-6">
-									<div class="row">
-										<div class="col-xs-11 label label-lg label-info arrowed-in arrowed-right">
-											<b>Renseignements Fournisseur</b>
-										</div>
-									</div>
+                    <div class="widget-body">
+                        <div class="widget-main padding-24">
+                            <div class="row">
+                                <div class="col-sm-6">
+                                    <div class="row">
+                                        <div class="col-xs-11 label label-lg label-info arrowed-in arrowed-right">
+                                            <b>Renseignements Fournisseur</b>
+                                        </div>
+                                    </div>
 
-									<div>
-										
-										<ul class="list-unstyled spaced">
+                                    <div>
+                                        
+                                        <ul class="list-unstyled spaced">
 											<li>
 												<i class="ace-icon fa fa-caret-right blue"></i> Référence                                                                                               
                                                   <b class="blue pull-right"> <?php  $fournisseur->s('reference')  ?> </b>                                        
@@ -139,21 +190,21 @@ $photo   = Minit::get_file_archive($fournisseur->fournisseur_info['pj_photo']);
 											</li>
 
 										</ul>
-									</div>
-								</div><!-- /.col -->
+                                    </div>
+                                </div><!-- /.col sm 6-->
 
-								<div class="col-sm-6">
-									<div class="row">
-										<div class="col-xs-11 label label-lg label-success arrowed-in arrowed-right">
-											<b>Informations du Représentant</b>
-										</div>
-									</div>
+                                <div class="col-sm-6">
+                                    <div class="row">
+                                        <div class="col-xs-11 label label-lg label-success arrowed-in arrowed-right">
+                                            <b>Informations du Représentant</b>
+                                        </div>
+                                    </div>
 
-									<div>
-										<ul class="list-unstyled  spaced">
+                                    <div>
+                                        <ul class="list-unstyled  spaced">
 											<li>
 												<i class="ace-icon fa fa-caret-right green"></i> Nom
-                                                   <b style="color:green"><?php echo $fournisseur->s('nom');?></b>
+                                                   <b class="blue pull-right"><?php echo $fournisseur->s('nom');?></b>
 											</li>
 
 											<li>
@@ -197,42 +248,109 @@ $photo   = Minit::get_file_archive($fournisseur->fournisseur_info['pj_photo']);
 											</li>
 
 										</ul>
-									</div>
-								</div><!-- /.col -->
-							</div><!-- /.row -->
+                                    </div>
+                                </div><!-- /.col sm 6-->
 
-						<!-- 	<div class="space"></div> -->
+                            </div><!-- /.row -->
+                        </div><!--widget main-->
+                    </div><!--widget body-->
+                </div><!--widget-box transparent-->
 
-							
+                        </div><!-- /.col sm 10 -->
 
-							<div class="hr hr8 hr-double hr-dotted"></div>
+                        </div><!-- /#home -->
+                     
+                     <?php
+                     if($tab_contrats_frn['tb_rl'])
+					 { ?>
+					 <div id="contrats_frn" class="tab-pane">
+                            <div class="profile-feed row">
+                               
+                                      <span>
+                                    <?php
+                                    if ($fournisseur_ctr == null)
+                                        echo '<B>Aucun contrat trouvé</B> ';
+                                    else {
+                                        ?>
+                                    <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                ID
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Réference
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Date
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Commentaire
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Date Effet
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Date Fin
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Document
+                                            </th>
 
-									
-<!--							<div class="row">
-								<div class="col-sm-5 pull-right">
-									<h4 class="pull-right">
-										Total amount :
-										<span class="red">$395</span>
-									</h4>
-								</div>
-								<div class="col-sm-7 pull-left"> Extra Information </div>
-							</div>-->
+                                    <?php
+                                            foreach ($fournisseur_ctr as $ctr) {
+                                                ?>
+                                                <tr>   
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $ctr['0']; ?></span>
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $ctr['1']; ?></span>
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $ctr['2']; ?></span>
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $ctr['3']; ?></span>
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $ctr['4']; ?></span>
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $ctr['5']; ?></span>
+                                                    </td>
 
-							<!-- <div class="space-6"></div>
-							<div class="well">
-								Thank you for choosing Ace Company products.
-								We believe you will be satisfied by our services.
-							</div> -->
-						</div>
-					</div>
-				</div>
+                                                    <td style="text-align: center;" >  
+                                                        <?php if( $ctr['6'] != null){ ?>
+                                                           <a href="#" class="iframe_pdf" rel=<?php echo $ctr[6]; ?>>
+                                                                <i class="ace-icon fa fa-print"></i>
+                                                            </a>    
+                                                            <?php } ?>
+                                                    </td>
+                                                </tr>
+                                    <?php } } ?>
 
-				<!-- /section:pages/invoice -->
-			</div>
-		</div>
+                                    </table>
+                                </span> 
 
-		<!-- PAGE CONTENT ENDS -->
-	</div><!-- /.col -->
+                                 
+
+                            </div><!-- /. contrats_frn row -->
+
+                        </div><!-- /#contrats_frn  -->
+
+
+					 <?php
+					 }
+					 ?>
+
+                       
+
+                    </div><!-- /#tab-content -->
+                    </div><!-- /#tattable -->
+                </div>
+            </div><!-- /# user profile -->
+        </div>
+
+
 </div><!-- /.row -->
 
 <!-- page specific plugin scripts -->

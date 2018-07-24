@@ -70,8 +70,8 @@ $(document).ready(function() {
 		aoColumns: [
 	        {"sClass": "center","sWidth":"5%"}, //
 	        {"sClass": "left","sWidth":"15%"},
-	        {"sClass": "left","sWidth":"25%"}, //
-	        {"sClass": "left","sWidth":"35%"},
+	        {"sClass": "left","sWidth":"20%"}, //
+	        {"sClass": "left","sWidth":"30%"},
 	        {"sClass": "center","sWidth":"15%"},
 	        {"sClass": "center","sWidth":"10%"},
 	        {"sClass": "center","sWidth":"5%"},

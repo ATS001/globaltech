@@ -8,9 +8,10 @@ class Mfournisseurs {
   var $last_id; //return last ID after insert command
   var $log = NULL; //Log of all opération.
   var $error = true; //Error bol changed when an error is occured
-  var $id_fournisseur; // Ville ID append when request
+  var $id_fournisseur; // ID append when request
   var $token; //user for recovery function
-  var $fournisseur_info; //Array stock all ville info
+  var $fournisseur_info; //Array stock all fournisseur info
+  var $contrats_info; //Array stock all contrats fournisseur info
 
 
   public function __construct($properties = array()){
@@ -65,6 +66,43 @@ class Mfournisseurs {
     }
     
   }
+
+    //Return the list of a fournisseur contrats
+
+    public function get_list_contrats()
+    {
+      
+        $table = "contrats_frn";
+      global $db;
+
+      $sql ="SELECT c.`id`,c.`reference`,DATE_FORMAT(c.`credat`,'%d-%m-%Y') AS date_contrat,c.`commentaire`,DATE_FORMAT(c.`date_effet`,'%d-%m-%Y')AS date_effet, DATE_FORMAT(c.`date_fin`,'%d-%m-%Y') AS date_fin,c.`pj` FROM contrats_frn c WHERE  c.`etat`= 1 and c.`id_fournisseur`= ".$this->id_fournisseur." ORDER BY c.credat DESC";
+
+      if(!$db->Query($sql))
+      {
+        $this->error = false;
+        $this->log  .= $db->Error();
+      }else{
+        if ($db->RowCount() == 0)
+        {
+          $this->error = false;
+          $this->log .= 'Aucun enregistrement trouvé ';
+        } else {
+          $this->contrats_info = $db->RecordsSimplArray();
+          $this->error = true;
+        }
+
+
+      }
+      //return Array
+      if($this->error == false)
+      {
+        return false;
+      }else{
+        return true ;
+      }
+    }
+
+
 
      /**
      * [check_exist Check if one entrie already exist on table]
@@ -210,26 +248,19 @@ class Mfournisseurs {
              
         $this->Check_exist('r_commerce', $this->_data['r_commerce'], 'N° de registre', null);           
        
-        $this->Check_exist('nif', $this->_data['nif'], 'N° de NIF', null);
+        $this->Check_exist('nif', $this->_data['nif'], 'Numéro Identification Fiscale', null);
 
     
 
-       $this->check_non_exist('ref_pays','id', $this->_data['id_pays'], 'Pays');
+        $this->check_non_exist('ref_pays','id', $this->_data['id_pays'], 'Pays');
 
-        if($this->_data['id_ville'] = '------')
+        if($this->_data['id_ville'] != NULL)
         {
-            null;
-            //var_dump('ville vide');
-        }    
-        else{
             $this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
         }
 
-        if($this->_data['id_devise'] = '------')
+        if($this->_data['id_devise'] != NULL)
         {
-            null;
-        }    
-        else{
             $this->check_non_exist('ref_devise','id', $this->_data['id_devise'], 'Devise');
         }
 
@@ -260,28 +291,13 @@ class Mfournisseurs {
       $values["civilite"]      = MySQL::SQLValue($this->_data['civilite']);
       $values["adresse"]     = MySQL::SQLValue($this->_data['adresse']);
       $values["id_pays"]     = MySQL::SQLValue($this->_data['id_pays']);
-      
-      if($this->_data['id_ville'] = '------')
-      {
-            null;
-      }    
-      else{
-            $values["id_ville"]    = MySQL::SQLValue($this->_data['id_ville']);
-      }
-      
+      $values["id_ville"]    = MySQL::SQLValue($this->_data['id_ville']);
       $values["tel"]       = MySQL::SQLValue($this->_data['tel']);
       $values["fax"]       = MySQL::SQLValue($this->_data['fax']);
       $values["bp"]        = MySQL::SQLValue($this->_data['bp']);
       $values["email"]       = MySQL::SQLValue($this->_data['email']);
       $values["rib"]       = MySQL::SQLValue($this->_data['rib']);
-       if($this->_data['id_devise'] = '------')
-        {
-            null;
-        }    
-        else{
       $values["id_devise"]     = MySQL::SQLValue($this->_data['id_devise']);
-        }
-      
       $values["creusr"]        = MySQL::SQLValue(session::get('userid'));
       $values["credat"]        = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
@@ -383,6 +399,18 @@ class Mfournisseurs {
       }
 
     }
+
+    // afficher les infos d'un fournisseur
+    public function g($key)
+    {
+        if($this->fournisseur_info[$key] != null)
+        {
+            return $this->fournisseur_info[$key];
+        }else{
+            return null;
+        }
+
+    }
   
     // afficher les infos d'un fournisseur
     public function Shw($key,$no_echo = "")
@@ -414,26 +442,20 @@ class Mfournisseurs {
       $this->Check_exist('r_social', $this->_data['r_social'], 'Raison Sociale', $this->id_fournisseur);
              
       $this->Check_exist('r_commerce', $this->_data['r_commerce'], 'N° de registre', $this->id_fournisseur);           
-      $this->Check_exist('nif', $this->_data['nif'], 'N° de NIF', $this->id_fournisseur);
+      $this->Check_exist('nif', $this->_data['nif'], 'Numéro Identification Fiscale', $this->id_fournisseur);
 
 
       $this->check_non_exist('ref_pays','id', $this->_data['id_pays'], 'Pays');
 
-        if($this->_data['id_ville'] = '------')
-        {
-            null;
-        }    
-        else{
+      if($this->_data['id_ville'] != NULL)
+      {
         $this->check_non_exist('ref_ville','id', $this->_data['id_ville'], 'Ville');
-        }
+      }
 
-         if($this->_data['id_devise'] = '------')
-        {
-            null;
-        }    
-        else{
-      $this->check_non_exist('ref_devise','id', $this->_data['id_devise'], 'Devise');
-        }
+      if($this->_data['id_devise'] != NULL)
+      {
+        $this->check_non_exist('ref_devise','id', $this->_data['id_devise'], 'Devise');
+      }
 
     
         //Check if PJ attached required
@@ -456,30 +478,19 @@ class Mfournisseurs {
       $values["denomination"]  = MySQL::SQLValue($this->_data['denomination']);
       $values["r_social"]    = MySQL::SQLValue($this->_data['r_social']);
       $values["r_commerce"]    = MySQL::SQLValue($this->_data['r_commerce']);
+      $values["nif"]       = MySQL::SQLValue($this->_data['nif']);
       $values["nom"]       = MySQL::SQLValue($this->_data['nom']);
       $values["prenom"]      = MySQL::SQLValue($this->_data['prenom']);
       $values["civilite"]      = MySQL::SQLValue($this->_data['civilite']);
       $values["adresse"]     = MySQL::SQLValue($this->_data['adresse']);
-      $values["id_pays"]     = MySQL::SQLValue($this->_data['id_pays']);
-      if($this->_data['id_ville'] = '------')
-      {
-            null;
-      }    
-      else{
-            $values["id_ville"]    = MySQL::SQLValue($this->_data['id_ville']);
-      }
+      $values["id_pays"]     = MySQL::SQLValue($this->_data['id_pays']);   
+      $values["id_ville"]    = MySQL::SQLValue($this->_data['id_ville']);
       $values["tel"]       = MySQL::SQLValue($this->_data['tel']);
       $values["fax"]       = MySQL::SQLValue($this->_data['fax']);
       $values["bp"]        = MySQL::SQLValue($this->_data['bp']);
       $values["email"]       = MySQL::SQLValue($this->_data['email']);
-      $values["rib"]       = MySQL::SQLValue($this->_data['rib']);
-       if($this->_data['id_devise'] = '------')
-        {
-            null;
-        }    
-        else{
+      $values["rib"]       = MySQL::SQLValue($this->_data['rib']);   
       $values["id_devise"]     = MySQL::SQLValue($this->_data['id_devise']);
-        }
       $values["updusr"]        = MySQL::SQLValue(session::get('userid'));
       $values["upddat"]        = MySQL::SQLValue(date("Y-m-d H:i:s"));
       $wheres["id"]            = $this->id_fournisseur;

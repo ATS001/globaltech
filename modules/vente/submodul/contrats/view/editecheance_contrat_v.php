@@ -1,5 +1,5 @@
 <div class="table-header">
-            Contrat Du: 
+            Abonnement Du: 
             <?php 
             $date_debut=Mreq::tp('dat_ef'); 
             echo $date_debut; ?>

@@ -21,7 +21,7 @@ $array_column = array(
         'column' => 'fournisseurs.denomination',
         'type'   => '',
         'alias'  => 'denomination',
-        'width'  => '25',
+        'width'  => '20',
         'header' => 'Dénomination',
         'align'  => 'L'
     ),
@@ -30,7 +30,7 @@ $array_column = array(
         'column' => 'fournisseurs.r_social',
         'type'   => '',
         'alias'  => 'r_social',
-        'width'  => '35',
+        'width'  => '30',
         'header' => 'Raison Sociale',
         'align'  => 'L'
     ),

@@ -68,6 +68,7 @@ class Mcontrat {
     }
 
 
+    
     //Get  liste devis
 
     static public function select_devis($is_edit=null) {
