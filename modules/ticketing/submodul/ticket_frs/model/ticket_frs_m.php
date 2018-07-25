@@ -93,7 +93,7 @@ class Mticket_frs {
         $sql = "SELECT $table.* , DATE_FORMAT($table.date_action,'%d-%m-%Y') as date_act FROM $table "
                 . " WHERE $table.id = " . $this->id_action_ticket;
 
-        
+
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
@@ -269,7 +269,7 @@ class Mticket_frs {
         }
     }
 
-    public function deleteactionticket() {
+    public function deleteaction_frs() {
         global $db;
         $id_action_ticket = $this->id_action_ticket;
 
@@ -303,7 +303,7 @@ class Mticket_frs {
         global $db;
         $table_action = $this->table_action;
         $sql_req = "SELECT $table_action.*, users_sys.nom FROM $table_action, users_sys WHERE users_sys.id = $table_action.creusr AND id_ticket_frs = " . $this->id_tickets;
-        
+
         if (!$db->Query($sql_req) OR ! $db->RowCount()) {
             $this->log .= $db->Error();
             $this->error = false;
@@ -448,9 +448,9 @@ class Mticket_frs {
      * Resolutions tickets
      * @return bol send to controller
      */
-    public function resolution_ticket($etat) {
+    public function resolution_ticket_frs($etat) {
         //Get existing data for row
-        $this->get_tickets();
+        $this->get_ticket_frs();
 
         $this->last_id = $this->id_tickets;
         global $db;
@@ -533,9 +533,9 @@ class Mticket_frs {
      * Clôture ticket
      * @return bol send to controller
      */
-    public function cloture_ticket($etat) {
+    public function clotureticket_frs($etat) {
         //Get existing data for row
-        $this->get_tickets();
+        $this->get_ticket_frs();
 
         $this->last_id = $this->id_tickets;
         global $db;
@@ -588,7 +588,6 @@ class Mticket_frs {
             $this->error = false;
             $this->log .= '</br>' . $message . ' n\'exist pas';
         }
-       
     }
 
     /**

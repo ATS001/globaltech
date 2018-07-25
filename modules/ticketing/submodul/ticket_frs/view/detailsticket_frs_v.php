@@ -209,16 +209,16 @@ if ($ticket->get_action_ticket()) {
                                                                                     $etat1 = Msetting::get_set('etat_ticket', 'resolution_encours');
                                                                                     if ($ticket->g("etat") == $etat1 AND $value["etat"] == '0' and session::get('userid') == $value["creusr"]) {
                                                                                         ?>
-                                                                                        <a href="#" class="this_url"  rel="editaction" data="<?php echo Minit::crypt_tp('id', $value['id']) ?>">
+                                                                                        <a href="#" class="this_url"  rel="editaction_frs" data="<?php echo Minit::crypt_tp('id', $value['id']) ?>">
                                                                                             <i class="ace-icon fa fa-pencil blue bigger-125"></i>
                                                                                         </a>
 
-                                                                                        <a href="#" class="this_exec" cn_rmv="<?php echo $value['id'] ?>" rel="deleteactionticket" data="<?php echo Minit::crypt_tp('id', $value['id']) ?>">
+                                                                                        <a href="#" class="this_exec" cn_rmv="<?php echo $value['id'] ?>" rel="deleteaction_frs" data="<?php echo Minit::crypt_tp('id', $value['id']) ?>">
                                                                                             <i class="ace-icon fa fa-times red bigger-125"></i>
                                                                                         </a>
                                                                                     <?php } ?>
                                                                                     <?php if ($value["etat"] == '0') { ?>
-                                                                                        <a href="#" class="this_url"  rel="detailsaction" data="<?php echo Minit::crypt_tp('id', $value['id']) ?>">
+                                                                                        <a href="#" class="this_url"  rel="detailsaction_frs" data="<?php echo Minit::crypt_tp('id', $value['id']) ?>">
                                                                                             <i class="ace-icon fa fa-search  blue bigger-125"></i>
                                                                                         </a>
                                                                                     <?php } ?>
@@ -265,7 +265,7 @@ if ($ticket->get_action_ticket()) {
 
 <?php
 if ($ticket->g("etat") == 1) {
-    $form = new Mform('resolution', 'resolution', '', 'tickets', '0', null);
+    $form = new Mform('resolution_frs', 'resolution_frs', '', 'ticket_frs', '0', null);
     $form->input_hidden('id', $ticket->g("id"));
     $form->input_hidden('idc', Mreq::tp('idc'));
     $form->input_hidden('idh', Mreq::tp('idh'));

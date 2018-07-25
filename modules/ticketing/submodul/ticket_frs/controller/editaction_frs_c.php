@@ -57,5 +57,5 @@ if (MInit::form_verif('editaction_frs', false)) {
 }
 
 //No form posted show view
-view::load_view('editaction');
+view::load_view('editaction_frs');
 ?>

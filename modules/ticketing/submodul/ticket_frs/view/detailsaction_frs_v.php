@@ -15,7 +15,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_tickets->get_ticket_action()) {
     // returne message error red to client 
     exit('3#' . $info_tickets->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
-$id_ticket = $info_tickets->ticket_action_info["id_ticket"];
+$id_ticket = $info_tickets->ticket_action_info["id_ticket_frs"];
 ?>
 
 <div class="pull-right tableTools-container">

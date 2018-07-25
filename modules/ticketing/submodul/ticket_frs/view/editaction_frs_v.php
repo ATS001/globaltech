@@ -15,7 +15,7 @@ if(!defined('_MEXEC'))die();
  	// returne message error red to client 
  	exit('3#'.$info_tickets->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
  }
-$id_ticket = $info_tickets->ticket_action_info["id_ticket"];
+$id_ticket = $info_tickets->ticket_action_info["id_ticket_frs"];
 ?>
 
 <div class="pull-right tableTools-container">
@@ -47,7 +47,7 @@ $id_ticket = $info_tickets->ticket_action_info["id_ticket"];
 			<div class="widget-box">
 				
 <?php
-$id_ticket = $info_tickets->ga('id_ticket');
+$id_ticket = $info_tickets->ga('id_ticket_frs');
 $form = new Mform('editaction_frs', 'editaction_frs', '1', 'detailsticket_frs&'.MInit::crypt_tp('id', $id_ticket), '0', null);
 $form->input_hidden('id', $info_tickets->ga('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
