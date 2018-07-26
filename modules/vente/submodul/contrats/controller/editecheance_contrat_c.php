@@ -11,17 +11,18 @@ if (MInit::form_verif('editecheance_contrat', false)) {
       
   
     $posted_data = array(
-        'id' => Mreq::tp('id'),
-        'tkn_frm' => Mreq::tp('tkn_frm'),
-        'checker_tkn_frm' => Mreq::tp('checker_tkn_frm'),
+        'id'             => Mreq::tp('id'),
+        'tkn_frm'        => Mreq::tp('tkn_frm'),
+        'checker_tkn_frm'=> Mreq::tp('checker_tkn_frm'),
         //'idcontrat' => Mreq::tp('idcontrat'),
-        'date_echeance' => Mreq::tp('date_echeance'),
-        'montant'       => Mreq::tp('montant') ,
-        'commentaire'   => Mreq::tp('commentaire'),
+        'date_echeance'  => Mreq::tp('date_echeance'),
+        'montant'        => Mreq::tp('montant') ,
+        'commentaire'    => Mreq::tp('commentaire'),
     );
 
     $date_fin=Mreq::tp('dat_fn');
     $date_effet=Mreq::tp('dat_ef');
+    $dev=Mreq::tp('devis');
     
     $echeance=new Mcontrat();
     $date_echeance=$echeance->verif_date_echeance($posted_data['tkn_frm'],date('Y-m-d',strtotime($posted_data['date_echeance'])),Mreq::tp('id'));
@@ -77,6 +78,24 @@ if (MInit::form_verif('editecheance_contrat', false)) {
             exit("0#$date");
     }
     //End check empty element
+
+        $new_contrat1 = new Mcontrat($posted_data);
+        $new_contrat1->get_total_devis($dev);
+        //var_dump($new_contrat1->Shw_type('totalttc',1));
+
+        $new_contrat2 = new Mcontrat($posted_data);
+        $new_contrat2->get_total_echeances(Mreq::tp('tkn_frm'));
+        //var_dump($new_contrat2->Shw_type('montant_total',1));
+
+        if ($new_contrat1->Shw_type('totalttc', 1) <= $new_contrat2->Shw_type('montant_total', 1)) {
+            $montant_echeance1 = "<ul>Le montant total du devis est inférieur au montant total des échéances, Il faut minimiser le montant !!!</ul>";
+            $checker = 4;
+        }
+
+        if ($checker == 4) {
+            exit("0#$montant_echeance1");
+        }
+
 
 
     $exist_echeance = new Mcontrat($posted_data);

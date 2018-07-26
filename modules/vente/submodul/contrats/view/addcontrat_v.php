@@ -31,7 +31,6 @@ $list_devis = Mcontrat::select_devis();
 /*var_dump($list_devis);
 exit();*/
 
-
 //Devis
 $form->select('Devis', 'iddevis', 8, $list_devis, '------', null, null, null);
 
@@ -126,7 +125,7 @@ $form->render();
             }
             var $link = $(this).attr('rel');
             var $titre = $(this).attr('data_titre');
-            var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val();
+            var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val()+'&devis='+$('#iddevis').val();
             ajax_bbox_loader($link, $data, $titre, 'large')
 
         });
@@ -148,7 +147,7 @@ $form->render();
             }
             var $link = $(this).attr('rel');
             var $titre = 'Modifier détail abonnement';
-            var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val();
+            var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val()+'&devis='+$('#iddevis').val();
             ajax_bbox_loader($link, $data, $titre, 'large')
 
         });

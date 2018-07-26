@@ -1,11 +1,25 @@
 <div class="table-header">
             Abonnement Du: 
             <?php 
+
+$new_contrat1 = new Mcontrat();
+$new_contrat1->get_total_devis(Mreq::tp('devis'));
+
+$dev=$new_contrat1->Shw_type('totalttc',1);
+
+$new_contrat2 = new Mcontrat();
+$new_contrat2->get_total_echeances(Mreq::tp('tkn'));
+
+$ech=$new_contrat2->Shw_type('montant_total', 1);
+
             $date_debut=Mreq::tp('dat_ef'); 
             echo $date_debut; ?>
             Au: <?php 
             $date_fin=Mreq::tp('dat_fn');  
             echo $date_fin; ?>
+            => Reste Devis: <?php 
+            $reste=$dev-$ech;  
+            echo $reste; ?>
 </div>
 <?php 
 $form = new Mform('addecheance_contrat', 'addecheance_contrat', '', 'contrats', '0', 'is_modal');
@@ -13,17 +27,8 @@ $form = new Mform('addecheance_contrat', 'addecheance_contrat', '', 'contrats', 
 $form->input_hidden('tkn_frm',Mreq::tp('tkn'));
 $form->input_hidden('dat_ef', Mreq::tp('dat_ef'));
 $form->input_hidden('dat_fn', Mreq::tp('dat_fn'));
+$form->input_hidden('devis', Mreq::tp('devis'));
 
-
-/*$new_contrat1 = new Mcontrat($posted_data);
-$new_contrat1->get_total_devis($posted_data['iddevis']);
-
-var_dump($new_contrat1->Shw_type('totalttc',1));
-*/
-$new_contrat2 = new Mcontrat();
-$new_contrat2->get_total_echeances(Mreq::tp('tkn'));
-
-var_dump($new_contrat2->Shw_type('montant_total', 1));
 
 //Date échéance
 $array_date_echeance[]= array('required', 'true', 'Insérer la date échéance');

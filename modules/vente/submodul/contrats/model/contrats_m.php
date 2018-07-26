@@ -190,7 +190,7 @@ class Mcontrat {
         $table_echeance = 'echeances_contrat';
         global $db;
         //var_dump('testt');
-        $sql = "SELECT sum($table_echeance.montant) as montant_total FROM $table_echeance WHERE  tkn_frm = '$tkn_frm'";
+        $sql = "SELECT IFNULL(sum($table_echeance.montant),0) as montant_total FROM $table_echeance WHERE  tkn_frm = '$tkn_frm'";
         //var_dump('testt2');
         if (!$db->Query($sql)) {
             $this->error = false;
