@@ -27,7 +27,7 @@ $form = new Mform('addecheance_contrat', 'addecheance_contrat', '', 'contrats', 
 $form->input_hidden('tkn_frm',Mreq::tp('tkn'));
 $form->input_hidden('dat_ef', Mreq::tp('dat_ef'));
 $form->input_hidden('dat_fn', Mreq::tp('dat_fn'));
-$form->input_hidden('devis', Mreq::tp('devis'));
+$form->input_hidden('dev', $dev);
 
 
 //Date échéance

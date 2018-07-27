@@ -40,8 +40,8 @@ if(!MInit::crypt_tp('id', null, 'D') or !$client->get_client())
     // returne message error red to client 
     exit('3#'.$client->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
-$tab_devis        = view::tab_render('devis', 'Devis', $add_set=NULL, 'money' , $active = true, 'feed');
-$tab_abn          = view::tab_render('contrats', 'Contrats', $add_set=NULL, 'book' , $active = true, 'feed1');
+$tab_devis        = view::tab_render('devis', 'Devis', $add_set=NULL, 'money' , false, 'feed');
+$tab_abn          = view::tab_render('contrats', 'Contrats', $add_set=NULL, 'book' , false,'feed1');
 $tab_bl           = view::tab_render('bl', 'Bons de Livraison', $add_set=NULL, 'money' , false, 'feedbl');
 $tab_factures     = view::tab_render('factures', 'Factures', $add_set=NULL, 'money' , false, 'feed2');
 $tab_encaissement = view::tab_render('encaissements', 'Encaissements', $add_set=NULL, 'money' , false, 'feedenc');

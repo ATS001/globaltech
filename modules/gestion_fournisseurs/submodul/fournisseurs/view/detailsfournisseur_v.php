@@ -19,7 +19,7 @@ if(!MInit::crypt_tp('id', null, 'D') or !$fournisseur->get_fournisseur())
 $pj    	 = $fournisseur->fournisseur_info['pj'];
 $photo   = Minit::get_file_archive($fournisseur->fournisseur_info['pj_photo']);
 
-$tab_contrats_frn = view::tab_render('contrats_frn', 'Contrats', $add_set=NULL, 'book' , $active = true, 'contrats_frn');
+$tab_contrats_frn = view::tab_render('contrats_fournisseurs', 'Contrats', $add_set=NULL, 'book' , $active = true, 'contrats_frn');
 
 ?>
 <div class="pull-right tableTools-container">

@@ -44,6 +44,7 @@ $form->input_hidden('idh', Mreq::tp('idh'));
 
 $form->input_hidden('dat_ef', Mreq::tp('dat_ef'));
 $form->input_hidden('dat_fn', Mreq::tp('dat_fn'));
+$form->input_hidden('dev', $dev);
 
 
 //Check tkn_frm
