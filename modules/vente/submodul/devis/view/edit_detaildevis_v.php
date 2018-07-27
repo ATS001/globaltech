@@ -51,8 +51,9 @@ $form->select_table('Produit / Service', 'id_produit', 8, 'produits', 'id', 'id'
 //Produit
 //$produit_array[]  = array('required', 'true', 'Choisir un Produit / Service');
 //$form->select_table('Produit / Service', 'id_produit', 8, 'produits', 'id', 'designation' , 'designation', $indx = '------', $info_devis_d->h('id_produit'),$multi=NULL, $where='etat = 1' , $produit_array);
+$delta_commission = Mreq::tp('type_commission') == 'C' ? Mreq::tp('commission') : 0;
 
-$prix_affich=$info_devis_d->h('prix_unitaire') + ($info_devis_d->h('prix_unitaire') *  Mreq::tp('commission') / 100);
+$prix_affich=$info_devis_d->h('prix_unitaire') + ($info_devis_d->h('prix_unitaire') *  $delta_commission / 100);
 //var_dump(Mreq::tp('commission'));
 $hard_code_pri_u_ht = '<label style="margin-left:15px;margin-right : 20px;">Prix Unité HT: </label><input id="prix_unitaire" name="prix_unitaire" class="input-large alignRight" type="text" readonly="" value="'.$prix_affich.'">';
 $hard_code_pri_u_ht .= '<span class="help-block returned_span">...</span>';
@@ -125,7 +126,7 @@ $(document).ready(function() {
     	$('#'+$f_total_tva).val($total_tva);
     	$('#'+$f_total_ttc).val($total_ttc);  
     }
-        $('#type_produit').change(function(e) {
+    $('#type_produit').change(function(e) {
         var $type_produit = $(this).val();
 
         if($type_produit == null){

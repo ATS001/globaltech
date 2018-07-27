@@ -2057,6 +2057,7 @@
 		var aiDisplay = oSettings.aiDisplay;
 	
 		oSettings.bDrawing = true;
+
 	
 		/* Check and see if we have an initial draw position from state saving */
 		if ( iInitDisplayStart !== undefined && iInitDisplayStart !== -1 )
@@ -2226,6 +2227,12 @@
 			id:      oSettings.sTableId+'_wrapper',
 			'class': classes.sWrapper + (oSettings.nTFoot ? '' : ' '+classes.sNoFooter)
 		} );
+		
+        var table_id = oSettings.sTableId;
+      
+		$('.btn_zip').removeClass('active');
+		$('#head_'+oSettings.sTableId).removeClass('table-header-archive');
+		ace.cookie.remove(oSettings.sTableId +"_zip");
 	
 		oSettings.nHolding = holding[0];
 		oSettings.nTableWrapper = insert[0];
@@ -2876,17 +2883,18 @@
 	 */
 	function _fnFeatureHtmlFilter ( settings )
 	{
-		var classes = settings.oClasses;
-		var tableId = settings.sTableId;
-		var language = settings.oLanguage;
+		var classes        = settings.oClasses;
+		var tableId        = settings.sTableId;
+		var language       = settings.oLanguage;
 		var previousSearch = settings.oPreviousSearch;
-		var features = settings.aanFeatures;
+		var features       = settings.aanFeatures;
 		var serch_e_1      = settings.oFeatures.search_extra1;
 		//var serch_e_2      = settings.oFeatures.search_extra2;
 		//var serch_e_3      = settings.oFeatures.search_extra3;
 		
 
 		var input = '<input id="orig_search" type="search"  class="'+classes.sFilterInput+'"/>';
+		
 		
 		//alert(extra_input);
 	
@@ -2901,11 +2909,12 @@
 			})
 		    //.append( $('<label/>' ).append(extra_input) )
 			.append( $('<label/>' ).append( str ) );
-
+        
 		var extra_input = serch_e_1 === null ? null : $.each(serch_e_1, function( index, value ) {
                    
-                   filter.append($('<label/>').append(value.val));
-                 });
+                  /* filter.append($('<label/>').append(value));
+                   alert(value);*/
+                });
 	
 		var searchFn = function() {
 			/* Update all other filter input elements for the new display */
@@ -15276,6 +15285,30 @@ function csv_export($table, $format)
     });
 }
 
+function exec_zip($table, $id_table) {
+
+	//Check Btn Archive active
+	
+	if($('.btn_zip').hasClass('active')){
+		$('.btn_zip').removeClass('active');
+		$('#head_'+$id_table).removeClass('table-header-archive');
+		ace.cookie.remove($id_table +"_zip");
+	}else{
+		$('.btn_zip').addClass('active');
+		$('#head_'+$id_table).addClass('table-header-archive');
+		ace.cookie.set($id_table +"_zip", 1);
+		
+	}
+
+	var data  = $table.ajax.params();
+	var sUrl  = $table.ajax.url();
+	
+	$table.draw();
+	//var table = $('#'+$table).DataTable();
+	//table.draw();
+	
+
+}
 
 
 

@@ -60,7 +60,7 @@ class view {
 		$icon_class = $icon == NULL ? 'plus' : $icon;
 		$tab_index = $permission == "0" ? NULL : $tab_index = '<li class="'.$active.'">
 						<a data-toggle="tab" href="#'.$id.'">
-							<i class="green ace-icon fa fa-'.$icon.' bigger-120"></i>
+							<i class="blue ace-icon fa fa-'.$icon.' bigger-120"></i>
 							'.$text.'
 						</a>
 					</li>';

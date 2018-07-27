@@ -33,6 +33,7 @@ if(!$proforma->Get_detail_proforma_pdf())
 
 }
 global $db;
+$tableau_body = null;
 $headers = array(
             '#'           => '5[#]C',
             'Réf'         => '17[#]C',
@@ -43,8 +44,20 @@ $headers = array(
 
         );
 $proforma_info   = $proforma->proforma_info;
+$liste_sub_group = $proforma->get_detail_prforma_by_group();
 $tableau_head = MySQL::make_table_head($headers);
-$tableau_body = $db->GetMTable_pdf($headers);
+if($liste_sub_group){
+    $tableau_body = null;
+    foreach ($liste_sub_group as $key => $value) 
+    {
+    	$proforma->Get_detail_proforma_pdf();
+    	$tableau_body .= $tableau_head;
+    	$tableau_body .= $db->GetMTable_pdf($headers);
+
+    }
+}
+
+//$tableau_body = $db->GetMTable_pdf($headers);
 
 
 
@@ -214,7 +227,7 @@ class MYPDF extends TCPDF {
 // create new PDF document
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-$pdf->Table_head = $tableau_head;
+//$pdf->Table_head = $tableau_head;
 $pdf->info_proforma = $proforma->proforma_info;
 $pdf->qr = isset($qr_code) ? $qr_code : false;
 

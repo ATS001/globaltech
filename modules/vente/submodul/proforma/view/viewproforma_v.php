@@ -150,7 +150,51 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_proforma->Get_detail_proforma_sho
 									<div class="space"></div>
 
 									<div>
-										<?php print $info_proforma->Gettable_detail_proforma();?>
+										<?php 
+
+                                        $liste_sub_group = $info_proforma->get_detail_prforma_by_group();
+                                        
+                                        
+
+                                        if($liste_sub_group)
+                                        {
+                                        	$output = null;
+                                        	foreach ($liste_sub_group as $key => $value) {
+                                        		
+                                        		$id_sub_group = $value['sub_group'];
+                                        		$output .= '<div class="hr hr8 hr-double hr-dotted"></div><h4 class="widget-title grey lighter">
+								                                <i class="ace-icon fa fa-adress-card-o green"></i>
+								                           Proposition N°: '.$id_sub_group.' </h3>';
+                                        		
+                                        		
+                                        		$output .= $info_proforma->Gettable_detail_proforma($id_sub_group);
+                                        		$liste_sum = $info_proforma->get_sum_by_sub_group($id_sub_group);
+                                        		//var_dump($liste_sum);exit();
+                                        		$output .= 
+                                        		'<div class="row"><div class="col-sm-5 pull-right">
+                                        		<ul class="list-unstyled  spaced">
+                                        		    <li>
+                                        			    <i class="ace-icon fa fa-caret-right green"></i>
+                                        				Total hors Taxes: 
+                                        				<b class="blue pull-right">'.$liste_sum[0]['sum_tt_ht'].' '.$info_proforma->g('devise').'</b>
+                                        		    </li>
+                                        		    <li>
+                                        			    <i class="ace-icon fa fa-caret-right green"></i>
+                                        				Total TVA: 
+                                        				<b class="blue pull-right">'.$liste_sum[0]['sum_tt_tva'].' '.$info_proforma->g('devise').'</b>
+                                        		    </li>
+                                        		    <li>
+                                        			    <i class="ace-icon fa fa-caret-right green"></i>
+                                        				Total TTC: 
+                                        				<b class="blue pull-right">'.$liste_sum[0]['sum_tt_ttc'].' '.$info_proforma->g('devise').'</b>
+                                        		    </li>
+                                        		</ul></div></div>';
+                                        		
+                                        	}
+                                        	print $output;
+
+                                        }
+										?>
 
 										
 									</div>

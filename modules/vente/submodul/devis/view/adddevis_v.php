@@ -246,7 +246,28 @@ $(document).ready(function() {
         
     });
 
-    $('#commission').focusout( function () {
+    $('#commission').bind('input change', function () {
+        var $exist_value_commission = $(this).data('exist_val_commission');
+        $cms = parseFloat($('#commission').val());
+        
+        $set_commision = parseFloat(<?php echo Msetting::get_set('plafond_comission') ?>);
+
+        if($cms > $set_commision){
+ 
+            
+            ajax_loadmessage('La commission ne doit pas dépasser '+$set_commision,'nok',5000);
+           
+            $('#commission').val($exist_value_commission);
+            
+            return false;
+            
+        }
+        
+    });
+
+    
+
+    $('#commission').on('focusout', function () {
          var $exist_value_commission = $(this).data('exist_val_commission');
         //Get previous data
         
@@ -256,19 +277,21 @@ $(document).ready(function() {
         if($('#type_commission').val() == 'S' && $(this).val() == 0){
             return true;
         }
-        var table = $('#table_details_devis').DataTable();
         $cms = parseFloat($('#commission').val());
-
         $set_commision = parseFloat(<?php echo Msetting::get_set('plafond_comission') ?>);
 
         if($cms > $set_commision){
-
-            ajax_loadmessage('La commission ne doit pas dépasser '+$set_commision,'nok',5000);
-            $('#commission').val(0);
+ 
+            
+            //ajax_loadmessage('La commission ne doit pas dépasser '+$set_commision,'nok',5000);
+           
+            $('#commission').val($exist_value_commission);
             return false;
             
         }
-        if (table.data().count()) {
+        var table = $('#table_details_devis').DataTable();
+        
+        if (table.data().count() &&  this.value !== $exist_value_commission) {
 
             bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de la commission sera appliqué sur l'ensemble des lignes détails, voulez vous continuer ?</span>", 
                 function(result){
@@ -436,7 +459,7 @@ $(document).ready(function() {
 
         var $link  = $(this).attr('rel');
         var $titre = 'Modifier détail Devis'; 
-        var $data  = $(this).attr('data')+'&commission='+$('#commission').val(); 
+        var $data  = $(this).attr('data')+'&commission='+$('#commission').val()+'&type_commission='+$('#type_commission').val(); 
         ajax_bbox_loader($link, $data, $titre, 'large')
         
     });

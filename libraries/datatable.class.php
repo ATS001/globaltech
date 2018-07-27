@@ -38,6 +38,7 @@ class Mdatatable
     var $btn_add_data     = null;//Used to set more data to Button Add
     var $btn_add_check    = false;//Used in submodul check if no btn add data then remove defalut add btn 
     var $btn_action       = true;//Swap to false if dont want show btn Action
+    
 
 
     public function __construct($properties = array()){
@@ -408,6 +409,7 @@ class Mdatatable
         {
             $js .= "aoColumnDefs : '',";
         }
+                
         $js .= "bProcessing: true,notifcol : ".$notif_col.",serverSide: true,ajax_url:\"".$this->task."\", $extra_data $order aoColumns: [";
         
         $js_arr = $this->columns_html;
@@ -435,6 +437,7 @@ class Mdatatable
         //last blocjs
         $js .= "$('.export_csv').on('click', function() {csv_export(table, 'csv');});";
         $js .= "$('.export_pdf').on('click', function() {csv_export(table, 'pdf');});";
+        $js .= "$('.show_zip').on('click', function() {exec_zip(table, '".$this->task."_grid' );});";
         $js .= "$('#".$this->task."_grid').on('click', 'tr button', function() {
             var row = $(this).closest('tr');
             append_drop_menu('".$this->task."', table.cell(row, 0).data(),'.btn_action');});});</script>";
@@ -459,8 +462,12 @@ class Mdatatable
         
         $html .= $this->btn_csv($this->task,'Exporter Liste');
         $html .= $this->btn_pdf($this->task,'Exporter Liste');
+        $html .= $this->btn_zip($this->task,'Exporter Liste');
+       
+
         $html .= "\t</div>\n\t</div>\n\t</div>\n";
-        $html .= "\t<div class=\"table-header\">\tListe ".$this->title_module." </div>\n";
+        $html .= "\t<div id=\"head_".$this->task."_grid\" class=\"table-header\">\tListe ".$this->title_module."</div>\n";
+       
         $html .= "\t<div>\n<table id=\"".$this->task."_grid\" class=\"table table-bordered table-condensed table-hover table-striped dataTable no-footer\">\n";
         $html .= "\t<thead>\n\t<tr>\n";
         $this->get_html_column();
@@ -566,6 +573,23 @@ class Mdatatable
         $output = '<a title="Export PDF" href="#"  class="ColVis_Button ColVis_MasterButton btn btn-white btn-info btn-bold export_pdf"><span><i class="fa fa-file-pdf-o fa-lg" style="color:red"></i></span></a>';
 
 
+        $render = ($output);
+
+
+        return $render ;
+    }
+
+    /**
+     * [btn_zip description]
+     * @param  [type] $app  [description]
+     * @param  [type] $text [description]
+     * @return [type]       [description]
+     */
+    private function btn_zip($app, $text)
+    {
+        //$output = '<a title="Afficher Archive" href="#"  class="btn_zip ColVis_Button ColVis_MasterButton btn btn-white btn-info btn-bold show_zip"><span><i class="fa fa-file-archive-o fa-lg blue" style="color:"></i></span></a>';
+
+        $output = '<a title="Archive" href="#"  class="btn_zip btn btn-white btn-bold show_zip"><span><i class="fa fa-file-archive-o fa-lg blue"></i></span></a>';
         $render = ($output);
 
 
