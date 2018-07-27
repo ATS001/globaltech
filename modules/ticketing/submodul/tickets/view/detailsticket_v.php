@@ -57,11 +57,13 @@ if ($ticket->get_action_ticket()) {
                                 Ticket
                             </a>
                         </li>
+                        <?php if($ticket->g("etat") == "3") { ?>
                         <div class="widget-toolbar hidden-480">
                                     <a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'ticket') ?>" data="<?php echo MInit::crypt_tp('id', $ticket->id_tickets) ?>">
                                         <i class="ace-icon fa fa-print"></i>
                                     </a>
                                 </div> 
+                        <?php }?>
                     </ul>
 
                     <div class="tab-content no-border padding-24">
