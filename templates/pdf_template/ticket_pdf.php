@@ -155,9 +155,9 @@ class MYPDF extends TCPDF {
         }
         $this->Ln();
         $this->setCellPadding(0);
-        $height = $this->getLastH();
-        var_dump($this->getLastH());
-        var_dump($this->GetY());
+        $height = $this->getLastH() + 100;
+        //var_dump($this->getLastH());
+        //var_dump($this->GetY());
         //$this->SetTopMargin(10 + $this->GetY());
         //Info général
         $tableau_head = $this->Table_head;
