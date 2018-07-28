@@ -1,5 +1,5 @@
 <?php 
-var_dump($_COOKIE);
+//var_dump($_COOKIE);
 $chart = new MHighchart();
 $chart->titre = 'Evolution des recettes par mois';
 $chart->items = 'Fcfa';

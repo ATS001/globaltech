@@ -207,7 +207,7 @@ class Mproforma
      * [Get_detail_proforma_pdf Render query for export PDF]
      * @return bol send to controller
      */
-    public function Get_detail_proforma_pdf()
+    public function Get_detail_proforma_pdf($sub_group = 1)
     {
         global $db;
 
@@ -228,7 +228,7 @@ class Mproforma
        // $colms .= " REPLACE(FORMAT($table.total_tva,0),',',' '), ";
         $colms .= " REPLACE(FORMAT($table.total_ht,0),',', ' ') ";
         
-        $req_sql  = " SELECT $colms FROM $table WHERE id_proforma = $id_proforma ";
+        $req_sql  = " SELECT $colms FROM $table WHERE id_proforma = $id_proforma AND sub_group = $sub_group ";
         if(!$db->Query($req_sql))
         {
             $this->error = false;

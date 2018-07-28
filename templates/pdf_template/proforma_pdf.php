@@ -43,16 +43,42 @@ $headers = array(
             'P.Total'       => '15[#]R',
 
         );
+
 $proforma_info   = $proforma->proforma_info;
 $liste_sub_group = $proforma->get_detail_prforma_by_group();
 $tableau_head = MySQL::make_table_head($headers);
 if($liste_sub_group){
     $tableau_body = null;
     foreach ($liste_sub_group as $key => $value) 
-    {
-    	$proforma->Get_detail_proforma_pdf();
+    {   
+    	$id_sub_group = $value['sub_group'];
+    	$tableau_body .= '<h3>Proposition N°: '.$id_sub_group.' </h3>';
+    	
+    	$proforma->Get_detail_proforma_pdf($id_sub_group);
+    	
     	$tableau_body .= $tableau_head;
     	$tableau_body .= $db->GetMTable_pdf($headers);
+    	$liste_sum = $proforma->get_sum_by_sub_group($id_sub_group);
+    	$table_sum_sub_group = '<table class="table" cellspacing="2" cellpadding="2"  style="width: 300px; border:1pt solid black;" >
+            <tbody>                
+                <tr>
+                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Total HT</td>
+                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;">'.$liste_sum[0]['sum_tt_ht'].' '.$proforma->g('devise').'</td>
+                </tr> 
+                <tr>
+                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Total TVA</td>
+                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;">'.$liste_sum[0]['sum_tt_tva'].' '.$proforma->g('devise').'</td>
+                </tr>   
+                <tr>
+                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Total TTC</td>
+                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;">'.$liste_sum[0]['sum_tt_ttc'].' '.$proforma->g('devise').'</td>
+                </tr>              
+            </tbody>
+        </table>';
+    	$tableau_body .= $table_sum_sub_group;
 
     }
 }
