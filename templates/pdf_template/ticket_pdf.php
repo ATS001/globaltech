@@ -13,7 +13,7 @@
 //               Tecnick.com LTD
 //               www.tecnick.com
 //               info@tecnick.com
-//============================================================+
+//============================================================
 //Get all info Devis from model
 $ticket = new Mtickets;
 $ticket->id_tickets = Mreq::tp('id');
@@ -24,19 +24,29 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $ticket->get_tickets()) {
     exit('0#<br>Les informations pour cette template sont erronées, contactez l\'administrateur');
 }
 
+
 //Execute Pdf render
 
 if (!$ticket->Get_detail_ticket_pdf()) {
     exit("0#" . $ticket->log);
 }
+
+
 global $db;
 $headers = array(
     'Date' => '17[#]C',
     'Description' => '43[#]',
 );
 
-//var_dump($ticket->action_info);
 $action_info = $ticket->action_info;
+foreach ($action_info as $key => &$value) {
+
+    $value[0] = $value[0];
+    $value[1] = strip_tags($value[1]);
+}
+
+//var_dump($action_info);
+//$action_info = $ticket->action_info;
 $tableau_head = MySQL::make_table_head($headers);
 $tableau_body = $db->GetMTable_pdf($headers);
 
@@ -254,9 +264,10 @@ $pdf->AddPage();
 // Print text using writeHTMLCell()
 $pdf->Table_body = $tableau_body;
 $html = $pdf->Table_body;
-
+//$pdf->writeHTML($html, true, false, true, false, '');
+var_dump($html);
 // ---------------------------------------------------------
-//$pdf->writeHTMLCell('', '','' , '', $html , 0, 0, 0, true, 'L', true);
+$pdf->writeHTML('', '', '', '', $html, 0, 0, 0, true, 'L', true);
 // Close and output PDF document
 // This method has several options, check the source code documentation for more information.
 $pdf->Output($file_export, 'F');
