@@ -1,5 +1,5 @@
 <?php 
-//Export Module 'factures' Date: 17-07-2018
+//Export Module 'factures' Date: 28-07-2018
 global $db;
 if(!$result_insert_modul = $db->Query("insert into modul (modul, description, rep_modul, tables, app_modul, modul_setting, is_setting, etat, services)values('factures', 'Gestion des factures','factures/main','factures','factures',NULL,'0', '0', '[-1-2-3-5-7-]')")){$this->error = false; $this->log .= "<li> Error Import Modul 'factures' </li>";}
   //Task 'factures' 'Gestion des factures'
