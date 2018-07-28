@@ -432,6 +432,7 @@ class Mdevis
             $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
             $values["id_commercial"]   = MySQL::SQLValue($this->_data['id_commercial']);
             $values["commission"]      = MySQL::SQLValue($this->_data['commission']);
+            $values["type_commission"] = MySQL::SQLValue($this->_data['type_commission']);
             $values["total_commission"]= MySQL::SQLValue($total_commission);
             $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
             $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
@@ -2248,7 +2249,7 @@ class Mdevis
     {
         global $db;
         
-        $add_set = array('return' => '<a href="#" class="this_url" rel="detailbl" data="%crypt%"> <i class="ace-icon fa fa-eye blue bigger-100"></i></a>', 'data' => 'id');
+        $add_set = array('return' => '<a href="#" class="report_tplt" rel="'.MInit::crypt_tp('tplt', 'devis').'" data="%crypt%"> <i class="ace-icon fa fa-print"></i></a>', 'data' => 'id');
         $id_devis = $this->id_devis;
         $req_sql  = " SELECT id, reference, date_bl, '#' FROM bl WHERE iddevis = $id_devis ";
         
@@ -2260,7 +2261,7 @@ class Mdevis
         }
         if(!$db->RowCount())
         {
-             $output = 'Pas de Bons de Livraison enregistrés pour ce devis'; 
+             $output = '<div class="alert alert-danger">Pas de Bons de Livraison enregistrés pour ce devis</div>'; 
              return $output;
         }
         
@@ -2270,10 +2271,7 @@ class Mdevis
             'Référence'           => '10[#]center',
             'Date création'       => '30[#]', 
             'Voir détails'        => '15[#]center[#]crypt', 
-            
-            
-            
-        );
+         );
                  
                 
         $tableau = $db->GetMTable($headers, $add_set);
@@ -2284,9 +2282,9 @@ class Mdevis
     {
         global $db;
         
-        $add_set = array('return' => '<a href="#" class="this_url" rel="detailbl" data="%crypt%"> <i class="ace-icon fa fa-eye blue bigger-100"></i></a>', 'data' => 'id');
+        $add_set = array('return' => '<a href="#" class="report_tplt" rel="'.MInit::crypt_tp('tplt', 'devis').'" data="%crypt%"> <i class="ace-icon fa fa-print"></i></a>', 'data' => 'id');
         $id_devis = $this->id_devis;
-        $req_sql  = " SELECT id, reference, date_bl, '#' FROM bl WHERE iddevis = $id_devis ";
+        $req_sql ="SELECT factures.id, factures.reference,DATE_FORMAT(factures.date_facture,'%d-%m-%Y') as datfact, REPLACE(FORMAT(factures.total_ht,0),',',' ') total_ht, REPLACE(FORMAT(factures.total_ttc,0),',',' ') total_ttc, REPLACE(FORMAT(factures.total_tva,0),',',' ') as total_tva, REPLACE(FORMAT(factures.total_paye,0),',',' ') as total_paye, REPLACE(FORMAT(factures.reste,0),',',' ') as total_reste, '#' FROM factures WHERE  factures.iddevis = $id_devis   ORDER BY factures.credat DESC";
         
         if(!$db->Query($req_sql))
         {
@@ -2296,16 +2294,21 @@ class Mdevis
         }
         if(!$db->RowCount())
         {
-             $output = 'Pas de Bons de Livraison enregistrés pour ce devis'; 
+             $output = '<div class="alert alert-danger">Pas de Factures enregistrés pour ce devis</div>'; 
              return $output;
         }
         
         
         $headers = array(
-            'ID'                  => '5[#]center',
-            'Référence'           => '10[#]center',
-            'Date création'       => '30[#]', 
-            'Voir détails'        => '15[#]center[#]crypt', 
+            'ID'            => '5[#]center',
+            'Référence'     => '10[#]center',
+            'Date création' => '10[#]', 
+            'Total HT'      => '10[#]alignRight', 
+            'Total TTC'     => '10[#]alignRight', 
+            'Total TVA'     => '10[#]alignRight', 
+            'Payé'          => '10[#]alignRight', 
+            'Rest'          => '10[#]alignRight', 
+            'Voir détails'  => '5[#]center[#]crypt', 
             
             
             
@@ -2321,9 +2324,9 @@ class Mdevis
     {
         global $db;
         
-        $add_set = array('return' => '<a href="#" class="this_url" rel="detailbl" data="%crypt%"> <i class="ace-icon fa fa-eye blue bigger-100"></i></a>', 'data' => 'id');
+        $add_set = array('return' => '<a href="#" class="this_url" rel="detailsencaissement" data="%crypt%"> <i class="ace-icon fa fa-eye blue bigger-100"></i></a>', 'data' => 'id');
         $id_devis = $this->id_devis;
-        $req_sql  = " SELECT id, reference, date_bl, '#' FROM bl WHERE iddevis = $id_devis ";
+        $req_sql ="SELECT e.id, e.reference, e.designation  ,e.date_encaissement, e.ref_payement, e.mode_payement, IFNULL(REPLACE(FORMAT((e.montant),0),',',' '),0) AS montant ,  '#' FROM encaissements e,factures f,devis d  WHERE  f.id=e.`idfacture` AND f.iddevis = d.id and d.id = $id_devis ORDER BY e.date_encaissement DESC";
         
         if(!$db->Query($req_sql))
         {
@@ -2333,16 +2336,21 @@ class Mdevis
         }
         if(!$db->RowCount())
         {
-             $output = 'Pas de Bons de Livraison enregistrés pour ce devis'; 
+             $output = '<div class="alert alert-danger">Pas d\'Encaissement enregistrés pour ce devis</div>'; 
              return $output;
         }
         
         
         $headers = array(
-            'ID'                  => '5[#]center',
-            'Référence'           => '10[#]center',
-            'Date création'       => '30[#]', 
-            'Voir détails'        => '15[#]center[#]crypt', 
+            'ID'           => '5[#]center',
+            'Référence'    => '10[#]center',
+            'Designation'  => '10[#]center',
+            'Date'         => '10[#]', 
+            'Réf paiement' => '10[#]center',
+            'Mode'         => '10[#]center',
+            'Montant'      => '10[#]center',
+            
+            'Voir détails' => '15[#]center[#]crypt', 
             
             
             

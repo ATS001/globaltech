@@ -783,9 +783,10 @@ if($js_array != null)
      * @return append string into form_fields [Input render]
      */
 
-    public function select_count($input_desc, $input_id, $input_class, $count, $indx = NULL ,$selected = NULL ) 
+    public function select_count($input_desc, $input_id, $input_class, $count, $indx = NULL ,$selected = NULL, $no_zero = false ) 
     {
     	$class_chosen = ($input_class * 100) / 12;
+      $start_zero = !$no_zero ? 0 : 1 ;
         $output = '<div class="space-2"></div>
         <div class="form-group">
          <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">'.$input_desc.':</label>
@@ -799,7 +800,7 @@ if($js_array != null)
                      $output .= $indx;
 
 
-                     for($i = 0; $i <= $count; $i++ ) {
+                     for($i = $start_zero; $i <= $count; $i++ ) {
 
                       if($selected != NULL){  
                        $select =  $i == $selected ? "selected":""; 

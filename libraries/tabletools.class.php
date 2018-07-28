@@ -404,11 +404,17 @@ class TableTools
      */
     static public function where_etat_line($table, $task_name)
     {
+    	$etat = Cookie::Get($task_name."_grid_zip", null);
+
+    	$wher_etat = $etat == null ? null : ' AND task_action.`etat_line` = 100 ';
+    	
+
     	$where_etat_line = " WHERE   (SELECT 
     		COUNT(task_action.id) 
     		FROM
     		task_action, rules_action , task
     		WHERE task_action.`etat_line` = `$table`.etat
+    		$wher_etat
     		AND task_action.appid = task.id 
     		AND task.`app` = '$task_name'  
     		AND task_action.id = rules_action.`action_id`
@@ -424,6 +430,8 @@ class TableTools
      */
     static public function where_search_etat($table, $task_name, $search)
     {
+
+
     	$where_search_etat = " OR (SELECT 
     		COUNT(task_action.id) 
     		FROM

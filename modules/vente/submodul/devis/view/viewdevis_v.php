@@ -15,9 +15,9 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->Get_detail_devis_show())
 }
 
 
-$tab_details_devis = view::tab_render('devis', 'Devis', $add_set=NULL, 'money' , $active = true, 'home');
-$tab_liste_bl = view::tab_render('bl', 'Bons de Livraison', $add_set=NULL, 'money' , false, 'bl');
-$tab_liste_factures = view::tab_render('factures', 'Factures', $add_set=NULL, 'money' , false, 'factures');
+$tab_details_devis = view::tab_render('devis', 'Devis', $add_set=NULL, 'paper-plane-o' , $active = true, 'home');
+$tab_liste_bl = view::tab_render('bl', 'Bons de Livraison', $add_set=NULL, 'bookmark' , false, 'bl');
+$tab_liste_factures = view::tab_render('factures', 'Factures', $add_set=NULL, 'file' , false, 'factures');
 $tab_liste_encaissement = view::tab_render('encaissements', 'Encaissements', $add_set=NULL, 'money' , false, 'encaissement');
 
 ?>
@@ -88,7 +88,7 @@ $tab_liste_encaissement = view::tab_render('encaissements', 'Encaissements', $ad
 					 {
 					 	echo $tab_liste_factures['tcs'];
 					 	//Content (includ file - simple string - function return string)
-					 	echo 'Liste des factures';
+					 	echo $info_devis->get_list_factures();
 					 	echo $tab_liste_factures['tce'];
 					 }
 
@@ -96,7 +96,7 @@ $tab_liste_encaissement = view::tab_render('encaissements', 'Encaissements', $ad
 					 {
 					 	echo $tab_liste_encaissement['tcs'];
 					 	//Content (includ file - simple string - function return string)
-					 	echo 'Liste des encaissement';
+					 	echo $info_devis->get_list_encaissement();
 					 	echo $tab_liste_encaissement['tce'];
 					 }
 
