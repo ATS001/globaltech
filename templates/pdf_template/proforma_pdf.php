@@ -59,7 +59,14 @@ if($liste_sub_group){
     	$tableau_body .= $tableau_head;
     	$tableau_body .= $db->GetMTable_pdf($headers);
     	$liste_sum = $proforma->get_sum_by_sub_group($id_sub_group);
-    	$table_sum_sub_group = '<table class="table" cellspacing="2" cellpadding="2"  style="width: 300px; border:1pt solid black;" >
+    	$table_sum_sub_group = '
+    	<table style="width: 685px;" cellpadding="2">
+    <tr>
+        <td width="50%" align="left">
+            
+        </td>
+        <td width="50%">
+    	<table class="table" cellspacing="2" cellpadding="2"  style="width: 300px; border:1pt solid black;" >
             <tbody>                
                 <tr>
                     <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Total HT</td>
@@ -77,7 +84,8 @@ if($liste_sub_group){
                     <td class="alignRight" style="width:60%; background-color: #eeecec;">'.$liste_sum[0]['sum_tt_ttc'].' '.$proforma->g('devise').'</td>
                 </tr>              
             </tbody>
-        </table>';
+        </table>
+        </td></tr></table> ';
     	$tableau_body .= $table_sum_sub_group;
 
     }

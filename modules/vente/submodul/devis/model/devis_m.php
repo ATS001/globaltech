@@ -1781,6 +1781,50 @@ class Mdevis
 
     }
 
+    public function archivedevis()
+    {
+        global $db;
+        $id_devis = $this->id_devis;
+        $table = $this->table;
+        $this->get_devis();
+        //Format where clause
+        $id_devis = MySQL::SQLValue($id_devis);
+        $sql_req = "UPDATE $table SET etat = 100 WHERE id = $id_devis";
+       
+        //check if id on where clause isset
+        if($id_devis == null)
+        {
+            $this->error = false;
+            $this->log .='</br>L\' id est vide';
+            return false;
+        }
+        //execute Delete Query
+        if(!$db->Query($sql_req))
+        {
+
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .='</br>Archivage non réussie';
+
+        }else{
+
+            $this->error = true;
+            $this->log .='</br>Archivage réussie ';
+            //log
+            if(!Mlog::log_exec($table, $this->id_devis, 'Archivage devis '.$this->id_devis, 'Update'))
+            {
+                $this->log .= '</br>Un problème de log ';
+                        
+            }
+        }
+        //check if last error is true then return true else rturn false.
+        if($this->error == false){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
     public function delete_devis()
     {
         global $db;

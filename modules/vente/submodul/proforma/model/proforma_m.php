@@ -1218,6 +1218,50 @@ class Mproforma
 
     }
 
+    public function archiveproforma()
+    {
+        global $db;
+        $id_proforma = $this->id_proforma;
+        $table = $this->table;
+        $this->get_proforma();
+        //Format where clause
+        $id_proforma = MySQL::SQLValue($id_proforma);
+        $sql_req = "UPDATE $table SET etat = 100 WHERE id = $id_proforma";
+       
+        //check if id on where clause isset
+        if($id_proforma == null)
+        {
+            $this->error = false;
+            $this->log .='</br>L\' id est vide';
+            return false;
+        }
+        //execute Delete Query
+        if(!$db->Query($sql_req))
+        {
+
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .='</br>Archivage non réussie';
+
+        }else{
+
+            $this->error = true;
+            $this->log .='</br>Archivage proforma '.$this->id_devis.' réussie ';
+            //log
+            if(!Mlog::log_exec($table, $this->id_proforma, 'Archivage proforma '.$this->id_devis, 'Update'))
+            {
+                $this->log .= '</br>Un problème de log ';
+                        
+            }
+        }
+        //check if last error is true then return true else rturn false.
+        if($this->error == false){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
     public function delete_proforma()
     {
         global $db;
