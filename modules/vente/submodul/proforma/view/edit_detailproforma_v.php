@@ -21,6 +21,7 @@ $form->input_hidden('tkn_frm', $info_proforma_d->h('tkn_frm'));
 $form->input_hidden('tva_d', 'O');
 //commission commercial
 $form->input_hidden('commission', Mreq::tp('commission'));
+$form->input_hidden('sub_group', Mreq::tp('sub_group'));
 //prix unitaire sans commission
 $form->input_hidden('pu', $info_proforma_d->h('prix_unitaire'));
 //Type produit old
@@ -227,12 +228,18 @@ $(document).ready(function() {
                     }
                     $('#label_qte').text('Quantité: ('+data['unite_vente']+')');
                     $('#pu').val(data['prix_vente']);
-                    $('#prix_unitaire').val(parseFloat(data['prix_vente'])+ ( parseFloat(data['prix_vente']) * parseFloat($('#commission').val()) / 100 ));
+                    if($('#type_commission').val() == 'C'){
+                        $('#prix_unitaire').val(parseFloat(data['prix_vente'])+ ( parseFloat(data['prix_vente']) * parseFloat($('#commission').val()) / 100 ));
+                    }else{
+                        $('#prix_unitaire').val(parseFloat(data['prix_vente'])); 
+                    }
+                    
                     $('#ref_produit').val(data['reference']);
                     $('.returned_span').remove();
                     if(data['prix_vendu'] == 0){
                      $('#ref_produit').parent('div').after('<span class="show_info_product help-block returned_span">Ce produit n\' pas été vendu avant!</span>'); 
                     }else{
+                       
                         $('#ref_produit').parent('div').after('<span class="show_info_product help-block returned_span">Ce produit a été vendu à :'+data['prix_vendu']+' '+data['qte_dispo']+'</span>');
                     }
                     $('#prix_unitaire').trigger('change');

@@ -3,7 +3,7 @@
 if(!defined('_MEXEC'))die();
 //SYS GLOBAL TECH
 // Modul: devis
-//Created : 12-10-2017
+//Created : 29-07-2018
 //Controller EXEC Form
 $devis = new Mdevis();
 $devis->id_devis = Mreq::tp('id');
@@ -17,11 +17,11 @@ if(!MInit::crypt_tp('id', null, 'D')or !$devis->get_devis())
 
 //Etat for validate row
 //$etat = $devis->devis_info['etat'];
-//$devis->archivdevis($etat)
+//$devis->archivedevis($etat)
 //Execute Validate - delete
 
 
-if($devis->archivdevis())
+if($devis->archivedevis())
 {
 	exit("1#".$devis->log);
 

@@ -1218,6 +1218,50 @@ class Mproforma
 
     }
 
+    public function archiveproforma()
+    {
+        global $db;
+        $id_proforma = $this->id_proforma;
+        $table = $this->table;
+        $this->get_proforma();
+        //Format where clause
+        $id_proforma = MySQL::SQLValue($id_proforma);
+        $sql_req = "UPDATE $table SET etat = 100 WHERE id = $id_proforma";
+       
+        //check if id on where clause isset
+        if($id_proforma == null)
+        {
+            $this->error = false;
+            $this->log .='</br>L\' id est vide';
+            return false;
+        }
+        //execute Delete Query
+        if(!$db->Query($sql_req))
+        {
+
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .='</br>Archivage non réussie';
+
+        }else{
+
+            $this->error = true;
+            $this->log .='</br>Archivage proforma '.$this->id_devis.' réussie ';
+            //log
+            if(!Mlog::log_exec($table, $this->id_proforma, 'Archivage proforma '.$this->id_devis, 'Update'))
+            {
+                $this->log .= '</br>Un problème de log ';
+                        
+            }
+        }
+        //check if last error is true then return true else rturn false.
+        if($this->error == false){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
     public function delete_proforma()
     {
         global $db;
@@ -1259,7 +1303,7 @@ class Mproforma
         }
     }
 
-        /**
+    /**
      * [get_info_produit description] Get all product info
      * @param  [type] $id_produit [description]
      * @return [type]             [description]
@@ -1271,9 +1315,10 @@ class Mproforma
         $req_sql = "SELECT 
         produits.designation,
         produits.reference,
+        produits.idtype,
         produits.prix_vente AS prix_vente,
         ref_unites_vente.unite_vente,
-        ref_types_produits.type_produit,
+        ref_types_produits.type_produit, ref_types_produits.check_stock,
         IFNULL((SELECT MAX(d_devis.prix_ht) FROM d_devis WHERE d_devis.id_produit = $id_produit), 0) AS prix_vendu,
         IFNULL(SUM(stock.qte), 0) AS qte_in_stock,
         IFNULL(
@@ -1307,15 +1352,27 @@ class Mproforma
         if (!$db->Query($req_sql)) {
            
             $this->arr_prduit = array('error' => "Erreur get product info");
+            
             return false;
             
         }else{
-            
+
             $this->arr_prduit = $db->RowArray();
+            if($this->arr_prduit['type_produit'] == 'Abonnement' ){
+                $this->arr_prduit['abn']= true;
+
+            }
             if($this->arr_prduit['prix_vente'] == null)
             {
                 $this->arr_prduit = array('error' => "Prix de produit n'est pas enregitré");
-            }            
+            }
+            if($this->arr_prduit['check_stock'] == 'Y' )
+            {
+                $this->arr_prduit['qte_dispo'] = ' / Qte disponible : '. $this->arr_prduit['qte_in_stock'].' '.$this->arr_prduit['unite_vente'];
+            }else{
+                $this->arr_prduit['qte_dispo']  = '';
+            }
+            
         }
         return true;
     }
