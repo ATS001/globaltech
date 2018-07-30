@@ -115,13 +115,19 @@ $(document).ready(function() {
                                                                                                     
                     $('#label_qte').text('Quantité: ('+data['unite_vente']+')');
                     $('#pu').val(data['prix_vente']);
-                    $('#prix_unitaire').val(parseFloat(data['prix_vente'])+ ( parseFloat(data['prix_vente']) * parseFloat($('#commission').val()) / 100 ));
+                    if($('#type_commission').val() == 'C'){
+                        $('#prix_unitaire').val(parseFloat(data['prix_vente'])+ ( parseFloat(data['prix_vente']) * parseFloat($('#commission').val()) / 100 ));
+                    }else{
+                        $('#prix_unitaire').val(parseFloat(data['prix_vente'])); 
+                    }
+                    
                     $('#ref_produit').val(data['reference']);
                     $('.returned_span').remove();
                     if(data['prix_vendu'] == 0){
-                     $('#ref_produit').parent('div').after('<span class="help-block returned_span">Ce produit n\' pas été vendu avant!</span>'); 
+                     $('#ref_produit').parent('div').after('<span class="show_info_product help-block returned_span">Ce produit n\' pas été vendu avant!</span>'); 
                     }else{
-                        $('#ref_produit').parent('div').after('<span class="help-block returned_span">Ce produit étais vendu à :'+data['prix_vendu']+'</span>');
+                       
+                        $('#ref_produit').parent('div').after('<span class="show_info_product help-block returned_span">Ce produit a été vendu à :'+data['prix_vendu']+' '+data['qte_dispo']+'</span>');
                     }
                     $('#prix_unitaire').trigger('change');
                                         
