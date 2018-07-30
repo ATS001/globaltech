@@ -51,13 +51,14 @@ class MHighchart
 		$chart = new Highchart();
 		$this->container = MD5(uniqid(rand(), true));
 		$this->width = $width;
-		
+		$chart->addExtraScript('export', 'http://code.highcharts.com/modules/', 'exporting.js');
 
 
 		$chart->chart->renderTo = $this->container;
 		$chart->chart->plotBackgroundColor = null;
 		$chart->chart->plotBorderWidth = null;
 		$chart->chart->plotShadow = false;
+		$chart->exporting->enabled = true;
 		$chart->title->text = $this->titre;
 		$item = $this->items;
 
@@ -71,7 +72,7 @@ class MHighchart
 		$chart->plotOptions->pie->dataLabels->enabled = 1;
 		$chart->plotOptions->pie->dataLabels->color = "#000000";
 		$chart->plotOptions->pie->dataLabels->connectorColor = "#000000";
-
+        
 		$chart->plotOptions->pie->dataLabels->formatter = new HighchartJsExpr(
 			"function() {
 				return '<b>'+ this.point.name +'</b>: '+ Highcharts.numberFormat(this.y, 1) +' %'; }"
@@ -135,7 +136,7 @@ class MHighchart
 		$chart = new Highchart();
 		$this->container = MD5(uniqid(rand(), true));
 		$this->width = $width;
-		
+		$chart->exporting->enabled = true;
 
 
 		$chart->chart->renderTo = $this->container;

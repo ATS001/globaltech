@@ -10,3 +10,4 @@ $chart = new MHighchart();
 $chart->titre = 'Top Produits demandés';
 $chart->items = 'Fcfa';
 $chart->Pie_render('v_sum_best_product', 6);
+?>

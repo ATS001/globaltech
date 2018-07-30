@@ -84,7 +84,9 @@
 		<script src="<?php echo THEME_PATH ;?>/js/jquery.fullscreen-min.js"></script>
  <?php $mrn_js = Mcfg::get('deploy') == true ?'mrn-function.js' : 'myfunction.js';?>
         <script src="<?php echo THEME_PATH .'/js/'. $mrn_js ?>"></script>
-        <script src="<?php echo THEME_PATH ?>/js/highchart/highcharts.js"></script>
+        <script src="<?php echo THEME_PATH ?>/js/highchart/code/highcharts.js"></script>
+        <script src="<?php echo THEME_PATH ?>/js/highchart/code/modules/exporting.js"></script>
+       <!--  <script src="<?php echo THEME_PATH ?>/js/highchart/code/modules/offline-exporting.js"></script> -->
 
 
 <script type="text/javascript">
