@@ -37,20 +37,18 @@ class Mcontrats_fournisseurs {
     global $db;
     $table = $this->table;
 
-    $sql = "SELECT  c.*, f.reference as ref_fournisseur,f.denomination ,f.r_social ,f.tel, f.fax, f.email,p.pays ,"
-            . " DATE_FORMAT($table.date_effet,'%d-%m-%Y') as date_effet,"
-            . "DATE_FORMAT($table.date_fin,'%d-%m-%Y') as date_fin "
-            . "FROM $table c, fournisseurs f, ref_pays p "
-            . " WHERE c.id_fournisseur=f.id and f.id_pays=p.id and  c.id = ".$this->id_contrats_frn;
+    $sql = "SELECT  c.*, f.reference as ref_fournisseur,f.denomination ,f.r_social ,f.tel, f.fax, f.email,p.pays ,DATE_FORMAT(c.date_effet,'%d-%m-%Y') as date_effet,DATE_FORMAT(c.date_fin,'%d-%m-%Y') as date_fin FROM $table c, fournisseurs f, ref_pays p WHERE c.id_fournisseur=f.id and f.id_pays=p.id and  c.id = ".$this->id_contrats_frn;
 
     if(!$db->Query($sql))
     {
      $this->error = false;
      $this->log  .= $db->Error();
+     var_dump($db->Error());
    }else{
      if ($db->RowCount() == 0) {
+      var_dump('test 2');
       $this->error = false;
-      $this->log .= 'Aucun enregistrement trouvé ';
+      $this->log .= 'Aucun enregistrement trouvé';
     } else {
       $this->contrats_frn_info = $db->RowArray();
       $this->error = true;

@@ -21,7 +21,7 @@ $array_column = array(
         'column' => 'fournisseurs.denomination',
         'type'   => '',
         'alias'  => 'fournisseur',
-        'width'  => '15',
+        'width'  => '25',
         'header' => 'Fournisseur',
         'align'  => 'L'
     ),

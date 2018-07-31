@@ -9,7 +9,6 @@ $contrats_frn->id_contrats_frn= Mreq::tp('id');
 $contrats_frn->get_contrats_frn();
 
 
-
 $action = new TableTools();
 $action->line_data = $contrats_frn->contrats_frn_info;
 $action->action_line_table('contrats_fournisseurs', 'contrats_frn',$contrats_frn->contrats_frn_info['creusr'],'deletecontrat_frn');
