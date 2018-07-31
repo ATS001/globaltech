@@ -46,6 +46,7 @@ class Mfacture {
         return array_key_exists($property, $this->_data) ? $this->_data[$property] : null
         ;
     }
+    
 
     //Get all info categorie_contrats_frn from database for edit form
     public function get_commerciale_devis() {
