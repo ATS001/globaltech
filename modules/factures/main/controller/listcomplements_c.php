@@ -42,14 +42,6 @@ $array_column = array(
         'header' => 'Date',
         'align' => 'C'
     ),
-    array(
-        'column' => 'statut',
-        'type' => '',
-        'alias' => 'statut',
-        'width' => '15',
-        'header' => 'Statut',
-        'align' => 'C'
-    ),
 );
 //Creat new instance
 $list_data_table = new Mdatatable();
