@@ -72,9 +72,7 @@ $id_facture_c = MInit::crypt_tp('id', $id_facture);
                         <th>
                             Date
                         </th>
-                        <th>
-                            Etat
-                        </th>
+                        
                         <th>
                             #
                         </th>
@@ -103,7 +101,7 @@ $id_facture_c = MInit::crypt_tp('id', $id_facture);
                 {"sClass": "right", "sWidth": "12%"},
                 {"sClass": "center", "sWidth": "10%"},
                 {"sClass": "center", "sWidth": "10%"},
-                {"sClass": "center", "sWidth": "10%"},
+               
                 {"sClass": "center", "sWidth": "5%"}, // Action
             ],
         });

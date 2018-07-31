@@ -5,10 +5,17 @@
 defined('_MEXEC') or die;
 if(MInit::form_verif('bloquerclient',false))
 {
-	
+	//Check if id is been the correct id compared with idc
+   if(!MInit::crypt_tp('id', null, 'D'))
+   {  
+   // returne message error red to client 
+   exit('3#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+   }
+
   $posted_data = array(
-   'id_motif_blocage'      => Mreq::tp('id_motif_blocage') ,
-   'commentaire'    => Mreq::tp('commentaire')
+   'id'                => Mreq::tp('id') ,
+   'id_motif_blocage'  => Mreq::tp('id_motif_blocage') ,
+   'commentaire'       => Mreq::tp('commentaire')
    );
 
   
@@ -40,9 +47,10 @@ if(MInit::form_verif('bloquerclient',false))
   //End check empty element
 
   $new_client = new  Mclients($posted_data);
+  $new_client->id_client = $posted_data['id']; 
 
   //execute Insert returne false if error
-  if($new_client->save_new_client()){
+  if($new_client->bloquer_client()){
 
     echo("1#".$new_client->log);
   }else{

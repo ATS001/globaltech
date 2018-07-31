@@ -40,6 +40,11 @@ if(!MInit::crypt_tp('id', null, 'D') or !$client->get_client())
     // returne message error red to client 
     exit('3#'.$client->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
+$tab_devis        = view::tab_render('devis', 'Devis', $add_set=NULL, 'money' , false, 'feed');
+$tab_abn          = view::tab_render('contrats', 'Contrats', $add_set=NULL, 'book' , false,'feed1');
+$tab_bl           = view::tab_render('bl', 'Bons de Livraison', $add_set=NULL, 'money' , false, 'feedbl');
+$tab_factures     = view::tab_render('factures', 'Factures', $add_set=NULL, 'money' , false, 'feed2');
+$tab_encaissement = view::tab_render('encaissements', 'Encaissements', $add_set=NULL, 'money' , false, 'feedenc');
 
 ?>
 <div class="pull-right tableTools-container">
@@ -77,26 +82,43 @@ if(!MInit::crypt_tp('id', null, 'D') or !$client->get_client())
                             </a>
                         </li>
 
+                        <?php
+                        if($tab_devis['tb_rl'])
+                        { ?>
                         <li>
                             <a data-toggle="tab" href="#feed">
                                 <i class="dodger blue ace-icon fa fa-send bigger-120"></i>
                                 Devis
                             </a>
                         </li>
-
-                         <li>
+                        <?php
+                        }
+                        
+                        if($tab_abn['tb_rl'])
+                        { ?>
+                        <li>
                             <a data-toggle="tab" href="#feed1">
                                 <i class="orange ace-icon fa fa-inbox bigger-120"></i>
                                 Abonnements
                             </a>
                         </li>
-
+                        <?php
+                        }
+                
+                        if($tab_bl['tb_rl'])
+                        { ?>
                         <li>
                             <a data-toggle="tab" href="#feedbl">
                                 <i class="purple ace-icon fa fa-bookmark-o bigger-120"></i>
                                 BLS
                             </a>
                         </li>
+                        <?php
+                        }
+
+                        if($tab_factures['tb_rl'])
+                        { ?>
+                        
 
                          <li>
                             <a data-toggle="tab" href="#feed2">
@@ -104,13 +126,21 @@ if(!MInit::crypt_tp('id', null, 'D') or !$client->get_client())
                                 Factures
                             </a>
                         </li>
-                        
+                        <?php
+                        }
+
+                        if($tab_encaissement['tb_rl'])
+                        { ?>
                         <li>
                             <a data-toggle="tab" href="#feedenc">
                                 <i class="red ace-icon fa fa-money bigger-120"></i>
                                 Encaissements
                             </a>
                         </li>
+                        <?php
+                        }
+                        ?>
+
                     </ul>
 
                     <div class="tab-content no-border padding-24">
@@ -139,8 +169,22 @@ if(!MInit::crypt_tp('id', null, 'D') or !$client->get_client())
                             <i class="ace-icon fa fa-adress-card-o green"></i>
                             Client : <?php echo $client->s('reference')?>
                         </h3>
+                         <?php
+                                    if ($client->g('etat') == Msetting::get_set('etat_client', 'client_bloque') ) {
+                                        ?>
+                                       <div>
+                                            <b class="red pull-right margin-left: 30px"> <?php echo $client->s('date_blocage')?>&nbsp;&nbsp;&nbsp;</b> 
+                                            <b class="grey pull-right"> &nbsp;&nbsp;&nbsp;Date :&nbsp;</b>
 
-                    
+                                            <b class="red pull-right margin-left: 30px"> <?php echo $client->s('commentaire')?></b> 
+                                            <b class="grey pull-right">&nbsp;&nbsp;&nbsp; Commentaire :&nbsp;</b>
+                                           
+                                            <b class="red pull-right margin-left: 30px"> <?php echo $client->s('motif')?></b> 
+                                            <b class="grey pull-right"> Motif de blocage:&nbsp;</b>   
+                                        </div>
+                        <?php 
+                            }
+                        ?>
 
                         <?php if( $pj != null){
                         ?>
@@ -284,6 +328,7 @@ if(!MInit::crypt_tp('id', null, 'D') or !$client->get_client())
                                         </ul>
                                     </div>
                                 </div><!-- /.col sm 6-->
+
                             </div><!-- /.row -->
                         </div><!--widget main-->
                     </div><!--widget body-->

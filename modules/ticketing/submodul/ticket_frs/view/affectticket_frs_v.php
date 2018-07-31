@@ -3,7 +3,7 @@
 if (!defined('_MEXEC'))
     die();
 
-$ticket = new Mticket_frs;
+$ticket = new Mticket_frs();
 //Set ID of Module with POST id
 $ticket->id_tickets = Mreq::tp('id');
 //$ticket->get_tickets();
@@ -73,40 +73,58 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
                                                         <?php if ($ticket->g("technicien") != NULL) { ?>
                                                             <li>
                                                                 <i class="ace-icon fa fa-caret-right green"></i>Technicien précèdent :
-                                                                <b style="color:green"><?php $ticket->s("technicien") ?></b>
+                                                                <b class="blue pull-right"><?php $ticket->s("technicien") ?></b>
                                                             </li> 
                                                             <li>
                                                                 <i class="ace-icon fa fa-caret-right green"></i>Date affectation :
-                                                                <b style="color:green"><?php $ticket->s("date_affectation") ?></b>
+                                                                <b class="blue pull-right"><?php $ticket->s("date_affectation") ?></b>
                                                             </li>
                                                             <li>
                                                                 <i class="ace-icon fa fa-caret-right green"></i>Nombre de jour :
-                                                                <b style="color:green"><?php $ticket->s("nbrj") ?></b>
+                                                                <b class="blue pull-right"><?php $ticket->s("nbrj") ?></b>
                                                             </li> 
                                                         <?php } ?>
                                                         <li>
                                                             <i class="ace-icon fa fa-caret-right green"></i>Fournisseur :
-                                                            <b style="color:green"><?php $ticket->s("fournisseur") ?></b>
+                                                            <b class="blue pull-right"><?php $ticket->s("fournisseur") ?></b>
                                                         </li>
-                                                       
+
                                                         <li>
-                                                            <i class="ace-icon fa fa-caret-right green"></i>Type produit:
-                                                            <b style="color:green"><?php $ticket->s("typep") ?></b>
+                                                            <i class="ace-icon fa fa-caret-right green"></i>Date incident :
+                                                            <b class="blue pull-right"><?php $ticket->s("date_incident") ?></b>
                                                         </li>
                                                         <li>
-                                                            <i class="ace-icon fa fa-caret-right green"></i>Catégorie produit :
-                                                            <b style="color:green"><?php $ticket->s("categorie_produit") ?></b>
+                                                            <i class="ace-icon fa fa-caret-right green"></i>Nature incident :
+                                                            <b class="blue pull-right"><?php
+                                                                if ($ticket->g("nature_incident") == "Autres")
+                                                                    $ticket->s("autre_nt");
+                                                                else {
+                                                                    $ticket->s("nature_incident");
+                                                                }
+                                                                ?></b>
                                                         </li>
-                                                        <?php if ($ticket->g("prd") != NULL) { ?>
-                                                            <li>
-                                                                <i class="ace-icon fa fa-caret-right green"></i>Produit :
-                                                                <b style="color:green"><?php $ticket->s("prd") ?></b>
-                                                            </li>
-                                                        <?php } ?>
                                                         <li>
-                                                            <i class="ace-icon fa fa-caret-right green"></i>Date prévisionnelle :
-                                                            <b style="color:green"><?php $ticket->s("date_previs") ?></b>
+                                                            <i class="ace-icon fa fa-caret-right green"></i>PEC Fournisseur :
+                                                            <b class="blue pull-right"><?php
+                                                                if ($ticket->g("prise_charge_frs") == "Autres")
+                                                                    $ticket->s("autre_pecf");
+                                                                else {
+                                                                    $ticket->s("prise_charge_frs");
+                                                                }
+                                                                ?></b>
                                                         </li>
+                                                        <li>
+                                                            <i class="ace-icon fa fa-caret-right green"></i>PEC Globaltech :
+                                                            <b class="blue pull-right"><?php
+                                                                if ($ticket->g("prise_charge_glbt") == "Autres")
+                                                                    $ticket->s("autre_pecg");
+                                                                else {
+                                                                    $ticket->s("prise_charge_glbt");
+                                                                }
+                                                                ?></b>
+                                                        </li>
+
+
                                                     </ul>
 
                                                 </div>
@@ -118,7 +136,7 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
                                                 <div>
                                                     <div class="space-6"></div>
                                                     <div class="sa">
-                                                        <?php $ticket->s("message") ?>
+                                                        <?php $ticket->s("description") ?>
                                                     </div>
                                                 </div>
                                             </div><!-- /.col -->

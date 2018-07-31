@@ -10,7 +10,7 @@ if (!defined('_MEXEC'))
 <div class="pull-right tableTools-container">
     <div class="btn-group btn-overlap">
 
-<?php TableTools::btn_add('ticket_frs', 'Liste des tickets', Null, $exec = NULL, 'reply'); ?>
+        <?php TableTools::btn_add('ticket_frs', 'Liste des tickets', Null, $exec = NULL, 'reply'); ?>
 
     </div>
 </div>
@@ -47,6 +47,8 @@ if (!defined('_MEXEC'))
                 $form->input_date('Date incident', 'date_incident', 4, date('d-m-Y'), $date_incident);
 
 //Select nature incident
+                $hard_code_remise = '<label style="margin-left:30px;margin-right : 20px;">'
+                        . '</label><input  id="autre_nt" name="autre_nt" class="input-large alignLeft" value="" type="text"><span class="help-block"></span>';
                 $nature_incident = array('Coupure de connexion' => 'Coupure de connexion',
                     'Intermittence de connexion' => 'Intermittence de connexion',
                     'BGP down' => 'BGP down',
@@ -55,17 +57,21 @@ if (!defined('_MEXEC'))
                     'Bande passante' => 'Bande passante',
                     'CRC Errors' => 'CRC Errors',
                     'Autres' => 'Autres');
-                $form->select('Nature incident', 'nature_incident', 4, $nature_incident, $indx = NULL, $selected = 'Coupure de connexion', $multi = NULL);
+                $form->select('Nature incident', 'nature_incident', 4, $nature_incident, $indx = NULL, $selected = 'Coupure de connexion', $multi = NULL,$hard_code_remise);
 
 //Prise en charge par fournisseur 
+                $hard_code_remise = '<label style="margin-left:30px;margin-right : 20px;">'
+                        . '</label><input  id="autre_pecf" name="autre_pecf" class="input-large alignLeft" value="" type="text"><span class="help-block"></span>';
                 $pec_frs = array('Equipe Noc' => 'Equipe Noc',
                     'Autres' => 'Autres');
-                $form->select('PEC Fournisseur', 'prise_charge_frs', 4, $pec_frs, $indx = NULL, $selected = 'Equipe Noc', $multi = NULL);
+                $form->select('PEC Fournisseur', 'prise_charge_frs', 4, $pec_frs, $indx = NULL, $selected = 'Equipe Noc', $multi = NULL, $hard_code_remise);
 
 //Prise en charge par Globaltech 
+                $hard_code_remise = '<label style="margin-left:30px;margin-right : 20px;">'
+                        . '</label><input  id="autre_pecg" name="autre_pecg" class="input-large alignLeft" value="" type="text"><span class="help-block"></span>';
                 $pec_glbt = array('Support Technique' => 'Support Technique',
                     'Autres' => 'Autres');
-                $form->select('PEC Globaltech', 'prise_charge_glbt', 4, $pec_glbt, $indx = NULL, $selected = 'Support Technique', $multi = NULL);
+                $form->select('PEC Globaltech', 'prise_charge_glbt', 4, $pec_glbt, $indx = NULL, $selected = 'Support Technique', $multi = NULL,$hard_code_remise);
 
 //Description
                 $array_desc[] = array("required", "true", "Insérer un message ");
@@ -82,11 +88,58 @@ if (!defined('_MEXEC'))
 </div>
 <!-- End Add devis bloc -->
 
+
 <script type="text/javascript">
     $(document).ready(function () {
 
-//JS bloc   
+        $('#autre_pecf').hide();
+        $('#autre_nt').hide();
+        $('#autre_pecg').hide();
+
+        $('#nature_incident').on('change', function () {
+
+            if ($("#nature_incident option:selected").text() != 'Autres') {
+                $('#autre_nt').val("");
+                $('#autre_nt').hide();
+
+
+            } else {
+                $('#autre_nt').show();
+
+            }
+
+        });
+
+        $('#prise_charge_frs').on('change', function () {
+
+            if ($("#prise_charge_frs option:selected").text() != 'Autres') {
+                $('#autre_pecf').val("");
+                $('#autre_pecf').hide();
+
+
+            } else {
+                $('#autre_pecf').show();
+
+            }
+
+        });
+
+        $('#prise_charge_glbt').on('change', function () {
+
+            if ($("#prise_charge_glbt option:selected").text() != 'Autres') {
+                $('#autre_pecg').val("");
+                $('#autre_pecg').hide();
+
+
+            } else {
+                $('#autre_pecg').show();
+
+            }
+
+        });
+
+
 
     });
-</script>	
 
+</script>  

@@ -21,6 +21,7 @@ class Mtickets {
     var $id_tickets = null;        // tickets ID append when request
     var $token = null;        //user for recovery function
     var $tickets_info = array();     //Array ticket all tickets info
+    var $action_info = array(); //Array action ticket all tickets info
     var $ticket_action_info = array();  //Array ticket action all tickets action info
     var $list_action = array(); // Arrauy of list action
     var $exige_pj;
@@ -796,7 +797,7 @@ class Mtickets {
         //Get info ticket
         $this->get_tickets();
         $tickets_info = $this->tickets_info;
-        
+
         if ($this->verif_email($tickets_info["id_technicien"]) == FALSE) {
             $this->log .= '<br/>Ce technicien n\'a pas une adresse Mail';
             return false;
@@ -821,19 +822,19 @@ class Mtickets {
 
         $mail->setFrom($mail->Username, 'GlobalTech HelpDesk'); // Personnaliser l'envoyeur
 
-        $mail->addAddress($agent->g('mail'), $agent->g('lnom')." ".$agent->g('fnom'));
-       
+        $mail->addAddress($agent->g('mail'), $agent->g('lnom') . " " . $agent->g('fnom'));
+
         $mail->isHTML(true); // Paramétrer le format des emails en HTML ou non
 
         $mail->Subject = "Ticket Réf: #" . $tickets_info['id'];
 
-        $mail->Body = "<b> Bonjour " . $agent->g('fnom') ." ".$agent->g('lnom'). ",</br></br> Le ticket N° " . $tickets_info['id'] . " vous a été affecté. </br></br> Cordialement</b>";
-       if (!$mail->send()) {
+        $mail->Body = "<b> Bonjour " . $agent->g('fnom') . " " . $agent->g('lnom') . ",</br></br> Le ticket N° " . $tickets_info['id'] . " vous a été affecté. </br></br> Cordialement</b>";
+        if (!$mail->send()) {
             $this->log .= "Mailer Error: " . $mail->ErrorInfo;
         } else {
-            $this->log .= "Ticket envoyé  à ".$agent->g('mail');
+            $this->log .= "Ticket envoyé  à " . $agent->g('mail');
         }
-      }
+    }
 
     private function verif_email($id_technicien) {
         global $db;
@@ -844,5 +845,117 @@ class Mtickets {
             return TRUE;
         }
     }
+
+    /**
+     * [Get_detail_devis_pdf Render query for export PDF]
+     * @return bol send to controller
+     */
+    public function Get_detail_ticket_pdf() {
+        global $db;
+
+        $id_ticket = $this->id_tickets;
+        $table = $this->table_action;
+        $this->Get_detail_ticket_show();
+        $ticket_info = $this->tickets_info;
+        $colms = null;
+        $colms .= " $table.date_action, ";
+        $colms .= " $table.message ";
+
+        $req_sql = " SELECT $colms FROM $table WHERE id_ticket = $id_ticket ";
+
+         if (!$db->Query($req_sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->action_info = $db->RecordsSimplArray();
+                
+                $this->error = true;
+            }
+        }
+
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function Get_detail_ticket_show() {
+        global $db;
+
+        $table = $this->table;
+
+        $req_sql = "SELECT $table.* ,
+                IFNULL(DATEDIFF(DATE(NOW()),DATE(tickets.date_affectation)),0) as nbrj,
+                DATE_FORMAT($table.date_affectation,'%d-%m-%Y') as date_affectation,
+                DATE_FORMAT($table.date_previs,'%d-%m-%Y') as date_previs,
+                DATE_FORMAT($table.date_realis,'%d-%m-%Y') as date_realis,
+                CONCAT(users_sys.fnom,' ',users_sys.lnom) as technicien ,
+                clients.denomination as client ,
+                ref_categories_produits.categorie_produit as categorie_produit ,
+                ref_types_produits.type_produit as typep , 
+                produits.designation as prd,
+                code_cloture.code_cloture as code_cloture,
+                $table.serial_number as serial_number,
+                    DATE_FORMAT($table.credat,'%d-%m-%Y') as credat
+                FROM $table LEFT JOIN produits ON produits.id=$table.id_produit "
+                . "LEFT JOIN ref_categories_produits  ON ref_categories_produits.id=$table.categorie_produit"
+                . " LEFT JOIN ref_types_produits ON ref_types_produits.id=$table.type_produit"
+                . " LEFT JOIN clients ON clients.id=$table.id_client"
+                . " LEFT JOIN users_sys ON users_sys.id=$table.id_technicien"
+                . " LEFT JOIN code_cloture ON code_cloture.id=$table.code_cloture"
+                . " WHERE $table.id = " . $this->id_tickets;
+
+        if (!$db->Query($req_sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->tickets_info = $db->RowArray();
+                $this->error = true;
+            }
+        }
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function get_action_by_ticket() {
+        global $db;
+
+        $table = $this->table_action;
+
+      $sql = " SELECT credat , message FROM $table WHERE id_ticket = ". $this->id_tickets ;
+      
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->action_info = $db->RecordsSimplArray();
+                
+                $this->error = true;
+            }
+        }
+        //return Array user_activities
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 
 }

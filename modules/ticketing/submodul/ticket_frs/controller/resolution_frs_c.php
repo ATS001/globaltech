@@ -1,30 +1,55 @@
 <?php 
-//First check target no Hack
-if(!defined('_MEXEC'))die();
-//SYS GLOBAL TECH
-// Modul: ticket_frs
-//Created : 15-07-2018
-//Controller EXEC Form
-$ticket_frs = new Mticket_frs();
-$ticket_frs->id_ticket_frs = Mreq::tp('id');
 
-if(!MInit::crypt_tp('id', null, 'D')or !$ticket_frs->get_ticket_frs())
-{  
-   // returne message error red to ticket_frs 
-   exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+//First check target no Hack
+if (!defined('_MEXEC'))
+    die();
+//SYS GLOBAL TECH
+// Modul: tickets
+//Created : 06-04-2018
+//Controller ADD Form
+if (MInit::form_verif('resolution_frs', false)) {
+    
+ $posted_data = array(    
+        'id' => Mreq::tp('id'),
+        'observation' => Mreq::tp('observation'),
+        'code_cloture' => Mreq::tp('code_cloture')
+         );
+ 
+ 
+ $checker = null;
+    $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
+
+    if ($posted_data["observation"] == NULL) {
+        $empty_list .= "<li>Résolution</li>";
+        $checker = 1;
+    }
+
+    if ($posted_data["code_cloture"] == NULL) {
+        $empty_list .= "<li>Code clôture</li>";
+        $checker = 1;
+    }
+
+    $empty_list .= "</ul>";
+    if ($checker == 1) {
+        exit("0#$empty_list");
+    }
+
+    //End check empty element
+    $tickets = new Mticket_frs($posted_data);
+    $tickets->id_tickets=$posted_data["id"];
+   
+    
+//Etat for validate row
+$etat = Msetting::get_set('etat_ticket', 'resolution_termine');
+
+
+if($tickets->resolution_ticket_frs($etat))
+{
+	exit("1#".$tickets->log);
+
+}else{
+	exit("0#".$tickets->log);
 }
 
 
-//Etat for validate row
-//$etat = $ticket_frs->ticket_frs_info['etat'];
-//$ticket_frs->resolution_frs($etat)
-//Execute Validate - delete
-
-
-if($ticket_frs->resolution_frs())
-{
-	exit("1#".$ticket_frs->log);
-
-}else{
-	exit("0#".$ticket_frs->log);
 }
