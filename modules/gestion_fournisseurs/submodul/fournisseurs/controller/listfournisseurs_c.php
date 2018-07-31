@@ -13,11 +13,7 @@ $array_column = array(
         'column' => 'fournisseurs.reference',
         'type'   => '',
         'alias'  => 'reference',
-<<<<<<< HEAD:modules/gestion_fournisseurs/submodul/fournisseurs/controller/listfournisseurs_c.php
         'width'  => '15',
-=======
-        'width'  => '20',
->>>>>>> refs/remotes/origin/fati:modules/fournisseurs/main/controller/listfournisseurs_c.php
         'header' => 'Référence',
         'align'  => 'L'
     ),
@@ -25,11 +21,7 @@ $array_column = array(
         'column' => 'fournisseurs.denomination',
         'type'   => '',
         'alias'  => 'denomination',
-<<<<<<< HEAD:modules/gestion_fournisseurs/submodul/fournisseurs/controller/listfournisseurs_c.php
         'width'  => '20',
-=======
-        'width'  => '15',
->>>>>>> refs/remotes/origin/fati:modules/fournisseurs/main/controller/listfournisseurs_c.php
         'header' => 'Dénomination',
         'align'  => 'L'
     ),
@@ -38,11 +30,7 @@ $array_column = array(
         'column' => 'fournisseurs.r_social',
         'type'   => '',
         'alias'  => 'r_social',
-<<<<<<< HEAD:modules/gestion_fournisseurs/submodul/fournisseurs/controller/listfournisseurs_c.php
         'width'  => '30',
-=======
-        'width'  => '15',
->>>>>>> refs/remotes/origin/fati:modules/fournisseurs/main/controller/listfournisseurs_c.php
         'header' => 'Raison Sociale',
         'align'  => 'L'
     ),

@@ -272,7 +272,7 @@ $tab_contrats_frn = view::tab_render('contrats_fournisseurs', 'Contrats', $add_s
                                         echo '<B>Aucun contrat trouvé</B> ';
                                     else {
                                         ?>
-                                    <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
+                                    <table class="table table-striped table-bordered table-hover" style="width: 800px ; align:center">
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 ID
                                             </th>
