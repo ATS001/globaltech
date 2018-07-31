@@ -13,19 +13,19 @@
 			<div class="pull-right tableTools-container">
 				<div class="btn-group btn-overlap">
 					
-						<?php TableTools::btn_add('addcontrat_frn','Ajouter un contrat'); ?>
-						<?php TableTools::btn_csv('contrats_fournisseurs','Exporter Liste'); ?>
-						<?php TableTools::btn_pdf('contrats_fournisseurs','Exporter Liste'); ?>
+						<?php TableTools::btn_add('addcontrat','Ajouter un abonnement'); ?>
+						<?php TableTools::btn_csv('contrats','Exporter Liste'); ?>
+						<?php TableTools::btn_pdf('contrats','Exporter Liste'); ?>
 					
 			    </div>
 			</div>
 		</div>
 
 		<div class="table-header">
-			Liste "Contrats Fournisseurs" 
+			Liste "Abonnements" 
 		</div>
 		<div>
-			<table id="contrats_frn_grid" class="table table-bordered table-condensed table-hover table-striped dataTable no-footer">
+			<table id="contrats_grid" class="table table-bordered table-condensed table-hover table-striped dataTable no-footer">
 				<thead>
 					<tr>						
 						<th>
@@ -36,11 +36,16 @@
 							Réference
 						</th>
 						<th>
-							Fournisseur
+							Devis
 						</th>
-                        
+                                                <th>
+							Date 
+						</th>
 						<th>
-							Date d'effet
+							Client
+						</th>
+						<th>
+							Date début
 						</th>
 						<th>
 							Date fin
@@ -62,20 +67,22 @@
 
 $(document).ready(function() {
 	
-	var table = $('#contrats_frn_grid').DataTable({
+	var table = $('#contrats_grid').DataTable({
 		bProcessing: true,
-		notifcol : 5,
+		notifcol : 7,
 		serverSide: true,
-		ajax_url:"contrats_fournisseurs",
+		ajax_url:"contrats",
 		
                 aoColumns: [
                     {"sClass": "center","sWidth":"5%"}, 
-                    {"sClass": "left","sWidth":"20%"},//
-                    {"sClass": "left","sWidth":"25%"},
-                    {"sClass": "center","sWidth":"15%"},
-                    {"sClass": "center","sWidth":"15%"},
+                    {"sClass": "left","sWidth":"11%"},//
+                    {"sClass": "left","sWidth":"13%"},
+                    {"sClass": "center","sWidth":"7%"},
+                    {"sClass": "left","sWidth":"17%"},
+                    {"sClass": "center","sWidth":"7%"},
+                    {"sClass": "center","sWidth":"7%"},
                     {"sClass": "center","sWidth":"10%"},
-                    {"sClass": "center","sWidth":"5%"},
+                    {"sClass": "center","sWidth":"4%"},
                     ],
     });
      /*var column = table.column(0);
@@ -89,13 +96,13 @@ $('.export_pdf').on('click', function() {
 	csv_export(table, 'pdf');
 });
 
-$('#contrats_frn_grid').on('click', 'tr button', function() {
+$('#contrats_grid').on('click', 'tr button', function() {
 	var $row = $(this).closest('tr')
 	//alert(table.cell($row, 0).data());
-	append_drop_menu('contrats_fournisseurs', table.cell($row, 0).data(), '.btn_action')
+	append_drop_menu('contrats', table.cell($row, 0).data(), '.btn_action')
 });
 
-$('#contrats_frn_grid tbody ').on('click', 'tr .this_del', function() {
+$('#contrats_grid tbody ').on('click', 'tr .this_del', function() {
 	//alert($(this).attr("item"));
 	stand_delet($(this),$(this).attr("table"),$(this).attr("item"))
 });
@@ -104,3 +111,50 @@ $('#contrats_frn_grid tbody ').on('click', 'tr .this_del', function() {
 });
 
 </script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

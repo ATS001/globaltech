@@ -79,26 +79,26 @@ $pj     = $info_contrats_frn->contrats_frn_info['pj'];
 										<ul class="list-unstyled spaced">
 											<li>
 												<i class="ace-icon fa fa-caret-right blue"></i> Référence                                                                                               
-                                                  <b style="color:blue"> <?php echo $info_contrats_frn->s('reference');?> </b>                                        
+                                                  <b class="blue pull-right">  <?php echo $info_contrats_frn->s('reference');?> </b>                                        
 									
 											</li>
 
 											<li>
 												<i class="ace-icon fa fa-caret-right blue"></i> Date d'effet                                                                                               
-                                                  <b style="color:blue"> <?php echo $info_contrats_frn->s('date_effet');?> </b>                                        
+                                                  <b class="blue pull-right">  <?php echo $info_contrats_frn->s('date_effet');?> </b>                                        
 									
 											</li>
 
 											<li>
 												<i class="ace-icon fa fa-caret-right blue"></i> Date de fin
-                                                   <b style="color:blue"><?php echo $info_contrats_frn->s('date_fin');?>  </b>                                      
+                                                   <b class="blue pull-right"> <?php echo $info_contrats_frn->s('date_fin');?>  </b>                                      
                                                                                                     
 											</li>										
 
 											<li>
 												<i class="ace-icon fa fa-caret-right blue"></i> Commentaire
 
-                                                    <b style="color:blue"><?php echo $info_contrats_frn->s('commentaire');?></b>
+                                                    <b class="blue pull-right"> <?php echo $info_contrats_frn->s('commentaire');?></b>
 											</li>
 										</ul>
 									</div>
@@ -115,24 +115,24 @@ $pj     = $info_contrats_frn->contrats_frn_info['pj'];
 										<ul class="list-unstyled  spaced">
 											<li>
 												<i class="ace-icon fa fa-caret-right green"></i> Référence
-                                                   <b style="color:green"><?php echo $info_contrats_frn->s('ref_fournisseur');?></b>
+                                                   <b class="blue pull-right"> <?php echo $info_contrats_frn->s('ref_fournisseur');?></b>
 											</li>
 
 											<li>
 												<i class="ace-icon fa fa-caret-right green"></i> Dénomination
-                                                   <b style="color:green"><?php echo $info_contrats_frn->s('denomination');?></b>
+                                                   <b class="blue pull-right"> <?php echo $info_contrats_frn->s('denomination');?></b>
 											</li>
 
 
 											<li>
 												<i class="ace-icon fa fa-caret-right green"></i>
 												Pays 
-                                                    <b style="color:green"><?php echo $info_contrats_frn->s('pays');?></b>
+                                                    <b class="blue pull-right"> <?php echo $info_contrats_frn->s('pays');?></b>
 											</li>
 											<li>
 												<i class="ace-icon fa fa-caret-right green"></i>
 												Tél 
-                                                    <b style="color:green"><?php echo $info_contrats_frn->s('tel');?></b>
+                                                    <b class="blue pull-right"> <?php echo $info_contrats_frn->s('tel');?></b>
 											</li>
 										</ul>
 									</div>
@@ -142,24 +142,6 @@ $pj     = $info_contrats_frn->contrats_frn_info['pj'];
 							<div class="space"></div>
 
 							
-
-							<div class="hr hr8 hr-double hr-dotted"></div>
-
-<!--							<div class="row">
-								<div class="col-sm-5 pull-right">
-									<h4 class="pull-right">
-										Total amount :
-										<span class="red">$395</span>
-									</h4>
-								</div>
-								<div class="col-sm-7 pull-left"> Extra Information </div>
-							</div>-->
-
-							<!-- <div class="space-6"></div>
-							<div class="well">
-								Thank you for choosing Ace Company products.
-								We believe you will be satisfied by our services.
-							</div> -->
 						</div>
 					</div>
 				</div>

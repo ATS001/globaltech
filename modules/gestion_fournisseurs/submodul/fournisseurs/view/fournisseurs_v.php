@@ -68,19 +68,12 @@ $(document).ready(function() {
 		//extra_data:"extra_data=1",
 		//ajax:{},
 		aoColumns: [
-	        {"sClass": "center","sWidth":"5%"}, //
-<<<<<<< HEAD:modules/gestion_fournisseurs/submodul/fournisseurs/view/fournisseurs_v.php
+	        {"sClass": "center","sWidth":"5%"}, 
 	        {"sClass": "left","sWidth":"15%"},
-	        {"sClass": "left","sWidth":"20%"}, //
-	        {"sClass": "left","sWidth":"30%"},
+	        {"sClass": "left","sWidth":"20%"},
+	        {"sClass": "center","sWidth":"25%"},
 	        {"sClass": "center","sWidth":"15%"},
-=======
-	        {"sClass": "left","sWidth":"20%"},
-	        {"sClass": "left","sWidth":"20%"}, //
-	        {"sClass": "left","sWidth":"20%"},
-	        {"sClass": "left","sWidth":"20%"},
->>>>>>> refs/remotes/origin/fati:modules/fournisseurs/main/view/fournisseurs_v.php
-	        {"sClass": "center","sWidth":"10%"},
+	        {"sClass": "center","sWidth":"15%"},
 	        {"sClass": "center","sWidth":"5%"},
 	        ],
 	    });
