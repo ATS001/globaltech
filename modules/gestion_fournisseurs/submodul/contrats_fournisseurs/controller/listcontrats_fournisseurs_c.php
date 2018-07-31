@@ -13,7 +13,7 @@ $array_column = array(
         'column' => 'contrats_frn.reference',
         'type'   => '',
         'alias'  => 'reference',
-        'width'  => '10',
+        'width'  => '20',
         'header' => 'Référence',
         'align'  => 'L'
     ),
@@ -30,7 +30,7 @@ $array_column = array(
         'column' => 'contrats_frn.date_effet',
         'type'   => 'date',
         'alias'  => 'date_effet',
-        'width'  => '10',
+        'width'  => '15',
         'header' => 'Date Effet',
         'align'  => 'C'
     ),
@@ -38,7 +38,7 @@ $array_column = array(
         'column' => 'contrats_frn.date_fin',
         'type'   => 'date',
         'alias'  => 'date_fin',
-        'width'  => '10',
+        'width'  => '15',
         'header' => 'Date Fin',
         'align'  => 'C'
     ),
@@ -46,7 +46,7 @@ $array_column = array(
         'column' => 'statut',
         'type'   => '',
         'alias'  => 'statut',
-        'width'  => '15',
+        'width'  => '10',
         'header' => 'Statut',
         'align'  => 'C'
     ),
