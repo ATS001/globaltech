@@ -107,7 +107,7 @@ $form->draw_datatabe_form('table_details_proforma', $verif_value, $columns, 'add
 $form->step_end();
 $form->step_start(3, 'Plus d\'information');
 $vie_opt = array('30' => '1 Mois' , '60' => '2 Mois', '90' => '3 Mois', '180' => '6 Mois', '365' => '12 Mois');
-$form->select('Validité', 'vie', 3, $vie_opt, $indx = '-----' ,30 , $multi = NULL);
+$form->select('Validité', 'vie', 3, $vie_opt, $indx = '-----' ,$info_proforma->g('vie') , $multi = NULL);
 //Conditions commercial
 $clauses = Msetting::get_set('claus_comercial');
 $form->input_editor('Conditions commerciales', 'claus_comercial', 8, $info_proforma->g('claus_comercial'), $js_array = null,  $input_height = 50);
