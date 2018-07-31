@@ -227,6 +227,39 @@ class Mfacture {
             return true;
         }
     }
+    
+    public function get_complement_by_facture_modele() {
+        global $db;
+
+        $table_complement = $this->table_complement;
+
+       /* $sql = "SELECT id,designation,type,
+                REPLACE(FORMAT(montant,0),',',' ') as montant
+                FROM $table_complement WHERE  $table_complement.idfacture = " . $this->id_facture;*/
+         $sql = "SELECT id,designation,type,
+                REPLACE(FORMAT(montant,0),',',' ') as montant
+                FROM $table_complement WHERE  $table_complement.idfacture = " . $this->id_facture;
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->complement_info = $db->RecordsArray();
+                
+                $this->error = true;
+            }
+        }
+        //return Array user_activities
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
     //Get all info encaissement from database for edit form
     public function get_encaissement() {
@@ -277,7 +310,7 @@ class Mfacture {
                 $this->error = false;
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
-                $this->encaissement_info = $db->RecordsSimplArray();
+                $this->encaissement_info = $db->RecordsArray();
                 $this->error = true;
             }
         }
