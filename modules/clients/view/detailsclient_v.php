@@ -358,7 +358,7 @@ $tab_encaissement = view::tab_render('encaissements', 'Encaissements', $add_set=
                                             </br></b> </br></b> 
                                         </div>
 
-                                        <table class="table table-striped table-bordered table-hover" style="width: 800px; align:center">
+                                        <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 ID
                                             </th>
@@ -444,7 +444,7 @@ $tab_encaissement = view::tab_render('encaissements', 'Encaissements', $add_set=
                                         echo '<B>Aucun abonnement trouvé</B> ';
                                     else {
                                         ?>
-                                    <table class="table table-striped table-bordered table-hover" style="width: 800px; align:center">
+                                    <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 ID
                                             </th>
@@ -538,7 +538,7 @@ $tab_encaissement = view::tab_render('encaissements', 'Encaissements', $add_set=
                                             </br></b> </br></b> 
                                         </div>
 
-                                        <table class="table table-striped table-bordered table-hover" style="width: 800px; align:center">
+                                        <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 ID
                                             </th>
@@ -635,7 +635,7 @@ $tab_encaissement = view::tab_render('encaissements', 'Encaissements', $add_set=
                                             </br></b> </br></b> 
                                         </div>
 
-                                        <table class="table table-striped table-bordered table-hover" style="width: 800px; align:center">
+                                        <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 ID
                                             </th>
@@ -720,7 +720,7 @@ $tab_encaissement = view::tab_render('encaissements', 'Encaissements', $add_set=
                                         echo '<B>Aucun BL trouvé</B> ';
                                     else {
                                         ?>
-                                        <table class="table table-striped table-bordered table-hover" style="width: 800px; align:center">
+                                        <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 ID
                                             </th>
