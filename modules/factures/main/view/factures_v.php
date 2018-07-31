@@ -13,7 +13,7 @@ $array_column = array(
         'column' => 'factures.reference',
         'type'   => '',
         'alias'  => 'reference',
-        'width'  => '10',
+        'width'  => '12',
         'header' => 'Référence',
         'align'  => 'L'
     ),
@@ -63,7 +63,7 @@ $array_column = array(
         'column' => 'IF(base_fact="C",CONCAT("<b>DU</b> ", DATE_FORMAT(factures.du,"%d-%m-%Y")," <b>AU</b> ",DATE_FORMAT(factures.au,"%d-%m-%Y"))," ")',
         'type'   => '',
         'alias'  => 'clt',
-        'width'  => '15',
+        'width'  => '13',
         'header' => 'Période facturée',
         'align'  => 'C'
     ),
@@ -71,7 +71,7 @@ $array_column = array(
         'column' => 'statut',
         'type'   => '',
         'alias'  => 'statut',
-        'width'  => '15',
+        'width'  => '8',
         'header' => 'Statut',
         'align'  => 'C'
     ),
