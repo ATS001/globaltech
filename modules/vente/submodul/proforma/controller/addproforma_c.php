@@ -49,7 +49,7 @@ if(MInit::form_verif('addproforma', false))
       $empty_list .= "<li>Commission ne dois pas dépasser $set_comission</li>";
       $checker = 1;
     }
-    if($posted_data['vie'] == NULL OR !in_array($posted_data['vie'],  array( '30','60', '90' ))){
+    if($posted_data['vie'] == NULL OR !in_array($posted_data['vie'],  array( '30','60', '90', '180', '365' ))){
 
       $empty_list .= "<li>Durée de validité</li>";
       $checker = 1;
