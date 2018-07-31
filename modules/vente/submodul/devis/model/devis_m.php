@@ -432,6 +432,7 @@ class Mdevis
             $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
             $values["id_commercial"]   = MySQL::SQLValue($this->_data['id_commercial']);
             $values["commission"]      = MySQL::SQLValue($this->_data['commission']);
+            $values["type_commission"] = MySQL::SQLValue($this->_data['type_commission']);
             $values["total_commission"]= MySQL::SQLValue($total_commission);
             $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
             $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
@@ -537,6 +538,7 @@ class Mdevis
             $values["total_commission"]= MySQL::SQLValue($total_commission);
             $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
             $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
+            $values["type_commission"] = MySQL::SQLValue($this->_data['type_commission']);
             $values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
             $values["total_remise"]    = MySQL::SQLValue($montant_remise);
             $values["projet"]          = MySQL::SQLValue($this->_data['projet']);
@@ -640,6 +642,7 @@ class Mdevis
         $values["projet"]          = MySQL::SQLValue($this->_data['projet']);
         $values["vie"]             = MySQL::SQLValue($this->_data['vie']);
         $values["claus_comercial"] = MySQL::SQLValue($this->_data['claus_comercial']);
+        $values["type_commission"] = MySQL::SQLValue($this->_data['type_commission']);
         $values["totalht"]         = MySQL::SQLValue($totalht);
         $values["totalttc"]        = MySQL::SQLValue($totalttc);
         $values["totaltva"]        = MySQL::SQLValue($totaltva);
@@ -889,16 +892,22 @@ class Mdevis
     }
 
     //update commission in details_devis after the change of commission in the main
-    public function set_commission_for_detail_on_change_main_commission($tkn_frm, $commission)
+    public function set_commission_for_detail_on_change_main_commission($tkn_frm, $commission, $type_commission = 'C')
     {
         //var_dump($commission);
         $table_details = $this->table_details;
         $tva_value     = Mcfg::get('tva');
 
+        if($type_commission == 'S')
+        {
+            $commission = 0;
+        }
+
         global $db;
         $req_sql = "UPDATE $table_details SET  prix_ht = (prix_unitaire +((prix_unitaire * $commission)/100)), total_ht = (prix_ht * qte), total_tva = ((total_ht * $tva_value)/100), total_ttc = (total_ht + total_tva)  WHERE tkn_frm = '$tkn_frm'";
 
         //Run adaptation
+        
         if(!$db->Query($req_sql))
         {
             $this->log .= $db->Error();
@@ -1216,7 +1225,7 @@ class Mdevis
             if($this->g('type_devis') == 'VNT' && $reponse == 'valid')
             {
                 $id_bl = 'id='.$id_bl;
-                $task  = MInit::crypt_tp('task', 'detailsbl');
+                $task  = MInit::crypt_tp('task', 'detailbl');
 
 
                 $this->log .= '</br>Opération réussie '.'<a left_menu="1" class="fa-double_angle_right this_url_jump" rel="seturl" title="Detail BL" data="'.$id_bl.'&'.$task.'"><b> : Détail Bon de livraison</a>';
@@ -1772,6 +1781,50 @@ class Mdevis
 
     }
 
+    public function archivedevis()
+    {
+        global $db;
+        $id_devis = $this->id_devis;
+        $table = $this->table;
+        $this->get_devis();
+        //Format where clause
+        $id_devis = MySQL::SQLValue($id_devis);
+        $sql_req = "UPDATE $table SET etat = 100 WHERE id = $id_devis";
+       
+        //check if id on where clause isset
+        if($id_devis == null)
+        {
+            $this->error = false;
+            $this->log .='</br>L\' id est vide';
+            return false;
+        }
+        //execute Delete Query
+        if(!$db->Query($sql_req))
+        {
+
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .='</br>Archivage non réussie';
+
+        }else{
+
+            $this->error = true;
+            $this->log .='</br>Archivage réussie ';
+            //log
+            if(!Mlog::log_exec($table, $this->id_devis, 'Archivage devis '.$this->id_devis, 'Update'))
+            {
+                $this->log .= '</br>Un problème de log ';
+                        
+            }
+        }
+        //check if last error is true then return true else rturn false.
+        if($this->error == false){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
     public function delete_devis()
     {
         global $db;
@@ -1829,7 +1882,7 @@ class Mdevis
         produits.idtype,
         produits.prix_vente AS prix_vente,
         ref_unites_vente.unite_vente,
-        ref_types_produits.type_produit,
+        ref_types_produits.type_produit, ref_types_produits.check_stock,
         IFNULL((SELECT MAX(d_devis.prix_ht) FROM d_devis WHERE d_devis.id_produit = $id_produit), 0) AS prix_vendu,
         IFNULL(SUM(stock.qte), 0) AS qte_in_stock,
         IFNULL(
@@ -1863,18 +1916,27 @@ class Mdevis
         if (!$db->Query($req_sql)) {
            
             $this->arr_prduit = array('error' => "Erreur get product info");
+            
             return false;
             
         }else{
 
             $this->arr_prduit = $db->RowArray();
-            if($this->arr_prduit['type_produit'] == 'Abonnement'){
+            if($this->arr_prduit['type_produit'] == 'Abonnement' ){
                 $this->arr_prduit['abn']= true;
+
             }
             if($this->arr_prduit['prix_vente'] == null)
             {
                 $this->arr_prduit = array('error' => "Prix de produit n'est pas enregitré");
             }
+            if($this->arr_prduit['check_stock'] == 'Y' )
+            {
+                $this->arr_prduit['qte_dispo'] = ' / Qte disponible : '. $this->arr_prduit['qte_in_stock'].' '.$this->arr_prduit['unite_vente'];
+            }else{
+                $this->arr_prduit['qte_dispo']  = '';
+            }
+            
         }
         return true;
     }
@@ -2225,6 +2287,122 @@ class Mdevis
         return true;
 
 
+    }
+
+    public function get_list_bl()
+    {
+        global $db;
+        
+        $add_set = array('return' => '<a href="#" class="report_tplt" rel="'.MInit::crypt_tp('tplt', 'devis').'" data="%crypt%"> <i class="ace-icon fa fa-print"></i></a>', 'data' => 'id');
+        $id_devis = $this->id_devis;
+        $req_sql  = " SELECT id, reference, date_bl, '#' FROM bl WHERE iddevis = $id_devis ";
+        
+        if(!$db->Query($req_sql))
+        {
+            $this->error = false;
+            $this->log  .= $db->Error().' '.$req_sql;
+            
+        }
+        if(!$db->RowCount())
+        {
+             $output = '<div class="alert alert-danger">Pas de Bons de Livraison enregistrés pour ce devis</div>'; 
+             return $output;
+        }
+        
+        
+        $headers = array(
+            'ID'                  => '5[#]center',
+            'Référence'           => '10[#]center',
+            'Date création'       => '30[#]', 
+            'Voir détails'        => '15[#]center[#]crypt', 
+         );
+                 
+                
+        $tableau = $db->GetMTable($headers, $add_set);
+        return $tableau;
+    }
+
+    public function get_list_factures()
+    {
+        global $db;
+        
+        $add_set = array('return' => '<a href="#" class="report_tplt" rel="'.MInit::crypt_tp('tplt', 'devis').'" data="%crypt%"> <i class="ace-icon fa fa-print"></i></a>', 'data' => 'id');
+        $id_devis = $this->id_devis;
+        $req_sql ="SELECT factures.id, factures.reference,DATE_FORMAT(factures.date_facture,'%d-%m-%Y') as datfact, REPLACE(FORMAT(factures.total_ht,0),',',' ') total_ht, REPLACE(FORMAT(factures.total_ttc,0),',',' ') total_ttc, REPLACE(FORMAT(factures.total_tva,0),',',' ') as total_tva, REPLACE(FORMAT(factures.total_paye,0),',',' ') as total_paye, REPLACE(FORMAT(factures.reste,0),',',' ') as total_reste, '#' FROM factures WHERE  factures.iddevis = $id_devis   ORDER BY factures.credat DESC";
+        
+        if(!$db->Query($req_sql))
+        {
+            $this->error = false;
+            $this->log  .= $db->Error().' '.$req_sql;
+            
+        }
+        if(!$db->RowCount())
+        {
+             $output = '<div class="alert alert-danger">Pas de Factures enregistrés pour ce devis</div>'; 
+             return $output;
+        }
+        
+        
+        $headers = array(
+            'ID'            => '5[#]center',
+            'Référence'     => '10[#]center',
+            'Date création' => '10[#]', 
+            'Total HT'      => '10[#]alignRight', 
+            'Total TTC'     => '10[#]alignRight', 
+            'Total TVA'     => '10[#]alignRight', 
+            'Payé'          => '10[#]alignRight', 
+            'Rest'          => '10[#]alignRight', 
+            'Voir détails'  => '5[#]center[#]crypt', 
+            
+            
+            
+        );
+                 
+                
+        $tableau = $db->GetMTable($headers, $add_set);
+        return $tableau;
+    }
+
+    
+    public function get_list_encaissement()
+    {
+        global $db;
+        
+        $add_set = array('return' => '<a href="#" class="this_url" rel="detailsencaissement" data="%crypt%"> <i class="ace-icon fa fa-eye blue bigger-100"></i></a>', 'data' => 'id');
+        $id_devis = $this->id_devis;
+        $req_sql ="SELECT e.id, e.reference, e.designation  ,e.date_encaissement, e.ref_payement, e.mode_payement, IFNULL(REPLACE(FORMAT((e.montant),0),',',' '),0) AS montant ,  '#' FROM encaissements e,factures f,devis d  WHERE  f.id=e.`idfacture` AND f.iddevis = d.id and d.id = $id_devis ORDER BY e.date_encaissement DESC";
+        
+        if(!$db->Query($req_sql))
+        {
+            $this->error = false;
+            $this->log  .= $db->Error().' '.$req_sql;
+            
+        }
+        if(!$db->RowCount())
+        {
+             $output = '<div class="alert alert-danger">Pas d\'Encaissement enregistrés pour ce devis</div>'; 
+             return $output;
+        }
+        
+        
+        $headers = array(
+            'ID'           => '5[#]center',
+            'Référence'    => '10[#]center',
+            'Designation'  => '10[#]center',
+            'Date'         => '10[#]', 
+            'Réf paiement' => '10[#]center',
+            'Mode'         => '10[#]center',
+            'Montant'      => '10[#]center',
+            
+            'Voir détails' => '15[#]center[#]crypt', 
+            
+            
+            
+        );
+                 
+                
+        $tableau = $db->GetMTable($headers, $add_set);
+        return $tableau;
     }
 
 

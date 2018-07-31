@@ -30,7 +30,7 @@ $typ_remise = array('P' => 'Pourcentage' , 'M' => 'Montant' );
 $form->select('Nature remise', 'type_remise_d', 3, $typ_remise, $indx = NULL ,$selected = NULL, $multi = NULL,  $hard_code_remis );
 //Quantité
 $hard_code_pri_tt_ht = '<label style="margin-left:15px;margin-right : 20px;">Prix total HT: </label><input id="total_ht" name="total_ht" value="0" class="input-large alignRight" type="text" readonly="">';
-$hard_code_tva = '<label style="margin-left:15px;margin-right : 20px;">total TVA: </label><input readonly="" id="total_tva" name="total_tva" class="input-small alignRight" value="0" type="text">';
+$hard_code_tva = '<label style="margin-left:15px;margin-right : 20px;">Total TVA: </label><input readonly="" id="total_tva" name="total_tva" class="input-small alignRight" value="0" type="text">';
 $qte_array[]  = array('required', 'true', 'Insérez une Quantité' );
 $qte_array[]  = array('minlength', '1', 'Minimum 1 caractères' );
 $form->input('Quantité', 'qte', 'text' ,'1 is-number alignRight', '1', $qte_array, $hard_code_pri_tt_ht.$hard_code_tva);
@@ -124,13 +124,19 @@ $(document).ready(function() {
                     }
                     $('#label_qte').text('Quantité: ('+data['unite_vente']+')');
                     $('#pu').val(data['prix_vente']);
-                    $('#prix_unitaire').val(parseFloat(data['prix_vente'])+ ( parseFloat(data['prix_vente']) * parseFloat($('#commission').val()) / 100 ));
+                    if($('#type_commission').val() == 'C'){
+                        $('#prix_unitaire').val(parseFloat(data['prix_vente'])+ ( parseFloat(data['prix_vente']) * parseFloat($('#commission').val()) / 100 ));
+                    }else{
+                        $('#prix_unitaire').val(parseFloat(data['prix_vente'])); 
+                    }
+                    
                     $('#ref_produit').val(data['reference']);
                     $('.returned_span').remove();
                     if(data['prix_vendu'] == 0){
-                     $('#ref_produit').parent('div').after('<span class="help-block returned_span">Ce produit n\' pas été vendu avant!</span>'); 
+                     $('#ref_produit').parent('div').after('<span class="show_info_product help-block returned_span">Ce produit n\' pas été vendu avant!</span>'); 
                     }else{
-                        $('#ref_produit').parent('div').after('<span class="help-block returned_span">Ce produit a été vendu à :'+data['prix_vendu']+' / Qte disponible : '+data['qte_in_stock']+'</span>');
+                       
+                        $('#ref_produit').parent('div').after('<span class="show_info_product help-block returned_span">Ce produit a été vendu à :'+data['prix_vendu']+' '+data['qte_dispo']+'</span>');
                     }
                     $('#prix_unitaire').trigger('change');
                     //check if have already rox in table stop if produit is Abonnement
@@ -155,7 +161,10 @@ $(document).ready(function() {
         $('#categ_produit').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
         //$('#categ_produit').trigger('change');
         $('#id_produit').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
-         $('#prix_unitaire').val('0').trigger('change');
+        $('#prix_unitaire').val('0').trigger('change');
+        $('.show_info_product').text('...');
+        $('#ref_produit').val('');
+
         $.ajax({
 
             cache: false,
@@ -191,6 +200,8 @@ $(document).ready(function() {
         }
         $('#id_produit').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
         $('#prix_unitaire').val('0').trigger('change');
+        $('.show_info_product').text('...');
+        $('#ref_produit').val('');
         $.ajax({
 
             cache: false,

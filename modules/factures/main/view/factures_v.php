@@ -83,6 +83,8 @@ $html_data_table = new Mdatatable();
 $html_data_table->columns_html = $array_column;
 $html_data_table->title_module = "Factures";
 $html_data_table->task = 'factures';
+$html_data_table->btn_add_check=TRUE;
+$html_data_table->btn_return = array('task' => 'facturearchive', 'title' => 'Factures Archivées');
 
 if(!$data = $html_data_table->table_html())
 {

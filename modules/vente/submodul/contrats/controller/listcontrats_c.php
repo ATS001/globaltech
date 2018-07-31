@@ -82,7 +82,7 @@ $list_data_table->task = 'contrats';
 //Set File name for export
 $list_data_table->file_name = 'liste_contrats';
 //Set Title of report
-$list_data_table->title_report = 'Liste des contrats';
+$list_data_table->title_report = 'Liste des abonnements';
 //Print JSON DATA
 if(!$data = $list_data_table->Query_maker())
 {

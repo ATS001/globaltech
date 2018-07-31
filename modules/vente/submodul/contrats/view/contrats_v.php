@@ -13,7 +13,7 @@
 			<div class="pull-right tableTools-container">
 				<div class="btn-group btn-overlap">
 					
-						<?php TableTools::btn_add('addcontrat','Ajouter un contrat'); ?>
+						<?php TableTools::btn_add('addcontrat','Ajouter un abonnement'); ?>
 						<?php TableTools::btn_csv('contrats','Exporter Liste'); ?>
 						<?php TableTools::btn_pdf('contrats','Exporter Liste'); ?>
 					
@@ -22,7 +22,7 @@
 		</div>
 
 		<div class="table-header">
-			Liste "Contrats" 
+			Liste "Abonnements" 
 		</div>
 		<div>
 			<table id="contrats_grid" class="table table-bordered table-condensed table-hover table-striped dataTable no-footer">
@@ -39,7 +39,7 @@
 							Devis
 						</th>
                                                 <th>
-							Date Contrat
+							Date 
 						</th>
 						<th>
 							Client

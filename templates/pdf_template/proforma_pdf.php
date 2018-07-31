@@ -33,6 +33,7 @@ if(!$proforma->Get_detail_proforma_pdf())
 
 }
 global $db;
+$tableau_body = null;
 $headers = array(
             '#'           => '5[#]C',
             'Réf'         => '17[#]C',
@@ -42,9 +43,55 @@ $headers = array(
             'P.Total'       => '15[#]R',
 
         );
+
 $proforma_info   = $proforma->proforma_info;
+$liste_sub_group = $proforma->get_detail_prforma_by_group();
 $tableau_head = MySQL::make_table_head($headers);
-$tableau_body = $db->GetMTable_pdf($headers);
+if($liste_sub_group){
+    $tableau_body = null;
+    foreach ($liste_sub_group as $key => $value) 
+    {   
+    	$id_sub_group = $value['sub_group'];
+    	$tableau_body .= '<h3>Proposition N°: '.$id_sub_group.' </h3>';
+    	
+    	$proforma->Get_detail_proforma_pdf($id_sub_group);
+    	
+    	$tableau_body .= $tableau_head;
+    	$tableau_body .= $db->GetMTable_pdf($headers);
+    	$liste_sum = $proforma->get_sum_by_sub_group($id_sub_group);
+    	$table_sum_sub_group = '
+    	<table style="width: 685px;" cellpadding="2">
+    <tr>
+        <td width="50%" align="left">
+            
+        </td>
+        <td width="50%">
+    	<table class="table" cellspacing="2" cellpadding="2"  style="width: 300px; border:1pt solid black;" >
+            <tbody>                
+                <tr>
+                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Total HT</td>
+                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;">'.$liste_sum[0]['sum_tt_ht'].' '.$proforma->g('devise').'</td>
+                </tr> 
+                <tr>
+                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Total TVA</td>
+                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;">'.$liste_sum[0]['sum_tt_tva'].' '.$proforma->g('devise').'</td>
+                </tr>   
+                <tr>
+                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Total TTC</td>
+                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;">'.$liste_sum[0]['sum_tt_ttc'].' '.$proforma->g('devise').'</td>
+                </tr>              
+            </tbody>
+        </table>
+        </td></tr></table> ';
+    	$tableau_body .= $table_sum_sub_group;
+
+    }
+}
+
+//$tableau_body = $db->GetMTable_pdf($headers);
 
 
 
@@ -214,7 +261,7 @@ class MYPDF extends TCPDF {
 // create new PDF document
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
-$pdf->Table_head = $tableau_head;
+//$pdf->Table_head = $tableau_head;
 $pdf->info_proforma = $proforma->proforma_info;
 $pdf->qr = isset($qr_code) ? $qr_code : false;
 

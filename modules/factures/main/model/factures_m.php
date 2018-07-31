@@ -46,7 +46,6 @@ class Mfacture {
         return array_key_exists($property, $this->_data) ? $this->_data[$property] : null
         ;
     }
-    
 
     //Get all info categorie_contrats_frn from database for edit form
     public function get_commerciale_devis() {
@@ -204,7 +203,7 @@ class Mfacture {
        /* $sql = "SELECT id,designation,type,
                 REPLACE(FORMAT(montant,0),',',' ') as montant
                 FROM $table_complement WHERE  $table_complement.idfacture = " . $this->id_facture;*/
-         $sql = "SELECT id,designation,type,
+         $sql = "SELECT designation,type,
                 REPLACE(FORMAT(montant,0),',',' ') as montant
                 FROM $table_complement WHERE  $table_complement.idfacture = " . $this->id_facture;
 
@@ -1617,6 +1616,28 @@ if($this->facture_info['base_fact'] == 'C')
             return true ;
         }
 
+    }
+    
+    
+    public function archiver_facture() {
+        global $db;
+        $table = $this->table;
+        $values['etat'] = "100";
+        $wheres['id'] = MySQL::SQLValue($this->id_facture);
+
+        if (!$result = $db->UpdateRows($table, $values, $wheres)) {
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .= 'Archivage non réussie DB';
+        }
+
+        if (!$this->Get_detail_facture_pdf()) {
+            $this->log .= $this->log;
+            return false;
+        } else {
+            $this->log .= "Archivage réussi";
+            return true;
+        }
     }
     
 }

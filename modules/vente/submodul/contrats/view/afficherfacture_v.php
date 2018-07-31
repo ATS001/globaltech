@@ -189,7 +189,7 @@ $encaissements = $info_facture->encaissement_info;
                             <div class="col-sm-4">
                                 <div class="row">
                                     <div class="col-xs-11 label label-lg label-yellow arrowed-in arrowed-right">
-                                        <b>Contrat Info</b>
+                                        <b>Abonnement Info</b>
                                     </div>
                                 </div>
 
@@ -202,7 +202,7 @@ $encaissements = $info_facture->encaissement_info;
                                         
                                         <li>
                                             <i class="ace-icon fa fa-caret-right yellow"></i>
-                                            Date contrat
+                                            Date abonnement
                                             <b style="color:#996633"><?php echo $info_facture->printattribute_ctr('date_contrat'); ?></b>
                                         </li>
 

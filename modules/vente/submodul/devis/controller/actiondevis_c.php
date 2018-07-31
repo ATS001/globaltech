@@ -10,7 +10,8 @@ $devis->get_devis();
 
 $action = new TableTools();
 $action->line_data = $devis->devis_info;
-$action->action_line_table('devis', 'devis', $devis->devis_info['creusr'], 'deletedevis');
+$etat_archive = Msetting::get_set('archive_devis');
+$action->action_line_table('devis', 'devis', $devis->devis_info['creusr'], 'deletedevis', $etat_archive);
 
 ?>
 </ul>

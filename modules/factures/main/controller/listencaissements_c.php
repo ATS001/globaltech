@@ -9,11 +9,12 @@ $array_column = array(
         'header' => 'ID',
         'align'  => 'C'
     ),
-         array(
+    
+    array(
         'column' => 'encaissements.reference',
         'type'   => '',
         'alias'  => 'reference',
-        'width'  => '11',
+        'width'  => '10',
         'header' => 'Référence',
         'align'  => 'L'
     ),
@@ -21,42 +22,35 @@ $array_column = array(
         'column' => 'factures.client',
         'type'   => '',
         'alias'  => 'client',
-        'width'  => '14',
+        'width'  => '15',
         'header' => 'Client',
         'align'  => 'L'
     ),
     
-   
+    
     array(
         'column' => 'encaissements.designation',
         'type'   => '',
         'alias'  => 'des',
-        'width'  => '13',
+        'width'  => '15',
         'header' => 'Désignation',
         'align'  => 'L'
     ),
   
+    
     array(
-        'column' => 'factures.reference',
-        'type'   => '',
-        'alias'  => 'freference',
-        'width'  => '10',
-        'header' => 'Facture',
-        'align'  => 'L'
-    ),
-    array(
-        'column' => "REPLACE(FORMAT(encaissements.montant,0),',',' ')",
+        'column' => 'encaissements.montant',
         'type'   => '',
         'alias'  => 'mt',
-        'width'  => '8',
+        'width'  => '10',
         'header' => 'Montant',
-        'align'  => 'R'
+        'align'  => 'C'
     ),
      array(
         'column' => 'encaissements.date_encaissement',
         'type'   => 'date',
         'alias'  => 'date',
-        'width'  => '8',
+        'width'  => '10',
         'header' => 'Date',
         'align'  => 'C'
     ),
@@ -64,7 +58,7 @@ $array_column = array(
         'column' => 'statut',
         'type'   => '',
         'alias'  => 'statut',
-        'width'  => '8',
+        'width'  => '15',
         'header' => 'Statut',
         'align'  => 'C'
     )

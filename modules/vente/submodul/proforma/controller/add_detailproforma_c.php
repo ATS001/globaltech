@@ -4,6 +4,7 @@ if(MInit::form_verif('add_detailproforma',false))
 {
 	$posted_data = array(
 		'tkn_frm'         => Mreq::tp('tkn_frm') ,
+		'sub_group'       => Mreq::tp('sub_group') ,
 		'id_produit'      => Mreq::tp('id_produit') ,
 		'ref_produit'     => Mreq::tp('ref_produit') ,
 		'qte'             => Mreq::tp('qte') ,
@@ -26,6 +27,11 @@ if(MInit::form_verif('add_detailproforma',false))
 	if($posted_data['qte'] == NULL OR !is_numeric($posted_data['qte'])){
 
 		$empty_list .= "<li>Quantité</li>";
+		$checker = 1;
+	}
+	if($posted_data['sub_group'] == NULL OR !is_numeric($posted_data['sub_group'])){
+
+		$empty_list .= "<li>Sous Group</li>";
 		$checker = 1;
 	}
 	if($posted_data['prix_unitaire'] == NULL OR $posted_data['prix_unitaire'] == '0' OR !is_numeric($posted_data['prix_unitaire']) ){

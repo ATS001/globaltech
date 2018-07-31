@@ -13,6 +13,12 @@ $array_column = array(
         'width'  => '10',
     ),
   array(
+        'column' => 'd_proforma.sub_group',
+        'type'   => '',
+        'alias'  => 'sub_group',
+        'width'  => '10',
+    ),
+  array(
         'column' => 'd_proforma.ref_produit',
         'type'   => '',
         'alias'  => 'ref_produit',
@@ -25,7 +31,7 @@ $array_column = array(
         'width'  => '10',
     ),
   array(
-        'column' => 'd_proforma.prix_unitaire',
+        'column' => 'd_proforma.prix_ht',
         'type'   => 'int',
         'alias'  => 'prix_unitaire',
         'width'  => '10',
@@ -83,6 +89,7 @@ $list_data_table->main_table = 'proforma';
 $list_data_table->task = 'proforma';
 //This query no need notif statut
 $list_data_table->need_notif = false;
+$list_data_table->debug = false;
 //$list_data_table->debug = true;
 //Print JSON DATA
 print($list_data_table->Query_maker());

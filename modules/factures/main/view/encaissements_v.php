@@ -113,5 +113,6 @@ if(!$data = $html_data_table->table_html())
     exit("0#".$html_data_table->log);
 }else{
     echo $data;
+    
 }
 

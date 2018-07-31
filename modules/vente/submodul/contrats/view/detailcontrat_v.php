@@ -26,14 +26,14 @@ if(!$info_contrat->get_devis_info())
 	<div class="btn-group btn-overlap">
 
 		<?php TableTools::btn_action('contrats', $info_contrat->id_contrat, 'detailcontrat');
-                TableTools::btn_add('contrats','Liste des contrats', Null, $exec = NULL, 'reply'); ?>
+                TableTools::btn_add('contrats','Liste des abonnements', Null, $exec = NULL, 'reply'); ?>
          
 
 	</div>
 </div>
 <div class="page-header">
 	<h1>
-            Détails contrat: <?php echo $info_contrat->s('reference');?>
+            Détails abonnement: <?php echo $info_contrat->s('reference');?>
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
 		</small>
@@ -57,16 +57,26 @@ if(!$info_contrat->get_devis_info())
 
 						<!-- #section:pages/invoice.info -->
 						<div class="widget-toolbar no-border invoice-info">
-							<span class="invoice-info-label">Contrat:</span>
-                                                        <span class="red"><?php echo $info_contrat->s('reference');
+							<table>
+								<tr><td>
+							<span class="invoice-info-label">Abonnement:</span>
+                            		</td>
+                            		<td>&nbsp;&nbsp;
+                            <b class="red pull-right"><?php echo $info_contrat->s('reference');
                                                                         
                                                           ?></span>
-
-							<br />
+                                    </td>                      
+                                 </tr>
+                                 <tr><td>
 							<span class="invoice-info-label">Date:</span>
-							<span class="blue"><?php echo $info_contrat->s('date_contrat'); 
+									</td>
+                            		<td>&nbsp;&nbsp;
+							<b class="blue pull-right"><?php echo $info_contrat->s('date_contrat'); 
                                                        
                                                         ?></span>
+                                   </td>                      
+                                 </tr>
+                            </table>
 						</div>
 
                         <?php if($info_contrat->s('pj') != null){?>
@@ -87,41 +97,36 @@ if(!$info_contrat->get_devis_info())
 								<div class="col-sm-6">
 									<div class="row">
 										<div class="col-xs-11 label label-lg label-info arrowed-in arrowed-right">
-											<b>Contrat Info</b>
+											<b>Abonnement Info</b>
 										</div>
 									</div>
 
 									<div>
 										<ul class="list-unstyled spaced">
 											<li>
-												<i class="ace-icon fa fa-caret-right blue"></i> Date d'effet                                                                                               
-                                                                                                <b style="color:blue"> <?php echo $info_contrat->s('date_effet');?> </b>                                                                                                          
-                                            
-									
+											<i class="ace-icon fa fa-caret-right blue"></i> Date d'effet                            
+                                             <b class="blue pull-right"> <?php echo $info_contrat->s('date_effet');?> </b>                             							
 											</li>
 
 											<li>
-												<i class="ace-icon fa fa-caret-right blue"></i> Date de fin
-                                                                                                <b style="color:blue"><?php echo $info_contrat->s('date_fin');?>  </b>                                                                                                              
+											<i class="ace-icon fa fa-caret-right blue"></i> Date de fin
+                                            <b class="blue pull-right"><?php echo $info_contrat->s('date_fin');?>  </b>          
                                                                                                     
 											</li>
 
-											<li>
-												
-                                                
-                 <i class="ace-icon fa fa-caret-right blue"></i> Type échéance
-                     <b style="color:blue"><?php if($info_contrat->s('periode_fact')=='D'){ echo $info_contrat->s('type_echeance')." => Début";}
+											<li>    
+                 							<i class="ace-icon fa fa-caret-right blue"></i> Type échéance
+                    						<b class="blue pull-right"><?php if($info_contrat->s('periode_fact')=='D'){ echo $info_contrat->s('type_echeance')." => Début";}
                      else {
                          echo $info_contrat->s('type_echeance')." => Fin";
                      }
-                     ?></b>
-                                                 
+                     ?></b>     
 											</li>											
 
 											<li>
-												<i class="ace-icon fa fa-caret-right blue"></i>
+											<i class="ace-icon fa fa-caret-right blue"></i>
 												Commentaire
-                                                                                                <b style="color:blue"><?php echo $info_contrat->s('commentaire');?></b>
+                                            <b class="blue pull-right"><?php echo $info_contrat->s('commentaire');?></b>
 											</li>
 										</ul>
 									</div>
@@ -137,24 +142,24 @@ if(!$info_contrat->get_devis_info())
 									<div>
 										<ul class="list-unstyled  spaced">
 											<li>
-												<i class="ace-icon fa fa-caret-right green"></i> Référence
-                                                                                                <b style="color:green"><?php echo $info_contrat->g('reference');?></b>
+											<i class="ace-icon fa fa-caret-right green"></i> Référence
+                                            <b class="blue pull-right"><?php echo $info_contrat->g('reference');?></b>
 											</li>
 
 											<li>
-												<i class="ace-icon fa fa-caret-right green"></i> Date devis
-                                                                                                <b style="color:green"><?php echo $info_contrat->g('date_devis');?></b>
+											<i class="ace-icon fa fa-caret-right green"></i> Date devis
+                                            <b class="blue pull-right"><?php echo $info_contrat->g('date_devis');?></b>
 											</li>
 
 											<li>
-												<i class="ace-icon fa fa-caret-right green"></i>Client
-                                                                                                <b style="color:green"><?php echo $info_contrat->g('client');?></b>
+											<i class="ace-icon fa fa-caret-right green"></i>Client
+                                            <b class="blue pull-right"><?php echo $info_contrat->g('client');?></b>
 											</li>
 
 											<li>
-												<i class="ace-icon fa fa-caret-right green"></i>
+											<i class="ace-icon fa fa-caret-right green"></i>
 											Tél Client
-                                                                                                <b style="color:green"><?php echo $info_contrat->g('tel');?></b>
+                                            <b class="blue pull-right"><?php echo $info_contrat->g('tel');?></b>
 											</li>
 										</ul>
 									</div>
@@ -176,23 +181,7 @@ if(!$info_contrat->get_devis_info())
 								
 							</div> <?php } ?>
 
-							<div class="hr hr8 hr-double hr-dotted"></div>
-
-<!--							<div class="row">
-								<div class="col-sm-5 pull-right">
-									<h4 class="pull-right">
-										Total amount :
-										<span class="red">$395</span>
-									</h4>
-								</div>
-								<div class="col-sm-7 pull-left"> Extra Information </div>
-							</div>-->
-
-							<div class="space-6"></div>
-							<div class="well">
-								Thank you for choosing Ace Company products.
-								We believe you will be satisfied by our services.
-							</div>
+						
 						</div>
 					</div>
 				</div>

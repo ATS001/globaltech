@@ -79,7 +79,7 @@ $html_data_table->title_module = "echeances";
 $html_data_table->task = 'echeances';
 
 //si t as besoin d'envoyer data ajoute key data Ã  Array ex: 'data' => 'id=$id'
-$html_data_table->btn_return = array('task' => 'contrats', 'title' => 'Retour liste contrats');
+$html_data_table->btn_return = array('task' => 'contrats', 'title' => 'Retour liste des abonnements');
 $html_data_table->task = 'echeances';
 $html_data_table->js_extra_data = "id_contrat=$id";
 $html_data_table->btn_add_data = MInit::crypt_tp('id_contrat', $id);
