@@ -14,7 +14,8 @@ $ticket_frs->get_ticket_frs();
 
 $action = new TableTools();
 $action->line_data = $ticket_frs->tickets_info;
-$action->action_line_table('ticket_frs', 'tickets_fournisseurs', $ticket_frs->tickets_info['creusr'], 'deleteticket_frs');
+$etat_archive = Msetting::get_set('archive_ticket_frs');
+$action->action_line_table('ticket_frs', 'tickets_fournisseurs', $ticket_frs->tickets_info['creusr'], 'deleteticket_frs',$etat_archive);
 
 
 echo '</ul>';
