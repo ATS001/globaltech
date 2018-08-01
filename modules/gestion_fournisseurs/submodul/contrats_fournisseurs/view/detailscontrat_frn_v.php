@@ -1,0 +1,163 @@
+<?php 
+//SYS GLOBAL TECH
+// Modul: contrats_fournisseurs => View
+
+//Get all contrats_frn info 
+$info_contrats_frn = new Mcontrats_fournisseurs();
+//Set ID of Module with POST id
+$info_contrats_frn->id_contrats_frn = Mreq::tp('id');
+
+//Check if Post ID <==> Post idc or get_modul return false. 
+if(!MInit::crypt_tp('id', null, 'D') or !$info_contrats_frn->get_contrats_frn())
+{ 	
+ 	// returne message error red to client 
+	exit('3#'.$info_contrats_frn->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+}
+$pj     = $info_contrats_frn->contrats_frn_info['pj'];
+?>
+<div class="pull-right tableTools-container">
+	<div class="btn-group btn-overlap">
+
+		<?php TableTools::btn_action('contrats_fournisseurs', $info_contrats_frn->id_contrats_frn, 'detailscontrat_frn');
+                TableTools::btn_add('contrats_fournisseurs','Liste des contrats fournisseurs', Null, $exec = NULL, 'reply'); ?>
+         
+
+	</div>
+</div>
+<div class="page-header">
+	<h1>
+            Détails du contrat : <?php echo $info_contrats_frn->s('reference');?>
+		<small>
+			<i class="ace-icon fa fa-angle-double-right"></i>
+		</small>
+	</h1>
+</div><!-- /.page-header -->
+<!-- ajax layout which only needs content area -->
+<div class="row">
+	<div class="col-xs-12">
+		<!-- PAGE CONTENT BEGINS -->
+		<div class="space-6"></div>
+
+		<div class="row">
+			<div class="col-sm-10 col-sm-offset-1">
+				<!-- #section:pages/invoice -->
+				<div class="widget-box transparent">
+					<div class="widget-header widget-header-large">
+						<h3 class="widget-title grey lighter">
+							<i class="ace-icon fa fa-adress-card-o green"></i>
+							Contrat: <?php echo $info_contrats_frn->s('reference')?>
+						</h3>
+
+					
+
+                        <?php if( $pj != null){
+                        ?>
+                         <div class="widget-toolbar hidden-480">
+							<a href="#" class="iframe_pdf" rel=<?php echo $pj; ?>>
+								<i class="ace-icon fa fa-print"></i>
+							</a>
+						</div>       
+                       <?php 
+                   							    } 
+                   	   ?>
+						
+
+						<!-- /section:pages/invoice.info -->
+					</div>
+
+					<div class="widget-body">
+						<div class="widget-main padding-24">
+							<div class="row">
+								<div class="col-sm-6">
+									<div class="row">
+										<div class="col-xs-11 label label-lg label-info arrowed-in arrowed-right">
+											<b>Informations Contrat</b>
+										</div>
+									</div>
+
+									<div>
+										<ul class="list-unstyled spaced">
+											<li>
+												<i class="ace-icon fa fa-caret-right blue"></i> Référence                                                                                               
+                                                  <b class="blue pull-right">  <?php echo $info_contrats_frn->s('reference');?> </b>                                        
+									
+											</li>
+
+											<li>
+												<i class="ace-icon fa fa-caret-right blue"></i> Date d'effet                                                                                               
+                                                  <b class="blue pull-right">  <?php echo $info_contrats_frn->s('date_effet');?> </b>                                        
+									
+											</li>
+
+											<li>
+												<i class="ace-icon fa fa-caret-right blue"></i> Date de fin
+                                                   <b class="blue pull-right"> <?php echo $info_contrats_frn->s('date_fin');?>  </b>                                      
+                                                                                                    
+											</li>										
+
+											<li>
+												<i class="ace-icon fa fa-caret-right blue"></i> Commentaire
+
+                                                    <b class="blue pull-right"> <?php echo $info_contrats_frn->s('commentaire');?></b>
+											</li>
+										</ul>
+									</div>
+								</div><!-- /.col -->
+
+								<div class="col-sm-6">
+									<div class="row">
+										<div class="col-xs-11 label label-lg label-success arrowed-in arrowed-right">
+											<b>Informations Fournisseur </b>
+										</div>
+									</div>
+
+									<div>
+										<ul class="list-unstyled  spaced">
+											<li>
+												<i class="ace-icon fa fa-caret-right green"></i> Référence
+                                                   <b class="blue pull-right"> <?php echo $info_contrats_frn->s('ref_fournisseur');?></b>
+											</li>
+
+											<li>
+												<i class="ace-icon fa fa-caret-right green"></i> Dénomination
+                                                   <b class="blue pull-right"> <?php echo $info_contrats_frn->s('denomination');?></b>
+											</li>
+
+
+											<li>
+												<i class="ace-icon fa fa-caret-right green"></i>
+												Pays 
+                                                    <b class="blue pull-right"> <?php echo $info_contrats_frn->s('pays');?></b>
+											</li>
+											<li>
+												<i class="ace-icon fa fa-caret-right green"></i>
+												Tél 
+                                                    <b class="blue pull-right"> <?php echo $info_contrats_frn->s('tel');?></b>
+											</li>
+										</ul>
+									</div>
+								</div><!-- /.col -->
+							</div><!-- /.row -->
+
+							<div class="space"></div>
+
+							
+						</div>
+					</div>
+				</div>
+
+				<!-- /section:pages/invoice -->
+			</div>
+		</div>
+
+		<!-- PAGE CONTENT ENDS -->
+	</div><!-- /.col -->
+</div><!-- /.row -->
+
+<!-- page specific plugin scripts -->
+<script type="text/javascript">
+	var scripts = [null, null]
+	$('.page-content-area').ace_ajax('loadScripts', scripts, function() {
+	  //inline scripts related to this page
+	});
+</script>

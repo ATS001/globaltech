@@ -28,6 +28,11 @@ class Mlog
 		
 	}
 
+	static public function FunctionName($value='')
+	{
+		# code...
+	}
+
 	
 
 }

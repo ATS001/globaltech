@@ -1,24 +1,40 @@
 <div class="table-header">
-            Contrat Du: 
+            Abonnement Du: 
             <?php 
-            $date_debut=Mreq::tp('dat_ef'); 
-            echo $date_debut; ?>
-            Au: <?php 
-            $date_fin=Mreq::tp('dat_fn');  
-            echo $date_fin; ?>
-</div>
-<?php
 //Get all echance info 
 $info_echeance = new Mcontrat();
 //Set ID of Module with POST id
 $info_echeance->id_echeance_contrat = Mreq::tp('id');
 //var_dump(Mreq::tp('id'));
 
-//Check if Post ID <==> Post idc or get_modul return false. 
 if (!MInit::crypt_tp('id', null, 'D') or !$info_echeance->get_echeance_contrat()) {
     // returne message error red to client 
     exit('3#' . $info_echeance->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
+
+$new_contrat1 = new Mcontrat();
+$new_contrat1->get_total_devis(Mreq::tp('devis'));
+
+$dev=$new_contrat1->Shw_type('totalttc',1);
+
+$new_contrat2 = new Mcontrat();
+$new_contrat2->get_total_echeances($info_echeance->h('tkn_frm'));
+
+$ech=$new_contrat2->Shw_type('montant_total', 1);
+
+            $date_debut=Mreq::tp('dat_ef'); 
+            echo $date_debut; ?>
+            Au: <?php 
+            $date_fin=Mreq::tp('dat_fn');  
+            echo $date_fin; ?>
+            => Reste Devis: <?php 
+            $reste=$dev-$ech;  
+            echo $reste; ?>
+</div>
+<?php
+
+//Check if Post ID <==> Post idc or get_modul return false. 
+
 $form = new Mform('editecheance_contrat', 'editecheance_contrat', '', 'contrats', '0', 'is_modal');
 //token main form
 $form->input_hidden('id', Mreq::tp('id'));
@@ -28,6 +44,7 @@ $form->input_hidden('idh', Mreq::tp('idh'));
 
 $form->input_hidden('dat_ef', Mreq::tp('dat_ef'));
 $form->input_hidden('dat_fn', Mreq::tp('dat_fn'));
+$form->input_hidden('dev', $dev);
 
 
 //Check tkn_frm

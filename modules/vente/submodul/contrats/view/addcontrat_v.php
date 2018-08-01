@@ -1,13 +1,13 @@
  <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
 				
-		<?php TableTools::btn_add('contrats','Liste des contrats', Null, $exec = NULL, 'reply'); ?>
+		<?php TableTools::btn_add('contrats','Liste des abonnements', Null, $exec = NULL, 'reply'); ?>
 					
 	</div>
 </div>
 <div class="page-header">
 	<h1>
-		Ajouter un contrat
+		Ajouter un abonnement
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
 		</small>
@@ -20,7 +20,7 @@
 			
 		</div>
 		<div class="table-header">
-			Formulaire: "<?php echo ACTIV_APP; ?>"
+			Formulaire: "<?php echo "Ajouter un abonnement"; ?>"
 		</div>
 		<div class="widget-content">
 			<div class="widget-box">
@@ -60,7 +60,7 @@ $array_date_notif[] = array('required', 'true', 'Insérer la date de notificatio
 $form->input_date('Date notification', 'date_notif', 4, date('d-m-Y'), $array_date_notif);
 
 //pj_id
-$form->input('Justification du contrat', 'pj', 'file', 6, null, null);
+$form->input('Justification Abonnement', 'pj', 'file', 6, null, null);
 $form->file_js('pj', 5000000, 'pdf');
 
 //pj_id
@@ -125,7 +125,7 @@ $form->render();
             }
             var $link = $(this).attr('rel');
             var $titre = $(this).attr('data_titre');
-            var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val();
+            var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val()+'&devis='+$('#iddevis').val();
             ajax_bbox_loader($link, $data, $titre, 'large')
 
         });
@@ -146,8 +146,8 @@ $form->render();
                 return false;
             }
             var $link = $(this).attr('rel');
-            var $titre = 'Modifier détail contrat';
-            var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val();
+            var $titre = 'Modifier détail abonnement';
+            var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val()+'&devis='+$('#iddevis').val();
             ajax_bbox_loader($link, $data, $titre, 'large')
 
         });

@@ -31,7 +31,6 @@ class Mfacture {
     var $reference = null; // Reference 
     var $sum_enc_fact; // Somme encaissements par facture
 
-
     public function __construct($properties = array()) {
         $this->_data = $properties;
     }
@@ -40,7 +39,6 @@ class Mfacture {
     public function __set($property, $value) {
         return $this->_data[$property] = $value;
     }
-
 
     public function __get($property) {
         return array_key_exists($property, $this->_data) ? $this->_data[$property] : null
@@ -65,7 +63,7 @@ class Mfacture {
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
                 $this->compte_commercial_info = $db->RowArray();
-               
+
                 $this->error = true;
             }
         }
@@ -76,7 +74,6 @@ class Mfacture {
             return true;
         }
     }
-
 
     //Get all info categorie_contrats_frn from database for edit form
     public function get_facture() {
@@ -104,7 +101,6 @@ class Mfacture {
             return true;
         }
     }
-
 
     //Get facture type echeance
     public function get_facture_type_echeance() {
@@ -134,7 +130,6 @@ class Mfacture {
             return true;
         }
     }
-
 
     //Get all info complement from database for edit form
     public function get_client() {
@@ -200,10 +195,10 @@ class Mfacture {
 
         $table_complement = $this->table_complement;
 
-       /* $sql = "SELECT id,designation,type,
-                REPLACE(FORMAT(montant,0),',',' ') as montant
-                FROM $table_complement WHERE  $table_complement.idfacture = " . $this->id_facture;*/
-         $sql = "SELECT id,designation,type,
+        /* $sql = "SELECT id,designation,type,
+          REPLACE(FORMAT(montant,0),',',' ') as montant
+          FROM $table_complement WHERE  $table_complement.idfacture = " . $this->id_facture; */
+        $sql = "SELECT designation,type,
                 REPLACE(FORMAT(montant,0),',',' ') as montant
                 FROM $table_complement WHERE  $table_complement.idfacture = " . $this->id_facture;
 
@@ -216,7 +211,40 @@ class Mfacture {
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
                 $this->complement_info = $db->RecordsSimplArray();
-                
+
+                $this->error = true;
+            }
+        }
+        //return Array user_activities
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    public function get_complement_by_facture_modele() {
+        global $db;
+
+        $table_complement = $this->table_complement;
+
+        /* $sql = "SELECT id,designation,type,
+          REPLACE(FORMAT(montant,0),',',' ') as montant
+          FROM $table_complement WHERE  $table_complement.idfacture = " . $this->id_facture; */
+        $sql = "SELECT id,designation,type,
+                REPLACE(FORMAT(montant,0),',',' ') as montant
+                FROM $table_complement WHERE  $table_complement.idfacture = " . $this->id_facture;
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->complement_info = $db->RecordsArray();
+
                 $this->error = true;
             }
         }
@@ -277,7 +305,7 @@ class Mfacture {
                 $this->error = false;
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
-                $this->encaissement_info = $db->RecordsSimplArray();
+                $this->encaissement_info = $db->RecordsArray();
                 $this->error = true;
             }
         }
@@ -440,18 +468,16 @@ class Mfacture {
                 if ($this->error == true) {
                     $this->log = '</br>Enregistrement réussie: <b>' . $this->reference . ' ID: ' . $this->last_id;
                     //$this->maj_reste($this->_data['idfacture'], $this->_data['montant']);
-                    
                     //$this->get_facture();
                     /*
-                    if ($this->facture_info['reste'] > 0) {
-                        $this->valid_etat_facture($etat = 2, $this->_data['idfacture']);
-                    }
-                    if ($this->facture_info['reste'] == 0) {
-                        $this->valid_etat_facture($etat = 3, $this->_data['idfacture']);
-                    }
+                      if ($this->facture_info['reste'] > 0) {
+                      $this->valid_etat_facture($etat = 2, $this->_data['idfacture']);
+                      }
+                      if ($this->facture_info['reste'] == 0) {
+                      $this->valid_etat_facture($etat = 3, $this->_data['idfacture']);
+                      }
                      * 
                      */
-                    
                 } else {
                     $this->log .= '</br>Enregistrement réussie: <b>' . $this->reference;
 
@@ -475,7 +501,7 @@ class Mfacture {
 
         //$this->sum_encaissement_by_facture($this->_data['idfacture']);
         //$this->id_facture = $this->_data['idfacture'];
-      
+
         $this->get_facture();
 
         $this->get_commerciale_devis();
@@ -485,14 +511,14 @@ class Mfacture {
         if ($this->error == true) {
 
             global $db;
-            $objet=$this->compte_commercial_info["commission"]."% de la facture: ".$this->compte_commercial_info["ref_facture"];
+            $objet = $this->compte_commercial_info["commission"] . "% de la facture: " . $this->compte_commercial_info["ref_facture"];
             $values["id_commerciale"] = $this->compte_commercial_info["commercial"];
             $values["objet"] = MySQL::SQLValue($objet);
             $values["id_facture"] = $this->id_facture;
             //$values["id_encaissement"]=$this->last_id;
-            $values["id_encaissement"]=$this->encaissement_info["id"];
+            $values["id_encaissement"] = $this->encaissement_info["id"];
             //$values["credit"] = (($this->_data["montant"] * $this->compte_commercial_info["commission"]) / 100) ;
-            $values["credit"] = (($this->encaissement_info["montant"] * $this->compte_commercial_info["commission"]) / 100) ;
+            $values["credit"] = (($this->encaissement_info["montant"] * $this->compte_commercial_info["commission"]) / 100);
             $values["Type"] = MySQL::SQLValue($this->compte_commercial_info["type_commission"]);
             $values["etat"] = 1;
             $values["creusr"] = MySQL::SQLValue(session::get("userid"));
@@ -508,14 +534,12 @@ class Mfacture {
             } else {
 
                 $this->last_id = $result;
-           
+
                 //Check $this->error = true return Green message and Bol true
                 if ($this->error == true) {
-                    $this->log = '</br>Enregistrement réussie: <b>' .'ID: ' . $this->last_id;
+                    $this->log = '</br>Enregistrement réussie: <b>' . 'ID: ' . $this->last_id;
                     $this->get_facture();
-
-                } 
-                else {
+                } else {
                     $this->log .= '</br>Enregistrement réussie: <b>' . $this->reference;
 
                     $this->log .= '</br>Un problème d\'Enregistrement ';
@@ -533,7 +557,7 @@ class Mfacture {
         }
     }
 
-     public function edit_compte_commercial() {
+    public function edit_compte_commercial() {
         //Get existing data for complement
         $this->get_encaissement();
         $this->last_id = $this->id_encaissement;
@@ -541,9 +565,9 @@ class Mfacture {
         $this->get_commerciale_devis();
 
         global $db;
-        
+
         $values["id_commerciale"] = $this->compte_commercial_info["commercial"];
-        $values["credit"] = (($this->_data["montant"] * $this->compte_commercial_info["commission"]) / 100) ;
+        $values["credit"] = (($this->_data["montant"] * $this->compte_commercial_info["commission"]) / 100);
         $values["etat"] = 1;
         $values["updusr"] = MySQL::SQLValue(session::get("userid"));
         $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
@@ -566,7 +590,6 @@ class Mfacture {
                 //Check $this->error = true return Green message and Bol true
                 if ($this->error == true) {
                     $this->log = '</br>Modification réussie: <b>' . $this->_data['id'] . ' ID: ' . $this->last_id;
-  
                 } else {
                     $this->log .= '</br>Modification non réussie: <b>' . $this->_data['id'];
                     $this->log .= '</br>Un problème d\'Enregistrement ';
@@ -583,8 +606,6 @@ class Mfacture {
             return true;
         }
     }
-
-
 
     public function test_first_encaissement($id_facture) {
         global $db;
@@ -755,16 +776,14 @@ class Mfacture {
      * @param  [key array] $key [description]
      * @return [string]      [description]
      */
-    public function g($key)
-    {
+    public function g($key) {
         if ($this->encaissement_info[$key] != null) {
             return $this->encaissement_info[$key];
         } else {
             return null;
         }
-
     }
-    
+
     /**
      * [save_file For save anattached file for entrie ]
      * @param  [string] $item  [input_name of attached file we add _id]
@@ -1010,7 +1029,6 @@ class Mfacture {
                 if ($this->error == true) {
                     $this->log = '</br>Modification réussie: <b>' . $this->_data['id'] . ' ID: ' . $this->last_id;
                     //$this->update_reste($this->_data['idfacture'], $mt_init, $this->_data['montant']);
-
 //                    if($this->facture_info['reste'] > 0 and $this->facture_info['reste'] == 4)
 //                    {
 //                        $this->invalid_etat_facture($etat=3,$this->_data['idfacture']);
@@ -1065,7 +1083,7 @@ class Mfacture {
       }
 
      */
-    
+
     public function valid_send_facture() {
         global $db;
         $table = $this->table;
@@ -1273,25 +1291,24 @@ class Mfacture {
         $this->get_id_devis();
         $id_devis = $this->id_devis['id'];
         $id_facture = $this->id_facture;
-        
+
         //$this->get_d_facture($this->id_facture);
-        $facture_details_info= $this->facture_details_info;
-        
+        $facture_details_info = $this->facture_details_info;
+
         $table = $this->table_details;
-        
+
         $this->Get_detail_facture_show();
         $devis_info = $this->devis_info;
-       // var_dump($devis_info);
+        // var_dump($devis_info);
 
         $this->get_facture_info();
         $info_facture = $this->facture_info;
 
-if($this->facture_info['base_fact'] == 'C')
-{
-        $this->get_contrat($this->facture_info['idcontrat']);
-        $info_contrat = $this->contrat_info;
-}
-        
+        if ($this->facture_info['base_fact'] == 'C') {
+            $this->get_contrat($this->facture_info['idcontrat']);
+            $info_contrat = $this->contrat_info;
+        }
+
 
         $colms = null;
         $colms .= " d_factures.order item, ";
@@ -1322,25 +1339,24 @@ if($this->facture_info['base_fact'] == 'C')
         $this->get_id_devis();
         $id_devis = $this->id_devis['id'];
         $id_facture = $this->id_facture;
-        
+
         //$this->get_d_facture($this->id_facture);
-        $facture_details_info= $this->facture_details_info;
-        
+        $facture_details_info = $this->facture_details_info;
+
         $table = $this->table_details;
-        
+
         $this->Get_detail_facture_show();
         $devis_info = $this->devis_info;
-       
+
 
         $this->get_facture_info();
         $info_facture = $this->facture_info;
 
-if($this->facture_info['base_fact'] == 'C')
-{
-        $this->get_contrat($this->facture_info['idcontrat']);
-        $info_contrat = $this->contrat_info;
-}
-        
+        if ($this->facture_info['base_fact'] == 'C') {
+            $this->get_contrat($this->facture_info['idcontrat']);
+            $info_contrat = $this->contrat_info;
+        }
+
 
         $colms = null;
         $colms .= " d_factures.order item, ";
@@ -1401,7 +1417,7 @@ if($this->facture_info['base_fact'] == 'C')
         INNER JOIN commerciaux
         ON (devis.id_commercial=commerciaux.id)
         WHERE devis.id = " . $id_devis;
-        
+
         if (!$db->Query($req_sql)) {
             $this->error = false;
             $this->log .= $db->Error();
@@ -1411,20 +1427,20 @@ if($this->facture_info['base_fact'] == 'C')
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
                 $this->devis_info = $db->RowArray();
-                
+
                 $this->error = true;
             }
         }
     }
 
     public function get_id_devis() {
-         global $db;
-        
+        global $db;
+
         $contrat = $this->facture_info['idcontrat'] == NULL ? 'NULL' : $this->facture_info['idcontrat'];
-        $devis   = $this->facture_info['iddevis']   == NULL ? 'NULL' : $this->facture_info['iddevis'];
-        $sql = "SELECT IF('" . $this->facture_info['base_fact']. "'='C', (SELECT iddevis FROM contrats WHERE id=$contrat), id ) as id FROM 
-    		devis WHERE  devis.id =if( '" . $this->facture_info['base_fact']. "'='C', (SELECT iddevis FROM contrats WHERE id=$contrat), $devis)";
-               
+        $devis = $this->facture_info['iddevis'] == NULL ? 'NULL' : $this->facture_info['iddevis'];
+        $sql = "SELECT IF('" . $this->facture_info['base_fact'] . "'='C', (SELECT iddevis FROM contrats WHERE id=$contrat), id ) as id FROM 
+    		devis WHERE  devis.id =if( '" . $this->facture_info['base_fact'] . "'='C', (SELECT iddevis FROM contrats WHERE id=$contrat), $devis)";
+
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
@@ -1434,7 +1450,7 @@ if($this->facture_info['base_fact'] == 'C')
                 $this->log .= 'Aucun enregistrement trouvé !!!!!!!rkeg ';
             } else {
                 $this->id_devis = $db->RowArray();
-                
+
                 $this->error = true;
             }
         }
@@ -1486,7 +1502,7 @@ if($this->facture_info['base_fact'] == 'C')
             FROM contrats ,devis 
             WHERE contrats.iddevis=devis.`id` AND contrats.id = " . $idcontrat;
 
- 
+
 
 
         if (!$db->Query($sql)) {
@@ -1508,47 +1524,46 @@ if($this->facture_info['base_fact'] == 'C')
             return true;
         }
     }
-    
+
     public function valid_encaissement() {
-         global $db;
+        global $db;
 
-                    $this->id_facture=$this->encaissement_info['idfacture'];
-                    $this->get_facture();
-                    if($this->encaissement_info['montant'] > $this->facture_info['reste'])
-                    {
-                           $this->error = false;
-                           $this->log = 'Le montant doit être inférieur ou égale au reste <b>'.$this->facture_info['reste'].'</b>';
-                    } else {
-                        
-                    
-                    
-        $values["etat"] = MySQL::SQLValue($etat=1);
-        $values["updusr"] = MySQL::SQLValue(session::get('userid'));
-        $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
-        $wheres['id'] = $this->id_encaissement;
-
-        // Execute the update and show error case error
-        if (!$result = $db->UpdateRows($this->table_encaissement, $values, $wheres)) {
-            $this->log .= '</br>Impossible de changer le statut!';
-            $this->log .= '</br>' . $db->Error();
+        $this->id_facture = $this->encaissement_info['idfacture'];
+        $this->get_facture();
+        if ($this->encaissement_info['montant'] > $this->facture_info['reste']) {
             $this->error = false;
+            $this->log = 'Le montant doit être inférieur ou égale au reste <b>' . $this->facture_info['reste'] . '</b>';
         } else {
-		if ($this->error == true) {
+
+
+
+            $values["etat"] = MySQL::SQLValue($etat = 1);
+            $values["updusr"] = MySQL::SQLValue(session::get('userid'));
+            $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+            $wheres['id'] = $this->id_encaissement;
+
+            // Execute the update and show error case error
+            if (!$result = $db->UpdateRows($this->table_encaissement, $values, $wheres)) {
+                $this->log .= '</br>Impossible de changer le statut!';
+                $this->log .= '</br>' . $db->Error();
+                $this->error = false;
+            } else {
+                if ($this->error == true) {
                     $this->log = '</br>Enregistrement réussie: <b>' . $this->reference . ' ID: ' . $this->last_id;
-                    
+
                     $this->maj_reste($this->encaissement_info['idfacture'], $this->encaissement_info['montant']);
-                    $this->id_facture=$this->encaissement_info['idfacture'];
+                    $this->id_facture = $this->encaissement_info['idfacture'];
                     $this->get_facture();
-                    
+
                     //var_dump($this->facture_info);
-                    
+
                     if ($this->facture_info['reste'] > 0) {
                         ///var_dump("Reste > 0 => etat=3");
                         $this->valid_etat_facture($etat = 2, $this->encaissement_info['idfacture']);
                     }
 
                     if ($this->facture_info['reste'] == 0) {
-                          //var_dump("Reste = 0 => etat=4");
+                        //var_dump("Reste = 0 => etat=4");
                         $this->valid_etat_facture($etat = 3, $this->encaissement_info['idfacture']);
                     }
                 } else {
@@ -1556,26 +1571,22 @@ if($this->facture_info['base_fact'] == 'C')
 
                     $this->log .= '</br>Un problème d\'Enregistrement ';
                 }
-            $this->log .= '</br>Statut changé! ';
-            $this->error = true;
+                $this->log .= '</br>Statut changé! ';
+                $this->error = true;
 
-                    if(!Mlog::log_exec($this->table_encaissement, $this->id_encaissement , 'Validation encaissement', 'Validate'))
-                    {
-                        $this->log .= '</br>Un problème de log ';
-                    }
+                if (!Mlog::log_exec($this->table_encaissement, $this->id_encaissement, 'Validation encaissement', 'Validate')) {
+                    $this->log .= '</br>Un problème de log ';
+                }
+            }
         }
-                    }
         if ($this->error == false) {
             return false;
         } else {
             return true;
         }
-        
     }
-    
-    
-    public function Get_detail_encaissement_show()
-    {
+
+    public function Get_detail_encaissement_show() {
         global $db;
         $req_sql = "SELECT
         encaissements.*,factures.reste,factures.client
@@ -1591,31 +1602,82 @@ if($this->facture_info['base_fact'] == 'C')
         ON (encaissements.idfacture = factures.id)
         LEFT JOIN users_sys 
         ON (encaissements.creusr = users_sys.id)
-        WHERE encaissements.id = ".$this->id_encaissement;
-        
-        if(!$db->Query($req_sql))
-        {
+        WHERE encaissements.id = " . $this->id_encaissement;
+
+        if (!$db->Query($req_sql)) {
             $this->error = false;
-            $this->log  .= $db->Error();
-        }else{
-            if ($db->RowCount() == 0)
-            {
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
                 $this->error = false;
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
                 $this->encaissement_info = $db->RowArray();
                 $this->error = true;
             }
-
-
         }
-        if($this->error == false)
-        {
+        if ($this->error == false) {
             return false;
-        }else{
-            return true ;
+        } else {
+            return true;
+        }
+    }
+
+    public function archiver_facture() {
+        global $db;
+        $table = $this->table;
+        $values['etat'] = "100";
+        $wheres['id'] = MySQL::SQLValue($this->id_facture);
+
+        if (!$result = $db->UpdateRows($table, $values, $wheres)) {
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .= 'Archivage non réussie DB';
         }
 
+        if (!$this->Get_detail_facture_pdf()) {
+            $this->log .= $this->log;
+            return false;
+        } else {
+            $this->log .= "Archivage réussi";
+            return true;
+        }
     }
-    
+
+    public function archivefactures() {
+        global $db;
+        $id_facture = $this->id_facture;
+        $table = $this->table;
+        $this->get_facture();
+        //Format where clause
+        $id_facture = MySQL::SQLValue($id_facture);
+        $sql_req = "UPDATE $table SET etat = 100 WHERE id = $id_facture";
+
+        //check if id on where clause isset
+        if ($id_facture == null) {
+            $this->error = false;
+            $this->log .= '</br>L\' id est vide';
+            return false;
+        }
+        //execute Delete Query
+        if (!$db->Query($sql_req)) {
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .= '</br>Archivage non réussie';
+        } else {
+            $this->error = true;
+            $this->log .= '</br>Archivage réussie ';
+            //log
+            if (!Mlog::log_exec($table, $this->id_facture, 'Archivage devis ' . $this->id_facture, 'Update')) {
+                $this->log .= '</br>Un problème de log ';
+            }
+        }
+        //check if last error is true then return true else rturn false.
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 }

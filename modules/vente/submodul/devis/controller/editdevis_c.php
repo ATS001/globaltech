@@ -26,7 +26,8 @@ if(MInit::form_verif('editdevis', false))
 		'claus_comercial'   => Mreq::tp('claus_comercial'),
    	'id_commercial'     => Mreq::tp('id_commercial'),
    	'commission'        => Mreq::tp('commission'),
-    'total_commission'  => Mreq::tp('total_commission')
+    'total_commission'  => Mreq::tp('total_commission'),
+    'type_commission'  => Mreq::tp('type_commission')
 
     );
 
@@ -81,6 +82,11 @@ if(MInit::form_verif('editdevis', false))
     $empty_list .= "<li>Clauses commerciales</li>";
     $checker = 1;
   }
+  if($posted_data['type_commission'] == NULL OR !in_array($posted_data['type_commission'],  array( 'C','S' ))){
+
+      $empty_list .= "<li>Type commission est incorrecte</li>";
+      $checker = 1;
+    }
 
   if($posted_data['id_commercial'] == NULL){
 

@@ -1,4 +1,5 @@
 <?php 
+//var_dump($_COOKIE);
 $chart = new MHighchart();
 $chart->titre = 'Evolution des recettes par mois';
 $chart->items = 'Fcfa';
@@ -9,3 +10,4 @@ $chart = new MHighchart();
 $chart->titre = 'Top Produits demandés';
 $chart->items = 'Fcfa';
 $chart->Pie_render('v_sum_best_product', 6);
+?>

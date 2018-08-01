@@ -78,7 +78,10 @@ $class_array[]  = array('minlength', '3', 'Minimum 3 caractères' );
 $form->input('Class Action', 'class', 'text', 6, $info_task_action->task_action_info['class'], $class_array);
 //Etat de ligne
 //select_count($input_desc, $input_id, $input_class, $count, $indx = NULL ,$selected = NULL )
-$form->select_count('Etat de la ligne', 'etat_line', 1, 10, $indx = NULL ,$selected = $info_task_action->task_action_info['etat_line'] );
+//$form->select_count('Etat de la ligne', 'etat_line', 1, 10, $indx = NULL ,$selected = $info_task_action->task_action_info['etat_line'] );
+$option_etat_line = array(0 => 'Etat 0', 1 => 'Etat 1', 2 => 'Etat 2', 3 => 'Etat 3', 4 => 'Etat 4', 5 => 'Etat 5', 6 => 'Etat 6', 7 => 'Etat 7', 8 => 'Etat 8', 9 => 'Etat 9', 10 => 'Etat 10', 100 => 'Etat archive 100' );
+
+$form->select('Etat de la ligne', 'etat_line', 3, $option_etat_line, $indx = NULL ,$selected = $info_task_action->task_action_info['etat_line'] );
 //Message dans la liste
 $form->input('Message à afficher', 'etat_desc', 'text' ,6 , $info_task_action->task_action_info['etat_desc'], $desc_array);
 //Style Message
