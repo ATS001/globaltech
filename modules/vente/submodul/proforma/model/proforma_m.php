@@ -85,7 +85,16 @@ class Mproforma
         $table_details = $this->table_details;
         global $db;
 
-        $sql = "SELECT $table_details.* FROM $table_details WHERE $table_details.id = ".$this->id_proforma_d;
+        $sql = "SELECT $table_details.* ,
+        ref_categories_produits.id as categ_id, ref_categories_produits.categorie_produit,
+        ref_types_produits.id as type_id, produits.designation
+        FROM 
+        $table_details , ref_types_produits, ref_categories_produits, produits
+        WHERE 
+        produits.idcategorie = ref_categories_produits.id
+        AND ref_types_produits.id = ref_categories_produits.type_produit
+        AND $table_details.id_produit = produits.id
+        AND $table_details.id = ".$this->id_proforma_d;
 
         if(!$db->Query($sql))
         {
@@ -175,11 +184,30 @@ class Mproforma
 
     }
 
+    public function get_detail_prforma_by_group()
+    {
+        global $db;
+        $id_proforma = $this->id_proforma;
+        $table    = $this->table_details;
+
+        $req_sql = "SELECT sub_group FROM $table WHERE id_proforma = $id_proforma GROUP BY sub_group ";
+        if(!$db->Query($req_sql) or !$db->RowCount())
+        {
+            $this->error = false;
+            $this->log  .= $db->Error().' '.$req_sql;
+            return false;
+        }
+
+        $liste_sub_group = $db->RecordsArray();
+        
+        return $liste_sub_group;
+    }
+
     /**
      * [Get_detail_proforma_pdf Render query for export PDF]
      * @return bol send to controller
      */
-    public function Get_detail_proforma_pdf()
+    public function Get_detail_proforma_pdf($sub_group = 1)
     {
         global $db;
 
@@ -200,7 +228,7 @@ class Mproforma
        // $colms .= " REPLACE(FORMAT($table.total_tva,0),',',' '), ";
         $colms .= " REPLACE(FORMAT($table.total_ht,0),',', ' ') ";
         
-        $req_sql  = " SELECT $colms FROM $table WHERE id_proforma = $id_proforma ";
+        $req_sql  = " SELECT $colms FROM $table WHERE id_proforma = $id_proforma AND sub_group = $sub_group ";
         if(!$db->Query($req_sql))
         {
             $this->error = false;
@@ -219,7 +247,28 @@ class Mproforma
         
     }
 
-    public function Gettable_detail_proforma()
+    public function get_sum_by_sub_group($sub_group)
+    {
+        global $db;
+        $id_proforma = $this->id_proforma;
+        $table    = $this->table_details;
+        $colms = null;
+        $colms .= " REPLACE(FORMAT(SUM($table.total_ht),0),',',' ') sum_tt_ht, ";
+        $colms .= " REPLACE(FORMAT(SUM($table.total_tva),0),',',' ') sum_tt_tva, ";
+        $colms .= " REPLACE(FORMAT(SUM($table.total_ttc),0),',', ' ') sum_tt_ttc";
+        $req_sql  = " SELECT $colms FROM $table WHERE id_proforma = $id_proforma AND sub_group = $sub_group ";
+        if(!$db->Query($req_sql))
+        {
+            $this->error = false;
+            $this->log  .= $db->Error().' '.$req_sql;
+            exit($this->log);
+        }
+
+        $liste_sum_by_sub_group = $db->RecordsArray();
+        return $liste_sum_by_sub_group;
+    }
+
+    public function Gettable_detail_proforma($sub_group = 1)
     {
         global $db;
         $id_proforma = $this->id_proforma;
@@ -237,7 +286,7 @@ class Mproforma
         $colms .= " REPLACE(FORMAT($table.total_tva,0),',',' '), ";
         $colms .= " REPLACE(FORMAT($table.total_ttc,0),',', ' ') ";
         
-        $req_sql  = " SELECT $colms FROM $table WHERE id_proforma = $id_proforma ";
+        $req_sql  = " SELECT $colms FROM $table WHERE id_proforma = $id_proforma AND sub_group = $sub_group ";
         if(!$db->Query($req_sql))
         {
             $this->error = false;
@@ -386,7 +435,8 @@ class Mproforma
             //$values["totalht"]       = MySQL::SQLValue($totalht);
             //$values["totalttc"]      = MySQL::SQLValue($totalttc);
             //$values["totaltva"]      = MySQL::SQLValue($totaltva);
-            $values["commission"] = MySQL::SQLValue($this->_data['commission']);
+            $values["commission"]      = MySQL::SQLValue($this->_data['commission']);
+            $values["type_commission"] = MySQL::SQLValue($this->_data['type_commission']);
             $values["creusr"]          = MySQL::SQLValue(session::get('userid'));
             $values["credat"]          = MySQL::SQLValue(date("Y-m-d H:i:s"));
         //Check if Insert Query been executed (False / True)
@@ -466,24 +516,25 @@ class Mproforma
         //$this->reference = $this->_data['reference'];
 
 
-        $values["reference"]       = MySQL::SQLValue($this->reference);
-        $values["tkn_frm"]         = MySQL::SQLValue($this->_data['tkn_frm']);
-        $values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
-        $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
-        $values["vie"]             = MySQL::SQLValue($this->_data['vie']);
-        $values["id_commercial"]   = MySQL::SQLValue($this->_data['id_commercial']);
-        $values["commission"]      = MySQL::SQLValue($this->_data['commission']);
-        /*$values["total_commission"]= MySQL::SQLValue($total_commission);*/
+        $values["reference"]          = MySQL::SQLValue($this->reference);
+        $values["tkn_frm"]            = MySQL::SQLValue($this->_data['tkn_frm']);
+        $values["id_client"]          = MySQL::SQLValue($this->_data['id_client']);
+        $values["tva"]                = MySQL::SQLValue($this->_data['tva']);
+        $values["vie"]                = MySQL::SQLValue($this->_data['vie']);
+        $values["id_commercial"]      = MySQL::SQLValue($this->_data['id_commercial']);
+        $values["commission"]         = MySQL::SQLValue($this->_data['commission']);
+        $values["type_commission"]    = MySQL::SQLValue($this->_data['type_commission']);
+        /*$values["total_commission"] = MySQL::SQLValue($total_commission);*/
         $values["date_proforma"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_proforma'])));
-        //$values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
-        //$values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
-        //$values["claus_comercial"] = MySQL::SQLValue($this->_data['claus_comercial']);
-        //$values["totalht"]         = MySQL::SQLValue($totalht);
-        //$values["totalttc"]        = MySQL::SQLValue($totalttc);
-        //$values["totaltva"]        = MySQL::SQLValue($totaltva);
-        $values["updusr"]  = MySQL::SQLValue(session::get('userid'));
-        $values["upddat"] = ' CURRENT_TIMESTAMP ';
-        $wheres["id"]     = MySQL::SQLValue($this->id_proforma);
+        //$values["type_remise"]      = MySQL::SQLValue($this->_data['type_remise']);
+        //$values["valeur_remise"]    = MySQL::SQLValue($valeur_remise);
+        //$values["claus_comercial"]  = MySQL::SQLValue($this->_data['claus_comercial']);
+        //$values["totalht"]          = MySQL::SQLValue($totalht);
+        //$values["totalttc"]         = MySQL::SQLValue($totalttc);
+        //$values["totaltva"]         = MySQL::SQLValue($totaltva);
+        $values["updusr"]             = MySQL::SQLValue(session::get('userid'));
+        $values["upddat"]             = ' CURRENT_TIMESTAMP ';
+        $wheres["id"]                 = MySQL::SQLValue($this->id_proforma);
         //Check if Insert Query been executed (False / True)
         if (!$result = $db->UpdateRows($table, $values, $wheres)) 
         {
@@ -624,15 +675,15 @@ class Mproforma
 
     }
 
-    private function get_order_detail($tkn_frm)
+    private function get_order_detail($tkn_frm, $sub_group)
     {
         $table_details = $this->table_details;
         global $db;
-        $req_sql = "SELECT IFNULL(MAX($table_details.order)+1,1) AS this_order FROM $table_details WHERE tkn_frm = '$tkn_frm'";
+        $req_sql = "SELECT IFNULL(MAX($table_details.order)+1,1) AS this_order FROM $table_details WHERE tkn_frm = '$tkn_frm' AND sub_group = $sub_group";
         $this->order_detail = $db->QuerySingleValue0($req_sql);
     }
 
-    private function check_detail_exist_in_proforma($tkn_frm, $id_produit)
+    private function check_detail_exist_in_proforma($tkn_frm, $id_produit, $sub_group)
     {
         if($this->error == false)
         {
@@ -640,13 +691,13 @@ class Mproforma
         }
         $table_details = $this->table_details;
         global $db;
-        $req_sql = "SELECT COUNT($table_details.id_produit) FROM $table_details WHERE tkn_frm='$tkn_frm' AND id_produit = $id_produit ";
+        $req_sql = "SELECT COUNT($table_details.id_produit) FROM $table_details WHERE tkn_frm='$tkn_frm' AND id_produit = $id_produit AND sub_group = $sub_group";
 
         $count_id = $db->QuerySingleValue0($req_sql);
         if($count_id != '0') 
         {
           $this->error = false;
-          $this->log .= '</br>Ce produit / service exist déjà dans la liste de ce proforma';
+          $this->log .= '</br>Ce produit / service exist déjà dans la liste de sous group pour le même proforma';
         }
     }
 
@@ -703,17 +754,23 @@ class Mproforma
     }
 
 
-    //update commission in details_devis after the change of commission in the main
-    public function set_commission_for_detail_on_change_main_commission($tkn_frm, $commission)
+    //update commission in details_proforma after the change of commission in the main
+    public function set_commission_for_detail_on_change_main_commission($tkn_frm, $commission, $type_commission = 'C')
     {
         //var_dump($commission);
         $table_details = $this->table_details;
         $tva_value     = Mcfg::get('tva');
 
+        if($type_commission == 'S')
+        {
+            $commission = 0;
+        }
+
         global $db;
         $req_sql = "UPDATE $table_details SET  prix_ht = (prix_unitaire +((prix_unitaire * $commission)/100)), total_ht = (prix_ht * qte), total_tva = ((total_ht * $tva_value)/100), total_ttc = (total_ht + total_tva)  WHERE tkn_frm = '$tkn_frm'";
 
         //Run adaptation
+        
         if(!$db->Query($req_sql))
         {
             $this->log .= $db->Error();
@@ -741,7 +798,7 @@ class Mproforma
     public function save_new_details_proforma($tkn_frm)
     {
         $table_details = $this->table_details;
-        $this->check_detail_exist_in_proforma($tkn_frm, $this->_data['id_produit']);
+        $this->check_detail_exist_in_proforma($tkn_frm, $this->_data['id_produit'], $this->_data['sub_group']);
         $this->check_non_exist('produits','id',$this->_data['id_produit'] ,'Réference du produit' );
 
 
@@ -764,7 +821,8 @@ class Mproforma
             $valeur_remis_d = number_format($this->valeur_remis_d, 2,'.', '');
             $prix_u_final   = $this->prix_u_final;
           //Get order line into proforma
-            $this->get_order_detail($tkn_frm);
+            $sub_group = $this->_data['sub_group'];
+            $this->get_order_detail($tkn_frm,  $sub_group);
             $order_detail = $this->order_detail;
             //Format values for Insert query 
             global $db;
@@ -773,6 +831,7 @@ class Mproforma
             $values["tkn_frm"]       = MySQL::SQLValue($this->_data['tkn_frm']);
             $values["id_produit"]    = MySQL::SQLValue($this->_data['id_produit']);
             $values["order"]         = MySQL::SQLValue($order_detail);
+            $values["sub_group"]     = MySQL::SQLValue($this->_data['sub_group']);
             $values["ref_produit"]   = MySQL::SQLValue($ref_produit);
             $values["designation"]   = MySQL::SQLValue($designation);
             $values["qte"]           = MySQL::SQLValue($this->_data['qte']);
@@ -780,7 +839,7 @@ class Mproforma
             $values["prix_ht"]       = MySQL::SQLValue($prix_u_final);
             $values["type_remise"]   = MySQL::SQLValue($this->_data['type_remise_d']);
             $values["remise_valeur"] = MySQL::SQLValue($valeur_remis_d);
-            $values["tva"]           = MySQL::SQLValue($this->_data['tva_d']);
+            $tva                     = Msetting::get_set('tva');
             $values["total_ht"]      = MySQL::SQLValue($this->total_ht);
             $values["total_ttc"]     = MySQL::SQLValue($this->total_ttc);
             $values["total_tva"]     = MySQL::SQLValue($this->total_tva);
@@ -829,7 +888,7 @@ class Mproforma
         $this->get_proforma_d();
         if($this->h('id_produit') != $this->_data['id_produit'])
         {
-            $this->check_detail_exist_in_proforma($tkn_frm, $this->_data['id_produit'], 1); 
+            $this->check_detail_exist_in_proforma($tkn_frm, $this->_data['id_produit'], $this->_data['sub_group']); 
         }
 
         $this->check_non_exist('produits','id',$this->_data['id_produit'] ,'Réference du produit' );
@@ -845,7 +904,7 @@ class Mproforma
             $produit->id_produit = MySQL::SQLValue($this->_data['id_produit']);
             $produit->get_produit();
 
-            $ref_produit         = $produit->produit_info['ref'];
+            $ref_produit         = $produit->produit_info['reference'];
             $designation         = $produit->produit_info['designation'];
         //Valeu finance
             $total_ht       = $this->total_ht_d;
@@ -864,7 +923,7 @@ class Mproforma
             $values["type_remise"]   = MySQL::SQLValue($this->_data['type_remise_d']);
             $values["prix_ht"]       = MySQL::SQLValue($prix_u_final);
             $values["remise_valeur"] = MySQL::SQLValue($this->valeur_remis_d);
-            $values["tva"]           = MySQL::SQLValue($this->_data['tva_d']);
+            $tva                     = Msetting::get_set('tva');
             $values["total_ht"]      = MySQL::SQLValue($this->total_ht);
             $values["total_ttc"]     = MySQL::SQLValue($this->total_ttc);
             $values["total_tva"]     = MySQL::SQLValue($this->total_tva);
@@ -889,7 +948,7 @@ class Mproforma
                     //log if is edit main devis
                     if($this->proforma_d_info['id_proforma'] != null)
                     {
-                        if(!Mlog::log_exec($table, $this->id_proforma, 'Modification Détail proforma '.$this->proforma_d_info['id_proforma'], 'Update'))
+                        if(!Mlog::log_exec($this->table, $this->id_proforma, 'Modification Détail proforma '.$this->proforma_d_info['id_proforma'], 'Update'))
                         {
                             $this->log .= '</br>Un problème de log ';
                         
@@ -1159,6 +1218,50 @@ class Mproforma
 
     }
 
+    public function archiveproforma()
+    {
+        global $db;
+        $id_proforma = $this->id_proforma;
+        $table = $this->table;
+        $this->get_proforma();
+        //Format where clause
+        $id_proforma = MySQL::SQLValue($id_proforma);
+        $sql_req = "UPDATE $table SET etat = 100 WHERE id = $id_proforma";
+       
+        //check if id on where clause isset
+        if($id_proforma == null)
+        {
+            $this->error = false;
+            $this->log .='</br>L\' id est vide';
+            return false;
+        }
+        //execute Delete Query
+        if(!$db->Query($sql_req))
+        {
+
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .='</br>Archivage non réussie';
+
+        }else{
+
+            $this->error = true;
+            $this->log .='</br>Archivage proforma '.$this->id_devis.' réussie ';
+            //log
+            if(!Mlog::log_exec($table, $this->id_proforma, 'Archivage proforma '.$this->id_devis, 'Update'))
+            {
+                $this->log .= '</br>Un problème de log ';
+                        
+            }
+        }
+        //check if last error is true then return true else rturn false.
+        if($this->error == false){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
     public function delete_proforma()
     {
         global $db;
@@ -1200,7 +1303,7 @@ class Mproforma
         }
     }
 
-        /**
+    /**
      * [get_info_produit description] Get all product info
      * @param  [type] $id_produit [description]
      * @return [type]             [description]
@@ -1212,9 +1315,10 @@ class Mproforma
         $req_sql = "SELECT 
         produits.designation,
         produits.reference,
+        produits.idtype,
         produits.prix_vente AS prix_vente,
         ref_unites_vente.unite_vente,
-        ref_types_produits.type_produit,
+        ref_types_produits.type_produit, ref_types_produits.check_stock,
         IFNULL((SELECT MAX(d_devis.prix_ht) FROM d_devis WHERE d_devis.id_produit = $id_produit), 0) AS prix_vendu,
         IFNULL(SUM(stock.qte), 0) AS qte_in_stock,
         IFNULL(
@@ -1248,15 +1352,27 @@ class Mproforma
         if (!$db->Query($req_sql)) {
            
             $this->arr_prduit = array('error' => "Erreur get product info");
+            
             return false;
             
         }else{
-            
+
             $this->arr_prduit = $db->RowArray();
+            if($this->arr_prduit['type_produit'] == 'Abonnement' ){
+                $this->arr_prduit['abn']= true;
+
+            }
             if($this->arr_prduit['prix_vente'] == null)
             {
                 $this->arr_prduit = array('error' => "Prix de produit n'est pas enregitré");
-            }            
+            }
+            if($this->arr_prduit['check_stock'] == 'Y' )
+            {
+                $this->arr_prduit['qte_dispo'] = ' / Qte disponible : '. $this->arr_prduit['qte_in_stock'].' '.$this->arr_prduit['unite_vente'];
+            }else{
+                $this->arr_prduit['qte_dispo']  = '';
+            }
+            
         }
         return true;
     }

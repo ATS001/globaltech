@@ -14,13 +14,13 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_contrat->get_contrat()) {
  <div class="pull-right tableTools-container">
     <div class="btn-group btn-overlap">
                 
-        <?php TableTools::btn_add('contrats','Liste des contrats', Null, $exec = NULL, 'reply'); ?>
+        <?php TableTools::btn_add('contrats','Liste des abonnements', Null, $exec = NULL, 'reply'); ?>
                     
     </div>
 </div>
 <div class="page-header">
     <h1>
-        Renouveler le contrat : <?php  echo $ref; ?>
+        Renouveler l'abonnement : <?php  echo $ref; ?>
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
         </small>

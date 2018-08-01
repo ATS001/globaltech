@@ -79,7 +79,7 @@ if($action == 'set_commission')
 {
 
 	$set_commission = new Mdevis();
-	$arr_return = $set_commission->set_commission_for_detail_on_change_main_commission(MReq::tp('tkn_frm'), MReq::tp('commission'));
+	$arr_return = $set_commission->set_commission_for_detail_on_change_main_commission(MReq::tp('tkn_frm'), MReq::tp('commission'), MReq::tp('type_commission'));
 	if($set_commission->error == true)
 	{
 		$result = json_encode($arr_return);

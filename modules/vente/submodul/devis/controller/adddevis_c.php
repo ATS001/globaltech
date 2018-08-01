@@ -18,6 +18,7 @@ if(MInit::form_verif('adddevis', false))
    'claus_comercial' => Mreq::tp('claus_comercial'),
    'id_commercial'   => Mreq::tp('id_commercial'),
    'commission'      => Mreq::tp('commission'),
+   'type_commission' => Mreq::tp('type_commission'),
    'total_commission'=> Mreq::tp('total_commission')
 
    );
@@ -41,6 +42,11 @@ if(MInit::form_verif('adddevis', false))
     if($posted_data['type_remise'] == NULL OR !in_array($posted_data['type_remise'],  array( 'P','M' ))){
 
       $empty_list .= "<li>Type remise est incorrecte</li>";
+      $checker = 1;
+    }
+    if($posted_data['type_commission'] == NULL OR !in_array($posted_data['type_commission'],  array( 'C','S' ))){
+
+      $empty_list .= "<li>Type commission est incorrecte</li>";
       $checker = 1;
     }
     if($posted_data['vie'] == NULL OR !in_array($posted_data['vie'],  array( '30','60', '90', '180', '365' ))){

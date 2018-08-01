@@ -3,13 +3,20 @@ $info_encaissement = new Mfacture();
 $info_encaissement->id_encaissement = Mreq::tp('id');
 $info_encaissement->get_encaissement_info();
 $justif = $info_encaissement->encaissement_info['pj'];
+
 ?>
 <div class="pull-right tableTools-container">
     <div class="btn-group btn-overlap">
 
 <?php
 TableTools::btn_action('encaissements', $info_encaissement->id_encaissement, 'detailsencaissement');
-TableTools::btn_add('encaissements', 'Liste des encaissements', MInit::crypt_tp('id', $info_encaissement->Shw('idfacture', 1)), $exec = NULL, 'reply');
+if($_SESSION['enc']=="0"){
+    TableTools::btn_add('encaissements', 'Liste des encaissements', NULL , $exec = NULL, 'reply');
+
+}else{
+    TableTools::btn_add('encaissements', 'Liste des encaissements', MInit::crypt_tp('id', $info_encaissement->Shw('idfacture', 1)), $exec = NULL, 'reply');
+
+}
 ?>
 
 

@@ -24,19 +24,36 @@ $form->input_hidden('commission', Mreq::tp('commission'));
 $form->input_hidden('pu', $info_devis_d->h('prix_unitaire'));
 
 //Type produit old
+
+$option_categ_produit = $form->select_option_only('ref_categories_produits', 'id', 'categorie_produit' , 'categorie_produit', $info_devis_d->h('categ_id'), $multi = NULL, ' type_produit = '.$info_devis_d->h('type_id'));
+
+
+
+
+//$option_produits = $form->select_option_only('produits', 'id', 'designation' , 'designation', $info_devis_d->h('id_produit'), $multi = NULL, $where);
+
 $form->input_hidden('type_produit_old', $info_devis_d->h('type_id'));
-$hard_code_type_produit = '<label style="margin-left:15px;margin-right : 20px;">Catégorie: </label><select id="categ_produit" name="categ_produit" class="chosen-select col-xs-12 col-sm-6" chosen-class="'.((6 * 100) / 12).'" ><option value="'.$info_devis_d->h('categ_id').'" >'.$info_devis_d->h('categorie_produit').'</option></select>';
+$hard_code_type_produit = '<label style="margin-left:15px;margin-right : 20px;">Catégorie: </label><select id="categ_produit" name="categ_produit" class="chosen-select col-xs-12 col-sm-6" chosen-class="'.((6 * 100) / 12).'" >'.$option_categ_produit.'</select>';
 $type_produit_array[]  = array('required', 'true', 'Choisir un Type Produit');
 $form->select_table('Type Produit', 'type_produit', 3, 'ref_types_produits', 'id', 'type_produit' , 'type_produit', $indx = '------' ,$selected = $info_devis_d->h('type_id'),$multi=NULL, $where='etat = 1' , $type_produit_array, $hard_code_type_produit);//Produit
 //$produit_array[]  = array('required', 'true', 'Choisir un Produit / Service');
 //$form->select_table('Produit / Service', 'id_produit', 8, 'produits', 'id', 'designation' , 'designation', $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat = 1' , $produit_array);
-$opt_produit = array($info_devis_d->h('id_produit') => $info_devis_d->h('designation'));
-$form->select('Produit / Service', 'id_produit', 8, $opt_produit, $indx = NULL ,$selected = NULL, $multi = NULL,  null);
+//$opt_produit = array($info_devis_d->h('id_produit') => $info_devis_d->h('designation'));
+//$form->select('Produit / Service', 'id_produit', 8, $opt_produit, $indx = NULL ,$selected = NULL, $multi = NULL,  null);
+
+$etat_produit_p  = Msetting::get_set('etat_produit', 'produit_valide_p');
+$etat_produit_ap = Msetting::get_set('etat_produit', 'produit_valide_ap');
+$etat_en_stock   = Msetting::get_set('etat_produit', 'en_stock');
+$etat_stock_faible = Msetting::get_set('etat_produit', 'stock_faible');
+$etat_stock_epuise = Msetting::get_set('etat_produit', 'stock_epuise');
+$where = ' etat in('.$etat_produit_p.','.$etat_produit_ap.','.$etat_en_stock.','.$etat_stock_faible.','.$etat_stock_epuise.') AND idcategorie = '.$info_devis_d->h('categ_id');
+$form->select_table('Produit / Service', 'id_produit', 8, 'produits', 'id', 'id' , 'designation', $indx = null ,$selected = $info_devis_d->h('id_produit'),$multi=NULL, $where = $where , null, null);
 //Produit
 //$produit_array[]  = array('required', 'true', 'Choisir un Produit / Service');
 //$form->select_table('Produit / Service', 'id_produit', 8, 'produits', 'id', 'designation' , 'designation', $indx = '------', $info_devis_d->h('id_produit'),$multi=NULL, $where='etat = 1' , $produit_array);
+$delta_commission = Mreq::tp('type_commission') == 'C' ? Mreq::tp('commission') : 0;
 
-$prix_affich=$info_devis_d->h('prix_unitaire') + ($info_devis_d->h('prix_unitaire') *  Mreq::tp('commission') / 100);
+$prix_affich=$info_devis_d->h('prix_unitaire') + ($info_devis_d->h('prix_unitaire') *  $delta_commission / 100);
 //var_dump(Mreq::tp('commission'));
 $hard_code_pri_u_ht = '<label style="margin-left:15px;margin-right : 20px;">Prix Unité HT: </label><input id="prix_unitaire" name="prix_unitaire" class="input-large alignRight" type="text" readonly="" value="'.$prix_affich.'">';
 $hard_code_pri_u_ht .= '<span class="help-block returned_span">...</span>';
@@ -109,7 +126,7 @@ $(document).ready(function() {
     	$('#'+$f_total_tva).val($total_tva);
     	$('#'+$f_total_ttc).val($total_ttc);  
     }
-        $('#type_produit').change(function(e) {
+    $('#type_produit').change(function(e) {
         var $type_produit = $(this).val();
 
         if($type_produit == null){
@@ -119,6 +136,8 @@ $(document).ready(function() {
         
         $('#id_produit').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
         $('#prix_unitaire').val('0').trigger('change');
+        $('.show_info_product').text('...');
+        $('#ref_produit').val('');
         $.ajax({
 
             cache: false,
@@ -153,6 +172,8 @@ $(document).ready(function() {
         }
         $('#id_produit').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
         $('#prix_unitaire').val('0').trigger('change');
+        $('.show_info_product').text('...');
+        $('#ref_produit').val('');
         $.ajax({
 
             cache: false,
@@ -216,9 +237,9 @@ $(document).ready(function() {
                     $('#ref_produit').val(data['reference']);
                     $('.returned_span').remove();
                     if(data['prix_vendu'] == 0){
-                     $('#ref_produit').parent('div').after('<span class="help-block returned_span">Ce produit n\' pas été vendu avant!</span>'); 
+                     $('#ref_produit').parent('div').after('<span class="show_info_product help-block returned_span">Ce produit n\' pas été vendu avant!</span>'); 
                     }else{
-                        $('#ref_produit').parent('div').after('<span class="help-block returned_span">Ce produit étais vendu à :'+data['prix_vendu']+'</span>');
+                        $('#ref_produit').parent('div').after('<span class="show_info_product help-block returned_span">Ce produit a été vendu à :'+data['prix_vendu']+' '+data['qte_dispo']+'</span>');
                     }
                     $('#prix_unitaire').trigger('change');
                     //check if have already rox in table stop if produit is Abonnement

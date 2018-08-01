@@ -17,6 +17,7 @@ if(MInit::form_verif('addproforma', false))
    'claus_comercial' => Mreq::tp('claus_comercial'),
    'id_commercial'   => Mreq::tp('id_commercial'),
    'commission'      => Mreq::tp('commission'),
+   'type_commission'      => Mreq::tp('type_commission'),
    'total_commission'=> Mreq::tp('total_commission')
 
    );
@@ -42,7 +43,13 @@ if(MInit::form_verif('addproforma', false))
       $empty_list .= "<li>Type remise est incorrecte</li>";
       $checker = 1;
     }
-    if($posted_data['vie'] == NULL OR !in_array($posted_data['vie'],  array( '30','60', '90' ))){
+    $set_comission = Msetting::get_set('plafond_comission');
+    if($posted_data['commission'] > $set_comission ){
+
+      $empty_list .= "<li>Commission ne dois pas dépasser $set_comission</li>";
+      $checker = 1;
+    }
+    if($posted_data['vie'] == NULL OR !in_array($posted_data['vie'],  array( '30','60', '90', '180', '365' ))){
 
       $empty_list .= "<li>Durée de validité</li>";
       $checker = 1;

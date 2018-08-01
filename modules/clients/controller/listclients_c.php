@@ -13,7 +13,7 @@ $array_column = array(
         'column' => 'clients.reference',
         'type'   => '',
         'alias'  => 'reference',
-        'width'  => '10',
+        'width'  => '13',
         'header' => 'Référence',
         'align'  => 'L'
     ),
@@ -21,7 +21,7 @@ $array_column = array(
         'column' => 'clients.denomination',
         'type'   => '',
         'alias'  => 'denomination',
-        'width'  => '10',
+        'width'  => '28',
         'header' => 'Dénomination',
         'align'  => 'L'
     ),
@@ -30,7 +30,7 @@ $array_column = array(
         'column' => 'clients.r_social',
         'type'   => '',
         'alias'  => 'r_social',
-        'width'  => '10',
+        'width'  => '29',
         'header' => 'Raison Sociale',
         'align'  => 'L'
     ),
@@ -38,15 +38,15 @@ $array_column = array(
         'column' => 'categorie_client.categorie_client',
         'type'   => '',
         'alias'  => 'categorie_client',
-        'width'  => '15',
-        'header' => 'Catégorie',
+        'width'  => '12',
+        'header' => 'Catégorie ',
         'align'  => 'C'
     ),
     array(
         'column' => 'statut',
         'type'   => '',
         'alias'  => 'statut',
-        'width'  => '15',
+        'width'  => '10',
         'header' => 'Statut',
         'align'  => 'C'
     ),

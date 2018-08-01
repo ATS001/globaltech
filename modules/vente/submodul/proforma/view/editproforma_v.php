@@ -7,7 +7,7 @@
  if(!MInit::crypt_tp('id', null, 'D') or !$info_proforma->get_proforma())
  {  
     // returne message error red to client 
-    exit('3#'.$info_user->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+    exit('3#'.$info_proforma->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
  }
 
 
@@ -41,7 +41,12 @@
             <div class="widget-box">
                 
 <?php
-$form = new Mform('editproforma', 'editproforma', '1', 'proforma', '0', null);
+$form = new Mform('editproforma', 'editproforma', '1', 'proforma', '1', null);
+$wizard_array[] = array(1,'Etape 1','active');
+$wizard_array[] = array(2,'Etape 2');
+$wizard_array[] = array(3,'Etape 3');
+$form->wizard_steps = $wizard_array;
+$form->step_start(1, 'Informations de base');
 $form->input_hidden('id', $info_proforma->g('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
@@ -65,18 +70,26 @@ $hard_code_commercial = '<span class="help-block returned_span">...</span>';
 $commercial_array[]  = array('required', 'true', 'Choisir un Commercial');
 $form->select_table('Commercial', 'id_commercial', 6, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)' , 'CONCAT(nom," ",prenom)' , $indx = '------' ,$selected=$info_proforma->g('id_commercial'),$multi=NULL, $where='etat=1', $commercial_array, $hard_code_commercial);
 //Commission du commercial
+//Commission du commercial
+$select_c = $info_proforma->g('type_commission') == 'C' ? 'selected' : null;
+$select_s = $info_proforma->g('type_commission') == 'S' ? 'selected' : null;
+$hard_code_commission  = '<label style="margin-left:15px;margin-right : 20px;">Prise en charge par: </label><select id="type_commission" name="type_commission" class="chosen-select col-xs-12 col-sm-3" chosen-class="'.((3 * 100) / 12).'" ><option value="C" '.$select_c.' >Client</option><option value="S" '.$select_s.'>Société</option></select>';
 $array_commission[]= array('required', 'true', 'Insérer la commission du commercial');
 $array_commission[]= array('number', 'true', 'Montant invalid' );
-$form->input('Commission du commercial (%)', 'commission', 'text' ,'2 is-number alignRight',$info_proforma->g('commission'), $array_commission, null, null);
+$form->input('Commission du commercial (%)', 'commission', 'text' ,'2 is-number alignRight',$info_proforma->g('commission'), $array_commission, $hard_code_commission, null);
+$form->step_end();
+$form->step_start(2, 'Tableau des Produits / Services');
+//Groupes
+$form->select_count('Sous groupe', 'sub_group', '2', 5, $indx = 1 ,$selected = NULL, true ); 
 
 //Table 
-$columns = array('id' => '1' ,'Item' => '5' , 'Réference'=>'10', 'Produit' => '30', 'P.U HT' => '10', 'T.Rem' => '5', 'V.Remise' => '10', 'Qte' => '5', 'Total HT' => '10', 'TVA' => '7', 'Total' =>'10', '#' =>'3'   );
+$columns = array('id' => '1' ,'Item' => '3' , 'Group' => '3' , 'Réference'=>'10', 'Produit' => '30', 'P.U HT' => '10', 'T.Rem' => '5', 'V.Remise' => '10', 'Qte' => '5', 'Total HT' => '10', 'TVA' => '7', 'Total' =>'10', '#' =>'3'   );
 $js_addfunct = 'var column = t.column(0);
      column.visible( ! column.visible() );';
 $verif_value = $info_proforma->g('tkn_frm');    
 $form->draw_datatabe_form('table_details_proforma', $verif_value, $columns, 'addproforma', 'add_detailproforma', 'Ajouter détails proforma', $js_addfunct);
 //Finance bloc
-$form->bloc_title('Zone totaux');
+
 //Type Remise
 //$form->input('Total des articles enregistrés', 'sum_table', 'text' ,'4 is-number alignRight', $info_proforma->g('totalht'), null, null, 'readonly');
 //$hard_code_remise = '<label style="margin-left:15px;margin-right : 20px;">Valeur remise: </label><input id="valeur_remise" name="valeur_remise" class="input-small alignRight" value="'.$info_proforma->g('valeur_remise').'" type="text"><span class="help-block">Cette remise sera appliquée sur le total H.T de proforma</span>';
@@ -90,11 +103,15 @@ $form->bloc_title('Zone totaux');
 ////$hard_code_prices .= '<label style="margin-left:15px;margin-right : 20px;">Prix Global TTC: </label><input readonly="" id="totalttc" name="totalttc" class="input-large is-number alignRight" value="'.$info_proforma->g('totalttc').'" type="text">';
 //$form->input('Prix Global HT', 'totalht', 'text' ,'3 is-number alignRight', $info_proforma->g('totalht'), $prixht_array, $hard_code_prices, 'readonly');
 //Validité
-$vie_opt = array('30' => '30 Jours' , '60' => '60 Jours', '90' => '90 Jours' );
-$form->select('Validité', 'vie', 3, $vie_opt, $indx = NULL ,$info_proforma->g('vie'), $multi = NULL);
+
+$form->step_end();
+$form->step_start(3, 'Plus d\'information');
+$vie_opt = array('30' => '1 Mois' , '60' => '2 Mois', '90' => '3 Mois', '180' => '6 Mois', '365' => '12 Mois');
+$form->select('Validité', 'vie', 3, $vie_opt, $indx = '-----' ,$info_proforma->g('vie') , $multi = NULL);
 //Conditions commercial
 $clauses = Msetting::get_set('claus_comercial');
 $form->input_editor('Conditions commerciales', 'claus_comercial', 8, $info_proforma->g('claus_comercial'), $js_array = null,  $input_height = 50);
+$form->step_end();
 $form->button('Enregistrer');
 //Form render
 $form->render();
@@ -169,14 +186,126 @@ $(document).ready(function() {
 
         var $link  = $(this).attr('rel');
         var $titre = $(this).attr('data_titre'); 
-        var $data  = $(this).attr('data')+'&commission='+$('#commission').val(); ; 
+        var $data  = $(this).attr('data')+'&commission='+$('#commission').val()+'&type_commission='+$('#type_commission').val()+'&sub_group='+$('#sub_group').val(); 
         ajax_bbox_loader($link, $data, $titre, 'large')
         
     });
 
-    $('#commission').on('change', function () {
-        var table = $('#table_details_proforma').DataTable();
+    $('#commission').focusin( function () {
+        $(this).data('exist_val_commission', $(this).val());
+        
+    });
+    $('#commission').bind('input change', function () {
+        var $exist_value_commission = $(this).data('exist_val_commission');
+        $cms = parseFloat($('#commission').val());
+        
+        $set_commision = parseFloat(<?php echo Msetting::get_set('plafond_comission') ?>);
 
+        if($cms > $set_commision){
+ 
+            
+            ajax_loadmessage('La commission ne doit pas dépasser '+$set_commision,'nok',5000);
+           
+            $('#commission').val($exist_value_commission);
+            
+            return false;
+            
+        }
+        
+    });
+
+    $('#commission').focusout( function () {
+
+         var $exist_value_commission = $(this).data('exist_val_commission');
+        //Get previous data
+       
+        
+        //var $exist_type_commission = $('#type_commission').data('exist_type_commission');
+
+        //First check if PEC commission by US return true
+        if($('#type_commission').val() == 'S'){
+            return true;
+        }
+
+        var table = $('#table_details_proforma').DataTable();
+        $cms = parseFloat($('#commission').val());
+
+        $set_commision = parseFloat(<?php echo Msetting::get_set('plafond_comission') ?>);
+
+        if($cms > $set_commision){
+
+            
+            $('#commission').val($exist_value_commission);
+            return false;
+            
+        }
+
+        if (table.data().count() &&  this.value !== $exist_value_commission) {
+
+            bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de la commission sera appliqué sur l'ensemble des lignes détails, voulez vous continuer ?</span>", 
+                function(result){
+                    if(result == true){
+                        $cms = parseFloat($('#commission').val());
+                        var $tkn_frm = $(this).attr('tkn_frm');
+                        $.ajax({
+
+                            cache: false,
+                            url  : '?_tsk=add_detailproforma&ajax=1'+'&act=1&<?php echo MInit::crypt_tp('exec', 'set_commission')?>',
+                            type : 'POST',
+                            data : $('#editproforma').serialize(),
+                            dataType:"JSON",
+                            success: function(data){
+
+                                if(data['error']== false){
+                                    ajax_loadmessage(data['mess'],'nok',5000)
+                                }else{
+                                    ajax_loadmessage(data['mess'],'ok',3000);
+                                    var t1 = $('.dataTable').DataTable().draw();
+                                    $('#sum_table').val(data['sum']);
+                                    $('#valeur_remise').trigger('change'); 
+                                }
+
+                            }
+                        });
+                    }else{
+                        
+                        $('#commission').val($exist_value_commission);
+                        
+
+                    }
+                }
+            );  
+        }
+
+    });
+
+
+    $('#type_commission').on('change', function () {
+        
+        //Get previous data
+        if($(this).val() == 'C'){
+            var $exist_type_commission = 'S'
+        }else{
+            var $exist_type_commission = 'C'
+        }
+        
+
+        //First check if PEC commission by US return true
+        if($('#type_commission').val() == 'S' && $(this).val() == 0){
+            return true;
+        }
+        var table = $('#table_details_proforma').DataTable();
+        $cms = parseFloat($('#commission').val());
+
+        $set_commision = parseFloat(<?php echo Msetting::get_set('plafond_comission') ?>);
+
+        if($cms > $set_commision){
+
+            ajax_loadmessage('La commission ne doit pas dépasser '+$set_commision,'nok',5000);
+            $('#commission').val(0);
+            return false;
+            
+        }
         if (table.data().count()) {
 
             bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de la commission sera appliqué sur l'ensemble des lignes détails, voulez vous continuer ?</span>", 
@@ -205,9 +334,16 @@ $(document).ready(function() {
                             }
                         });
                     }else{
-                     
-                      $('#commission').val($cms);
-                      
+
+                        
+                            $('#type_commission').val($exist_type_commission);
+                            $('#type_commission').trigger("chosen:updated");
+                            //$('#type_commission').trigger("change");
+                                         
+                        
+                       
+                        //$("div.id_100 select").val($exist_type_commission);
+
                     }
                 }
             );  
@@ -215,31 +351,7 @@ $(document).ready(function() {
 
     });
 
-    $('#table_details_proforma tbody ').on('click', 'tr .edt_det', function() {
-        
-        if($('#id_client').val() == ''){
-
-            ajax_loadmessage('Il faut choisir un client','nok');
-            return false;
-        }
-
-        if($('#id_commercial').val() == ''){
-
-            ajax_loadmessage('Il faut choisir un commercial','nok');
-            return false;
-        }
-
-        if($('#commission').val() == ''){
-
-            ajax_loadmessage('Il faut saisir une commission','nok');
-            return false;
-        }
-        var $link  = $(this).attr('rel');
-        var $titre = 'Modifier détail proforma';
-        var $data  = $(this).attr('data')+'&commission='+$('#commission').val(); 
-        ajax_bbox_loader($link, $data, $titre, 'large')
-        
-    });
+    
 
     $('#valeur_remise').bind('input change',function() {
         // Calcul values
@@ -277,7 +389,7 @@ $(document).ready(function() {
                             cache: false,
                             url  : '?_tsk=add_detailproforma&ajax=1'+'&act=1&<?php echo MInit::crypt_tp('exec', 'set_tva')?>',
                             type : 'POST',
-                            data : $('#addproforma').serialize(),
+                            data : $('#editproforma').serialize(),
                             dataType:"JSON",
                             success: function(data){
 
@@ -325,6 +437,32 @@ $(document).ready(function() {
             }
         });
 
+    });
+    $('#table_details_proforma tbody ').on('click', 'tr .edt_det', function() {
+        
+        if($('#id_client').val() == ''){
+
+            ajax_loadmessage('Il faut choisir un client','nok');
+            return false;
+        }
+
+         if($('#id_commercial').val() == ''){
+
+            ajax_loadmessage('Il faut choisir un commercial','nok');
+            return false;
+        }
+
+        if($('#commission').val() == ''){
+
+            ajax_loadmessage('Il faut saisir une commission','nok');
+            return false;
+        }
+
+        var $link  = $(this).attr('rel');
+        var $titre = 'Modifier détail proforma'; 
+        var $data  = $(this).attr('data')+'&commission='+$('#commission').val()+'&type_commission='+$('#type_commission').val()+'&sub_group='+$('#sub_group').val(); 
+        ajax_bbox_loader($link, $data, $titre, 'large')
+        
     });
     $('#table_details_proforma tbody ').on('click', 'tr .del_det', function() {
         var $id_detail = $(this).attr('data');

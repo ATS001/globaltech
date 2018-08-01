@@ -19,27 +19,29 @@ if(Mreq::tp('id') != null)
         'header' => 'ID',
         'align'  => 'C'
     ),
-        array(
-        'column' => 'factures.client',
-        'type'   => '',
-        'alias'  => 'client',
-        'width'  => '15',
-        'header' => 'Client',
-        'align'  => 'L'
-    ),
-    array(
+         array(
         'column' => 'encaissements.reference',
         'type'   => '',
         'alias'  => 'reference',
-        'width'  => '10',
+        'width'  => '11',
         'header' => 'Référence',
         'align'  => 'L'
     ),
     array(
+        'column' => 'factures.client',
+        'type'   => '',
+        'alias'  => 'client',
+        'width'  => '14',
+        'header' => 'Client',
+        'align'  => 'L'
+    ),
+    
+   
+    array(
         'column' => 'encaissements.designation',
         'type'   => '',
         'alias'  => 'des',
-        'width'  => '15',
+        'width'  => '13',
         'header' => 'Désignation',
         'align'  => 'L'
     ),
@@ -48,23 +50,23 @@ if(Mreq::tp('id') != null)
         'column' => 'factures.reference',
         'type'   => '',
         'alias'  => 'freference',
-        'width'  => '10',
+        'width'  => '11',
         'header' => 'Facture',
         'align'  => 'L'
     ),
     array(
-        'column' => 'encaissements.montant',
+        'column' => "REPLACE(FORMAT(encaissements.montant,0),',',' ')",
         'type'   => '',
         'alias'  => 'mt',
-        'width'  => '10',
+        'width'  => '8',
         'header' => 'Montant',
-        'align'  => 'C'
+        'align'  => 'R'
     ),
      array(
         'column' => 'encaissements.date_encaissement',
         'type'   => 'date',
         'alias'  => 'date',
-        'width'  => '10',
+        'width'  => '8',
         'header' => 'Date',
         'align'  => 'C'
     ),
@@ -72,28 +74,34 @@ if(Mreq::tp('id') != null)
         'column' => 'statut',
         'type'   => '',
         'alias'  => 'statut',
-        'width'  => '15',
+        'width'  => '7',
         'header' => 'Statut',
         'align'  => 'C'
     )
     
  );
-    
     //Creat new instance
 $html_data_table = new Mdatatable();
 $html_data_table->columns_html = $array_column;
-$html_data_table->title_module = "encaissements";
+//$html_data_table->title_module = "Encaissements - ".$info_facture->facture_info["reference"];
+$html_data_table->title_module = 'Encaissements '.( !empty(Mreq::tp('id')) ? $info_facture->facture_info["reference"] : ' ');
 $html_data_table->task = 'encaissements';
-
+if(Mreq::tp('id') != null){
 //si t as besoin d'envoyer data ajoute key data Ã  Array ex: 'data' => 'id=$id'
 $html_data_table->btn_return = array('task' => 'factures', 'title' => 'Retour liste factures');
+}
 $html_data_table->task = 'encaissements';
 $html_data_table->btn_add_check = true;
 if(Mreq::tp('id') != null){
     $html_data_table->js_extra_data = "id=$id_facture";
     $html_data_table->btn_add_data = MInit::crypt_tp('id', $id_facture);
+    $_SESSION['enc'] = "1";
+}else{
+    $_SESSION['enc'] = "0";
 }
 
+
+if(!empty(Mreq::tp('id')))
 if($info_facture->facture_info['etat'] == 4)
 {
     $html_data_table->btn_add_data=NULL;
@@ -105,5 +113,6 @@ if(!$data = $html_data_table->table_html())
     exit("0#".$html_data_table->log);
 }else{
     echo $data;
+    
 }
 
