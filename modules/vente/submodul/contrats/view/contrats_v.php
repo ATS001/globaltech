@@ -70,7 +70,7 @@ $array_column = array(
 //Creat new instance
 $html_data_table = new Mdatatable();
 $html_data_table->columns_html = $array_column;
-$html_data_table->title_module = "contrats";
+$html_data_table->title_module = "Abonnement";
 $html_data_table->task = 'contrats';
 
 
