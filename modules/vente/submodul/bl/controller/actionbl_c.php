@@ -12,10 +12,10 @@ $bl->id_bl = Mreq::tp('id');
 $bl->get_bl();
 
 
-
 $action = new TableTools();
 $action->line_data = $bl->bl_info;
-$action->action_line_table('bl', 'bl', $bl->bl_info['creusr'], 'deletebl');
 
+$etat_archive = Msetting::get_set('archive_bl');
+$action->action_line_table('bl', 'bl', $bl->bl_info['creusr'], 'deletebl',$etat_archive);
 
 echo '</ul>';
