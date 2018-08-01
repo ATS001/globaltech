@@ -465,7 +465,51 @@ private function save_file($item, $titre, $type)
         }
       }
 
-    }    
+    } 
+    //Archiver contrats
+    public function archivecontrats_fournisseurs()
+    {
+        global $db;
+        $id_contrats_frn = $this->id_contrats_frn;
+        $table = $this->table;
+        $this->get_contrats_frn();
+        //Format where clause
+        $id_contrats_frn = MySQL::SQLValue($id_contrats_frn);
+        $sql_req = "UPDATE $table SET etat = 100 WHERE id = $id_contrats_frn";
+       
+        //check if id on where clause isset
+        if($id_contrats_frn == null)
+        {
+            $this->error = false;
+            $this->log .='</br>L\' id est vide';
+            return false;
+        }
+        //execute Delete Query
+        if(!$db->Query($sql_req))
+        {
+
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .='</br>Archivage non réussie';
+
+        }else{
+
+            $this->error = true;
+            $this->log .='</br>Archivage réussie ';
+            //log
+            if(!Mlog::log_exec($table, $this->id_contrats_frn, 'Archivage devis '.$this->id_contrats_frn, 'Update'))
+            {
+                $this->log .= '</br>Un problème de log ';
+                        
+            }
+        }
+        //check if last error is true then return true else rturn false.
+        if($this->error == false){
+            return false;
+        }else{
+            return true;
+        }
+    }   
 
 
   }
