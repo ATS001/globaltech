@@ -68,6 +68,7 @@ class Mcontrat {
     }
 
 
+    
     //Get  liste devis
 
     static public function select_devis($is_edit=null) {
@@ -189,7 +190,7 @@ class Mcontrat {
         $table_echeance = 'echeances_contrat';
         global $db;
         //var_dump('testt');
-        $sql = "SELECT sum($table_echeance.montant) as montant_total FROM $table_echeance WHERE  tkn_frm = '$tkn_frm'";
+        $sql = "SELECT IFNULL(sum($table_echeance.montant),0) as montant_total FROM $table_echeance WHERE  tkn_frm = '$tkn_frm'";
         //var_dump('testt2');
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -1354,5 +1355,51 @@ public function save_echeance($debut,$fin,$perdiode_fact)
             }
         }
     }
+
+    //Archivage abonnement
+    public function archivecontrats()
+    {
+        global $db;
+        $id_contrat = $this->id_contrat;
+        $table = $this->table;
+        $this->get_contrat();
+        //Format where clause
+        $id_contrat = MySQL::SQLValue($id_contrat);
+        $sql_req = "UPDATE $table SET etat = 100 WHERE id = $id_contrat";
+       
+        //check if id on where clause isset
+        if($id_contrat == null)
+        {
+            $this->error = false;
+            $this->log .='</br>L\' id est vide';
+            return false;
+        }
+        //execute Delete Query
+        if(!$db->Query($sql_req))
+        {
+
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .='</br>Archivage non réussie';
+
+        }else{
+
+            $this->error = true;
+            $this->log .='</br>Archivage réussie ';
+            //log
+            if(!Mlog::log_exec($table, $this->id_contrat, 'Archivage abonnement '.$this->id_contrat, 'Update'))
+            {
+                $this->log .= '</br>Un problème de log ';
+                        
+            }
+        }
+        //check if last error is true then return true else rturn false.
+        if($this->error == false){
+            return false;
+        }else{
+            return true;
+        }
+    }
+
 
 }

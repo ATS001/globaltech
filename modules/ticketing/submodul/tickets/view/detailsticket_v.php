@@ -20,7 +20,6 @@ if ($ticket->get_action_ticket()) {
 } else {
     $list_action = false;
 }
-
 ?>
 
 <div class="pull-right tableTools-container">
@@ -37,6 +36,7 @@ if ($ticket->get_action_ticket()) {
 <div class="page-header">
     <h1>
         Détails du ticket: <?php $ticket->s('id'); ?>
+        
 
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
@@ -57,6 +57,13 @@ if ($ticket->get_action_ticket()) {
                                 Ticket
                             </a>
                         </li>
+                        <?php if($ticket->g("etat") == "3") { ?>
+                        <div class="widget-toolbar hidden-480">
+                                    <a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'ticket') ?>" data="<?php echo MInit::crypt_tp('id', $ticket->id_tickets) ?>">
+                                        <i class="ace-icon fa fa-print"></i>
+                                    </a>
+                                </div> 
+                        <?php }?>
                     </ul>
 
                     <div class="tab-content no-border padding-24">
@@ -77,13 +84,13 @@ if ($ticket->get_action_ticket()) {
                                                     <b style="color:green"><?php $ticket->s("projet") ?></b>
                                                 </li>
                                             <?php } ?>
-                                                <?php if ($ticket->g("serial_number") != NULL) { ?>
+                                            <?php if ($ticket->g("serial_number") != NULL) { ?>
                                                 <li>
                                                     <i class="ace-icon fa fa-caret-right green"></i>Serial number :
                                                     <b style="color:green"><?php $ticket->s("serial_number") ?></b>
                                                 </li>
                                             <?php } ?>
-                                                 <li>
+                                            <li>
                                                 <i class="ace-icon fa fa-caret-right green"></i>Date de création :
                                                 <b style="color:green"><?php $ticket->s("credat") ?></b>
                                             </li>
@@ -154,7 +161,7 @@ if ($ticket->get_action_ticket()) {
 
                         </div><!-- /#home -->
 
-                        <?php //if ($ticket->g("technicien") != NULL) {  ?>
+                        <?php //if ($ticket->g("technicien") != NULL) {   ?>
                         <div class="row">
                             <div id="timeline-1">
                                 <div class="row">
@@ -207,10 +214,8 @@ if ($ticket->get_action_ticket()) {
 
                                                                                 <div>
                                                                                     <?php
-                                                                                                                                                                                    
-                                                                                                                                    
                                                                                     $etat1 = Msetting::get_set('etat_ticket', 'resolution_encours');
-                                                                                    if ($ticket->g("etat") == $etat1 AND $value["etat"] == '0' and session::get('userid')== $value["creusr"]) {
+                                                                                    if ($ticket->g("etat") == $etat1 AND $value["etat"] == '0' and session::get('userid') == $value["creusr"]) {
                                                                                         ?>
                                                                                         <a href="#" class="this_url"  rel="editaction" data="<?php echo Minit::crypt_tp('id', $value['id']) ?>">
                                                                                             <i class="ace-icon fa fa-pencil blue bigger-125"></i>
@@ -219,12 +224,12 @@ if ($ticket->get_action_ticket()) {
                                                                                         <a href="#" class="this_exec" cn_rmv="<?php echo $value['id'] ?>" rel="deleteactionticket" data="<?php echo Minit::crypt_tp('id', $value['id']) ?>">
                                                                                             <i class="ace-icon fa fa-times red bigger-125"></i>
                                                                                         </a>
-                                                                                    <?php } ?>
-                                                                                    <?php if ($value["etat"] == '0') { ?>
+        <?php } ?>
+        <?php if ($value["etat"] == '0') { ?>
                                                                                         <a href="#" class="this_url"  rel="detailsaction" data="<?php echo Minit::crypt_tp('id', $value['id']) ?>">
                                                                                             <i class="ace-icon fa fa-search  blue bigger-125"></i>
                                                                                         </a>
-                                                                                    <?php } ?>
+        <?php } ?>
                                                                                 </div>
                                                                             </div>
                                                                         </div>
@@ -233,14 +238,14 @@ if ($ticket->get_action_ticket()) {
                                                             </div>
                                                         </div>
                                                     </div><!-- /.timeline-items -->
-                                                    <?php
-                                                }//foreach
-                                            }//End IF 
+        <?php
+    }//foreach
+}//End IF 
 
-                                            if ($ticket->g("etat") == 1) {
-                                                TableTools::btn_add('addaction', 'Ajouter une action', MInit::crypt_tp('id', Mreq::tp('id')));
-                                            }
-                                            ?>
+if ($ticket->g("etat") == 1) {
+    TableTools::btn_add('addaction', 'Ajouter une action', MInit::crypt_tp('id', Mreq::tp('id')));
+}
+?>
 
 
 
@@ -260,7 +265,7 @@ if ($ticket->get_action_ticket()) {
                             </div>
                         </div>
 
-                        <?php //}  ?>
+<?php //}   ?>
                     </div><!-- /#home -->
                     <div id="action" class="tab-pane in">
 

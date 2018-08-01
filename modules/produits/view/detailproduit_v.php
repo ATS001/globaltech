@@ -120,14 +120,14 @@
                                         else {
                                             ?>
                                             <table class="table table-striped table-bordered table-hover"
-                                                   style="width: 820px">
+                                                   style="width: 100%">
                                                 <th align="center" style="width: 20px">
                                                     ID
                                                 </th>
-                                                <th style="width:300px">
+                                                <th style="width:400px">
                                                     Entrepôt
                                                 </th>
-                                                <th align="center" style="width: 120px">
+                                                <th align="left" style="width: 300px">
                                                     Référence
                                                 </th>
                                                 <th align="center" style="width: 800px">
@@ -136,7 +136,7 @@
                                                 <th align="center" style="width: 100px">
                                                     Quantité
                                                 </th>
-                                                <th align="center" style="width: 120px">
+                                                <th align="center" style="width: 150px">
                                                     Date
                                                 </th>
                                                 <th align="center" style="width: 200px">
@@ -159,12 +159,12 @@
                                                                 <span><?php echo $cmpl['entrepot']; ?></span>
         <?php } else echo '-'; ?>
                                                         </td>
-                                                        <td align="center" valign="top">
+                                                        <td align="left" valign="top">
                                                             <?php if ($cmpl['reference'] != null) { ?>
                                                                 <span><?php echo $cmpl['reference']; ?></span>
         <?php } else echo '-'; ?>
                                                         </td>
-                                                        <td align="center" valign="top">
+                                                        <td align="left" valign="top">
                                                             <?php if ($cmpl['designation'] != null) { ?>
                                                                 <span><?php echo $cmpl['designation']; ?></span>
         <?php } else echo '-'; ?>

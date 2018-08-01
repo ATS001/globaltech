@@ -64,6 +64,7 @@ $html_data_table = new Mdatatable();
 $html_data_table->columns_html = $array_column;
 $html_data_table->title_module = "Ticket Fournisseur";
 $html_data_table->task = 'ticket_frs';
+$html_data_table->debug = true;
 
 if (!$data = $html_data_table->table_html()) {
     exit("0#" . $html_data_table->log);
