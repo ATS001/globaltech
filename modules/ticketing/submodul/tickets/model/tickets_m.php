@@ -863,7 +863,7 @@ class Mtickets {
 
         $req_sql = " SELECT $colms FROM $table WHERE id_ticket = $id_ticket ";
 
-         if (!$db->Query($req_sql)) {
+        if (!$db->Query($req_sql)) {
             $this->error = false;
             $this->log .= $db->Error();
         } else {
@@ -872,7 +872,7 @@ class Mtickets {
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
                 $this->action_info = $db->RecordsSimplArray();
-                
+
                 $this->error = true;
             }
         }
@@ -934,8 +934,8 @@ class Mtickets {
 
         $table = $this->table_action;
 
-      $sql = " SELECT credat , message FROM $table WHERE id_ticket = ". $this->id_tickets ;
-      
+        $sql = " SELECT credat , message FROM $table WHERE id_ticket = " . $this->id_tickets;
+
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
@@ -945,7 +945,7 @@ class Mtickets {
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
                 $this->action_info = $db->RecordsSimplArray();
-                
+
                 $this->error = true;
             }
         }
@@ -957,5 +957,42 @@ class Mtickets {
         }
     }
 
+    function archivetickets() {
+        global $db;
+        $id_ticket = $this->id_tickets;
+        $table = $this->table;
+        $this->get_tickets();
+        //Format where clause
+        $id_ticket = MySQL::SQLValue($id_ticket);
+        $sql_req = "UPDATE $table SET etat = 100 WHERE id = $id_ticket";
+
+        //check if id on where clause isset
+        if ($id_ticket == null) {
+            $this->error = false;
+            $this->log .= '</br>L\' id est vide';
+            return false;
+        }
+        //execute Delete Query
+        if (!$db->Query($sql_req)) {
+
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .= '</br>Archivage non réussie';
+        } else {
+
+            $this->error = true;
+            $this->log .= '</br>Archivage réussie ';
+            //log
+            if (!Mlog::log_exec($table, $this->id_tickets, 'Archivage ticket ' . $this->id_devis, 'Update')) {
+                $this->log .= '</br>Un problème de log ';
+            }
+        }
+        //check if last error is true then return true else rturn false.
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 
 }
