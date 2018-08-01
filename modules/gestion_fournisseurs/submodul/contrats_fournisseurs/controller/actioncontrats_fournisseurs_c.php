@@ -11,7 +11,9 @@ $contrats_frn->get_contrats_frn();
 
 $action = new TableTools();
 $action->line_data = $contrats_frn->contrats_frn_info;
-$action->action_line_table('contrats_fournisseurs', 'contrats_frn',$contrats_frn->contrats_frn_info['creusr'],'deletecontrat_frn');
+
+$etat_archive = Msetting::get_set('archive_contrats_fournisseurs');
+$action->action_line_table('contrats_fournisseurs', 'contrats_frn',$contrats_frn->contrats_frn_info['creusr'],'deletecontrat_frn', $etat_archive);
 ?>
 
 </ul>
