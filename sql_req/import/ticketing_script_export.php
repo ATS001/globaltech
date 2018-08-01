@@ -1,5 +1,5 @@
 <?php 
-//Export Module 'ticketing' Date: 28-07-2018
+//Export Module 'ticketing' Date: 02-08-2018
 global $db;
 if(!$result_insert_modul = $db->Query("insert into modul (modul, description, rep_modul, tables, app_modul, modul_setting, is_setting, etat, services)values('ticketing', 'Gestion Tickets','ticketing/main','tickets','ticketing',NULL,'0', '0', '[-1-2-3-5-4-7-6-]')")){$this->error = false; $this->log .= "<li> Error Import Modul 'ticketing' </li>";}
   //Task 'ticketing' 'Gestion Tickets'
