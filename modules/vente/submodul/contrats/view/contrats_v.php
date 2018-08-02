@@ -1,160 +1,82 @@
-<div class="page-header">
-	<h1>
-		<?php echo ACTIV_APP?>
-		<small>
-			<i class="ace-icon fa fa-angle-double-right"></i>
-		</small>
-	</h1>
-</div><!-- /.page-header -->
-
-<div class="row">
-	<div class="col-xs-12">
-		<div class="clearfix">
-			<div class="pull-right tableTools-container">
-				<div class="btn-group btn-overlap">
-					
-						<?php TableTools::btn_add('addcontrat','Ajouter un contrat'); ?>
-						<?php TableTools::btn_csv('contrats','Exporter Liste'); ?>
-						<?php TableTools::btn_pdf('contrats','Exporter Liste'); ?>
-					
-			    </div>
-			</div>
-		</div>
-
-		<div class="table-header">
-			Liste "Contrats" 
-		</div>
-		<div>
-			<table id="contrats_grid" class="table table-bordered table-condensed table-hover table-striped dataTable no-footer">
-				<thead>
-					<tr>						
-						<th>
-							ID
-						</th>
-						
-						<th>
-							Réference
-						</th>
-						<th>
-							Devis
-						</th>
-                                                <th>
-							Date Contrat
-						</th>
-						<th>
-							Client
-						</th>
-						<th>
-							Date début
-						</th>
-						<th>
-							Date fin
-						</th>
-						<th>
-							Statut
-						</th>
-						<th>
-							#
-						</th>
-					</tr>
-				</thead>
-			</table>
-		</div>
-	</div>
-</div>
-<script type="text/javascript">
-
-
-$(document).ready(function() {
-	
-	var table = $('#contrats_grid').DataTable({
-		bProcessing: true,
-		notifcol : 7,
-		serverSide: true,
-		ajax_url:"contrats",
-		
-                aoColumns: [
-                    {"sClass": "center","sWidth":"5%"}, 
-                    {"sClass": "left","sWidth":"11%"},//
-                    {"sClass": "left","sWidth":"13%"},
-                    {"sClass": "center","sWidth":"7%"},
-                    {"sClass": "left","sWidth":"17%"},
-                    {"sClass": "center","sWidth":"7%"},
-                    {"sClass": "center","sWidth":"7%"},
-                    {"sClass": "center","sWidth":"10%"},
-                    {"sClass": "center","sWidth":"4%"},
-                    ],
-    });
-     /*var column = table.column(0);
-     column.visible( ! column.visible() );*/
-
+<?php
+//array colomn
+$array_column = array(
+	array(
+        'column' => 'contrats.id',
+        'type'   => '',
+        'alias'  => 'id',
+        'width'  => '5',
+        'header' => 'ID',
+        'align'  => 'C'
+    ),
+    array(
+        'column' => 'contrats.reference',
+        'type'   => '',
+        'alias'  => 'reference',
+        'width'  => '10',
+        'header' => 'Référence',
+        'align'  => 'L'
+    ),
+    array(
+        'column' => 'devis.reference',
+        'type'   => '',
+        'alias'  => 'devis',
+        'width'  => '10',
+        'header' => 'Devis',
+        'align'  => 'L'
+    ),
+    array(
+        'column' => 'contrats.date_contrat',
+        'type'   => 'date',
+        'alias'  => 'date_contrat',
+        'width'  => '10',
+        'header' => 'Date Contrat',
+        'align'  => 'C'
+    ),
+    array(
+        'column' => 'CONCAT(clients.reference, " - ",clients.denomination)',
+        'type'   => '',
+        'alias'  => 'client',
+        'width'  => '10',
+        'header' => 'client',
+        'align'  => 'L'
+    ),
+    array(
+        'column' => 'contrats.date_effet',
+        'type'   => 'date',
+        'alias'  => 'date_effet',
+        'width'  => '10',
+        'header' => 'Date Début',
+        'align'  => 'C'
+    ),
+    array(
+        'column' => 'contrats.date_fin',
+        'type'   => 'date',
+        'alias'  => 'date_fin',
+        'width'  => '10',
+        'header' => 'Date Fin',
+        'align'  => 'C'
+    ),
+    array(
+        'column' => 'statut',
+        'type'   => '',
+        'alias'  => 'statut',
+        'width'  => '15',
+        'header' => 'Statut',
+        'align'  => 'C'
+    ),
     
-$('.export_csv').on('click', function() {
-	csv_export(table, 'csv');
-});
-$('.export_pdf').on('click', function() {
-	csv_export(table, 'pdf');
-});
-
-$('#contrats_grid').on('click', 'tr button', function() {
-	var $row = $(this).closest('tr')
-	//alert(table.cell($row, 0).data());
-	append_drop_menu('contrats', table.cell($row, 0).data(), '.btn_action')
-});
-
-$('#contrats_grid tbody ').on('click', 'tr .this_del', function() {
-	//alert($(this).attr("item"));
-	stand_delet($(this),$(this).attr("table"),$(this).attr("item"))
-});
+ );
+//Creat new instance
+$html_data_table = new Mdatatable();
+$html_data_table->columns_html = $array_column;
+$html_data_table->title_module = "Abonnement";
+$html_data_table->task = 'contrats';
 
 
-});
-
-</script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+if(!$data = $html_data_table->table_html())
+{
+    exit("0#".$html_data_table->log);
+}else{
+    echo $data;
+}

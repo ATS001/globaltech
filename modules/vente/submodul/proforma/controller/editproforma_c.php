@@ -25,7 +25,8 @@ if(MInit::form_verif('editproforma', false))
 		'claus_comercial'   => Mreq::tp('claus_comercial'),
 		'id_commercial'     => Mreq::tp('id_commercial'),
    		'commission'        => Mreq::tp('commission'),
-	    'total_commission'  => Mreq::tp('total_commission')
+	    'total_commission'  => Mreq::tp('total_commission'),
+	     'type_commission'  => Mreq::tp('type_commission')
 
 
 		);
@@ -56,7 +57,7 @@ if(MInit::form_verif('editproforma', false))
       $empty_list .= "<li>Type remise est incorrecte</li>";
       $checker = 1;
     }
-    if($posted_data['vie'] == NULL OR !in_array($posted_data['vie'],  array( '30','60', '90' ))){
+    if($posted_data['vie'] == NULL OR !in_array($posted_data['vie'],  array( '30','60', '90', '180', '365' ))){
 
       $empty_list .= "<li>Durée de validité</li>";
       $checker = 1;
@@ -92,7 +93,13 @@ if(MInit::form_verif('editproforma', false))
       $checker = 1;
     }
     */
-     if($posted_data['id_commercial'] == NULL){
+      if($posted_data['type_commission'] == NULL OR !in_array($posted_data['type_commission'],  array( 'C','S' ))){
+
+      $empty_list .= "<li>Type commission est incorrecte</li>";
+      $checker = 1;
+    }
+
+  if($posted_data['id_commercial'] == NULL){
 
       $empty_list .= "<li>Commercial</li>";
       $checker = 1;
@@ -102,6 +109,13 @@ if(MInit::form_verif('editproforma', false))
       $empty_list .= "<li>Commission</li>";
       $checker = 1;
     }
+    $set_comission = Msetting::get_set('plafond_comission');
+    if($posted_data['commission'] > $set_comission ){
+
+      $empty_list .= "<li>Commission ne dois pas dépasser $set_comission</li>";
+      $checker = 1;
+    }
+    
 /*    if($posted_data['total_commission'] == NULL OR !is_numeric($posted_data['total_commission']) ){
 
       $empty_list .= "<li>Total Commission</li>";

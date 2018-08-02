@@ -13,6 +13,7 @@ if(MInit::form_verif('edit_detailproforma',false))
 		'checker_tkn_frm' => Mreq::tp('checker_tkn_frm') ,
 		'id_produit'      => Mreq::tp('id_produit') ,
 		'ref_produit'     => Mreq::tp('ref_produit') ,
+		'sub_group'       => Mreq::tp('sub_group') ,
 		'qte'             => Mreq::tp('qte') ,
 		'prix_unitaire'   => Mreq::tp('prix_unitaire') ,
 		'tva_d'           => Mreq::tp('tva_d') , 
@@ -53,6 +54,11 @@ if(MInit::form_verif('edit_detailproforma',false))
 	if($posted_data['remise_valeur_d'] == NULL OR !is_numeric($posted_data['remise_valeur_d']) ){
 
 		$empty_list .= "<li>Valeur de remise</li>";
+		$checker = 1;
+	}
+	if($posted_data['sub_group'] == NULL OR !is_numeric($posted_data['sub_group'])){
+
+		$empty_list .= "<li>Sous Group</li>";
 		$checker = 1;
 	}
 	if($posted_data['tva_d'] == NULL OR !in_array($posted_data['tva_d'],  array( 'O','N' ))){

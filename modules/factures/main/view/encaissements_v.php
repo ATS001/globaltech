@@ -23,7 +23,7 @@ if(Mreq::tp('id') != null)
         'column' => 'encaissements.reference',
         'type'   => '',
         'alias'  => 'reference',
-        'width'  => '10',
+        'width'  => '11',
         'header' => 'Référence',
         'align'  => 'L'
     ),
@@ -31,7 +31,7 @@ if(Mreq::tp('id') != null)
         'column' => 'factures.client',
         'type'   => '',
         'alias'  => 'client',
-        'width'  => '15',
+        'width'  => '14',
         'header' => 'Client',
         'align'  => 'L'
     ),
@@ -41,7 +41,7 @@ if(Mreq::tp('id') != null)
         'column' => 'encaissements.designation',
         'type'   => '',
         'alias'  => 'des',
-        'width'  => '15',
+        'width'  => '13',
         'header' => 'Désignation',
         'align'  => 'L'
     ),
@@ -50,17 +50,17 @@ if(Mreq::tp('id') != null)
         'column' => 'factures.reference',
         'type'   => '',
         'alias'  => 'freference',
-        'width'  => '10',
+        'width'  => '11',
         'header' => 'Facture',
         'align'  => 'L'
     ),
     array(
-        'column' => 'encaissements.montant',
+        'column' => "REPLACE(FORMAT(encaissements.montant,0),',',' ')",
         'type'   => '',
         'alias'  => 'mt',
         'width'  => '8',
         'header' => 'Montant',
-        'align'  => 'C'
+        'align'  => 'R'
     ),
      array(
         'column' => 'encaissements.date_encaissement',
@@ -74,7 +74,7 @@ if(Mreq::tp('id') != null)
         'column' => 'statut',
         'type'   => '',
         'alias'  => 'statut',
-        'width'  => '10',
+        'width'  => '7',
         'header' => 'Statut',
         'align'  => 'C'
     )
@@ -113,5 +113,6 @@ if(!$data = $html_data_table->table_html())
     exit("0#".$html_data_table->log);
 }else{
     echo $data;
+    
 }
 

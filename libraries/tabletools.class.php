@@ -146,7 +146,7 @@ class TableTools
 
 	//Publique Function get action for user modul
     //depent of user connected
-	public function action_line_table($app, $table_modul, $cre_usr = null, $task_exec = null)
+	public function action_line_table($app, $table_modul, $cre_usr = null, $task_exec = null, $etat_archive = 2)
 	{
 		//Etat line is null return false
 		if($this->line_data['id'] == null)
@@ -181,7 +181,8 @@ class TableTools
 		AND rules_action.service = $service
 		AND $table_modul.etat = $etat 
 		AND $table_modul.id = $id
-		AND task_action.type = 0 ";
+		AND task_action.type = 0 
+		GROUP BY task_action.id ";
         //for more secure add this AND task_action.service LIKE  '$service_f' 
         //exit($sql);
 
@@ -208,6 +209,16 @@ class TableTools
 					$this->app_action .= $row->code;
 
 				}
+				//Get array form setting for this modul
+				
+				$stanadr_archive = null;
+				//check if current line have the max etat_line then show archive action.
+				//var_dump($etat.' '.$etat_archive);
+				if($this->check_rule_archive('archive'.$app) && is_array($etat_archive)  && in_array($etat, $etat_archive))
+				{
+					$stanadr_archive = '<li><a href="#" class="this_exec" data="'.MInit::crypt_tp('id',$id).'" rel="archive'.$app.'"  ><i class="ace-icon fa fa-archive bigger-100"></i> Archiver ligne</a></li>';
+				}
+				
 				$stanadr_delete = null;
 				if($etat == 0 AND ($cre_usr == session::get('userid') OR session::get('service') == 1) AND $task_exec != null)
 				{
@@ -215,13 +226,37 @@ class TableTools
 				}
 
 					$retour =  str_replace('%id%', MInit::crypt_tp('id',$id), $this->app_action);
-					return print($retour.$stanadr_delete);
+					return print($retour.$stanadr_delete.$stanadr_archive);
 
 			}
 
 
 		}
 		//return true;
+	}
+	private function check_rule_archive($app)
+	{
+		global $db;
+		$user = session::get('userid');
+		$sql = "SELECT
+		1
+		FROM
+		`rules_action`
+		INNER JOIN `task` 
+		ON (`rules_action`.`appid` = `task`.`id`)
+		INNER JOIN `users_sys` 
+		ON (`rules_action`.`userid` = `users_sys`.`id`)
+		WHERE users_sys.id = ".$user." 
+
+		AND task.app =  ".MySQL::SQLValue($app)." ";
+		if($db->QuerySingleValue0($sql) == '0')
+		{
+			return false;
+
+		}else{
+			return true;
+		}
+
 	}
 
 	//Publique Function get action for user modul
@@ -404,11 +439,17 @@ class TableTools
      */
     static public function where_etat_line($table, $task_name)
     {
+    	$etat = Cookie::Get($task_name."_grid_zip", null);
+
+    	$wher_etat = $etat == null ? ' AND task_action.`etat_line` <> 100 ' : ' AND task_action.`etat_line` = 100 ';
+    	
+
     	$where_etat_line = " WHERE   (SELECT 
     		COUNT(task_action.id) 
     		FROM
     		task_action, rules_action , task
     		WHERE task_action.`etat_line` = `$table`.etat
+    		$wher_etat
     		AND task_action.appid = task.id 
     		AND task.`app` = '$task_name'  
     		AND task_action.id = rules_action.`action_id`
@@ -424,6 +465,8 @@ class TableTools
      */
     static public function where_search_etat($table, $task_name, $search)
     {
+
+
     	$where_search_etat = " OR (SELECT 
     		COUNT(task_action.id) 
     		FROM

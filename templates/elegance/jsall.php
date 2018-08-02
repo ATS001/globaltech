@@ -74,7 +74,7 @@
 		<script src="<?php echo THEME_PATH ;?>/js/ace/ace.settings-skin.js"></script>
 		<script src="<?php echo THEME_PATH ;?>/js/jquery.colorbox.js"></script>
 		<script src="<?php echo THEME_PATH ;?>/js/jquery.maskedinput.js"></script>
-		<?php if(session::get('userid') AND Mcfg::get('deploy') == false){?>
+		<?php if(session::get('userid') AND Mcfg::get('deploy') == true){?>
 		<script src="<?php echo THEME_PATH ;?>/js/notify.js"></script>	
 		<?php } ?>
 		
@@ -84,7 +84,9 @@
 		<script src="<?php echo THEME_PATH ;?>/js/jquery.fullscreen-min.js"></script>
  <?php $mrn_js = Mcfg::get('deploy') == true ?'mrn-function.js' : 'myfunction.js';?>
         <script src="<?php echo THEME_PATH .'/js/'. $mrn_js ?>"></script>
-        <script src="<?php echo THEME_PATH ?>/js/highchart/highcharts.js"></script>
+        <script src="<?php echo THEME_PATH ?>/js/highchart/code/highcharts.js"></script>
+        <script src="<?php echo THEME_PATH ?>/js/highchart/code/modules/exporting.js"></script>
+       <!--  <script src="<?php echo THEME_PATH ?>/js/highchart/code/modules/offline-exporting.js"></script> -->
 
 
 <script type="text/javascript">

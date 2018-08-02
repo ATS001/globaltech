@@ -37,14 +37,7 @@ $array_column = array(
         'align'  => 'L'
     ),
   
-    array(
-        'column' => 'factures.reference',
-        'type'   => '',
-        'alias'  => 'freference',
-        'width'  => '10',
-        'header' => 'Facture',
-        'align'  => 'L'
-    ),
+    
     array(
         'column' => 'encaissements.montant',
         'type'   => '',
