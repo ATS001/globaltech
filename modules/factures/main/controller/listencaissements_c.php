@@ -9,12 +9,11 @@ $array_column = array(
         'header' => 'ID',
         'align'  => 'C'
     ),
-    
-    array(
+         array(
         'column' => 'encaissements.reference',
         'type'   => '',
         'alias'  => 'reference',
-        'width'  => '10',
+        'width'  => '11',
         'header' => 'Référence',
         'align'  => 'L'
     ),
@@ -22,35 +21,42 @@ $array_column = array(
         'column' => 'factures.client',
         'type'   => '',
         'alias'  => 'client',
-        'width'  => '15',
+        'width'  => '14',
         'header' => 'Client',
         'align'  => 'L'
     ),
     
-    
+   
     array(
         'column' => 'encaissements.designation',
         'type'   => '',
         'alias'  => 'des',
-        'width'  => '15',
+        'width'  => '13',
         'header' => 'Désignation',
         'align'  => 'L'
     ),
   
-    
+ array(
+        'column' => 'factures.reference',
+        'type'   => '',
+        'alias'  => 'ref',
+        'width'  => '13',
+        'header' => 'Facture',
+        'align'  => 'L'
+    ),
     array(
-        'column' => 'encaissements.montant',
+        'column' => "REPLACE(FORMAT(encaissements.montant,0),',',' ')",
         'type'   => '',
         'alias'  => 'mt',
-        'width'  => '10',
+        'width'  => '8',
         'header' => 'Montant',
-        'align'  => 'C'
+        'align'  => 'R'
     ),
      array(
         'column' => 'encaissements.date_encaissement',
         'type'   => 'date',
         'alias'  => 'date',
-        'width'  => '10',
+        'width'  => '8',
         'header' => 'Date',
         'align'  => 'C'
     ),
@@ -58,7 +64,7 @@ $array_column = array(
         'column' => 'statut',
         'type'   => '',
         'alias'  => 'statut',
-        'width'  => '15',
+        'width'  => '7',
         'header' => 'Statut',
         'align'  => 'C'
     )
@@ -82,6 +88,7 @@ $list_data_table->task = 'encaissements';
 $list_data_table->file_name = 'liste_encaissements';
 //Set Title of report
 $list_data_table->title_report = 'Liste encaissements';
+
 //Print JSON DATA
 if(!$data = $list_data_table->Query_maker())
 {
