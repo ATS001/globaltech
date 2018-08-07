@@ -39,7 +39,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_contrat->get_contrat()) {
             <div class="widget-box">
                 
 <?php
-$form = new Mform('renouvelercontrat', 'renouvelercontrat', '', 'contrats', '0', null);
+$form = new Mform('renouvelercontrats', 'renouvelercontrats', '', 'contrats', '0', null);
 
 $form->input_hidden('id', Mreq::tp('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
@@ -98,7 +98,7 @@ $js_addfunct = 'var column = t.column(0);
    
 $verif_value = md5(session::get('f_vaddcontrat'));    
 //var_dump($verif_value);
-$form->draw_datatabe_form('table_echeance', $verif_value, $columns, 'addcontrat', 'addecheance_contrat', 'Ajouter une échéance', $js_addfunct);
+$form->draw_datatabe_form('table_echeance', $verif_value, $columns, 'addcontrats', 'addecheance_contrat', 'Ajouter une échéance', $js_addfunct);
 
 
 $form->button('Enregistrer');

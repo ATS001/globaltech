@@ -39,7 +39,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_contrat->get_contrat()) {
             <div class="widget-box">
 
 <?php
-$form = new Mform('editcontrat', 'editcontrat', 1 , 'contrats', '0', null);
+$form = new Mform('editcontrats', 'editcontrats', 1 , 'contrats', '0', null);
 $form->input_hidden('id', Mreq::tp('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
@@ -95,7 +95,7 @@ $js_addfunct = 'var column = t.column(0);
 $verif_value = $info_contrat->s('tkn_frm');
 
 
-$form->draw_datatabe_form('table_echeance', $verif_value, $columns, 'addcontrat', 'addecheance_contrat', 'Ajouter une échéance', $js_addfunct);
+$form->draw_datatabe_form('table_echeance', $verif_value, $columns, 'addcontrats', 'addecheance_contrat', 'Ajouter une échéance', $js_addfunct);
 
 
 $form->button('Enregistrer');

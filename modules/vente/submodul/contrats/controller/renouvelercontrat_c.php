@@ -1,7 +1,7 @@
 <?php
 
 defined('_MEXEC') or die;
-if (MInit::form_verif('renouvelercontrat', false)) {
+if (MInit::form_verif('renouvelercontrats', false)) {
     $posted_data = array(
     	'id'   			   => Mreq::tp('id') ,
         'tkn_frm'         => Mreq::tp('tkn_frm'),
