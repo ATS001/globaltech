@@ -4,7 +4,7 @@
 // Modul: contrats => Controller
 
 defined('_MEXEC') or die;
-if (MInit::form_verif('editcontrat', false)) {
+if (MInit::form_verif('editcontrats', false)) {
     //Check if id is been the correct id compared with idc
     if (!MInit::crypt_tp('id', null, 'D')) {
         // returne message error red to client 

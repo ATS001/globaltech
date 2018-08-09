@@ -82,7 +82,8 @@ $html_data_table->task = 'echeances';
 $html_data_table->btn_return = array('task' => 'contrats', 'title' => 'Retour liste des abonnements');
 $html_data_table->task = 'echeances';
 $html_data_table->js_extra_data = "id_contrat=$id";
-$html_data_table->btn_add_data = MInit::crypt_tp('id_contrat', $id);
+$html_data_table->btn_add_check=TRUE;
+//$html_data_table->btn_add_data = MInit::crypt_tp('id_contrat', $id);
 
 if(!$data = $html_data_table->table_html())
 {
