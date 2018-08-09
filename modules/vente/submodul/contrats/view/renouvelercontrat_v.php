@@ -96,7 +96,7 @@ $columns = array('id' => '1','Item' => '5', 'Date échéance' => '12','Montant T
 $js_addfunct = 'var column = t.column(0);
      column.visible( ! column.visible() );';
    
-$verif_value = md5(session::get('f_vaddcontrat'));    
+$verif_value = md5(session::get('f_vrenouvelercontrat'));    
 //var_dump($verif_value);
 $form->draw_datatabe_form('table_echeance', $verif_value, $columns, 'addcontrats', 'addecheance_contrat', 'Ajouter une échéance', $js_addfunct);
 
@@ -147,7 +147,7 @@ $(document).ready(function() {
         }
         var $link  = $(this).attr('rel');
         var $titre = $(this).attr('data_titre'); 
-        var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val();
+        var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val()+'&devis='+$('#iddevis').val();
         ajax_bbox_loader($link, $data, $titre, 'large')
     });
 
@@ -169,7 +169,7 @@ $(document).ready(function() {
         }
         var $link  = $(this).attr('rel');
         var $titre = 'Modifier détail contrat'; 
-        var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val();
+        var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val()+'&devis='+$('#iddevis').val();
         ajax_bbox_loader($link, $data, $titre, 'large')
         
     });
