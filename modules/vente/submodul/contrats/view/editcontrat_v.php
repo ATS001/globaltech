@@ -81,7 +81,7 @@ $form->input_date('Date notification', 'date_notif', 4, $info_contrat->s('date_n
 
 //pj_id
 $form->input('Justification du contrat', 'pj', 'file', 6, 'Justification_client.pdf', null);
-$form->file_js('pj', 1000000, 'pdf', $info_contrat->s('pj'), 1);
+$form->file_js('pj', 5000000, 'pdf', $info_contrat->s('pj'), 1);
 
 //pj_id
 /*$form->input('Photo', 'pj_photo', 'file', 6, 'Photo_client.jpeg', null);
