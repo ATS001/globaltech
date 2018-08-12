@@ -1,7 +1,7 @@
 <?php
 
 defined('_MEXEC') or die;
-if (MInit::form_verif('addcontrat', false)) {
+if (MInit::form_verif('addcontrats', false)) {
 
     $posted_data = array(
         'tkn_frm' => Mreq::tp('tkn_frm'),
