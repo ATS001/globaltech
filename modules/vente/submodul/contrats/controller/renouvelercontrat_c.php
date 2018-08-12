@@ -1,9 +1,9 @@
 <?php
 
 defined('_MEXEC') or die;
-if (MInit::form_verif('renouvelercontrat', false)) {
+if (MInit::form_verif('renouvelercontrats', false)) {
     $posted_data = array(
-    	'id'   			   => Mreq::tp('id') ,
+    	'id'   		  => Mreq::tp('id') ,
         'tkn_frm'         => Mreq::tp('tkn_frm'),
         'iddevis'         => Mreq::tp('iddevis'),
         'date_effet'      => Mreq::tp('date_effet'),
@@ -913,5 +913,7 @@ $date_d = $posted_data['date_effet'];
         echo("0#" . $new_contrat->log);
     }
 } else {
+    $ctr = new Mcontrat();
+    $ctr -> delete_null_echeances();
     view::load_view('renouvelercontrat');
 }
