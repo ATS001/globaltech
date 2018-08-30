@@ -254,16 +254,16 @@ $encaissements = $info_facture->encaissement_info;
                                                 ?>
                                                 <tr>	
                                                     <td>
-                                                        <span><?php echo $cmpl['0']; ?></span>
+                                                        <span><?php echo $cmpl['id']; ?></span>
                                                     </td>
                                                     <td>
-                                                        <span><?php echo $cmpl['1']; ?></span>
+                                                        <span><?php echo $cmpl['designation']; ?></span>
                                                     </td>
                                                     <td>
-                                                        <span><?php echo $cmpl['2']; ?></span>
+                                                        <span><?php echo $cmpl['type']; ?></span>
                                                     </td>
                                                     <td>
-                                                        <span><?php echo $cmpl['3']; ?></span>
+                                                        <span><?php echo $cmpl['montant']; ?></span>
                                                     </td>
                                                 </tr>
 
@@ -299,25 +299,36 @@ $encaissements = $info_facture->encaissement_info;
                                             <th>
                                                 Référence
                                             </th>
-                                            <th>
+                                            <th style="text-align: right;">
                                                 Montant
                                             </th>
-                                            <th>
+                                            <th style="text-align: center;">
                                                 Date
+                                            </th>
+                                            <th style="text-align: center;">
+                                                Document
                                             </th>
                                             <?php foreach ($encaissements as $encs) { ?>
                                                 <tr>	
                                                     <td>
-                                                        <span><?php echo $encs['0']; ?></span>
+                                                        <span><?php echo $encs['id']; ?></span>
                                                     </td>
                                                     <td>
-                                                        <span><?php echo $encs['1']; ?></span>
+                                                        <span><?php echo $encs['reference']; ?></span>
                                                     </td>
-                                                    <td>
-                                                        <span><?php echo $encs['3']; ?></span>
+                                                    <td style="text-align: right;">
+                                                        <span><?php echo $encs['montant']; ?></span>
                                                     </td>
-                                                    <td>
-                                                        <span><?php echo $encs['4']; ?></span>
+                                                    <td align="center">
+                                                        <span><?php echo $encs['date_encaissement']; ?></span>
+                                                    </td>
+                                                    <td align="center" valign="top">
+                                                        <?php if ($encs['pj'] != null) { ?>
+                                                            <a href="#" class="iframe_pdf" rel=<?php echo $encs['pj']; ?>>
+                                                                <i style="display: block;margin-left:auto;margin-right:auto"
+                                                                   class="ace-icon fa fa-print"></i>
+                                                            </a>
+                                                        <?php } else echo '-'; ?>
                                                     </td>
                                                 </tr>
 

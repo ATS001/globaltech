@@ -39,7 +39,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_contrat->get_contrat()) {
             <div class="widget-box">
                 
 <?php
-$form = new Mform('renouvelercontrat', 'renouvelercontrat', '', 'contrats', '0', null);
+$form = new Mform('renouvelercontrats', 'renouvelercontrats', '', 'contrats', '0', null);
 
 $form->input_hidden('id', Mreq::tp('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
@@ -83,7 +83,7 @@ $form->input_date('Date notification', 'date_notif', 4, date('d-m-Y'), $array_da
 
 //pj_id
 $form->input('Justification du contrat', 'pj', 'file', 6, null, null);
-$form->file_js('pj', 1000000, 'pdf');
+$form->file_js('pj', 5000000, 'pdf');
 
 //pj_id
 /*$form->input('Photo', 'pj_photo', 'file', 6, null, null);
@@ -96,9 +96,9 @@ $columns = array('id' => '1','Item' => '5', 'Date échéance' => '12','Montant T
 $js_addfunct = 'var column = t.column(0);
      column.visible( ! column.visible() );';
    
-$verif_value = md5(session::get('f_vaddcontrat'));    
+$verif_value = md5(session::get('f_vrenouvelercontrat'));    
 //var_dump($verif_value);
-$form->draw_datatabe_form('table_echeance', $verif_value, $columns, 'addcontrat', 'addecheance_contrat', 'Ajouter une échéance', $js_addfunct);
+$form->draw_datatabe_form('table_echeance', $verif_value, $columns, 'addcontrats', 'addecheance_contrat', 'Ajouter une échéance', $js_addfunct);
 
 
 $form->button('Enregistrer');
@@ -147,7 +147,7 @@ $(document).ready(function() {
         }
         var $link  = $(this).attr('rel');
         var $titre = $(this).attr('data_titre'); 
-        var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val();
+        var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val()+'&devis='+$('#iddevis').val();
         ajax_bbox_loader($link, $data, $titre, 'large')
     });
 
@@ -169,7 +169,7 @@ $(document).ready(function() {
         }
         var $link  = $(this).attr('rel');
         var $titre = 'Modifier détail contrat'; 
-        var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val();
+        var $data = $(this).attr('data')+'&dat_ef='+$('#date_effet').val()+'&dat_fn='+$('#date_fin').val()+'&devis='+$('#iddevis').val();
         ajax_bbox_loader($link, $data, $titre, 'large')
         
     });
