@@ -82,7 +82,7 @@
 		<script src="<?php echo THEME_PATH ;?>/js/ace/ace.searchbox-autocomplete.js"></script>
 
 		<script src="<?php echo THEME_PATH ;?>/js/jquery.fullscreen-min.js"></script>
- <?php $mrn_js = Mcfg::get('deploy') == true ?'mrn-function.js' : 'myfunction.js';?>
+        <?php  $mrn_js = Mcfg::get('deploy') == true ?'myfunction.js' : 'myfunction.js';?>
         <script src="<?php echo THEME_PATH .'/js/'. $mrn_js ?>"></script>
         <script src="<?php echo THEME_PATH ?>/js/highchart/code/highcharts.js"></script>
         <script src="<?php echo THEME_PATH ?>/js/highchart/code/modules/exporting.js"></script>
