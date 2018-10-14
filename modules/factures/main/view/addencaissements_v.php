@@ -44,7 +44,7 @@ $id_facture = Mreq::tp('id');
 
 //Justification
                 $form->input('Justification', 'pj', 'file', 6, null, null);
-                $form->file_js('pj', 5000000, 'pdf');
+                $form->file_js('pj', 1000000, 'pdf');
 
 //Depositaire
                 $depos_array[] = array('required', 'true', 'Insérez le dépositaire');

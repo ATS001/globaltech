@@ -46,14 +46,14 @@
 
 	var sidebar_vars = {};
 	var old_ie = ace.vars['old_ie'];
-
+    
 	
 	
 	var scroll_right = false;
 	//scroll style class
 	
 	if(hasTouch) self.settings.sub_hover_delay = parseInt(Math.max(self.settings.sub_hover_delay, 2500));//for touch device, delay is at least 2.5sec
-
+    
 	var $window = $(window);
 	//navbar used for adding extra offset from top when adjusting submenu
 	var $navbar = $('.navbar').eq(0);
@@ -61,7 +61,7 @@
 	this.update_vars = function() {
 		navbar_fixed = $navbar.css('position') == 'fixed';
 	}
-
+    
 	self.dirty = false;
 	//on window resize or sidebar expand/collapse a previously "pulled up" submenu should be reset back to its default position
 	//for example if "pulled up" in "responsive-min" mode, in "fullmode" should not remain "pulled up"
@@ -212,6 +212,7 @@
 		if( sidebar_vars['collapsible'] /**|| sidebar_vars['horizontal']*/ ) return;
 
 		if( !$(this).hasClass('hover-show') ) return;
+		
 
 		getSubHide(this).hideDelay();
 	 });
@@ -373,6 +374,7 @@
 		
 		var pull_up = move_up > 0 && move_up > parent_height - 20;
 		if(pull_up) {
+
 			$li.addClass('pull_up');
 		}
 		else $li.removeClass('pull_up');
