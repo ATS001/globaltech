@@ -395,7 +395,7 @@ class Mclients {
         //var_dump('here');
     		$this->error = false;
     		$this->log .='</br>'.$message.' n\'existe pas';
-    		//exit('0#'.$this->log);
+    		return false;
     	}
     }
 
