@@ -30,6 +30,7 @@ class Mfacture {
     var $compte_commercial_info;
     var $reference = null; // Reference 
     var $sum_enc_fact; // Somme encaissements par facture
+    var $solde; // Solde client
 
     public function __construct($properties = array()) {
         $this->_data = $properties;
@@ -1121,6 +1122,7 @@ class Mfacture {
             $this->log .= $this->log;
             return false;
         } else {
+            $this->debit_compte_client();
             $this->log .= "Validation réussie";
             return true;
         }
@@ -1441,13 +1443,14 @@ class Mfacture {
         $sql = "SELECT IF('" . $this->facture_info['base_fact'] . "'='C', (SELECT iddevis FROM contrats WHERE id=$contrat), id ) as id FROM 
     		devis WHERE  devis.id =if( '" . $this->facture_info['base_fact'] . "'='C', (SELECT iddevis FROM contrats WHERE id=$contrat), $devis)";
 
+        $sql = "select * from devis";
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
         } else {
             if ($db->RowCount() == 0) {
                 $this->error = false;
-                $this->log .= 'Aucun enregistrement trouvé !!!!!!!rkeg ';
+                $this->log .= 'Aucun enregistrement trouvé !!';
             } else {
                 $this->id_devis = $db->RowArray();
 
@@ -1677,6 +1680,62 @@ class Mfacture {
             return false;
         } else {
             return true;
+        }
+    }
+
+    public function getSoldeClient($id_client) {
+        global $db;
+
+        $sql = "SELECT solde FROM compte_client where id_client = $id_client GROUP BY id_client HAVING MAX(id)";
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->solde = $db->QuerySingleValue0($sql);
+
+                $this->error = true;
+            }
+        }
+    }
+
+    public function debit_compte_client() {
+        global $db;
+
+        $mnt = str_replace(' ', '', $this->facture_info['total_ttc']);
+        $clt = $this->devis_info['id_client'];
+
+        $this->getSoldeClient($clt);
+        var_dump($this->solde);
+        var_dump($mnt);
+        $sld = $this->solde['0'];
+        var_dump(intval($sld)+intval($mnt));//icciiiii
+        
+        $req_sql = "INSERT into compte_client(id_client,type_mouvement,montant,description,date_mouvement,solde,creusr) 
+               values($clt,'F',$mnt,'test',null, $sld+$mnt ,1)";
+        if (!$db->Query($req_sql)) {
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .= '<br>Problème de mise à jour Etat de compte';
+        }
+    }
+
+    function credit_compte_client() {
+        global $db;
+
+        $mnt = str_replace(' ', '', $this->facture_info['total_ttc']);
+        $clt = $this->devis_info['id_client'];
+
+        $req_sql = "INSERT into compte_client(id_client,type_mouvement,montant,description,date_mouvement,solde,creusr) 
+               values($clt,'F',$mnt,'test',null,null,1)";
+        if (!$db->Query($req_sql)) {
+            $this->log .= $db->Error();
+            $this->error = false;
+            $this->log .= '<br>Problème de mise à jour Etat de compte';
         }
     }
 
