@@ -1710,10 +1710,13 @@ class Mfacture {
         $clt = $this->devis_info['id_client'];
 
         $this->getSoldeClient($clt);
-        var_dump($this->solde);
-        var_dump($mnt);
+        
         $sld = $this->solde['0'];
-        var_dump(intval($sld)+intval($mnt));//icciiiii
+        var_dump("Solde".$sld);
+        var_dump("Montant".$mnt);
+         var_dump("Client".$clt);
+        var_dump(number_format($sld) + number_format($mnt));
+        //var_dump(intval($sld)+intval($mnt));//icciiiii Problème l id récuppéré est éronné
         
         $req_sql = "INSERT into compte_client(id_client,type_mouvement,montant,description,date_mouvement,solde,creusr) 
                values($clt,'F',$mnt,'test',null, $sld+$mnt ,1)";
