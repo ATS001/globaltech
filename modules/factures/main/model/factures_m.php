@@ -1290,9 +1290,11 @@ class Mfacture {
         global $db;
 
         $id_facture = $this->id_facture;
+
         $this->get_id_devis();
         $id_devis = $this->id_devis['id'];
         $id_facture = $this->id_facture;
+
 
         //$this->get_d_facture($this->id_facture);
         $facture_details_info = $this->facture_details_info;
@@ -1301,7 +1303,7 @@ class Mfacture {
 
         $this->Get_detail_facture_show();
         $devis_info = $this->devis_info;
-        // var_dump($devis_info);
+
 
         $this->get_facture_info();
         $info_facture = $this->facture_info;
@@ -1443,7 +1445,6 @@ class Mfacture {
         $sql = "SELECT IF('" . $this->facture_info['base_fact'] . "'='C', (SELECT iddevis FROM contrats WHERE id=$contrat), id ) as id FROM 
     		devis WHERE  devis.id =if( '" . $this->facture_info['base_fact'] . "'='C', (SELECT iddevis FROM contrats WHERE id=$contrat), $devis)";
 
-        $sql = "select * from devis";
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
@@ -1453,7 +1454,6 @@ class Mfacture {
                 $this->log .= 'Aucun enregistrement trouvé !!';
             } else {
                 $this->id_devis = $db->RowArray();
-
                 $this->error = true;
             }
         }
@@ -1558,7 +1558,7 @@ class Mfacture {
                     $this->id_facture = $this->encaissement_info['idfacture'];
                     $this->get_facture();
 
-                    //var_dump($this->facture_info);
+
 
                     if ($this->facture_info['reste'] > 0) {
                         ///var_dump("Reste > 0 => etat=3");
@@ -1697,7 +1697,6 @@ class Mfacture {
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
                 $this->solde = $db->QuerySingleValue0($sql);
-
                 $this->error = true;
             }
         }
@@ -1708,18 +1707,16 @@ class Mfacture {
 
         $mnt = str_replace(' ', '', $this->facture_info['total_ttc']);
         $clt = $this->devis_info['id_client'];
-
+       
         $this->getSoldeClient($clt);
-        
-        $sld = $this->solde['0'];
-        var_dump("Solde".$sld);
-        var_dump("Montant".$mnt);
-         var_dump("Client".$clt);
-        var_dump(number_format($sld) + number_format($mnt));
-        //var_dump(intval($sld)+intval($mnt));//icciiiii Problème l id récuppéré est éronné
-        
+      
+        $sld = $this->solde;
+
+        //"Facture REF - du 14 Decembre 2017 au 13 Janvier 2018" 
+        //Facture REF - Date
+
         $req_sql = "INSERT into compte_client(id_client,type_mouvement,montant,description,date_mouvement,solde,creusr) 
-               values($clt,'F',$mnt,'test',null, $sld+$mnt ,1)";
+               values($clt,'F',$mnt,'Facture du.',NOW(), $sld+$mnt ,1)";
         if (!$db->Query($req_sql)) {
             $this->log .= $db->Error();
             $this->error = false;
