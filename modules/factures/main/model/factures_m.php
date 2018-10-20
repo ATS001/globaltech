@@ -1533,6 +1533,9 @@ class Mfacture {
 
         $this->id_facture = $this->encaissement_info['idfacture'];
         $this->get_facture();
+        
+       
+        
         if ($this->encaissement_info['montant'] > $this->facture_info['reste']) {
             $this->error = false;
             $this->log = 'Le montant doit être inférieur ou égale au reste <b>' . $this->facture_info['reste'] . '</b>';
@@ -1552,6 +1555,7 @@ class Mfacture {
                 $this->error = false;
             } else {
                 if ($this->error == true) {
+                    
                     $this->log = '</br>Enregistrement réussie: <b>' . $this->reference . ' ID: ' . $this->last_id;
 
                     $this->maj_reste($this->encaissement_info['idfacture'], $this->encaissement_info['montant']);
@@ -1561,25 +1565,31 @@ class Mfacture {
 
 
                     if ($this->facture_info['reste'] > 0) {
-                        ///var_dump("Reste > 0 => etat=3");
+                        
                         $this->valid_etat_facture($etat = 2, $this->encaissement_info['idfacture']);
                     }
 
                     if ($this->facture_info['reste'] == 0) {
-                        //var_dump("Reste = 0 => etat=4");
+                        
                         $this->valid_etat_facture($etat = 3, $this->encaissement_info['idfacture']);
                     }
                 } else {
+                    
                     $this->log .= '</br>Enregistrement réussie: <b>' . $this->reference;
 
                     $this->log .= '</br>Un problème d\'Enregistrement ';
                 }
                 $this->log .= '</br>Statut changé! ';
+                
+                
+                $this->credit_compte_client();
+                
                 $this->error = true;
-
+                
                 if (!Mlog::log_exec($this->table_encaissement, $this->id_encaissement, 'Validation encaissement', 'Validate')) {
                     $this->log .= '</br>Un problème de log ';
                 }
+                
             }
         }
         if ($this->error == false) {
@@ -1707,36 +1717,64 @@ class Mfacture {
 
         $mnt = str_replace(' ', '', $this->facture_info['total_ttc']);
         $clt = $this->devis_info['id_client'];
-       
+        
         $this->getSoldeClient($clt);
       
         $sld = $this->solde;
 
-        //"Facture REF - du 14 Decembre 2017 au 13 Janvier 2018" 
-        //Facture REF - Date
-
+        $base=$this->facture_info['base_fact'];
+        $reference=$this->facture_info['reference'];
+        $du=$this->facture_info['du'];
+        $au=$this->facture_info['au'];
+        
+        //var_dump($this->facture_info);
+        
         $req_sql = "INSERT into compte_client(id_client,type_mouvement,montant,description,date_mouvement,solde,creusr) 
-               values($clt,'F',$mnt,'Facture du.',NOW(), $sld+$mnt ,1)";
+               values($clt,'D',$mnt,IF('$base'='C', CONCAT('Facture: ', '$reference',' du ','$du',' du ', '$au'),CONCAT('Facture: ','$reference')),NOW(), $sld+$mnt ,1)";
+        
         if (!$db->Query($req_sql)) {
             $this->log .= $db->Error();
             $this->error = false;
             $this->log .= '<br>Problème de mise à jour Etat de compte';
         }
+        //var_dump($db);
     }
 
     function credit_compte_client() {
         global $db;
 
-        $mnt = str_replace(' ', '', $this->facture_info['total_ttc']);
+        $mnt = str_replace(' ', '', $this->encaissement_info['montant'] );
+        $this->get_id_devis();
+        $id_devis = $this->id_devis['id'];
+        
+        $this->Get_detail_facture_show();
+        $devis_info = $this->devis_info;
+        
         $clt = $this->devis_info['id_client'];
+        
+        $this->getSoldeClient($clt);
+      
+        $sld = $this->solde;
 
+        $reference=$this->encaissement_info['reference'];
+        $date=$this->encaissement_info['date_encaissement'];    
+        $ref_payement=$this->encaissement_info['ref_payement'];
+        
+        //var_dump($this->facture_info);
+        
         $req_sql = "INSERT into compte_client(id_client,type_mouvement,montant,description,date_mouvement,solde,creusr) 
-               values($clt,'F',$mnt,'test',null,null,1)";
+               values($clt,'C',$mnt,CONCAT('Payement: ', '$reference',' du ',DATE_FORMAT('$date','%d-%m-%Y'),"
+                . "IF('$ref_payement'<> null,Concat(': Référence N°: ','$ref_payement'),' '))"
+                . ",NOW(), $sld-$mnt ,1)";
+        
+        
         if (!$db->Query($req_sql)) {
             $this->log .= $db->Error();
             $this->error = false;
             $this->log .= '<br>Problème de mise à jour Etat de compte';
         }
+        ////var_dump($db);
+        // Verifier Message Aucun Enregistrement apres validation
     }
 
 }
