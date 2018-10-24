@@ -1,7 +1,7 @@
 <?php 
 //var_dump($_COOKIE);
-$chart = new MHighchart();
-$chart->call_chart('recette_per_month');
+//$chart = new MHighchart();
+//$chart->call_chart('recette_per_month');
 
 
 $chart = new MHighchart();

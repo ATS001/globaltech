@@ -19,6 +19,7 @@ $tab_details_devis = view::tab_render('devis', 'Devis', $add_set=NULL, 'paper-pl
 $tab_liste_bl = view::tab_render('bl', 'Bons de Livraison', $add_set=NULL, 'bookmark' , false, 'bl');
 $tab_liste_factures = view::tab_render('factures', 'Factures', $add_set=NULL, 'file' , false, 'factures');
 $tab_liste_encaissement = view::tab_render('encaissements', 'Encaissements', $add_set=NULL, 'money' , false, 'encaissement');
+$tab_liste_bank = view::tab_render('devis', 'Bank', $add_set=NULL, 'money' , false, 'devis');
 
 ?>
 <div class="pull-right tableTools-container">
@@ -60,6 +61,7 @@ $tab_liste_encaissement = view::tab_render('encaissements', 'Encaissements', $ad
 					echo $tab_liste_bl['tab_index']; 
 					echo $tab_liste_factures['tab_index']; 
 					echo $tab_liste_encaissement['tab_index']; 
+					echo $tab_liste_bank['tab_index'];
 					?>
 					
 				</ul>
@@ -98,6 +100,14 @@ $tab_liste_encaissement = view::tab_render('encaissements', 'Encaissements', $ad
 					 	//Content (includ file - simple string - function return string)
 					 	echo $info_devis->get_list_encaissement();
 					 	echo $tab_liste_encaissement['tce'];
+					 }
+
+					 if($tab_liste_bank['tb_rl'])
+					 {
+					 	echo $tab_liste_bank['tcs'];
+					 	//Content (includ file - simple string - function return string)
+					 	include 'bank_v.php';
+					 	echo $tab_liste_bank['tce'];
 					 }
 
 

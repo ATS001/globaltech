@@ -144,7 +144,7 @@ class Highchart implements \ArrayAccess
         } else {
             $result .= 'StockChart(';
         }
-        $result .= '"rangeSelector": { "verticalAlign": "top", "x": 0,  "y": 0 },';
+        //$result .= '"rangeSelector": { "verticalAlign": "top", "x": 0,  "y": 0 },';
         $result .= $this->renderOptions();
 
         $result .= is_null($callback) ? '' : ", $callback";

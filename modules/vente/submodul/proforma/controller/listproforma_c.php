@@ -27,12 +27,14 @@ $array_column = array(
         'align'  => 'C'
     ),
     array(
-        'column' => 'clients.denomination',
-        'type'   => '',
+        'column' => 'CONCAT(clients.denomination,\' - \',ref_devise.abreviation)',
+        'type'   => 'link',
+        'link'   => array('CONCAT(clients.denomination,\' - \',ref_devise.abreviation)', 'detailsclient', 'clients.id'),
         'alias'  => 'client',
-        'width'  => '40',
+        'width'  => '23',
         'header' => 'Client',
-        'align'  => 'L'
+        'align'  => 'L',
+        'export' => 'clients.denomination',
     ),
     array(
         'column' => 'statut',
@@ -47,9 +49,9 @@ $array_column = array(
 //Creat new instance
 $list_data_table = new Mdatatable();
 //Set tabels used in Query
-$list_data_table->tables = array('proforma', 'clients');
+$list_data_table->tables = array('proforma', 'clients', 'ref_devise');
 //Set Jointure
-$list_data_table->joint = 'clients.id = proforma.id_client';
+$list_data_table->joint = 'clients.id = proforma.id_client  AND clients.id_devise = ref_devise.id';
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query
