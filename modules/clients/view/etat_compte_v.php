@@ -33,7 +33,7 @@
                     <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">Période du:</label>
                     <div class="col-xs-12 col-sm-3">
                         <div class="clearfix input-group">
-                            <input name="range_s" id="range_s" class="form-control col-xs-12" type="text">
+                            <input name="date_debut" id="date_debut" class="form-control col-xs-12" type="text">
                             <span class="input-group-addon">
                                 <i class="fa fa-calendar bigger-110"></i>
                             </span>
@@ -42,7 +42,7 @@
                     <label class="control-label col-xs-12 col-sm-1" for="email">Et :</label>
                     <div class="col-xs-12 col-sm-3">
                         <div class="clearfix input-group">
-                            <input name="range_e" id="range_e" class="form-control col-xs-12 col-sm-3" type="text">
+                            <input name="date_fin" id="date_fin" class="form-control col-xs-12 col-sm-3" type="text">
                             <span class="input-group-addon">
                                 <i class="fa fa-calendar bigger-110"></i>
                             </span>
@@ -54,8 +54,7 @@
                     </div>
                 </div>
             </form>
-
-
+    
 
             <!-- End Search Form -->
 
@@ -68,38 +67,31 @@
 
             </div>
 
-            <div class="hr hr8 hr-double hr-dotted"></div>
-
-            <div class="row">
-                <div class="col-sm-5 pull-right add_text">
-
-                </div>
-                <div class="col-sm-7 pull-left"> 
-
-                </div>
-            </div>
+            
             
         </div>
     </div>
 </div>
 <script type="text/javascript">
 
-    $('#range_s, #range_e').datepicker().next().on(ace.click_event, function () {
+    $('#date_debut, #date_fin').datepicker().next().on(ace.click_event, function () {
         $(this).prev().focus();
     });
     $(document).on('click', '.send_range_date', function () {
         $data = $('#form_search_range').serialize();
 
-        var sUrl = 'cache/test.php';
+        //var sUrl = 'modules/clients/controller/compte_client_c.php';
+              
         $.ajax({
             cache: false,
-            url: sUrl + '',
+            url  : '?_tsk=compte_client&ajax=1',
+            //url: sUrl + '',
             type: 'POST',
             data: $data,
             dataType: 'JSON',
             success: function (data) {
-                $('.zone_table').empty().append(data['table']);
-                $('.add_text').empty().append(data['add_text']);
+                $('.zone_table').empty().append(data['tab']);
+                //$('.add_text').empty().append(data['tab']);
                 $('.report_tplt').show().removeClass('hide');
                 $('.report_tplt').attr('data', $data + '&pdf=1');
             }
