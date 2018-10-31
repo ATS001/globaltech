@@ -73,7 +73,7 @@
     </div>
 </div>
 <script type="text/javascript">
-
+var $id_client=<?php echo $client->s('id'); ?>;
     $('#date_debut, #date_fin').datepicker().next().on(ace.click_event, function () {
         $(this).prev().focus();
     });
@@ -87,7 +87,8 @@
             url  : '?_tsk=compte_client&ajax=1',
             //url: sUrl + '',
             type: 'POST',
-            data: $data,
+            data: $data+'&id='+$id_client ,
+            //data: $data , 
             dataType: 'JSON',
             success: function (data) {
                 $('.zone_table').empty().append(data['tab']);

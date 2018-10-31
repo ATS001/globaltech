@@ -257,7 +257,7 @@ class Mclients {
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
-            //var_dump($this->log );
+            
         } else {
             if ($db->RowCount() == 0) {
                 $this->error = false;
@@ -819,19 +819,19 @@ class Mclients {
         }
     }
 
-    public function Gettable_detail_clients($date_debut,$date_fin) {
+    public function Gettable_detail_clients($date_debut,$date_fin,$id_client) {
 
         global $db;
-        $id_client = $this->id_client;
+       
         $table = "compte_client";
         $colms = null;
         $colms .= "  DATE_FORMAT($table.date_mouvement,'%d-%m-%Y')as date, ";
         $colms .= " $table.description, ";
         $colms .= " IF(type_mouvement='D', REPLACE(FORMAT($table.montant,0),',',' '), ' ') AS debit, ";
         $colms .= " IF(type_mouvement='C', REPLACE(FORMAT($table.montant,0),',',' '), ' ') AS credit, ";
-        $colms .= " REPLACE(FORMAT($table.solde,0),',',' ')";
+        $colms .= " REPLACE(FORMAT($table.solde,0),',',' ') AS solde";
 
-        $req_sql = " SELECT $colms FROM $table WHERE id_client = 12 and DATE_FORMAT($table.date_mouvement,'%d-%m-%Y') between '$date_debut' and '$date_fin' ";
+        $req_sql = " SELECT $colms FROM $table WHERE id_client = $id_client and DATE_FORMAT($table.date_mouvement,'%d-%m-%Y') between '$date_debut' and '$date_fin' ";
        
         if (!$db->Query($req_sql)) {
             $this->error = false;
