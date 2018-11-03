@@ -38,14 +38,12 @@ $checker = null;
     if ($checker == 2) {
         exit("0#$control_date");
     }
-
   
 $clients = new Mclients();
 
 $date_debut = Mreq::tp('date_debut');
 $date_fin = Mreq::tp('date_fin');
 $id_client = Mreq::tp('id');
-
 
 $tab_mouvements=$clients->Gettable_detail_clients($date_debut, $date_fin,$id_client);
 

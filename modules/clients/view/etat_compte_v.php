@@ -94,10 +94,11 @@ var $id_client=<?php echo $client->s('id'); ?>;
                 $('.zone_table').empty().append(data['tab']);
                 //$('.add_text').empty().append(data['tab']);
                 $('.report_tplt').show().removeClass('hide');
-                $('.report_tplt').attr('data', $data + '&pdf=1');
+                $('.report_tplt').attr('data', $data+'&id='+$id_client + '&pdf=1');
             }
         });
 
 
     });
 </script>
+ 
