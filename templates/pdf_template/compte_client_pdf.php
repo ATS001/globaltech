@@ -36,23 +36,24 @@ if(!$compte_client->Get_detail_client_show($date_debut,$date_fin,$id_client))
 global $db;
 $tableau_body = null;
 
+
 $headers = array(
-    'Id'  => '6[#]C',
+    '#' => '5[[#]C',
     'Date' => '10[#]C',
-    'Description' => '43[#]L',
-    'Débit' => '10[#]R',
-    'Crédit' => '10[#]R',
-    'Solde' => '10[#]R',
-    'Reference'=>'12[#]R',
-    'Solde Final'=>'10[#]R',
+    'Description' => '46[#]L',
+    'Débit' => '11[#]R',
+    'Crédit' => '11[#]R',
+    'Solde' => '11[#]R',
+    
 );
-
-
+ 
 $compte_client_info = $compte_client->compte_client_info;
-//var_dump($compte_client_info);
 
 $tableau_head_product = MySQL::make_table_head($headers);
 $tableau_body_product = $db->GetMTable_pdf($headers);
+
+$compte_client->Get_detail_info_client($date_debut, $date_fin, $id_client);
+$client_info=$compte_client->client_info;
 
 
 // Extend the TCPDF class to create custom Header and Footer
@@ -65,6 +66,7 @@ class MYPDF extends TCPDF {
     var $info_ste = array();
     var $info_client = array();
     var $compte_client_info = array();
+    var $client_info = array();
     var $periode = null;
     var $qr = false;
     var $no_tabl_head = true;
@@ -88,38 +90,39 @@ class MYPDF extends TCPDF {
         //Ste
         // Title
         $titre_doc = '<h1 style="letter-spacing: 2px;color;#495375;font-size: 20pt;">ETAT DE COMPTE</h1>';
-        $this->writeHTMLCell(0, 0, 140, 10, $titre_doc, 'B', 0, 0, true, 'R', true);
+        $this->writeHTMLCell(0, 0, 122, 10, $titre_doc, 'B', 0, 0, true, 'R', true);
         $this->SetTextColor(0, 0, 0);
         $this->SetFont('helvetica', '', 9);
         $date_ref=date("M Y");  
        
         $detail_client = '<table cellspacing="3" cellpadding="2" border="0">
-		<tr>
-                <td style="width:25%; color:#A1A0A0;"><strong>REFERENCE ETAT DE COMPTE 
+            <tr>
+               
+                <td style="width:40%; color:#A1A0A0;"><strong>REFERENCE 
                 </strong></td>
                 <td style="width:5%;">:</td>
-                <td style="width:75%; background-color: #eeecec; "> GT-EC/' .$this->compte_client_info['id'].'/'.$date_ref.'</td>
+                <td style="width:57%; background-color: #eeecec; "> GT-EC/' .$this->client_info['id'].'/'.$date_ref.'</td>
                 </tr>
                 <tr>
-		<td style="width:25%; color:#A1A0A0;"><strong>REFERENCE CLIENT</strong></td>
+		<td style="width:40%; color:#A1A0A0;"><strong>REFERENCE CLIENT</strong></td>
 		<td style="width:5%;">:</td>
-		<td style="width:75%; background-color: #eeecec;">' . $this->compte_client_info['reference'] . '</td>
+		<td style="width:57%; background-color: #eeecec;">' . $this->client_info['reference'] . '</td>
 		</tr> 
 		<tr>
-		<td style="width:25%; color:#A1A0A0;"><strong>MONTANT DÛ</strong></td>
+		<td style="width:40%; color:#A1A0A0;"><strong>MONTANT DÛ</strong></td>
 		<td style="width:5%;">:</td>
-		<td style="width:75%; background-color: #eeecec; ">' . $this->compte_client_info['solde_final'] . '</td>
+		<td style="width:57%; background-color: #eeecec; ">' . $this->client_info['solde_final'] . '</td>
 		</tr>
                 <tr>
-                <td style="width:25%; color:#A1A0A0;"><strong>DELAI DE PAIEMENT
+                <td style="width:40%; color:#A1A0A0;"><strong>DELAI DE PAIEMENT
                 </strong></td>
                 <td style="width:5%;">:</td>
-                <td style="width:75%; background-color: #eeecec; "> 10 Jours </td>
+                <td style="width:57%; background-color: #eeecec; "> 10 Jours </td>
                 </tr>
                 </table>';
         
 
-        $this->writeHTMLCell(0, 0, 105, 23, $detail_client, '', 0, 0, true, 'L', true);
+        $this->writeHTMLCell(0, 0, 105, 33, $detail_client, '', 0, 0, true, 'L', true);
     
         //$this->Ln();
         //Comment fati 04/03 pour probleme tableau complement
@@ -188,8 +191,9 @@ class MYPDF extends TCPDF {
 $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8', false);
 
 $pdf->Table_head = $tableau_head_product;
-$pdf->info_client = $compte_client_info;
+//$pdf->info_client = $compte_client_info;
 $pdf->compte_client_info=$compte_client_info;
+$pdf->client_info=$client_info;
 
 
 // set document information
