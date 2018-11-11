@@ -47,7 +47,7 @@ $id_client = Mreq::tp('id');
 
 $tab_mouvements=$clients->Gettable_detail_clients($date_debut, $date_fin,$id_client);
 
-$array = array("tab" => $tab_mouvements);
+$array = array("tab" => $tab_mouvements,"solde_final"=>$clients->solde_final);
 
 echo json_encode($array);
 

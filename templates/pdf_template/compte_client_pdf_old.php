@@ -95,7 +95,7 @@ class MYPDF extends TCPDF {
         //Ste
         // Title
         $titre_doc = '<h1 style="letter-spacing: 2px;color;#495375;font-size: 20pt;">ETAT DE COMPTE</h1>';
-        $this->writeHTMLCell(0, 0, 122, 7, $titre_doc, 'B', 0, 0, true, 'R', true);
+        $this->writeHTMLCell(0, 0, 122, 10, $titre_doc, 'B', 0, 0, true, 'R', true);
         $this->SetTextColor(0, 0, 0);
         $this->SetFont('helvetica', '', 9);
         $date_ref=date("M Y");  
@@ -132,12 +132,12 @@ class MYPDF extends TCPDF {
                 </table>';
         
 
-        $this->writeHTMLCell(0, 0, 105, 20, $detail_client, '', 0, 0, true, 'L', true);
+        $this->writeHTMLCell(0, 0, 105, 33, $detail_client, '', 0, 0, true, 'L', true);
     
         //$this->Ln();
         //Comment fati 04/03 pour probleme tableau complement
         $this->setCellPadding(0);
-        $height = $this->getLastH() + $this->GetY()+5;
+        $height = $this->getLastH() + $this->GetY()+10;
         //$this->SetTopMargin(10 + $this->GetY());
         //Info général
         $tableau_head = $this->Table_head;
@@ -170,9 +170,9 @@ class MYPDF extends TCPDF {
        // $this->write2DBarcode($qr_content, 'QRCODE,H', 15, '', 25, 25, $style, 'N');
         //}
         $ste_c = new MSte_info();
-        $this->SetY(-20);
+        $this->SetY(-30);
         $ste = $ste_c->get_ste_info_report_footer(1);
-        $this->writeHTMLCell(0, 0, '','', $ste, '', 0, 0, true, 'C', true);
+        $this->writeHTMLCell(0, 0, '', '', $ste, '', 0, 0, true, 'C', true);
         // Position at 15 mm from bottom
         $this->SetY(-15);
         // Set font
@@ -251,7 +251,6 @@ $pdf->SetFont('helvetica', '', 9);
 $pdf->AddPage();
 //If is generated to stored the QR is need
 // Print text using writeHTMLCell()
-
 $pdf->Table_body = $tableau_body_product;
 $html = $pdf->Table_body;
 // ---------------------------------------------------------
@@ -282,7 +281,7 @@ p {
 
 
 </style>
-<table style="width: 685px; hight: 685px;" cellpadding="2">
+<table style="width: 685px;" cellpadding="2">
 
 <tr>
     <td colspan="2" style="color: #E99222;font-family: sans-serif;font-weight: bold;">Arrêté la présente Facture à la somme de :
@@ -300,6 +299,8 @@ p {
        Veuiller détacher la partie ci-dessous et envoyer avec votre versement.
     </td>
 </tr>
+
+<tr><td></td></tr>
 
     <tr>
         <td width="50%" align="left">
@@ -374,6 +375,8 @@ p {
     </td>
     </tr>
             
+            <tr><td></td></tr>
+            
             <tr>
             <td width="50%" align="left">
             <table class="table" cellspacing="2" cellpadding="2"  style="width: 300px; border:1pt solid black;" >
@@ -412,38 +415,33 @@ p {
             
         </table>
         </td>
-           
-        <td width="50%">
-        <table class="table">
-          <tbody>
-            <tr>
-            <td></td>
-            <td colspan="2" align="right" style="font: underline; width: 150px;  padding-right: 100px;">
-                <br>
-            <strong>' . $signature . '</strong>
-            </td>
-            </tr>
-            
-            <tr>
-            <td></td>
-            <td colspan="2" align="right" style="font: underline; width: 200px;  padding-right: 500px;">
-            <span class="profile-picture">
-			<img width="150" height="100" class="editable img-responsive" alt="logo_global.png" id="avatar2" src="./upload/signature/signature_ali.jpg" />
-            </span>	
+</tr>
 
-            </td>
-            </tr>
-
-          </tbody>
-        </table> 
-        </td>
-</tr></table>';
+<tr>
+    <td colspan="2" align="right" style="font: underline; width: 550px;  padding-right: 200px;">
+        <br><br><br><br><br>
+        <strong>' . $signature . '</strong>
+    </td>
+</tr>';
 //$pdf->lastPage(); 
 	
+$block_sum .= '
+<tr>
+<td colspan="2" align="right" style="font: underline; width: 620px;  padding-right: 200px;">
+        <br>
+        <span class="profile-picture">
+			<img width="150" height="150" class="editable img-responsive" alt="logo_global.png" id="avatar2" src="./upload/signature/signature_ali.jpg" />
+		</span>	
+
+    </td>
+</tr>
+</table>';
+
+
+
+
 $pdf->writeHTML($html, true, false, true, false, '');
- 
-/*$y = $pdf->GetY();
- //var_dump($y);
+/* $y = $pdf->GetY();
   //No space for Sum Blok then AddPage
   if($y > 190)
   {
@@ -453,11 +451,15 @@ $pdf->writeHTML($html, true, false, true, false, '');
 
   }else{
   $pdf->writeHTML($block_sum, true, false, true, false, '');
-  }
- * 
- */ 
+  } */
 $pdf->writeHTMLTogether($block_sum, $ln = true, $fill = false, $reseth = false, $cell = false, $align = '');
+/* $block_sum1 = 'Y: '.$y;
+  $pdf->writeHTML($block_sum1, true, false, true, false, '');
+  $pdf->writeHTML($block_sum, true, false, true, false, '');
+  $y = $pdf->GetY();
 
+
+  $block_sum1 = 'Y: '.$y; */
 
 // Close and output PDF document
 // This method has several options, check the source code documentation for more information.
