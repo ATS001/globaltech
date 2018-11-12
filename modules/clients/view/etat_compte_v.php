@@ -63,9 +63,11 @@
 
             <div class="zone_table">
             </div>
-            <div>Solde Final</div>
-            <div class="zone_solde_final">
+            <div style="text-align: right">
+                 <div class="zone_solde_final" style="font-weight: bold">
+                     
                 
+            </div>
             </div>
 
             
@@ -93,7 +95,7 @@ var $id_client=<?php echo $client->s('id'); ?>;
             dataType: 'JSON',
             success: function (data) {
                 $('.zone_table').empty().append(data['tab']);
-                $('.zone_solde_final').empty().append(data['solde_final']);
+                $('.zone_solde_final').empty().append("Montant dû : ").append(data['solde_final']);
                 $('.report_tplt').show().removeClass('hide');
                 $('.report_tplt').attr('data', $data+'&id='+$id_client + '&pdf=1');
             }

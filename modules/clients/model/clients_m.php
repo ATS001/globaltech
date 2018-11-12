@@ -821,30 +821,36 @@ class Mclients {
     }
 
     public function Gettable_detail_clients($date_debut, $date_fin, $id_client) {
+        $date_d= date('Y-m-d', strtotime($date_debut));
+        $date_f= date('Y-m-d', strtotime($date_fin));
 
         global $db;
 
         $table = "compte_client";
         
-        $req_sql = "SELECT @n := @n + 1 n ,' ' AS DATE, 'ANCIEN SOLDE' AS description
-                ,' ' AS debit
-                ,' ' AS credit
-                ,CONCAT(REPLACE(FORMAT( IFNULL(SUM(compte_client.solde),0),0),',',' '),' ', dev.abreviation) AS solde
-                FROM compte_client,clients c, ref_devise dev ,(SELECT @n := 0) m WHERE c.id=compte_client.id_client
-                AND  dev.id=c.id_devise AND compte_client.id_client =  $id_client  
-                AND  DATE_FORMAT(compte_client.date_mouvement,'%d-%m-%Y') < '$date_debut'
+        $req_sql = "(SELECT @n := @n + 1 n ,' ' AS DATE, 'ANCIEN SOLDE' AS description
+,' ' AS debit
+,' ' AS credit
+,(
+SELECT 0  FROM DUAL WHERE NOT EXISTS (SELECT * FROM compte_client cc WHERE  cc.id_client=compte_client.id_client AND cc.date_mouvement < '$date_d' )
+UNION
+(SELECT  CONCAT(REPLACE(FORMAT( cc.solde,0),',',' '),' ', dev.abreviation) FROM compte_client cc WHERE cc.id_client=compte_client.id_client AND cc.date_mouvement < '$date_d'  ORDER BY cc.id DESC LIMIT 1 )
+) AS solde
+FROM compte_client,clients c, ref_devise dev ,(SELECT @n := 0) m WHERE c.id=compte_client.id_client AND  dev.id=c.id_devise
+AND  compte_client.id_client = $id_client LIMIT 1)
+
 
                 UNION     
 
-                SELECT   @n := @n + 1 n ,DATE_FORMAT(compte_client.date_mouvement,'%d-%m-%Y')AS DATE, 
+                (SELECT   @n := @n + 1 n ,DATE_FORMAT(compte_client.date_mouvement,'%d-%m-%Y')AS DATE, 
                 compte_client.description AS description, 
                 IF(type_mouvement='D', REPLACE(FORMAT(compte_client.montant,0),',',' '), ' ') AS debit,  
                 IF(type_mouvement='C', REPLACE(FORMAT(compte_client.montant,0),',',' '), ' ') AS credit,
                 CONCAT(REPLACE(FORMAT(compte_client.solde,0),',',' '),' ', dev.abreviation) AS solde
                 FROM compte_client,clients c, ref_devise dev WHERE c.id=compte_client.id_client
                 AND  dev.id=c.id_devise AND compte_client.id_client =  $id_client AND 
-                DATE_FORMAT(compte_client.date_mouvement,'%d-%m-%Y') BETWEEN '$date_debut' AND '$date_fin'
-                       ";
+                compte_client.date_mouvement BETWEEN '$date_d' AND '$date_f'
+                       order by compte_client.id)";
 
         
         if (!$db->Query($req_sql)) {
@@ -857,16 +863,16 @@ class Mclients {
         $headers = array(
             'Id' => '5[#]center',
             'Date' => '5[#]center',
-            'Description' => '30[#]center',
+            'Description' => '30[#]left',
             'Débit' => '8[#]alignRight',
             'Crédit' => '8[#]alignRight',
             'Solde' => '12[#]alignRight',
         );
-
+        
 
         $tableau = $db->GetMTable($headers);
         
-        var_dump($this->Get_detail_info_client($date_debut, $date_fin, $id_client));
+        $this->Get_detail_info_client($date_debut, $date_fin, $id_client);
         $this->solde_final=$this->client_info['solde_final'];
         //var_dump($this->solde_final);
         return $tableau;
@@ -908,6 +914,9 @@ class Mclients {
 
     public function Get_detail_client_show($date_debut, $date_fin, $id_client) {
         $id_client = $this->id_client;
+         $date_d= date('Y-m-d', strtotime($date_debut));
+        $date_f= date('Y-m-d', strtotime($date_fin));
+        
         global $db;
         $i = 0;
         /*
@@ -920,23 +929,26 @@ class Mclients {
 
          *  //var_dump($req_sql);
          */
-         $req_sql = "SELECT @n := @n + 1 n ,' ' AS DATE, 'ANCIEN SOLDE' AS description
+         $req_sql = "(SELECT @n := @n + 1 n ,' ' AS DATE, 'ANCIEN SOLDE' AS description
 ,' ' AS debit
 ,' ' AS credit
-,REPLACE(FORMAT( IFNULL(SUM(compte_client.solde),0),0),',',' ') AS solde
-FROM compte_client,clients c ,(SELECT @n := 0) m WHERE c.id=compte_client.id_client
-AND  compte_client.id_client = $id_client 
-AND  DATE_FORMAT(compte_client.date_mouvement,'%d-%m-%Y') < '$date_debut'
+,(
+SELECT 0  FROM DUAL WHERE NOT EXISTS (SELECT * FROM compte_client cc WHERE  cc.id_client=compte_client.id_client AND cc.date_mouvement < '$date_d' )
+UNION
+(SELECT  REPLACE(FORMAT( cc.solde,0),',',' ') FROM compte_client cc WHERE cc.id_client=compte_client.id_client AND cc.date_mouvement < '$date_d'  ORDER BY cc.id DESC LIMIT 1 )
+) AS solde
+FROM compte_client,clients c, (SELECT @n := 0) m WHERE c.id=compte_client.id_client
+AND  compte_client.id_client = $id_client LIMIT 1)
 
 UNION     
 
-SELECT   @n := @n + 1 n ,DATE_FORMAT(compte_client.date_mouvement,'%d-%m-%Y')AS DATE, 
+(SELECT   @n := @n + 1 n ,DATE_FORMAT(compte_client.date_mouvement,'%d-%m-%Y')AS DATE, 
 compte_client.description AS description, 
 IF(type_mouvement='D', REPLACE(FORMAT(compte_client.montant,0),',',' '), ' ') AS debit,  
 IF(type_mouvement='C', REPLACE(FORMAT(compte_client.montant,0),',',' '), ' ') AS credit,
 REPLACE(FORMAT(compte_client.solde,0),',',' ') AS solde
 FROM compte_client,clients c WHERE c.id=compte_client.id_client AND compte_client.id_client = $id_client AND 
-DATE_FORMAT(compte_client.date_mouvement,'%d-%m-%Y') BETWEEN  '$date_debut' AND '$date_fin' ORDER BY compte_client.id
+compte_client.date_mouvement BETWEEN  '$date_d' AND '$date_f' ORDER BY compte_client.id)
        ";
         if (!$db->Query($req_sql)) {
             $this->error = false;
@@ -961,7 +973,9 @@ DATE_FORMAT(compte_client.date_mouvement,'%d-%m-%Y') BETWEEN  '$date_debut' AND 
     }
 
     public function Get_detail_info_client($date_debut, $date_fin, $id_client) {
-        $id_client = $this->id_client;
+        $date_d= date('Y-m-d', strtotime($date_debut));
+        $date_f= date('Y-m-d', strtotime($date_fin));
+     
         global $db;
         $i = 0;
 
@@ -975,9 +989,9 @@ DATE_FORMAT(compte_client.date_mouvement,'%d-%m-%Y') BETWEEN  '$date_debut' AND 
           FROM compte_client mvt 
           WHERE mvt.id_client = compte_client.`id_client` ORDER BY mvt.id DESC LIMIT 1) AS solde_final
           FROM compte_client,clients c,ref_ville v,ref_devise dev
-          WHERE c.id_devise=dev.id and c.id_ville=v.id and  compte_client.id_client=c.id and compte_client.id_client = $id_client "
-                . "AND DATE_FORMAT(compte_client.date_mouvement,'%d-%m-%Y') BETWEEN '$date_debut' and '$date_fin' "
-                . "ORDER BY compte_client.id";
+          WHERE c.id_devise=dev.id and c.id_ville=v.id and  compte_client.id_client=c.id and compte_client.id_client = $id_client 
+          AND compte_client.date_mouvement BETWEEN '$date_d' and '$date_f'
+          ORDER BY compte_client.id";
 
 
         if (!$db->Query($req_sql)) {
@@ -993,7 +1007,9 @@ DATE_FORMAT(compte_client.date_mouvement,'%d-%m-%Y') BETWEEN  '$date_debut' AND 
                 $this->error = true;
             }
         }
-        //var_dump($this->compte_client_info);
+        
+        //var_dump($this->client_info);
+        //var_dump($db);
         if ($this->error == false) {
             return false;
         } else {
