@@ -7,8 +7,8 @@ $posted_data = array(
         );
        
 
-
-$checker = null;
+  $er=false;
+  $checker = null;
   $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
 
   if($posted_data['date_debut'] == NULL){
@@ -23,22 +23,24 @@ $checker = null;
     $checker = 1;
   }
   
-
   $empty_list.= "</ul>";
-  if($checker == 1)
-  {
-    exit("0#$empty_list");
-  }
-
+  
   if (date('Y-m-d', strtotime($posted_data['date_debut'])) > date('Y-m-d', strtotime($posted_data['date_fin']))) {
 
-        $control_date = "<ul>La date de début doit être inférieur à la date de fin </ul>";
+        $empty_list = "<ul>La date de début doit être inférieur à la date de fin </ul>";
         $checker = 2;
     }
 
-    if ($checker == 2) {
-        exit("0#$control_date");
-    }
+  
+  
+  if($checker == 1 or $checker ==2)
+  {
+      $er=true;
+     //$array_error=array("error" => true ,"mess"=>$empty_list);
+     //echo json_encode($array_error);
+    
+  }
+   
   
 $clients = new Mclients();
 
@@ -48,7 +50,7 @@ $id_client = Mreq::tp('id');
 
 $tab_mouvements=$clients->Gettable_detail_clients($date_debut, $date_fin,$id_client);
 
-$array = array("tab" => $tab_mouvements,"solde_final"=>$clients->solde_final);
+$array = array("tab" => $tab_mouvements,"solde_final"=>$clients->solde_final,"error" => $er ,"mess"=>$empty_list);
 
 echo json_encode($array);
 

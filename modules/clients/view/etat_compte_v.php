@@ -60,7 +60,7 @@
 
 
             <div class="space"></div>
-
+          
             <div class="zone_table">
             </div>
             <div style="text-align: right">
@@ -94,10 +94,18 @@ var $id_client=<?php echo $client->s('id'); ?>;
             //data: $data , 
             dataType: 'JSON',
             success: function (data) {
+               if(data['error'] == true)
+               {
+                    ajax_loadmessage(data['mess'] ,'nok',5000);
+                }
+                    //return false;
+                else{
+                
                 $('.zone_table').empty().append(data['tab']);
                 $('.zone_solde_final').empty().append("Montant dû : ").append(data['solde_final']);
                 $('.report_tplt').show().removeClass('hide');
                 $('.report_tplt').attr('data', $data+'&id='+$id_client + '&pdf=1');
+            }
             }
         });
 
