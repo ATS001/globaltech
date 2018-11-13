@@ -1696,9 +1696,9 @@ class Mfacture {
     public function getSoldeClient($id_client) {
         global $db;
 
-        $sql = "SELECT 0  FROM DUAL WHERE NOT EXISTS (SELECT * FROM compte_client cc WHERE  cc.id_client=$id_client )
+        $sql = "SELECT 0  AS solde FROM DUAL WHERE NOT EXISTS (SELECT * FROM compte_client cc WHERE  cc.id_client=$id_client )
 UNION
- SELECT compte_client.solde FROM compte_client where compte_client.id_client =$id_client  GROUP BY id_client HAVING MAX(id)";
+(SELECT compte_client.solde AS solde FROM compte_client where compte_client.id_client =$id_client order by id desc limit 1 )";
 
         if (!$db->Query($sql)) {
             $this->error = false;
