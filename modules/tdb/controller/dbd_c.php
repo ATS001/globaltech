@@ -1,7 +1,12 @@
 <?php 
 //var_dump($_COOKIE);
 $chart = new MHighchart();
+$chart->call_chart('recette_per_month');
+
+
+$chart = new MHighchart();
 $chart->titre = 'Evolution des recettes par mois';
+$chart->id_chart = 'recette_per_month';
 $chart->items = 'Fcfa';
 $chart->column_render('v_recet_per_month', 6);
 

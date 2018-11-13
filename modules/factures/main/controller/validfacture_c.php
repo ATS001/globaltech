@@ -13,7 +13,8 @@
 	//$etat = $facture->facture_info['etat'];
 
 
-	if($facture->valid_facture())
+	//if($facture->debit_compte_client())
+        if($facture->valid_facture())
 	{
 		exit("1#".$facture->log);
 

@@ -10,6 +10,8 @@ class MHighchart
 	var $container       = NULL;
 	var $chart_rended    = NULL;
 	var $chart_generated = NULL;
+	var $id_chart        = NULL;
+	var $chart_only      = false;
 
 
 	/**
@@ -162,7 +164,7 @@ class MHighchart
 		$chart->tooltip->formatter = new HighchartJsExpr("function() {
 			return Highcharts.numberFormat(this.y, 0)+' Fcfa';}"
             );
-
+		
 		
 
 		$chart->series[] = array(
@@ -179,18 +181,29 @@ class MHighchart
      */
     private function Graph_render()
     {
+    	$main_box_start = $this->chart_only == false ? '<div class="col-sm-'.$this->width.'"><div class="widget-box">' : null;
+    	$main_box_end   = $this->chart_only == false ? '</div><!-- /.widget-box --></div>' : null;
+    	
     	$this->chart_rended = '
-            <div class="col-sm-'.$this->width.'">
-                <div class="widget-box">
+            '.$main_box_start .'
                     <div class="widget-header widget-header-flat widget-header-small">
                         <h5 class="widget-title">
                             <i class="ace-icon fa fa-signal"></i>
                             '.$this->titre.'
                         </h5>
+                        <div class="widget-toolbar no-border">
+                            			
+                            <a href="#"  class="filter_highchart" this_c="'.$this->container.'" id_chart="'.MInit::crypt_tp('chart', $this->id_chart).'">
+								<i class="ace-icon fa fa-filter"></i>
+							</a>
+                            <a href="#" data-action="reload" class="refrech_highchart" this_c="'.$this->container.'" id_chart="'.MInit::crypt_tp('chart', $this->id_chart).'">
+								<i class="ace-icon fa fa-refresh"></i>
+							</a>
+						</div>
+						
 
 
                     </div>
-
                     <div class="widget-body">
                         <div class="widget-main">
 
@@ -199,8 +212,19 @@ class MHighchart
 
                         </div><!-- /.widget-main -->
                     </div><!-- /.widget-body -->
-                </div><!-- /.widget-box -->
-            </div>';
+                '.$main_box_end.'';
 
+    }
+
+    public function call_chart($chart)
+    {
+    	//Format file link
+    	$file_tplt = MPATH_THEMES.'chart_template/'.$chart.'_chart.php';
+    	if(!file_exists($file_tplt)){
+    		exit('0#<br>Le Graph n\'existe pas, contactez l\'administrateur'.$file_tplt);
+    	}
+
+        //Evry thing ok load template
+    	include_once $file_tplt;
     }
 }

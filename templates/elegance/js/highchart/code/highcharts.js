@@ -410,3 +410,124 @@ function(a){if(c[a])c[a][f]()});if(d.hoverSeries===c||(d.hoverPoint&&d.hoverPoin
 a);q(this,a?"select":"unselect")},drawTracker:I.drawTrackerGraph})})(K);(function(a){var C=a.Chart,E=a.each,F=a.inArray,n=a.isArray,h=a.isObject,e=a.pick,u=a.splat;C.prototype.setResponsive=function(e){var h=this.options.responsive,n=[],f=this.currentResponsive;h&&h.rules&&E(h.rules,function(c){void 0===c._id&&(c._id=a.uniqueKey());this.matchResponsiveRule(c,n,e)},this);var c=a.merge.apply(0,a.map(n,function(c){return a.find(h.rules,function(a){return a._id===c}).chartOptions})),n=n.toString()||void 0;
 n!==(f&&f.ruleIds)&&(f&&this.update(f.undoOptions,e),n?(this.currentResponsive={ruleIds:n,mergedOptions:c,undoOptions:this.currentOptions(c)},this.update(c,e)):this.currentResponsive=void 0)};C.prototype.matchResponsiveRule=function(a,h){var n=a.condition;(n.callback||function(){return this.chartWidth<=e(n.maxWidth,Number.MAX_VALUE)&&this.chartHeight<=e(n.maxHeight,Number.MAX_VALUE)&&this.chartWidth>=e(n.minWidth,0)&&this.chartHeight>=e(n.minHeight,0)}).call(this)&&h.push(a._id)};C.prototype.currentOptions=
 function(e){function q(e,c,k,r){var f;a.objectEach(e,function(a,b){if(!r&&-1<F(b,["series","xAxis","yAxis"]))for(a=u(a),k[b]=[],f=0;f<a.length;f++)c[b][f]&&(k[b][f]={},q(a[f],c[b][f],k[b][f],r+1));else h(a)?(k[b]=n(a)?[]:{},q(a,c[b]||{},k[b],r+1)):k[b]=c[b]||null})}var x={};q(e,this.options,x,0);return x}})(K);return K});
+
+
+$('body').on('click', '.refrech_highchart', function() {
+
+    var $contnair_chart = '#'+$(this).attr('this_c');
+    var $widget = $($contnair_chart).closest('.widget-box');
+    var $id_chart = $(this).attr('id_chart');
+	
+	$.ajax({
+		cache: false,
+		url  : '?_tsk=chart&ajax=1',
+		type : 'POST',
+		data : $id_chart,
+		dataType:"html",
+		success: function(data){
+			bootbox.hideAll();
+			var data_arry = data.split("#");
+			if(data_arry[0]==3){
+
+				ajax_loadmessage(data_arry[1],'nok',5000)
+				$($contnair_chart).empty();
+
+				if(typeof $redirect !== 'undefined'){
+					ajax_loader($redirect,'');
+
+				}else{
+					window.setTimeout( function(){
+					window.location = "./";
+				    }, 5000 );
+
+				}
+			}else if(data_arry[0]==4){
+				bootbox.process({
+	    		    message:'Working',
+	            });
+	            $($contnair_chart).empty();
+	            $($contnair_chart).html('');
+				ajax_loadmessage(data_arry[1],'nok',5000)
+				window.setTimeout( function(){
+					    window.location = "./";
+				        }, 5000 );
+				
+
+			}else{
+
+				$($widget).empty().html(data);
+            }
+		},
+		timeout: 30000,
+		error: function(){
+			ajax_loadmessage('Délai non attendue','nok',5000)
+		}
+
+        // will fire when timeout is reached
+     
+	});
+
+});
+
+$('body').on('click', '.filter_highchart', function() {
+
+	$('.filtre_fields').show();
+	alert('filter');
+
+    var $contnair_chart = '#'+$(this).attr('this_c');
+    var $widget = $($contnair_chart).closest('.widget-box');
+    var $id_chart = $(this).attr('id_chart');
+	$.ajax({
+		cache: false,
+		url  : '?_tsk=chart&ajax=1',
+		type : 'POST',
+		data : $id_chart+'&filtr=1',
+		dataType:"html",
+		success: function(data){
+			bootbox.hideAll();
+			var data_arry = data.split("#");
+			if(data_arry[0]==3){
+
+				ajax_loadmessage(data_arry[1],'nok',5000)
+				$($contnair_chart).empty();
+
+				if(typeof $redirect !== 'undefined'){
+					ajax_loader($redirect,'');
+
+				}else{
+					window.setTimeout( function(){
+					window.location = "./";
+				    }, 5000 );
+
+				}
+			}else if(data_arry[0]==4){
+				bootbox.process({
+	    		    message:'Working',
+	            });
+	            $($contnair_chart).empty();
+	            $($contnair_chart).html('');
+				ajax_loadmessage(data_arry[1],'nok',5000)
+				window.setTimeout( function(){
+					    window.location = "./";
+				        }, 5000 );
+				
+
+			}else{
+
+				$($contnair_chart).empty().html(data);
+            }
+		},
+		timeout: 30000,
+		error: function(){
+			ajax_loadmessage('Délai non attendue','nok',5000)
+		}
+
+        // will fire when timeout is reached
+     
+	});   
+});
+/*
+new Highcharts.Chart({"exporting":{"enabled":true},"chart":{"renderTo":"a4a23c5ac81564b51aaecc221e441a09","type":"column","plotBackgroundColor":null,"plotBorderWidth":null,"plotShadow":false},"title":{"text":"Evolution des recettes par mois"},"subtitle":{"text":null},"xAxis":{"categories":["f\u00e9vrier","mars","avril","mai","juin","juillet"]},"yAxis":{"min":0,"title":{"text":"Recette (FCFA)"}},"legend":{"layout":"vertical","backgroundColor":"#FFFFFF","align":"left","verticalAlign":"top","x":100,"y":70,"floating":1,"shadow":1},
+	"rangeSelector": { "verticalAlign": "top", "x": 0,  "y": 0 },
+	"tooltip":{"formatter":function() {
+			return Highcharts.numberFormat(this.y, 0)+' Fcfa';}},"series":[{"name":"2018","data":[2290000,8496548,33156355,22561800,7347021,1000]}]});*/
