@@ -45,6 +45,7 @@ $tab_abn          = view::tab_render('contrats', 'Contrats', $add_set=NULL, 'boo
 $tab_bl           = view::tab_render('bl', 'Bons de Livraison', $add_set=NULL, 'money' , false, 'feedbl');
 $tab_factures     = view::tab_render('factures', 'Factures', $add_set=NULL, 'money' , false, 'feed2');
 $tab_encaissement = view::tab_render('encaissements', 'Encaissements', $add_set=NULL, 'money' , false, 'feedenc');
+$tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL, 'money' , false, 'etat_compte');
 
 ?>
 <div class="pull-right tableTools-container">
@@ -135,6 +136,16 @@ $tab_encaissement = view::tab_render('encaissements', 'Encaissements', $add_set=
                             <a data-toggle="tab" href="#feedenc">
                                 <i class="red ace-icon fa fa-money bigger-120"></i>
                                 Encaissements
+                            </a>
+                        </li>
+                        <?php
+                        }
+                        if($tab_encaissement['tb_rl'])
+                        { ?>
+                        <li>
+                            <a data-toggle="tab" href="#etat_compte">
+                                <i class="black ace-icon fa fa-bank bigger-120"></i>
+                                Etat de compte
                             </a>
                         </li>
                         <?php
@@ -772,8 +783,36 @@ $tab_encaissement = view::tab_render('encaissements', 'Encaissements', $add_set=
                             </div><!-- /. feed row bl -->
                       
                         </div><!-- /#feed bl-->
+                        
+                         <div id="etat_compte" class="tab-pane">
+                            <div class="profile-feed row">
+                                   
+                                <span>
+
+                                     <?php
+					 if($tab_mvmts_compte['tb_rl'])
+					 {
+					 	echo $tab_mvmts_compte['tcs'];
+					 	//Content (includ file - simple string - function return string)
+					 	include 'etat_compte_v.php';
+					 	echo $tab_mvmts_compte['tce'];
+					 }
+                                    ?>  
+
+                                    
+                                </span>        
+
+                            </div><!-- /. feed row etat compte -->
+                      
+                        </div><!-- /#feed etat compte-->
+                        
+                                   
 
                     </div><!-- /#tab-content -->
+                    
+                    
+				
+                                
                     </div><!-- /#tattable -->
                 </div>
             </div><!-- /# user profile -->
