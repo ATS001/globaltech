@@ -38,6 +38,11 @@ class Mdatatable
     var $btn_add_data     = null;//Used to set more data to Button Add
     var $btn_add_check    = false;//Used in submodul check if no btn add data then remove defalut add btn 
     var $btn_action       = true;//Swap to false if dont want show btn Action
+    var $use_filter       = false;//set to true to enable filter (setting into view)
+    var $data_filter      = array();// Set columns should be filtred (setting controller)
+    var $where_f          = null;//fit with Function get where_filter
+    var $tag_filter       = null;//Format Tag br show in header of table when filter applied
+    var $task_add         = null;//Setup Task add if different of default task
     
 
 
@@ -146,6 +151,103 @@ class Mdatatable
         }
     }
 
+    /**
+     * [where_filter description]
+     * @param  [type] $table     [description]
+     */
+    private function where_filter()
+    {
+        //Id Table HTML
+        $table            = $this->main_table;
+        //Col shold be filtres 
+        $data_filter      = $this->data_filter;
+
+        $data_form_filter = Cookie::Get($table.'_grid_flt', null);
+        if(empty($data_form_filter)){
+            return null;
+        }
+        //When FIlter not null format where filter based to data_filter
+        //Format form data to array
+        $data_form_filter = json_decode($data_form_filter, true);
+        
+        $input_name_arr = array_column($data_form_filter, 'name');
+        $input_valu_arr = array_column($data_form_filter, 'value');
+        
+        $data_form_filter = array_combine($input_name_arr, $input_valu_arr);
+
+        
+        $base_columns = $this->columns;
+        $columns = array_column($this->columns, 'alias');
+
+        $render = $tag_filter = $tag_filter_ex = NULL;
+        $tag_filter .= "      <div class=\"btn-group btn-overlap zone_tag_filter\">";
+        $tag_filter_ex .= "<ul>";
+        foreach ($base_columns as $key => $value)
+        {
+            
+            if(array_key_exists($value['alias'], $data_filter))
+            {
+                $id    = $value['alias'];
+                $type  = $data_filter[$id][0];
+                $column = $value['column'];
+
+                
+                //$data_input = $data_form_filter[$id];
+                
+                switch ($type) {
+                    case 'int':
+                        if($data_form_filter[$id] != null)
+                        {
+                            $input = MySQL::SQLValue($data_form_filter[$id]);
+                            $render .= " AND $column like $input ";
+                            $tag_filter .= " <span class=\"label label-info spaced arrowed-right\">".$value['header']." Egale à: ".$data_form_filter[$id]."</span> ";
+                            $tag_filter_ex .= " <li>".$value['header']." Egale à: ".$data_form_filter[$id]."</li> ";
+                        }
+                        break;
+                    case 'text':
+                        if($data_form_filter[$id] != null)
+                        {
+                            $input = MySQL::SQLValue("%".$data_form_filter[$id]."%");
+                            $render .= " AND $column like $input ";
+                            $tag_filter .= " <span class=\"label label-info spaced arrowed-right\">".$value['header']." Contient: ".$data_form_filter[$id]."</span> ";
+                            $tag_filter_ex .= " <li>".$value['header']." Contient: ".$data_form_filter[$id]."</li> ";
+                            
+                        }    
+                        
+                    //var_dump($data_form_filter[$id]);
+                        break;
+                    case 'date':
+                        if($data_form_filter[$id.'_s'] != null AND $data_form_filter[$id.'_e'] != null)
+                        {
+                            $date_s = MySQL::SQLValue(date('Y-m-d',strtotime($data_form_filter[$id.'_s'])));
+                            $date_e = MySQL::SQLValue(date('Y-m-d',strtotime($data_form_filter[$id.'_e'])));
+                            $render .= " AND ($column BETWEEN $date_s AND $date_e) ";
+                            $tag_filter .= " <span class=\"label label-info spaced arrowed-right\">".$value['header']." Entre : ".$data_form_filter[$id.'_s']." Et : ".$data_form_filter[$id.'_e']."</span> ";
+                            $tag_filter_ex .= " <li>".$value['header']." Entre : ".$data_form_filter[$id.'_s']." Et : ".$data_form_filter[$id.'_e']."</li> ";
+                        }
+                        
+                    //var_dump($data_form_filter[$id.'_s'].'  '.$data_form_filter[$id.'_e']);
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+                
+            }
+                    
+        }
+        
+        $tag_filter .= "</div>";
+        $tag_filter_ex .= "</ul>";
+        $this->where_f = $render;   
+        $this->tag_filter = $tag_filter;    
+        if(Mreq::tp('export') == 1){
+            $this->tag_filter = $tag_filter_ex; 
+        }
+
+
+    }
+
     private function get_where()
     {
     	// check search value exist
@@ -216,8 +318,9 @@ class Mdatatable
     private function export_data($format)
     {
     	//Export data to CSV File
-    	$file_name = $this->file_name;
-    	$title     = $this->title_report;
+        $file_name  = $this->file_name;
+    	$title      = $this->title_report;
+        $tag_filter = $this->tag_filter; 
         if($file_name == null or $title == null)
         {
             $this->error = false;
@@ -262,7 +365,7 @@ class Mdatatable
             
             
             
-    		if(!Minit::Export_pdf($headers, $file_name, $title))
+    		if(!Minit::Export_pdf($headers, $file_name, $title, $tag_filter))
             {
                 $this->error = false;
                 $this->log   = '<br\>Erreur export PDF';
@@ -278,7 +381,18 @@ class Mdatatable
 
     public function Query_maker()
     {
+        
+
     	$params = $this->params;
+        if(array_key_exists('serch', $params) && $params['serch'] == 1)
+        {
+            $output = $this->call_filter();
+            if($output)
+            {
+                return $output;
+            }
+
+        }
     	$where = $where_s = $sqlTot = $sqlRec = NULL;
     	$data = array();
     	$this->get_list_table();
@@ -288,7 +402,8 @@ class Mdatatable
     	
     	$colms = $this->list_col;
     	$this->get_where();
-
+        $this->where_filter();
+        
     	$where .= $this->where_etat_line;
     	if($this->need_notif){
     		$where .= $this->joint == null ?'' : ' AND '.$this->joint;
@@ -298,7 +413,7 @@ class Mdatatable
     	}
     	
     	$where .= $this->where_s == NULL ? NULL : $this->where_s;
-        
+        $where .= $this->where_f == NULL ? NULL : $this->where_f;
         
 	    //getting total number records without any search
     	$sql = "SELECT $colms  FROM  $tables  ";
@@ -363,14 +478,15 @@ class Mdatatable
     		$data[] = $row;
     	}
 		
-
+        
     	$json_data = array(
+            "filter"          => $this->tag_filter,
     		"draw"            => intval( $params['draw'] ),   
     		"recordsTotal"    => intval( $totalRecords ),  
     		"recordsFiltered" => intval( $totalRecords),
 			"data"            => $data   // total data array
 		);
-        //var_dump($data);exit();
+        
         if($this->error == false)
         {
             return false;
@@ -404,12 +520,14 @@ class Mdatatable
         $extra_data = $this->js_extra_data == null ? null : 'extra_data :"'. $this->js_extra_data.'",';
         $notif_col = $this->need_notif == true ? $count_col : 0;
         $js = "<script type=\"text/javascript\">$(document).ready(function() {";
+        //delete cookie filter if exist
+        $js .= "ace.cookie.remove('".$this->task."_grid_flt');";
         $js .= "var table = $('#".$this->task."_grid').DataTable({";
         if(!$this->btn_action)
         {
             $js .= "aoColumnDefs : '',";
         }
-                
+               
         $js .= "bProcessing: true,notifcol : ".$notif_col.",serverSide: true,ajax_url:\"".$this->task."\", $extra_data $order aoColumns: [";
         
         $js_arr = $this->columns_html;
@@ -438,6 +556,12 @@ class Mdatatable
         $js .= "$('.export_csv').on('click', function() {csv_export(table, 'csv');});";
         $js .= "$('.export_pdf').on('click', function() {csv_export(table, 'pdf');});";
         $js .= "$('.show_zip').on('click', function() {exec_zip(table, '".$this->task."_grid' );});";
+        if($this->use_filter)
+        {
+            $js .= "$('.btn_search').on('click', function() {exec_search(table, '".$this->task."_grid');});";
+            $js .= "$('.btn_rmv_search').on('click', function() {exec_rmv_search(table, '".$this->task."_grid');});";
+        }
+        
         $js .= "$('#".$this->task."_grid').on('click', 'tr button', function() {
             var row = $(this).closest('tr');
             append_drop_menu('".$this->task."', table.cell(row, 0).data(),'.btn_action');});});</script>";
@@ -453,16 +577,20 @@ class Mdatatable
         $html .= "\t<div class=\"page-header\">\n\t<h1>\n";
         $html .= $this->title_module;
         $html .= "<small><i class=\"ace-icon fa fa-angle-double-right\"></i></small>\t</h1>\n\t</div>\n";
-        $html .= "\t<div class=\"row\">\n\t<div class=\"col-xs-12\"\n>\t<div class=\"clearfix\">\n";
+        $html .= "\t<div class=\"row\">\n\t<div class=\"col-xs-12\"\n>\t<div class=\"clearfix table_zone_setting\">\n";
+        $html .= "\t<div class=\"pull-left tableTools-container\"\n>\t<div class=\"btn-group btn-overlap\"\n>\t<a href=\"#\" class=\" btn btn-purple btn-bold  spaced btn_rmv_search hide\"\n>\t<span><i class=\"fa fa-refresh\"></i>  Afficher tout</span\n></a>\n\t</div>\n\t</div>\n";
         $html .= "\t<div class=\"pull-right tableTools-container\">\n";
         $html .= "\t<div class=\"btn-group btn-overlap\">\n";
+        $task_add = $this->task_add == null ? 'add'.$this->task : $this->task_add;
         if($this->btn_add_data != null or !$this->btn_add_check){
-            $html .= $this->btn_add('add'.$this->task,'Ajouter '.$this->title_module, $this->btn_add_data);
+            $html .= $this->btn_add($task_add,'Ajouter '.$this->title_module, $this->btn_add_data);
         }
         
+        $html .= $this->btn_search();
         $html .= $this->btn_csv($this->task,'Exporter Liste');
         $html .= $this->btn_pdf($this->task,'Exporter Liste');
-        $html .= $this->btn_zip($this->task,'Exporter Liste');
+        $html .= $this->btn_zip();
+        
        
 
         $html .= "\t</div>\n\t</div>\n\t</div>\n";
@@ -585,7 +713,7 @@ class Mdatatable
      * @param  [type] $text [description]
      * @return [type]       [description]
      */
-    private function btn_zip($app, $text)
+    private function btn_zip()
     {
         //$output = '<a title="Afficher Archive" href="#"  class="btn_zip ColVis_Button ColVis_MasterButton btn btn-white btn-info btn-bold show_zip"><span><i class="fa fa-file-archive-o fa-lg blue" style="color:"></i></span></a>';
 
@@ -595,4 +723,67 @@ class Mdatatable
 
         return $render ;
     }
+    /**
+     * [btn_search description]
+     * @return [type]       [description]
+     */
+    private function btn_search()
+    {
+        if(!$this->use_filter){
+            return null;
+        }
+        
+        $output = '<a title="Recherche avancée" href="#"  class="btn_search btn btn-white btn-bold "><span><i class="fa fa-search fa-lg purple"></i></span></a>';
+        $render = ($output);
+
+
+        return $render ;
+    }  
+
+    private function call_filter()
+    {
+
+        $base_columns = $this->columns;
+        $columns = array_column($this->columns, 'alias');
+        $arr_filter = $this->data_filter;
+        $render_js = null;
+        $render = '<form id="form_'.$this->main_table.'_grid" action="#" class="form-horizontal">';
+        foreach ($base_columns as $key => $value)
+        {
+            
+            if(array_key_exists($value['alias'], $arr_filter))
+            {
+                $id    = $value['alias'];
+                $type  = $arr_filter[$id][0];
+                $text  = $value['header'];
+                $class = $arr_filter[$id][1];
+                switch ($type) {
+                    case 'text':
+                        $render .= Mform::input_x($id, $text, $class);
+                        break;
+                    case 'int':
+                        $render .= Mform::input_x($id, $text, $class.' is-number alignRight');
+                        break;    
+                    case 'date':
+                        $render .= Mform::date_x($id, $text, $class);
+                        $render_js .= '$(\'#'.$id.'_s, #'.$id.'_e\').datepicker()
+                               .next().on(ace.click_event, function(){
+                                    $(this).prev().focus();
+                               });';
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+                
+            }
+                    
+        }
+        
+        $render .= '</form>';
+        $render .= '<script>';
+        $render .= $render_js;
+        $render .= '</script>';
+        return $render ;
+    }  
 }

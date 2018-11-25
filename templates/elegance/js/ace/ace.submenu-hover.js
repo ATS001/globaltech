@@ -46,14 +46,14 @@
 
 	var sidebar_vars = {};
 	var old_ie = ace.vars['old_ie'];
-    
+
 	
 	
 	var scroll_right = false;
 	//scroll style class
 	
 	if(hasTouch) self.settings.sub_hover_delay = parseInt(Math.max(self.settings.sub_hover_delay, 2500));//for touch device, delay is at least 2.5sec
-    
+
 	var $window = $(window);
 	//navbar used for adding extra offset from top when adjusting submenu
 	var $navbar = $('.navbar').eq(0);
@@ -61,7 +61,7 @@
 	this.update_vars = function() {
 		navbar_fixed = $navbar.css('position') == 'fixed';
 	}
-    
+
 	self.dirty = false;
 	//on window resize or sidebar expand/collapse a previously "pulled up" submenu should be reset back to its default position
 	//for example if "pulled up" in "responsive-min" mode, in "fullmode" should not remain "pulled up"
@@ -141,15 +141,15 @@
 
 
 	var currentScroll = -1;
-
+    
 	//some mobile browsers don't have mouseenter
-	var event_1 = !hasTouch ? 'mouseenter.sub_hover' : 'touchstart.sub_hover';// pointerdown.sub_hover';
-	var event_2 = !hasTouch ? 'mouseleave.sub_hover' : 'touchend.sub_hover touchcancel.sub_hover';// pointerup.sub_hover pointercancel.sub_hover';
+	var event_1 = !hasTouch ? 'mouseenter.sub_hover' : 'touchstart.sub_hover click ';// pointerdown.sub_hover';
+	var event_2 = !hasTouch ? 'mouseleave.sub_hover' : 'touchend.sub_hover touchcancel.sub_hover click ';// pointerup.sub_hover pointercancel.sub_hover';
 	
 	$sidebar.on(event_1, '.nav-list li, .sidebar-shortcuts', function (e) {
 		sidebar_vars = $sidebar.ace_sidebar('vars');
 		
-	
+	    
 		//ignore if collapsible mode (mobile view .navbar-collapse) so it doesn't trigger submenu movements
 		//or return if horizontal but not mobile_view (style 1&3)
 		if( sidebar_vars['collapsible'] /**|| sidebar_vars['horizontal']*/ ) return;
@@ -157,7 +157,7 @@
 		var $this = $(this);
 
 		var shortcuts = false;
-		var has_hover = $this.hasClass('hover');
+		
 		
 		var sub = $this.find('> .submenu').get(0);
 		if( !(sub || ((this.parentNode == nav_list || has_hover || (shortcuts = $this.hasClass('sidebar-shortcuts'))) /**&& sidebar_vars['minimized']*/)) ) {
@@ -212,7 +212,6 @@
 		if( sidebar_vars['collapsible'] /**|| sidebar_vars['horizontal']*/ ) return;
 
 		if( !$(this).hasClass('hover-show') ) return;
-		
 
 		getSubHide(this).hideDelay();
 	 });
@@ -374,7 +373,6 @@
 		
 		var pull_up = move_up > 0 && move_up > parent_height - 20;
 		if(pull_up) {
-
 			$li.addClass('pull_up');
 		}
 		else $li.removeClass('pull_up');

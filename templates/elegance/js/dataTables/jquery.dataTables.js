@@ -2527,6 +2527,7 @@
 	
 		var ajaxData;
 		var ajax = oSettings.ajax;
+
 		//alert(oSettings.ajax_url);
 		var extra_data = oSettings.extra_data;
 		var and = extra_data != null ? "&" : null;
@@ -2558,6 +2559,11 @@
 		var callback = function ( json ) {
 			_fnCallbackFire( oSettings, null, 'xhr', [oSettings, json, oSettings.jqXHR] );
 			fn( json );
+			var tag_filter =  json.filter  
+			if(tag_filter !== null){
+				$('.btn_rmv_search').parent().closest('div').after(tag_filter);
+			}
+			
 		};
 	
 		if ( $.isPlainObject( ajax ) && ajax.data )
@@ -2567,17 +2573,19 @@
 			var newData = $.isFunction( ajaxData ) ?
 				ajaxData( data, oSettings ) :  // fn can manipulate data or return
 				ajaxData;                      // an object object or array to merge
-	
+	        
 			// If the function returned something, use that alone
 			data = $.isFunction( ajaxData ) && newData ?
 				newData :
 				$.extend( true, data, newData );
-	
+
+	       
 			// Remove the data property as we've resolved it already and don't want
 			// jQuery to do it again (it is restored at the end of the function)
 			delete ajax.data;
+
 		}
-	
+	    
 		var baseAjax = {
 			"data": data,
 			"success": function (json) {
@@ -2589,6 +2597,7 @@
 	
 				oSettings.json = json;
 				callback( json );
+				
 			},
 			"dataType": "json",
 			"cache": false,
@@ -11337,7 +11346,7 @@
 				 *      } );
 				 *    } );
 				 */
-				"sPrevious": "Présedent"
+				"sPrevious": "Précédent"
 			},
 	
 			/**
@@ -11392,7 +11401,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sInfo": "Affichage _START_ à _END_ du _TOTAL_ lines",
+			"sInfo": "Affichage _START_ à _END_ du _TOTAL_ linges",
 	
 	
 			/**
@@ -11413,7 +11422,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sInfoEmpty": "Affichage 0 to 0 of 0 lines",
+			"sInfoEmpty": "Affichage 0 to 0 of 0 Linges",
 	
 	
 			/**
@@ -11435,7 +11444,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sInfoFiltered": "(filtré via _MAX_ total lines)",
+			"sInfoFiltered": "(filtré via _MAX_ total Lignes)",
 	
 	
 			/**
@@ -11553,7 +11562,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sLengthMenu": "Afficher _MENU_ lines",
+			"sLengthMenu": "Afficher _MENU_ Lignes",
 	
 	
 			/**
@@ -15251,7 +15260,7 @@
 function csv_export($table, $format)
 {
 	var data  = $table.ajax.params();
-	var sUrl  = $table.ajax.url()
+	var sUrl  = $table.ajax.url();
 	bootbox.process({
 	    		    message:'Working',
 	            });
@@ -15285,6 +15294,47 @@ function csv_export($table, $format)
     });
 }
 
+function exec_search($table, $id_table ) {
+	
+	
+	var data  = null;
+	var sUrl  = $table.ajax.url();
+	$.ajax({
+                url: sUrl+'&lst=1&serch=1',
+                type: 'POST',
+                data: data,
+                dataType: 'html',
+                success: function(data) {
+                	var dialog = bootbox.dialog({
+                		message: data,
+		                title: 'Recherche avancée ',
+		                size : 'large',
+		                buttons: 			
+		                {						
+		                	"click" :
+		                	{
+		                		"label" : "Recherche",
+		                		"className" : "btn-sm btn-primary send_modal",
+		                		"callback": function(e) {
+		                			send_filter($table, $id_table);
+		                			return true;
+		                		}
+		                	},
+		                	"cancel" :
+		                	{
+		                		"label" : "Annuler",
+		                		"className" : "btn-sm btn-inverse close_modal",
+		                		"callback": function (e) {
+		                			return true;
+		                		}
+		                	} 
+
+		                } 
+                	})
+                }
+    });
+}
+
 function exec_zip($table, $id_table) {
 
 	//Check Btn Archive active
@@ -15293,6 +15343,7 @@ function exec_zip($table, $id_table) {
 		$('.btn_zip').removeClass('active');
 		$('#head_'+$id_table).removeClass('table-header-archive');
 		ace.cookie.remove($id_table +"_zip");
+		exec_rmv_search($table, $id_table);
 	}else{
 		$('.btn_zip').addClass('active');
 		$('#head_'+$id_table).addClass('table-header-archive');
@@ -15300,15 +15351,38 @@ function exec_zip($table, $id_table) {
 		
 	}
 
-	var data  = $table.ajax.params();
-	var sUrl  = $table.ajax.url();
-	
 	$table.draw();
-	//var table = $('#'+$table).DataTable();
-	//table.draw();
-	
+};
 
+function send_filter($table, $id_table){
+
+    var form_data = JSON.stringify($('#form_'+$id_table).serializeArray());
+    var hasFoo = false;
+    var empty = $('#form_'+$id_table).find("input").filter(function() {
+        return this.value;
+    });
+    
+    if(empty.length) {
+        ace.cookie.remove($id_table+'_flt');
+        ace.cookie.set($id_table+'_flt', form_data);
+        $('#head_'+$id_table).addClass('table-header-filtred');
+        $('.btn_search').hide();
+        $('.btn_rmv_search').removeClass('hide').show();
+        $table.ajax.reload();
+    }else{
+    	ajax_loadmessage('Aucun filtre inséré','nok',3000)
+    } 
 }
 
-
+function exec_rmv_search($table, $id_table) {
+	
+    ace.cookie.remove($id_table+'_flt');
+    
+    $('#head_'+$id_table).removeClass('table-header-filtred');
+    $('.btn_rmv_search').hide();
+    $('.zone_tag_filter').remove();
+    $('.btn_search').show();
+    /*$('.table_zone_setting').append('<div class="tableTools-container"><div class="btn-group btn-overlap"><a href="#" class=" btn btn-purple btn-info btn-bold  spaced remove_filter" data="'+$id_table+'_flt'+'"><span><i class="fa fa-refresh"></i>  Afficher tout</span></a></div></div>');*/
+    $table.ajax.reload();
+}
 

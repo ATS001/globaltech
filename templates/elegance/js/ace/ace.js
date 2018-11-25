@@ -218,10 +218,11 @@ jQuery(function($) {
 				container: 'body',
 				template: '<div class="tooltip '+tooltip_class+'"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
 			});
+			
 		});
 		
 		//or something like this if items are dynamically inserted
-		/**
+		
 		$('.sidebar').tooltip({
 			'placement': function (context, source) {
 				var offset = $(source).offset();
@@ -233,7 +234,7 @@ jQuery(function($) {
 			container: 'body',
 			template: '<div class="tooltip tooltip-error"><div class="tooltip-arrow"></div><div class="tooltip-inner"></div></div>'
 		});
-		*/
+		
 	}
 	
 	

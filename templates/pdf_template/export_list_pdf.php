@@ -29,6 +29,7 @@ class MYPDF extends TCPDF {
     var $Table_head  = null;
     var $Table_body  = null;
     var $high_header = null;
+    var $tag_filter  = null;
     // Colored table
     //Separated Header Drawing into it's own function for reuse.
     //writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
@@ -41,9 +42,23 @@ class MYPDF extends TCPDF {
         $this->writeHTMLCell('', '', 40, 10,$this->title_report, 0, 0, 0, true, 'L', true);
         $this->SetFont('dejavusans', '', 10, '', true);
         $this->writeHTMLCell('', '', 40, 18,'Généré le :'.date('d-m-Y H:i:s').' Par: '.session::get('username'), 0, 0, 0, true, 'L', true);
+        if($this->tag_filter != null)
+        {
+            $this->SetFont('dejavusans', '', 8, '', true);
+            $this->writeHTMLCell('', '', 40, 24,'Filtre appliqué: '.$this->tag_filter, 0, 0, 0, true, 'L', true);
+            $height = $this->getLastH();
+            $this->SetTopMargin($height + $this->GetY());
+            $height = $this->getLastH() + $this->GetY();
+
+        }else{
+            $height = 30;
+
+        }
+        
+        
         $this->SetFont('dejavusans', '', 7, '', true);
         $tableau_head = $this->Table_head;
-        $this->writeHTMLCell('', '', '', 30, $tableau_head, 0, 0, 0, true, 'L', true);
+        $this->writeHTMLCell('', '', '', $height , $tableau_head, 0, 0, 0, true, 'L', true);
         $height = $this->getLastH();
         $this->high_header = $height;
         $this->SetTopMargin($height + $this->GetY());
@@ -59,6 +74,7 @@ $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8',
 
 $pdf->Table_head = $tableau_head;
 $pdf->title_report = $title_report;
+$pdf->tag_filter = $tag_filter;
 //$pdf->high_header = 30;
 // set document information
 $pdf->SetCreator(MCfg::get('sys_titre'));
@@ -101,6 +117,7 @@ $pdf->AddPage();
 
 //Get table body content from exporter scrip
 $pdf->Table_body = $tableau_body;
+
 $html = $pdf->Table_body;
 //exit($pdf->GetY() .'  '.PDF_MARGIN_TOP);
 // Print text using writeHTMLCell()

@@ -982,6 +982,44 @@ static public function load_select($table, $value, $text, $where = null)
 
 }
 
+static public function input_x($input_id, $description, $class = 5)
+{
+  $input = '<div class="space-2"></div>
+  <div class="form-group">
+    <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">'.$description.':</label>
+    <div class="col-xs-12 col-sm-'.$class.'">
+      <div class="clearfix">';
+      $input .= '<input type="text" name="'.$input_id.'" id="'.$input_id.'" class="col-xs-12 col-sm-'.$class.'"/>';
+  $input .= '</div></div></div>';
+  return $input;
+}
+
+
+
+static public function date_x($input_id, $description, $class = 5)
+{
+  $value = null;
+ 
+  
+  $input = '<div class="space-2"></div>
+  <div class="form-group">
+    <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">'.$description.' entre:</label>
+    <div class="col-xs-12 col-sm-3">
+      <div class="clearfix input-group">';
+      $input .= '<input type="text" name="'.$input_id.'_s" id="'.$input_id.'_s" class="form-control col-xs-12 col-sm-3" '.$value.'  />';       
+      $input .= '<span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span>';
+      $input .= '</div></div>';
+      $input .= '<label class="control-label col-xs-12 col-sm-1" for="email">Et :</label>';
+      $input .= '<div class="col-xs-12 col-sm-3">
+      <div class="clearfix input-group">';
+      $input .= '<input type="text" name="'.$input_id.'_e" id="'.$input_id.'_e" class="form-control col-xs-12 col-sm-3" '.$value.'  />';
+      $input .= '<span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span>';
+      //$input .= '<a class="input-group-addon"><i class="fa fa-search bigger-110"></i></a>';
+               $input .= '</div></div></div>';
+
+  return $input;
+}
+
 
 
 }

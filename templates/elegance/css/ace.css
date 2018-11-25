@@ -10746,6 +10746,14 @@ td .lbl:only-child {
   padding-left: 12px;
   margin-bottom: 1px;
 }
+.table-header-filtred {
+  background-color: #b71eaa;
+  color: #FFF;
+  font-size: 14px;
+  line-height: 38px;
+  padding-left: 12px;
+  margin-bottom: 1px;
+}
 .table-header .close {
   margin-right: 8px;
   margin-top: 0;
