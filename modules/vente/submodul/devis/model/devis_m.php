@@ -170,6 +170,8 @@ class Mdevis
         INNER JOIN commerciaux
         ON (devis.id_commercial=commerciaux.id)
         WHERE devis.id = ".$this->id_devis;
+        
+
         if(!$db->Query($req_sql))
         {
             $this->error = false;

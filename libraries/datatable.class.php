@@ -42,6 +42,7 @@ class Mdatatable
     var $data_filter      = array();// Set columns should be filtred (setting controller)
     var $where_f          = null;//fit with Function get where_filter
     var $tag_filter       = null;//Format Tag br show in header of table when filter applied
+    var $task_add         = null;//Setup Task add if different of default task
     
 
 
@@ -580,8 +581,9 @@ class Mdatatable
         $html .= "\t<div class=\"pull-left tableTools-container\"\n>\t<div class=\"btn-group btn-overlap\"\n>\t<a href=\"#\" class=\" btn btn-purple btn-bold  spaced btn_rmv_search hide\"\n>\t<span><i class=\"fa fa-refresh\"></i>  Afficher tout</span\n></a>\n\t</div>\n\t</div>\n";
         $html .= "\t<div class=\"pull-right tableTools-container\">\n";
         $html .= "\t<div class=\"btn-group btn-overlap\">\n";
+        $task_add = $this->task_add == null ? 'add'.$this->task : $this->task_add;
         if($this->btn_add_data != null or !$this->btn_add_check){
-            $html .= $this->btn_add('add'.$this->task,'Ajouter '.$this->title_module, $this->btn_add_data);
+            $html .= $this->btn_add($task_add,'Ajouter '.$this->title_module, $this->btn_add_data);
         }
         
         $html .= $this->btn_search();

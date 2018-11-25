@@ -222,6 +222,7 @@
 				( ( $sub.parent().hasClass('hover') && $sub.css('position') == 'absolute' ) && !self.collapsible )
 			)
 			{
+
 				return false;
 			}
 

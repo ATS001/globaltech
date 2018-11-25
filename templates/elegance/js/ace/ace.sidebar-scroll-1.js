@@ -23,6 +23,7 @@
 		
 	function Sidebar_Scroll(sidebar , settings) {
 		var self = this;
+		
 
 		var $window = $(window);
 		var $sidebar = $(sidebar),

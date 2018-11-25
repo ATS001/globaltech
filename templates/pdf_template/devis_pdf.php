@@ -261,6 +261,7 @@ $pdf->SetAutoPageBreak(TRUE, 30);
 // set image scale factor
 $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 
+//$pdf->SetProtection(array('print', 'copy','modify'), "ourcodeworld", "ourcodeworld-master", 0, null);
 
 // Set font
 // dejavusans is a UTF-8 Unicode font, if you only need to

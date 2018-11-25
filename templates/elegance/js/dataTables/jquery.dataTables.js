@@ -11346,7 +11346,7 @@
 				 *      } );
 				 *    } );
 				 */
-				"sPrevious": "Présedent"
+				"sPrevious": "Précédent"
 			},
 	
 			/**
@@ -11401,7 +11401,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sInfo": "Affichage _START_ à _END_ du _TOTAL_ lines",
+			"sInfo": "Affichage _START_ à _END_ du _TOTAL_ linges",
 	
 	
 			/**
@@ -11422,7 +11422,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sInfoEmpty": "Affichage 0 to 0 of 0 lines",
+			"sInfoEmpty": "Affichage 0 to 0 of 0 Linges",
 	
 	
 			/**
@@ -11444,7 +11444,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sInfoFiltered": "(filtré via _MAX_ total lines)",
+			"sInfoFiltered": "(filtré via _MAX_ total Lignes)",
 	
 	
 			/**
@@ -11562,7 +11562,7 @@
 			 *      } );
 			 *    } );
 			 */
-			"sLengthMenu": "Afficher _MENU_ lines",
+			"sLengthMenu": "Afficher _MENU_ Lignes",
 	
 	
 			/**

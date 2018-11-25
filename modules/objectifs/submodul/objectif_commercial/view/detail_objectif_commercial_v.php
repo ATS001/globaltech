@@ -1,22 +1,22 @@
 <?php
 //Get all Devis info 
-$info_devis = new Mdevis();
+$info_objectif_commercial = new Mobjectif_commercial();
 $action = new TableTools();
-$info_devis->id_devis = Mreq::tp('id');
-$info_devis->get_devis();
+$info_objectif_commercial->id_objectif_commercial = Mreq::tp('id');
+$info_objectif_commercial->get_objectif_commercial();
 
 //Set ID of Module with POST id
-$info_devis->id_devis = Mreq::tp('id');
+$info_objectif_commercial->id_objectif_commercial = Mreq::tp('id');
 //Check if Post ID <==> Post idc or get_modul return false. 
-if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->Get_detail_devis_show())
+if(!MInit::crypt_tp('id', null, 'D') or !$info_objectif_commercial->Get_detail_objectif_commercial_show())
 { 	
  	// returne message error red to client 
-	exit('3#'.$info_devis->log .'<br>Les informations pour cette ligne (Devis) sont erronées contactez l\'administrateur');
+	exit('3#'.$info_objectif_commercial->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
 
 
-$tab_details_devis = view::tab_render('devis', 'Devis', $add_set=NULL, 'paper-plane-o' , $active = true, 'home');
-$tab_liste_bl = view::tab_render('bl', 'Bons de Livraison', $add_set=NULL, 'bookmark' , false, 'bl');
+$tab_details_objectif_commercial = view::tab_render('objectif_commercial', 'Objectif', $add_set=NULL, 'paper-plane-o' , $active = true, 'home');
+$tab_liste_devis = view::tab_render('devis', 'Liste Devis', $add_set=NULL, 'bookmark' , false, 'bl');
 $tab_liste_factures = view::tab_render('factures', 'Factures', $add_set=NULL, 'file' , false, 'factures');
 $tab_liste_encaissement = view::tab_render('encaissements', 'Encaissements', $add_set=NULL, 'money' , false, 'encaissement');
 
@@ -26,8 +26,8 @@ $tab_liste_encaissement = view::tab_render('encaissements', 'Encaissements', $ad
 	<div class="btn-group btn-overlap">
 
 		<?php 
-		TableTools::btn_action('devis', $info_devis->id_devis, 'viewdevis');
-		TableTools::btn_add('devis','Liste des Devis', Null, $exec = NULL, 'reply'); 
+		TableTools::btn_action('objectif_commercial', $info_objectif_commercial->id_objectif_commercial, 'detail_bjectif_service');
+		TableTools::btn_add('objectif_commercial','Liste des Objectifs', Null, $exec = NULL, 'reply'); 
 
 		?>
 
@@ -35,7 +35,7 @@ $tab_liste_encaissement = view::tab_render('encaissements', 'Encaissements', $ad
 </div><!-- /.tableTools-container -->
 <div class="page-header">
 	<h1>
-		Détails Devis: <?php $info_devis->s('reference')?>
+		Détails Objectif:  <?php echo $info_objectif_commercial->g('description') . ' - ' .$info_objectif_commercial->g('id_objectif').' -' ?>
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
 		</small>
@@ -44,7 +44,7 @@ $tab_liste_encaissement = view::tab_render('encaissements', 'Encaissements', $ad
 </div><!-- /.page-header -->
 
 <div class="row">
-	<?php Mmodul::get_statut_etat_line('devis', $info_devis->g('etat')); ?>
+	<?php Mmodul::get_statut_etat_line('objectif_commercial', $info_objectif_commercial->g('etat')); ?>
 	<div id="main_div">
 		<div id="user-profile-2" class="user-profile">
 			<div class="tabbable">
@@ -57,8 +57,8 @@ $tab_liste_encaissement = view::tab_render('encaissements', 'Encaissements', $ad
 					</li> -->
                     
 					<?php 
-					echo $tab_details_devis['tab_index']; 
-					echo $tab_liste_bl['tab_index']; 
+					echo $tab_details_objectif_commercial['tab_index']; 
+					echo $tab_liste_devis['tab_index']; 
 					echo $tab_liste_factures['tab_index']; 
 					echo $tab_liste_encaissement['tab_index']; 
 					
@@ -70,27 +70,27 @@ $tab_liste_encaissement = view::tab_render('encaissements', 'Encaissements', $ad
 					<?php 
 					 
 
-					 if($tab_details_devis['tb_rl'])
+					 if($tab_details_objectif_commercial['tb_rl'])
 					 {
-					 	echo $tab_details_devis['tcs'];
+					 	echo $tab_details_objectif_commercial['tcs'];
 					 	//Content (includ file - simple string - function return string)
-					 	include 'detailsdevis_v.php';
-					 	echo $tab_details_devis['tce'];
+					 	include 'detail_objectif_v.php';
+					 	echo $tab_details_objectif_commercial['tce'];
 					 }
 
-					 if($tab_liste_bl['tb_rl'])
+					 if($tab_liste_devis['tb_rl'])
 					 {
-					 	echo $tab_liste_bl['tcs'];
+					 	echo $tab_liste_devis['tcs'];
 					 	//Content (includ file - simple string - function return string)
-					 	echo $info_devis->get_list_bl();
-					 	echo $tab_liste_bl['tce'];
+					 	echo $info_objectif_commercial->get_list_devis_for_objectif();
+					 	echo $tab_liste_devis['tce'];
 					 }
 
 					 if($tab_liste_factures['tb_rl'])
 					 {
 					 	echo $tab_liste_factures['tcs'];
-					 	//Content (includ file - simple string - function return string)
-					 	echo $info_devis->get_list_factures();
+					 	
+					 	echo $info_objectif_commercial->get_list_factures_for_objectif();
 					 	echo $tab_liste_factures['tce'];
 					 }
 
@@ -98,7 +98,7 @@ $tab_liste_encaissement = view::tab_render('encaissements', 'Encaissements', $ad
 					 {
 					 	echo $tab_liste_encaissement['tcs'];
 					 	//Content (includ file - simple string - function return string)
-					 	echo $info_devis->get_list_encaissement();
+					 	echo $info_objectif_commercial->get_list_encaissemen_for_objectif();
 					 	echo $tab_liste_encaissement['tce'];
 					 }
 
