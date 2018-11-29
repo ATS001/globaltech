@@ -15,6 +15,7 @@ if (MInit::form_verif('editcommerciale', false)) {
         'nom' => Mreq::tp('nom'),
         'prenom' => Mreq::tp('prenom'),
         'is_glbt' => Mreq::tp('is_glbt'),
+        'service' => Mreq::tp('service'),
         'cin' => Mreq::tp('cin'),
         'rib' => Mreq::tp('rib'),
         'tel' => Mreq::tp('tel'),
@@ -61,9 +62,27 @@ if (MInit::form_verif('editcommerciale', false)) {
         $checker = 1;
     }
 
+     if ($posted_data["is_glbt"] == 'Non' AND  $posted_data["service"] != '') {
+        $empty_list2 = "<ul>Commerciale externe , interdiction de choisir un service</ul>";
+        $checker = 2;
+    }
+    
+    
+    if ($posted_data["is_glbt"] == 'Oui' AND  $posted_data["service"] == '') {
+        $empty_list3 = "<ul>Commerciale interne , veuillez choisir un service </ul>";
+        $checker = 3;
+    }
+    
     $empty_list .= "</ul>";
     if ($checker == 1) {
         exit("0#$empty_list");
+    }
+     if ($checker == 2) {
+        exit("0#$empty_list2");
+    }
+    
+    if ($checker == 3) {
+        exit("0#$empty_list3");
     }
 
 
