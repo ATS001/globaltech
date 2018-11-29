@@ -18,6 +18,7 @@ if (MInit::form_verif('addcommerciale', false)) {
         'email' => Mreq::tp('email'),
         'sexe' => Mreq::tp('sexe'),
         'adresse' => Mreq::tp('adresse'),
+        'service' => MReq::tp('service'),
         'pj_id' => Mreq::tp('pj-id'),
         'photo_id' => Mreq::tp('photo-id'),
 
@@ -56,9 +57,27 @@ if (MInit::form_verif('addcommerciale', false)) {
         $checker = 1;
     }
 
+     if ($posted_data["is_glbt"] == 'Non' AND  $posted_data["service"] != '') {
+        $empty_list2 = "<ul>Commerciale externe , interdiction de choisir un service</ul>";
+        $checker = 2;
+    }
+    
+    
+    if ($posted_data["is_glbt"] == 'Oui' AND  $posted_data["service"] == '') {
+        $empty_list3 = "<ul>Commerciale interne , veuillez choisir un service </ul>";
+        $checker = 3;
+    }
+    
     $empty_list .= "</ul>";
     if ($checker == 1) {
         exit("0#$empty_list");
+    }
+     if ($checker == 2) {
+        exit("0#$empty_list2");
+    }
+    
+    if ($checker == 3) {
+        exit("0#$empty_list3");
     }
 
 

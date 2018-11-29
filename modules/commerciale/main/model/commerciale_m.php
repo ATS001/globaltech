@@ -22,6 +22,7 @@ class Mcommerciale
     var $id_commerciale = null;        // commerciale ID append when request
     var $token = null;        //user for recovery function
     var $commerciale_info = array();     //Array stock all commerciale info
+    var $id_service; // Id Service du commerciale interne
     var $exige_pj;
     var $exige_photo;
 
@@ -83,8 +84,14 @@ class Mcommerciale
      */
     public function save_new_commerciale()
     {
-        //$this->check_exist($column, $value, $message, $edit = null);
-        //$this->check_non_exist($table, $column, $value, $message)
+        
+        /*
+        if($this->_data["is_glbt"] == "Oui"){
+        if($this->_data["tel"] != NULL || $this->_data["email"] != NULL)
+            $this->get_id_service ();
+        }
+         * 
+         */
 
 
         // If we have an error
@@ -98,6 +105,7 @@ class Mcommerciale
             $values["rib"] = MySQL::SQLValue($this->_data["rib"]);
             $values["tel"] = MySQL::SQLValue($this->_data["tel"]);
             $values["email"] = MySQL::SQLValue($this->_data["email"]);
+            $values["id_service"] = MySQL::SQLValue($this->_data["service"]);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
 
             if (!$result = $db->InsertRow($this->table, $values)) {
@@ -160,6 +168,7 @@ class Mcommerciale
             $values["rib"] = MySQL::SQLValue($this->_data["rib"]);
             $values["tel"] = MySQL::SQLValue($this->_data["tel"]);
             $values["email"] = MySQL::SQLValue($this->_data["email"]);
+            $values["id_service"] = MySQL::SQLValue($this->_data["service"]);
             $values["updusr"] = MySQL::SQLValue(session::get('userid'));
             $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
             $wheres["id"] = $this->id_commerciale;
@@ -393,5 +402,39 @@ class Mcommerciale
         }
     }
 
+public function get_id_service()
+    {
+   
+        global $db;
 
+        $table = "users_sys";
+        $tel = $this->_data['tel'];
+        $email=$this->_data['email'];
+        
+        $sql = "SELECT $table.service FROM 
+		$table WHERE  $table.tel =   '$tel'  OR $table.mail = '$email' ";
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->id_service = $db->RowArray();
+                $this->error = true;
+            }
+
+
+        }
+        var_dump($db);
+        //return Array user_info
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+
+    }
 }

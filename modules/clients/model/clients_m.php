@@ -317,7 +317,7 @@ class Mclients {
         $table = $this->table;
         $sql_edit = $edit == null ? null : " AND id <> $edit";
         $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
-                WHERE $table.$column = " . MySQL::SQLValue($value) . " $sql_edit ");
+		 		WHERE $table.$column = " . MySQL::SQLValue($value) . " $sql_edit ");
 
         if ($result != "0") {
             $this->error = false;
@@ -336,7 +336,7 @@ class Mclients {
     private function check_non_exist($table, $column, $value, $message) {
         global $db;
         $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
-            WHERE $table.$column = " . MySQL::SQLValue($value));
+    		WHERE $table.$column = " . MySQL::SQLValue($value));
         if ($result == "0") {
 //var_dump('here');
             $this->error = false;
@@ -461,14 +461,14 @@ class Mclients {
                     if (!Mlog::log_exec($this->table, $this->last_id, 'Création client', 'Insert')) {
                         $this->log .= '</br>Un problème de log ';
                     }
-//Check $this->error = false return Red message and Bol false   
+//Check $this->error = false return Red message and Bol false	
                 } else {
                     $this->log .= '</br>Enregistrement réussie: <b>' . $this->_data['denomination'];
 
                     $this->log .= '</br>Un problème d\'Enregistrement ';
                 }
             }
-//Else Error false  
+//Else Error false	
         } else {
             $this->log .= '</br>Enregistrement non réussie';
         }
@@ -590,7 +590,7 @@ class Mclients {
 //Format values for Insert query 
             global $db;
 
-//$values["code"]        = MySQL::SQLValue($this->_data['code']);
+//$values["code"]  		 = MySQL::SQLValue($this->_data['code']);
             $values["denomination"] = MySQL::SQLValue($this->_data['denomination']);
             $values["id_categorie"] = MySQL::SQLValue($this->_data['id_categorie']);
             $values["r_social"] = MySQL::SQLValue($this->_data['r_social']);
@@ -646,13 +646,13 @@ class Mclients {
                     if (!Mlog::log_exec($this->table, $this->id_client, 'Modification client', 'Update')) {
                         $this->log .= '</br>Un problème de log ';
                     }
-//Check $this->error = false return Red message and Bol false   
+//Check $this->error = false return Red message and Bol false	
                 } else {
                     $this->log .= '</br>Modification réussie: <b>' . $this->_data['denomination'];
                     $this->log .= '</br>Un problème d\'Enregistrement ';
                 }
             }
-//Else Error false  
+//Else Error false	
         } else {
             $this->log .= '</br>Enregistrement non réussie';
         }
