@@ -1,4 +1,6 @@
-<?php 
+<div class="row">
+        <!-- /.row -->
+        <?php 
 //var_dump($_COOKIE);
 //$chart = new MHighchart();
 //$chart->call_chart('recette_per_month');
@@ -23,3 +25,4 @@ $chart->items = 'Fcfa';
 if($chart->table_rank_render('v_sum_best_product', 3, 'test'));*/
 
 ?>
+</div>
