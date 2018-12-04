@@ -64,7 +64,7 @@
 																	<?php 
 //Best Product
 $chart = new MHighchart();
-$chart->titre = 'Top Produits demandés';
+$chart->titre = 'Situation Objectif';
 $chart->items = 'Fcfa';
 $chart->chart_only = true;
 

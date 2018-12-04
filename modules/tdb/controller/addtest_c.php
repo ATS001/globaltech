@@ -1,88 +1,67 @@
-<?php
-/*if(MInit::form_verif('addtest', false))
-{
-	
-  $posted_data = array(
-   'nom'        => Mreq::tp('nom') ,
-   'prenom'     => Mreq::tp('prenom') ,
-   'photo_id'   => Mreq::tp('photo_id') ,
-   'photo_titl' => Mreq::tp('photo_titl') ,
-   
-   
-  );
-global $db;
-    
-    $values["nom"]    = MySQL::SQLValue($posted_data['nom']);
-    $values["prenom"] = MySQL::SQLValue($posted_data['prenom']);
-    
+        <!-- Small boxes (Stat box) -->
+        <div class="row">
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box btn-info">
+              <div class="inner">
+                <h3>150</h3>
 
-    if (!$result = $db->InsertRow("test", $values)) {
-        
-        $log = $db->Error();
-        
-        
+                <p>New Orders</p>
+              </div>
+              <div class="icon">
+                <i class="ace-icon fa fa-home home-icon"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
 
-      }else{
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box btn-success">
+              <div class="inner">
+                <h3>53<sup style="font-size: 20px">%</sup></h3>
 
-        $last_id = $result;
-        $folder        = MPATH_UPLOAD.'test'.SLASH.$last_id;
-        Minit::save_multipl_file_upload(Mreq::tp('photo_id'), $folder, $last_id, Mreq::tp('photo_titl'), 'test', 'gal', 'image', $edit = null);
-        
-      }
+                <p>Bounce Rate</p>
+              </div>
+              <div class="icon">
+                <i class="ace-icon fa fa-home home-icon"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+          <!-- ./col -->
+          <div class="col-lg-3 col-6">
+            <!-- small box -->
+            <div class="small-box btn-warning">
+              <div class="inner">
+                <h3>44</h3>
 
-    
+                <p>User Registrations</p>
+              </div>
+              <div class="icon">
+                <i class="ace-icon fa fa-home home-icon"></i>
+              </div>
+              <a href="#" class="small-box-footer">More info <i class="fa fa-arrow-circle-right"></i></a>
+            </div>
+          </div>
+         
+          <div class="col-lg-3 col-6">
+        <div class="info-box btn-info">
+              <span class="info-box-icon"><i class="fa fa-bookmark-o"></i></span>
 
-}*/
+              <div class="info-box-content">
+                <span class="info-box-text">Bookmarks</span>
+                <span class="info-box-number">41,410</span>
 
-
-function after_update($table, $id, $arr_new, $arr_old) {
-  $aReturn = array();
-
-  foreach ($arr_new as $mKey => $mValue) {
-    if (array_key_exists($mKey, $arr_old)) {
-      if (is_array($mValue)) {
-        $aRecursiveDiff = arrayRecursiveDiff($mValue, $arr_old[$mKey]);
-        if (count($aRecursiveDiff)) { $aReturn[$mKey] = $aRecursiveDiff; }
-      } else {
-        if ($mValue != $arr_old[$mKey]) {
-
-            $aReturn[$mKey] = array('table' => $table, 'id_item'=>$id, 'column'=>$mKey, 'val_old'=>$arr_old[$mKey], 'val_new'=>$mValue, 'user'=>session::get('username'));
-          }
-      }
-    }
-  }
-  //Traitement result
-  global $db;
-  
-  foreach ($aReturn as $key_g => $values) {
-    foreach ($values as $key => $value) {
-      $arr_insert[$key] = MySQL::SQLValue($value);
-    }
-    if (!$result = $db->InsertRow("espionnage_update", $arr_insert)) {
-        
-        exit($db->Error().' '.$db->BuildSQLInsert("espionnage_update", $arr_insert));
-      }
-  }
-  //return $aReturn;
-  
-}
-
-/*$arr_new  = array('k1' => '1' ,'K2'=> '2');
-$arr_old  = array('k1' => '1' ,'K2'=> '5');*/
-
-$arr_new['k1'] = 1;
-$arr_new['k2'] = 'test de 2';
-$arr_new['k3'] = 'test de 3';
-$arr_new['k4'] = 'Kle 4';
-$arr_old['k1'] = 1;
-$arr_old['k2'] = 3;
-$arr_old['k3'] = 'K3not';
-$arr_old['k4'] = 'Old k4';
-
-//var_dump($arr_old);
-//var_dump($arr_new);
-after_update('table', 12, $arr_new, $arr_old);
-
-
-
-?>
+                <div class="progress">
+                  <div class="progress-bar" style="width: 10%"></div>
+                </div>
+                <span class="progress-description">
+                  70% Increase in 30 Days
+                </span>
+              </div>
+              <!-- /.info-box-content -->
+            </div>
+             </div>
+        </div>
