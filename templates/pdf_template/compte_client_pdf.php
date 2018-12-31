@@ -277,7 +277,7 @@ p {
 <table style="width: 685px; hight: 685px;" cellpadding="2">
 
 <tr>
-    <td colspan="2" style="color: #E99222;font-family: sans-serif;font-weight: bold;">Arrêté la présente Facture à la somme de :
+    <td colspan="2" style="color: #E99222;font-family: sans-serif;font-weight: bold;">Arrêté le présent Etat de compte à la somme de :
     </td>
 </tr>
 <tr>
