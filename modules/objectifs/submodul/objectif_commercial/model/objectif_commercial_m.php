@@ -305,6 +305,73 @@ class Mobjectif_commercial {
 
 
     }
+    /**
+     * [debloque_objectif_service description]
+     * @return [type] [description]
+     */
+    public function debloque_objectif_commercial()
+    {
+        //Get existing data for row
+        $this->get_objectif_commercial();
+        
+        $this->last_id = $this->id_objectif_commercial;
+        global $db;
+        //Get Etat Objectif to validate
+        $etat_creat =  Msetting::get_set('etat_objectifs', 'creat_obj');
+        if($etat_creat == null)
+        {
+            $this->log   .= '</br>Impossible de changer le statut!';
+            $this->log   .= '</br>manque de paramètre';
+            $this->error = false;
+            return false;
+        }
+
+        //Check if line have same value of setting
+        if($etat_creat == $this->objectif_commercial_info['etat'])
+        {
+            $this->log   .= '</br>Cette ligne est dèja débloquée';
+            $this->error = false;
+            return false;
+        }
+        //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
+        
+
+        $values["etat"]        = MySQL::SQLValue($etat_creat);
+        $values["updusr"]      = MySQL::SQLValue(session::get('userid'));
+        $values["upddat"]      = MySQL::SQLValue(date("Y-m-d H:i:s"));
+
+        $wheres['id']     = $this->id_objectif_commercial;
+
+        // Execute the update and show error case error
+        if(!$result = $db->UpdateRows($this->table, $values, $wheres))
+        {
+            $this->log   .= '</br>Impossible de changer le statut!';
+            $this->log   .= '</br>'.$db->Error();
+            $this->error  = false;
+
+        }else{
+            $this->log   .= '</br>Statut changé! ';
+            $this->error  = true;
+            if(!Mlog::log_exec($this->table, $this->last_id, 'Changement ETAT  objectif_service', 'Update'))
+            {
+                $this->log .= '</br>Un problème de log ';
+                $this->error = false;
+            }
+               //Esspionage
+            if(!$db->After_update($this->table, $this->id_objectif_commercial, $values, $this->objectif_commercial_info)){
+                $this->log .= '</br>Problème Espionnage';
+                $this->error = false;   
+            }
+
+        }
+        if($this->error == false){
+            return false;
+        }else{
+            return true;
+        }
+
+
+    }
 
 	/**
 	 *  [check_non_exist Check if one entrie not exist on referential table]
