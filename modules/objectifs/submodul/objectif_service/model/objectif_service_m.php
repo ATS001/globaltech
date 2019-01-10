@@ -520,7 +520,7 @@ class Mobjectif_service {
     {
         global $db;
         
-        $add_set = array('return' => '<a href="#" class="report_tplt" rel="'.MInit::crypt_tp('tplt', 'devis').'" data="%crypt%"> <i class="ace-icon fa fa-print"></i></a>', 'data' => 'id');
+        $add_set = array('return' => '<a href="#" class="report_tplt" rel="'.MInit::crypt_tp('tplt', 'facture').'" data="%crypt%"> <i class="ace-icon fa fa-print"></i></a>', 'data' => 'id');
         $id_objectif = $this->id_objectif_service;
         $date_s     = date('Y-m-d', strtotime($this->g('date_s')));
         $date_e     = date('Y-m-d', strtotime($this->g('date_e')));
