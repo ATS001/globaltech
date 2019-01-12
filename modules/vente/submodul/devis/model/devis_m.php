@@ -2488,6 +2488,95 @@ class Mdevis
         return $tableau;
     }
 
+    static public function indicator_nbr_devis()
+    {
+        
+        global $db;        
+        $id_user    = session::get('userid');
+        $id_service = session::get('service');
+        if(in_array($id_service, array(1, 3))){
+            $where_user = null;
+        }elseif($id_service == 2){
+            $where_user = " AND id_user_sys = $id_user";
+        }
+        $req_sql ="SELECT
+        COUNT(`devis`.`id`) AS nbr_devis FROM `devis`
+        INNER JOIN `commerciaux` ON (`devis`.`id_commercial` = `commerciaux`.`id`)
+        INNER JOIN `users_sys` ON (`commerciaux`.`id_user_sys` = `users_sys`.`id`)
+        WHERE 1=1 $where_user";
+        
+        if(!$db->Query($req_sql))
+        {
+            return false;
+        }else{
+            if (!$db->RowCount())
+            {
+                return false;
+            } else {
+                $arr_result = $db->RowArray();                
+            }
+        }
+        
+        $output =  '<div class="col-lg-3 col-6">
+                        <div class="small-box btn-success">
+                            <div class="inner">
+                                <h3>'.$arr_result['nbr_devis'].'</h3>
+                                <p>Devis enregistrés</p>
+                            </div>
+                        <div class="icon">
+                            <i class="ace-icon fa fa-paper-plane home-icon"></i>
+                        </div>
+                        <a href="#" rel="devis" class="small-box-footer this_url">Voir détails <i class="fa fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>';
+        return print($output);            
+    }
+
+    static public function indicator_nbr_facture_non_paye()
+    {
+        
+        global $db;        
+        $id_user    = session::get('userid');
+        $id_service = session::get('service');
+        if(in_array($id_service, array(1, 3))){
+            $where_user = null;
+        }elseif($id_service == 2){
+            $where_user = " AND id_user_sys = $id_user";
+        }
+        $req_sql ="SELECT
+        COUNT(`factures`.`id`) AS nbr_facture FROM `factures`
+        INNER JOIN `devis` ON (`devis`.`id` = `factures`.`iddevis`)
+        INNER JOIN `commerciaux` ON (`devis`.`id_commercial` = `commerciaux`.`id`)
+        INNER JOIN `users_sys` ON (`commerciaux`.`id_user_sys` = `users_sys`.`id`)
+        WHERE  factures.etat IN(3 ,2) $where_user";
+        
+        if(!$db->Query($req_sql))
+        {
+            return false;
+        }else{
+            if (!$db->RowCount())
+            {
+                return false;
+            } else {
+                $arr_result = $db->RowArray();                
+            }
+        }
+        
+        $output =  '<div class="col-lg-3 col-6">
+                        <div class="small-box btn-red">
+                            <div class="inner">
+                                <h3>'.$arr_result['nbr_facture'].'</h3>
+                                <p>Facture non payées</p>
+                            </div>
+                        <div class="icon">
+                            <i class="ace-icon fa fa-file home-icon"></i>
+                        </div>
+                        <a href="#" rel="factures" class="small-box-footer this_url">Voir détails <i class="fa fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>';
+        return print($output);            
+    }
+
 
 
 /**

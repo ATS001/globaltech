@@ -70,8 +70,7 @@ class Mobjectif_service {
 			return false;
 		}else{
 			return true ;
-		}
-		
+		}		
 	}
 
     /**
@@ -695,6 +694,50 @@ class Mobjectif_service {
                 
         $tableau = $db->GetMTable($headers, $add_set);
         return $tableau;
+    }
+
+    static public function indicator_objectif_service()
+    {
+        
+        global $db;
+        $table = 'objectif_service';
+        $id_service = session::get('service');
+        if(in_array($id_service, array(1, 3))){
+            $where = null;
+        }elseif($id_service == 2){
+            $where = " AND $table.id_service = 2";
+        }
+        $req_sql ="SELECT $table.id, REPLACE(FORMAT($table.objectif,0),',',' ') AS objectif,
+                   REPLACE(FORMAT($table.realise,0),',',' ') AS realise,
+                   ROUND($table.realise * 100 / $table.objectif, 2) AS percent,
+                   $table.objectif - $table.realise AS reste_int FROM  $table 
+                   WHERE 1=1  $where ";
+        
+        if(!$db->Query($req_sql))
+        {
+            return false;
+        }else{
+            if (!$db->RowCount())
+            {
+                return false;
+            } else {
+                $arr_result = $db->RowArray();                
+            }
+        }
+        $idc = MInit::crypt_tp('id', $arr_result['id']);
+        $output =  '<div class="col-lg-3 col-6">
+                        <div class="small-box btn-purple">
+                            <div class="inner">
+                                <h3>'.$arr_result['percent'].'<sup style="font-size: 20px">%</sup></h3>
+                                <p>Réalisation globale: '.$arr_result['realise'].'</p>
+                            </div>
+                        <div class="icon">
+                            <i class="ace-icon fa fa-line-chart home-icon"></i>
+                        </div>
+                        <a href="#" rel="detail_objectif_service" data="'.$idc.'"  class="small-box-footer this_url">Voir détails <i class="fa fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>';
+        return print($output);            
     }
 
 
