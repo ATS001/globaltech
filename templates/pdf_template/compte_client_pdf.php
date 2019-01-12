@@ -6,40 +6,37 @@
 //
 // Description : All info compte client
 //
-
 //============================================================+
 //Get all info Compte client from model
 $compte_client = new Mclients();
 $compte_client->id_client = Mreq::tp('id');
 
-$id_client=Mreq::tp('id');
-$date_debut=Mreq::tp('date_debut');
-$date_fin=Mreq::tp('date_fin');
+$id_client = Mreq::tp('id');
+$date_debut = Mreq::tp('date_debut');
+$date_fin = Mreq::tp('date_fin');
 
 
 /*
-if (!MInit::crypt_tp('id', null, 'D') or ! $compte_client->get_client()) {
-    // returne message error red to facture 
-    
-    exit('0#<br>Les informationss pour cette template sont erronées, contactez l\'administrateur');
-}
+  if (!MInit::crypt_tp('id', null, 'D') or ! $compte_client->get_client()) {
+  // returne message error red to facture
+
+  exit('0#<br>Les informationss pour cette template sont erronées, contactez l\'administrateur');
+  }
  * 
  */
 
 //Execute Pdf render
 
 $compte_client->Get_detail_info_client($date_debut, $date_fin, $id_client);
-$client_info=$compte_client->client_info;
-$devise=$client_info["devise"];
+$client_info = $compte_client->client_info;
+$devise = $client_info["devise"];
 
-if(!$compte_client->Get_detail_client_show($date_debut,$date_fin,$id_client))
-{
-	exit("0#".$compte_client->log);
-
+if (!$compte_client->Get_detail_client_show($date_debut, $date_fin, $id_client)) {
+    exit("0#" . $compte_client->log);
 }
 global $db;
 $tableau_body = null;
- 
+
 $compte_client_info = $compte_client->compte_client_info;
 
 
@@ -50,16 +47,13 @@ $headers = array(
     '#' => '5[[#]C',
     'Date' => '10[#]C',
     'Description' => '46[#]L',
-    'Débit' => '11[#]R',
-    'Crédit' => '11[#]R',
-    'Solde('.$devise.')' => '11[#]R',
-    
+    'Montant' => '11[#]R',
+    'Paiement' => '11[#]R',
+    'Solde(' . $devise . ')' => '11[#]R',
 );
 
 $tableau_head_product = MySQL::make_table_head($headers);
 $tableau_body_product = $db->GetMTable_pdf($headers);
-
-
 
 // Extend the TCPDF class to create custom Header and Footer
 class MYPDF extends TCPDF {
@@ -98,15 +92,15 @@ class MYPDF extends TCPDF {
         $this->writeHTMLCell(0, 0, 122, 7, $titre_doc, 'B', 0, 0, true, 'R', true);
         $this->SetTextColor(0, 0, 0);
         $this->SetFont('helvetica', '', 9);
-        $date_ref=date("M Y");  
-       
+        $date_ref = date("M Y");
+
         $detail_client = '<table cellspacing="3" cellpadding="2" border="0">
             <tr>
                
                 <td style="width:40%; color:#A1A0A0;"><strong>REFERENCE 
                 </strong></td>
                 <td style="width:5%;">:</td>
-                <td style="width:57%; background-color: #eeecec; ">GT-EC/'.$date_ref.'</td>
+                <td style="width:57%; background-color: #eeecec; ">GT-EC/' . $date_ref . '</td>
                 </tr>
                 <tr>
 		<td style="width:40%; color:#A1A0A0;"><strong>REFERENCE CLIENT</strong></td>
@@ -121,7 +115,7 @@ class MYPDF extends TCPDF {
 		<tr>
 		<td style="width:40%; color:#A1A0A0;"><strong>MONTANT DÛ</strong></td>
 		<td style="width:5%;">:</td>
-		<td  style="width:57%; text-align: right; background-color: #E99222; ">' . $this->client_info['solde_final'] .' '. $this->client_info['devise']. '</td>
+		<td  style="width:57%; text-align: right; background-color: #E99222; ">' . $this->client_info['solde_final'] . ' ' . $this->client_info['devise'] . '</td>
 		</tr>
                 <tr>
                 <td style="width:40%; color:#A1A0A0;"><strong>DELAI DE PAIEMENT
@@ -130,14 +124,14 @@ class MYPDF extends TCPDF {
                 <td style="width:57%; background-color: #eeecec; "> 10 Jours </td>
                 </tr>
                 </table>';
-        
+
 
         $this->writeHTMLCell(0, 0, 105, 20, $detail_client, '', 0, 0, true, 'L', true);
-    
+
         //$this->Ln();
         //Comment fati 04/03 pour probleme tableau complement
         $this->setCellPadding(0);
-        $height = $this->getLastH() + $this->GetY()+5;
+        $height = $this->getLastH() + $this->GetY() + 5;
         //$this->SetTopMargin(10 + $this->GetY());
         //Info général
         $tableau_head = $this->Table_head;
@@ -147,9 +141,7 @@ class MYPDF extends TCPDF {
             $this->SetTopMargin($height + $this->GetY());
             //end comment fati
         }
-  
     }
-    
 
     // Page footer
     public function Footer() {
@@ -167,12 +159,12 @@ class MYPDF extends TCPDF {
         );
         //write2DBarcode($code, $type, $x='', $y='', $w='', $h='', $style='', $align='', $distort=false)
         $this->SetY(-30);
-       // $this->write2DBarcode($qr_content, 'QRCODE,H', 15, '', 25, 25, $style, 'N');
+        // $this->write2DBarcode($qr_content, 'QRCODE,H', 15, '', 25, 25, $style, 'N');
         //}
         $ste_c = new MSte_info();
         $this->SetY(-20);
         $ste = $ste_c->get_ste_info_report_footer(1);
-        $this->writeHTMLCell(0, 0, '','', $ste, '', 0, 0, true, 'C', true);
+        $this->writeHTMLCell(0, 0, '', '', $ste, '', 0, 0, true, 'C', true);
         // Position at 15 mm from bottom
         $this->SetY(-15);
         // Set font
@@ -203,8 +195,8 @@ $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8',
 
 $pdf->Table_head = $tableau_head_product;
 //$pdf->info_client = $compte_client_info;
-$pdf->compte_client_info=$compte_client_info;
-$pdf->client_info=$client_info;
+$pdf->compte_client_info = $compte_client_info;
+$pdf->client_info = $client_info;
 
 
 // set document information
@@ -262,7 +254,7 @@ $solde_lettre = $obj->convert("fr-FR");
 
 
 $signature = 'La Direction';
-$date_ref=date("M Y"); 
+$date_ref = date("M Y");
 
 $block_sum = '<div></div>
 <style>
@@ -285,165 +277,39 @@ p {
 <table style="width: 685px; hight: 685px;" cellpadding="2">
 
 <tr>
-    <td colspan="2" style="color: #E99222;font-family: sans-serif;font-weight: bold;">Arrêté la présente Facture à la somme de :
+    <td colspan="2" style="color: #E99222;font-family: sans-serif;font-weight: bold;">Arrêté le présent Etat de compte à la somme de :
     </td>
 </tr>
 <tr>
     <td colspan="2" style="color:#6B6868; width: 650px; border:1pt solid black; background-color: #eeecec; padding: 5px;">
-        <strong>'.$solde_lettre.'</strong>    
+        <strong>' . $solde_lettre . '</strong>    
     </td>
 </tr>
-
-<tr><td></td></tr>
-<tr>
-    <td colspan="2" style="width: 650px;  padding: 5px;">
-       Veuiller détacher la partie ci-dessous et envoyer avec votre versement.
-    </td>
-</tr>
-
-    <tr>
-        <td width="50%" align="left">
-            <table class="table" cellspacing="2" cellpadding="2"  style="width: 300px; border:1pt solid black;" >
-            <tbody>
-               
-                <tr>
-                    <td style="width:45%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>De</strong></td>
-                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
-                     <td  style="width:50%;"><strong>   </strong></td>
-                
-                </tr>
-
-             
-                <tr>
-                    <td style="width:45%;color:#A1A0A0;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Nom du Client</strong></td>
-                    <td style="width:5%;color:#A1A0A0;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
-                    <td  style="width:50%; background-color: #eeecec;"><strong> ' . $pdf->client_info['denomination'] . ' </strong></td>
-                </tr>
-                 <tr>
-                    <td style="width:45%;color:#A1A0A0;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>A l\'Attention du </strong></td>
-                    <td style="width:5%;color:#A1A0A0;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
-                    <td  style="width:50%; background-color: #eeecec;"><strong>DIRECTEUR GENERAL</strong></td>
-                </tr>
-                
-                <tr>
-                    <td style="width:45%;color:#A1A0A0;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Adresse</strong></td>
-                    <td style="width:5%;color:#A1A0A0;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
-                    <td  style="width:50%; background-color: #eeecec;"><strong> ' . $pdf->client_info['adresse'] . ' </strong></td>
-                </tr>
-                <tr>
-                    <td style="width:45%;color:#A1A0A0;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Localité</strong></td>
-                    <td style="width:5%;color:#A1A0A0;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
-                    <td style="width:50%; background-color: #eeecec;"><strong> ' . $pdf->client_info['ville'] . ' </strong></td>
-                </tr>
-            </tbody>
-            
-        </table>
-        </td>
-        <td width="50%">
-           <table class="table" cellspacing="2" cellpadding="2"  style="width: 300px; border:1pt solid black;" >
-            <tbody>
-               
-                <tr>
-                    <td style="width:45%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>REFERENCE </strong></td>
-                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
-                    <td  style="width:50%; background-color: #eeecec;"><strong> GT-EC/'.$date_ref.' </strong></td>
-                </tr>
-
-             
-                <tr>
-                    <td style="width:45%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>DELAIS DE PAIEMENT </strong></td>
-                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
-                    <td  style="width:50%; background-color: #eeecec;"><strong> 10 Jours </strong></td>
-                </tr>
-                 <tr>
-                    <td style="width:45%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>REFERENCE CLIENT </strong></td>
-                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
-                    <td  style="width:50%; background-color: #eeecec;"><strong> ' . $pdf->client_info['denomination'] . ' </strong></td>
-                </tr>
-                
-                <tr>
-                    <td style="width:45%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>MONTANT DÛ </strong></td>
-                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
-                    <td class="alignRight" style="width:50%; background-color: #E99222;"><strong> ' . $pdf->client_info['solde_final'] . ' '. $pdf->client_info['devise']. ' </strong></td>
-                </tr>
-                 <tr>
-                    <td></td>
-                </tr>
-            </tbody>
-            </table> 
-    </td>
-    </tr>
-            
-            <tr>
-            <td width="50%" align="left">
-            <table class="table" cellspacing="2" cellpadding="2"  style="width: 300px; border:1pt solid black;" >
-            <tbody>
-               
-                <tr>
-                    <td style="width:75%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>FAIRE TOUT CHÈQUE À L\'ORDRE DE</strong></td>
-                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
-                     <td  style="width:20%; "><strong>   </strong></td>
-                
-                </tr>
-
-             
-                <tr>
-                    <td style="width:45%;color:#A1A0A0;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Nom de l\'Entreprise</strong></td>
-                    <td style="width:5%;color: #A1A0A0;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
-                    <td  style="width:50%; background-color: #eeecec;"><strong>GLOBAL TECH</strong></td>
-                </tr>
-                 <tr>
-                    <td style="width:45%;color:#A1A0A0;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Adresse</strong></td>
-                    <td style="width:5%;color: #A1A0A0;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
-                    <td style="width:50%; background-color: #eeecec;"><strong>DIRECTEUR GENERAL</strong></td>
-                </tr>
-                
-                <tr>
-                    <td style="width:45%;color:#A1A0A0;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Adresse</strong></td>
-                    <td style="width:5%;color: #A1A0A0;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
-                    <td   style="width:50%; background-color: #eeecec;"><strong>Avenue Charles de Gaulle</strong></td>
-                </tr>
-                <tr>
-                    <td style="width:45%;color:#A1A0A0;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>BP</strong></td>
-                    <td style="width:5%;color: #A1A0A0;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
-                    <td   style="width:50%; background-color: #eeecec;"><strong>1656,  Ndjamena Tchad</strong></td>
-                </tr>
-            </tbody>
-            
-        </table>
-        </td>
            
-        <td width="50%">
-        <table class="table">
-          <tbody>
-            <tr>
-            <td></td>
-            <td colspan="2" align="right" style="font: underline; width: 150px;  padding-right: 100px;">
-                <br>
-            <strong>' . $signature . '</strong>
-            </td>
-            </tr>
+<tr>
+<br>
+    <td colspan="2" align="right" style="font: underline; width: 550px; padding-right: 200px;">
+        
+        <strong>' . $signature . '</strong>
+    </td>
+</tr>
             
             <tr>
-            <td></td>
-            <td colspan="2" align="right" style="font: underline; width: 200px;  padding-right: 500px;">
-            <span class="profile-picture">
-			<img width="150" height="100" class="editable img-responsive" alt="logo_global.png" id="avatar2" src="./upload/signature/signature_ali.jpg" />
-            </span>	
+<td colspan="2" align="right" style="font: underline; width: 620px;  padding-right: 200px;">
+  
+        <span class="profile-picture">
+			<img width="170" height="170" class="editable img-responsive" alt="logo_global.png" id="avatar2" src="./upload/signature/signature_ali.jpg" />
+		</span>	
 
-            </td>
-            </tr>
-
-          </tbody>
-        </table> 
-        </td>
-</tr></table>';
+    </td>
+</tr>
+</table>';
 //$pdf->lastPage(); 
-	
+
 $pdf->writeHTML($html, true, false, true, false, '');
- 
-/*$y = $pdf->GetY();
- //var_dump($y);
+
+/* $y = $pdf->GetY();
+  //var_dump($y);
   //No space for Sum Blok then AddPage
   if($y > 190)
   {
@@ -455,7 +321,7 @@ $pdf->writeHTML($html, true, false, true, false, '');
   $pdf->writeHTML($block_sum, true, false, true, false, '');
   }
  * 
- */ 
+ */
 $pdf->writeHTMLTogether($block_sum, $ln = true, $fill = false, $reseth = false, $cell = false, $align = '');
 
 

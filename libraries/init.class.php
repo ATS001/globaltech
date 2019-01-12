@@ -542,7 +542,7 @@ static public function pub_copy_file($old_file, $new_file, $path, $mode = 0777){
    
  }
 
- static public function Export_pdf($headers, $file_name, $title = NULL)
+ static public function Export_pdf($headers, $file_name, $title = NULL, $tag_filter = NULL)
  {
    global $db;
 
@@ -556,7 +556,9 @@ static public function pub_copy_file($old_file, $new_file, $path, $mode = 0777){
    $tableau_head = MySQL::make_table_head($headers);
    $tableau_body = $db->GetMTable_pdf($headers);
    $title_report = $title;
-   $html = $tableau_body;//$db->GetHTML($header, true, null, $styleHeader = null, $styleData = null);
+   
+   $html = $tableau_body;
+
    //Load template 
    include_once MPATH_THEMES.'pdf_template/export_list_pdf.php';
 

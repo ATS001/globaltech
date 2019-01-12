@@ -430,7 +430,9 @@ class TableTools
     	}
     	return $order_notif;
 
-    }   
+    }
+
+       
     /**
      * [where_etat_line description]
      * @param  [type] $table     [description]

@@ -1,6 +1,7 @@
 <?php
 //First check target no Hack
-if (!defined('_MEXEC')) die();
+if (!defined('_MEXEC'))
+    die();
 //SYS GLOBAL TECH
 // Modul: commerciale
 //Created : 30-12-2017
@@ -10,12 +11,10 @@ $info_commerciale = new Mcommerciale();
 //Set ID of Module with POST id
 $info_commerciale->id_commerciale = Mreq::tp('id');
 //Check if Post ID <==> Post idc or get_modul return false. 
-if (!MInit::crypt_tp('id', null, 'D') or !$info_commerciale->get_commerciale()) {
+if (!MInit::crypt_tp('id', null, 'D') or ! $info_commerciale->get_commerciale()) {
     // returne message error red to client
     exit('3#' . $info_commerciale->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
-
-
 ?>
 
 <div class="pull-right tableTools-container">
@@ -61,6 +60,10 @@ if (!MInit::crypt_tp('id', null, 'D') or !$info_commerciale->get_commerciale()) 
                 //is_glbt ==>
                 $array_is_glbt = array('Oui' => 'Oui', 'Non' => 'Non');
                 $form->select('Interne', 'is_glbt', 2, $array_is_glbt, $indx = NULL, $info_commerciale->g("is_glbt"), $multi = NULL);
+                //Service
+                $service_array[] = array('required', 'true', 'Choisir le Service');
+                $form->select_table('Service', 'service', 6, 'services', 'id', 'service', 'service', $indx = '------', $selected = $info_commerciale->g("id_service"), $multi = NULL, $where = 'id <> 1', $service_array);
+
                 //cin ==>
                 $array_cin[] = array("required", "true", "Insérer le N CIN");
                 $form->input("CIN", "cin", "text", "6", $info_commerciale->g("cin"), $array_cin, null, $readonly = null);
@@ -103,4 +106,3 @@ if (!MInit::crypt_tp('id', null, 'D') or !$info_commerciale->get_commerciale()) 
     });
 </script>	
 
-		

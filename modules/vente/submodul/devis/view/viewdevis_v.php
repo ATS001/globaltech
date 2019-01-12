@@ -11,7 +11,7 @@ $info_devis->id_devis = Mreq::tp('id');
 if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->Get_detail_devis_show())
 { 	
  	// returne message error red to client 
-	exit('3#'.$info_devis->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+	exit('3#'.$info_devis->log .'<br>Les informations pour cette ligne (Devis) sont erronées contactez l\'administrateur');
 }
 
 
@@ -19,6 +19,7 @@ $tab_details_devis = view::tab_render('devis', 'Devis', $add_set=NULL, 'paper-pl
 $tab_liste_bl = view::tab_render('bl', 'Bons de Livraison', $add_set=NULL, 'bookmark' , false, 'bl');
 $tab_liste_factures = view::tab_render('factures', 'Factures', $add_set=NULL, 'file' , false, 'factures');
 $tab_liste_encaissement = view::tab_render('encaissements', 'Encaissements', $add_set=NULL, 'money' , false, 'encaissement');
+
 
 ?>
 <div class="pull-right tableTools-container">
@@ -60,6 +61,7 @@ $tab_liste_encaissement = view::tab_render('encaissements', 'Encaissements', $ad
 					echo $tab_liste_bl['tab_index']; 
 					echo $tab_liste_factures['tab_index']; 
 					echo $tab_liste_encaissement['tab_index']; 
+					
 					?>
 					
 				</ul>
@@ -99,6 +101,8 @@ $tab_liste_encaissement = view::tab_render('encaissements', 'Encaissements', $ad
 					 	echo $info_devis->get_list_encaissement();
 					 	echo $tab_liste_encaissement['tce'];
 					 }
+
+					 
 
 
 					?>

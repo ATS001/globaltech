@@ -23,7 +23,19 @@ class nuts {
           "pt-PT" => array('dollar', 'dollars', 'cêntimo', 'cêntimos', 'm', 'm'),
           "en-EN" => array('dollar', 'dollars', 'cent', 'cents', '')
         ),
+        "$" => array(
+          100,
+          "fr-FR" => array('dollar', 'dollars', 'centime', 'centimes', '', ''),
+          "pt-PT" => array('dollar', 'dollars', 'cêntimo', 'cêntimos', 'm', 'm'),
+          "en-EN" => array('dollar', 'dollars', 'cent', 'cents', '')
+        ),
         "EUR" => array(
+          100,
+          "fr-FR" => array('euro', 'euros', 'centime', 'centimes', '', ''),
+          "pt-PT" => array('euro', 'euros', 'cêntimo', 'cêntimos', 'm', 'm'),
+          "en-EN" => array('euro', 'euros', 'cent', 'cents', '', '')
+        ),
+        "€" => array(
           100,
           "fr-FR" => array('euro', 'euros', 'centime', 'centimes', '', ''),
           "pt-PT" => array('euro', 'euros', 'cêntimo', 'cêntimos', 'm', 'm'),
@@ -290,13 +302,18 @@ class nuts {
     
     if ($unit < 3){
       // [0..999].
+      $return .= ' ' . $this->numbers[$language][$unit][0];
+      
     } else {
+
       // 0, 1 ou n ?
       if ($group == 0) {
+        
       } elseif ($group == 1){
         $return .= ' ' . $this->numbers[$language][$unit][0];
       } else {
         $return .= ' ' . $this->numbers[$language][$unit][1];
+
       }
     }
     
@@ -308,6 +325,7 @@ class nuts {
     }
     
     if (nuts::DEBUG) echo "<br>local b $unit [" . $return . "] ";
+    
     // Exceptions de genre.
     if (   ($this->units[$this->unit][$language][$gender] == 'f' && $unit < 3)
       || ($this->units[$this->unit][$language][$gender] == 'f' && $this->numbers[$language][$unit][2] == 'f')) {
@@ -376,9 +394,13 @@ class nuts {
     
     // Décodage par blocs de 3.
     $groups = explode(' ', $this->format($nb, ' '));
+   
     for ($i = 0; $i < count($groups) ; $i++){
-      $return .= $this->getThree($groups[$i], (count($groups) - 1 - $i) * 3, $language, $gender) . ' ';
+      
+        $return .= $this->getThree($groups[$i], (count($groups) - 1 - $i) * 3, $language, $gender) . ' ';
+        
     }
+   
     $return = trim($return);
 
     if (nuts::DEBUG) echo "<br>part a : [" . $return . "]";
@@ -399,6 +421,8 @@ class nuts {
   function convert($language){
     // Partie entière.
     $return = $this->part($this->parts[0], $language, 4) . " ";
+
+
     $return .= ($this->parts[0] > 1) ? $this->units[$this->unit][$language][1] : $this->units[$this->unit][$language][0];
     
     // Exceptions.

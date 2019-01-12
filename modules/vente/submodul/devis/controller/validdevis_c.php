@@ -10,21 +10,6 @@ if(!MInit::crypt_tp('id', null, 'D')or !$devis->get_devis())
 }
 
 
-
-//Execute activation desactivation
-$etat = $devis->devis_info['etat'];
-
-switch ($etat) {
-	case 0:
-		$action = 'valid_devis';
-		break;
-	case 1:
-	    $action = 'senddevis_to_client';	
-	default:
-		# code...
-		break;
-}
-
 if($devis->valid_devis(0))
 {
 	exit("1#".$devis->log);

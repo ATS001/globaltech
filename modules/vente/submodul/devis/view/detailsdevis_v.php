@@ -162,6 +162,7 @@
 													<b class="red">
 														<?php 
 														$devise = $info_devis->g('devise');
+														
 
 														$obj = new nuts($info_devis->g('totalttc'), $devise);
 														$ttc_lettre = $obj->convert("fr-FR");

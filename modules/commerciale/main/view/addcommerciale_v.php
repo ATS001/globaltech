@@ -46,6 +46,10 @@ if (!defined('_MEXEC')) die();
                 //is_glbt ==>
                 $array_is_glbt = array('Oui' => 'Oui', 'Non' => 'Non');
                 $form->select('Interne', 'is_glbt', 2, $array_is_glbt, $indx = NULL, $selected = 'Oui', $multi = NULL);
+               //Service
+                $service_array[]  = array('required', 'true', 'Choisir le Service' );
+                $form->select_table('Service', 'service', 6, 'services', 'id', 'service' , 'service', $indx = '------' ,$selected=NULL,$multi=NULL, $where='id <> 1', $service_array);
+
                 //cin ==>
                 $array_cin[] = array("required", "true", "Insérer le N° CIN");
                 $form->input("CIN", "cin", "text", "9", null, $array_cin, null, $readonly = null);
@@ -60,7 +64,7 @@ if (!defined('_MEXEC')) die();
 
                 //Select Simple Example
                 $sexe_opt = array('Masculin' => 'Masculin', 'Féminin' => 'Féminin');
-                $form->select('Sexe', 'sexe', 2, $sexe_opt, $indx = NULL, $selected = 'M', $multi = NULL);
+                $form->select('Sexe', 'sexe', 2, $sexe_opt, $indx = NULL, $selected = 'Masculin', $multi = NULL);
 
                 //image
                 $form->input('Photo', 'photo', 'file', 9, null, null);
@@ -81,11 +85,7 @@ if (!defined('_MEXEC')) die();
 <!-- End Add devis bloc -->
 
 <script type="text/javascript">
-    $(document).ready(function () {
 
-//JS bloc   
-
-    });
 </script>	
 
 		

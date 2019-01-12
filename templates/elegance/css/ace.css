@@ -5868,6 +5868,51 @@ fieldset[disabled] .btn-pink.active {
   background-color: #d6487e !important;
   border-color: #d6487e;
 }
+.btn-red,
+.btn-red:focus {
+  background-color: #ea0b1a !important;
+  border-color: #ea0b1a;
+}
+.btn-red:hover,
+.btn-red:active,
+.open > .btn-red.dropdown-toggle {
+  background-color: #ea7981 !important;
+  border-color: #ea0b1a;
+}
+.btn-red.no-border:hover,
+.btn-red.no-border:active {
+  border-color: #ea7981;
+}
+.btn-red.no-hover:hover,
+.btn-red.no-hover:active {
+  background-color: #ea0b1a !important;
+}
+.btn-red.active {
+  background-color: #8573b5 !important;
+  border-color: #705ca8;
+}
+.btn-red.no-border.active {
+  background-color: #7c69af !important;
+  border-color: #7c69af;
+}
+.btn-red.disabled,
+.btn-red[disabled],
+fieldset[disabled] .btn-red,
+.btn-red.disabled:hover,
+.btn-red[disabled]:hover,
+fieldset[disabled] .btn-red:hover,
+.btn-red.disabled:focus,
+.btn-red[disabled]:focus,
+fieldset[disabled] .btn-red:focus,
+.btn-red.disabled:active,
+.btn-red[disabled]:active,
+fieldset[disabled] .btn-red:active,
+.btn-red.disabled.active,
+.btn-red[disabled].active,
+fieldset[disabled] .btn-red.active {
+  background-color: #ea0b1a !important;
+  border-color: #ea0b1a;
+}
 .btn-purple,
 .btn-purple:focus {
   background-color: #9585bf !important;
@@ -10740,6 +10785,14 @@ td .lbl:only-child {
 }
 .table-header-archive {
   background-color: #e22d36;
+  color: #FFF;
+  font-size: 14px;
+  line-height: 38px;
+  padding-left: 12px;
+  margin-bottom: 1px;
+}
+.table-header-filtred {
+  background-color: #b71eaa;
   color: #FFF;
   font-size: 14px;
   line-height: 38px;

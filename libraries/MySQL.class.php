@@ -1024,7 +1024,7 @@ class MySQL
         return $reference;
     }
 
-		/**
+	/**
 	 * This function returns the last query as an HTML table
 	 *
 	 * @param boolean $showCount (Optional) TRUE if you want to show the row count,

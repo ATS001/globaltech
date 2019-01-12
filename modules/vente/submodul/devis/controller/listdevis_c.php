@@ -22,16 +22,16 @@ $array_column = array(
         'column' => 'devis.reference',
         'type'   => '',
         'alias'  => 'ref_produit',
-        'width'  => '10',
+        'width'  => '15',
         'header' => 'Référence',
         'align'  => 'C'
     ),
     array(
-        'column' => 'clients.denomination',
+        'column' => 'CONCAT(clients.denomination,\' - \',ref_devise.abreviation)',
         'type'   => 'link',
-        'link'   => array('clients.denomination', 'detailsclient', 'clients.id'),
+        'link'   => array('CONCAT(clients.denomination,\' - \',ref_devise.abreviation)', 'detailsclient', 'clients.id'),
         'alias'  => 'client',
-        'width'  => '25',
+        'width'  => '23',
         'header' => 'Client',
         'align'  => 'L',
         'export' => 'clients.denomination',
@@ -48,7 +48,7 @@ $array_column = array(
         'column' => 'devis.totalttc',
         'type'   => 'int',
         'alias'  => 'montantttc',
-        'width'  => '15',
+        'width'  => '12',
         'header' => 'Montant TTC',
         'align'  => 'R'
     ),
@@ -65,9 +65,9 @@ $array_column = array(
 //Creat new instance
 $list_data_table = new Mdatatable();
 //Set tabels used in Query
-$list_data_table->tables = array('devis', 'clients');
+$list_data_table->tables = array('devis', 'clients', 'ref_devise');
 //Set Jointure
-$list_data_table->joint = 'clients.id = devis.id_client';
+$list_data_table->joint = 'clients.id = devis.id_client AND clients.id_devise = ref_devise.id';
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query
@@ -78,6 +78,9 @@ $list_data_table->task = 'devis';
 $list_data_table->file_name = 'liste_devis';
 //Set Title of report
 $list_data_table->title_report = 'Liste Devis';
+//Set Fliter setting
+$list_data_table->data_filter = array('id' => array('int','5'), 'client' => array('text','9'), 'date_devis' => array('date','5'), 'ref_produit' => array('text','5') );
+//$list_data_table->debug = true;
 //Print JSON DATA
 if(!$data = $list_data_table->Query_maker())
 {

@@ -205,6 +205,7 @@ class MAjax
 				WHERE users_sys.id = ".$this->session_user." 
 
 				AND task.app =  ".MySQL::SQLValue($this->app_array['app'])." ";
+				//exit($sql);
 				if($db->QuerySingleValue0($sql) == '0' && $this->app_array['app_sys'] == 0)
 				{
 					$this->error = false;
