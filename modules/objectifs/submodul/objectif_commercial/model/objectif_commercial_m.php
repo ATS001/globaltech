@@ -13,14 +13,14 @@ if(!defined('_MEXEC'))die();
 
 class Mobjectif_commercial {
 	
-	private $_data;                      //data receive from form
-	var $table            = 'objectif_commercial';   //Main table of module
-	var $last_id          = null;        //return last ID after insert command
-	var $log              = null;        //Log of all opération.
-	var $error            = true;        //Error bol changed when an error is occured
-    var $id_objectif_commercial       = null;        // objectif_commercial ID append when request
-	var $token            = null;        //user for recovery function
-	var $objectif_commercial_info     = array();     //Array stock all objectif_commercial info
+    private $_data;                      //data receive from form
+    var $table                    = 'objectif_commercial';   //Main table of module
+    var $last_id                  = null;        //return last ID after insert command
+    var $log                      = null;        //Log of all opération.
+    var $error                    = true;        //Error bol changed when an error is occured
+    var $id_objectif_commercial   = null;        // objectif_commercial ID append when request
+    var $token                    = null;        //user for recovery function
+    var $objectif_commercial_info = array();     //Array stock all objectif_commercial info
 	
 
 	public function __construct($properties = array()){
@@ -302,6 +302,73 @@ class Mobjectif_commercial {
     	}else{
     		return true;
     	}
+
+
+    }
+    /**
+     * [debloque_objectif_service description]
+     * @return [type] [description]
+     */
+    public function debloque_objectif_commercial()
+    {
+        //Get existing data for row
+        $this->get_objectif_commercial();
+        
+        $this->last_id = $this->id_objectif_commercial;
+        global $db;
+        //Get Etat Objectif to validate
+        $etat_creat =  Msetting::get_set('etat_objectifs', 'creat_obj');
+        if($etat_creat == null)
+        {
+            $this->log   .= '</br>Impossible de changer le statut!';
+            $this->log   .= '</br>manque de paramètre';
+            $this->error = false;
+            return false;
+        }
+
+        //Check if line have same value of setting
+        if($etat_creat == $this->objectif_commercial_info['etat'])
+        {
+            $this->log   .= '</br>Cette ligne est dèja débloquée';
+            $this->error = false;
+            return false;
+        }
+        //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
+        
+
+        $values["etat"]        = MySQL::SQLValue($etat_creat);
+        $values["updusr"]      = MySQL::SQLValue(session::get('userid'));
+        $values["upddat"]      = MySQL::SQLValue(date("Y-m-d H:i:s"));
+
+        $wheres['id']     = $this->id_objectif_commercial;
+
+        // Execute the update and show error case error
+        if(!$result = $db->UpdateRows($this->table, $values, $wheres))
+        {
+            $this->log   .= '</br>Impossible de changer le statut!';
+            $this->log   .= '</br>'.$db->Error();
+            $this->error  = false;
+
+        }else{
+            $this->log   .= '</br>Statut changé! ';
+            $this->error  = true;
+            if(!Mlog::log_exec($this->table, $this->last_id, 'Changement ETAT  objectif_service', 'Update'))
+            {
+                $this->log .= '</br>Un problème de log ';
+                $this->error = false;
+            }
+               //Esspionage
+            if(!$db->After_update($this->table, $this->id_objectif_commercial, $values, $this->objectif_commercial_info)){
+                $this->log .= '</br>Problème Espionnage';
+                $this->error = false;   
+            }
+
+        }
+        if($this->error == false){
+            return false;
+        }else{
+            return true;
+        }
 
 
     }
@@ -625,6 +692,47 @@ class Mobjectif_commercial {
         $tableau = $db->GetMTable($headers, $add_set);
         return $tableau;
     }
+
+    static public function indicator_objectif_commercial()
+    {
+        
+        global $db;
+        $table = 'objectif_commercial';
+        $id_user = session::get('userid');
+        $req_sql ="SELECT $table.id, REPLACE(FORMAT($table.objectif,0),',',' ') AS objectif,
+                   REPLACE(FORMAT($table.realise,0),',',' ') AS realise,
+                   ROUND($table.realise * 100 / $table.objectif, 2) AS percent,
+                   $table.objectif - $table.realise AS reste_int FROM  $table, commerciaux 
+                   WHERE commerciaux.id = $table.id_commercial AND  commerciaux.id_user_sys = $id_user";
+
+        if(!$db->Query($req_sql))
+        {
+            return false;
+        }else{
+            if (!$db->RowCount())
+            {
+                return false;
+            } else {
+                $arr_result = $db->RowArray();                
+            }
+        }
+        $idc = MInit::crypt_tp('id', $arr_result['id']);
+        $output =  '<div class="col-lg-3 col-6">
+                        <div class="small-box btn-info">                        
+                            <div class="inner">                               
+                                <h3>'.$arr_result['percent'].'<sup style="font-size: 20px">%</sup></h3>
+                                <p class="info-box-text">Réalisation personnelle: '.$arr_result['realise'].'</p>
+                            </div>
+                            <div class="icon">
+                                <i class="ace-icon fa fa-line-chart home-icon"></i>
+                            </div>
+                            <a href="#" rel="detail_objectif_commercial" data="'.$idc.'"  class="small-box-footer this_url">Voir détails <i class="fa fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>';
+        return print($output);            
+    }
+    
+
 
 
 }

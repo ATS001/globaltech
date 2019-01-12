@@ -70,8 +70,7 @@ class Mobjectif_service {
 			return false;
 		}else{
 			return true ;
-		}
-		
+		}		
 	}
 
     /**
@@ -306,6 +305,74 @@ class Mobjectif_service {
 
     }
 
+    /**
+     * [debloque_objectif_service description]
+     * @return [type] [description]
+     */
+    public function debloque_objectif_service()
+    {
+        //Get existing data for row
+        $this->get_objectif_service();
+        
+        $this->last_id = $this->id_objectif_service;
+        global $db;
+        //Get Etat Objectif to validate
+        $etat_creat =  Msetting::get_set('etat_objectifs', 'creat_obj');
+        if($etat_creat == null)
+        {
+            $this->log   .= '</br>Impossible de changer le statut!';
+            $this->log   .= '</br>manque de paramètre';
+            $this->error = false;
+            return false;
+        }
+
+        //Check if line have same value of setting
+        if($etat_creat == $this->objectif_service_info['etat'])
+        {
+            $this->log   .= '</br>Cette ligne est dèja débloquée';
+            $this->error = false;
+            return false;
+        }
+        //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
+        
+
+        $values["etat"]        = MySQL::SQLValue($etat_creat);
+        $values["updusr"]      = MySQL::SQLValue(session::get('userid'));
+        $values["upddat"]      = MySQL::SQLValue(date("Y-m-d H:i:s"));
+
+        $wheres['id']     = $this->id_objectif_service;
+
+        // Execute the update and show error case error
+        if(!$result = $db->UpdateRows($this->table, $values, $wheres))
+        {
+            $this->log   .= '</br>Impossible de changer le statut!';
+            $this->log   .= '</br>'.$db->Error();
+            $this->error  = false;
+
+        }else{
+            $this->log   .= '</br>Statut changé! ';
+            $this->error  = true;
+            if(!Mlog::log_exec($this->table, $this->last_id, 'Changement ETAT  objectif_service', 'Update'))
+            {
+                $this->log .= '</br>Un problème de log ';
+                $this->error = false;
+            }
+               //Esspionage
+            if(!$db->After_update($this->table, $this->id_objectif_service, $values, $this->objectif_service_info)){
+                $this->log .= '</br>Problème Espionnage';
+                $this->error = false;   
+            }
+
+        }
+        if($this->error == false){
+            return false;
+        }else{
+            return true;
+        }
+
+
+    }
+
 	/**
 	 *  [check_non_exist Check if one entrie not exist on referential table]
      * @param  [string] $table   [referential table]
@@ -452,7 +519,7 @@ class Mobjectif_service {
     {
         global $db;
         
-        $add_set = array('return' => '<a href="#" class="report_tplt" rel="'.MInit::crypt_tp('tplt', 'devis').'" data="%crypt%"> <i class="ace-icon fa fa-print"></i></a>', 'data' => 'id');
+        $add_set = array('return' => '<a href="#" class="report_tplt" rel="'.MInit::crypt_tp('tplt', 'facture').'" data="%crypt%"> <i class="ace-icon fa fa-print"></i></a>', 'data' => 'id');
         $id_objectif = $this->id_objectif_service;
         $date_s     = date('Y-m-d', strtotime($this->g('date_s')));
         $date_e     = date('Y-m-d', strtotime($this->g('date_e')));
@@ -627,6 +694,50 @@ class Mobjectif_service {
                 
         $tableau = $db->GetMTable($headers, $add_set);
         return $tableau;
+    }
+
+    static public function indicator_objectif_service()
+    {
+        
+        global $db;
+        $table = 'objectif_service';
+        $id_service = session::get('service');
+        if(in_array($id_service, array(1, 3))){
+            $where = null;
+        }elseif($id_service == 2){
+            $where = " AND $table.id_service = 2";
+        }
+        $req_sql ="SELECT $table.id, REPLACE(FORMAT($table.objectif,0),',',' ') AS objectif,
+                   REPLACE(FORMAT($table.realise,0),',',' ') AS realise,
+                   ROUND($table.realise * 100 / $table.objectif, 2) AS percent,
+                   $table.objectif - $table.realise AS reste_int FROM  $table 
+                   WHERE 1=1  $where ";
+        
+        if(!$db->Query($req_sql))
+        {
+            return false;
+        }else{
+            if (!$db->RowCount())
+            {
+                return false;
+            } else {
+                $arr_result = $db->RowArray();                
+            }
+        }
+        $idc = MInit::crypt_tp('id', $arr_result['id']);
+        $output =  '<div class="col-lg-3 col-6">
+                        <div class="small-box btn-purple">
+                            <div class="inner">
+                                <h3>'.$arr_result['percent'].'<sup style="font-size: 20px">%</sup></h3>
+                                <p>Réalisation globale: '.$arr_result['realise'].'</p>
+                            </div>
+                        <div class="icon">
+                            <i class="ace-icon fa fa-line-chart home-icon"></i>
+                        </div>
+                        <a href="#" rel="detail_objectif_service" data="'.$idc.'"  class="small-box-footer this_url">Voir détails <i class="fa fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>';
+        return print($output);            
     }
 
 

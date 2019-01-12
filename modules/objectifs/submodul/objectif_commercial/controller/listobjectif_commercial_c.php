@@ -75,12 +75,17 @@ $array_column = array(
     ),
     
 );
+//Check if is commercial show only his lines
+$only_my_lines = null;
+if(session::get('service') == 3){
+    $only_my_lines = 'AND commerciaux.id_user_sys = '.session::get('userid');
+}
 //Creat new instance
 $list_data_table = new Mdatatable();
 //Set tabels used in Query
 $list_data_table->tables = array('objectif_commercial', 'commerciaux');
 //Set Jointure
-$list_data_table->joint = 'commerciaux.id = objectif_commercial.id_commercial';
+$list_data_table->joint = 'commerciaux.id = objectif_commercial.id_commercial '.$only_my_lines;
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query

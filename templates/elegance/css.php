@@ -1,7 +1,7 @@
 <!-- bootstrap & fontawesome -->
 		<link rel="stylesheet" href="<?php echo THEME_PATH ;?>/css/bootstrap.css" />
 		<link rel="stylesheet" href="<?php echo THEME_PATH ;?>/css/font-awesome.css" />
-
+        <link rel="stylesheet" href="<?php echo THEME_PATH ;?>/css/adminlte_mrn.css" />
 		<!-- page specific plugin styles -->
 		<!-- page specific plugin styles -->
 		<link rel="stylesheet" href="<?php echo THEME_PATH ;?>/css/jquery-ui.custom.css" />

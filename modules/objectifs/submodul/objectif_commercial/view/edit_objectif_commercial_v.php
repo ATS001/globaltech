@@ -59,8 +59,9 @@ $form->input_hidden('idh', Mreq::tp('idh'));
 	$array_description[]= array("required", "true", "Insérer Description ...");
 	$form->input("Description", "description", "text" ,"9", $info_objectifs->g("description"), $array_description, null, $readonly = null);
 //Liste Commerciaux	
+//public function select_table($input_desc, $input_id, $input_class, $table, $id_table, $order_by , $txt_table, $indx = NULL ,$selected = NULL, $multi = NULL, $where = NULL, $js_array = null, $hard_code = null ) 
 $array_commercial[]  = array('required', 'true', 'Choisir un Service....');
-$form->select_table('Commercial ', 'id_commercial', 8, 'commerciaux', 'id', 'text' , 'CONCAT(commerciaux.nom,\' \',commerciaux.prenom)', $indx = '------' , $info_objectifs->g("id_commercial"), $multi=NULL, 'is_glbt = "OUI"', $array_commercial, null);	
+$form->select_table('Commercial ', 'id_commercial', 8, 'commerciaux', 'id', 'text' , 'CONCAT(commerciaux.nom,\' \',commerciaux.prenom)', $indx = null , $info_objectifs->g("id_commercial"), $multi=NULL, 'is_glbt = "OUI"', $array_commercial, null);	
 //Date Début ==> 
 	$array_date_d[]= array("required", "true", "Insérer Date Début ...");
 	$form->input_date('Date Début', 'date_s', 4, $info_objectifs->g("date_s"), $array_date_d);

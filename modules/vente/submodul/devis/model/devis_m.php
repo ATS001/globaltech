@@ -519,14 +519,42 @@ class Mdevis
         		return false;
         	}
 
+
+
 		//Format values for Insert query 
-        	$montant_remise = $this->sum_total_ht - $this->total_ht_t;
-        	$totalht  = $this->total_ht_t;
-        	$totaltva = $this->total_tva_t;
-        	$totalttc = $this->total_ttc_t;
-            $valeur_remise = $this->valeur_remis_t;
-            $total_remise = $this->total_remise;
-            $total_commission=$this->total_commission;
+            $montant_remise   = $this->sum_total_ht - $this->total_ht_t;
+            $totalht          = $this->total_ht_t;
+            $totaltva         = $this->total_tva_t;
+            $totalttc         = $this->total_ttc_t;
+            $valeur_remise    = $this->valeur_remis_t;
+            $total_remise     = $this->total_remise;
+            $total_commission = $this->total_commission;
+            
+
+            //Check if need validate DG
+            $plafond_validate_dg = Msetting::get_set('plafond_valid_dg');
+            if($plafond_validate_dg == null)
+            {
+                $this->error = false;
+                $this->log .= "Manque paramètre plafond_valid_dg";
+                return false;
+            }
+            $etat_valid_dg = Msetting::get_set('etat_devis', 'valid_devis_dg');
+            if($etat_valid_dg == null)
+            {
+                $this->error = false;
+                $this->log .= "Manque paramètre valid_devis_dg";
+                return false;
+            }
+
+            if($plafond_validate_dg <= $totalttc)
+            {
+                $etat_line = $etat_valid_dg;
+                $this->log .= '</br> Demande une validation DG';
+            }else{
+                $etat_line        = 0;
+            }
+            
 
 
         	$values["reference"]       = MySQL::SQLValue($this->reference);
@@ -549,6 +577,7 @@ class Mdevis
             $values["totalht"]         = MySQL::SQLValue($totalht);
             $values["totalttc"]        = MySQL::SQLValue($totalttc);
             $values["totaltva"]        = MySQL::SQLValue($totaltva);
+            $values["etat"]            = MySQL::SQLValue($etat_line);
             $values["creusr"]          = MySQL::SQLValue(session::get('userid'));
             $values["credat"]          = MySQL::SQLValue(date("Y-m-d H:i:s"));
         //Check if Insert Query been executed (False / True)
@@ -563,7 +592,7 @@ class Mdevis
                 //Check $this->error = true return Green message and Bol true
                 if($this->error == true)
                 {
-                    $this->log = '</br>Enregistrement réussie: <b>Réference: '.$reference;
+                    $this->log .= '</br>Enregistrement réussie: <b>Réference: '.$reference;
                     $this->save_temp_detail($this->_data['tkn_frm'], $this->last_id);
                     //log
                     if(!Mlog::log_exec($this->table, $this->last_id, 'Enregistrement Devis '.$this->last_id, 'Insert'))
@@ -628,6 +657,30 @@ class Mdevis
         $valeur_remise = number_format($this->valeur_remis_t, 2,'.', '');
         $this->reference = $this->devis_info['reference'];
 
+        //Check if need validate DG
+            $plafond_validate_dg = Msetting::get_set('plafond_valid_dg');
+            if($plafond_validate_dg == null)
+            {
+                $this->error = false;
+                $this->log .= "Manque paramètre plafond_valid_dg";
+                return false;
+            }
+            $etat_valid_dg = Msetting::get_set('etat_devis', 'valid_devis_dg');
+            if($etat_valid_dg == null)
+            {
+                $this->error = false;
+                $this->log .= "Manque paramètre valid_devis_dg";
+                return false;
+            }
+
+            if($plafond_validate_dg <= $totalttc)
+            {
+                $etat_line = $etat_valid_dg;
+                $this->log .= '</br> Demande une validation DG';
+            }else{
+                $etat_line        = 0;
+            }
+
 
         $values["reference"]       = MySQL::SQLValue($this->reference);
         $values["tkn_frm"]         = MySQL::SQLValue($this->_data['tkn_frm']);
@@ -648,6 +701,7 @@ class Mdevis
         $values["totalht"]         = MySQL::SQLValue($totalht);
         $values["totalttc"]        = MySQL::SQLValue($totalttc);
         $values["totaltva"]        = MySQL::SQLValue($totaltva);
+        $values["etat"]            = MySQL::SQLValue($etat_line);
         $values["updusr"]          = MySQL::SQLValue(session::get('userid'));
         $values["upddat"]          = ' CURRENT_TIMESTAMP ';
         $wheres["id"]              = MySQL::SQLValue($this->id_devis);
@@ -663,7 +717,7 @@ class Mdevis
             //Check $this->error = true return Green message and Bol true
             if($this->error == true)
             {
-                $this->log = '</br>Modification réussie: <b>Réference: '.$this->reference;
+                $this->log .= '</br>Modification réussie: <b>Réference: '.$this->reference;
                 $this->save_temp_detail($this->_data['tkn_frm'], $this->id_devis);
                 //log
                 if(!Mlog::log_exec($this->table, $this->last_id, 'Modification Devis '.$this->last_id, 'Update'))
@@ -1561,6 +1615,7 @@ class Mdevis
         $id_devis = $this->id_devis;
         
         $new_etat = Msetting::get_set('etat_devis', 'send_devis');
+        
         if($new_etat == null)
         {
             $this->error = false;
@@ -1598,13 +1653,22 @@ class Mdevis
     public function valid_devis($etat)
     {
         $old_etat = Msetting::get_set('etat_devis', 'creat_devis');
+        $old_etat_dg = Msetting::get_set('etat_devis', 'valid_devis_dg');
+
         if($old_etat == null)
         {
             $this->error = false;
             $this->log .= "Manque paramètre etat_devis => creat_devis";
             return false;
         }
-        if($etat != $old_etat)
+        
+        if($old_etat_dg == null)
+        {
+            $this->error = false;
+            $this->log .= "Manque paramètre etat_devis => valid_devis_dg";
+            return false;
+        }
+        if($etat != $old_etat AND $etat != $old_etat_dg)
         {
             $this->error = false;
             $this->log .= "Ce devis ne peux pas être validé //Etat faild";
@@ -1615,6 +1679,7 @@ class Mdevis
         $id_devis = $this->id_devis;
         
         $new_etat = Msetting::get_set('etat_devis', 'valid_devis');
+
         if($new_etat == null)
         {
             $this->error = false;
@@ -1646,10 +1711,18 @@ class Mdevis
     public function debloqdevis($etat)
     {
         $old_etat = Msetting::get_set('etat_devis', 'modif_client');
+        $new_etat_dg = Msetting::get_set('etat_devis', 'valid_devis_dg');
+
         if($old_etat == null)
         {
             $this->error = false;
             $this->log .= "Manque paramètre etat_devis => modif_client";
+            return false;
+        }
+        if($new_etat_dg == null)
+        {
+            $this->error = false;
+            $this->log .= "Manque paramètre etat_devis => valid_devis_dg";
             return false;
         }
         if($etat != $old_etat)
@@ -1665,6 +1738,14 @@ class Mdevis
             $this->log .= "Manque paramètre etat_devis => valid_devis";
             return false;
         }
+        $montant_ttc = $this->devis_info['totalttc'];
+        $plafond_validate_dg = Msetting::get_set('plafond_valid_dg');
+
+        if($plafond_validate_dg < $montant_ttc){
+            $new_etat = $new_etat_dg;
+        }
+        
+        
         global $db;
         $table    = $this->table;
         $id_devis = $this->id_devis;
@@ -2328,7 +2409,7 @@ class Mdevis
     {
         global $db;
         
-        $add_set = array('return' => '<a href="#" class="report_tplt" rel="'.MInit::crypt_tp('tplt', 'devis').'" data="%crypt%"> <i class="ace-icon fa fa-print"></i></a>', 'data' => 'id');
+        $add_set = array('return' => '<a href="#" class="report_tplt" rel="'.MInit::crypt_tp('tplt', 'facture').'" data="%crypt%"> <i class="ace-icon fa fa-print"></i></a>', 'data' => 'id');
         $id_devis = $this->id_devis;
         $req_sql ="SELECT factures.id, factures.reference,DATE_FORMAT(factures.date_facture,'%d-%m-%Y') as datfact, REPLACE(FORMAT(factures.total_ht,0),',',' ') total_ht, REPLACE(FORMAT(factures.total_ttc,0),',',' ') total_ttc, REPLACE(FORMAT(factures.total_tva,0),',',' ') as total_tva, REPLACE(FORMAT(factures.total_paye,0),',',' ') as total_paye, REPLACE(FORMAT(factures.reste,0),',',' ') as total_reste, '#' FROM factures WHERE  factures.iddevis = $id_devis   ORDER BY factures.credat DESC";
         
@@ -2405,6 +2486,95 @@ class Mdevis
                 
         $tableau = $db->GetMTable($headers, $add_set);
         return $tableau;
+    }
+
+    static public function indicator_nbr_devis()
+    {
+        
+        global $db;        
+        $id_user    = session::get('userid');
+        $id_service = session::get('service');
+        if(in_array($id_service, array(1, 3))){
+            $where_user = null;
+        }elseif($id_service == 2){
+            $where_user = " AND id_user_sys = $id_user";
+        }
+        $req_sql ="SELECT
+        COUNT(`devis`.`id`) AS nbr_devis FROM `devis`
+        INNER JOIN `commerciaux` ON (`devis`.`id_commercial` = `commerciaux`.`id`)
+        INNER JOIN `users_sys` ON (`commerciaux`.`id_user_sys` = `users_sys`.`id`)
+        WHERE 1=1 $where_user";
+        
+        if(!$db->Query($req_sql))
+        {
+            return false;
+        }else{
+            if (!$db->RowCount())
+            {
+                return false;
+            } else {
+                $arr_result = $db->RowArray();                
+            }
+        }
+        
+        $output =  '<div class="col-lg-3 col-6">
+                        <div class="small-box btn-success">
+                            <div class="inner">
+                                <h3>'.$arr_result['nbr_devis'].'</h3>
+                                <p>Devis enregistrés</p>
+                            </div>
+                        <div class="icon">
+                            <i class="ace-icon fa fa-paper-plane home-icon"></i>
+                        </div>
+                        <a href="#" rel="devis" class="small-box-footer this_url">Voir détails <i class="fa fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>';
+        return print($output);            
+    }
+
+    static public function indicator_nbr_facture_non_paye()
+    {
+        
+        global $db;        
+        $id_user    = session::get('userid');
+        $id_service = session::get('service');
+        if(in_array($id_service, array(1, 3))){
+            $where_user = null;
+        }elseif($id_service == 2){
+            $where_user = " AND id_user_sys = $id_user";
+        }
+        $req_sql ="SELECT
+        COUNT(`factures`.`id`) AS nbr_facture FROM `factures`
+        INNER JOIN `devis` ON (`devis`.`id` = `factures`.`iddevis`)
+        INNER JOIN `commerciaux` ON (`devis`.`id_commercial` = `commerciaux`.`id`)
+        INNER JOIN `users_sys` ON (`commerciaux`.`id_user_sys` = `users_sys`.`id`)
+        WHERE  factures.etat IN(3 ,2) $where_user";
+        
+        if(!$db->Query($req_sql))
+        {
+            return false;
+        }else{
+            if (!$db->RowCount())
+            {
+                return false;
+            } else {
+                $arr_result = $db->RowArray();                
+            }
+        }
+        
+        $output =  '<div class="col-lg-3 col-6">
+                        <div class="small-box btn-red">
+                            <div class="inner">
+                                <h3>'.$arr_result['nbr_facture'].'</h3>
+                                <p>Facture non payées</p>
+                            </div>
+                        <div class="icon">
+                            <i class="ace-icon fa fa-file home-icon"></i>
+                        </div>
+                        <a href="#" rel="factures" class="small-box-footer this_url">Voir détails <i class="fa fa-arrow-circle-right"></i></a>
+                        </div>
+                    </div>';
+        return print($output);            
     }
 
 

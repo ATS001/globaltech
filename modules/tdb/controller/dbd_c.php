@@ -1,5 +1,9 @@
+
+        <!-- /.row -->
 <?php 
-//var_dump($_COOKIE);
+
+view::load_view('indicators');
+
 //$chart = new MHighchart();
 //$chart->call_chart('recette_per_month');
 
