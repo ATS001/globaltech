@@ -285,19 +285,18 @@ p {
         <strong>' . $solde_lettre . '</strong>    
     </td>
 </tr>
-
-<tr><td></td></tr>
            
-          <tr>
+<tr>
+<br>
     <td colspan="2" align="right" style="font: underline; width: 550px; padding-right: 200px;">
-        <br><br><br><br><br>
+        
         <strong>' . $signature . '</strong>
     </td>
 </tr>
             
             <tr>
 <td colspan="2" align="right" style="font: underline; width: 620px;  padding-right: 200px;">
-        <br>
+  
         <span class="profile-picture">
 			<img width="170" height="170" class="editable img-responsive" alt="logo_global.png" id="avatar2" src="./upload/signature/signature_ali.jpg" />
 		</span>	

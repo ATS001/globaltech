@@ -831,11 +831,11 @@ class Mclients {
         $req_sql = "(SELECT @n := @n + 1 n ,' ' AS DATE, 'ANCIEN SOLDE' AS description
 ,' ' AS debit
 ,' ' AS credit
-,(
+,IFNULL((
 SELECT 0  FROM DUAL WHERE NOT EXISTS (SELECT * FROM compte_client cc WHERE  cc.id_client=compte_client.id_client AND cc.date_mouvement < '$date_d' )
 UNION
 (SELECT  CONCAT(REPLACE(FORMAT( cc.solde,0),',',' '),' ', dev.abreviation) FROM compte_client cc WHERE cc.id_client=compte_client.id_client AND cc.date_mouvement < '$date_d'  ORDER BY cc.id DESC LIMIT 1 )
-) AS solde
+),0) AS solde
 FROM compte_client,clients c, ref_devise dev ,(SELECT @n := 0) m WHERE c.id=compte_client.id_client AND  dev.id=c.id_devise
 AND  compte_client.id_client = $id_client LIMIT 1)
 
@@ -932,11 +932,11 @@ AND  compte_client.id_client = $id_client LIMIT 1)
          $req_sql = "(SELECT @n := @n + 1 n ,' ' AS DATE, 'ANCIEN SOLDE' AS description
 ,' ' AS debit
 ,' ' AS credit
-,(
+,IFNULL((
 SELECT 0  FROM DUAL WHERE NOT EXISTS (SELECT * FROM compte_client cc WHERE  cc.id_client=compte_client.id_client AND cc.date_mouvement < '$date_d' )
 UNION
 (SELECT  REPLACE(FORMAT( cc.solde,0),',',' ') FROM compte_client cc WHERE cc.id_client=compte_client.id_client AND cc.date_mouvement < '$date_d'  ORDER BY cc.id DESC LIMIT 1 )
-) AS solde
+),0) AS solde
 FROM compte_client,clients c, (SELECT @n := 0) m WHERE c.id=compte_client.id_client
 AND  compte_client.id_client = $id_client LIMIT 1)
 
