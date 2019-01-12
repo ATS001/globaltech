@@ -2409,7 +2409,7 @@ class Mdevis
     {
         global $db;
         
-        $add_set = array('return' => '<a href="#" class="report_tplt" rel="'.MInit::crypt_tp('tplt', 'devis').'" data="%crypt%"> <i class="ace-icon fa fa-print"></i></a>', 'data' => 'id');
+        $add_set = array('return' => '<a href="#" class="report_tplt" rel="'.MInit::crypt_tp('tplt', 'facture').'" data="%crypt%"> <i class="ace-icon fa fa-print"></i></a>', 'data' => 'id');
         $id_devis = $this->id_devis;
         $req_sql ="SELECT factures.id, factures.reference,DATE_FORMAT(factures.date_facture,'%d-%m-%Y') as datfact, REPLACE(FORMAT(factures.total_ht,0),',',' ') total_ht, REPLACE(FORMAT(factures.total_ttc,0),',',' ') total_ttc, REPLACE(FORMAT(factures.total_tva,0),',',' ') as total_tva, REPLACE(FORMAT(factures.total_paye,0),',',' ') as total_paye, REPLACE(FORMAT(factures.reste,0),',',' ') as total_reste, '#' FROM factures WHERE  factures.iddevis = $id_devis   ORDER BY factures.credat DESC";
         
