@@ -35,11 +35,12 @@ $client_info = $compte_client->client_info;
 
 $compte_client_2->Get_client();
 $client_info_2 = $compte_client_2->client_info;
-$devise = $client_info_2["devise"];
+$devise = $client_info_2["dev"];
 
 $compte_client_2->Get_solde_client_final($id_client);
 
-$solde_final=$compte_client_2->solde_final['solde_final'];
+$solde_final = $compte_client_2->solde_final['solde_final'];
+
 
 if (!$compte_client->Get_detail_client_show($date_debut, $date_fin, $id_client)) {
     exit("0#" . $compte_client->log);
@@ -266,9 +267,9 @@ $pdf->AddPage();
 $pdf->Table_body = $tableau_body_product;
 $html = $pdf->Table_body;
 // ---------------------------------------------------------
-//var_dump($pdf->solde_final);
 
-$obj = new nuts($solde_final, $pdf->client_info['devise']);
+//var_dump($pdf->client_info);
+$obj = new nuts($solde_final, $devise);
 $solde_lettre = $obj->convert("fr-FR");
 
 
