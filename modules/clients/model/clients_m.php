@@ -1023,7 +1023,7 @@ compte_client.date_mouvement BETWEEN  '$date_d' AND '$date_f' ORDER BY compte_cl
         global $db;
 
 
-        $req_sql = "SELECT REPLACE(FORMAT(mvt.solde,0),',','') AS solde_final
+        $req_sql = "SELECT REPLACE(FORMAT(mvt.solde,0),',',' ') AS solde_final
           FROM compte_client mvt 
           WHERE mvt.id_client =  $id_client  ORDER BY mvt.id DESC LIMIT 1";
 

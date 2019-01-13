@@ -134,7 +134,7 @@ class MYPDF extends TCPDF {
 		<tr>
 		<td style="width:40%; color:#A1A0A0;"><strong>MONTANT DÛ</strong></td>
 		<td style="width:5%;">:</td>
-		<td  style="width:57%; text-align: right; background-color: #E99222; ">' . $this->solde_final . ' ' . $this->client_info_2['devise'] . '</td>
+		<td  style="width:57%; text-align: right; background-color: #E99222; ">' . $this->solde_final . ' ' . $this->client_info_2['dev'] . '</td>
 		</tr>
                 <tr>
                 <td style="width:40%; color:#A1A0A0;"><strong>DELAI DE PAIEMENT
