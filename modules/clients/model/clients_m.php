@@ -831,11 +831,11 @@ class Mclients {
         $req_sql = "(SELECT @n := @n + 1 n ,' ' AS DATE, 'ANCIEN SOLDE' AS description
 ,' ' AS debit
 ,' ' AS credit
-,(
+,IFNULL((
 SELECT 0  FROM DUAL WHERE NOT EXISTS (SELECT * FROM compte_client cc WHERE  cc.id_client=compte_client.id_client AND cc.date_mouvement < '$date_d' )
 UNION
 (SELECT  CONCAT(REPLACE(FORMAT( cc.solde,0),',',' '),' ', dev.abreviation) FROM compte_client cc WHERE cc.id_client=compte_client.id_client AND cc.date_mouvement < '$date_d'  ORDER BY cc.id DESC LIMIT 1 )
-) AS solde
+),0) AS solde
 FROM compte_client,clients c, ref_devise dev ,(SELECT @n := 0) m WHERE c.id=compte_client.id_client AND  dev.id=c.id_devise
 AND  compte_client.id_client = $id_client LIMIT 1)
 
@@ -864,8 +864,8 @@ AND  compte_client.id_client = $id_client LIMIT 1)
             'Id' => '5[#]center',
             'Date' => '5[#]center',
             'Description' => '30[#]left',
-            'Débit' => '8[#]alignRight',
-            'Crédit' => '8[#]alignRight',
+            'Montant' => '8[#]alignRight',
+            'Paiement' => '8[#]alignRight',
             'Solde' => '12[#]alignRight',
         );
         
@@ -873,7 +873,11 @@ AND  compte_client.id_client = $id_client LIMIT 1)
         $tableau = $db->GetMTable($headers);
         
         $this->Get_detail_info_client($date_debut, $date_fin, $id_client);
-        $this->solde_final=$this->client_info['solde_final'];
+
+//var_dump($this->client_info);
+        $this->Get_solde_client_final($id_client);
+
+        $this->solde_final=$this->solde_final['solde_final'];
         //var_dump($this->solde_final);
         return $tableau;
     }
@@ -932,11 +936,11 @@ AND  compte_client.id_client = $id_client LIMIT 1)
          $req_sql = "(SELECT @n := @n + 1 n ,' ' AS DATE, 'ANCIEN SOLDE' AS description
 ,' ' AS debit
 ,' ' AS credit
-,(
+,IFNULL((
 SELECT 0  FROM DUAL WHERE NOT EXISTS (SELECT * FROM compte_client cc WHERE  cc.id_client=compte_client.id_client AND cc.date_mouvement < '$date_d' )
 UNION
 (SELECT  REPLACE(FORMAT( cc.solde,0),',',' ') FROM compte_client cc WHERE cc.id_client=compte_client.id_client AND cc.date_mouvement < '$date_d'  ORDER BY cc.id DESC LIMIT 1 )
-) AS solde
+),0) AS solde
 FROM compte_client,clients c, (SELECT @n := 0) m WHERE c.id=compte_client.id_client
 AND  compte_client.id_client = $id_client LIMIT 1)
 
@@ -985,9 +989,7 @@ compte_client.date_mouvement BETWEEN  '$date_d' AND '$date_f' ORDER BY compte_cl
           REPLACE(FORMAT(compte_client.solde,0),',',' ') AS solde
           ,c.reference AS reference,dev.abreviation as devise,
           c.denomination AS denomination ,c.adresse AS adresse ,
-          v.ville as ville, (SELECT REPLACE(FORMAT(mvt.solde,0),',',' ')
-          FROM compte_client mvt 
-          WHERE mvt.id_client = compte_client.`id_client` ORDER BY mvt.id DESC LIMIT 1) AS solde_final
+          v.ville as ville
           FROM compte_client,clients c,ref_ville v,ref_devise dev
           WHERE c.id_devise=dev.id and c.id_ville=v.id and  compte_client.id_client=c.id and compte_client.id_client = $id_client 
           AND compte_client.date_mouvement BETWEEN '$date_d' and '$date_f'
@@ -1016,5 +1018,36 @@ compte_client.date_mouvement BETWEEN  '$date_d' AND '$date_f' ORDER BY compte_cl
             return true;
         }
     }
+    public function Get_solde_client_final($id_client) {
+        
+        global $db;
 
+
+        $req_sql = "SELECT REPLACE(FORMAT(mvt.solde,0),',','') AS solde_final
+          FROM compte_client mvt 
+          WHERE mvt.id_client =  $id_client  ORDER BY mvt.id DESC LIMIT 1";
+
+
+        if (!$db->Query($req_sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+
+                $this->solde_final = $db->RowArray();
+                $this->error = true;
+            }
+        }
+        
+        //var_dump($this->client_info);
+        //var_dump($db);
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
