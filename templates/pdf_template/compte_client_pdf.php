@@ -11,6 +11,9 @@
 $compte_client = new Mclients();
 $compte_client->id_client = Mreq::tp('id');
 
+$compte_client_2 = new Mclients();
+$compte_client_2->id_client = Mreq::tp('id');
+
 $id_client = Mreq::tp('id');
 $date_debut = Mreq::tp('date_debut');
 $date_fin = Mreq::tp('date_fin');
@@ -29,7 +32,14 @@ $date_fin = Mreq::tp('date_fin');
 
 $compte_client->Get_detail_info_client($date_debut, $date_fin, $id_client);
 $client_info = $compte_client->client_info;
-$devise = $client_info["devise"];
+
+$compte_client_2->Get_client();
+$client_info_2 = $compte_client_2->client_info;
+$devise = $client_info_2["devise"];
+
+$compte_client_2->Get_solde_client_final($id_client);
+
+$solde_final=$compte_client_2->solde_final['solde_final'];
 
 if (!$compte_client->Get_detail_client_show($date_debut, $date_fin, $id_client)) {
     exit("0#" . $compte_client->log);
@@ -40,7 +50,11 @@ $tableau_body = null;
 $compte_client_info = $compte_client->compte_client_info;
 
 
+//var_dump($client_info);
 
+//var_dump('*******');
+
+//var_dump($client_info_2);
 
 
 $headers = array(
@@ -66,6 +80,8 @@ class MYPDF extends TCPDF {
     var $info_client = array();
     var $compte_client_info = array();
     var $client_info = array();
+    var $client_info_2 = array();
+    var $solde_final = array();
     var $periode = null;
     var $qr = false;
     var $no_tabl_head = true;
@@ -94,6 +110,8 @@ class MYPDF extends TCPDF {
         $this->SetFont('helvetica', '', 9);
         $date_ref = date("M Y");
 
+//var_dump($this->client_info_2);
+
         $detail_client = '<table cellspacing="3" cellpadding="2" border="0">
             <tr>
                
@@ -105,17 +123,17 @@ class MYPDF extends TCPDF {
                 <tr>
 		<td style="width:40%; color:#A1A0A0;"><strong>REFERENCE CLIENT</strong></td>
 		<td style="width:5%;">:</td>
-		<td style="width:57%; background-color: #eeecec;">' . $this->client_info['reference'] . '</td>
+		<td style="width:57%; background-color: #eeecec;">' . $this->client_info_2['reference'] . '</td>
 		</tr> 
                 <tr>
 		<td style="width:40%; color:#A1A0A0;"><strong>DENOMINATION</strong></td>
 		<td style="width:5%;">:</td>
-		<td style="width:57%; background-color: #eeecec;">' . $this->client_info['denomination'] . '</td>
+		<td style="width:57%; background-color: #eeecec;">' . $this->client_info_2['denomination'] . '</td>
 		</tr> 
 		<tr>
 		<td style="width:40%; color:#A1A0A0;"><strong>MONTANT DÛ</strong></td>
 		<td style="width:5%;">:</td>
-		<td  style="width:57%; text-align: right; background-color: #E99222; ">' . $this->client_info['solde_final'] . ' ' . $this->client_info['devise'] . '</td>
+		<td  style="width:57%; text-align: right; background-color: #E99222; ">' . $this->solde_final . ' ' . $this->client_info_2['devise'] . '</td>
 		</tr>
                 <tr>
                 <td style="width:40%; color:#A1A0A0;"><strong>DELAI DE PAIEMENT
@@ -197,7 +215,8 @@ $pdf->Table_head = $tableau_head_product;
 //$pdf->info_client = $compte_client_info;
 $pdf->compte_client_info = $compte_client_info;
 $pdf->client_info = $client_info;
-
+$pdf->client_info_2 = $client_info_2;
+$pdf->solde_final= $solde_final;
 
 // set document information
 $pdf->SetCreator(MCfg::get('sys_titre'));
@@ -247,9 +266,9 @@ $pdf->AddPage();
 $pdf->Table_body = $tableau_body_product;
 $html = $pdf->Table_body;
 // ---------------------------------------------------------
+//var_dump($pdf->solde_final);
 
-
-$obj = new nuts($pdf->client_info['solde_final'], $pdf->client_info['devise']);
+$obj = new nuts($solde_final, $pdf->client_info['devise']);
 $solde_lettre = $obj->convert("fr-FR");
 
 

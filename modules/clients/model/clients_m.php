@@ -864,8 +864,8 @@ AND  compte_client.id_client = $id_client LIMIT 1)
             'Id' => '5[#]center',
             'Date' => '5[#]center',
             'Description' => '30[#]left',
-            'Débit' => '8[#]alignRight',
-            'Crédit' => '8[#]alignRight',
+            'Montant' => '8[#]alignRight',
+            'Paiement' => '8[#]alignRight',
             'Solde' => '12[#]alignRight',
         );
         
@@ -873,7 +873,11 @@ AND  compte_client.id_client = $id_client LIMIT 1)
         $tableau = $db->GetMTable($headers);
         
         $this->Get_detail_info_client($date_debut, $date_fin, $id_client);
-        $this->solde_final=$this->client_info['solde_final'];
+
+//var_dump($this->client_info);
+        $this->Get_solde_client_final($id_client);
+
+        $this->solde_final=$this->solde_final['solde_final'];
         //var_dump($this->solde_final);
         return $tableau;
     }
@@ -985,9 +989,7 @@ compte_client.date_mouvement BETWEEN  '$date_d' AND '$date_f' ORDER BY compte_cl
           REPLACE(FORMAT(compte_client.solde,0),',',' ') AS solde
           ,c.reference AS reference,dev.abreviation as devise,
           c.denomination AS denomination ,c.adresse AS adresse ,
-          v.ville as ville, (SELECT REPLACE(FORMAT(mvt.solde,0),',',' ')
-          FROM compte_client mvt 
-          WHERE mvt.id_client = compte_client.`id_client` ORDER BY mvt.id DESC LIMIT 1) AS solde_final
+          v.ville as ville
           FROM compte_client,clients c,ref_ville v,ref_devise dev
           WHERE c.id_devise=dev.id and c.id_ville=v.id and  compte_client.id_client=c.id and compte_client.id_client = $id_client 
           AND compte_client.date_mouvement BETWEEN '$date_d' and '$date_f'
@@ -1016,5 +1018,36 @@ compte_client.date_mouvement BETWEEN  '$date_d' AND '$date_f' ORDER BY compte_cl
             return true;
         }
     }
+    public function Get_solde_client_final($id_client) {
+        
+        global $db;
 
+
+        $req_sql = "SELECT REPLACE(FORMAT(mvt.solde,0),',',' ') AS solde_final
+          FROM compte_client mvt 
+          WHERE mvt.id_client =  $id_client  ORDER BY mvt.id DESC LIMIT 1";
+
+
+        if (!$db->Query($req_sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+
+                $this->solde_final = $db->RowArray();
+                $this->error = true;
+            }
+        }
+        
+        //var_dump($this->client_info);
+        //var_dump($db);
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
 }
