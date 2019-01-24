@@ -528,7 +528,7 @@ class Mproforma
         $values["date_proforma"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_proforma'])));
         //$values["type_remise"]      = MySQL::SQLValue($this->_data['type_remise']);
         //$values["valeur_remise"]    = MySQL::SQLValue($valeur_remise);
-        //$values["claus_comercial"]  = MySQL::SQLValue($this->_data['claus_comercial']);
+        $values["claus_comercial"]  = MySQL::SQLValue($this->_data['claus_comercial']);
         //$values["totalht"]          = MySQL::SQLValue($totalht);
         //$values["totalttc"]         = MySQL::SQLValue($totalttc);
         //$values["totaltva"]         = MySQL::SQLValue($totaltva);

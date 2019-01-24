@@ -332,7 +332,7 @@ $block_sum = '<div></div>
     <td colspan="2" style="color:#6B6868; width: 650px; border:1pt solid black; background-color: #eeecec;">
         '.$pdf->info_proforma['claus_comercial'].'
      <br>
-     Merci de nous avoir consulter.
+     Merci de nous avoir consulté.
  </td>
 </tr>
 
