@@ -593,6 +593,7 @@ class Mdevis
                 if($this->error == true)
                 {
                     $this->log .= '</br>Enregistrement réussie: <b>Réference: '.$reference;
+                    $this->send_creat_devis_mail($values["id_commercial"]);
                     $this->save_temp_detail($this->_data['tkn_frm'], $this->last_id);
                     //log
                     if(!Mlog::log_exec($this->table, $this->last_id, 'Enregistrement Devis '.$this->last_id, 'Insert'))
@@ -1215,7 +1216,7 @@ class Mdevis
         $reponse = $this->_data['reponse'];
         if($this->g('type_devis') == 'VNT' && $reponse == 'valid')
         {
-            //$this->loop_check_qte();
+            $this->loop_check_qte();
             if($id_bl = $this->generate_bl($this->id_devis))
             {
                 $this->insert_d_bl($id_bl);
@@ -1402,7 +1403,6 @@ class Mdevis
             AND  d_devis.id_produit = $id_produit AND produits.id =  d_devis.id_produit   GROUP BY d_devis.id_produit " ;     
         }
         
-
         
         
         if(!$db->Query($req_check_produit))
@@ -1701,6 +1701,10 @@ class Mdevis
                         
             }
             $this->log .= "<br/>Opération réussie";
+            $this->get_devis();
+            
+             $this->send_valid_devis_mail();
+            
             return true;
         
     }
@@ -2033,14 +2037,9 @@ class Mdevis
         $input_qte_c = "CONCAT('<input type=\"hidden\" name=\"line_d_d[]\" value=\"',$table.id,'\"/><input type=\"hidden\" name=\"id_produit_',$table.id,'\" value=\"',$table.id_produit,'\"/>
         <span id=\"qte_',$table.id_produit,'\" tp=\"',produits.idtype,'\" class=\"badge badge-info\">',$table.qte,'</span>') as qte_c";
         $input_qte_l = "CONCAT('<input id=\"liv_',$table.id_produit,'\" class=\"liv center  is-number\" name=\"qte_liv_',$table.id,'\" type=\"text\" value=\"',$table.qte,'\"/>') as qte_l";
-        $etat_stock = "CASE WHEN d_devis.qte > qte_actuel.`qte_act` AND produits.`idtype` <> 2 THEN 
+        $etat_stock = "CASE WHEN d_devis.qte > qte_actuel.`qte_act` THEN 
   CONCAT('<span id=\"stok_',$table.id_produit,'\" class=\"badge badge-danger\">', qte_actuel.`qte_act`,'</span>')
-   WHEN d_devis.qte <= qte_actuel.`qte_act` AND produits.`idtype` <> 2 THEN
-    CONCAT('<span id=\"stok_',$table.id_produit,'\" class=\"badge badge-success\">', qte_actuel.`qte_act`,'</span>') 
-    ELSE 'NA' END AS stock";
-   $appro_stock = "CASE WHEN d_devis.qte > qte_actuel.`qte_act` AND produits.`idtype` <> 2 THEN 
-  CONCAT('</span>','<a id=\"appro_stok_',$table.id_produit,'\" class=\"btn btn-white btn-info btn-sm appro_stock\" data=\"',$table.id_produit,'\"><i class=\"ace-icon fa fa-plus bigger-120 blue\"></i>','</a>')
-   ELSE  '-' END AS appro_stock";
+   ELSE  CONCAT('<span id=\"stok_',$table.id_produit,'\" class=\"badge badge-success\">', qte_actuel.`qte_act`,'</span>') END AS stock";
         $id_devis = $this->id_devis;
         
         $colms = null;
@@ -2051,7 +2050,6 @@ class Mdevis
         $colms .= " $input_qte_c, ";
         
         $colms .= " $etat_stock, ";
-        $colms .= " $appro_stock, ";
         $colms .= " $input_qte_l";
         
         
@@ -2072,7 +2070,6 @@ class Mdevis
             'Description'           => '30[#]', 
             'Qte commandée'         => '15[#]center', 
             'En Stock'              => '15[#]center', 
-            'Appro'                 => '10[#]center',
             'Qte à livrer'          => '15[#]center', 
             
             
@@ -2593,5 +2590,104 @@ class Mdevis
     public function __destruct(){
         //
         
+    }
+    
+     private function send_creat_devis_mail($id_commercial) {
+        //Get info devis
+         $this->id_devis=$id_commercial;
+        $this->get_devis();
+        $devis_info = $this->devis_info;
+
+        if ($this->verif_email($devis_info["creusr"]) == FALSE) {
+            $this->log .= '<br/>Ce Commercial n\'a pas une adresse Mail';
+            return false;
+        }
+
+        $commerciale = new Musers();
+        $commerciale->id_user = $devis_info["creusr"];
+        $commerciale->get_user();
+        $agent_name = $commerciale->g('fnom') . ' ' . $commerciale->g('lnom');
+        $agent_service = $commerciale->g('service_user');
+        $agent_tel = $commerciale->g('tel');
+
+        $mail = new PHPMailer();
+        $mail->isSMTP(); // Paramétrer le Mailer pour utiliser SMTP         
+        $mail->SMTPSecure = 'ssl'; // Accepter SSL
+       
+        $mail->setFrom($mail->Username, 'GlobalTech Direction'); // Personnaliser l'envoyeur
+        $mail->addAddress($commerciale->g('mail'), $commerciale->g('lnom') . " " . $commerciale->g('fnom'));
+      $mail->addCC('commercial@globaltech.td', ' Globaltech DG');
+      
+       
+        if(intval($devis_info["totalttc"]) > Msetting::get_set('plafond_valid_dg')){
+         $mail->addCC('contact@globaltech.td', ' Globaltech DG');
+        }
+        
+        $mail->isHTML(true); // Paramétrer le format des emails en HTML ou non
+
+        $mail->Subject = "Devis Réf: #" . $devis_info['reference'];
+        
+        $mail->Body = "<b> Bonjour," 
+                . "</br></br> Le devis REF: " . $devis_info['reference'] . " a été crée et il est en attente de validation.
+                </br></br> Cordialement</b>";
+        
+        if (!$mail->send()) {
+            $this->log .= "Mailer Error: " . $mail->ErrorInfo;
+        } else {
+            $this->log .= "Mail Création devis envoyé  à " . $commerciale->g('mail');
+        }
+    }
+       
+      
+    private function send_valid_devis_mail() {
+        //Get info devis
+        $this->get_devis();
+        $devis_info = $this->devis_info;
+                
+        if ($this->verif_email($devis_info["creusr"]) == FALSE) {
+            $this->log .= '<br/>Ce Commercial n\'a pas une adresse Mail';
+            return false;
+        }
+
+        $commerciale = new Musers();
+        $commerciale->id_user = $devis_info["creusr"];
+        $commerciale->get_user();
+        $agent_name = $commerciale->g('fnom') . ' ' . $commerciale->g('lnom');
+        $agent_service = $commerciale->g('service_user');
+        $agent_tel = $commerciale->g('tel');
+
+        $mail = new PHPMailer();
+        $mail->isSMTP(); // Paramétrer le Mailer pour utiliser SMTP 
+        $mail->SMTPSecure = 'ssl'; // Accepter SSL
+       
+        $mail->setFrom($mail->Username, 'GlobalTech Direction'); // Personnaliser l'envoyeur
+        $mail->addAddress($commerciale->g('mail'), $commerciale->g('lnom') . " " . $commerciale->g('fnom'));
+      
+        if($devis_info["totalttc"] > 5000000){
+         $mail->addCC('commercial@globaltech.td', 'DCM');
+        }
+        $mail->isHTML(true); // Paramétrer le format des emails en HTML ou non
+        $mail->Subject = "Devis Réf: #" . $devis_info['reference'];
+       
+        $mail->Body = "<b> Bonjour, "
+                . ",</br></br> Le devis REF: " . $devis_info['reference'] . " a été validé.
+                </br></br> Cordialement</b>";
+        
+        if (!$mail->send()) {
+            $this->log .= "Mailer Error: " . $mail->ErrorInfo;
+        } else {
+            $this->log .= "Mail validation devis envoyé  à " . $commerciale->g('mail');
+        }
+    }
+
+    private function verif_email($id_commerciale) {
+        global $db;
+        $result = $db->QuerySingleValue0("SELECT mail FROM users_sys WHERE id=" . $id_commerciale);
+        
+        if ($result == "0") {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
     }
 }
