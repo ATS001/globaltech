@@ -1765,7 +1765,7 @@ UNION
         //var_dump($this->facture_info);
         
         $req_sql = "INSERT into compte_client(id_client,type_mouvement,montant,description,date_mouvement,solde,creusr) 
-               values($clt,'C',$mnt,CONCAT('Payement: ', '$reference',' du ',DATE_FORMAT('$date','%d-%m-%Y'),"
+               values($clt,'C',$mnt,CONCAT('Paiement: ', '$reference',' du ',DATE_FORMAT('$date','%d-%m-%Y'),"
                 . "IF('$ref_payement'<> null,Concat(': Référence N°: ','$ref_payement'),' '))"
                 . ",NOW(), $sld-$mnt ,1)";
         

@@ -119,6 +119,19 @@ $(document).ready(function() {
     		$('#scan').closest('.form-group').hide();
     	}
     });
+    $('.appro_stock').on('click', function(event) {
+        
+        
+        
+        var $link  = 'validdevisclient';
+        var $titre = 'Ajouter produit au stock'; 
+        var $data  = '&act=1&id_produit='+$(this).attr('data')+'&qte_exist='+$('#stok_'+$(this).attr('data')).text()+'&need='+$('#liv_'+$(this).attr('data')).val(); 
+       
+        ajax_bbox_loader($link, $data, $titre, 'large')
+        
+    
+        /* Act on the event */
+    });
 
 <?php
 	if($info_devis->g('type_devis') == 'VNT'){
