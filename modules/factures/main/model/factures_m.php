@@ -1124,6 +1124,7 @@ class Mfacture {
         } else {
             $this->debit_compte_client();
             $this->log .= "Validation réussie";
+            $this->send_valid_facture_mail();
             return true;
         }
     }
@@ -1778,5 +1779,50 @@ UNION
         ////var_dump($db);
         // Verifier Message Aucun Enregistrement apres validation
     }
+  
+    private function send_valid_facture_mail() {
+        //Get info abonnement
+        $this->get_facture();
+        $facture_info = $this->facture_info;
 
+        if ($this->verif_email($facture_info["creusr"]) == FALSE) {
+            $this->log .= '<br/>Ce commerciale n\'a pas une adresse Mail';
+            return false;
+        }
+
+        $commerciale = new Musers();
+        $commerciale->id_user = $facture_info["creusr"];
+        $commerciale->get_user();
+        $agent_name = $commerciale->g('fnom') . ' ' . $commerciale->g('lnom');
+        $agent_service = $commerciale->g('service_user');
+        $agent_tel = $commerciale->g('tel');
+
+        $mail = new PHPMailer();
+        $mail->isSMTP(); // Paramétrer le Mailer pour utiliser SMTP 
+        $mail->SMTPSecure = 'ssl'; // Accepter SSL
+        $mail->setFrom($mail->Username, 'GlobalTech Direction'); // Personnaliser l'envoyeur
+        $mail->addAddress('contact@globaltech.td', 'Globaltech DG');
+        $mail->addCC('commercial@globaltech.td', 'Globaltech DCM');
+        $mail->isHTML(true); // Paramétrer le format des emails en HTML ou non
+
+        $mail->Subject = "Facture Réf: #" . $facture_info['reference'];
+
+        $mail->Body = "<b> Bonjour " . $commerciale->g('fnom') . " " . $commerciale->g('lnom') 
+                . ",</br></br> La facture REF: " . $facture_info['reference'] . " a été validée. </br></br> Cordialement</b>";
+        if (!$mail->send()) {
+            $this->log .= "Mailer Error: " . $mail->ErrorInfo;
+        } else {
+            $this->log .= "Mail validation facture envoyé  à " . $commerciale->g('mail');
+        }
+    }
+
+    private function verif_email($id_commerciale) {
+        global $db;
+        $result = $db->QuerySingleValue0("SELECT mail FROM users_sys WHERE id=" . $id_commerciale);
+        if ($result == "0") {
+            return FALSE;
+        } else {
+            return TRUE;
+        }
+    }
 }

@@ -81,7 +81,7 @@ class Mclients {
 
         /* $sql ="SELECT d.`id`,d.`reference`,DATE_FORMAT(d.`date_devis`,'%d-%m-%Y') AS date_devis,CONCAT(c.`nom`,' ',c.`prenom`) as commercial,REPLACE(FORMAT(d.`totalht`,0),',',' '),REPLACE(FORMAT(d.`totaltva`,0),',',' '),REPLACE(FORMAT(d.`total_remise`,0),',',' '),REPLACE(FORMAT(d.`totalttc`,0),',',' ') FROM devis d, commerciaux c WHERE  d.`etat`=".Msetting::get_set('etat_devis', 'valid_client')." and  c.`id`=d.`id_commercial` and d.`id_client` = ".$this->id_client." order by d.date_devis desc"; */
 
-        $sql = "SELECT d.`id`,d.`reference`,DATE_FORMAT(d.`date_devis`,'%d-%m-%Y') AS date_devis,CONCAT(c.`nom`,' ',c.`prenom`) as commercial,REPLACE(FORMAT(d.`totalht`,0),',',' '),REPLACE(FORMAT(d.`totaltva`,0),',',' '),REPLACE(FORMAT(d.`total_remise`,0),',',' '),REPLACE(FORMAT(d.`totalttc`,0),',',' ') FROM devis d, commerciaux c WHERE c.`id`=d.`id_commercial` and d.`id_client` = " . $this->id_client . " order by d.date_devis desc";
+        $sql = "SELECT d.`id`,d.`reference`,DATE_FORMAT(d.`date_devis`,'%d-%m-%Y') AS date_devis,CONCAT(c.`nom`,' ',c.`prenom`) as commercial,REPLACE(FORMAT(d.`totalht`,0),',',' '),REPLACE(FORMAT(d.`totaltva`,0),',',' '),REPLACE(FORMAT(d.`total_remise`,0),',',' '),REPLACE(FORMAT(d.`totalttc`,0),',',' '), d.etat as etat FROM devis d, commerciaux c WHERE c.`id`=d.`id_commercial` and d.`id_client` = " . $this->id_client . " order by d.date_devis desc";
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -140,7 +140,7 @@ class Mclients {
 
         global $db;
 
-        $sql = "SELECT bl.`id`,bl.`reference`,DATE_FORMAT(bl.`date_bl`,'%d-%m-%Y') AS date_bl,bl.`projet`FROM devis d, bl WHERE bl.`iddevis`=d.`id` AND d.`id_client` = " . $this->id_client . " order by bl.date_bl desc";
+        $sql = "SELECT bl.`id`,bl.`reference`,DATE_FORMAT(bl.`date_bl`,'%d-%m-%Y') AS date_bl,bl.`projet`, bl.etat as etat FROM devis d, bl WHERE bl.`iddevis`=d.`id` AND d.`id_client` = " . $this->id_client . " order by bl.date_bl desc";
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -196,7 +196,7 @@ class Mclients {
         $table = "contrats";
         global $db;
 
-        $sql = "SELECT c.`id`,c.`reference`,DATE_FORMAT(c.`credat`,'%d-%m-%Y') AS date_abn,e.`type_echeance`, DATE_FORMAT(c.`date_effet`,'%d-%m-%Y')AS date_effet, DATE_FORMAT(c.`date_fin`,'%d-%m-%Y') AS date_fin,c.`pj` FROM contrats c,ref_type_echeance e WHERE e.`id`=c.`idtype_echeance` AND c.`iddevis`IN(SELECT id FROM devis d WHERE d.`id_client`= " . $this->id_client . ") ORDER BY c.credat DESC";
+        $sql = "SELECT c.`id`,c.`reference`,DATE_FORMAT(c.`credat`,'%d-%m-%Y') AS date_abn,e.`type_echeance`, DATE_FORMAT(c.`date_effet`,'%d-%m-%Y')AS date_effet, DATE_FORMAT(c.`date_fin`,'%d-%m-%Y') AS date_fin,c.`pj`,c.etat as etat FROM contrats c,ref_type_echeance e WHERE e.`id`=c.`idtype_echeance` AND c.`iddevis`IN(SELECT id FROM devis d WHERE d.`id_client`= " . $this->id_client . ") ORDER BY c.credat DESC";
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -225,7 +225,7 @@ class Mclients {
         $table = "factures";
         global $db;
 
-        $sql = "SELECT factures.id,factures.reference,DATE_FORMAT(factures.date_facture,'%d-%m-%Y'),IF(factures.`base_fact`='C','Contrat',IF(factures.`base_fact`='D','Devis','BL')) AS base_fact,REPLACE(FORMAT(factures.total_ht,0),',',' '),REPLACE(FORMAT(factures.total_ttc,0),',',' '),REPLACE(FORMAT(factures.total_tva,0),',',' '),REPLACE(FORMAT(factures.total_paye,0),',',' '),REPLACE(FORMAT(factures.reste,0),',',' ') FROM factures,clients c,devis d WHERE   IF(factures.`base_fact`='C',( factures.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE factures.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client=c.id ) ), (factures.iddevis=d.id AND d.id_client=c.id )) and c.id=" . $this->id_client . " ORDER BY factures.credat DESC";
+        $sql = "SELECT factures.id,factures.reference,DATE_FORMAT(factures.date_facture,'%d-%m-%Y'),IF(factures.`base_fact`='C','Contrat',IF(factures.`base_fact`='D','Devis','BL')) AS base_fact,REPLACE(FORMAT(factures.total_ht,0),',',' '),REPLACE(FORMAT(factures.total_ttc,0),',',' '),REPLACE(FORMAT(factures.total_tva,0),',',' '),REPLACE(FORMAT(factures.total_paye,0),',',' '),REPLACE(FORMAT(factures.reste,0),',',' '), factures.etat as etat FROM factures,clients c,devis d WHERE   IF(factures.`base_fact`='C',( factures.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE factures.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client=c.id ) ), (factures.iddevis=d.id AND d.id_client=c.id )) and c.id=" . $this->id_client . " ORDER BY factures.credat DESC";
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -254,7 +254,7 @@ class Mclients {
         $table = "encaissements";
         global $db;
 
-        $sql = "SELECT e.id,e.`reference`,designation ,depositaire ,e.`date_encaissement`,ref_payement, e.`mode_payement`,IFNULL(REPLACE(FORMAT((e.`montant`),0),',',' '),0) AS montant ,pj FROM encaissements e,factures f,devis d  WHERE  f.`id`=e.`idfacture` AND IF(f.`base_fact`='C',( f.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE f.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client) ), (f.iddevis=d.id )) AND d.`id_client`=" . $this->id_client . " ORDER BY e.date_encaissement DESC";
+        $sql = "SELECT e.id,e.`reference`,designation ,depositaire ,e.`date_encaissement`,ref_payement, e.`mode_payement`,IFNULL(REPLACE(FORMAT((e.`montant`),0),',',' '),0) AS montant ,pj, e.etat as etat FROM encaissements e,factures f,devis d  WHERE  f.`id`=e.`idfacture` AND IF(f.`base_fact`='C',( f.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE f.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client) ), (f.iddevis=d.id )) AND d.`id_client`=" . $this->id_client . " ORDER BY e.date_encaissement DESC";
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -317,7 +317,7 @@ class Mclients {
         $table = $this->table;
         $sql_edit = $edit == null ? null : " AND id <> $edit";
         $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
-		 		WHERE $table.$column = " . MySQL::SQLValue($value) . " $sql_edit ");
+                WHERE $table.$column = " . MySQL::SQLValue($value) . " $sql_edit ");
 
         if ($result != "0") {
             $this->error = false;
@@ -336,7 +336,7 @@ class Mclients {
     private function check_non_exist($table, $column, $value, $message) {
         global $db;
         $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
-    		WHERE $table.$column = " . MySQL::SQLValue($value));
+            WHERE $table.$column = " . MySQL::SQLValue($value));
         if ($result == "0") {
 //var_dump('here');
             $this->error = false;
@@ -461,14 +461,14 @@ class Mclients {
                     if (!Mlog::log_exec($this->table, $this->last_id, 'Création client', 'Insert')) {
                         $this->log .= '</br>Un problème de log ';
                     }
-//Check $this->error = false return Red message and Bol false	
+//Check $this->error = false return Red message and Bol false   
                 } else {
                     $this->log .= '</br>Enregistrement réussie: <b>' . $this->_data['denomination'];
 
                     $this->log .= '</br>Un problème d\'Enregistrement ';
                 }
             }
-//Else Error false	
+//Else Error false  
         } else {
             $this->log .= '</br>Enregistrement non réussie';
         }
@@ -501,6 +501,7 @@ class Mclients {
             $this->error = false;
         } else {
             $this->log .= '</br>Statut changé! ';
+            $this->send_welcome_client_mail();
             $this->error = true;
             if (!Mlog::log_exec($this->table, $this->id_client, 'Validation client', 'Validate')) {
                 $this->log .= '</br>Un problème de log ';
@@ -590,7 +591,7 @@ class Mclients {
 //Format values for Insert query 
             global $db;
 
-//$values["code"]  		 = MySQL::SQLValue($this->_data['code']);
+//$values["code"]        = MySQL::SQLValue($this->_data['code']);
             $values["denomination"] = MySQL::SQLValue($this->_data['denomination']);
             $values["id_categorie"] = MySQL::SQLValue($this->_data['id_categorie']);
             $values["r_social"] = MySQL::SQLValue($this->_data['r_social']);
@@ -646,13 +647,13 @@ class Mclients {
                     if (!Mlog::log_exec($this->table, $this->id_client, 'Modification client', 'Update')) {
                         $this->log .= '</br>Un problème de log ';
                     }
-//Check $this->error = false return Red message and Bol false	
+//Check $this->error = false return Red message and Bol false   
                 } else {
                     $this->log .= '</br>Modification réussie: <b>' . $this->_data['denomination'];
                     $this->log .= '</br>Un problème d\'Enregistrement ';
                 }
             }
-//Else Error false	
+//Else Error false  
         } else {
             $this->log .= '</br>Enregistrement non réussie';
         }
@@ -1048,6 +1049,64 @@ compte_client.date_mouvement BETWEEN  '$date_d' AND '$date_f' ORDER BY compte_cl
             return false;
         } else {
             return true;
+        }
+    }
+    
+    
+    private function send_welcome_client_mail() {
+        //Get info abonnement
+        $this->get_client();
+        $client_info = $this->client_info;
+
+        if ($this->verif_email($client_info["id"]) == FALSE) {
+            $this->log .= '<br/>Ce client n\'a pas une adresse Mail';
+            return false;
+        }
+
+        $client = new Mclients();
+        $client->id_client = $client_info["id"];
+        $client->get_client();
+        $agent_name = $client->g('denomination');
+      
+        $mail = new PHPMailer();
+        $mail->isSMTP(); // Paramétrer le Mailer pour utiliser SMTP 
+        $mail->SMTPSecure = 'ssl'; // Accepter SSL
+        $mail->setFrom($mail->Username, 'GlobalTech Direction'); // Personnaliser l'envoyeur
+        $mail->addAddress($client_info["email"], $client_info["denomination"]);
+       
+        $mail->isHTML(true); // Paramétrer le format des emails en HTML ou non
+
+        $mail->Subject = "Bienvenue chez Globaltech";
+
+        $mail->Body = "<b></br></br> Cher Client,</br>Bienvenue chez Globaltech. Nous sommes très heureux de vous compter parmi nos clients</br>
+                    et vous confirmons par ce courrier l’activation de votre commande Offre (Internet via VSAT ou</br>
+                    Internet via BLR).</br>
+                    Nous espérons que cette offre vous donnera pleine satisfaction.</br>
+                    Votre Numéro de Code Client est le ".$client_info["reference"]." nous vous remercions de le communiquer lors </br>
+                    de vos demandes auprès de nos services.
+                    </br></br>
+                    Pour toutes vos demandes de renseignements, nous vous suggérons de nous contacter :</br>
+                    Par Téléphone	(+235) 22 51 40 44</br>
+                    Par Email	support@globaltech.td       Service Technique  </br>
+                                commercial@globaltech.td    Service Commercial </br>
+
+</br></br>
+Toute l’équipe de Globaltech vous transmet, cher Client, ses salutations distinguées.
+                    </b>";
+        if (!$mail->send()) {
+            $this->log .= "Mailer Error: " . $mail->ErrorInfo;
+        } else {
+            $this->log .= "Mail validation clients envoyé  à " . $client_info["email"];
+        }
+    }
+
+    private function verif_email($id_client) {
+        global $db;
+        $result = $db->QuerySingleValue0("SELECT email FROM clients WHERE id=" . $id_client);
+        if ($result == "0") {
+            return FALSE;
+        } else {
+            return TRUE;
         }
     }
 }
