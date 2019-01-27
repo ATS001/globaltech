@@ -1419,7 +1419,7 @@ class Mcontrat {
         if (!$mail->send()) {
             $this->log .= "Mailer Error: " . $mail->ErrorInfo;
         } else {
-            $this->log .= "Mail validation devis envoyé  à " . $commerciale->g('mail');
+            $this->log .= "Mail validation abonnement envoyé  à " . $commerciale->g('mail');
         }
     }
 

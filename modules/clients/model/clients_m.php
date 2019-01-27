@@ -501,6 +501,7 @@ class Mclients {
             $this->error = false;
         } else {
             $this->log .= '</br>Statut changé! ';
+            $this->send_welcome_client_mail();
             $this->error = true;
             if (!Mlog::log_exec($this->table, $this->id_client, 'Validation client', 'Validate')) {
                 $this->log .= '</br>Un problème de log ';
@@ -1048,6 +1049,64 @@ compte_client.date_mouvement BETWEEN  '$date_d' AND '$date_f' ORDER BY compte_cl
             return false;
         } else {
             return true;
+        }
+    }
+    
+    
+    private function send_welcome_client_mail() {
+        //Get info abonnement
+        $this->get_client();
+        $client_info = $this->client_info;
+
+        if ($this->verif_email($client_info["id"]) == FALSE) {
+            $this->log .= '<br/>Ce client n\'a pas une adresse Mail';
+            return false;
+        }
+
+        $client = new Mclients();
+        $client->id_client = $client_info["id"];
+        $client->get_client();
+        $agent_name = $client->g('denomination');
+      
+        $mail = new PHPMailer();
+        $mail->isSMTP(); // Paramétrer le Mailer pour utiliser SMTP 
+        $mail->SMTPSecure = 'ssl'; // Accepter SSL
+        $mail->setFrom($mail->Username, 'GlobalTech Direction'); // Personnaliser l'envoyeur
+        $mail->addAddress($client_info["email"], $client_info["denomination"]);
+       
+        $mail->isHTML(true); // Paramétrer le format des emails en HTML ou non
+
+        $mail->Subject = "Bienvenue chez Globaltech";
+
+        $mail->Body = "<b></br></br> Cher Client,</br>Bienvenue chez Globaltech. Nous sommes très heureux de vous compter parmi nos clients</br>
+                    et vous confirmons par ce courrier l’activation de votre commande Offre (Internet via VSAT ou</br>
+                    Internet via BLR).</br>
+                    Nous espérons que cette offre vous donnera pleine satisfaction.</br>
+                    Votre Numéro de Code Client est le ".$client_info["reference"]." nous vous remercions de le communiquer lors </br>
+                    de vos demandes auprès de nos services.
+                    </br></br>
+                    Pour toutes vos demandes de renseignements, nous vous suggérons de nous contacter :</br>
+                    Par Téléphone	(+235) 22 51 40 44</br>
+                    Par Email	support@globaltech.td       Service Technique  </br>
+                                commercial@globaltech.td    Service Commercial </br>
+
+</br></br>
+Toute l’équipe de Globaltech vous transmet, cher Client, ses salutations distinguées.
+                    </b>";
+        if (!$mail->send()) {
+            $this->log .= "Mailer Error: " . $mail->ErrorInfo;
+        } else {
+            $this->log .= "Mail validation clients envoyé  à " . $client_info["email"];
+        }
+    }
+
+    private function verif_email($id_client) {
+        global $db;
+        $result = $db->QuerySingleValue0("SELECT email FROM clients WHERE id=" . $id_client);
+        if ($result == "0") {
+            return FALSE;
+        } else {
+            return TRUE;
         }
     }
 }
