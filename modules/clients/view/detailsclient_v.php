@@ -359,7 +359,7 @@ $tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL,
                                     else {
                                         ?>
                                         <div>
-                                        	<b class="blue pull-right margin-left: 30px"> <?php echo $client->s('dev')?></b> 
+                                            <b class="blue pull-right margin-left: 30px"> <?php echo $client->s('dev')?></b> 
                                             <b class="blue pull-right margin-left: 30px"> <?php echo $total_devis['totalht']?>&nbsp;</b> 
                                             <b class="grey pull-right"> Total HT:&nbsp;&nbsp;&nbsp;</b>   
                                             </br>
@@ -395,7 +395,10 @@ $tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL,
                                                 Total TTC
                                             </th>
                                             <th style="text-align: center;"><font color="#5C9EDB">
-                                                Document
+                                                Etat
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Devis
                                             </th>
 
                                     <?php
@@ -424,6 +427,10 @@ $tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL,
                                                     </td>
                                                     <td style="text-align: right;">
                                                         <span><?php echo $devis['7']; ?></span>
+                                                    </td>
+                                                     <td style="text-align: center;">
+                                                        <span><?php Mmodul::get_etat_line('devis', $devis['8']); ?>
+                                                        </span>
                                                     </td>
                                                     <td style="text-align: center;" >  
                                                         <a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'devis') ?>" data="<?php echo MInit::crypt_tp('id', $devis['0']) ?>">
@@ -475,7 +482,10 @@ $tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL,
                                                 Date Fin
                                             </th>
                                             <th style="text-align: center;"><font color="#5C9EDB">
-                                                Document
+                                                Etat
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Contrats
                                             </th>
 
                                     <?php
@@ -499,6 +509,10 @@ $tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL,
                                                     </td>
                                                     <td style="text-align: center;">
                                                         <span><?php echo $abn['5']; ?></span>
+                                                    </td>
+                                                     <td style="text-align: center;">
+                                                        <span><?php Mmodul::get_etat_line('contrats', $abn['7']); ?>
+                                                        </span>
                                                     </td>
 
                                                     <td style="text-align: center;" >  
@@ -530,7 +544,7 @@ $tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL,
                                     else {
                                         ?>
                                         <div>
-                                        	<b class="red pull-right margin-left: 30px"> <?php echo $client->s('dev')?></b>
+                                            <b class="red pull-right margin-left: 30px"> <?php echo $client->s('dev')?></b>
                                             <b class="red pull-right margin-left: 30px"> <?php echo $total_fact['reste']?>&nbsp;</b> 
                                             <b class="grey pull-right">&nbsp;&nbsp;&nbsp;Reste à Payer:&nbsp;&nbsp;&nbsp;</b>  
 
@@ -578,7 +592,10 @@ $tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL,
                                                 Reste
                                             </th>
                                             <th style="text-align: center;"><font color="#5C9EDB">
-                                                Document
+                                                Etat
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Factures
                                             </th>
                                     <?php
                                             foreach ($client_fact as $fact) {
@@ -609,6 +626,10 @@ $tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL,
                                                         <span><?php echo $fact['7']; ?></span>
                                                     <td style="text-align: right;">
                                                         <span><?php echo $fact['8']; ?></span>
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        <span><?php Mmodul::get_etat_line('factures', $fact['9']); ?>
+                                                        </span>
                                                     </td>
                                                     <td style="text-align: center;" >  
                                                         <a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'facture') ?>" data="<?php echo MInit::crypt_tp('id', $fact['0']) ?>">
@@ -671,9 +692,11 @@ $tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL,
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 Montant payé
                                             </th>
-                                            
                                             <th style="text-align: center;"><font color="#5C9EDB">
-                                                Document
+                                                Etat
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Encaissements
                                             </th>
                                     <?php
                                             foreach ($client_enc as $enc) {?>
@@ -701,6 +724,10 @@ $tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL,
                                                     </td>
                                                     <td style="text-align: right;">
                                                         <span><?php echo $enc['7']; ?></span>
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        <span><?php Mmodul::get_etat_line('encaissements', $enc['9']); ?>
+                                                        </span>
                                                     </td>
                                                     <td style="text-align: center;" >  
                                                         <a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'recepisse') ?>" data="<?php echo MInit::crypt_tp('id', $enc['0']) ?>">
@@ -745,7 +772,10 @@ $tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL,
                                                 Projet
                                             </th>
                                             <th style="text-align: center;"><font color="#5C9EDB">
-                                                Document
+                                                Etat
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                BLs
                                             </th>
 
                                     <?php
@@ -762,6 +792,10 @@ $tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL,
                                                     </td>
                                                     <td style="text-align: left;">
                                                         <span><?php echo $bl['3']; ?></span>
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        <span><?php Mmodul::get_etat_line('bl', $bl['4']); ?>
+                                                        </span>
                                                     </td>
                                                     
                                                     <td style="text-align: center;" >  
@@ -790,13 +824,13 @@ $tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL,
                                 <span>
 
                                      <?php
-					 if($tab_mvmts_compte['tb_rl'])
-					 {
-					 	echo $tab_mvmts_compte['tcs'];
-					 	//Content (includ file - simple string - function return string)
-					 	include 'etat_compte_v.php';
-					 	echo $tab_mvmts_compte['tce'];
-					 }
+                     if($tab_mvmts_compte['tb_rl'])
+                     {
+                        echo $tab_mvmts_compte['tcs'];
+                        //Content (includ file - simple string - function return string)
+                        include 'etat_compte_v.php';
+                        echo $tab_mvmts_compte['tce'];
+                     }
                                     ?>  
 
                                     
@@ -811,7 +845,7 @@ $tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL,
                     </div><!-- /#tab-content -->
                     
                     
-				
+                
                                 
                     </div><!-- /#tattable -->
                 </div>

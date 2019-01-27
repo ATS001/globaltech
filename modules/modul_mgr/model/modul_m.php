@@ -2146,6 +2146,30 @@ class Mmodul {
 
     }
 
+    static public function get_etat_line($task, $etat_line)
+    {
+    	global $db;
+    	$sql = "SELECT 
+    	task_action.message_etat
+    	FROM
+    	task_action,
+    	task
+    	WHERE task.app = '$task' 
+    	AND task.id = task_action.appid 
+    	AND task_action.type = 0 
+    	AND task_action.etat_line = $etat_line ";
+        if(!$db->Query($sql))
+        {
+             $result = null;
+        }else{
+        	$arr_result = $db->RowArray();
+        	$result = '<strong>'.$arr_result['message_etat'].'</strong>';
+        }
+       
+        return print($result);
+
+    }
+
 
 
 }
