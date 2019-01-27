@@ -1215,7 +1215,7 @@ class Mdevis
         $reponse = $this->_data['reponse'];
         if($this->g('type_devis') == 'VNT' && $reponse == 'valid')
         {
-            $this->loop_check_qte();
+            //$this->loop_check_qte();
             if($id_bl = $this->generate_bl($this->id_devis))
             {
                 $this->insert_d_bl($id_bl);
@@ -1402,6 +1402,7 @@ class Mdevis
             AND  d_devis.id_produit = $id_produit AND produits.id =  d_devis.id_produit   GROUP BY d_devis.id_produit " ;     
         }
         
+
         
         
         if(!$db->Query($req_check_produit))
@@ -2032,9 +2033,14 @@ class Mdevis
         $input_qte_c = "CONCAT('<input type=\"hidden\" name=\"line_d_d[]\" value=\"',$table.id,'\"/><input type=\"hidden\" name=\"id_produit_',$table.id,'\" value=\"',$table.id_produit,'\"/>
         <span id=\"qte_',$table.id_produit,'\" tp=\"',produits.idtype,'\" class=\"badge badge-info\">',$table.qte,'</span>') as qte_c";
         $input_qte_l = "CONCAT('<input id=\"liv_',$table.id_produit,'\" class=\"liv center  is-number\" name=\"qte_liv_',$table.id,'\" type=\"text\" value=\"',$table.qte,'\"/>') as qte_l";
-        $etat_stock = "CASE WHEN d_devis.qte > qte_actuel.`qte_act` THEN 
+        $etat_stock = "CASE WHEN d_devis.qte > qte_actuel.`qte_act` AND produits.`idtype` <> 2 THEN 
   CONCAT('<span id=\"stok_',$table.id_produit,'\" class=\"badge badge-danger\">', qte_actuel.`qte_act`,'</span>')
-   ELSE  CONCAT('<span id=\"stok_',$table.id_produit,'\" class=\"badge badge-success\">', qte_actuel.`qte_act`,'</span>') END AS stock";
+   WHEN d_devis.qte <= qte_actuel.`qte_act` AND produits.`idtype` <> 2 THEN
+    CONCAT('<span id=\"stok_',$table.id_produit,'\" class=\"badge badge-success\">', qte_actuel.`qte_act`,'</span>') 
+    ELSE 'NA' END AS stock";
+   $appro_stock = "CASE WHEN d_devis.qte > qte_actuel.`qte_act` AND produits.`idtype` <> 2 THEN 
+  CONCAT('</span>','<a id=\"appro_stok_',$table.id_produit,'\" class=\"btn btn-white btn-info btn-sm appro_stock\" data=\"',$table.id_produit,'\"><i class=\"ace-icon fa fa-plus bigger-120 blue\"></i>','</a>')
+   ELSE  '-' END AS appro_stock";
         $id_devis = $this->id_devis;
         
         $colms = null;
@@ -2045,6 +2051,7 @@ class Mdevis
         $colms .= " $input_qte_c, ";
         
         $colms .= " $etat_stock, ";
+        $colms .= " $appro_stock, ";
         $colms .= " $input_qte_l";
         
         
@@ -2065,6 +2072,7 @@ class Mdevis
             'Description'           => '30[#]', 
             'Qte commandée'         => '15[#]center', 
             'En Stock'              => '15[#]center', 
+            'Appro'                 => '10[#]center',
             'Qte à livrer'          => '15[#]center', 
             
             

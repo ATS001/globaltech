@@ -127,6 +127,58 @@
                 return true;
             }
         }
+        private function get_last_achat_info($id_produit)
+        {
+            global $db;
+            $table = $this->table;
+            $req_sql = "SELECT * FROM $table WHERE idproduit = $id_produit ORDER BY id DESC LIMIT 1";
+            if(!$db->Query($req_sql) OR !$db->RowCount()){
+                return false;
+            }else{
+                $array_result = $db->RowArray();
+                return $array_result;
+            }
+        }
+
+        public function save_temp_new_achat_produit($id_produit) {
+
+            global $db;
+            if($produit_info = $this->get_last_achat_info($id_produit)){
+                $prix_achat    = $produit_info['prix_achat'];
+                $prix_vente    = $produit_info['prix_vente'];
+                $date_validite = $produit_info['date_validite'];
+            }else{
+                $prix_achat    = 0;
+                $prix_vente    = 0;
+                $date_validite = date('Y-m-d');
+            }
+            $values["mouvement"]     = MySQL::SQLValue('E');
+            $values["qte"]           = MySQL::SQLValue($this->_data['qte']);
+            $values["prix_achat"]    = MySQL::SQLValue($prix_achat);
+            $values["prix_vente"]    = MySQL::SQLValue($prix_vente);
+            $values["idproduit"]     = MySQL::SQLValue($id_produit);
+            $values["date_achat"]    = 'CURRENT_TIMESTAMP';
+            $values["date_validite"] = MySQL::SQLValue($date_validite);
+            $values["creusr"]        = MySQL::SQLValue(session::get('userid'));
+            $values["credat"]        = MySQL::SQLValue(date("Y-m-d H:i:s"));
+            if (!$result = ($db->InsertRow("stock", $values))) 
+            {
+                $this->log .= $db->Error();
+                $this->log .= '</br>Enregistrement BD non réussie';                    
+                return false;
+            } else {
+
+                $this->last_id = $result;
+                $this->log .= '</br>Enregistrement  réussie ' . ' - ' . $this->last_id . ' -';            
+                if(!Mlog::log_exec($this->table, $this->last_id , 'Insertion achat temp produit', 'Insert'))
+                {
+                    $this->log .= '</br>Un problème de log ';
+                    return false;
+                }
+                return true;                
+            }
+        
+        }
 
        public function maj_prix_vente($id_facture, $montant) {
 
