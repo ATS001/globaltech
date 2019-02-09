@@ -169,7 +169,7 @@ class Mclients {
         $table = "factures";
         global $db;
 
-        $sql = "SELECT IFNULL(REPLACE(FORMAT(SUM(factures.`total_ht`),0),',',' '),0) as totalht,IFNULL(REPLACE(FORMAT(SUM(factures.`total_ttc`),0),',',' '),0)as totalttc,IFNULL(REPLACE(FORMAT(SUM(factures.`total_paye`),0),',',' '),0) as paye,IFNULL(REPLACE(FORMAT(SUM(factures.`reste`),0),',',' '),0)as reste FROM factures,devis d  WHERE  IF(factures.`base_fact`='C',(factures.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE factures.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client) ),(factures.iddevis=d.id )) AND d.`id_client` = " . $this->id_client;
+        $sql = "SELECT IFNULL(REPLACE(FORMAT(SUM(factures.`total_ht`),0),',',' '),0) as totalht,IFNULL(REPLACE(FORMAT(SUM(factures.`total_ttc`),0),',',' '),0)as totalttc,IFNULL(REPLACE(FORMAT(SUM(factures.`total_paye`),0),',',' '),0) as paye,IFNULL(REPLACE(FORMAT(SUM(factures.`reste`),0),',',' '),0)as reste FROM factures,devis d  WHERE  factures.`etat` NOT IN (100,200) AND IF(factures.`base_fact`='C',(factures.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE factures.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client) ),(factures.iddevis=d.id )) AND d.`id_client` = " . $this->id_client;
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -225,7 +225,7 @@ class Mclients {
         $table = "factures";
         global $db;
 
-        $sql = "SELECT factures.id,factures.reference,DATE_FORMAT(factures.date_facture,'%d-%m-%Y'),IF(factures.`base_fact`='C','Contrat',IF(factures.`base_fact`='D','Devis','BL')) AS base_fact,REPLACE(FORMAT(factures.total_ht,0),',',' '),REPLACE(FORMAT(factures.total_ttc,0),',',' '),REPLACE(FORMAT(factures.total_tva,0),',',' '),REPLACE(FORMAT(factures.total_paye,0),',',' '),REPLACE(FORMAT(factures.reste,0),',',' '), factures.etat as etat FROM factures,clients c,devis d WHERE   IF(factures.`base_fact`='C',( factures.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE factures.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client=c.id ) ), (factures.iddevis=d.id AND d.id_client=c.id )) and c.id=" . $this->id_client . " ORDER BY factures.credat DESC";
+        $sql = "SELECT factures.id,factures.reference,DATE_FORMAT(factures.date_facture,'%d-%m-%Y'),IF(factures.`base_fact`='C','Contrat',IF(factures.`base_fact`='D','Devis','BL')) AS base_fact,REPLACE(FORMAT(factures.total_ht,0),',',' '),REPLACE(FORMAT(factures.total_ttc,0),',',' '),REPLACE(FORMAT(factures.total_tva,0),',',' '),REPLACE(FORMAT(factures.total_paye,0),',',' '),REPLACE(FORMAT(factures.reste,0),',',' '), factures.etat as etat FROM factures,clients c,devis d WHERE factures.`etat` NOT IN (200,100) AND  IF(factures.`base_fact`='C',( factures.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE factures.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client=c.id ) ), (factures.iddevis=d.id AND d.id_client=c.id )) and c.id=" . $this->id_client . " ORDER BY factures.credat DESC";
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -1109,4 +1109,7 @@ Toute l’équipe de Globaltech vous transmet, cher Client, ses salutations dist
             return TRUE;
         }
     }
+    
+   
+
 }
