@@ -153,6 +153,7 @@ class Mdevis
         , ref_devise.abreviation as devise
         , services.service as comercial
         , CONCAT(commerciaux.nom,' ',commerciaux.prenom) as commercial
+        , CONCAT(users_sys.lnom,' ',users_sys.fnom) as cre_usr
         FROM
         devis
         INNER JOIN clients 
