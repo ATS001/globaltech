@@ -225,7 +225,7 @@ class Mclients {
         $table = "factures";
         global $db;
 
-        $sql = "SELECT factures.id,factures.reference,DATE_FORMAT(factures.date_facture,'%d-%m-%Y'),IF(factures.`base_fact`='C','Contrat',IF(factures.`base_fact`='D','Devis','BL')) AS base_fact,REPLACE(FORMAT(factures.total_ht,0),',',' '),REPLACE(FORMAT(factures.total_ttc,0),',',' '),REPLACE(FORMAT(factures.total_tva,0),',',' '),REPLACE(FORMAT(factures.total_paye,0),',',' '),REPLACE(FORMAT(factures.reste,0),',',' '), factures.etat as etat FROM factures,clients c,devis d WHERE   IF(factures.`base_fact`='C',( factures.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE factures.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client=c.id ) ), (factures.iddevis=d.id AND d.id_client=c.id )) and c.id=" . $this->id_client . " ORDER BY factures.credat DESC";
+        $sql = "SELECT factures.id,factures.reference,DATE_FORMAT(factures.date_facture,'%d-%m-%Y'),IF(factures.`base_fact`='C','Contrat',IF(factures.`base_fact`='D','Devis','BL')) AS base_fact,REPLACE(FORMAT(factures.total_ht,0),',',' '),REPLACE(FORMAT(factures.total_ttc,0),',',' '),REPLACE(FORMAT(factures.total_tva,0),',',' '),REPLACE(FORMAT(factures.total_paye,0),',',' '),REPLACE(FORMAT(factures.reste,0),',',' '), factures.etat as etat FROM factures,clients c,devis d WHERE   IF(factures.`base_fact`='C',( factures.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE factures.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client=c.id ) ), (factures.iddevis=d.id AND d.id_client=c.id )) and c.id=" . $this->id_client . " AND c.`etat`<>200 ORDER BY factures.credat DESC";
 
         if (!$db->Query($sql)) {
             $this->error = false;
