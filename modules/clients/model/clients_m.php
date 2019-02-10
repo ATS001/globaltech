@@ -110,7 +110,7 @@ class Mclients {
         $table = "devis";
         global $db;
 
-        $sql = "SELECT IFNULL(REPLACE(FORMAT(SUM(d.`totalht`),0),',',' '),0) as totalht,IFNULL(REPLACE(FORMAT(SUM(d.`totalttc`),0),',',' '),0)as totalttc FROM devis d WHERE d.etat<>200 d.`id_client` = " . $this->id_client;
+        $sql = "SELECT IFNULL(REPLACE(FORMAT(SUM(d.`totalht`),0),',',' '),0) as totalht,IFNULL(REPLACE(FORMAT(SUM(d.`totalttc`),0),',',' '),0)as totalttc FROM devis d WHERE d.etat<>200 and d.`id_client` = " . $this->id_client;
 
         /* $sql ="SELECT IFNULL(REPLACE(FORMAT(SUM(d.`totalht`),0),',',' '),0) as totalht,IFNULL(REPLACE(FORMAT(SUM(d.`totalttc`),0),',',' '),0)as totalttc FROM devis d WHERE d.`etat`<>".Msetting::get_set('etat_devis', 'valid_client')." and d.`id_client` = ".$this->id_client; */
 
