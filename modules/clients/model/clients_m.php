@@ -81,7 +81,7 @@ class Mclients {
 
         /* $sql ="SELECT d.`id`,d.`reference`,DATE_FORMAT(d.`date_devis`,'%d-%m-%Y') AS date_devis,CONCAT(c.`nom`,' ',c.`prenom`) as commercial,REPLACE(FORMAT(d.`totalht`,0),',',' '),REPLACE(FORMAT(d.`totaltva`,0),',',' '),REPLACE(FORMAT(d.`total_remise`,0),',',' '),REPLACE(FORMAT(d.`totalttc`,0),',',' ') FROM devis d, commerciaux c WHERE  d.`etat`=".Msetting::get_set('etat_devis', 'valid_client')." and  c.`id`=d.`id_commercial` and d.`id_client` = ".$this->id_client." order by d.date_devis desc"; */
 
-        $sql = "SELECT d.`id`,d.`reference`,DATE_FORMAT(d.`date_devis`,'%d-%m-%Y') AS date_devis,CONCAT(c.`nom`,' ',c.`prenom`) as commercial,REPLACE(FORMAT(d.`totalht`,0),',',' '),REPLACE(FORMAT(d.`totaltva`,0),',',' '),REPLACE(FORMAT(d.`total_remise`,0),',',' '),REPLACE(FORMAT(d.`totalttc`,0),',',' '), d.etat as etat FROM devis d, commerciaux c WHERE c.`id`=d.`id_commercial` and d.`id_client` = " . $this->id_client . " order by d.date_devis desc";
+        $sql = "SELECT d.`id`,d.`reference`,DATE_FORMAT(d.`date_devis`,'%d-%m-%Y') AS date_devis,CONCAT(c.`nom`,' ',c.`prenom`) as commercial,REPLACE(FORMAT(d.`totalht`,0),',',' '),REPLACE(FORMAT(d.`totaltva`,0),',',' '),REPLACE(FORMAT(d.`total_remise`,0),',',' '),REPLACE(FORMAT(d.`totalttc`,0),',',' '), d.etat as etat FROM devis d, commerciaux c WHERE c.`id`=d.`id_commercial` and d.etat <> 200 and d.`id_client` = " . $this->id_client . " order by d.date_devis desc";
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -110,7 +110,7 @@ class Mclients {
         $table = "devis";
         global $db;
 
-        $sql = "SELECT IFNULL(REPLACE(FORMAT(SUM(d.`totalht`),0),',',' '),0) as totalht,IFNULL(REPLACE(FORMAT(SUM(d.`totalttc`),0),',',' '),0)as totalttc FROM devis d WHERE d.`id_client` = " . $this->id_client;
+        $sql = "SELECT IFNULL(REPLACE(FORMAT(SUM(d.`totalht`),0),',',' '),0) as totalht,IFNULL(REPLACE(FORMAT(SUM(d.`totalttc`),0),',',' '),0)as totalttc FROM devis d WHERE d.etat<>200 d.`id_client` = " . $this->id_client;
 
         /* $sql ="SELECT IFNULL(REPLACE(FORMAT(SUM(d.`totalht`),0),',',' '),0) as totalht,IFNULL(REPLACE(FORMAT(SUM(d.`totalttc`),0),',',' '),0)as totalttc FROM devis d WHERE d.`etat`<>".Msetting::get_set('etat_devis', 'valid_client')." and d.`id_client` = ".$this->id_client; */
 
@@ -140,7 +140,7 @@ class Mclients {
 
         global $db;
 
-        $sql = "SELECT bl.`id`,bl.`reference`,DATE_FORMAT(bl.`date_bl`,'%d-%m-%Y') AS date_bl,bl.`projet`, bl.etat as etat FROM devis d, bl WHERE bl.`iddevis`=d.`id` AND d.`id_client` = " . $this->id_client . " order by bl.date_bl desc";
+        $sql = "SELECT bl.`id`,bl.`reference`,DATE_FORMAT(bl.`date_bl`,'%d-%m-%Y') AS date_bl,bl.`projet`, bl.etat as etat FROM devis d, bl WHERE bl.`iddevis`=d.`id` and bl.etat <>200 AND d.`id_client` = " . $this->id_client . " order by bl.date_bl desc";
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -169,7 +169,7 @@ class Mclients {
         $table = "factures";
         global $db;
 
-        $sql = "SELECT IFNULL(REPLACE(FORMAT(SUM(factures.`total_ht`),0),',',' '),0) as totalht,IFNULL(REPLACE(FORMAT(SUM(factures.`total_ttc`),0),',',' '),0)as totalttc,IFNULL(REPLACE(FORMAT(SUM(factures.`total_paye`),0),',',' '),0) as paye,IFNULL(REPLACE(FORMAT(SUM(factures.`reste`),0),',',' '),0)as reste FROM factures,devis d  WHERE  IF(factures.`base_fact`='C',(factures.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE factures.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client) ),(factures.iddevis=d.id )) AND d.`id_client` = " . $this->id_client;
+        $sql = "SELECT IFNULL(REPLACE(FORMAT(SUM(factures.`total_ht`),0),',',' '),0) as totalht,IFNULL(REPLACE(FORMAT(SUM(factures.`total_ttc`),0),',',' '),0)as totalttc,IFNULL(REPLACE(FORMAT(SUM(factures.`total_paye`),0),',',' '),0) as paye,IFNULL(REPLACE(FORMAT(SUM(factures.`reste`),0),',',' '),0)as reste FROM factures,devis d  WHERE  IF(factures.`base_fact`='C',(factures.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE factures.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client) ),(factures.iddevis=d.id ))  AND factures.etat <>200 AND d.`id_client` = " . $this->id_client;
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -196,7 +196,7 @@ class Mclients {
         $table = "contrats";
         global $db;
 
-        $sql = "SELECT c.`id`,c.`reference`,DATE_FORMAT(c.`credat`,'%d-%m-%Y') AS date_abn,e.`type_echeance`, DATE_FORMAT(c.`date_effet`,'%d-%m-%Y')AS date_effet, DATE_FORMAT(c.`date_fin`,'%d-%m-%Y') AS date_fin,c.`pj`,c.etat as etat FROM contrats c,ref_type_echeance e WHERE e.`id`=c.`idtype_echeance` AND c.`iddevis`IN(SELECT id FROM devis d WHERE d.`id_client`= " . $this->id_client . ") ORDER BY c.credat DESC";
+        $sql = "SELECT c.`id`,c.`reference`,DATE_FORMAT(c.`credat`,'%d-%m-%Y') AS date_abn,e.`type_echeance`, DATE_FORMAT(c.`date_effet`,'%d-%m-%Y')AS date_effet, DATE_FORMAT(c.`date_fin`,'%d-%m-%Y') AS date_fin,c.`pj`,c.etat as etat FROM contrats c,ref_type_echeance e WHERE e.`id`=c.`idtype_echeance` and c.etat <>200 AND c.`iddevis`IN(SELECT id FROM devis d WHERE d.`id_client`= " . $this->id_client . ") ORDER BY c.credat DESC";
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -225,7 +225,7 @@ class Mclients {
         $table = "factures";
         global $db;
 
-        $sql = "SELECT factures.id,factures.reference,DATE_FORMAT(factures.date_facture,'%d-%m-%Y'),IF(factures.`base_fact`='C','Contrat',IF(factures.`base_fact`='D','Devis','BL')) AS base_fact,REPLACE(FORMAT(factures.total_ht,0),',',' '),REPLACE(FORMAT(factures.total_ttc,0),',',' '),REPLACE(FORMAT(factures.total_tva,0),',',' '),REPLACE(FORMAT(factures.total_paye,0),',',' '),REPLACE(FORMAT(factures.reste,0),',',' '), factures.etat as etat FROM factures,clients c,devis d WHERE   IF(factures.`base_fact`='C',( factures.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE factures.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client=c.id ) ), (factures.iddevis=d.id AND d.id_client=c.id )) and c.id=" . $this->id_client . " AND c.`etat`<>200 ORDER BY factures.credat DESC";
+        $sql = "SELECT factures.id,factures.reference,DATE_FORMAT(factures.date_facture,'%d-%m-%Y'),IF(factures.`base_fact`='C','Contrat',IF(factures.`base_fact`='D','Devis','BL')) AS base_fact,REPLACE(FORMAT(factures.total_ht,0),',',' '),REPLACE(FORMAT(factures.total_ttc,0),',',' '),REPLACE(FORMAT(factures.total_tva,0),',',' '),REPLACE(FORMAT(factures.total_paye,0),',',' '),REPLACE(FORMAT(factures.reste,0),',',' '), factures.etat as etat FROM factures,clients c,devis d WHERE   IF(factures.`base_fact`='C',( factures.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE factures.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client=c.id ) ), (factures.iddevis=d.id AND d.id_client=c.id )) and c.id=" . $this->id_client . " AND factures.`etat`<>200 ORDER BY factures.credat DESC";
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -254,7 +254,7 @@ class Mclients {
         $table = "encaissements";
         global $db;
 
-        $sql = "SELECT e.id,e.`reference`,designation ,depositaire ,e.`date_encaissement`,ref_payement, e.`mode_payement`,IFNULL(REPLACE(FORMAT((e.`montant`),0),',',' '),0) AS montant ,pj, e.etat as etat FROM encaissements e,factures f,devis d  WHERE  f.`id`=e.`idfacture` AND IF(f.`base_fact`='C',( f.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE f.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client) ), (f.iddevis=d.id )) AND d.`id_client`=" . $this->id_client . " ORDER BY e.date_encaissement DESC";
+        $sql = "SELECT e.id,e.`reference`,designation ,depositaire ,e.`date_encaissement`,ref_payement, e.`mode_payement`,IFNULL(REPLACE(FORMAT((e.`montant`),0),',',' '),0) AS montant ,pj, e.etat as etat FROM encaissements e,factures f,devis d  WHERE  f.`id`=e.`idfacture` AND IF(f.`base_fact`='C',( f.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE f.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client) ), (f.iddevis=d.id )) AND d.`id_client`=" . $this->id_client . " and e.etat <> 200 ORDER BY e.date_encaissement DESC";
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -282,7 +282,7 @@ class Mclients {
 
         global $db;
 
-        $sql = "SELECT IFNULL(REPLACE(FORMAT(SUM(e.`montant`),0),',',' '),0) AS total_enc FROM encaissements e,factures f,devis d  WHERE  f.`id`=e.`idfacture` AND IF(f.`base_fact`='C',(f.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE f.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client) ),(f.iddevis=d.id )) AND d.`id_client` = " . $this->id_client;
+        $sql = "SELECT IFNULL(REPLACE(FORMAT(SUM(e.`montant`),0),',',' '),0) AS total_enc FROM encaissements e,factures f,devis d  WHERE  f.`id`=e.`idfacture` AND IF(f.`base_fact`='C',(f.idcontrat=(SELECT ctr.id FROM contrats ctr WHERE f.idcontrat=ctr.id AND ctr.iddevis=d.id AND d.id_client) ),(f.iddevis=d.id )) and e.etat <>200 AND d.`id_client` = " . $this->id_client;
 
         if (!$db->Query($sql)) {
             $this->error = false;
