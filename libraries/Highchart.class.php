@@ -23,7 +23,7 @@ class MHighchart
 	{
 		
 		//Get Percentage from data value
-		
+		var_dump($data_array);
 		$arr_nbr_sta = array();
 		$crc = 0;
 		foreach ($data_array as $key => $value) {
