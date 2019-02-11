@@ -24,7 +24,7 @@ class MHighchart
 		
 		//Get Percentage from data value
 		if( $total_part == 0){
-			$output = '<div class="alert alert-danger">L\'Objectif n\'est pas défini !</div> ';
+			$output = '<div class="alert alert-danger">L\'objectif n\'est pas défini !</div> ';
 			return print($output);
 		}
 		$arr_nbr_sta = array();
