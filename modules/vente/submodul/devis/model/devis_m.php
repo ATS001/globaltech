@@ -2500,9 +2500,9 @@ class Mdevis
         global $db;        
         $id_user    = session::get('userid');
         $id_service = session::get('service');
-        if(in_array($id_service, array(1, 3))){
+        if(in_array($id_service, array(1, 3, 2))){
             $where_user = null;
-        }elseif($id_service == 2){
+        }elseif($id_service == 7){
             $where_user = " AND id_user_sys = $id_user";
         }
         $req_sql ="SELECT
