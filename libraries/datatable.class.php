@@ -10,7 +10,8 @@ class Mdatatable
     var $task             = null;//Task called for etat_line and notif status
     var $main_table       = null;//Main table used for notif and status
     var $list_table       = null;
-    var $joint            = null;
+    var $joint            = null; //Set for jointure and Costum where
+    var $only_owner       = false;//Set to true to show owner line only
     var $sqlTot           = null;
     var $sqlRec           = null;
     var $where            = null;
@@ -405,6 +406,7 @@ class Mdatatable
         $this->where_filter();
         
     	$where .= $this->where_etat_line;
+        
     	if($this->need_notif){
     		$where .= $this->joint == null ?'' : ' AND '.$this->joint;
     	}else{
