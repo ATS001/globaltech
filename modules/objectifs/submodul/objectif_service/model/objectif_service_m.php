@@ -685,8 +685,7 @@ class Mobjectif_service {
             'Commercial'   => '15[#]center',
             'Montant'      => '10[#]center',
             'Date'         => '5[#]',     
-            '#'            => '3[#]center[#]crypt', 
-            
+            '#'            => '3[#]center[#]crypt',          
             
             
         );
@@ -728,9 +727,9 @@ class Mobjectif_service {
         if(in_array($id_service, array(1, 3, 2))){
             $ca_global = '<p>CA Global: '.$arr_result['realise'].'</p>';
         }elseif(in_array($id_service, array(2))){
-            $ca_global = Null;
+            $ca_global = '<p></p>';
         }else{
-            $ca_global = null;
+            $ca_global = '<p></p>';
         }
         $idc = MInit::crypt_tp('id', $arr_result['id']);
         $output =  '<div class="col-lg-3 col-6">
