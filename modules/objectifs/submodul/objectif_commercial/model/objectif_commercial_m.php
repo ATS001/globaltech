@@ -721,7 +721,7 @@ class Mobjectif_commercial {
                         <div class="small-box btn-info">                        
                             <div class="inner">                               
                                 <h3>'.$arr_result['percent'].'<sup style="font-size: 20px">%</sup></h3>
-                                <p class="info-box-text">Réalisation personnelle: '.$arr_result['realise'].'</p>
+                                <p class="info-box-text">CA personnel: '.$arr_result['realise'].'</p>
                             </div>
                             <div class="icon">
                                 <i class="ace-icon fa fa-line-chart home-icon"></i>

@@ -416,6 +416,7 @@ class MLogin
 		$mail = new PHPMailer;
 //Tell PHPMailer to use SMTP
 		$mail->isSMTP();
+		$mail->SMTPDebug = 2;
 
 		$mail->addAddress($this->user_info['mail'], $this->user_info['fnom'].'  '.$this->user_info['lnom']);
 //Set the subject line

@@ -62,12 +62,23 @@ $array_column = array(
     ),
     
  );
+
+//Show line for owner
+$only_owner = null;
+$id_service = session::get('service');
+if($id_service == 7)
+{
+    $only_owner = ' AND devis.creusr = '.session::get('userid');
+}
+
 //Creat new instance
 $list_data_table = new Mdatatable();
 //Set tabels used in Query
 $list_data_table->tables = array('devis', 'clients', 'ref_devise');
 //Set Jointure
-$list_data_table->joint = 'clients.id = devis.id_client AND clients.id_devise = ref_devise.id';
+$list_data_table->joint = 'clients.id = devis.id_client AND clients.id_devise = ref_devise.id '.$only_owner;
+
+
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query

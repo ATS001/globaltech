@@ -77,7 +77,7 @@ $array_column = array(
 );
 //Check if is commercial show only his lines
 $only_my_lines = null;
-if(session::get('service') == 3){
+if(session::get('service') == 7){
     $only_my_lines = 'AND commerciaux.id_user_sys = '.session::get('userid');
 }
 //Creat new instance
