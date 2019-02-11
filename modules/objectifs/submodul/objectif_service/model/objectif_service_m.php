@@ -729,6 +729,8 @@ class Mobjectif_service {
             $ca_global = '<p>CA Global: '.$arr_result['realise'].'</p>';
         }elseif(in_array($id_service, array(2))){
             $ca_global = Null;
+        }else{
+            $ca_global = null;
         }
         $idc = MInit::crypt_tp('id', $arr_result['id']);
         $output =  '<div class="col-lg-3 col-6">
