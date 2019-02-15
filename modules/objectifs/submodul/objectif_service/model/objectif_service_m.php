@@ -600,7 +600,7 @@ class Mobjectif_service {
         INNER JOIN `factures` 
         ON (`encaissements`.`idfacture` = `factures`.`id`)
         INNER JOIN `devis` 
-        ON (`factures`.`iddevis` = `devis`.`id`)
+        ON ON (`devis`.`id` = IF(factures.`base_fact`='C',(SELECT ctr.iddevis FROM contrats ctr WHERE                  ctr.id=factures.`idcontrat`),`factures`.`iddevis` )) 
         INNER JOIN `commerciaux` 
         ON (`devis`.`id_commercial` = `commerciaux`.`id`)
         INNER JOIN `services` 
@@ -662,7 +662,7 @@ class Mobjectif_service {
         INNER JOIN `services` ON (`commerciaux`.`id_service` = `services`.`id`) 
         WHERE encaissements.etat IN(1, 0) 
         AND encaissements.`date_encaissement` BETWEEN '$date_s' AND '$date_e' 
-        AND devis.etat <> 200 AND services.id = $id_service";
+        AND devis.etat <> 200 AND services.id = $id_service GROUP BY devis.id";
         //exit($req_sql);
         
         if(!$db->Query($req_sql))
