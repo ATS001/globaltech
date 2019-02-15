@@ -600,7 +600,7 @@ class Mobjectif_service {
         INNER JOIN `factures` 
         ON (`encaissements`.`idfacture` = `factures`.`id`)
         INNER JOIN `devis` 
-        ON ON (`devis`.`id` = IF(factures.`base_fact`='C',(SELECT ctr.iddevis FROM contrats ctr WHERE                  ctr.id=factures.`idcontrat`),`factures`.`iddevis` )) 
+        ON (`devis`.`id` = IF(factures.`base_fact`='C',(SELECT ctr.iddevis FROM contrats ctr WHERE ctr.id=factures.`idcontrat`),`factures`.`iddevis` )) 
         INNER JOIN `commerciaux` 
         ON (`devis`.`id_commercial` = `commerciaux`.`id`)
         INNER JOIN `services` 
