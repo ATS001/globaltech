@@ -655,7 +655,7 @@ class Mobjectif_service {
         REPLACE(FORMAT(devis.`totalttc`,0),',',' ') total_ttc,
         DATE_FORMAT(devis.`date_devis`,'%d-%m-%Y') AS date_devis, '#' 
         FROM `factures` 
-        INNER JOIN `devis` ON (`factures`.`iddevis` = `devis`.`id`) 
+        INNER JOIN `devis` ON (`devis`.`id` = IF(factures.`base_fact`='C',(SELECT ctr.iddevis FROM contrats ctr WHERE                  ctr.id=factures.`idcontrat`),`factures`.`iddevis` )) 
         INNER JOIN `clients` ON (`clients`.`id` = `devis`.`id_client`) 
         INNER JOIN `encaissements` ON (`encaissements`.`idfacture` = `factures`.`id`) 
         INNER JOIN `commerciaux`ON (`commerciaux`.`id` = `devis`.`id_commercial`) 

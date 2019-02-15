@@ -652,14 +652,15 @@ class Mobjectif_commercial {
         CONCAT(commerciaux.`nom`,' ',commerciaux.`prenom`) AS commercial,
         REPLACE(FORMAT(devis.`totalttc`,0),',',' ') total_ttc,
         DATE_FORMAT(devis.`date_devis`,'%d-%m-%Y') AS date_devis, '#' 
-        FROM `devis` 
-        INNER JOIN `factures` ON (`factures`.`iddevis` = `devis`.`id`) 
+        FROM `factures` 
+        INNER JOIN `devis` ON (`devis`.`id` = IF(factures.`base_fact`='C',(SELECT ctr.iddevis FROM contrats ctr WHERE                  ctr.id=factures.`idcontrat`),`factures`.`iddevis` )) 
         INNER JOIN `clients` ON (`clients`.`id` = `devis`.`id_client`) 
         INNER JOIN `encaissements` ON (`encaissements`.`idfacture` = `factures`.`id`) 
-        INNER JOIN `commerciaux`ON (`commerciaux`.`id` = `devis`.`id_commercial`)
+        INNER JOIN `commerciaux`ON (`commerciaux`.`id` = `devis`.`id_commercial`) 
+        INNER JOIN `services` ON (`commerciaux`.`id_service` = `services`.`id`) 
         WHERE encaissements.etat IN(1, 0) 
         AND encaissements.`date_encaissement` BETWEEN '$date_s' AND '$date_e' 
-        AND devis.etat <> 200 AND commerciaux.id = $id_commercial";
+        AND devis.etat <> 200 AND services.id = $id_commercial";
        // exit($req_sql);
         
         if(!$db->Query($req_sql))
