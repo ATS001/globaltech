@@ -535,7 +535,7 @@ class Mobjectif_service {
         REPLACE(FORMAT(factures.reste,0),',',' ') AS total_reste, '#'
         FROM `factures`
         INNER JOIN `devis` 
-        ON (`factures`.`iddevis` = `devis`.`id`)
+        ON (`devis`.`id` = IF(factures.`base_fact`='C',(SELECT ctr.iddevis FROM contrats ctr WHERE ctr.id=factures.`idcontrat`),`factures`.`iddevis` )) 
         INNER JOIN `encaissements` 
         ON (`encaissements`.`idfacture` = `factures`.`id`)
         INNER JOIN `commerciaux` 
