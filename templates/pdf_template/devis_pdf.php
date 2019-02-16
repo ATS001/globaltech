@@ -319,7 +319,8 @@ $titl_ht = $pdf->info_devis['totaltva'] == 0 ? 'Total à payer' : 'Total HT';
 //$signature = $pdf->info_proforma['comercial']; 
 
 //$signature = 'La Direction'; 
-$signature = 'Autorisé par '.$pdf->info_devis['cre_usr']; 
+$signature = 'Autorisé par : ';
+$creusr = $pdf->info_devis['cre_usr']; 
 
 $block_sum = '<div></div>
 <style>
@@ -379,13 +380,22 @@ p {
     <td colspan="2" style="color:#6B6868; width: 650px; border:1pt solid black; background-color: #eeecec; padding: 5px;">
         '.$pdf->info_devis['claus_comercial'].'
     </td>
+    
 </tr>
-
-<tr>
-    <td colspan="2" align="right" style="font: underline; width: 550px; padding-right: 200px;">
-        <br><br><br><br><br>
-        
-        <strong>'.$signature.'</strong>
+<tr><td><br><br><br></td></tr>
+<tr align="center">
+<td style="font: underline; width: 200px;" > </td>
+<td style="font: underline; width: 200px;" > </td>
+    <td style="font: underline;">
+                <strong>'.$signature.'</strong>       
+    </td>
+</tr>
+<tr align="center">
+<td style="font: underline; width: 200px;" > </td>
+<td style="font: underline; width: 200px;"> </td>
+    <td style="font: underline;">
+                
+        <strong>'.$creusr.'</strong>
     </td>
 </tr>';
 //$pdf->lastPage(); 
