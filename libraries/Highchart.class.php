@@ -98,9 +98,11 @@ class MHighchart
 	 */
 	public function Pie_render($table_vue, $width = 6, $where = null)
 	{
+		/* Set Total by get sum(nbr) */
+		
 		global $db;
         $where = $where != null ? "WHERE ".$where : null;
-		$sql = "SELECT * FROM $table_vue $where";
+		$sql = "SELECT SUM(nbr) AS nbr, name FROM $table_vue $where GROUP BY name";
 		if(!$db->Query($sql)){
 			var_dump($db->Error());
 			return false;
@@ -108,13 +110,14 @@ class MHighchart
 			if($db->RowCount())
 			{
 				$brut_array       = $db->RecordsArray();
+                $sum_total = array_sum(array_column($brut_array,'nbr'));
 
                 //Format Y and nbr to float value
 				foreach($brut_array as $k=>$arr)
 				{
-
-					$brut_array[$k]['y']  = (float) $arr['y'];
-					$brut_array[$k]['nbr']  = (float) $arr['nbr'];     
+					$brut_array[$k]['y'] = ((float) $arr['nbr'] / $sum_total) * 100;
+					//$brut_array[$k]['y']  = (float) $arr['y'];
+					$brut_array[$k]['nbr']  = (float) $arr['nbr'];  
 
 				}
 

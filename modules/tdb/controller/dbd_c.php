@@ -15,9 +15,9 @@ $chart->column_render('v_recet_per_month', 6);
 
 //Best Product
 $chart = new MHighchart();
-$chart->titre = 'Top Produits demandés';
+$chart->titre = 'Partition recette par type produit';
 $chart->items = 'Fcfa';
-$chart->Pie_render('v_sum_best_product', 6);
+$chart->Pie_render('v_sum_best_type_product', 6, " intvl BETWEEN '2019-01-01' AND '2019-12-31'");
 
 //Best Product
 /*$chart = new MHighchart();
