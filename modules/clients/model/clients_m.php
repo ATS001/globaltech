@@ -833,12 +833,12 @@ class Mclients {
 ,' ' AS debit
 ,' ' AS credit
 ,IFNULL((
-SELECT 0  FROM DUAL WHERE NOT EXISTS (SELECT * FROM compte_client cc WHERE  cc.id_client=compte_client.id_client AND cc.date_mouvement < '$date_d' )
+SELECT 0  FROM DUAL WHERE NOT EXISTS (SELECT * FROM compte_client cc WHERE  cc.id_client=compte_client.id_client AND cc.date_mouvement < '$date_d' AND cc.etat <> 200 )
 UNION
-(SELECT  CONCAT(REPLACE(FORMAT( cc.solde,0),',',' '),' ', dev.abreviation) FROM compte_client cc WHERE cc.id_client=compte_client.id_client AND cc.date_mouvement < '$date_d'  ORDER BY cc.id DESC LIMIT 1 )
+(SELECT  CONCAT(REPLACE(FORMAT( cc.solde,0),',',' '),' ', dev.abreviation) FROM compte_client cc WHERE cc.id_client=compte_client.id_client AND cc.date_mouvement < '$date_d' AND cc.etat <> 200  ORDER BY cc.id DESC LIMIT 1 )
 ),0) AS solde
 FROM compte_client,clients c, ref_devise dev ,(SELECT @n := 0) m WHERE c.id=compte_client.id_client AND  dev.id=c.id_devise
-AND  compte_client.id_client = $id_client LIMIT 1)
+AND  compte_client.id_client = $id_client AND compte_client.etat <> 200 LIMIT 1)
 
 
                 UNION     
@@ -851,7 +851,7 @@ AND  compte_client.id_client = $id_client LIMIT 1)
                 FROM compte_client,clients c, ref_devise dev WHERE c.id=compte_client.id_client
                 AND  dev.id=c.id_devise AND compte_client.id_client =  $id_client AND 
                 compte_client.date_mouvement BETWEEN '$date_d' AND '$date_f'
-                       order by compte_client.id)";
+                AND compte_client.etat <> 200 order by compte_client.id)";
 
         
         if (!$db->Query($req_sql)) {
@@ -938,12 +938,12 @@ AND  compte_client.id_client = $id_client LIMIT 1)
 ,' ' AS debit
 ,' ' AS credit
 ,IFNULL((
-SELECT 0  FROM DUAL WHERE NOT EXISTS (SELECT * FROM compte_client cc WHERE  cc.id_client=compte_client.id_client AND cc.date_mouvement < '$date_d' )
+SELECT 0  FROM DUAL WHERE NOT EXISTS (SELECT * FROM compte_client cc WHERE  cc.id_client=compte_client.id_client AND cc.date_mouvement < '$date_d' AND cc.etat <> 200)
 UNION
-(SELECT  REPLACE(FORMAT( cc.solde,0),',',' ') FROM compte_client cc WHERE cc.id_client=compte_client.id_client AND cc.date_mouvement < '$date_d'  ORDER BY cc.id DESC LIMIT 1 )
+(SELECT  REPLACE(FORMAT( cc.solde,0),',',' ') FROM compte_client cc WHERE cc.id_client=compte_client.id_client AND cc.date_mouvement < '$date_d' AND cc.etat <> 200  ORDER BY cc.id DESC LIMIT 1 )
 ),0) AS solde
 FROM compte_client,clients c, (SELECT @n := 0) m WHERE c.id=compte_client.id_client
-AND  compte_client.id_client = $id_client LIMIT 1)
+AND  compte_client.id_client = $id_client AND compte_client.etat <> 200 LIMIT 1)
 
 UNION     
 
@@ -953,7 +953,7 @@ IF(type_mouvement='D', REPLACE(FORMAT(compte_client.montant,0),',',' '), ' ') AS
 IF(type_mouvement='C', REPLACE(FORMAT(compte_client.montant,0),',',' '), ' ') AS credit,
 REPLACE(FORMAT(compte_client.solde,0),',',' ') AS solde
 FROM compte_client,clients c WHERE c.id=compte_client.id_client AND compte_client.id_client = $id_client AND 
-compte_client.date_mouvement BETWEEN  '$date_d' AND '$date_f' ORDER BY compte_client.id)
+compte_client.date_mouvement BETWEEN  '$date_d' AND '$date_f'AND compte_client.etat <> 200 ORDER BY compte_client.id)
        ";
         if (!$db->Query($req_sql)) {
             $this->error = false;
@@ -993,7 +993,7 @@ compte_client.date_mouvement BETWEEN  '$date_d' AND '$date_f' ORDER BY compte_cl
           v.ville as ville
           FROM compte_client,clients c,ref_ville v,ref_devise dev
           WHERE c.id_devise=dev.id and c.id_ville=v.id and  compte_client.id_client=c.id and compte_client.id_client = $id_client 
-          AND compte_client.date_mouvement BETWEEN '$date_d' and '$date_f'
+          AND compte_client.date_mouvement BETWEEN '$date_d' and '$date_f'  AND compte_client.etat <> 200
           ORDER BY compte_client.id";
 
 
