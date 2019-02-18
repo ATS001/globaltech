@@ -12,6 +12,7 @@ class MHighchart
 	var $chart_generated = NULL;
 	var $id_chart        = NULL;
 	var $chart_only      = false;
+	var $filter          = true;
     
 
     /**
@@ -120,15 +121,11 @@ class MHighchart
 					$brut_array[$k]['nbr']  = (float) $arr['nbr'];  
 
 				}
-
 				$arr_nbr_sta = $brut_array;
-
-
 			}else{
-				exit('no data yet');
+				$output = '<div class="alert alert-danger">Les valeurs ne donnent pas de résultat</div> ';
+			    return print($output);
 			}
-
-
 		}
 
 
@@ -177,7 +174,7 @@ class MHighchart
 
     
 
-    public function column_render($table_vue, $width = 6)
+    public function column_render($table_vue, $width = 6, $where = null, $filter = true)
     {
     	global $db;
     	$db->Query("SET lc_time_names = 'fr_FR';");
@@ -219,6 +216,7 @@ class MHighchart
 		$chart = new Highchart();
 		$this->container = MD5(uniqid(rand(), true));
 		$this->width = $width;
+		$this->filter = $filter;
 		$chart->exporting->enabled = true;
 
 
@@ -269,18 +267,20 @@ class MHighchart
                             <i class="ace-icon fa fa-signal"></i>
                             '.$this->titre.'
                         </h5>
-                        <div class="widget-toolbar no-border">
-                            			
-                            <a href="#"  class="filter_highchart" this_c="'.$this->container.'" id_chart="'.MInit::crypt_tp('chart', $this->id_chart).'">
+                        <div class="widget-toolbar no-border">';
+        if($this->filter){
+            $header .= '<a href="#"  class="filter_highchart" rel="chart" data_titre="'.$this->titre.'" this_c="'.$this->container.'" data="'.MInit::crypt_tp('chart', $this->id_chart).'">
 								<i class="ace-icon fa fa-filter"></i>
-							</a>
-                            <a href="#" data-action="reload" class="refrech_highchart" this_c="'.$this->container.'" id_chart="'.MInit::crypt_tp('chart', $this->id_chart).'">
+							</a>';
+        }                    			
+        
+         $header .= '<a href="#" data-action="reload" class="refrech_highchart" chart="'.$this->id_chart.'" this_c="'.$this->container.'" id_chart="'.MInit::crypt_tp('chart', $this->id_chart).'">
 								<i class="ace-icon fa fa-refresh"></i>
 							</a>
 						</div>
 					</div>';
-        $start_body =  '<div class="widget-body">
-                        <div class="widget-main">';
+        $start_body =  '<div  class="widget-body">
+                        <div id="'.$this->id_chart.'_body" class="widget-main">';
         $end_body =  '</div><!-- /.widget-main -->
                     </div><!-- /.widget-body -->' ;   
         $chart = '<div id="'.$this->container.'"></div>
@@ -399,7 +399,7 @@ class MHighchart
 							</a>
 						</div>
                     </div>
-                    <div class="widget-body">  
+                    <div id="'.$this->id_chart.'_body" class="widget-body">  
                         <div id="'.$this->container.'">
                             <table class="table table-striped table-bordered table-hover no-margin-bottom no-border-top">
                                 <thead>
