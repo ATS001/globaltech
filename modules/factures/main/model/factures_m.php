@@ -1729,15 +1729,17 @@ UNION
 
         $base=$this->facture_info['base_fact'];
         $reference=$this->facture_info['reference'];
+        $date=$this->facture_info['date_facture'];  
+        
         $du=$this->facture_info['du'];
         $au=$this->facture_info['au'];
-        
-        //var_dump($this->facture_info);
+
         
         $req_sql = "INSERT into compte_client(id_client,type_mouvement,id_facture,montant,description,date_mouvement,solde,creusr) 
-               values($clt,'D',$fact,$mnt,IF('$base'='C', CONCAT('Facture: ', '$reference',' du ','$du',' du ', '$au'),CONCAT('Facture: ','$reference')),NOW(), $sld+$mnt ,1)";
-        
+               values($clt,'D',$fact,$mnt,IF('$base'='C', CONCAT('Facture: ', '$reference',' du ','$du',' au ', '$au'),CONCAT('Facture: ','$reference',' du ', '$date')),STR_TO_DATE('$date','%d-%m-%Y'), $sld+$mnt ,1)";
+
         if (!$db->Query($req_sql)) {
+
             $this->log .= $db->Error();
             $this->error = false;
             $this->log .= '<br>Problème de mise à jour Etat de compte';
@@ -1772,7 +1774,7 @@ UNION
         $req_sql = "INSERT into compte_client(id_client,type_mouvement,id_encaissement,montant,description,date_mouvement,solde,creusr) 
                values($clt,'C',$enc,$mnt,CONCAT('Paiement: ', '$reference',' du ',DATE_FORMAT('$date','%d-%m-%Y'),"
                 . "IF('$ref_payement'<> null,Concat(': Référence N°: ','$ref_payement'),' '))"
-                . ",NOW(), $sld-$mnt ,1)";
+                . ",'$date', $sld-$mnt ,1)";
         
         
         if (!$db->Query($req_sql)) {
