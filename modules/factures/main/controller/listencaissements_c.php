@@ -97,7 +97,5 @@ if(!$data = $list_data_table->Query_maker())
     echo $data;
 }
 
-
-
 ?>
 	

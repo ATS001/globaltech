@@ -22,6 +22,7 @@ class Mdatatable
     var $list_col         = null;
     var $need_notif       = true;
     var $order_notif      = null;//Used when call order statut column
+    var $order_status     = null;//Used when call need Order statut column
     var $params           = array();//Array of $_REQUEST
     var $debug            = false;//Used when want see the full query probleme case
     var $file_name        = null;//Used for Export data 
@@ -311,6 +312,7 @@ class Mdatatable
     	if($this->need_notif)
     	{
     		$this->order_notif = TableTools::order_bloc($params['order'][0]['column']);
+            $this->order_notif .= $this->order_status;
     	}
     	$this->sqlRec .=  " ORDER BY $order_notif ". $columns[$params['order'][0]['column']]."   ".$params['order'][0]['dir']."  LIMIT ".$params['start']." ,".$params['length']." ";
         
@@ -431,9 +433,19 @@ class Mdatatable
        
     	if($this->need_notif)
     	{
+            $add_order = null;
     		array_push($columns, 'statut');
             array_push($columns, 'notif');
             $this->order_notif = TableTools::order_bloc($params['order'][0]['column']);
+            if(is_array($this->order_status))
+            {                
+                foreach ($this->order_status as $step) {
+                    if(is_numeric($step)){
+                        $add_order .= " ".$this->main_table.".etat = ".$step." DESC, ";
+                    }                    
+                }
+            }
+            $this->order_notif .= $add_order;
     	}
         $order_column = $order_dir = $order_by = null;
         if(array_key_exists('order', $params)){
@@ -441,8 +453,8 @@ class Mdatatable
             $order_dir    = $params['order'][0]['dir'];
             $order_by = ' ORDER BY ';
         }
-        
     	$order_notif = $this->order_notif;
+
     	$sqlRec .=  " $order_by $order_notif  $order_column   $order_dir  LIMIT ".$params['start']." ,".$params['length']." ";
         //Istance od DB connexion
         global $db;
