@@ -77,6 +77,20 @@ $form->input('Nom utilisateur', 'fnom', 'text' ,6 , $info_user->Shw('fnom',1), $
 $lnom_array[]  = array('required', 'true', 'Insérer Prénom utilisateur' );
 $lnom_array[]  = array('minlength', '3', 'Minimum 3 caractères' );
 $form->input('Prénom utilisateur', 'lnom', 'text', 6, $info_user->Shw('lnom',1), $lnom_array);
+
+
+//CIN utilisateur
+$cin_array[]  = array('remote', 'cin#users_sys#cin', 'Ce CIN existe déja' );
+$cin_array[]  = array('minlength', '6', 'Minimum 6 caractères' );
+$form->input('CIN utilisateur', 'cin', 'text' ,6 , $info_user->Shw('cin',1), $cin_array);
+//RIB utilisateur
+$rib_array[]  = array('minlength', '3', 'Minimum 3 caractères' );
+$form->input('RIB utilisateur', 'rib', 'text', 6, $info_user->Shw('rib',1), $rib_array);
+
+//Select Sexe
+$sexe_opt = array('Masculin' => 'Masculin', 'Féminin' => 'Féminin');
+$form->select('Sexe', 'sexe', 2, $sexe_opt, $indx = NULL, $info_user->Shw('sexe',1), $multi = NULL);
+
 //Service
 $service_array[]  = array('required', 'true', 'Choisir le Service' );
 $form->select_table('Service', 'service', 6, 'services', 'id', 'service' , 'service', $indx = '------' ,$selected=$info_user->Shw('service',1),$multi=NULL, $where='id <> 1', $service_array);
