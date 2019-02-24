@@ -672,6 +672,18 @@ static public function check_date($date, $temps = null, $date_avant = null, $dat
   
 }
 
+public static function compare_date($date_s = null, $date_e = null)
+{
+$date_s = new DateTime($date_s);
+$date_e = new DateTime($date_e);
+if($date_s > $date_e){
+  return false;
+}
+return true;
+  
+}
+
+
 
 public static function deleteDir($dir) {
     if (is_dir($dir) AND is_readable($dir)) { 

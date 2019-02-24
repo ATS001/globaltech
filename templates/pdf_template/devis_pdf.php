@@ -46,7 +46,12 @@ $devis_info   = $devis->devis_info;
 $tableau_head = MySQL::make_table_head($headers);
 $tableau_body = $db->GetMTable_pdf($headers);
 
-
+//***************************************************
+ $user = new Musers();
+ $user->id_user = $devis_info['creusr'];
+ $user->get_user();
+ $signature_foto = Minit::get_file_archive($user->user_info['signature']);
+ //**************************************************
 
 
 // Extend the TCPDF class to create custom Header and Footer
@@ -313,8 +318,8 @@ $block_ttc    = $pdf->info_devis['totaltva'] == 0 ? null : $block_ttc;
 $titl_ht = $pdf->info_devis['totaltva'] == 0 ? 'Total à payer' : 'Total HT';
 //$signature = $pdf->info_proforma['comercial']; 
 
-$signature = 'La Direction'; 
-
+//$signature = 'La Direction'; 
+$signature = 'Autorisé par '.$pdf->info_devis['cre_usr']; 
 
 $block_sum = '<div></div>
 <style>
@@ -379,6 +384,7 @@ p {
 <tr>
     <td colspan="2" align="right" style="font: underline; width: 550px; padding-right: 200px;">
         <br><br><br><br><br>
+        
         <strong>'.$signature.'</strong>
     </td>
 </tr>';
@@ -400,7 +406,10 @@ $block_sum .= '
 <td colspan="2" align="right" style="font: underline; width: 620px;  padding-right: 200px;">
         <br>
         <span class="profile-picture">
-			<img width="170" height="170" class="editable img-responsive" alt="logo_global.png" id="avatar2" src="./upload/signature/signature_ali.jpg" />
+			<img width="170" height="170" 
+                        class="editable img-responsive" 
+                        alt="logo_global.png" 
+                        id="avatar2" src="'.$signature_foto.'"/>
 		</span>	
 
     </td>
@@ -408,6 +417,7 @@ $block_sum .= '
 </table>';
 }
 
+//var_dump($block_sum2);
 
 $pdf->writeHTML($html, true, false, true, false, '');
 /*$y = $pdf->GetY();

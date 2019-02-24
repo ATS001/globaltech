@@ -384,7 +384,7 @@ class TableTools
     			WHEN SUM(task_action.`notif`) > 0 
     			THEN 
     			task_action.`etat_desc`                            
-    			ELSE CONCAT(task_action.`etat_desc`,' ') 
+    			ELSE CONCAT(task_action.`etat_desc`,'*') 
     			END ";
     	}else{
     			$message_etat = " CASE
@@ -419,17 +419,14 @@ class TableTools
      */
     static public function order_bloc($order_column)
     {
-
-
-
+    	
     	if(Mreq::tp('export') == 1)
     	{
     		$order_notif = " CASE WHEN LOCATE('*', statut) = 0  THEN 0 ELSE 1 END DESC, ";
     	}else{
-    		$order_notif = " CASE WHEN LOCATE('notif', statut) = 0  THEN 0 ELSE 1 END DESC, ";
+    		$order_notif = " CASE WHEN LOCATE('notif', statut) = 0  THEN 0 ELSE 1 END DESC, ";    		
     	}
     	return $order_notif;
-
     }
 
        

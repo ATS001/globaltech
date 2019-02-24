@@ -493,7 +493,7 @@ public function input_date($input_desc, $input_id, $input_class, $input_value = 
     <div class="form-group">
         <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">'.$input_desc.':</label>
 
-        <div class="col-xs-12 col-sm-3">
+        <div class="col-xs-12 col-sm-'.$input_class.'">
             <div class="clearfix input-group">';
 
 

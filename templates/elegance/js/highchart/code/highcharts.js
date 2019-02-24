@@ -415,7 +415,7 @@ function(e){function q(e,c,k,r){var f;a.objectEach(e,function(a,b){if(!r&&-1<F(b
 $('body').on('click', '.refrech_highchart', function() {
 
     var $contnair_chart = '#'+$(this).attr('this_c');
-    var $widget = $($contnair_chart).closest('.widget-box');
+    var $widget = '#'+$(this).attr('chart')+'_body';
     var $id_chart = $(this).attr('id_chart');
 	
 	$.ajax({
@@ -428,18 +428,14 @@ $('body').on('click', '.refrech_highchart', function() {
 			bootbox.hideAll();
 			var data_arry = data.split("#");
 			if(data_arry[0]==3){
-
 				ajax_loadmessage(data_arry[1],'nok',5000)
 				$($contnair_chart).empty();
-
 				if(typeof $redirect !== 'undefined'){
 					ajax_loader($redirect,'');
-
 				}else{
 					window.setTimeout( function(){
 					window.location = "./";
 				    }, 5000 );
-
 				}
 			}else if(data_arry[0]==4){
 				bootbox.process({
@@ -450,8 +446,7 @@ $('body').on('click', '.refrech_highchart', function() {
 				ajax_loadmessage(data_arry[1],'nok',5000)
 				window.setTimeout( function(){
 					    window.location = "./";
-				        }, 5000 );
-				
+				        }, 5000 );	
 
 			}else{
 
@@ -472,16 +467,17 @@ $('body').on('click', '.refrech_highchart', function() {
 $('body').on('click', '.filter_highchart', function() {
 
 	$('.filtre_fields').show();
-	alert('filter');
-
-    var $contnair_chart = '#'+$(this).attr('this_c');
-    var $widget = $($contnair_chart).closest('.widget-box');
+	var $contnair_chart = '#'+$(this).attr('this_c');
+    var $widget = $($contnair_chart).closest('.widget-body');
     var $id_chart = $(this).attr('id_chart');
+    var $link  = $(this).attr('rel');
+    var $titre = $(this).attr('data_titre'); 
+    var $data  = $(this).attr('data'); 
 	$.ajax({
 		cache: false,
 		url  : '?_tsk=chart&ajax=1',
 		type : 'POST',
-		data : $id_chart+'&filtr=1',
+		data : $data+'&filtr=1',
 		dataType:"html",
 		success: function(data){
 			bootbox.hideAll();
@@ -513,8 +509,38 @@ $('body').on('click', '.filter_highchart', function() {
 				
 
 			}else{
+				
+				var dialog = bootbox.dialog({
 
-				$($contnair_chart).empty().html(data);
+				message: data,
+				title: 'Filter : ' + $titre,
+				size:  'middle',
+				buttons: 			
+				{						
+					"click" :
+					{
+						"label" : "Envoyer",
+						"className" : "btn-sm btn-primary send_modal_chart_filter",
+						"callback": function(e) {
+						
+							return false;
+						}
+					},
+					"cancel" :
+					{
+						"label" : "Annuler",
+						"className" : "btn-sm btn-inverse close_modal",
+						"callback": function (e) {
+							return true;
+						}
+					} 
+
+				}
+			});
+
+			$('.bootbox-body').ace_scroll({
+				size: 400
+			});
             }
 		},
 		timeout: 30000,
@@ -524,10 +550,6 @@ $('body').on('click', '.filter_highchart', function() {
 
         // will fire when timeout is reached
      
-	});   
+	});  
+	
 });
-/*
-new Highcharts.Chart({"exporting":{"enabled":true},"chart":{"renderTo":"a4a23c5ac81564b51aaecc221e441a09","type":"column","plotBackgroundColor":null,"plotBorderWidth":null,"plotShadow":false},"title":{"text":"Evolution des recettes par mois"},"subtitle":{"text":null},"xAxis":{"categories":["f\u00e9vrier","mars","avril","mai","juin","juillet"]},"yAxis":{"min":0,"title":{"text":"Recette (FCFA)"}},"legend":{"layout":"vertical","backgroundColor":"#FFFFFF","align":"left","verticalAlign":"top","x":100,"y":70,"floating":1,"shadow":1},
-	"rangeSelector": { "verticalAlign": "top", "x": 0,  "y": 0 },
-	"tooltip":{"formatter":function() {
-			return Highcharts.numberFormat(this.y, 0)+' Fcfa';}},"series":[{"name":"2018","data":[2290000,8496548,33156355,22561800,7347021,1000]}]});*/
