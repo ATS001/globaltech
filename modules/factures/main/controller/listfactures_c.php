@@ -102,6 +102,13 @@ $list_data_table->task = 'factures';
 $list_data_table->file_name = 'liste_factures';
 //Set Title of report
 $list_data_table->title_report = 'Liste factures';
+
+//Set Order Status
+//{"attente_validation":"0", "attente_envoi_client":"1", "attente_paiement":"2","paye_partiellement":"3","facture_payee":"4","facture_archivee":"100"}
+
+$order_status = array(Msetting::get_set('etat_facture', 'attente_validation'), Msetting::get_set('etat_facture', 'attente_envoi_client'), Msetting::get_set('etat_facture', 'attente_paiement'), Msetting::get_set('etat_facture', 'paye_partiellement'),Msetting::get_set('etat_facture', 'facture_payee'),Msetting::get_set('etat_facture', 'facture_archivee'));
+$list_data_table->order_status = $order_status;
+
 //Print JSON DATA
 if(!$data = $list_data_table->Query_maker())
 {
