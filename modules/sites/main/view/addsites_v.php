@@ -85,7 +85,9 @@ $form->input('LNB', 'lnb', 'text', 6, null, NULL);
 //Buc
 $form->input('BUC', 'buc', 'text', 6, null, NULL);
 
-
+//photo
+$form->input('Photo', 'photo', 'file', 6, null, null);
+$form->file_js('photo', 500000, 'image');
 
 $form->button('Enregistrer le site');
 

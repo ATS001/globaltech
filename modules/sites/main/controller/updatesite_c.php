@@ -25,7 +25,8 @@ if(MInit::form_verif('updatesite', false))
             'bande' => Mreq::tp('bande'),
             'satellite' => Mreq::tp('satellite'),
             'lnb' => Mreq::tp('lnb'),
-            'buc' => Mreq::tp('buc')
+            'buc' => Mreq::tp('buc'),
+            'photo_id' => Mreq::tp('photo-id')
         );
 
         //Check if array have empty element return list

@@ -106,6 +106,7 @@ class Msites {
             } else {
 
                 $this->last_id = $result;
+                $this->save_file('photo', 'Photo du site '.$reference, 'image');
                 $this->log .= '</br>Enregistrement  réussie ' . $reference . ' - ' . $this->last_id . ' -';
                 if (!Mlog::log_exec($this->table, $this->last_id, 'Création sites', 'Insert')) {
                     $this->log .= '</br>Un problème de log ';
@@ -165,7 +166,8 @@ class Msites {
                 $this->log .= '</br>Enregistrement BD non réussie';
             } else {
 
-                $this->last_id = $result;
+                //$this->last_id = $result;
+                $this->save_file('photo', 'Photo du site ', 'image');
                 $this->log .= '</br>Enregistrement  réussie ' . ' ' . $this->last_id . ' -';
                 if (!Mlog::log_exec($this->table, $this->last_id, 'Modification sites', 'Update')) {
                     $this->log .= '</br>Un problème de log ';
@@ -365,6 +367,35 @@ class Msites {
         }
         
         return $reference;
+        
+    }
+    
+    
+    private function save_file($item, $titre, $type)
+    {    
+    	//Format all parameteres
+    	$temp_file     = $this->_data[$item.'_id'];
+            
+        //If nofile uploaded return kill function
+      if($temp_file == Null){
+        return true;
+      }
+
+      $new_name_file = $item.'_'.$this->last_id;
+      $folder        = MPATH_UPLOAD.'sites'.SLASH.$this->last_id;
+      $id_line       = $this->last_id;
+      $title         = $titre;
+      $table         = $this->table;
+      $column        = $item;
+      $type          = $type;
+
+
+    	//Call save_file_upload from initial class
+      if(!Minit::save_file_upload($temp_file, $new_name_file, $folder, $id_line, $title, 'sites', $table, $column, $type, $edit = null))
+      {
+        $this->error = false;
+        $this->log .='</br>Enregistrement '.$item.' dans BD non réussie';
+      }
     }
 
 }

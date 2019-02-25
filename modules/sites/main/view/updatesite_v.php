@@ -93,9 +93,11 @@ $form->input('LNB', 'lnb', 'text', 6,$info_sites->g("lnb"), null, NULL);
 //Buc
 $form->input('BUC', 'buc', 'text', 6,$info_sites->g("buc"), null, NULL);
 
+//photo
+$form->input('Photo', 'photo', 'file', 6, 'Photo.png', null);
+$form->file_js('photo', 100000, 'image', $info_sites->g('photo'), 1);
 
-
-$form->button('Enregistrer le site');
+$form->button('Modifier le site');
 
 //Form render
 $form->render();
