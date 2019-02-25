@@ -535,7 +535,7 @@ class Mobjectif_service {
         REPLACE(FORMAT(factures.reste,0),',',' ') AS total_reste, '#'
         FROM `factures`
         INNER JOIN `devis` 
-        ON (`factures`.`iddevis` = `devis`.`id`)
+        ON (`devis`.`id` = IF(factures.`base_fact`='C',(SELECT ctr.iddevis FROM contrats ctr WHERE ctr.id=factures.`idcontrat`),`factures`.`iddevis` )) 
         INNER JOIN `encaissements` 
         ON (`encaissements`.`idfacture` = `factures`.`id`)
         INNER JOIN `commerciaux` 
@@ -600,7 +600,7 @@ class Mobjectif_service {
         INNER JOIN `factures` 
         ON (`encaissements`.`idfacture` = `factures`.`id`)
         INNER JOIN `devis` 
-        ON (`factures`.`iddevis` = `devis`.`id`)
+        ON (`devis`.`id` = IF(factures.`base_fact`='C',(SELECT ctr.iddevis FROM contrats ctr WHERE ctr.id=factures.`idcontrat`),`factures`.`iddevis` )) 
         INNER JOIN `commerciaux` 
         ON (`devis`.`id_commercial` = `commerciaux`.`id`)
         INNER JOIN `services` 
@@ -655,14 +655,14 @@ class Mobjectif_service {
         REPLACE(FORMAT(devis.`totalttc`,0),',',' ') total_ttc,
         DATE_FORMAT(devis.`date_devis`,'%d-%m-%Y') AS date_devis, '#' 
         FROM `factures` 
-        INNER JOIN `devis` ON (`factures`.`iddevis` = `devis`.`id`) 
+        INNER JOIN `devis` ON (`devis`.`id` = IF(factures.`base_fact`='C',(SELECT ctr.iddevis FROM contrats ctr WHERE                  ctr.id=factures.`idcontrat`),`factures`.`iddevis` )) 
         INNER JOIN `clients` ON (`clients`.`id` = `devis`.`id_client`) 
         INNER JOIN `encaissements` ON (`encaissements`.`idfacture` = `factures`.`id`) 
         INNER JOIN `commerciaux`ON (`commerciaux`.`id` = `devis`.`id_commercial`) 
         INNER JOIN `services` ON (`commerciaux`.`id_service` = `services`.`id`) 
         WHERE encaissements.etat IN(1, 0) 
         AND encaissements.`date_encaissement` BETWEEN '$date_s' AND '$date_e' 
-        AND devis.etat <> 200 AND services.id = $id_service";
+        AND devis.etat <> 200 AND services.id = $id_service GROUP BY devis.id";
         //exit($req_sql);
         
         if(!$db->Query($req_sql))
@@ -685,8 +685,7 @@ class Mobjectif_service {
             'Commercial'   => '15[#]center',
             'Montant'      => '10[#]center',
             'Date'         => '5[#]',     
-            '#'            => '3[#]center[#]crypt', 
-            
+            '#'            => '3[#]center[#]crypt',          
             
             
         );
@@ -703,9 +702,9 @@ class Mobjectif_service {
         $table = 'objectif_service';
         $id_service = session::get('service');
         if(in_array($id_service, array(1, 3))){
-            $where = null;
-        }elseif($id_service == 2){
-            $where = " AND $table.id_service = 2";
+            $where = null; 
+        }elseif(in_array($id_service, array(2, 7))){
+            $where = " AND $table.id_service IN (2, 7) ";
         }
         $req_sql ="SELECT $table.id, REPLACE(FORMAT($table.objectif,0),',',' ') AS objectif,
                    REPLACE(FORMAT($table.realise,0),',',' ') AS realise,
@@ -724,12 +723,20 @@ class Mobjectif_service {
                 $arr_result = $db->RowArray();                
             }
         }
+        $id_service = session::get('service');
+        if(in_array($id_service, array(1, 3, 2))){
+            $ca_global = '<p>CA Global: '.$arr_result['realise'].'</p>';
+        }elseif(in_array($id_service, array(2))){
+            $ca_global = '<p>.</p>';
+        }else{
+            $ca_global = '<p>.</p>';
+        }
         $idc = MInit::crypt_tp('id', $arr_result['id']);
         $output =  '<div class="col-lg-3 col-6">
                         <div class="small-box btn-purple">
                             <div class="inner">
                                 <h3>'.$arr_result['percent'].'<sup style="font-size: 20px">%</sup></h3>
-                                <p>Réalisation globale: '.$arr_result['realise'].'</p>
+                                '.$ca_global.'
                             </div>
                         <div class="icon">
                             <i class="ace-icon fa fa-line-chart home-icon"></i>

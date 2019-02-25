@@ -19,4 +19,4 @@ if(Mreq::tp('chart') != NULL)
 	$chart->chart_only = true;
 }
 
-$chart->column_render('v_recet_per_month', 6);
+$chart->column_render('v_recet_per_month', 6, null, false);

@@ -50,7 +50,7 @@ $form->step_end();
 $form->step_start(2, 'Informations générales');
 
 
-//Nom utilisature
+//Nom utilisateur
 $fnom_array[]  = array('required', 'true', 'Insérer Nom utilisateur' );
 $fnom_array[]  = array('minlength', '3', 'Minimum 3 caractères' );
 $form->input('Nom utilisateur', 'fnom', 'text' ,6 , null, $fnom_array);
@@ -58,6 +58,19 @@ $form->input('Nom utilisateur', 'fnom', 'text' ,6 , null, $fnom_array);
 $lnom_array[]  = array('required', 'true', 'Insérer Prénom utilisateur' );
 $lnom_array[]  = array('minlength', '3', 'Minimum 3 caractères' );
 $form->input('Prénom utilisateur', 'lnom', 'text', 6, null, $lnom_array);
+
+//CIN utilisateur
+$cin_array[]  = array('remote', 'cin#users_sys#cin', 'Ce CIN existe déja' );
+$cin_array[]  = array('minlength', '6', 'Minimum 6 caractères' );
+$form->input('CIN utilisateur', 'cin', 'text' ,6 , null, $cin_array);
+//RIB utilisateur
+$rib_array[]  = array('minlength', '3', 'Minimum 3 caractères' );
+$form->input('RIB utilisateur', 'rib', 'text', 6, null, $rib_array);
+
+//Select Sexe
+$sexe_opt = array('Masculin' => 'Masculin', 'Féminin' => 'Féminin');
+$form->select('Sexe', 'sexe', 2, $sexe_opt, $indx = NULL, $selected = 'Masculin', $multi = NULL);
+
 //Service
 $service_array[]  = array('required', 'true', 'Choisir le Service' );
 $form->select_table('Service', 'service', 6, 'services', 'id', 'service' , 'service', $indx = '------' ,$selected=NULL,$multi=NULL, $where='id <> 1', $service_array);

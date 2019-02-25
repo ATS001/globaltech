@@ -59,7 +59,7 @@ if($liste_sub_group){
     	$tableau_body .= $tableau_head;
     	$tableau_body .= $db->GetMTable_pdf($headers);
     	$liste_sum = $proforma->get_sum_by_sub_group($id_sub_group);
-    	$table_sum_sub_group = '
+    	/*$table_sum_sub_group = '
     	<table style="width: 685px;" cellpadding="2">
     <tr>
         <td width="50%" align="left">
@@ -86,7 +86,7 @@ if($liste_sub_group){
             </tbody>
         </table>
         </td></tr></table> ';
-    	$tableau_body .= $table_sum_sub_group;
+    	$tableau_body .= $table_sum_sub_group;*/
 
     }
 }

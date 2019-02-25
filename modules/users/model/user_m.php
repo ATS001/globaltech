@@ -317,11 +317,11 @@ class Musers {
     public function save_new_user()
     {
 
-
-
         //Befor execute do the multiple check
         //Nom d'utilisateur
     	$this->Check_exist('nom', $this->_data['nom'], 'Nom d\' utilisateur', null);
+        //CIN d'utilisateur
+      $this->Check_exist('cin', $this->_data['cin'], 'CIN d\' utilisateur', null);
         //Email utilisateur
     	$this->Check_exist('email', $this->_data['mail'], 'Email', null);
         //Service si existe
@@ -354,6 +354,9 @@ class Musers {
     		$values["service"] = MySQL::SQLValue($this->_data['service']);
     		$values["fnom"]    = MySQL::SQLValue($this->_data['fnom']);
     		$values["lnom"]    = MySQL::SQLValue($this->_data['lnom']);
+        $values["cin"]     = MySQL::SQLValue($this->_data['cin']);
+        $values["rib"]     = MySQL::SQLValue($this->_data['rib']);
+        $values["sexe"]    = MySQL::SQLValue($this->_data['sexe']);
     		$values["tel"]     = MySQL::SQLValue($this->_data['tel']);
     		$values["etat"]    = MySQL::SQLValue(0);
     		$values["defapp"]  = MySQL::SQLValue(3);
@@ -418,6 +421,10 @@ class Musers {
         //Befor execute do the multiple check
         //Nom d'utilisateur
       $this->Check_exist('nom', $this->_data['nom'], 'Nom d\' utilisateur', $this->id_user);
+
+        //CIN d'utilisateur
+      $this->Check_exist('cin', $this->_data['cin'], 'CIN d\' utilisateur', $this->id_user);
+
         //Email utilisateur
       $this->Check_exist('email', $this->_data['mail'], 'Email', $this->id_user);
         //Service si existe
@@ -447,11 +454,13 @@ class Musers {
       {
         global $db;
         $values["nom"]     = MySQL::SQLValue($this->_data['nom']);
-        $values["mail"]    = MySQL::SQLValue($this->_data['mail']);
-        
+        $values["mail"]    = MySQL::SQLValue($this->_data['mail']);    
         $values["service"] = MySQL::SQLValue($this->_data['service']);
         $values["fnom"]    = MySQL::SQLValue($this->_data['fnom']);
         $values["lnom"]    = MySQL::SQLValue($this->_data['lnom']);
+        $values["cin"]     = MySQL::SQLValue($this->_data['cin']);
+        $values["rib"]     = MySQL::SQLValue($this->_data['rib']);
+        $values["sexe"]    = MySQL::SQLValue($this->_data['sexe']);
         $values["tel"]     = MySQL::SQLValue($this->_data['tel']);
         $values["etat"]    = MySQL::SQLValue($this->user_info['etat']);
         $values["defapp"]  = MySQL::SQLValue(3);
