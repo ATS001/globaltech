@@ -29,6 +29,8 @@
 $tva  = Mcfg::get('tva'); 
 $form = new Mform('adddevis', 'adddevis', '', 'devis', '0', null);
 //$form->input_hidden('commission', Mreq::tp('commission'));
+$plafond_remise = session::get('service') == 7 ? Msetting::get_set('plafond_remise_commercial') : 10;
+$form->input_hidden('remise_plafond', $plafond_remise);
 
 //Date devis
 $array_date[]= array('required', 'true', 'Insérer la date de devis');
@@ -174,22 +176,63 @@ $(document).ready(function() {
 
     $('#valeur_remise').bind('input change',function() {
     	// Calcul values
-    	var totalht       = parseInt($('#sum_table').val());
-    	var type_remise   = $('#type_remise').val();
-    	var remise_valeur = parseFloat($('#valeur_remise').val());
-    	var tva           = $('#tva').val();
-        var commission    = parseFloat($("#commission").val());
-        var percentage_othorized = 100;
-    	var dix_per_ht    = parseFloat((totalht * percentage_othorized) / 100);
+        var totalht                 = parseInt($('#sum_table').val());
+        var type_remise             = $('#type_remise').val();
+        var remise_valeur           = parseFloat($('#valeur_remise').val());
+        var tva                     = $('#tva').val();
+        var commission              = parseFloat($("#commission").val());
+        var percentage_othorized    = parseFloat($("#remise_plafond").val());
+        
+        <?php
+        if(session::get('service') == 3 OR session::get('service') == 1){
+            echo 'var percentage_othorized_dg = parseFloat(100);';
+        }else{
+            echo 'var percentage_othorized_dg = parseFloat(10);';
+        }
+
+        ?>
+        
+        var dix_per_ht              = parseFloat((totalht * percentage_othorized) / 100);
+        var dix_per_ht_dg           = parseFloat((totalht * percentage_othorized_dg) / 100);
     	if((type_remise == 'P' && remise_valeur > percentage_othorized) || (type_remise == 'M' && remise_valeur > dix_per_ht)){
-    		ajax_loadmessage('La remise exeptionnel ne doit pas dépasser '+percentage_othorized+'% du Total des articles','nok');
+    		ajax_loadmessage('Le plafond de remise applicable est de: '+percentage_othorized+'% du Total des articles</br>Vous avez la possibilité d\'appliquer une remise jusqu\'à '+percentage_othorized_dg+'%  soumise à la validation de DG ' ,'nok');
     		$('#totalht').val(totalht);
-    		$('#valeur_remise').val(0);
-    		calculat_devis(totalht, null, 0, tva, 'totalht', 'totaltva', 'totalttc',commission,'total_commission');
-    		return false;
+            if((type_remise == 'P' && remise_valeur > percentage_othorized_dg) || (type_remise == 'M' && remise_valeur > dix_per_ht_dg)){
+                ajax_loadmessage('Le plafond de remise applicable est de: '+percentage_othorized+'% du Total des articles</br>Vous avez la possibilité d\'appliquer une remise jusqu\'à '+percentage_othorized_dg+'%  soumise à la validation de DG ' ,'nok');
+                    $('#valeur_remise').val(percentage_othorized_dg);
+                    return false;
+            }
+    		
+            calculat_devis(totalht, null, 0, tva, 'totalht', 'totaltva', 'totalttc',commission,'total_commission');    		
     	}
     	calculat_devis(totalht, type_remise, remise_valeur, tva, 'totalht', 'totaltva', 'totalttc',commission,'total_commission');
         
+    });
+
+    $('#id_commercial').on('change', function () {
+        var $id_commercial = $(this).val();
+
+        if($id_commercial == null){
+            return true;
+        }
+        $.ajax({
+
+            cache: false,
+            url  : '?_tsk=add_detaildevis&ajax=1',
+            type : 'POST',
+            data : '&act=1&id='+$id_commercial+'&<?php echo MInit::crypt_tp('exec', 'info_commercial') ?>',
+            dataType:"JSON",
+            success: function(data){
+
+                if(data['error']== false){
+                    ajax_loadmessage(data['mess'],'nok',5000)
+                }else{                                       
+                    $('#remise_plafond').val(data['remise']);
+                    $('#remise_dg_plafond').val(data['remise_dg']);                     
+                }
+
+            }
+        });     
     });
 
    

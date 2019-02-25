@@ -43,6 +43,21 @@ if($action == 'produit_info')
 	}
      
 }
+//Get info commercial
+if($action == 'info_commercial')
+{
+	$commercial = new Mcommerciale();
+	$commercial->id_commerciale = Mreq::tp('id');
+	if($commercial->get_commerciale())
+	{ 
+		$plafond_remise = $commercial->g('id_service') == 7 ? Msetting::get_set('plafond_remise_commercial') : 10; 
+		//send data as json format
+		$arr_return = array('remise' => $plafond_remise);
+		echo json_encode($arr_return);
+	}else{
+		echo json_encode(array('error' => false, 'mess' => 'Problème récuperation plafond remise'));
+	}     
+}
 
 if($action == 'info_client')
 {
@@ -123,7 +138,5 @@ if($action == 'load_select_produit')
 		echo json_encode($output);
 	}else{
 		echo json_encode(array('error' => false, 'mess' => 'Pas de produit trouvé' ));
-	}
-	
-	
+	}	
 }

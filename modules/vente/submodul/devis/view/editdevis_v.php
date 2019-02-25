@@ -48,7 +48,8 @@ $form->input_hidden('idh', Mreq::tp('idh'));
 //Reference
 $form->input_hidden('checker_reference',  MInit::cryptage($info_devis->g('reference'), 1));
 $form->input_hidden('reference', $info_devis->g('reference'));
-
+$plafond_remise = session::get('service') == 7 ? Msetting::get_set('plafond_remise_commercial') : 10;
+$form->input_hidden('remise_plafond', $plafond_remise);
 //Date devis
 $array_date[]= array('required', 'true', 'Insérer la date de devis');
 $form->input_date('Date devis', 'date_devis', 4, $info_devis->g('date_devis'), $array_date);
@@ -84,7 +85,8 @@ $form->draw_datatabe_form('table_details_devis', $verif_value, $columns, 'adddev
 //Finance bloc
 $form->bloc_title('Zone totaux');
 //Type Remise
-$form->input('Total des articles enregistrés', 'sum_table', 'text' ,'4 is-number alignRight', $info_devis->g('totalht'), null, null, 'readonly');
+$sum_table = $info_devis->g('totalht') + $info_devis->g('total_remise');
+$form->input('Total des articles enregistrés', 'sum_table', 'text' ,'4 is-number alignRight', $sum_table, null, null, 'readonly');
 $hard_code_remise = '<label style="margin-left:15px;margin-right : 20px;">Valeur remise: </label><input id="valeur_remise" name="valeur_remise" class="input-small alignRight" value="'.$info_devis->g('valeur_remise').'" type="text">';
 $hard_code_remise .= '<label style="margin-left:30px;margin-right : 20px;">Commission   :</label><input readonly="" id="total_commission" name="total_commission" class="input-large is-number alignRight" value="'.$info_devis->g('total_commission').'" type="text"><span class="help-block">Cette remise sera appliquée sur le total H.T de devis</span>';
 $typ_remise = array('P' => 'Pourcentage' , 'M' => 'Montant' );
@@ -426,23 +428,40 @@ $(document).ready(function() {
     });
 
     $('#valeur_remise').bind('input change',function() {
-    	// Calcul values
-    	var totalht       = parseInt($('#sum_table').val());
-    	var type_remise   = $('#type_remise').val();
-    	var remise_valeur = parseFloat($('#valeur_remise').val());
-    	var tva           = $('#tva').val();
-    	var dix_per_ht    = parseFloat((totalht * 10) / 100);
-        var commission    = parseFloat($("#commission").val());
+        // Calcul values
+        var totalht                 = parseInt($('#sum_table').val());
+        var type_remise             = $('#type_remise').val();
+        var remise_valeur           = parseFloat($('#valeur_remise').val());
+        var tva                     = $('#tva').val();
+        var commission              = parseFloat($("#commission").val());
+        var percentage_othorized    = parseFloat($("#remise_plafond").val());
+        
+        <?php
+        if(session::get('service') == 3 OR session::get('service') == 1){
+            echo 'var percentage_othorized_dg = parseFloat(100);';
+        }else{
+            echo 'var percentage_othorized_dg = parseFloat(10);';
+        }
 
-    	if((type_remise == 'P' && remise_valeur > 10) || (type_remise == 'M' && remise_valeur > dix_per_ht)){
-    		ajax_loadmessage('La remise exeptionnel ne doit pas dépasser 10% du Total des articles','nok');
-    		$('#totalht').val(totalht);
-    		$('#valeur_remise').val(0);
-    		calculat_devis(totalht, null, 0, tva, 'totalht', 'totaltva', 'totalttc',commission,'total_commission');
-    		return false;
-    	}
-    	calculat_devis(totalht, type_remise, remise_valeur, tva, 'totalht', 'totaltva', 'totalttc',commission,'total_commission');
-    })
+        ?>
+        
+        var dix_per_ht              = parseFloat((totalht * percentage_othorized) / 100);
+        var dix_per_ht_dg           = parseFloat((totalht * percentage_othorized_dg) / 100);
+        if((type_remise == 'P' && remise_valeur > percentage_othorized) || (type_remise == 'M' && remise_valeur > dix_per_ht)){
+            ajax_loadmessage('Le plafond de remise applicable est de: '+percentage_othorized+'% du Total des articles</br>Vous avez la possibilité d\'appliquer une remise jusqu\'à '+percentage_othorized_dg+'%  soumise à la validation de DG ' ,'nok');
+            $('#totalht').val(totalht);
+
+            if((type_remise == 'P' && remise_valeur > percentage_othorized_dg) || (type_remise == 'M' && remise_valeur > dix_per_ht_dg)){
+                ajax_loadmessage('Le plafond de remise applicable est de: '+percentage_othorized+'% du Total des articles</br>Vous avez la possibilité d\'appliquer une remise jusqu\'à '+percentage_othorized_dg+'%  soumise à la validation de DG ' ,'nok');
+                    $('#valeur_remise').val(percentage_othorized_dg);
+                    return false;
+            }
+            
+            calculat_devis(totalht, null, 0, tva, 'totalht', 'totaltva', 'totalttc',commission,'total_commission');         
+        }
+        calculat_devis(totalht, type_remise, remise_valeur, tva, 'totalht', 'totaltva', 'totalttc',commission,'total_commission');
+        
+    });
     $('#type_remise').on('change', function () {
         $('#valeur_remise').trigger('input');
     });
