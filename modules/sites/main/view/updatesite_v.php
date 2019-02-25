@@ -54,6 +54,10 @@ $form->input_hidden('idh', Mreq::tp('idh'));
 
 //Type Site
 
+//photo
+$form->input('Photo', 'photo', 'file', 6, 'Photo.png', null);
+$form->file_js('photo', 100000, 'image', $info_sites->g('photo'), 1);
+
  $array_site = array('RADIO' => 'RADIO', 'VSAT' => 'VSAT');
  $form->select('Type Site', 'type_site', 2, $array_site, $indx = NULL, $info_sites->g("type_site"), $multi = NULL);
 
@@ -93,9 +97,7 @@ $form->input('LNB', 'lnb', 'text', 6,$info_sites->g("lnb"), null, NULL);
 //Buc
 $form->input('BUC', 'buc', 'text', 6,$info_sites->g("buc"), null, NULL);
 
-//photo
-$form->input('Photo', 'photo', 'file', 6, 'Photo.png', null);
-$form->file_js('photo', 100000, 'image', $info_sites->g('photo'), 1);
+
 
 $form->button('Modifier le site');
 
@@ -111,62 +113,77 @@ $form->render();
     
   <script type="text/javascript">
 $(document).ready(function() {
-    
-    
-    
-    if($("#type_site option:selected").text() == 'RADIO'){
-
+   
+    //*******************************************
             $('#reference').attr('readonly', false);
             $('#id_client').attr('readonly', false);
-            $('#date_mes').attr('readonly', false);         
-            $('#basestation').attr('readonly', false);
+            $('#date_mes').attr('readonly', false);     
             $('#secteur').attr('readonly', false);
             $('#antenne').attr('readonly', false);
             $('#modem').attr('readonly', false);
             $('#sn_modem').attr('readonly', false);          
             
-            $('#bande').attr('readonly', true);
-            $('#buc').attr('readonly', true);
-            $('#satellite').attr('readonly',true);
-            $('#lnb').attr('readonly', true);
-           
-        }else{
-            
-            $('#reference').attr('readonly', false);
-            $('#id_client').attr('readonly', false);
-            $('#date_mes').attr('readonly', false); 
-            $('#satellite').attr('readonly',false);
-            $('#bande').attr('readonly',false);
-            $('#antenne').attr('readonly',false);
-            $('#modem').attr('readonly', false);
-            $('#sn_modem').attr('readonly', false); 
-            $('#buc').attr('readonly', false);            
-            $('#lnb').attr('readonly', false);
-            
-             $('#basestation').attr('readonly', true);
-             $('#secteur').attr('readonly', true);
-        }
+              document.getElementById('basestation').style.display = 'none';
+              //document.getElementById('label_basestation').style.display = 'none';  
+                       
+              document.getElementById('bande').style.display = 'none';
+              document.getElementById('label_bande').style.display = 'none';
+              
+              document.getElementById('buc').style.display = 'none';
+              document.getElementById('label_buc').style.display = 'none';
+              
+              document.getElementById('satellite').style.display = 'none';
+              document.getElementById('label_satellite').style.display = 'none';
+              
+              document.getElementById('lnb').style.display = 'none';
+              document.getElementById('label_lnb').style.display = 'none';
+             
     
-  
+    //********************************************
+
     $('#type_site').on('change',function() {
         if($("#type_site option:selected").text() == 'RADIO'){
 
             $('#reference').attr('readonly', false);
             $('#id_client').attr('readonly', false);
             $('#date_mes').attr('readonly', false);         
-            $('#basestation').attr('readonly', false);
             $('#secteur').attr('readonly', false);
             $('#antenne').attr('readonly', false);
             $('#modem').attr('readonly', false);
             $('#sn_modem').attr('readonly', false);          
             
-            $('#bande').attr('readonly', true).val('');
-            $('#buc').attr('readonly', true).val('');
-            $('#satellite').attr('readonly',true).val('');
-            $('#lnb').attr('readonly', true).val('');
+              document.getElementById('basestation').style.display = 'none';
+                       //document.getElementById('label_basestation').style.display = 'none'; 
+                       
+              document.getElementById('bande').style.display = 'none';
+              document.getElementById('label_bande').style.display = 'none';
+              
+              document.getElementById('buc').style.display = 'none';
+              document.getElementById('label_buc').style.display = 'none';
+              
+              document.getElementById('satellite').style.display = 'none';
+              document.getElementById('label_satellite').style.display = 'none';
+              
+              document.getElementById('lnb').style.display = 'none';
+              document.getElementById('label_lnb').style.display = 'none';
             
         }else{
-            
+               document.getElementById('basestation').style.display = 'block';
+              //document.getElementById('label_basestation').style.display = 'block';
+              
+              document.getElementById('bande').style.display = 'block';
+              document.getElementById('label_bande').style.display = 'block';
+              
+              document.getElementById('buc').style.display = 'block';
+              document.getElementById('label_buc').style.display = 'block';
+              
+              document.getElementById('satellite').style.display = 'block';
+              document.getElementById('label_satellite').style.display = 'block';
+              
+              document.getElementById('lnb').style.display = 'block';
+              document.getElementById('label_lnb').style.display = 'block';
+              
+              
             $('#reference').attr('readonly', false).val('');
             $('#id_client').attr('readonly', false).val('');
             $('#date_mes').attr('readonly', false).val(''); 
@@ -178,11 +195,13 @@ $(document).ready(function() {
             $('#buc').attr('readonly', false).val('');            
             $('#lnb').attr('readonly', false).val('');
             
-             $('#basestation').attr('readonly', true).val('');
-             $('#secteur').attr('readonly', true).val('');
+              
+              document.getElementById('secteur').style.display = 'none';
+              document.getElementById('label_secteur').style.display = 'none';
+              
+            
         }
 
     });	
-    
    });
-    </script>	
+    </script>
