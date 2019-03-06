@@ -167,7 +167,7 @@ $(document).ready(function() {
 
         var $link  = $(this).attr('rel');
    		var $titre = $(this).attr('data_titre'); 
-   		var $data  = $(this).attr('data')+'&commission='+$('#commission').val();
+   		var $data  = $(this).attr('data')+'&commission='+$('#commission').val()+'&id_commercial='+$('#id_commercial').val();
         ajax_bbox_loader($link, $data, $titre, 'large')
         
     });
@@ -180,32 +180,8 @@ $(document).ready(function() {
         var type_remise             = $('#type_remise').val();
         var remise_valeur           = parseFloat($('#valeur_remise').val());
         var tva                     = $('#tva').val();
-        var commission              = parseFloat($("#commission").val());
-        var percentage_othorized    = parseFloat($("#remise_plafond").val());
-        
-        <?php
-        if(session::get('service') == 3 OR session::get('service') == 1){
-            echo 'var percentage_othorized_dg = parseFloat(100);';
-        }else{
-            echo 'var percentage_othorized_dg = parseFloat(10);';
-        }
-
-        ?>
-        
-        var dix_per_ht              = parseFloat((totalht * percentage_othorized) / 100);
-        var dix_per_ht_dg           = parseFloat((totalht * percentage_othorized_dg) / 100);
-    	if((type_remise == 'P' && remise_valeur > percentage_othorized) || (type_remise == 'M' && remise_valeur > dix_per_ht)){
-    		ajax_loadmessage('Le plafond de remise applicable est de: '+percentage_othorized+'% du Total des articles</br>Vous avez la possibilité d\'appliquer une remise jusqu\'à '+percentage_othorized_dg+'%  soumise à la validation de DG ' ,'nok');
-    		$('#totalht').val(totalht);
-            if((type_remise == 'P' && remise_valeur > percentage_othorized_dg) || (type_remise == 'M' && remise_valeur > dix_per_ht_dg)){
-                ajax_loadmessage('Le plafond de remise applicable est de: '+percentage_othorized+'% du Total des articles</br>Vous avez la possibilité d\'appliquer une remise jusqu\'à '+percentage_othorized_dg+'%  soumise à la validation de DG ' ,'nok');
-                    $('#valeur_remise').val(percentage_othorized_dg);
-                    return false;
-            }
-    		
-            calculat_devis(totalht, null, 0, tva, 'totalht', 'totaltva', 'totalttc',commission,'total_commission');    		
-    	}
-    	calculat_devis(totalht, type_remise, remise_valeur, tva, 'totalht', 'totaltva', 'totalttc',commission,'total_commission');
+        var commission              = parseFloat($("#commission").val());   
+        calculat_devis(totalht, type_remise, remise_valeur, tva, 'totalht', 'totaltva', 'totalttc',commission,'total_commission');
         
     });
 

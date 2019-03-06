@@ -35,6 +35,7 @@ class Mdevis
     var $type_devis       = null;//Type Devis (ABN / VNT)
     var $info_temp_client = array();
     var $total_commission = null;//
+    var $etat_valid_devis = 0;
 
     
 
@@ -530,53 +531,17 @@ class Mdevis
             $valeur_remise    = $this->valeur_remis_t;
             $total_remise     = $this->total_remise;
             $total_commission = $this->total_commission;
+               
+
+            
             
 
-            //Check if need validate DG
-            $plafond_validate_dg = Msetting::get_set('plafond_valid_dg');
-            if($plafond_validate_dg == null)
+            if(!$this->get_commerciale_remise_plafond($this->_data['id_commercial'], $valeur_remise))
             {
-                $this->error = false;
-                $this->log .= "Manque paramètre plafond_valid_dg";
-                return false;
-            }
-            $etat_valid_dg = Msetting::get_set('etat_devis', 'valid_devis_dg');
-            if($etat_valid_dg == null)
-            {
-                $this->error = false;
-                $this->log .= "Manque paramètre valid_devis_dg";
                 return false;
             }
 
-            if($plafond_validate_dg <= $totalttc)
-            {
-                $etat_line = $etat_valid_dg;
-                $this->log .= '</br> Le montant global dépasse le plafond autorisé </br> Ce devis necéssite une validation DG';
-            }else{
-                $etat_line        = 0;
-            }
-            if($valeur_remise > 10 && (session::get('service') != 3 OR session::get('service') != 1))
-            {
-                
-                $this->log .= '</br> La remise dépasse le plafond autorisé : 10% !';
-                return false;
-            }
-
-            $commercial = new Mcommerciale();
-            $commercial->id_commerciale = $this->_data['id_commercial'];
-            if($commercial->get_commerciale())
-            { 
-                $plafond_remise = $commercial->g('id_service') == 7 ? Msetting::get_set('plafond_remise_commercial') : 10; 
-            }
-
-            if($valeur_remise > $plafond_remise && (session::get('service') != 3 OR session::get('service') != 1))
-            {
-                $etat_line = $etat_valid_dg;
-                $this->log .= '</br> La remise dépasse '.$plafond_remise.'%! </br> Ce devis necéssite une validation DG';
-            }else{
-                $etat_line        = 0;
-            }
-            
+            $etat_line = $this->etat_valid_devis;
 
 
         	$values["reference"]       = MySQL::SQLValue($this->reference);
@@ -679,51 +644,15 @@ class Mdevis
         $total_commission=$this->total_commission;
         $valeur_remise = number_format($this->valeur_remis_t, 2,'.', '');
         $this->reference = $this->devis_info['reference'];
+        if(!$this->get_commerciale_remise_plafond($this->_data['id_commercial'], $valeur_remise))
+        {
+            return false;
+        }
+        $etat_line = $this->etat_valid_devis;
 
-        //Check if need validate DG
-            $plafond_validate_dg = Msetting::get_set('plafond_valid_dg');
-            if($plafond_validate_dg == null)
-            {
-                $this->error = false;
-                $this->log .= "Manque paramètre plafond_valid_dg";
-                return false;
-            }
-            $etat_valid_dg = Msetting::get_set('etat_devis', 'valid_devis_dg');
-            if($etat_valid_dg == null)
-            {
-                $this->error = false;
-                $this->log .= "Manque paramètre valid_devis_dg";
-                return false;
-            }
+            
 
-            if($plafond_validate_dg <= $totalttc)
-            {
-                $etat_line = $etat_valid_dg;
-                $this->log .= '</br> Le montant global dépasse le plafond autorisé </br> Ce devis necéssite une validation DG';
-            }else{
-                $etat_line        = 0;
-            }
-            if($valeur_remise > 10 && (session::get('service') != 3 OR session::get('service') != 1))
-            {
-                
-                $this->log .= '</br> La remise dépasse le plafond autorisé : 10% !';
-                return false;
-            }
-
-            $commercial = new Mcommerciale();
-            $commercial->id_commerciale = $this->_data['id_commercial'];
-            if($commercial->get_commerciale())
-            { 
-                $plafond_remise = $commercial->g('id_service') == 7 ? Msetting::get_set('plafond_remise_commercial') : 10; 
-            }
-
-            if($valeur_remise > $plafond_remise && (session::get('service') != 3 OR session::get('service') != 1))
-            {
-                $etat_line = $etat_valid_dg;
-                $this->log .= '</br> La remise dépasse '.$plafond_remise.'%! </br> Ce devis necéssite une validation DG';
-            }else{
-                $etat_line        = 0;
-            }
+            
 
 
 
@@ -1098,7 +1027,7 @@ class Mdevis
         $this->check_detail_exist_in_devis($tkn_frm, $this->_data['id_produit']);
         $this->check_non_exist('produits','id',$this->_data['id_produit'] ,'Réference du produit' );
         $this->check_detail_have_more_abn($tkn_frm);
-        //var_dump($this->_data['commission']);
+
         //Check $this->error (true / false)
         if($this->error == true){
         //Calcul Montant
@@ -1117,13 +1046,11 @@ class Mdevis
             
             $valeur_remis_d = number_format($this->valeur_remis_d, 2,'.', '');
             $prix_u_final   = $this->prix_u_final;
-            if($valeur_remis_d > 5 && (session::get('service') != 3 OR session::get('service') != 1))
+            if(!$this->get_commerciale_remise_plafond($this->_data['id_commercial'], $valeur_remis_d))
             {
-                
-                $this->log .= '</br> La remise dépasse le plafond autorisé : 10% !';
                 return false;
             }
-            
+                        
           //Get order line into devis
             $this->get_order_detail($tkn_frm);
             $order_detail = $this->order_detail;
@@ -1214,10 +1141,8 @@ class Mdevis
             $produit             = new Mproduit();
             $produit->id_produit = MySQL::SQLValue($this->_data['id_produit']);
             $produit->get_produit();
-            if($valeur_remis_d > 5 && (session::get('service') != 3 OR session::get('service') != 1))
+            if(!$this->get_commerciale_remise_plafond($this->_data['id_commercial'], $valeur_remis_d))
             {
-                
-                $this->log .= '</br> La remise dépasse le plafond autorisé : 10% !';
                 return false;
             }
 
@@ -1771,6 +1696,7 @@ class Mdevis
     {
         $old_etat = Msetting::get_set('etat_devis', 'creat_devis');
         $old_etat_dg = Msetting::get_set('etat_devis', 'valid_devis_dg');
+        $old_etat_dcm = Msetting::get_set('etat_devis', 'valid_devis_dcm');
 
         if($old_etat == null)
         {
@@ -1785,7 +1711,13 @@ class Mdevis
             $this->log .= "Manque paramètre etat_devis => valid_devis_dg";
             return false;
         }
-        if($etat != $old_etat AND $etat != $old_etat_dg)
+        if($old_etat_dcm == null)
+        {
+            $this->error = false;
+            $this->log .= "Manque paramètre etat_devis => valid_devis_dcm";
+            return false;
+        }
+        if($etat != $old_etat AND $etat != $old_etat_dg AND $etat != $old_etat_dcm)
         {
             $this->error = false;
             $this->log .= "Ce devis ne peux pas être validé //Etat faild";
@@ -2805,5 +2737,55 @@ class Mdevis
         } else {
             return TRUE;
         }
+    }
+
+    private function get_commerciale_remise_plafond($id_commercial, $valeur_remise)
+    {
+        return true;
+        /*global $db;
+        $etat_valid_dg = Msetting::get_set('etat_devis', 'valid_devis_dg');
+        $etat_valid_dcm = Msetting::get_set('etat_devis', 'valid_devis_dcm');
+        if($etat_valid_dg == null)
+        {
+            $this->error = false;
+            $this->log .= "Manque paramètre valid_devis_dg";
+            return false;
+        }
+        if($etat_valid_dcm == null)
+        {
+            $this->error = false;
+            $this->log .= "Manque paramètre valid_devis_dcm";
+            return false;
+        }
+        
+        $req_sql ="SELECT remise, remise_valid_dcm, remise_valid_dg FROM commerciaux WHERE id = $id_commercial";
+        
+        if(!$db->Query($req_sql))
+        {
+            $this->log .= '</br>Impossible récuperation plafonds remises';
+            return false;
+        }else{
+            if(!$db->RowCount())
+            {
+                $this->log .= '</br>Impossible récuperation plafonds remises';
+                return false;
+            }
+            $arr_result = $db->RowArray();
+            $plafond_remise = $arr_result['remise'];
+            $plafond_remise_valid_dcm = $arr_result['remise_valid_dcm'];
+            $plafond_remise_valid_dg = $arr_result['remise_valid_dg'];
+            if($valeur_remise > $plafond_remise_valid_dg){
+                $this->log .= '</br>La remise appliquée dépasse le plafond autorisé ('.$plafond_remise_valid_dg.'%)';
+                return false;
+            }elseif($valeur_remise > $plafond_remise && $valeur_remise <= $plafond_remise_valid_dcm) {
+                $this->log .= '</br>La remise appliquée dépasse le plafond autorisé ('.$plafond_remise.'%)</br>Le devis doit être validé par le DCM';
+                $this->etat_valid_devis = $etat_valid_dcm;
+                
+            }elseif ($valeur_remise > $plafond_remise && $valeur_remise > $plafond_remise_valid_dcm) {
+                $this->log .= '</br>La remise appliquée dépasse le plafond autorisé ('.$plafond_remise_valid_dcm.'%)</br>Le devis doit être validé par le DG';  
+                $this->etat_valid_devis = $etat_valid_dg;               
+            }
+            return true;              
+        }*/
     }
 }
