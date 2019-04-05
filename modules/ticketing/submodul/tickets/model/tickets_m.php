@@ -60,13 +60,15 @@ class Mtickets {
                 produits.designation as prd,
                 code_cloture.code_cloture as code_cloture,
                 $table.serial_number as serial_number,
-                    DATE_FORMAT($table.credat,'%d-%m-%Y') as credat
+                DATE_FORMAT($table.credat,'%d-%m-%Y') as credat,
+            
                 FROM $table LEFT JOIN produits ON produits.id=$table.id_produit "
                 . "LEFT JOIN ref_categories_produits  ON ref_categories_produits.id=$table.categorie_produit"
                 . " LEFT JOIN ref_types_produits ON ref_types_produits.id=$table.type_produit"
                 . " LEFT JOIN clients ON clients.id=$table.id_client"
                 . " LEFT JOIN users_sys ON users_sys.id=$table.id_technicien"
                 . " LEFT JOIN code_cloture ON code_cloture.id=$table.code_cloture"
+              
                 . " WHERE $table.id = " . $this->id_tickets;
 
         if (!$db->Query($sql)) {
@@ -135,6 +137,8 @@ class Mtickets {
             $values["id_client"] = MySQL::SQLValue($this->_data["id_client"]);
             $values["projet"] = MySQL::SQLValue($this->_data["projet"]);
             $values["message"] = MySQL::SQLValue($this->_data["message"]);
+            $values["id_technicien"] = MySQL::SQLValue($this->_data["id_technicien"]);
+            $values["date_probleme"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_probleme'])));
             $values["date_previs"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_previs'])));
             $values["type_produit"] = MySQL::SQLValue($this->_data["type_produit"]);
             $values["categorie_produit"] = MySQL::SQLValue($this->_data["categorie_produit"]);
@@ -152,6 +156,8 @@ class Mtickets {
                 $this->last_id = $result;
                 $this->id_tickets = $db->GetLastInsertID();
                 $this->init_action("ouverture", $old_technicien = NULL);
+                $technicien = $this->getTechnicien($this->_data["id_technicien"]);
+                $this->init_action("affectation", $technicien = NULL);
                 $this->log .= '</br>Enregistrement  réussie ';
                 if (!Mlog::log_exec($this->table, $this->last_id, 'Création tickets', 'Insert')) {
                     $this->log .= '</br>Un problème de log ';
@@ -993,6 +999,16 @@ class Mtickets {
         } else {
             return true;
         }
+    }
+    
+    public function getTechnicien($id_technicien)
+    {
+        $agent = new Musers();
+        $agent->id_user = $id_technicien;
+        $agent->get_user();
+        $agent_name = $agent->g('fnom') . ' ' . $agent->g('lnom');
+        
+        return $agent_name;
     }
 
 }

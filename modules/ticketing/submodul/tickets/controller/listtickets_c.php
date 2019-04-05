@@ -25,34 +25,26 @@ $array_column = array(
         'header' => 'Client',
         'align' => 'L'
     ),
+    /*
     array(
-        'column' => 'tickets.projet',
+        'column' => 'sites.reference',
         'type' => '',
         'alias' => 'projet',
         'width' => '15',
-        'header' => 'Projet',
+        'header' => 'Site',
         'align' => 'L'
     ),
+     * */
+    
     array(
-        'column' => 'tickets.credat',
+        'column' => 'tickets.date_probleme',
         'type' => 'date',
         'alias' => 'credat',
         'width' => '10',
-        'header' => 'Date création',
+        'header' => 'Date problème',
         'align' => 'C'
     ),
-    /*
-    array(
-        'column' => 'tickets.date_previs',
-        'type' => 'date',
-        'alias' => 'date_previs',
-        'width' => '10',
-        'header' => 'Date prévisionnelle',
-        'align' => 'C'
-    ),
-     * 
-     */
-    
+      
     array(
         'column' => '(CASE WHEN tickets.`etat` <> 3 
 THEN IFNULL(DATEDIFF(DATE(tickets.`date_previs`),DATE(NOW())),0) 
@@ -85,7 +77,8 @@ THEN IFNULL(DATEDIFF(DATE(tickets.`date_previs`),DATE(tickets.`date_realis`)),0)
 //Creat new instance
 $list_data_table = new Mdatatable();
 //Set tabels used in Query
-$list_data_table->tables = array('tickets LEFT JOIN users_sys ON users_sys.id=tickets.id_technicien LEFT JOIN clients ON clients.id=tickets.id_client');
+$list_data_table->tables = array('tickets LEFT JOIN users_sys ON users_sys.id=tickets.id_technicien LEFT JOIN clients ON clients.id=tickets.id_client '
+    );
 
 $list_data_table->joint = '';
 //Call all columns

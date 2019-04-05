@@ -53,7 +53,7 @@ $array_column = array(
     ),
      * 
      */
-    
+    /*
     array(
         'column' => '(CASE WHEN tickets.`etat` <> 3 
 THEN IFNULL(DATEDIFF(DATE(tickets.`date_previs`),DATE(NOW())),0) 
@@ -65,6 +65,8 @@ THEN IFNULL(DATEDIFF(DATE(tickets.`date_previs`),DATE(tickets.`date_realis`)),0)
         'header' => 'Nbr jours',
         'align' => 'C'
     ),
+     * 
+     */
      
     array(
         'column' => 'CONCAT(users_sys.fnom," ",users_sys.lnom)',
