@@ -53,7 +53,7 @@ $array_column = array(
         'align'  => 'R'
     ),
     array(
-        'column' => 'CONCAT((SELECT c.reference FROM clients c WHERE c.denomination=factures.client), " - ",factures.client)',
+        'column' => 'CONCAT((SELECT c.reference FROM clients c WHERE c.denomination=factures.client group by denomination), " - ",factures.client)',
         'type'   => '',
         'alias'  => 'con_clt',
         'width'  => '17',
