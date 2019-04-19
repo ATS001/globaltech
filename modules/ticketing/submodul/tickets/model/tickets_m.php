@@ -60,7 +60,7 @@ class Mtickets {
                 produits.designation as prd,
                 code_cloture.code_cloture as code_cloture,
                 $table.serial_number as serial_number,
-                DATE_FORMAT($table.credat,'%d-%m-%Y') as credat,
+                DATE_FORMAT($table.credat,'%d-%m-%Y') as credat
             
                 FROM $table LEFT JOIN produits ON produits.id=$table.id_produit "
                 . "LEFT JOIN ref_categories_produits  ON ref_categories_produits.id=$table.categorie_produit"
@@ -421,7 +421,6 @@ class Mtickets {
                 $this->error == false;
                 $this->log .= '</br>Enregistrement BD non réussie';
             } else {
-
                 $this->last_id = $result;
                 $this->send_ticket_mail();
                 if ($is_reaffect == TRUE) {
@@ -445,7 +444,7 @@ class Mtickets {
 
             $this->log .= '</br>Enregistrement non réussie';
         }
-
+        
         //check if last error is true then return true else rturn false.
         if ($this->error == false) {
             return false;

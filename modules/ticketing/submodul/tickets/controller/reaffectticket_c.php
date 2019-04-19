@@ -44,12 +44,15 @@ $etat = Msetting::get_set('etat_ticket', 'resolution_encours');
 
     //execute Insert returne false if error
     if ($new_tickets->affect_ticket(TRUE)) {
+        /*
         if ($new_tickets->valid_tickets($etat)) {
             exit("1#" . $new_tickets->log);
         } else {
 
             exit("0#" . $new_tickets->log);
         }
+         * 
+         */
 
         exit("1#" . $new_tickets->log);
     } else {
