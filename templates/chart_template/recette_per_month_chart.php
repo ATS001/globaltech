@@ -1,5 +1,5 @@
 <?php 
-if(Mreq::tp('filtr') == 1){
+/*if(Mreq::tp('filtr') == 1){
 	$form = new Mform('chart', 'chart', '', 'devis', '0', '');
 	
 	$mail_array[]  = array('email', 'true', 'Adresse Email non valide' );
@@ -7,16 +7,17 @@ if(Mreq::tp('filtr') == 1){
     $form->button();
     $form->render();
 	exit();
-}
-
-$chart = new MHighchart();
-$chart->titre = 'Evolution des recettes par mois';
-$chart->id_chart = 'recette_per_month';
-$chart->items = 'Fcfa';
+}*/
+if(in_array(session::get('service'), array(1, 2, 3))){
+	$chart = new MHighchart();
+	$chart->titre = 'Evolution des recettes par mois';
+	$chart->id_chart = 'recette_per_month';
+	$chart->items = 'Fcfa';
 //Set to true if called from Ajax after filter
-if(Mreq::tp('chart') != NULL)
-{
-	$chart->chart_only = true;
-}
+	if(Mreq::tp('chart') != NULL)
+	{
+		$chart->chart_only = true;
+	}
 
-$chart->column_render('v_recet_per_month', 6, null, false);
+	$chart->column_render('v_recet_per_month', 6, null, false);
+}
