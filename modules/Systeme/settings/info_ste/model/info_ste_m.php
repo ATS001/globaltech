@@ -169,12 +169,6 @@ class MSte_info
     	return $footer;
     }
 
-    
-
-
-
-
-
-
+   
 
 }
