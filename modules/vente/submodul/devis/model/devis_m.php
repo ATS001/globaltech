@@ -2547,6 +2547,7 @@ class Mdevis
         global $db;        
         $id_user    = session::get('userid');
         $id_service = session::get('service');
+        $where_user = null;
         if(in_array($id_service, array(1, 3, 2))){
             $where_user = null;
         }elseif($id_service == 7){
@@ -2591,6 +2592,7 @@ class Mdevis
         global $db;        
         $id_user    = session::get('userid');
         $id_service = session::get('service');
+        $where_user = null;
         if(in_array($id_service, array(1, 3, 2))){
             $where_user = null;
         }elseif($id_service == 7){
