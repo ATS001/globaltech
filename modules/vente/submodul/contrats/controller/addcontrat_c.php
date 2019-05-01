@@ -567,7 +567,7 @@ $waw=date('d-m-Y',$datt);
         $output_an = [];
         $total_jr = 0;
         $day = date('d',strtotime($date_d));
-    // var_dump('dkhel')  ; 
+     //var_dump('dkhel')  ; 
 
         if ($day == '01') {
             //var_dump('1');
@@ -581,7 +581,7 @@ $waw=date('d-m-Y',$datt);
      
      
         do {
-
+//var_dump('2');
             $time = date('Y-m-d', strtotime($time . "+ 6 Month"));
             $time2 = date('Y-m-t', strtotime($time . "- 1 Month"));
 
@@ -608,7 +608,8 @@ $waw=date('d-m-Y',$datt);
                         
            $tab_echeance['debut']= date('d-m-Y', strtotime($waw));
            $tab_echeance['fin']=date('d-m-Y', strtotime($month));
-           
+
+
            if($posted_data['periode_fact'] == 'D')
            {
             $tab_echeance['periode_fact']=date('d-m-Y', strtotime($waw));
