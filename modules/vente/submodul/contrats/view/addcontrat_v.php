@@ -1,7 +1,12 @@
  <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
-				
+        
 		<?php TableTools::btn_add('contrats','Liste des abonnements', Null, $exec = NULL, 'reply'); ?>
+
+		<!-- <?php //TableTools::btn_add('contrats','Liste des abonnements', Null, $exec = NULL, 'reply'); 
+        //$client=Mreq::tp('id'); 
+
+        ?>-->
 					
 	</div>
 </div>
