@@ -4,6 +4,7 @@ if(MInit::form_verif('add_detaildevis',false))
 {
 	$posted_data = array(
 		'tkn_frm'         => Mreq::tp('tkn_frm') ,
+		'id_commercial'   => Mreq::tp('id_commercial') ,
 		'id_produit'      => Mreq::tp('id_produit') ,
 		'ref_produit'     => Mreq::tp('ref_produit') ,
 		'qte'             => Mreq::tp('qte') ,
@@ -58,6 +59,7 @@ if(MInit::form_verif('add_detaildevis',false))
 		$empty_list .= "<li>Type de remise</li>";
 		$checker = 1;
 	}
+	
 	if($posted_data['tva_d'] == NULL OR !in_array($posted_data['tva_d'],  array( 'O','N' ))){
 
 		$empty_list .= "<li>TVA non valide</li>";

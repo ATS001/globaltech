@@ -5,6 +5,7 @@ $form->input_hidden('tkn_frm', Mreq::tp('tkn'));
 $form->input_hidden('tva_d', 'O');
 
 $form->input_hidden('commission', Mreq::tp('commission'));
+$form->input_hidden('id_commercial', Mreq::tp('id_commercial'));
 $form->input_hidden('pu', 0);
 //var_dump(Mreq::tp('commission'));
 
