@@ -353,6 +353,10 @@ $tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL,
                             <div class="profile-feed row">
                                    
                                 <span>
+                                   
+<!--<b class="blue pull-right margin-left: 30px"> <?php 
+//TableTools::btn_add('adddevis', 'Devis', Mreq::tp('id'), $exec = NULL, '');  ?></b>      -->
+       
                                     <?php
                                     if ($client_devis == null)
                                         echo '<B>Aucun devis trouvé</B> ';
@@ -457,6 +461,8 @@ $tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL,
                             <div class="profile-feed row">
                                
                                       <span>
+                                    <b class="bleu pull-right margin-left: 30px"> <?php 
+              TableTools::btn_add('addcontrats', 'Abonnement', MInit::crypt_tp('id',$client->id_client), $exec = NULL, ''); var_dump($client->id_client);var_dump($client->id_client); ?></b>
                                     <?php
                                     if ($client_abn == null)
                                         echo '<B>Aucun abonnement trouvé</B> ';

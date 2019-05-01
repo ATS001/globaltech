@@ -612,7 +612,7 @@ $waw=date('d-m-Y',$datt);
            if($posted_data['periode_fact'] == 'D')
            {
             $tab_echeance['periode_fact']=date('d-m-Y', strtotime($waw));
-        }
+           }
            else{
             if($posted_data['periode_fact'] == 'F')
             $tab_echeance['periode_fact']=date('d-m-Y', strtotime($month));           
@@ -687,7 +687,7 @@ $waw=date('d-m-Y',$datt);
         }
 
         if (date('Y-m-d', strtotime($month)) <> date('Y-m-d', strtotime($last))) {
-            $control_echeance_s = "<ul>Il faut choisir une période Semestrielle, ou séléctionner le type d'échéance : Autres   !!!</ul>";
+            $control_echeance_s = "<ul>Il faut choisir une période Simestrielle, ou séléctionner le type d'échéance : Autres   !!!</ul>";
             $checker = 7;
         }
 
