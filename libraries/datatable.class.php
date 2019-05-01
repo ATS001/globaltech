@@ -246,8 +246,6 @@ class Mdatatable
         if(Mreq::tp('export') == 1){
             $this->tag_filter = $tag_filter_ex; 
         }
-
-
     }
 
     private function get_where()
@@ -535,7 +533,7 @@ class Mdatatable
         $notif_col = $this->need_notif == true ? $count_col : 0;
         $js = "<script type=\"text/javascript\">$(document).ready(function() {";
         //delete cookie filter if exist
-        $js .= "ace.cookie.remove('".$this->task."_grid_flt');";
+        //$js .= "ace.cookie.remove('".$this->task."_grid_flt');";
         $js .= "var table = $('#".$this->task."_grid').DataTable({";
         if(!$this->btn_action)
         {

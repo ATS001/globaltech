@@ -989,37 +989,6 @@ class Mdevis
         }
     }
 
-    /*private function check_remise($id_commercial, $remise, $type_remise)
-    {
-        $commercial = new Mcommerciale();
-        $commercial->id_commerciale = $id_commercial;
-        if($commercial->get_commerciale())
-        { 
-            $plafond_remise = $commercial->g('id_service') == 7 ? Msetting::get_set('plafond_remise_commercial') : 10; 
-            if($type_remise == 'P')
-            {
-                if($plafond_remise < $remise){
-                    $this->log .= 'Le plafond de remise applicable est de: '+$plafond_remise+'% du Total des articles</br>Vous avez la possibilité d\'appliquer une remise jusqu\'à '+percentage_othorized_dg+'%  soumise à la validation de DG '; 
-                    return false;
-                }
-                $prix_u_remised = $prix_u - ($prix_u * $val_remise) / 100;
-                $this->valeur_remis_d = $val_remise;
-
-            }else if($type_remise == 'M'){
-                $prix_u_remised = $prix_u - $val_remise;
-                $this->valeur_remis_d = ($val_remise * 100) / $prix_u;
-            }else{
-                $prix_u_remised = $prix_u;
-            }
-        }else{
-           $this->log .= '</br>Problème vérification plafond remise'; 
-           return false; 
-        }
-
-        if($remise)
-        # code...
-    }
-*/
     public function save_new_details_devis($tkn_frm)
     {
 
@@ -2325,6 +2294,14 @@ class Mdevis
         } else {
             $this->log .= "Devis envoyé  à ".$this->g('email');
         }
+    }
+
+    static public function get_client_name($id_client)
+    {
+        global $db;
+        $sql = "SELECT denomination FROM clients WHERE id = $id_client";
+        $denomination = $db->QuerySingleValue($sql);
+        return $denomination;
     }
 
     public function save_new_client_temp()
