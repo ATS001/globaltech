@@ -9,25 +9,29 @@ if(MInit::form_verif('editdevis', false))
   
   $posted_data = array(
 
-    'id'                => Mreq::tp('id') ,
-    'id_client'         => Mreq::tp('id_client') ,
-    'tva'               => Mreq::tp('tva') ,
-    'tkn_frm'           => Mreq::tp('tkn_frm') ,
-    'reference'         => Mreq::tp('reference') ,
-    'checker_reference' => Mreq::tp('checker_reference') ,
-    'date_devis'        => Mreq::tp('date_devis') ,
-    'type_remise'       => Mreq::tp('type_remise') ,
-    'valeur_remise'     => Mreq::tp('valeur_remise') ,
-    'totalht'           => Mreq::tp('totalht') ,
-    'totalttc'          => Mreq::tp('totalttc') ,
-    'totaltva'          => Mreq::tp('totaltva') ,
-    'projet'            => Mreq::tp('projet'),
-    'vie'               => Mreq::tp('vie'),
-		'claus_comercial'   => Mreq::tp('claus_comercial'),
-   	'id_commercial'     => Mreq::tp('id_commercial'),
-   	'commission'        => Mreq::tp('commission'),
-    'total_commission'  => Mreq::tp('total_commission'),
-    'type_commission'  => Mreq::tp('type_commission')
+     'id'                  => Mreq::tp('id') ,
+     'id_client'           => Mreq::tp('id_client') ,
+     'tva'                 => Mreq::tp('tva') ,
+     'tkn_frm'             => Mreq::tp('tkn_frm') ,
+     'reference'           => Mreq::tp('reference') ,
+     'checker_reference'   => Mreq::tp('checker_reference') ,
+     'date_devis'          => Mreq::tp('date_devis') ,
+     'type_remise'         => Mreq::tp('type_remise') ,
+     'valeur_remise'       => Mreq::tp('valeur_remise') ,
+     'totalht'             => Mreq::tp('totalht') ,
+     'totalttc'            => Mreq::tp('totalttc') ,
+     'totaltva'            => Mreq::tp('totaltva') ,
+     'projet'              => Mreq::tp('projet'),
+     'vie'                 => Mreq::tp('vie'),
+     'claus_comercial'     => Mreq::tp('claus_comercial'),
+     'id_commercial'       => Mreq::tp('id_commercial'),
+     'commission'          => Mreq::tp('commission'),
+     'total_commission'    => Mreq::tp('total_commission'),
+     'type_commission'     => Mreq::tp('type_commission'),
+     'id_commercial_ex'    => Mreq::tp('id_commercial_ex'),
+     'commission_ex'       => Mreq::tp('commission_ex'),
+     'total_commission_ex' => Mreq::tp('total_commission_ex'),
+     'type_commission_ex'  => Mreq::tp('type_commission_ex')
 
     );
 
@@ -98,13 +102,24 @@ if(MInit::form_verif('editdevis', false))
       $empty_list .= "<li>Commission</li>";
       $checker = 1;
     }
+    if($posted_data['commission_ex'] != NULL AND !is_numeric($posted_data['commission_ex']) ){
+
+      $empty_list .= "<li>Commission Externe</li>";
+      $checker = 1;
+    }
     $set_comission = Msetting::get_set('plafond_comission');
-    if($posted_data['commission'] > $set_comission ){
+    if($posted_data['commission'] > $set_comission  ){
 
       $empty_list .= "<li>Commission ne dois pas dépasser $set_comission</li>";
       $checker = 1;
     }
     if($posted_data['total_commission'] == NULL OR !is_numeric($posted_data['total_commission']) ){
+
+      $empty_list .= "<li>Total Commission</li>";
+      $checker = 1;
+    }
+
+    if($posted_data['total_commission_ex'] != NULL AND !is_numeric($posted_data['total_commission_ex']) ){
 
       $empty_list .= "<li>Total Commission</li>";
       $checker = 1;

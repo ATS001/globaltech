@@ -245,7 +245,7 @@ class Mdatatable
         $this->tag_filter = $tag_filter;    
         if(Mreq::tp('export') == 1){
             $this->tag_filter = $tag_filter_ex; 
-        }
+        }        
     }
 
     private function get_where()

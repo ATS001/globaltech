@@ -66,7 +66,7 @@ $form->input('Projet', 'projet', 'text' ,'6', $info_devis->g('projet'), null , n
 //Commercial
 $hard_code_commercial = '<span class="help-block returned_span">...</span>';
 $commercial_array[]  = array('required', 'true', 'Choisir un Commercial');
-$form->select_table('Commercial', 'id_commercial', 6, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)' , 'CONCAT(nom," ",prenom)' , $indx = '------' ,$selected=$info_devis->g('id_commercial'),$multi=NULL, $where='etat=1', $commercial_array, $hard_code_commercial);
+$form->select_table('Commercial', 'id_commercial', 6, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)' , 'CONCAT(nom," ",prenom)' , $indx = '------' ,$selected=$info_devis->g('id_commercial'),$multi=NULL, $where='etat=1 AND is_glbt = \'Oui\' ', $commercial_array, $hard_code_commercial);
 //Commission du commercial
 $select_c = $info_devis->g('type_commission') == 'C' ? 'selected' : null;
 $select_s = $info_devis->g('type_commission') == 'S' ? 'selected' : null;
@@ -74,7 +74,17 @@ $hard_code_commission  = '<label style="margin-left:15px;margin-right : 20px;">P
 $array_commission[]= array('required', 'true', 'Insérer la commission du commercial');
 $array_commission[]= array('number', 'true', 'Montant invalid' );
 $form->input('Commission du commercial (%)', 'commission', 'text' ,'2 is-number alignRight',$info_devis->g('commission'), $array_commission, $hard_code_commission, null);
-
+//Commercial externe
+//$hard_code_commercial = '<span class="help-block returned_span">...</span>';
+//$commercial_array[]  = array('required', 'true', 'Choisir un Commercial externe');
+$form->select_table('Commercial externe', 'id_commercial_ex', 6, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)' , 'CONCAT(nom," ",prenom)' , $indx = '------' ,$selected=$info_devis->g('id_commercial_ex'),$multi=NULL, $where='etat=1 AND is_glbt = \'Non\' ', $commercial_array, null);
+//Commission du commercial
+$select_c = $info_devis->g('type_commission_ex') == 'C' ? 'selected' : null;
+$select_s = $info_devis->g('type_commission_ex') == 'S' ? 'selected' : null;
+$hard_code_commission_ex  = '<label style="margin-left:15px;margin-right : 20px;">Prise en charge par: </label><select id="type_commission_ex" name="type_commission_ex" class="chosen-select col-xs-12 col-sm-3" chosen-class="'.((3 * 100) / 12).'" ><option value="C" '.$select_c.' >Client</option><option value="S" '.$select_s.'>Société</option></select>';
+//$array_commission[]= array('required', 'true', 'Insérer la commission du commercial');
+$array_commission_ex[]= array('number', 'true', 'Montant invalid' );
+$form->input('Commission du commercial externe (%)', 'commission_ex', 'text' ,'2 is-number alignRight',$info_devis->g('commission_ex'), $array_commission_ex, $hard_code_commission, null);
 
 //Table 
 $columns = array('id' => '1' ,'Item' => '3' , 'Réference'=>'14', 'Produit' => '30', 'P.U HT' => '10', 'T.Rem' => '5', 'V.Remise' => '5', 'Qte' => '5', 'Total HT' => '10', 'TVA' => '7', 'Total' =>'10', '#' =>'3'   );
