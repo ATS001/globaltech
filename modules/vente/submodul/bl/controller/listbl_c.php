@@ -20,7 +20,7 @@ $array_column = array(
     'type'   => '',
     'alias'  => 'reference',
     'width'  => '15',
-    'header' => 'reference',
+    'header' => 'Reference',
     'align'  => 'L'
 ),
   array(
