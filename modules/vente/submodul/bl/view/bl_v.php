@@ -21,7 +21,7 @@ $array_column = array(
     'type'   => '',
     'alias'  => 'reference',
     'width'  => '15',
-    'header' => 'reference',
+    'header' => 'Reference',
     'align'  => 'L'
 ),
   array(
@@ -29,7 +29,7 @@ $array_column = array(
     'type'   => '',
     'alias'  => 'client',
     'width'  => '15',
-    'header' => 'client',
+    'header' => 'Client',
     'align'  => 'L'
 ),
   array(
