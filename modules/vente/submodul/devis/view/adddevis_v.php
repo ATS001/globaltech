@@ -1,13 +1,45 @@
- <div class="pull-right tableTools-container">
+<?php
+//chck if called with client ID then suggest task for after exec
+//id_clnt crypted => id client
+//tsk_aft crypted => Task after exec
+//
+$after_exec     = 'devis';
+$id_clnt        = MReq::tp('id_clnt');
+$tsk_aft        = MReq::tp('tsk_aft');
+$name_client    = null;
+$title          = 'Ajouter un Devis';
+$btn_return_txt = 'Liste des Devis';
+$btn_task       = 'devis';
+$btn_setting    = null;
+
+if($id_clnt != null && $tsk_aft != null){
+    if(!MInit::crypt_tp('id_clnt', null, 'D')){
+          Minit::big_message('ID client n\'est pas correcte', 'danger');
+          die();
+    }
+    if(!MInit::crypt_tp('tsk_aft', null, 'D')){
+          Minit::big_message('Erreur Système #aft_exec', 'danger');
+          die();
+    }
+    $after_exec = $tsk_aft.'&'.MInit::crypt_tp('id', $id_clnt);
+    $name_client = Mdevis::get_client_name($id_clnt);
+    $title .=  ' pour le client :'.$name_client;
+    $btn_return_txt = 'Détail client '.$name_client;
+    $btn_task = $tsk_aft;
+    $btn_setting = MInit::crypt_tp('id', $id_clnt);
+}
+
+?>
+<div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
 				
-		<?php TableTools::btn_add('devis','Liste des Devis', Null, $exec = NULL, 'reply'); ?>
+		<?php TableTools::btn_add($btn_task, $btn_return_txt, $btn_setting, $exec = NULL, 'reply'); ?>
 					
 	</div>
 </div>
 <div class="page-header">
 	<h1>
-		Ajouter un Devis
+		<?php echo $title; ?>
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
 		</small>
@@ -27,7 +59,7 @@
 				
 <?php
 $tva  = Mcfg::get('tva'); 
-$form = new Mform('adddevis', 'adddevis', '', 'devis', '0', null);
+$form = new Mform('adddevis', 'adddevis', '', $after_exec, '0', null);
 //$form->input_hidden('commission', Mreq::tp('commission'));
 $plafond_remise = session::get('service') == 7 ? Msetting::get_set('plafond_remise_commercial') : 10;
 $form->input_hidden('remise_plafond', $plafond_remise);
@@ -36,9 +68,18 @@ $form->input_hidden('remise_plafond', $plafond_remise);
 $array_date[]= array('required', 'true', 'Insérer la date de devis');
 $form->input_date('Date devis', 'date_devis', 2, date('d-m-Y'), $array_date);
 //Client
+
 $hard_code_client = '<a id="add_client_diver" href="#" rel="add_client_diver" data="" data_titre="Ajout Client Diver " class=" "><span class="help-block returned_span"><i class="fa fa-plus"></i> Ajouter un client divers</span></a>';
+$where_id_client = null;
+//if client is set no temp clien button
+if($id_clnt != null){
+    $hard_code_client = null;
+    $where_id_client = ' AND id = '.$id_clnt;
+}
 $client_array[]  = array('required', 'true', 'Choisir un Client');
-$form->select_table('Client', 'id_client', 6, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat=1 or type_client=\'T\'', $client_array, $hard_code_client);
+//Il faut vérifier si le client est préenvoyé
+
+$form->select_table('Client', 'id_client', 6, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' ,$selected = $id_clnt,$multi=NULL, $where='(etat=1 or type_client=\'T\' )'.$where_id_client, $client_array, $hard_code_client);
 //TVA
 $tva_opt = array('O' => 'OUI' , 'N' => 'NON' );
 $form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$selected = NULL, $multi = NULL);
@@ -48,12 +89,21 @@ $form->input('Projet', 'projet', 'text' ,'6', NULL, null, null, null);
 //Commercial
 //$hard_code_commercial = '<span class="help-block returned_span">...</span>';
 $commercial_array[]  = array('required', 'true', 'Choisir un Commercial');
-$form->select_table('Commercial', 'id_commercial', 6, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)' , 'CONCAT(nom," ",prenom)' , $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat=1', $commercial_array, null);
+$form->select_table('Commercial', 'id_commercial', 6, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)' , 'CONCAT(nom," ",prenom)' , $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat=1  AND is_glbt = \'Oui\' ', $commercial_array, null);
 //Commission du commercial
 $hard_code_commission  = '<label style="margin-left:15px;margin-right : 20px;">Prise en charge par: </label><select id="type_commission" name="type_commission" class="chosen-select col-xs-12 col-sm-3" chosen-class="'.((3 * 100) / 12).'" ><option value="C" >Client</option><option value="S" >Société</option></select>';
 $array_commission[]= array('required', 'true', 'Insérer la commission du commercial');
 $array_commission[]= array('number', 'true', 'Montant invalid' );
 $form->input('Commission du commercial (%)', 'commission', 'text' ,'2 is-number alignRight','0', $array_commission, $hard_code_commission, null);
+//Commercial externe
+//$hard_code_commercial = '<span class="help-block returned_span">...</span>';
+//$commercial_array[]  = array('required', 'true', 'Choisir un Commercial externe');
+$form->select_table('Commercial externe', 'id_commercial_ex', 6, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)' , 'CONCAT(nom," ",prenom)' , $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat=1 AND is_glbt = \'Non\' ', $commercial_array, null);
+//Commission du commercial
+$hard_code_commission_ex  = '<label style="margin-left:15px;margin-right : 20px;">Prise en charge par: </label><select id="type_commission_ex" name="type_commission_ex" class="chosen-select col-xs-12 col-sm-3" chosen-class="'.((3 * 100) / 12).'" ><option value="C" >Client</option><option value="S" >Société</option></select>';
+//$array_commission[]= array('required', 'true', 'Insérer la commission du commercial');
+$array_commission_ex[]= array('number', 'true', 'Montant invalid' );
+$form->input('Commission du commercial externe (%)', 'commission_ex', 'text' ,'2 is-number alignRight','0', $array_commission_ex, $hard_code_commission, null);
 
 
 //Table 

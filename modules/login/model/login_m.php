@@ -161,6 +161,14 @@ class MLogin
 				$session->set('secur_ss',$salt );
 				session::clear_cookie('gobak');
 				session::clear_cookie('this_zone');
+				session::clear_cookie('this_zone');
+				
+				foreach ($_COOKIE as $name => $content) {
+                    if (strpos($name, 'grid_flt')) {
+                        session::clear_cookie($name);
+                        setcookie($name, '', time() - 3600);                        
+                    }
+                }
 				
 				
 				//exit($session->get_cookie('alg'));
@@ -194,7 +202,7 @@ class MLogin
 				}
 			}
 
-			$this->log .= '<br>Bienvenue <strong>'.$this->user_info['lnom'].' '.$this->user_info['fnom'].'</strong></br> Vous serez rédiriger dans qulques instants';
+			$this->log .= '<br>Bienvenue <strong>'.$this->user_info['lnom'].' '.$this->user_info['fnom'].'</strong></br> Vous serez rédiriger dans qulques instants ';
 
 		}
 

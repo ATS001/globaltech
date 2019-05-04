@@ -9,33 +9,34 @@ class Mdevis
 	//Declared Private
 	private $_data; //data receive from form
     //Declared Variable
-    var $table            = 'devis'; //Main table of module
-    var $table_details    = 'd_devis'; //Tables détails devis
-    var $last_id          = null;//return last ID after insert command
-    var $log              = null;//Log of all opération.
-    var $id_devis         = null;// Devis ID append when request
-    var $token            = null;//user for recovery function
-    var $devis_info       = null;//Array stock all ville info
-    var $devis_d_info     = null;//
-    var $reference        = null;// Reference Devis
-    var $error            = true;//Error bol changed when an error is occured
-    var $valeur_remis_d   = null;//
-    var $total_remise     = null;//
-    var $prix_u_final     = null;//
-    var $total_ht_d       = null;//
-    var $total_tva_d      = null;//
-    var $total_ttc_d      = null;//
-    var $valeur_remis_t   = null;//
-    var $total_ht_t       = null;// 
-    var $total_tva_t      = null;//
-    var $order_detail     = null; //
-    var $sum_total_ht     = null;//
-    var $arr_prduit       = array();
-    var $attached         = null;
-    var $type_devis       = null;//Type Devis (ABN / VNT)
-    var $info_temp_client = array();
-    var $total_commission = null;//
-    var $etat_valid_devis = 0;
+    var $table               = 'devis'; //Main table of module
+    var $table_details       = 'd_devis'; //Tables détails devis
+    var $last_id             = null;//return last ID after insert command
+    var $log                 = null;//Log of all opération.
+    var $id_devis            = null;// Devis ID append when request
+    var $token               = null;//user for recovery function
+    var $devis_info          = null;//Array stock all ville info
+    var $devis_d_info        = null;//
+    var $reference           = null;// Reference Devis
+    var $error               = true;//Error bol changed when an error is occured
+    var $valeur_remis_d      = null;//
+    var $total_remise        = null;//
+    var $prix_u_final        = null;//
+    var $total_ht_d          = null;//
+    var $total_tva_d         = null;//
+    var $total_ttc_d         = null;//
+    var $valeur_remis_t      = null;//
+    var $total_ht_t          = null;// 
+    var $total_tva_t         = null;//
+    var $order_detail        = null; //
+    var $sum_total_ht        = null;//
+    var $arr_prduit          = array();
+    var $attached            = null;
+    var $type_devis          = null;//Type Devis (ABN / VNT)
+    var $info_temp_client    = array();
+    var $total_commission    = null;//
+    var $total_commission_ex = null;//
+    var $etat_valid_devis    = 0;
 
     
 
@@ -505,7 +506,7 @@ class Mdevis
       //Get sum of details
         	$this->Get_sum_detail($this->_data['tkn_frm']); 
       //calcul values devis
-        	$this->Calculate_devis_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva'],$this->_data['commission']);
+        	$this->Calculate_devis_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva'],$this->_data['commission'], $this->_data['commission_ex']);
             global $db;
             //Generate reference
             if(!$reference = $db->Generate_reference($this->table, 'DEV'))
@@ -524,13 +525,14 @@ class Mdevis
 
 
 		//Format values for Insert query 
-            $montant_remise   = $this->sum_total_ht - $this->total_ht_t;
-            $totalht          = $this->total_ht_t;
-            $totaltva         = $this->total_tva_t;
-            $totalttc         = $this->total_ttc_t;
-            $valeur_remise    = $this->valeur_remis_t;
-            $total_remise     = $this->total_remise;
-            $total_commission = $this->total_commission;
+               $montant_remise      = $this->sum_total_ht - $this->total_ht_t;
+               $totalht             = $this->total_ht_t;
+               $totaltva            = $this->total_tva_t;
+               $totalttc            = $this->total_ttc_t;
+               $valeur_remise       = $this->valeur_remis_t;
+               $total_remise        = $this->total_remise;
+               $total_commission    = $this->total_commission;
+               $total_commission_ex = $this->total_commission_ex;
                
 
             
@@ -550,12 +552,20 @@ class Mdevis
             $values["reference"]       = MySQL::SQLValue($reference);
         	$values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
             $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
+
             $values["id_commercial"]   = MySQL::SQLValue($this->_data['id_commercial']);
             $values["commission"]      = MySQL::SQLValue($this->_data['commission']);
             $values["total_commission"]= MySQL::SQLValue($total_commission);
+            $values["type_commission"] = MySQL::SQLValue($this->_data['type_commission']);
+
+            $values["id_commercial_ex"]   = MySQL::SQLValue($this->_data['id_commercial_ex']);
+            $values["commission_ex"]      = MySQL::SQLValue($this->_data['commission_ex']);
+            $values["total_commission_ex"]= MySQL::SQLValue($total_commission_ex);
+            $values["type_commission_ex"] = MySQL::SQLValue($this->_data['type_commission_ex']);
+
             $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
             $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
-            $values["type_commission"] = MySQL::SQLValue($this->_data['type_commission']);
+            
             $values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
             $values["total_remise"]    = MySQL::SQLValue($montant_remise);
             $values["projet"]          = MySQL::SQLValue($this->_data['projet']);
@@ -623,7 +633,7 @@ class Mdevis
     	$this->Get_sum_detail($this->_data['tkn_frm']); 
         //calcul values devis
         
-    	$this->Calculate_devis_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva'],$this->_data['commission']);
+    	$this->Calculate_devis_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva'],$this->_data['commission'], $this->_data['commission_ex']);
 
 
         //Get Type devis
@@ -637,13 +647,14 @@ class Mdevis
         $this->get_devis();
         //Format values for Insert query 
     	global $db;
-        $montant_remise = $this->sum_total_ht - $this->total_ht_t;
-    	$totalht  = $this->total_ht_t;
-    	$totaltva = $this->total_tva_t;
-    	$totalttc = $this->total_ttc_t;
-        $total_commission=$this->total_commission;
-        $valeur_remise = number_format($this->valeur_remis_t, 2,'.', '');
-        $this->reference = $this->devis_info['reference'];
+        $montant_remise      = $this->sum_total_ht - $this->total_ht_t;
+        $totalht             = $this->total_ht_t;
+        $totaltva            = $this->total_tva_t;
+        $totalttc            = $this->total_ttc_t;
+        $total_commission    = $this->total_commission;
+        $total_commission_ex = $this->total_commission_ex;
+        $valeur_remise       = number_format($this->valeur_remis_t, 2,'.', '');
+        $this->reference     = $this->devis_info['reference'];
         if(!$this->get_commerciale_remise_plafond($this->_data['id_commercial'], $valeur_remise))
         {
             return false;
@@ -657,29 +668,37 @@ class Mdevis
 
 
 
-        $values["reference"]       = MySQL::SQLValue($this->reference);
-        $values["tkn_frm"]         = MySQL::SQLValue($this->_data['tkn_frm']);
-        $values["type_devis"]      = MySQL::SQLValue($this->type_devis);
-        $values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
-        $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
-        $values["id_commercial"]   = MySQL::SQLValue($this->_data['id_commercial']);
-        $values["commission"]      = MySQL::SQLValue($this->_data['commission']);
-        $values["total_commission"]= MySQL::SQLValue($total_commission);
-        $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
-        $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
-        $values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
-        $values["total_remise"]   = MySQL::SQLValue($montant_remise);
-        $values["projet"]          = MySQL::SQLValue($this->_data['projet']);
-        $values["vie"]             = MySQL::SQLValue($this->_data['vie']);
-        $values["claus_comercial"] = MySQL::SQLValue($this->_data['claus_comercial']);
-        $values["type_commission"] = MySQL::SQLValue($this->_data['type_commission']);
-        $values["totalht"]         = MySQL::SQLValue($totalht);
-        $values["totalttc"]        = MySQL::SQLValue($totalttc);
-        $values["totaltva"]        = MySQL::SQLValue($totaltva);
-        $values["etat"]            = MySQL::SQLValue($etat_line);
-        $values["updusr"]          = MySQL::SQLValue(session::get('userid'));
-        $values["upddat"]          = ' CURRENT_TIMESTAMP ';
-        $wheres["id"]              = MySQL::SQLValue($this->id_devis);
+            $values["reference"]           = MySQL::SQLValue($this->reference);
+            $values["tkn_frm"]             = MySQL::SQLValue($this->_data['tkn_frm']);
+            $values["type_devis"]          = MySQL::SQLValue($this->type_devis);
+            $values["id_client"]           = MySQL::SQLValue($this->_data['id_client']);
+            $values["tva"]                 = MySQL::SQLValue($this->_data['tva']);
+            
+            $values["id_commercial"]       = MySQL::SQLValue($this->_data['id_commercial']);
+            $values["commission"]          = MySQL::SQLValue($this->_data['commission']);
+            $values["total_commission"]    = MySQL::SQLValue($total_commission);
+            $values["type_commission"]     = MySQL::SQLValue($this->_data['type_commission']);
+            
+            $values["id_commercial_ex"]    = MySQL::SQLValue($this->_data['id_commercial_ex']);
+            $values["commission_ex"]       = MySQL::SQLValue($this->_data['commission_ex']);
+            $values["total_commission_ex"] = MySQL::SQLValue($total_commission_ex);
+            $values["type_commission_ex"]  = MySQL::SQLValue($this->_data['type_commission_ex']);
+            
+            $values["date_devis"]          = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
+            $values["type_remise"]         = MySQL::SQLValue($this->_data['type_remise']);
+            $values["valeur_remise"]       = MySQL::SQLValue($valeur_remise);
+            $values["total_remise"]        = MySQL::SQLValue($montant_remise);
+            $values["projet"]              = MySQL::SQLValue($this->_data['projet']);
+            $values["vie"]                 = MySQL::SQLValue($this->_data['vie']);
+            $values["claus_comercial"]     = MySQL::SQLValue($this->_data['claus_comercial']);
+            
+            $values["totalht"]             = MySQL::SQLValue($totalht);
+            $values["totalttc"]            = MySQL::SQLValue($totalttc);
+            $values["totaltva"]            = MySQL::SQLValue($totaltva);
+            $values["etat"]                = MySQL::SQLValue($etat_line);
+            $values["updusr"]              = MySQL::SQLValue(session::get('userid'));
+            $values["upddat"]              = ' CURRENT_TIMESTAMP ';
+            $wheres["id"]                  = MySQL::SQLValue($this->id_devis);
         //Check if Insert Query been executed (False / True)
         if (!$result = $db->UpdateRows($this->table, $values, $wheres)) 
         {
@@ -787,7 +806,7 @@ class Mdevis
 
     }
 
-    private function Calculate_devis_t($totalht, $type_remise, $value_remise, $tva,$commission)
+    private function Calculate_devis_t($totalht, $type_remise, $value_remise, $tva, $commission, $commission_ex)
     {
     	if($type_remise == 'P')
     	{
@@ -820,7 +839,8 @@ class Mdevis
         $this->total_ttc_t = $this->total_ht_t + $this->total_tva_t;
 
         //Total commission
-        $this->total_commission = ($this->total_ttc_t * $commission) / 100;
+        $this->total_commission    = ($this->total_ttc_t * $commission) / 100;
+        $this->total_commission_ex = ($this->total_ttc_t * $commission_ex) / 100;
 
         return true;
     }
@@ -989,37 +1009,6 @@ class Mdevis
         }
     }
 
-    /*private function check_remise($id_commercial, $remise, $type_remise)
-    {
-        $commercial = new Mcommerciale();
-        $commercial->id_commerciale = $id_commercial;
-        if($commercial->get_commerciale())
-        { 
-            $plafond_remise = $commercial->g('id_service') == 7 ? Msetting::get_set('plafond_remise_commercial') : 10; 
-            if($type_remise == 'P')
-            {
-                if($plafond_remise < $remise){
-                    $this->log .= 'Le plafond de remise applicable est de: '+$plafond_remise+'% du Total des articles</br>Vous avez la possibilité d\'appliquer une remise jusqu\'à '+percentage_othorized_dg+'%  soumise à la validation de DG '; 
-                    return false;
-                }
-                $prix_u_remised = $prix_u - ($prix_u * $val_remise) / 100;
-                $this->valeur_remis_d = $val_remise;
-
-            }else if($type_remise == 'M'){
-                $prix_u_remised = $prix_u - $val_remise;
-                $this->valeur_remis_d = ($val_remise * 100) / $prix_u;
-            }else{
-                $prix_u_remised = $prix_u;
-            }
-        }else{
-           $this->log .= '</br>Problème vérification plafond remise'; 
-           return false; 
-        }
-
-        if($remise)
-        # code...
-    }
-*/
     public function save_new_details_devis($tkn_frm)
     {
 
@@ -2325,6 +2314,14 @@ class Mdevis
         } else {
             $this->log .= "Devis envoyé  à ".$this->g('email');
         }
+    }
+
+    static public function get_client_name($id_client)
+    {
+        global $db;
+        $sql = "SELECT denomination FROM clients WHERE id = $id_client";
+        $denomination = $db->QuerySingleValue($sql);
+        return $denomination;
     }
 
     public function save_new_client_temp()
