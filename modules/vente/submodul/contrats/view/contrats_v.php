@@ -74,6 +74,7 @@ $html_data_table->columns_html = $array_column;
 $html_data_table->title_module = "Abonnement";
 $html_data_table->task = 'contrats';
 
+//$html_data_table->use_filter = true;
 
 if(!$data = $html_data_table->table_html())
 {

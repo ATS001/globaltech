@@ -69,15 +69,16 @@ class Mcontrat {
 
     //Get  liste devis
 
-    static public function select_devis($is_edit = null) {
+    static public function select_devis($is_edit = null,$client_filtre = null) {
         global $db;
 
         $table = 'devis';
         $etat_devis_valid = Msetting::get_set('etat_devis', 'valid_client');
         $is_edit = $is_edit == null ? null : "and devis.id <> $is_edit";
+        $client_filtre = $client_filtre == null ? null : "and clients.id = $client_filtre";
 
         $sql = "SELECT devis.id as val, CONCAT(devis.reference,' / Client: ',clients.denomination,IF(devis.projet IS NOT NULL,CONCAT(' / Projet: ',devis.projet),' '),' / Total: ',devis.totalttc,IF(ref_devise.abreviation IS NOT NULL,CONCAT(' ',ref_devise.abreviation),' ')) as txt FROM 
-            devis,clients,ref_devise WHERE  devis.id_client=clients.id and ref_devise.id=clients.id_devise and devis.type_devis='ABN' and devis.etat = $etat_devis_valid AND  devis.id NOT IN (SELECT iddevis FROM contrats c WHERE devis.id = c.iddevis $is_edit )";
+            devis,clients,ref_devise WHERE  devis.id_client=clients.id and ref_devise.id=clients.id_devise and devis.type_devis='ABN' and devis.etat = $etat_devis_valid $client_filtre AND  devis.id NOT IN (SELECT iddevis FROM contrats c WHERE devis.id = c.iddevis $is_edit )";
 
         if (!$db->Query($sql)) {
             $list_devis = $db->Error();
@@ -88,6 +89,7 @@ class Mcontrat {
                 $list_devis = $db->RecordsSelectArray();
             }
         }
+
         return $list_devis;
     }
 
