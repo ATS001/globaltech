@@ -44,12 +44,12 @@ if (MInit::form_verif('editticket', false)) {
         $empty_list .= "<li>Date prévisionnelle</li>";
         $checker = 1;
     }
-
+/*
     if (date('Y-m-d', strtotime($posted_data['date_previs'])) < date('Y-m-d')) {
         $control_date = "<li>Date prévisionnelle doit être supérieur ou égale à la date d'aujourd'hui</li>";
         $checker = 2;
     }
-
+*/
     if ($posted_data["type_produit"] == NULL) {
         $empty_list .= "<li>Type produit</li>";
         $checker = 1;

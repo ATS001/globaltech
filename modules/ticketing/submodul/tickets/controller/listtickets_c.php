@@ -12,7 +12,7 @@ $array_column = array(
         'column' => 'tickets.id',
         'type' => '',
         'alias' => 'id',
-        'width' => '5',
+        'width' => '4',
         'header' => 'ID',
         'align' => 'C'
     ),
@@ -25,31 +25,39 @@ $array_column = array(
         'header' => 'Client',
         'align' => 'L'
     ),
-    /*
     array(
         'column' => 'sites.reference',
         'type' => '',
-        'alias' => 'projet',
-        'width' => '15',
+        'alias' => 'site',
+        'width' => '6',
         'header' => 'Site',
-        'align' => 'L'
-    ),
-     * */
-    
-    array(
-        'column' => 'tickets.date_probleme',
-        'type' => 'date',
-        'alias' => 'credat',
-        'width' => '10',
-        'header' => 'Date problème',
         'align' => 'C'
     ),
-      
+    array(
+        'column' => 'tickets.credat',
+        'type' => 'date',
+        'alias' => 'credat',
+        'width' => '8',
+        'header' => 'Date création',
+        'align' => 'C'
+    ),
+    /*
+    array(
+        'column' => 'tickets.date_previs',
+        'type' => 'date',
+        'alias' => 'date_previs',
+        'width' => '10',
+        'header' => 'Date prévisionnelle',
+        'align' => 'C'
+    ),
+     * 
+     */
+   
     array(
         'column' => '(CASE WHEN tickets.`etat` <> 3 
-THEN IFNULL(DATEDIFF(DATE(tickets.`date_previs`),DATE(NOW())),0) 
+THEN IFNULL(DATEDIFF(DATE(tickets.`date_affectation`),DATE(NOW())),0) 
 WHEN tickets.`etat` = 3 
-THEN IFNULL(DATEDIFF(DATE(tickets.`date_previs`),DATE(tickets.`date_realis`)),0) END) ',
+THEN IFNULL(DATEDIFF(DATE(tickets.`date_affectation`),DATE(tickets.`date_realis`)),0) END) ',
         'type' => '',
         'alias' => 'nbr',
         'width' => '8',
@@ -57,11 +65,12 @@ THEN IFNULL(DATEDIFF(DATE(tickets.`date_previs`),DATE(tickets.`date_realis`)),0)
         'align' => 'C'
     ),
      
+     
     array(
         'column' => 'CONCAT(users_sys.fnom," ",users_sys.lnom)',
         'type' => '',
         'alias' => 'idtechnicien',
-        'width' => '15',
+        'width' => '13',
         'header' => 'Technicien',
         'align' => 'L'
     ),
@@ -69,7 +78,7 @@ THEN IFNULL(DATEDIFF(DATE(tickets.`date_previs`),DATE(tickets.`date_realis`)),0)
         'column' => 'statut',
         'type' => '',
         'alias' => 'statut',
-        'width' => '8',
+        'width' => '7',
         'header' => 'Statut',
         'align' => 'C'
     ),
@@ -77,8 +86,12 @@ THEN IFNULL(DATEDIFF(DATE(tickets.`date_previs`),DATE(tickets.`date_realis`)),0)
 //Creat new instance
 $list_data_table = new Mdatatable();
 //Set tabels used in Query
-$list_data_table->tables = array('tickets LEFT JOIN users_sys ON users_sys.id=tickets.id_technicien LEFT JOIN clients ON clients.id=tickets.id_client '
-    );
+$list_data_table->tables = array('tickets LEFT JOIN users_sys   
+                                                 ON users_sys.id=tickets.id_technicien 
+                                          LEFT JOIN clients 
+                                                 ON clients.id=tickets.id_client 
+                                                 LEFT JOIN sites
+                                                 ON sites.id=tickets.projet');
 
 $list_data_table->joint = '';
 //Call all columns

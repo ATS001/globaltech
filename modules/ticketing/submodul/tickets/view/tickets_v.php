@@ -13,7 +13,7 @@ $array_column = array(
         'column' => 'tickets.id',
         'type' => '',
         'alias' => 'id',
-        'width' => '5',
+        'width' => '4',
         'header' => 'ID',
         'align' => 'C'
     ),
@@ -27,18 +27,18 @@ $array_column = array(
         'align' => 'L'
     ),
     array(
-        'column' => 'tickets.projet',
+        'column' => 'sites.reference',
         'type' => '',
-        'alias' => 'projet',
-        'width' => '15',
-        'header' => 'Projet',
-        'align' => 'L'
+        'alias' => 'site',
+        'width' => '6',
+        'header' => 'Site',
+        'align' => 'C'
     ),
     array(
         'column' => 'tickets.credat',
         'type' => 'date',
         'alias' => 'credat',
-        'width' => '10',
+        'width' => '8',
         'header' => 'Date création',
         'align' => 'C'
     ),
@@ -53,26 +53,23 @@ $array_column = array(
     ),
      * 
      */
-    /*
-    array(
+   array(
         'column' => '(CASE WHEN tickets.`etat` <> 3 
-THEN IFNULL(DATEDIFF(DATE(tickets.`date_previs`),DATE(NOW())),0) 
+THEN IFNULL(DATEDIFF(DATE(tickets.`date_affectation`),DATE(NOW())),0) 
 WHEN tickets.`etat` = 3 
-THEN IFNULL(DATEDIFF(DATE(tickets.`date_previs`),DATE(tickets.`date_realis`)),0) END) ',
+THEN IFNULL(DATEDIFF(DATE(tickets.`date_affectation`),DATE(tickets.`date_realis`)),0) END) ',
         'type' => '',
         'alias' => 'nbr',
         'width' => '8',
         'header' => 'Nbr jours',
         'align' => 'C'
     ),
-     * 
-     */
      
     array(
         'column' => 'CONCAT(users_sys.fnom," ",users_sys.lnom)',
         'type' => '',
         'alias' => 'idtechnicien',
-        'width' => '15',
+        'width' => '13',
         'header' => 'Technicien',
         'align' => 'L'
     ),
@@ -80,7 +77,7 @@ THEN IFNULL(DATEDIFF(DATE(tickets.`date_previs`),DATE(tickets.`date_realis`)),0)
         'column' => 'statut',
         'type' => '',
         'alias' => 'statut',
-        'width' => '8',
+        'width' => '7',
         'header' => 'Statut',
         'align' => 'C'
     ),
@@ -88,7 +85,7 @@ THEN IFNULL(DATEDIFF(DATE(tickets.`date_previs`),DATE(tickets.`date_realis`)),0)
 //Creat new instance
 $html_data_table = new Mdatatable();
 $html_data_table->columns_html = $array_column;
-$html_data_table->title_module = "tickets";
+$html_data_table->title_module = "Ticket";
 $html_data_table->task = 'tickets';
 
 if (!$data = $html_data_table->table_html()) {
