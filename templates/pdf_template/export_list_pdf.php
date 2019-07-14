@@ -36,8 +36,8 @@ class MYPDF extends TCPDF {
     public function Header() {
         
        // $this->SetHeaderData(MCfg::get('logo'), 30, $this->title_report, 'Généré à Temara le :'.date('d-m-Y H:i:s').' Par: '.session::get('username'), array(0,64,255), array(0,64,128));
-        $image_file = MPATH_IMG.MCfg::get('logo');
-        $this->Image($image_file, 10, 5, 25, 20, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
+        $image_file = MPATH_IMG.MCfg::get('logo_pdf');
+        $this->Image($image_file, 10, 5, 25, 20, 'jpg', '', 'T', false, 300, '', false, false, 0, false, false, false);
         $this->SetFont('dejavusans', '', 14, 'BIU', true);
         $this->writeHTMLCell('', '', 40, 10,$this->title_report, 0, 0, 0, true, 'L', true);
         $this->SetFont('dejavusans', '', 10, '', true);
