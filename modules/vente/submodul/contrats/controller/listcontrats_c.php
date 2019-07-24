@@ -1,7 +1,7 @@
 <?php
 //array colomn
 $array_column = array(
-	array(
+    array(
         'column' => 'contrats.id',
         'type'   => '',
         'alias'  => 'id',
@@ -13,23 +13,23 @@ $array_column = array(
         'column' => 'contrats.reference',
         'type'   => '',
         'alias'  => 'reference',
-        'width'  => '10',
+        'width'  => '14',
         'header' => 'Référence',
-        'align'  => 'L'
+        'align'  => 'C'
     ),
     array(
         'column' => 'devis.reference',
         'type'   => '',
         'alias'  => 'devis',
-        'width'  => '10',
+        'width'  => '14',
         'header' => 'Devis',
-        'align'  => 'L'
+        'align'  => 'C'
     ),
     array(
         'column' => 'contrats.date_contrat',
         'type'   => 'date',
         'alias'  => 'date_contrat',
-        'width'  => '10',
+        'width'  => '8',
         'header' => 'Date Contrat',
         'align'  => 'C'
     ),
@@ -37,7 +37,7 @@ $array_column = array(
         'column' => 'CONCAT(clients.reference, " - ",clients.denomination)',
         'type'   => '',
         'alias'  => 'client',
-        'width'  => '10',
+        'width'  => '20',
         'header' => 'client',
         'align'  => 'L'
     ),
@@ -45,7 +45,7 @@ $array_column = array(
         'column' => 'contrats.date_effet',
         'type'   => 'date',
         'alias'  => 'date_effet',
-        'width'  => '10',
+        'width'  => '8',
         'header' => 'Date Début',
         'align'  => 'C'
     ),
@@ -53,7 +53,7 @@ $array_column = array(
         'column' => 'contrats.date_fin',
         'type'   => 'date',
         'alias'  => 'date_fin',
-        'width'  => '10',
+        'width'  => '8',
         'header' => 'Date Fin',
         'align'  => 'C'
     ),
@@ -61,18 +61,24 @@ $array_column = array(
         'column' => 'statut',
         'type'   => '',
         'alias'  => 'statut',
-        'width'  => '15',
+        'width'  => '10',
         'header' => 'Statut',
         'align'  => 'C'
     ),
-    
  );
+//Show line for owner
+$only_owner = null;
+$id_service = session::get('service');
+if($id_service == 7)
+{
+    $only_owner = ' AND contrats.creusr  = '.session::get('userid');
+}
 //Creat new instance
 $list_data_table = new Mdatatable();
 //Set tabels used in Query
 $list_data_table->tables = array('contrats', 'devis','clients');
 //Set Jointure
-$list_data_table->joint = 'contrats.iddevis = devis.id and clients.id = devis.id_client';
+$list_data_table->joint = 'contrats.iddevis = devis.id and clients.id = devis.id_client'.$only_owner;
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query

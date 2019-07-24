@@ -52,7 +52,7 @@ $tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL,
     <div class="btn-group btn-overlap">
 
         <?php TableTools::btn_action('clients', $client->id_client, 'detailsclient');
-              TableTools::btn_add('clients', 'Liste Clients', Null, $exec = NULL, 'reply');      
+              TableTools::btn_add('clients', 'Liste Clients', Null, $exec = NULL, 'reply');   
          ?> 
          
     </div>
@@ -353,12 +353,17 @@ $tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL,
                             <div class="profile-feed row">
                                    
                                 <span>
+                                   
+<b class="blue pull-right margin-left: 30px"><?php TableTools::btn_add('adddevis', 'Ajouter Devis',MInit::crypt_tp('id_clnt', Mreq::tp('id')) . MInit::crypt_tp('&tsk_aft', 'detailsclient'), $exec = NULL);  ?> </b></br></br>
+       
                                     <?php
                                     if ($client_devis == null)
                                         echo '<B>Aucun devis trouvé</B> ';
                                     else {
-                                        ?>
+                                                     ?>
                                         <div>
+                                            
+
                                             <b class="blue pull-right margin-left: 30px"> <?php echo $client->s('dev')?></b> 
                                             <b class="blue pull-right margin-left: 30px"> <?php echo $total_devis['totalht']?>&nbsp;</b> 
                                             <b class="grey pull-right"> Total HT:&nbsp;&nbsp;&nbsp;</b>   
@@ -456,12 +461,15 @@ $tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL,
                         <div id="feed1" class="tab-pane">
                             <div class="profile-feed row">
                                
-                                      <span>
+                                    <span>
+<div>
+    <b class="blue pull-right margin-left: 30px"><?php TableTools::btn_add('addcontrats', 'Ajouter Abonnement',MInit::crypt_tp('id_clnt', Mreq::tp('id')) . MInit::crypt_tp('&tsk_aft', 'detailsclient'), $exec = NULL);  ?> </b></br></br>
+</div>                                    
                                     <?php
                                     if ($client_abn == null)
                                         echo '<B>Aucun abonnement trouvé</B> ';
-                                    else {
-                                        ?>
+                                    else {     
+                                    ?>
                                     <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 ID
