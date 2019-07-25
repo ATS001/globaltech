@@ -1677,6 +1677,27 @@ class Mfacture {
                 
                 
                 $this->credit_compte_client();
+
+                $this->get_commerciale_devis();
+                if($this->compte_commercial_info['commission']!=0){
+               
+                if($this->credit_compte_commerciale()){
+
+                    $this->get_commerciale_ex_devis();
+                    if($this->compte_commercial_ex_info['commission_ex']!=0){
+               
+                        if($this->credit_compte_commerciale_ex()){
+
+                            $this->error = true;
+
+                        }else {
+
+                            $this->error = false;
+
+                        } 
+                    }
+                }
+                }
                 
                 $this->error = true;
                 
