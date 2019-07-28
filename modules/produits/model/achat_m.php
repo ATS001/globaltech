@@ -14,7 +14,8 @@
         var $token; //user for recovery function
         var $achat_info; //Array stock all achat info
         var $app_action; //Array action for each 
-
+        var $listeNumSerie = array(); //Liste des numéros de série d'un article
+        
         public function __construct($properties = array()) {
             $this->_data = $properties;
         }
@@ -83,7 +84,8 @@
         //Save new produit after all check
         public function save_new_achat_produit() {
 
-
+            $this->extraireNumeroSerieExcel();
+          
             global $db;
             $values["mouvement"] = MySQL::SQLValue('E');
             $values["qte"] = MySQL::SQLValue($this->_data['qte']);
@@ -105,8 +107,8 @@
                     $this->log .= '</br>Enregistrement BD non réussie';
                 } else {
 
-                    $this->last_id = $result;
-                    $this->log .= '</br>Enregistrement  réussie ' . ' - ' . $this->last_id . ' -';
+                    $this->enregistrerNumSerieArticle($this->listeNumSerie);
+                    $this->log .= '</br>Enregistrement  réussie ';
                     $this->maj_prix_vente($this->_data['idproduit'], $this->_data['prix_vente']);
 
 
@@ -397,5 +399,43 @@ private function refresh_products()
                 echo "";
             }
         }
+
+        public function enregistrerNumSerieArticle($liste) {
+            
+        global $db;
+
+        foreach ($liste as $value) {
+        $values["id_produit"] = MySQL::SQLValue($this->_data['idproduit']);
+        $values["serial_number"] = MySQL::SQLValue($value);
+        
+            if (!$result = $db->InsertRow("serial_number", $values)) {
+
+                $this->log .= $db->Error();
+                $this->error = false;
+                $this->log .= '</br>Enregistrement BD non réussie';
+            } else {
+                if (!Mlog::log_exec($this->table, $this->last_id, 'Insertion N° serie', 'Insert')) {
+                    $this->log .= '</br>Un problème de log ';
+                }
+            }
+        }
+    }
+
+    public function extraireNumeroSerieExcel() {
+        $index = 0;
+        $objPHPExcel = PHPExcel_IOFactory::load($this->_data['pj_id']);
+        $sheet = $objPHPExcel->getSheet(0);
+
+        foreach ($sheet->getRowIterator() as $row) {
+            foreach ($row->getCellIterator() as $cell) {
+                $this->listeNumSerie[$index++] = $cell->getValue();
+            }
+        }
+   
+         if($index != $this->_data['qte'])
+           exit("0#" . "La quantité doit être égale au nombre des SNs saisies");
+       
+        
+    }
 
     }

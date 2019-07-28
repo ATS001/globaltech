@@ -67,6 +67,10 @@
 
 	//Date de fin de validité
 	$form->input_date('Date de validité', 'date_validite', 4, date('d-m-Y'), '');
+        
+        //Numéro de série
+                $form->input('N° de série', 'pj', 'file', 8, null, null);
+                $form->file_js('pj', 1000000, 'xls');
 
 
 	$form->button('Enregistrer achat');
