@@ -11,6 +11,7 @@
             'idproduit' => Mreq::tp('idproduit'),
             'date_achat' => Mreq::tp('date_achat'),
             'date_validite' => Mreq::tp('date_validite'),
+            'pj_id' => Mreq::tp('pj-id')
         );
 
         //Check if array have empty element return list

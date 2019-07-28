@@ -59,8 +59,10 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_tickets->get_tickets()) {
                 $form->select_table('Client ', 'id_client', 8, 'clients', 'id', 'id', 'denomination', $indx = '------', $info_tickets->g('id_client'), $multi = NULL, $where = 'etat=1', $client_array, NULL);
 
 //Site ==> 
-                
-                $form->input("Site", "projet", "text", "9", $info_tickets->g('projet'), NULL, null, $readonly = null);
+               //  $st_array[] = array('required', 'true', 'Choisir un site');
+               // $form->select_table('Site ', 'id_site', 8, 'sites', 'id', 'id', 'reference', $indx = '------', $info_tickets->g('projet'), $multi = NULL, $where = 'etat=1', $st_array, NULL);
+
+              
 //Serial number ==> 
                 
                 $form->input("Serial number", "serial_number", "text", "9", $info_tickets->g('serial_number'), NULL, null, $readonly = null);
