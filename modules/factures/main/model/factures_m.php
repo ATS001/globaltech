@@ -801,35 +801,6 @@ class Mfacture {
         }
     }
 
-    //activer ou desactiver un contrats_frn
-    public function valid_contrats_frn($etat = 0) {
-
-        global $db;
-        //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
-        $etat = $etat == 0 ? 1 : 0;
-        //Format value for requet
-        $values["etat"] = MySQL::SQLValue($etat);
-        $values["updusr"] = MySQL::SQLValue(session::get('userid'));
-        $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
-
-        $where["id"] = $this->id_contrats_frn;
-
-        // Execute the update and show error case error
-        if (!$result = $db->UpdateRows($this->table, $values, $where)) {
-            $this->log .= '</br>Impossible de changer le statut!';
-            $this->log .= '</br>' . $db->Error();
-            $this->error = false;
-        } else {
-            $this->log .= '</br>Statut changé! ';
-            $this->error = true;
-        }
-        if ($this->error == false) {
-            return false;
-        } else {
-            return true;
-        }
-    }
-
     // afficher les infos d'un contrats_frn
     public function s($key) {
         if ($this->contrats_frn_info[$key] != null) {
@@ -1677,6 +1648,27 @@ class Mfacture {
                 
                 
                 $this->credit_compte_client();
+
+                $this->get_commerciale_devis();
+                if($this->compte_commercial_info['commission']!=0){
+               
+                if($this->credit_compte_commerciale()){
+
+                    $this->get_commerciale_ex_devis();
+                    if($this->compte_commercial_ex_info['commission_ex']!=0){
+               
+                        if($this->credit_compte_commerciale_ex()){
+
+                            $this->error = true;
+
+                        }else {
+
+                            $this->error = false;
+
+                        } 
+                    }
+                }
+                }
                 
                 $this->error = true;
                 
@@ -1924,4 +1916,55 @@ UNION
             return TRUE;
         }
     }
+
+    public function delete_facture() {
+        global $db;
+
+        $table = $this->table;
+        $id_facture = $this->id_facture;
+
+        $this->get_facture();
+
+        $values["etat"] = 200;
+        $values["updusr"] = MySQL::SQLValue(session::get("userid"));
+        $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+
+        $wheres["id"] = $id_facture;
+
+        // If we have an error
+        if ($this->error == true) {
+
+            if (!$result = $db->UpdateRows($table, $values, $wheres)) {
+                //$db->Kill();
+                //var_dump($db);
+                $this->log .= $db->Error();
+                $this->error == false;
+                $this->log .= '</br>Suppression BD non réussie';
+            } else {
+
+                //Check $this->error = true return Green message and Bol true
+                if ($this->error == true) {
+                    $this->log = '</br>Suppression réussie: <b> ID: ' . $id_facture;
+
+                    if (!Mlog::log_exec($this->table, $this->id_facture, 'Suppression Facture', 'Delete')) {
+                        $this->log .= '</br>Un problème de log ';
+                                     }
+
+                } else {
+                    $this->log .= '</br>Suppression non réussie: <b>' . $this->_data['id'];
+                    $this->log .= '</br>Un problème d\'Enregistrement ';
+                }
+            }
+            //Else Error false  
+        } else {
+            $this->log .= '</br>Suppression non réussie';
+        }
+        //check if last error is true then return true else rturn false.
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 }
