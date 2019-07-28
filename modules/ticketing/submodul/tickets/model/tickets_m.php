@@ -48,27 +48,29 @@ class Mtickets {
 
         $table = $this->table;
 
-        $sql = "SELECT $table.* ,
-                IFNULL(DATEDIFF(DATE(NOW()),DATE(tickets.date_affectation)),0) as nbrj,
-                DATE_FORMAT($table.date_affectation,'%d-%m-%Y') as date_affectation,
-                DATE_FORMAT($table.date_previs,'%d-%m-%Y') as date_previs,
-                DATE_FORMAT($table.date_realis,'%d-%m-%Y') as date_realis,
-                CONCAT(users_sys.fnom,' ',users_sys.lnom) as technicien ,
-                clients.denomination as client ,
-                ref_categories_produits.categorie_produit as categorie_produit ,
-                ref_types_produits.type_produit as typep , 
-                produits.designation as prd,
-                code_cloture.code_cloture as code_cloture,
-                $table.serial_number as serial_number,
-                    DATE_FORMAT($table.credat,'%d-%m-%Y') as credat
-                FROM $table LEFT JOIN produits ON produits.id=$table.id_produit "
-                . "LEFT JOIN ref_categories_produits  ON ref_categories_produits.id=$table.categorie_produit"
-                . " LEFT JOIN ref_types_produits ON ref_types_produits.id=$table.type_produit"
-                . " LEFT JOIN clients ON clients.id=$table.id_client"
-                . " LEFT JOIN users_sys ON users_sys.id=$table.id_technicien"
-                . " LEFT JOIN code_cloture ON code_cloture.id=$table.code_cloture"
-                . " WHERE $table.id = " . $this->id_tickets;
-
+        $sql = "SELECT tickets.* ,
+                IFNULL(DATEDIFF(DATE(NOW()),DATE(tickets.date_affectation)),0) AS nbrj,
+                DATE_FORMAT(tickets.date_affectation,'%d-%m-%Y') AS date_affectation,
+                DATE_FORMAT(tickets.date_previs,'%d-%m-%Y') AS date_previs,
+                DATE_FORMAT(tickets.date_realis,'%d-%m-%Y') AS date_realis,
+                CONCAT(users_sys.fnom,' ',users_sys.lnom) AS technicien ,
+                clients.denomination AS client ,
+                ref_categories_produits.categorie_produit AS categorie_produit ,
+                ref_types_produits.type_produit AS typep , 
+                produits.designation AS prd,
+                code_cloture.code_cloture AS code_cloture,
+                tickets.serial_number AS serial_number,
+                sites.reference AS site,
+                DATE_FORMAT(tickets.credat,'%d-%m-%Y') AS credat            
+                FROM tickets LEFT JOIN produits ON produits.id=tickets.id_produit 
+                LEFT JOIN ref_categories_produits  ON ref_categories_produits.id=tickets.categorie_produit
+                 LEFT JOIN ref_types_produits ON ref_types_produits.id=tickets.type_produit
+                 LEFT JOIN clients ON clients.id=tickets.id_client
+                 LEFT JOIN users_sys ON users_sys.id=tickets.id_technicien
+                 LEFT JOIN code_cloture ON code_cloture.id=tickets.code_cloture 
+                 LEFT JOIN sites ON sites.id=tickets.projet             
+                 WHERE tickets.id =  " . $this->id_tickets;
+       
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
@@ -82,6 +84,7 @@ class Mtickets {
                 $this->error = true;
             }
         }
+        
         //return Array user_info
         if ($this->error == false) {
             return false;
@@ -135,6 +138,8 @@ class Mtickets {
             $values["id_client"] = MySQL::SQLValue($this->_data["id_client"]);
             $values["projet"] = MySQL::SQLValue($this->_data["projet"]);
             $values["message"] = MySQL::SQLValue($this->_data["message"]);
+            $values["id_technicien"] = MySQL::SQLValue($this->_data["id_technicien"]);
+            $values["date_probleme"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_probleme'])));
             $values["date_previs"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_previs'])));
             $values["type_produit"] = MySQL::SQLValue($this->_data["type_produit"]);
             $values["categorie_produit"] = MySQL::SQLValue($this->_data["categorie_produit"]);
@@ -152,6 +157,8 @@ class Mtickets {
                 $this->last_id = $result;
                 $this->id_tickets = $db->GetLastInsertID();
                 $this->init_action("ouverture", $old_technicien = NULL);
+                $technicien = $this->getTechnicien($this->_data["id_technicien"]);
+                $this->init_action("affectation", $technicien = NULL);
                 $this->log .= '</br>Enregistrement  réussie ';
                 if (!Mlog::log_exec($this->table, $this->last_id, 'Création tickets', 'Insert')) {
                     $this->log .= '</br>Un problème de log ';
@@ -199,7 +206,7 @@ class Mtickets {
                 $this->save_file('pj', 'PJ' . $this->_data['id_ticket'], 'Document');
 
                 $this->save_file('photo', 'Photo' . $this->_data['id_ticket'], 'Image');
-
+ 
                 $this->log .= '</br>Enregistrement  réussie ' . $this->last_id . ' -';
                 if (!Mlog::log_exec($this->table_action, $this->last_id, 'Création action', 'Insert')) {
                     $this->log .= '</br>Un problème de log ';
@@ -415,7 +422,6 @@ class Mtickets {
                 $this->error == false;
                 $this->log .= '</br>Enregistrement BD non réussie';
             } else {
-
                 $this->last_id = $result;
                 $this->send_ticket_mail();
                 if ($is_reaffect == TRUE) {
@@ -439,7 +445,7 @@ class Mtickets {
 
             $this->log .= '</br>Enregistrement non réussie';
         }
-
+        
         //check if last error is true then return true else rturn false.
         if ($this->error == false) {
             return false;
@@ -797,7 +803,7 @@ class Mtickets {
         //Get info ticket
         $this->get_tickets();
         $tickets_info = $this->tickets_info;
-
+        
         if ($this->verif_email($tickets_info["id_technicien"]) == FALSE) {
             $this->log .= '<br/>Ce technicien n\'a pas une adresse Mail';
             return false;
@@ -993,6 +999,16 @@ class Mtickets {
         } else {
             return true;
         }
+    }
+    
+    public function getTechnicien($id_technicien)
+    {
+        $agent = new Musers();
+        $agent->id_user = $id_technicien;
+        $agent->get_user();
+        $agent_name = $agent->g('fnom') . ' ' . $agent->g('lnom');
+        
+        return $agent_name;
     }
 
 }

@@ -1,12 +1,39 @@
+<?php
+//chck if called with client ID then suggest task for after exec
+//id_clnt crypted => id client
+//tsk_aft crypted => Task after exec
+//
+$after_exec     = 'contrats';
+$id_clnt        = MReq::tp('id_clnt');
+$tsk_aft        = MReq::tp('tsk_aft');
+$name_client    = null;
+$title          = 'Ajouter Abonnement';
+$btn_return_txt = 'Liste des abonnements';
+$btn_task       = 'contrats';
+$btn_setting    = null;
+
+if($id_clnt != null && $tsk_aft != null){
+    if(!MInit::crypt_tp('id_clnt', null, 'D')){
+          Minit::big_message('ID client n\'est pas correcte', 'danger');
+          die();
+    }
+    if(!MInit::crypt_tp('tsk_aft', null, 'D')){
+          Minit::big_message('Erreur Système #aft_exec', 'danger');
+          die();
+    }
+    $after_exec = $tsk_aft.'&'.MInit::crypt_tp('id', $id_clnt);
+    $name_client = Mdevis::get_client_name($id_clnt);
+    $title .=  ' pour le client :'.$name_client;
+    $btn_return_txt = 'Détail Client '.$name_client;
+    $btn_task = $tsk_aft;
+    $btn_setting = MInit::crypt_tp('id', $id_clnt);
+}
+
+?>
  <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
         
-		<?php TableTools::btn_add('contrats','Liste des abonnements', Null, $exec = NULL, 'reply'); ?>
-
-		<!-- <?php //TableTools::btn_add('contrats','Liste des abonnements', Null, $exec = NULL, 'reply'); 
-        //$client=Mreq::tp('id'); 
-
-        ?>-->
+<?php TableTools::btn_add($btn_task, $btn_return_txt, $btn_setting, $exec = NULL, 'reply'); ?>
 					
 	</div>
 </div>
@@ -31,10 +58,9 @@
 			<div class="widget-box">
 				
 <?php
-$form = new Mform('addcontrats', 'addcontrats', '', 'contrats', '0', null);
-$list_devis = Mcontrat::select_devis();
-/*var_dump($list_devis);
-exit();*/
+$form = new Mform('addcontrats', 'addcontrats', '', $after_exec , '0', null);
+$list_devis = Mcontrat::select_devis(null,$id_clnt);
+
 
 //Devis
 $form->select('Devis', 'iddevis', 8, $list_devis, '------', null, null, null);
