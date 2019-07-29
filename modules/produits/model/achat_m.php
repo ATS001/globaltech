@@ -82,9 +82,11 @@
         }
 
         //Save new produit after all check
-        public function save_new_achat_produit() {
+        public function save_new_achat_produit($save_sn) {
 
+           if($save_sn != NULL){
             $this->extraireNumeroSerieExcel();
+           }
           
             global $db;
             $values["mouvement"] = MySQL::SQLValue('E');
