@@ -11,7 +11,13 @@
             'idproduit' => Mreq::tp('idproduit'),
             'date_achat' => Mreq::tp('date_achat'),
             'date_validite' => Mreq::tp('date_validite'),
+            'pj_id' => Mreq::tp('pj-id')
         );
+        
+        $produit = new Mproduit();
+        $produit->id_produit = Mreq::tp('idproduit');
+        $produit->get_produit();
+        
 
         //Check if array have empty element return list
         //for acceptable empty field do not put here
@@ -52,6 +58,11 @@
             $empty_list_prix .= "<li>Le prix de vente ne doit pas être inférieur au prix d'achat </li>";
             $checker = 2;
         } 
+        if($posted_data['pj_id'] == NULL AND $produit->produit_info['exige-sn'] == "Oui"){
+
+            $empty_list .= "<li>Fichier des numéros de séries </li>";
+            $checker = 1;
+        }
         
         
 
@@ -70,7 +81,7 @@
         
         
         //execute Insert returne false if error
-        if ($new_achat->save_new_achat_produit()) {
+        if ($new_achat->save_new_achat_produit($posted_data['pj_id'])) {
 
             echo("1#" . $new_achat->log);
         } else {

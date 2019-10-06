@@ -10,6 +10,7 @@ $ticket = new Mtickets;
 $ticket->id_tickets = Mreq::tp('id');
 $ticket->get_tickets();
 
+
 if (!MInit::crypt_tp('id', null, 'D') or ! $ticket->get_tickets()) {
     // returne message error red to client
     exit('3#' . $ticket->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur ');
@@ -81,7 +82,7 @@ if ($ticket->get_action_ticket()) {
                                             <?php if ($ticket->g("projet") != NULL) { ?>
                                                 <li>
                                                     <i class="ace-icon fa fa-caret-right green"></i>Site :
-                                                    <b style="color:green"><?php $ticket->s("projet") ?></b>
+                                                    <b style="color:green"><?php $ticket->s("site") ?></b>
                                                 </li>
                                             <?php } ?>
                                             <?php if ($ticket->g("serial_number") != NULL) { ?>
@@ -281,7 +282,7 @@ if ($ticket->g("etat") == 1) {
 </div>
 
 <?php
-if ($ticket->g("etat") == 1) {
+if ($ticket->g("etat") == 0) {
     $form = new Mform('resolution', 'resolution', '', 'tickets', '0', null);
     $form->input_hidden('id', $ticket->g("id"));
     $form->input_hidden('idc', Mreq::tp('idc'));

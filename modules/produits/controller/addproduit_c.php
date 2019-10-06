@@ -12,6 +12,7 @@
             'iduv' => Mreq::tp('iduv'),
             'idtype' => Mreq::tp('idtype'),
             'id_entrepot' => Mreq::tp('id_entrepot'),
+            'exige-sn' => Mreq::tp('exige-sn')            
         );
 
         //Check if array have empty element return list

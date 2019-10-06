@@ -46,6 +46,10 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_produit->get_produit()) {
                 $form->input_hidden('idc', Mreq::tp('idc'));
                 $form->input_hidden('idh', Mreq::tp('idh'));
 
+                //Exige SN ==>
+                $array_exige_sn = array('Oui' => 'Oui', 'Non' => 'Non');
+                $form->select('Exige SN', 'exige-sn', 2, $array_exige_sn, $indx = NULL, $info_produit->Shw("exige-sn",1) = 'Non', $multi = NULL);
+                
                 //Entrepôt de produit
                 $entrepot_array[] = array('required', 'true', 'Choisir un entrepôt');
                 $form->select_table('Entrepôt', 'id_entrepot', 6, 'entrepots', 'id', 'libelle', 'libelle', $indx = '------', $selected =$info_produit->Shw('id_entrepot', 1), $multi = NULL, $where = 'etat= 1', $entrepot_array);

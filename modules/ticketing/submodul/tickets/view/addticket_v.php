@@ -41,14 +41,22 @@ if (!defined('_MEXEC'))
                 $client_array[] = array('required', 'true', 'Choisir un Client');
                 $form->select_table('Client', 'id_client', 6, 'clients', 'id', 'denomination', 'denomination', $indx = '------', $selected = NULL, $multi = NULL, $where = 'etat=1', $client_array, NULL);
 
-//Projet ==> 
+//Site ==> 
+              
+                $site_array[] = array('required', 'true', 'Choisir un site');
+                $form->select_table('Site', 'projet', 6, 'sites', 'id', 'reference', 'reference', $indx = '------',NULL, $multi = NULL, $where = 'etat=1', $site_array, NULL);
 
-                $form->input("Site", "projet", "text", "9", null, NULL, null, $readonly = null);
+ 
 
 //Serial number==> 
-
                  $form->input("Serial number", "serial_number", "text", "9", null, NULL, null, $readonly = null);
+                 //Technicien ==> 
+$array_technicien[] = array("required", "true", "Choisir un technicien");
+$form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', 'CONCAT(users_sys.lnom," ",users_sys.fnom)', $indx = '------', $selected = NULL, $multi = NULL, $where = ' service=6 AND etat=1', $array_technicien, NULL);
 
+//Date problème ==> 
+                $date_prob[] = array('required', 'true', 'Insérer une date prévisionnelle');
+                $form->input_date('Date problème', 'date_probleme', 2, date('d-m-Y'), $date_prob);
 
 //Date prévisionnelle ==> 
                 $date_prev[] = array('required', 'true', 'Insérer une date prévisionnelle');
@@ -150,6 +158,49 @@ if (!defined('_MEXEC'))
             });
 
         });
+        
+        //************************************
+         $('#serial_number').blur(function (e) {
+            var $serial_number = $(this).val();
+            
+            if ($serial_number == null) {
+                return true;
+            }
+           
+            $.ajax({
+
+                cache: false,
+                url: '?_tsk=addtickets&ajax=1',
+                type: 'POST',
+                data: '&act=1&id=' + $serial_number + '&<?php echo MInit::crypt_tp('exec', 'check_exist_sn') ?>',
+                dataType: "JSON",
+                success: function (data) {
+                                      
+                  if ( data['sn'] == "") {
+                     $('.show_info_product').remove();
+                     $('#serial_number').parent('div').after('<span class="show_info_product help-block returned_span">Vous devez saisir un Serial number</span>');
+                  }else
+                     if (typeof data['sn'] != "" && data['error'] == false){
+                     $('.show_info_product').remove();
+                     $('#serial_number').parent('div').after('<span class="show_info_product help-block returned_span">Ce produit n\' a pas été fourni par GLOBALTECH</span>'); 
+                    }
+                    else
+                    if(data[$serial_number] !== 'undefined')
+                    {      
+                     $('.show_info_product').remove();
+                     $('#serial_number').parent('div').after('<span class="show_info_product help-block returned_span">Ce produit a été fourni par GLOBALTECH</span>');
+                    }
+
+                    //}
+
+
+                }//end success
+            });
+
+        });
+        
+        
+        //************************************
 
     });
 </script>	

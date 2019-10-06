@@ -37,3 +37,20 @@ if ($action == 'load_select_produit') {
         echo json_encode(array('error' => false, 'mess' => 'Pas de produit trouvé'));
     }
 }
+
+
+//Load_categorie by type
+if ($action == 'check_exist_sn') {
+    
+    $val= MReq::tp('id');
+    $where = "serial_number = '$val'";
+    $table = 'serial_number';
+    $value = 'id';
+    $text = 'serial_number';
+    
+    if ($output = Mform::load_select($table, $value, $text, $where)) {
+       echo json_encode($output);       
+                   } else {
+        echo json_encode(array('error' => false, 'mess' => 'Pas de SN trouvée ','sn'=>$val));
+    }
+}

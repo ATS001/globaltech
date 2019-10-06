@@ -16,6 +16,7 @@ if (MInit::form_verif('editproduit', false)) {//If form is Posted do Action else
         'iduv' => Mreq::tp('iduv'),
         'idtype' => Mreq::tp('idtype'),
         'id_entrepot' => Mreq::tp('id_entrepot'),
+        'exige-sn' => Mreq::tp('exige-sn')
     );
 
     //Check if array have empty element return list
@@ -56,7 +57,7 @@ if (MInit::form_verif('editproduit', false)) {//If form is Posted do Action else
         $empty_list .= "<li>Entrepôt</li>";
         $checker = 1;
     }
-
+    
 
     $empty_list .= "</ul>";
     if ($checker == 1) {

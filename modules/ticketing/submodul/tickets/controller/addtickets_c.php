@@ -13,10 +13,12 @@ if (MInit::form_verif('addtickets', false)) {
         'id_client' => Mreq::tp('id_client'),
         'projet' => Mreq::tp('projet'),
         'message' => Mreq::tp('message'),
+        'date_probleme' => Mreq::tp('date_probleme'),
         'date_previs' => Mreq::tp('date_previs'),
         'type_produit' => Mreq::tp('type_produit'),
         'categorie_produit' => Mreq::tp('categorie_produit'),
         'id_produit'=> Mreq::tp('id_produit'),
+        'id_technicien'=> Mreq::tp('id_technicien'),
         'serial_number'=>Mreq::tp('serial_number'),
          );
 
