@@ -64,6 +64,7 @@ $html_data_table = new Mdatatable();
 $html_data_table->columns_html = $array_column;
 $html_data_table->title_module = "Devis";
 $html_data_table->task = 'devis';
+//$html_data_table->btn_add_data = MInit::crypt_tp('id_clnt','124').'&'.MInit::crypt_tp('tsk_aft','detailsclient');
 $html_data_table->btn_return = array('task' =>'tdb');
 $html_data_table->use_filter = true;
 //$html_data_table->btn_action = false;

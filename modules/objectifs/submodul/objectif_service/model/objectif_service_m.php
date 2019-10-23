@@ -701,6 +701,7 @@ class Mobjectif_service {
         global $db;
         $table = 'objectif_service';
         $id_service = session::get('service');
+        $where = null;
         if(in_array($id_service, array(1, 3))){
             $where = null; 
         }elseif(in_array($id_service, array(2, 7))){

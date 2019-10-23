@@ -2559,8 +2559,16 @@
 		var callback = function ( json ) {
 			_fnCallbackFire( oSettings, null, 'xhr', [oSettings, json, oSettings.jqXHR] );
 			fn( json );
-			var tag_filter =  json.filter  
+			
+			var $id_table = $(instance.selector).attr('id');
+			
+            
+			var tag_filter =  json.filter;  
 			if(tag_filter !== null){
+				$('.zone_tag_filter').remove();
+				$('#head_'+ $id_table).addClass('table-header-filtred');
+                $('.btn_search').hide();
+                $('.btn_rmv_search').removeClass('hide').show();
 				$('.btn_rmv_search').parent().closest('div').after(tag_filter);
 			}
 			

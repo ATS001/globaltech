@@ -57,7 +57,7 @@ $only_owner = null;
 $id_service = session::get('service');
 if($id_service == 7)
 {
-    $only_owner = ' AND devis.creusr = '.session::get('userid');
+    $only_owner = ' AND clients.creusr = '.session::get('userid');
 }
 //Creat new instance
 $list_data_table = new Mdatatable();
