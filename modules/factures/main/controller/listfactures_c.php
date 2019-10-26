@@ -103,6 +103,7 @@ $list_data_table->file_name = 'liste_factures';
 $list_data_table->title_report = 'Liste factures';
 
 //Set Fliter setting
+$list_data_table->data_filter = array('id' => array('int','5'), 'con_clt' => array('text','9'), 'df' => array('date','5'), 'periode' => array('date','5'), 'tttc' => array('text','5') );
 
 //Set Order Status
 //{"attente_validation":"0", "attente_envoi_client":"1", "attente_paiement":"2","paye_partiellement":"3","facture_payee":"4","facture_archivee":"100"}
