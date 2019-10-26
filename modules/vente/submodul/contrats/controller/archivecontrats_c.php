@@ -14,13 +14,6 @@ if(!MInit::crypt_tp('id', null, 'D')or !$contrats->get_contrat())
    exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
 
-
-//Etat for validate row
-//$etat = $contrats->contrats_info['etat'];
-//$contrats->archiveabonnement($etat)
-//Execute Validate - delete
-
-
 if($contrats->archivecontrats())
 {
 	exit("1#".$contrats->log);

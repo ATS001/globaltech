@@ -1,7 +1,7 @@
 <?php
 //array colomn
 $array_column = array(
-	array(
+    array(
         'column' => 'factures.id',
         'type'   => '',
         'alias'  => 'id',
@@ -25,12 +25,11 @@ $array_column = array(
         'header' => 'Date',
         'align'  => 'C'
     ),
-    
     array(
         'column' => 'factures.total_ttc',
         'type'   => 'int',
         'alias'  => 'tttc',
-        'width'  => '6',
+        'width'  => '8',
         'header' => 'Total TTC',
         'align'  => 'R'
     ),
@@ -39,7 +38,7 @@ $array_column = array(
         'column' => 'factures.total_paye',
         'type'   => 'int',
         'alias'  => 'tp',
-        'width'  => '7',
+        'width'  => '8',
         'header' => 'Total payé',
         'align'  => 'R'
     ),
@@ -48,7 +47,7 @@ $array_column = array(
         'column' => 'factures.reste',
         'type'   => 'int',
         'alias'  => 'rest',
-        'width'  => '6',
+        'width'  => '8',
         'header' => 'Reste',
         'align'  => 'R'
     ),
@@ -56,7 +55,7 @@ $array_column = array(
         'column' => 'CONCAT((SELECT c.reference FROM clients c WHERE c.denomination=factures.client group by denomination), " - ",factures.client)',
         'type'   => '',
         'alias'  => 'con_clt',
-        'width'  => '17',
+        'width'  => '27',
         'header' => 'Client',
         'align'  => 'C'
     ),
@@ -65,7 +64,7 @@ $array_column = array(
         'type'   => 'html',
         'html'   => 'IF(base_fact="C",CONCAT("<b>DU</b> ", DATE_FORMAT(factures.du,"%d-%m-%Y")," <b>AU</b> ",DATE_FORMAT(factures.au,"%d-%m-%Y"))," ")',
         'alias'  => 'periode',
-        'width'  => '13',
+        'width'  => '12',
         'header' => 'Période facturée',
         'align'  => 'C'
     ),
@@ -73,7 +72,7 @@ $array_column = array(
         'column' => 'statut',
         'type'   => '',
         'alias'  => 'statut',
-        'width'  => '8',
+        'width'  => '10',
         'header' => 'Statut',
         'align'  => 'C'
     ),
@@ -102,6 +101,9 @@ $list_data_table->task = 'factures';
 $list_data_table->file_name = 'liste_factures';
 //Set Title of report
 $list_data_table->title_report = 'Liste factures';
+
+//Set Fliter setting
+$list_data_table->data_filter = array('id' => array('int','5'), 'con_clt' => array('text','9'), 'df' => array('date','5'), 'periode' => array('date','5'), 'tttc' => array('text','5') );
 
 //Set Order Status
 //{"attente_validation":"0", "attente_envoi_client":"1", "attente_paiement":"2","paye_partiellement":"3","facture_payee":"4","facture_archivee":"100"}
