@@ -13,7 +13,7 @@ $array_column = array(
         'column' => 'contrats.reference',
         'type'   => '',
         'alias'  => 'reference',
-        'width'  => '10',
+        'width'  => '13',
         'header' => 'Référence',
         'align'  => 'L'
     ),
@@ -21,7 +21,7 @@ $array_column = array(
         'column' => 'devis.reference',
         'type'   => '',
         'alias'  => 'devis',
-        'width'  => '10',
+        'width'  => '13',
         'header' => 'Devis',
         'align'  => 'L'
     ),
@@ -29,7 +29,7 @@ $array_column = array(
         'column' => 'contrats.date_contrat',
         'type'   => 'date',
         'alias'  => 'date_contrat',
-        'width'  => '10',
+        'width'  => '8',
         'header' => 'Date Contrat',
         'align'  => 'C'
     ),
@@ -37,15 +37,15 @@ $array_column = array(
         'column' => 'CONCAT(clients.reference, " - ",clients.denomination)',
         'type'   => '',
         'alias'  => 'client',
-        'width'  => '10',
-        'header' => 'client',
+        'width'  => '30',
+        'header' => 'Client',
         'align'  => 'L'
     ),
     array(
         'column' => 'contrats.date_effet',
         'type'   => 'date',
         'alias'  => 'date_effet',
-        'width'  => '10',
+        'width'  => '8',
         'header' => 'Date Début',
         'align'  => 'C'
     ),
@@ -53,7 +53,7 @@ $array_column = array(
         'column' => 'contrats.date_fin',
         'type'   => 'date',
         'alias'  => 'date_fin',
-        'width'  => '10',
+        'width'  => '8',
         'header' => 'Date Fin',
         'align'  => 'C'
     ),
@@ -73,6 +73,8 @@ $html_data_table->columns_html = $array_column;
 $html_data_table->title_module = "Abonnement";
 $html_data_table->task = 'contrats';
 
+$html_data_table->btn_return = array('task' =>'tdb');
+$html_data_table->use_filter = true;
 
 if(!$data = $html_data_table->table_html())
 {

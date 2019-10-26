@@ -1,7 +1,7 @@
 <?php
 //array colomn
 $array_column = array(
-	array(
+    array(
         'column' => 'contrats.id',
         'type'   => '',
         'alias'  => 'id',
@@ -13,7 +13,7 @@ $array_column = array(
         'column' => 'contrats.reference',
         'type'   => '',
         'alias'  => 'reference',
-        'width'  => '10',
+        'width'  => '13',
         'header' => 'Référence',
         'align'  => 'L'
     ),
@@ -21,7 +21,7 @@ $array_column = array(
         'column' => 'devis.reference',
         'type'   => '',
         'alias'  => 'devis',
-        'width'  => '10',
+        'width'  => '13',
         'header' => 'Devis',
         'align'  => 'L'
     ),
@@ -29,7 +29,7 @@ $array_column = array(
         'column' => 'contrats.date_contrat',
         'type'   => 'date',
         'alias'  => 'date_contrat',
-        'width'  => '10',
+        'width'  => '8',
         'header' => 'Date Contrat',
         'align'  => 'C'
     ),
@@ -37,15 +37,15 @@ $array_column = array(
         'column' => 'CONCAT(clients.reference, " - ",clients.denomination)',
         'type'   => '',
         'alias'  => 'client',
-        'width'  => '10',
-        'header' => 'client',
+        'width'  => '30',
+        'header' => 'Client',
         'align'  => 'L'
     ),
     array(
         'column' => 'contrats.date_effet',
         'type'   => 'date',
         'alias'  => 'date_effet',
-        'width'  => '10',
+        'width'  => '8',
         'header' => 'Date Début',
         'align'  => 'C'
     ),
@@ -53,7 +53,7 @@ $array_column = array(
         'column' => 'contrats.date_fin',
         'type'   => 'date',
         'alias'  => 'date_fin',
-        'width'  => '10',
+        'width'  => '8',
         'header' => 'Date Fin',
         'align'  => 'C'
     ),
@@ -83,6 +83,10 @@ $list_data_table->task = 'contrats';
 $list_data_table->file_name = 'liste_contrats';
 //Set Title of report
 $list_data_table->title_report = 'Liste des abonnements';
+
+//Set Fliter setting
+$list_data_table->data_filter = array('id' => array('int','5'), 'client' => array('text','9'), 'date_contrat' => array('date','5'), 'date_effet' => array('date','5'), 'date_fin' => array('date','5') );
+
 //Print JSON DATA
 if(!$data = $list_data_table->Query_maker())
 {
