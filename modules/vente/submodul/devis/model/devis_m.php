@@ -9,32 +9,34 @@ class Mdevis
 	//Declared Private
 	private $_data; //data receive from form
     //Declared Variable
-    var $table            = 'devis'; //Main table of module
-    var $table_details    = 'd_devis'; //Tables détails devis
-    var $last_id          = null;//return last ID after insert command
-    var $log              = null;//Log of all opération.
-    var $id_devis         = null;// Devis ID append when request
-    var $token            = null;//user for recovery function
-    var $devis_info       = null;//Array stock all ville info
-    var $devis_d_info     = null;//
-    var $reference        = null;// Reference Devis
-    var $error            = true;//Error bol changed when an error is occured
-    var $valeur_remis_d   = null;//
-    var $total_remise     = null;//
-    var $prix_u_final     = null;//
-    var $total_ht_d       = null;//
-    var $total_tva_d      = null;//
-    var $total_ttc_d      = null;//
-    var $valeur_remis_t   = null;//
-    var $total_ht_t       = null;// 
-    var $total_tva_t      = null;//
-    var $order_detail     = null; //
-    var $sum_total_ht     = null;//
-    var $arr_prduit       = array();
-    var $attached         = null;
-    var $type_devis       = null;//Type Devis (ABN / VNT)
-    var $info_temp_client = array();
-    var $total_commission = null;//
+    var $table               = 'devis'; //Main table of module
+    var $table_details       = 'd_devis'; //Tables détails devis
+    var $last_id             = null;//return last ID after insert command
+    var $log                 = null;//Log of all opération.
+    var $id_devis            = null;// Devis ID append when request
+    var $token               = null;//user for recovery function
+    var $devis_info          = null;//Array stock all ville info
+    var $devis_d_info        = null;//
+    var $reference           = null;// Reference Devis
+    var $error               = true;//Error bol changed when an error is occured
+    var $valeur_remis_d      = null;//
+    var $total_remise        = null;//
+    var $prix_u_final        = null;//
+    var $total_ht_d          = null;//
+    var $total_tva_d         = null;//
+    var $total_ttc_d         = null;//
+    var $valeur_remis_t      = null;//
+    var $total_ht_t          = null;// 
+    var $total_tva_t         = null;//
+    var $order_detail        = null; //
+    var $sum_total_ht        = null;//
+    var $arr_prduit          = array();
+    var $attached            = null;
+    var $type_devis          = null;//Type Devis (ABN / VNT)
+    var $info_temp_client    = array();
+    var $total_commission    = null;//
+    var $total_commission_ex = null;//
+    var $etat_valid_devis    = 0;
 
     
 
@@ -504,7 +506,7 @@ class Mdevis
       //Get sum of details
         	$this->Get_sum_detail($this->_data['tkn_frm']); 
       //calcul values devis
-        	$this->Calculate_devis_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva'],$this->_data['commission']);
+        	$this->Calculate_devis_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva'],$this->_data['commission'], $this->_data['commission_ex']);
             global $db;
             //Generate reference
             if(!$reference = $db->Generate_reference($this->table, 'DEV'))
@@ -523,60 +525,25 @@ class Mdevis
 
 
 		//Format values for Insert query 
-            $montant_remise   = $this->sum_total_ht - $this->total_ht_t;
-            $totalht          = $this->total_ht_t;
-            $totaltva         = $this->total_tva_t;
-            $totalttc         = $this->total_ttc_t;
-            $valeur_remise    = $this->valeur_remis_t;
-            $total_remise     = $this->total_remise;
-            $total_commission = $this->total_commission;
+               $montant_remise      = $this->sum_total_ht - $this->total_ht_t;
+               $totalht             = $this->total_ht_t;
+               $totaltva            = $this->total_tva_t;
+               $totalttc            = $this->total_ttc_t;
+               $valeur_remise       = $this->valeur_remis_t;
+               $total_remise        = $this->total_remise;
+               $total_commission    = $this->total_commission;
+               $total_commission_ex = $this->total_commission_ex;
+               
+
+            
             
 
-            //Check if need validate DG
-            $plafond_validate_dg = Msetting::get_set('plafond_valid_dg');
-            if($plafond_validate_dg == null)
+            if(!$this->get_commerciale_remise_plafond($this->_data['id_commercial'], $valeur_remise))
             {
-                $this->error = false;
-                $this->log .= "Manque paramètre plafond_valid_dg";
-                return false;
-            }
-            $etat_valid_dg = Msetting::get_set('etat_devis', 'valid_devis_dg');
-            if($etat_valid_dg == null)
-            {
-                $this->error = false;
-                $this->log .= "Manque paramètre valid_devis_dg";
                 return false;
             }
 
-            if($plafond_validate_dg <= $totalttc)
-            {
-                $etat_line = $etat_valid_dg;
-                $this->log .= '</br> Le montant global dépasse le plafond autorisé </br> Ce devis necéssite une validation DG';
-            }else{
-                $etat_line        = 0;
-            }
-            if($valeur_remise > 10 && (session::get('service') != 3 OR session::get('service') != 1))
-            {
-                
-                $this->log .= '</br> La remise dépasse le plafond autorisé : 10% !';
-                return false;
-            }
-
-            $commercial = new Mcommerciale();
-            $commercial->id_commerciale = $this->_data['id_commercial'];
-            if($commercial->get_commerciale())
-            { 
-                $plafond_remise = $commercial->g('id_service') == 7 ? Msetting::get_set('plafond_remise_commercial') : 10; 
-            }
-
-            if($valeur_remise > $plafond_remise && (session::get('service') != 3 OR session::get('service') != 1))
-            {
-                $etat_line = $etat_valid_dg;
-                $this->log .= '</br> La remise dépasse '.$plafond_remise.'%! </br> Ce devis necéssite une validation DG';
-            }else{
-                $etat_line        = 0;
-            }
-            
+            $etat_line = $this->etat_valid_devis;
 
 
         	$values["reference"]       = MySQL::SQLValue($this->reference);
@@ -585,12 +552,20 @@ class Mdevis
             $values["reference"]       = MySQL::SQLValue($reference);
         	$values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
             $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
+
             $values["id_commercial"]   = MySQL::SQLValue($this->_data['id_commercial']);
             $values["commission"]      = MySQL::SQLValue($this->_data['commission']);
             $values["total_commission"]= MySQL::SQLValue($total_commission);
+            $values["type_commission"] = MySQL::SQLValue($this->_data['type_commission']);
+
+            $values["id_commercial_ex"]   = MySQL::SQLValue($this->_data['id_commercial_ex']);
+            $values["commission_ex"]      = MySQL::SQLValue($this->_data['commission_ex']);
+            $values["total_commission_ex"]= MySQL::SQLValue($total_commission_ex);
+            $values["type_commission_ex"] = MySQL::SQLValue($this->_data['type_commission_ex']);
+
             $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
             $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
-            $values["type_commission"] = MySQL::SQLValue($this->_data['type_commission']);
+            
             $values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
             $values["total_remise"]    = MySQL::SQLValue($montant_remise);
             $values["projet"]          = MySQL::SQLValue($this->_data['projet']);
@@ -658,7 +633,7 @@ class Mdevis
     	$this->Get_sum_detail($this->_data['tkn_frm']); 
         //calcul values devis
         
-    	$this->Calculate_devis_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva'],$this->_data['commission']);
+    	$this->Calculate_devis_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva'],$this->_data['commission'], $this->_data['commission_ex']);
 
 
         //Get Type devis
@@ -672,85 +647,58 @@ class Mdevis
         $this->get_devis();
         //Format values for Insert query 
     	global $db;
-        $montant_remise = $this->sum_total_ht - $this->total_ht_t;
-    	$totalht  = $this->total_ht_t;
-    	$totaltva = $this->total_tva_t;
-    	$totalttc = $this->total_ttc_t;
-        $total_commission=$this->total_commission;
-        $valeur_remise = number_format($this->valeur_remis_t, 2,'.', '');
-        $this->reference = $this->devis_info['reference'];
+        $montant_remise      = $this->sum_total_ht - $this->total_ht_t;
+        $totalht             = $this->total_ht_t;
+        $totaltva            = $this->total_tva_t;
+        $totalttc            = $this->total_ttc_t;
+        $total_commission    = $this->total_commission;
+        $total_commission_ex = $this->total_commission_ex;
+        $valeur_remise       = number_format($this->valeur_remis_t, 2,'.', '');
+        $this->reference     = $this->devis_info['reference'];
+        if(!$this->get_commerciale_remise_plafond($this->_data['id_commercial'], $valeur_remise))
+        {
+            return false;
+        }
+        $etat_line = $this->etat_valid_devis;
 
-        //Check if need validate DG
-            $plafond_validate_dg = Msetting::get_set('plafond_valid_dg');
-            if($plafond_validate_dg == null)
-            {
-                $this->error = false;
-                $this->log .= "Manque paramètre plafond_valid_dg";
-                return false;
-            }
-            $etat_valid_dg = Msetting::get_set('etat_devis', 'valid_devis_dg');
-            if($etat_valid_dg == null)
-            {
-                $this->error = false;
-                $this->log .= "Manque paramètre valid_devis_dg";
-                return false;
-            }
+            
 
-            if($plafond_validate_dg <= $totalttc)
-            {
-                $etat_line = $etat_valid_dg;
-                $this->log .= '</br> Le montant global dépasse le plafond autorisé </br> Ce devis necéssite une validation DG';
-            }else{
-                $etat_line        = 0;
-            }
-            if($valeur_remise > 10 && (session::get('service') != 3 OR session::get('service') != 1))
-            {
-                
-                $this->log .= '</br> La remise dépasse le plafond autorisé : 10% !';
-                return false;
-            }
-
-            $commercial = new Mcommerciale();
-            $commercial->id_commerciale = $this->_data['id_commercial'];
-            if($commercial->get_commerciale())
-            { 
-                $plafond_remise = $commercial->g('id_service') == 7 ? Msetting::get_set('plafond_remise_commercial') : 10; 
-            }
-
-            if($valeur_remise > $plafond_remise && (session::get('service') != 3 OR session::get('service') != 1))
-            {
-                $etat_line = $etat_valid_dg;
-                $this->log .= '</br> La remise dépasse '.$plafond_remise.'%! </br> Ce devis necéssite une validation DG';
-            }else{
-                $etat_line        = 0;
-            }
+            
 
 
 
 
-        $values["reference"]       = MySQL::SQLValue($this->reference);
-        $values["tkn_frm"]         = MySQL::SQLValue($this->_data['tkn_frm']);
-        $values["type_devis"]      = MySQL::SQLValue($this->type_devis);
-        $values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
-        $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
-        $values["id_commercial"]   = MySQL::SQLValue($this->_data['id_commercial']);
-        $values["commission"]      = MySQL::SQLValue($this->_data['commission']);
-        $values["total_commission"]= MySQL::SQLValue($total_commission);
-        $values["date_devis"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
-        $values["type_remise"]     = MySQL::SQLValue($this->_data['type_remise']);
-        $values["valeur_remise"]   = MySQL::SQLValue($valeur_remise);
-        $values["total_remise"]   = MySQL::SQLValue($montant_remise);
-        $values["projet"]          = MySQL::SQLValue($this->_data['projet']);
-        $values["vie"]             = MySQL::SQLValue($this->_data['vie']);
-        $values["claus_comercial"] = MySQL::SQLValue($this->_data['claus_comercial']);
-        $values["type_commission"] = MySQL::SQLValue($this->_data['type_commission']);
-        $values["totalht"]         = MySQL::SQLValue($totalht);
-        $values["totalttc"]        = MySQL::SQLValue($totalttc);
-        $values["totaltva"]        = MySQL::SQLValue($totaltva);
-        $values["etat"]            = MySQL::SQLValue($etat_line);
-        $values["updusr"]          = MySQL::SQLValue(session::get('userid'));
-        $values["upddat"]          = ' CURRENT_TIMESTAMP ';
-        $wheres["id"]              = MySQL::SQLValue($this->id_devis);
+            $values["reference"]           = MySQL::SQLValue($this->reference);
+            $values["tkn_frm"]             = MySQL::SQLValue($this->_data['tkn_frm']);
+            $values["type_devis"]          = MySQL::SQLValue($this->type_devis);
+            $values["id_client"]           = MySQL::SQLValue($this->_data['id_client']);
+            $values["tva"]                 = MySQL::SQLValue($this->_data['tva']);
+            
+            $values["id_commercial"]       = MySQL::SQLValue($this->_data['id_commercial']);
+            $values["commission"]          = MySQL::SQLValue($this->_data['commission']);
+            $values["total_commission"]    = MySQL::SQLValue($total_commission);
+            $values["type_commission"]     = MySQL::SQLValue($this->_data['type_commission']);
+            
+            $values["id_commercial_ex"]    = MySQL::SQLValue($this->_data['id_commercial_ex']);
+            $values["commission_ex"]       = MySQL::SQLValue($this->_data['commission_ex']);
+            $values["total_commission_ex"] = MySQL::SQLValue($total_commission_ex);
+            $values["type_commission_ex"]  = MySQL::SQLValue($this->_data['type_commission_ex']);
+            
+            $values["date_devis"]          = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_devis'])));
+            $values["type_remise"]         = MySQL::SQLValue($this->_data['type_remise']);
+            $values["valeur_remise"]       = MySQL::SQLValue($valeur_remise);
+            $values["total_remise"]        = MySQL::SQLValue($montant_remise);
+            $values["projet"]              = MySQL::SQLValue($this->_data['projet']);
+            $values["vie"]                 = MySQL::SQLValue($this->_data['vie']);
+            $values["claus_comercial"]     = MySQL::SQLValue($this->_data['claus_comercial']);
+            
+            $values["totalht"]             = MySQL::SQLValue($totalht);
+            $values["totalttc"]            = MySQL::SQLValue($totalttc);
+            $values["totaltva"]            = MySQL::SQLValue($totaltva);
+            $values["etat"]                = MySQL::SQLValue($etat_line);
+            $values["updusr"]              = MySQL::SQLValue(session::get('userid'));
+            $values["upddat"]              = ' CURRENT_TIMESTAMP ';
+            $wheres["id"]                  = MySQL::SQLValue($this->id_devis);
         //Check if Insert Query been executed (False / True)
         if (!$result = $db->UpdateRows($this->table, $values, $wheres)) 
         {
@@ -858,7 +806,7 @@ class Mdevis
 
     }
 
-    private function Calculate_devis_t($totalht, $type_remise, $value_remise, $tva,$commission)
+    private function Calculate_devis_t($totalht, $type_remise, $value_remise, $tva, $commission, $commission_ex)
     {
     	if($type_remise == 'P')
     	{
@@ -891,7 +839,8 @@ class Mdevis
         $this->total_ttc_t = $this->total_ht_t + $this->total_tva_t;
 
         //Total commission
-        $this->total_commission = ($this->total_ttc_t * $commission) / 100;
+        $this->total_commission    = ($this->total_ttc_t * $commission) / 100;
+        $this->total_commission_ex = ($this->total_ttc_t * $commission_ex) / 100;
 
         return true;
     }
@@ -1060,37 +1009,6 @@ class Mdevis
         }
     }
 
-    /*private function check_remise($id_commercial, $remise, $type_remise)
-    {
-        $commercial = new Mcommerciale();
-        $commercial->id_commerciale = $id_commercial;
-        if($commercial->get_commerciale())
-        { 
-            $plafond_remise = $commercial->g('id_service') == 7 ? Msetting::get_set('plafond_remise_commercial') : 10; 
-            if($type_remise == 'P')
-            {
-                if($plafond_remise < $remise){
-                    $this->log .= 'Le plafond de remise applicable est de: '+$plafond_remise+'% du Total des articles</br>Vous avez la possibilité d\'appliquer une remise jusqu\'à '+percentage_othorized_dg+'%  soumise à la validation de DG '; 
-                    return false;
-                }
-                $prix_u_remised = $prix_u - ($prix_u * $val_remise) / 100;
-                $this->valeur_remis_d = $val_remise;
-
-            }else if($type_remise == 'M'){
-                $prix_u_remised = $prix_u - $val_remise;
-                $this->valeur_remis_d = ($val_remise * 100) / $prix_u;
-            }else{
-                $prix_u_remised = $prix_u;
-            }
-        }else{
-           $this->log .= '</br>Problème vérification plafond remise'; 
-           return false; 
-        }
-
-        if($remise)
-        # code...
-    }
-*/
     public function save_new_details_devis($tkn_frm)
     {
 
@@ -1098,7 +1016,7 @@ class Mdevis
         $this->check_detail_exist_in_devis($tkn_frm, $this->_data['id_produit']);
         $this->check_non_exist('produits','id',$this->_data['id_produit'] ,'Réference du produit' );
         $this->check_detail_have_more_abn($tkn_frm);
-        //var_dump($this->_data['commission']);
+
         //Check $this->error (true / false)
         if($this->error == true){
         //Calcul Montant
@@ -1117,13 +1035,11 @@ class Mdevis
             
             $valeur_remis_d = number_format($this->valeur_remis_d, 2,'.', '');
             $prix_u_final   = $this->prix_u_final;
-            if($valeur_remis_d > 5 && (session::get('service') != 3 OR session::get('service') != 1))
+            if(!$this->get_commerciale_remise_plafond($this->_data['id_commercial'], $valeur_remis_d))
             {
-                
-                $this->log .= '</br> La remise dépasse le plafond autorisé : 10% !';
                 return false;
             }
-            
+                        
           //Get order line into devis
             $this->get_order_detail($tkn_frm);
             $order_detail = $this->order_detail;
@@ -1214,10 +1130,8 @@ class Mdevis
             $produit             = new Mproduit();
             $produit->id_produit = MySQL::SQLValue($this->_data['id_produit']);
             $produit->get_produit();
-            if($valeur_remis_d > 5 && (session::get('service') != 3 OR session::get('service') != 1))
+            if(!$this->get_commerciale_remise_plafond($this->_data['id_commercial'], $valeur_remis_d))
             {
-                
-                $this->log .= '</br> La remise dépasse le plafond autorisé : 10% !';
                 return false;
             }
 
@@ -1771,6 +1685,7 @@ class Mdevis
     {
         $old_etat = Msetting::get_set('etat_devis', 'creat_devis');
         $old_etat_dg = Msetting::get_set('etat_devis', 'valid_devis_dg');
+        $old_etat_dcm = Msetting::get_set('etat_devis', 'valid_devis_dcm');
 
         if($old_etat == null)
         {
@@ -1785,7 +1700,13 @@ class Mdevis
             $this->log .= "Manque paramètre etat_devis => valid_devis_dg";
             return false;
         }
-        if($etat != $old_etat AND $etat != $old_etat_dg)
+        if($old_etat_dcm == null)
+        {
+            $this->error = false;
+            $this->log .= "Manque paramètre etat_devis => valid_devis_dcm";
+            return false;
+        }
+        if($etat != $old_etat AND $etat != $old_etat_dg AND $etat != $old_etat_dcm)
         {
             $this->error = false;
             $this->log .= "Ce devis ne peux pas être validé //Etat faild";
@@ -2395,6 +2316,14 @@ class Mdevis
         }
     }
 
+    static public function get_client_name($id_client)
+    {
+        global $db;
+        $sql = "SELECT denomination FROM clients WHERE id = $id_client";
+        $denomination = $db->QuerySingleValue($sql);
+        return $denomination;
+    }
+
     public function save_new_client_temp()
     {
         global $db;
@@ -2615,6 +2544,7 @@ class Mdevis
         global $db;        
         $id_user    = session::get('userid');
         $id_service = session::get('service');
+        $where_user = null;
         if(in_array($id_service, array(1, 3, 2))){
             $where_user = null;
         }elseif($id_service == 7){
@@ -2659,6 +2589,7 @@ class Mdevis
         global $db;        
         $id_user    = session::get('userid');
         $id_service = session::get('service');
+        $where_user = null;
         if(in_array($id_service, array(1, 3, 2))){
             $where_user = null;
         }elseif($id_service == 7){
@@ -2805,5 +2736,55 @@ class Mdevis
         } else {
             return TRUE;
         }
+    }
+
+    private function get_commerciale_remise_plafond($id_commercial, $valeur_remise)
+    {
+        return true;
+        /*global $db;
+        $etat_valid_dg = Msetting::get_set('etat_devis', 'valid_devis_dg');
+        $etat_valid_dcm = Msetting::get_set('etat_devis', 'valid_devis_dcm');
+        if($etat_valid_dg == null)
+        {
+            $this->error = false;
+            $this->log .= "Manque paramètre valid_devis_dg";
+            return false;
+        }
+        if($etat_valid_dcm == null)
+        {
+            $this->error = false;
+            $this->log .= "Manque paramètre valid_devis_dcm";
+            return false;
+        }
+        
+        $req_sql ="SELECT remise, remise_valid_dcm, remise_valid_dg FROM commerciaux WHERE id = $id_commercial";
+        
+        if(!$db->Query($req_sql))
+        {
+            $this->log .= '</br>Impossible récuperation plafonds remises';
+            return false;
+        }else{
+            if(!$db->RowCount())
+            {
+                $this->log .= '</br>Impossible récuperation plafonds remises';
+                return false;
+            }
+            $arr_result = $db->RowArray();
+            $plafond_remise = $arr_result['remise'];
+            $plafond_remise_valid_dcm = $arr_result['remise_valid_dcm'];
+            $plafond_remise_valid_dg = $arr_result['remise_valid_dg'];
+            if($valeur_remise > $plafond_remise_valid_dg){
+                $this->log .= '</br>La remise appliquée dépasse le plafond autorisé ('.$plafond_remise_valid_dg.'%)';
+                return false;
+            }elseif($valeur_remise > $plafond_remise && $valeur_remise <= $plafond_remise_valid_dcm) {
+                $this->log .= '</br>La remise appliquée dépasse le plafond autorisé ('.$plafond_remise.'%)</br>Le devis doit être validé par le DCM';
+                $this->etat_valid_devis = $etat_valid_dcm;
+                
+            }elseif ($valeur_remise > $plafond_remise && $valeur_remise > $plafond_remise_valid_dcm) {
+                $this->log .= '</br>La remise appliquée dépasse le plafond autorisé ('.$plafond_remise_valid_dcm.'%)</br>Le devis doit être validé par le DG';  
+                $this->etat_valid_devis = $etat_valid_dg;               
+            }
+            return true;              
+        }*/
     }
 }

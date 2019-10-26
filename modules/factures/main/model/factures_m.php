@@ -28,6 +28,7 @@ class Mfacture {
     var $facture_details_info; // Array details facture
     var $type_echeance_info; // Array details facture
     var $compte_commercial_info;
+    var $compte_commercial_ex_info;
     var $reference = null; // Reference 
     var $sum_enc_fact; // Somme encaissements par facture
     var $solde; // Solde client
@@ -46,7 +47,7 @@ class Mfacture {
         ;
     }
 
-    //Get all info categorie_contrats_frn from database for edit form
+    //Get devis commercial from database 
     public function get_commerciale_devis() {
         global $db;
 
@@ -68,7 +69,37 @@ class Mfacture {
                 $this->error = true;
             }
         }
-        //return Array contrats_frn_info
+        //return Array compte_commercial_info
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
+    //Get devis external commercial from database 
+    public function get_commerciale_ex_devis() {
+        global $db;
+
+        $sql = "SELECT  c.id AS commercial_ex, IFNULL(d.commission_ex,0) AS commission_ex, f.reference AS ref_facture, 'Automatique' AS type_commission_ex 
+            FROM devis d,factures f,commerciaux c WHERE  
+            d.id= IF(f.`base_fact`='C',(SELECT ctr.iddevis FROM contrats ctr WHERE ctr.id=f.`idcontrat`),f.`iddevis`)
+            AND d.`id_commercial_ex`=c.id AND f.id  = " . $this->id_facture;
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->compte_commercial_ex_info = $db->RowArray();
+
+                $this->error = true;
+            }
+        }
+        //return Array compte_commercial_ex_info
         if ($this->error == false) {
             return false;
         } else {
@@ -527,7 +558,7 @@ class Mfacture {
 
             //Check if Insert Query been executed (False / True)
             if (!$result = $db->InsertRow('compte_commerciale', $values)) {
-                var_dump($db);
+                //var_dump($db);
                 //False => Set $this->log and $this->error = false
                 $this->log .= $db->Error();
                 $this->error = false;
@@ -557,6 +588,68 @@ class Mfacture {
             return true;
         }
     }
+
+    //Credit commercial account
+    public function credit_compte_commerciale_ex() {
+
+        //$this->sum_encaissement_by_facture($this->_data['idfacture']);
+        //$this->id_facture = $this->_data['idfacture'];
+
+        $this->get_facture();
+
+        $this->get_commerciale_ex_devis();
+
+        global $db;
+        //var_dump($db);
+        if ($this->error == true) {
+
+            global $db;
+            $objet = $this->compte_commercial_ex_info["commission_ex"] . "% de la facture: " . $this->compte_commercial_ex_info["ref_facture"];
+            $values["id_commerciale"] = $this->compte_commercial_ex_info["commercial_ex"];
+            $values["objet"] = MySQL::SQLValue($objet);
+            $values["id_facture"] = $this->id_facture;
+            //$values["id_encaissement"]=$this->last_id;
+            $values["id_encaissement"] = $this->encaissement_info["id"];
+            //$values["credit"] = (($this->_data["montant"] * $this->compte_commercial_ex_info["commission"]) / 100) ;
+            $values["credit"] = (($this->encaissement_info["montant"] * $this->compte_commercial_ex_info["commission_ex"]) / 100);
+            $values["Type"] = MySQL::SQLValue($this->compte_commercial_ex_info["type_commission_ex"]);
+            $values["etat"] = 1;
+            $values["creusr"] = MySQL::SQLValue(session::get("userid"));
+            $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+
+            //Check if Insert Query been executed (False / True)
+            if (!$result = $db->InsertRow('compte_commerciale', $values)) {
+                //var_dump($db);
+                //False => Set $this->log and $this->error = false
+                $this->log .= $db->Error();
+                $this->error = false;
+                $this->log .= '</br>Enregistrement BD non réussie';
+            } else {
+
+                $this->last_id = $result;
+
+                //Check $this->error = true return Green message and Bol true
+                if ($this->error == true) {
+                    $this->log = '</br>Enregistrement réussie: <b>' . 'ID: ' . $this->last_id;
+                    $this->get_facture();
+                } else {
+                    $this->log .= '</br>Enregistrement réussie: <b>' . $this->reference;
+
+                    $this->log .= '</br>Un problème d\'Enregistrement ';
+                }
+            }
+            //Else Error false  
+        } else {
+            $this->log .= '</br>Enregistrement non réussie';
+        }
+        //check if last error is true then return true else rturn false.
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 
     public function edit_compte_commercial() {
         //Get existing data for complement
@@ -705,35 +798,6 @@ class Mfacture {
             $this->log .= $db->Error();
             $this->error = false;
             $this->log .= '<br>Problème de mise à jour du reste ';
-        }
-    }
-
-    //activer ou desactiver un contrats_frn
-    public function valid_contrats_frn($etat = 0) {
-
-        global $db;
-        //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
-        $etat = $etat == 0 ? 1 : 0;
-        //Format value for requet
-        $values["etat"] = MySQL::SQLValue($etat);
-        $values["updusr"] = MySQL::SQLValue(session::get('userid'));
-        $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
-
-        $where["id"] = $this->id_contrats_frn;
-
-        // Execute the update and show error case error
-        if (!$result = $db->UpdateRows($this->table, $values, $where)) {
-            $this->log .= '</br>Impossible de changer le statut!';
-            $this->log .= '</br>' . $db->Error();
-            $this->error = false;
-        } else {
-            $this->log .= '</br>Statut changé! ';
-            $this->error = true;
-        }
-        if ($this->error == false) {
-            return false;
-        } else {
-            return true;
         }
     }
 
@@ -1584,6 +1648,27 @@ class Mfacture {
                 
                 
                 $this->credit_compte_client();
+
+                $this->get_commerciale_devis();
+                if($this->compte_commercial_info['commission']!=0){
+               
+                if($this->credit_compte_commerciale()){
+
+                    $this->get_commerciale_ex_devis();
+                    if($this->compte_commercial_ex_info['commission_ex']!=0){
+               
+                        if($this->credit_compte_commerciale_ex()){
+
+                            $this->error = true;
+
+                        }else {
+
+                            $this->error = false;
+
+                        } 
+                    }
+                }
+                }
                 
                 $this->error = true;
                 
@@ -1831,4 +1916,55 @@ UNION
             return TRUE;
         }
     }
+
+    public function delete_facture() {
+        global $db;
+
+        $table = $this->table;
+        $id_facture = $this->id_facture;
+
+        $this->get_facture();
+
+        $values["etat"] = 200;
+        $values["updusr"] = MySQL::SQLValue(session::get("userid"));
+        $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+
+        $wheres["id"] = $id_facture;
+
+        // If we have an error
+        if ($this->error == true) {
+
+            if (!$result = $db->UpdateRows($table, $values, $wheres)) {
+                //$db->Kill();
+                //var_dump($db);
+                $this->log .= $db->Error();
+                $this->error == false;
+                $this->log .= '</br>Suppression BD non réussie';
+            } else {
+
+                //Check $this->error = true return Green message and Bol true
+                if ($this->error == true) {
+                    $this->log = '</br>Suppression réussie: <b> ID: ' . $id_facture;
+
+                    if (!Mlog::log_exec($this->table, $this->id_facture, 'Suppression Facture', 'Delete')) {
+                        $this->log .= '</br>Un problème de log ';
+                                     }
+
+                } else {
+                    $this->log .= '</br>Suppression non réussie: <b>' . $this->_data['id'];
+                    $this->log .= '</br>Un problème d\'Enregistrement ';
+                }
+            }
+            //Else Error false  
+        } else {
+            $this->log .= '</br>Suppression non réussie';
+        }
+        //check if last error is true then return true else rturn false.
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 }

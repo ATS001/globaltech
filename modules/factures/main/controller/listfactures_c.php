@@ -52,7 +52,7 @@ $array_column = array(
         'align'  => 'R'
     ),
     array(
-        'column' => 'CONCAT((SELECT c.reference FROM clients c WHERE c.denomination=factures.client), " - ",factures.client)',
+        'column' => 'CONCAT((SELECT c.reference FROM clients c WHERE c.denomination=factures.client group by denomination), " - ",factures.client)',
         'type'   => '',
         'alias'  => 'con_clt',
         'width'  => '27',
@@ -83,14 +83,14 @@ $only_owner = null;
 $id_service = session::get('service');
 if($id_service == 7)
 {
-    $only_owner = ' AND devis.creusr = '.session::get('userid');
+    $only_owner = ' AND devis.creusr  = '.session::get('userid');
 }
 //Creat new instance
 $list_data_table = new Mdatatable();
 //Set tabels used in Query
-$list_data_table->tables = array('factures');
+$list_data_table->tables = array('factures, devis');
 //Set Jointure
-$list_data_table->joint = ' 1=1 '.$only_owner;
+$list_data_table->joint = ' devis.id = IF(factures.`base_fact`="C",(SELECT ctr.iddevis FROM contrats ctr WHERE ctr.id=factures.`idcontrat`),factures.`iddevis`) '.$only_owner;
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query

@@ -1,6 +1,5 @@
 <!-- /.row -->
 <?php 
-//include 'addtest_c.php';
 view::load_view('indicators');
 
 $chart = new MHighchart();

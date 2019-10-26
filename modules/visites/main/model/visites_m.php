@@ -111,7 +111,7 @@ class Mvisites {
             $values["raison_sociale"] = MySQL::SQLValue($this->_data["raison_sociale"]);
             $values["nature_visite"] = MySQL::SQLValue($this->_data["nature_visite"]);
             $values["objet_visite"] = MySQL::SQLValue($this->_data["objet_visite"]);
-            $values["date_visite"] = MySQL::SQLValue($this->_data["date_visite"]);
+            $values["date_visite"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
             $values["interlocuteur"] = MySQL::SQLValue($this->_data["interlocuteur"]);
             $values["fonction_interloc"] = MySQL::SQLValue($this->_data["fonction_interloc"]);
             $values["coordonees_interloc"] = MySQL::SQLValue($this->_data["coordonees_interloc"]);
@@ -165,7 +165,7 @@ class Mvisites {
             $values["raison_sociale"] = MySQL::SQLValue($this->_data["raison_sociale"]);
             $values["nature_visite"] = MySQL::SQLValue($this->_data["nature_visite"]);
             $values["objet_visite"] = MySQL::SQLValue($this->_data["objet_visite"]);
-            $values["date_visite"] = MySQL::SQLValue($this->_data["date_visite"]);
+            $values["date_visite"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
             $values["interlocuteur"] = MySQL::SQLValue($this->_data["interlocuteur"]);
             $values["fonction_interloc"] = MySQL::SQLValue($this->_data["fonction_interloc"]);
             $values["coordonees_interloc"] = MySQL::SQLValue($this->_data["coordonees_interloc"]);

@@ -4,6 +4,7 @@ if(MInit::form_verif('add_detaildevis',false))
 {
 	$posted_data = array(
 		'tkn_frm'         => Mreq::tp('tkn_frm') ,
+		'id_commercial'   => Mreq::tp('id_commercial') ,
 		'id_produit'      => Mreq::tp('id_produit') ,
 		'ref_produit'     => Mreq::tp('ref_produit') ,
 		'qte'             => Mreq::tp('qte') ,

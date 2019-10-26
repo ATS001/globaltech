@@ -1,7 +1,7 @@
 <?php
 //array colomn
 $array_column = array(
-	array(
+    array(
         'column' => 'contrats.id',
         'type'   => '',
         'alias'  => 'id',
@@ -15,7 +15,7 @@ $array_column = array(
         'alias'  => 'reference',
         'width'  => '13',
         'header' => 'Référence',
-        'align'  => 'L'
+        'align'  => 'C'
     ),
     array(
         'column' => 'devis.reference',
@@ -23,7 +23,7 @@ $array_column = array(
         'alias'  => 'devis',
         'width'  => '13',
         'header' => 'Devis',
-        'align'  => 'L'
+        'align'  => 'C'
     ),
     array(
         'column' => 'contrats.date_contrat',
@@ -61,10 +61,11 @@ $array_column = array(
         'column' => 'statut',
         'type'   => '',
         'alias'  => 'statut',
-        'width'  => '15',
+        'width'  => '10',
         'header' => 'Statut',
         'align'  => 'C'
     ),
+    
     
  );
 //Creat new instance

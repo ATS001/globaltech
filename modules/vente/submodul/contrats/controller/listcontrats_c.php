@@ -15,7 +15,7 @@ $array_column = array(
         'alias'  => 'reference',
         'width'  => '13',
         'header' => 'Référence',
-        'align'  => 'L'
+        'align'  => 'C'
     ),
     array(
         'column' => 'devis.reference',
@@ -23,7 +23,7 @@ $array_column = array(
         'alias'  => 'devis',
         'width'  => '13',
         'header' => 'Devis',
-        'align'  => 'L'
+        'align'  => 'C'
     ),
     array(
         'column' => 'contrats.date_contrat',
@@ -61,18 +61,24 @@ $array_column = array(
         'column' => 'statut',
         'type'   => '',
         'alias'  => 'statut',
-        'width'  => '15',
+        'width'  => '10',
         'header' => 'Statut',
         'align'  => 'C'
     ),
-    
  );
+//Show line for owner
+$only_owner = null;
+$id_service = session::get('service');
+if($id_service == 7)
+{
+    $only_owner = ' AND contrats.creusr  = '.session::get('userid');
+}
 //Creat new instance
 $list_data_table = new Mdatatable();
 //Set tabels used in Query
 $list_data_table->tables = array('contrats', 'devis','clients');
 //Set Jointure
-$list_data_table->joint = 'contrats.iddevis = devis.id and clients.id = devis.id_client';
+$list_data_table->joint = 'contrats.iddevis = devis.id and clients.id = devis.id_client'.$only_owner;
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query
@@ -95,7 +101,4 @@ if(!$data = $list_data_table->Query_maker())
     echo $data;
 }
 
-
-
 ?>
-	

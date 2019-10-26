@@ -567,7 +567,7 @@ $waw=date('d-m-Y',$datt);
         $output_an = [];
         $total_jr = 0;
         $day = date('d',strtotime($date_d));
-    // var_dump('dkhel')  ; 
+     //var_dump('dkhel')  ; 
 
         if ($day == '01') {
             //var_dump('1');
@@ -581,7 +581,7 @@ $waw=date('d-m-Y',$datt);
      
      
         do {
-
+//var_dump('2');
             $time = date('Y-m-d', strtotime($time . "+ 6 Month"));
             $time2 = date('Y-m-t', strtotime($time . "- 1 Month"));
 
@@ -608,11 +608,12 @@ $waw=date('d-m-Y',$datt);
                         
            $tab_echeance['debut']= date('d-m-Y', strtotime($waw));
            $tab_echeance['fin']=date('d-m-Y', strtotime($month));
-           
+
+
            if($posted_data['periode_fact'] == 'D')
            {
             $tab_echeance['periode_fact']=date('d-m-Y', strtotime($waw));
-        }
+           }
            else{
             if($posted_data['periode_fact'] == 'F')
             $tab_echeance['periode_fact']=date('d-m-Y', strtotime($month));           
@@ -628,19 +629,20 @@ $waw=date('d-m-Y',$datt);
 
         }else{
 
-           //var_dump('2');
+            //var_dump('2');
         $t = new DateTime($date_d);
         $time1 = date_sub($t, date_interval_create_from_date_string('1 days'));
         $time2 = date_format($time1, 'd-m-Y');
 
         $time = strtotime($time2);
         $time = strtotime('+6 month', $time);
-
         $last = date('d-m-Y', strtotime($date_f));
         $res = 0;
-        $datt=strtotime($date_d);
 
-        $tab=array();
+
+ $datt=strtotime($date_d);
+
+ $tab=array();
 
             do {
             $month = date('d-m-Y', $time);
@@ -661,15 +663,17 @@ $waw=date('d-m-Y',$datt);
 
             $time = strtotime('+6 month', $time);
             $time1 = date_sub($t, date_interval_create_from_date_string('1 days'));
-            
-            $waw=date('d-m-Y',$datt);
-            $datt = strtotime('+1 year', $datt);
+        
+$waw=date('d-m-Y',$datt);
+        
+         $datt = strtotime('+6 month', $datt);
 
         
            $tab_echeance['debut']= date('d-m-Y', strtotime($waw));
            $tab_echeance['fin']=date('d-m-Y', strtotime($month));
 
-           if($posted_data['periode_fact'] == 'D')
+           
+  if($posted_data['periode_fact'] == 'D')
            {
             $tab_echeance['periode_fact']=date('d-m-Y', strtotime($waw));
         }
@@ -679,15 +683,15 @@ $waw=date('d-m-Y',$datt);
            }
 
 
-           array_push($tab,$tab_echeance); 
-
+           array_push($tab,$tab_echeance);         
 
         } while (date('Y-m-d', strtotime($month)) < date('Y-m-d', strtotime($last)));
 
         }
 
+
         if (date('Y-m-d', strtotime($month)) <> date('Y-m-d', strtotime($last))) {
-            $control_echeance_s = "<ul>Il faut choisir une période Semestrielle, ou séléctionner le type d'échéance : Autres   !!!</ul>";
+            $control_echeance_s = "<ul>Il faut choisir une période Simestrielle, ou séléctionner le type d'échéance : Autres   !!!</ul>";
             $checker = 7;
         }
 
