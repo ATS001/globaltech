@@ -21,25 +21,24 @@ $array_column = array(
         'column' => 'clients.denomination',
         'type'   => '',
         'alias'  => 'denomination',
-        'width'  => '28',
+        'width'  => '30',
         'header' => 'Dénomination',
-        'align'  => 'L'
-    ),
-  
-    array(
-        'column' => 'clients.r_social',
-        'type'   => '',
-        'alias'  => 'r_social',
-        'width'  => '29',
-        'header' => 'Raison Sociale',
         'align'  => 'L'
     ),
     array(
         'column' => 'categorie_client.categorie_client',
         'type'   => '',
         'alias'  => 'categorie_client',
-        'width'  => '12',
+        'width'  => '15',
         'header' => 'Catégorie ',
+        'align'  => 'C'
+    ),
+    array(
+        'column' => "clients.credat",
+        'type'   => 'date',
+        'alias'  => 'date_client',
+        'width'  => '8',
+        'header' => 'Date Création',
         'align'  => 'C'
     ),
     array(
@@ -75,6 +74,10 @@ $list_data_table->task = 'clients';
 $list_data_table->file_name = 'liste_clients';
 //Set Title of report
 $list_data_table->title_report = 'Liste Clients';
+
+//Set Fliter setting
+$list_data_table->data_filter = array('id' => array('int','5'), 'categorie_client' => array('text','9'), 'denomination' => array('text','9'), 'date_client' => array('date','5'));
+
 //Print JSON DATA
 if(!$data = $list_data_table->Query_maker())
 {

@@ -41,6 +41,9 @@ if(!$info_contrat->get_devis_info())
 </div><!-- /.page-header -->
 <!-- ajax layout which only needs content area -->
 <div class="row">
+<?php Mmodul::get_statut_etat_line('contrats', $info_contrat->s('etat'));
+//echo $actions;
+?>
 	<div class="col-xs-12">
 		<!-- PAGE CONTENT BEGINS -->
 		<div class="space-6"></div>
@@ -201,4 +204,3 @@ if(!$info_contrat->get_devis_info())
 	  //inline scripts related to this page
 	});
 </script>
-

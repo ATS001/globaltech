@@ -2,12 +2,18 @@
 //SYS GLOBAL TECH
 // Modul: clients => View
  defined('_MEXEC') or die; 
+ $id_prospect=Mreq::tp('id');
  ?>
 <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
 					
 		<?php 
-              TableTools::btn_add('clients', 'Liste des Clients', Null, $exec = NULL, 'reply');      
+        if($id_prospect == null){
+              TableTools::btn_add('clients', 'Liste des Clients', Null, $exec = NULL, 'reply');
+        }
+        else{
+             TableTools::btn_add('prospects', 'Liste des Prospects', Null, $exec = NULL, 'reply');
+        }  
 		 ?>
 
 					
@@ -33,14 +39,21 @@
 			<div class="widget-box">
 				
 <?php
-//
-$form = new Mform('addclient', 'addclient','',  'clients', '1');//Si on veut un wizzad on saisie 1, sinon null pour afficher un formulaire normal
 
+if($id_prospect == null){
+$form = new Mform('addclients', 'addclients','',  'clients', '1');
+}
+else{
+$form = new Mform('addclients', 'addclients','',  'prospects', '1');   
+}
 //Step Wizard
 $wizard_array[] = array(1,'Etape 1','active');
 $wizard_array[] = array(2,'Etape 2');
 $wizard_array[] = array(3,'Etape 3');
 $form->wizard_steps = $wizard_array;
+
+
+$form->input_hidden('id_prospect', $id_prospect);
 
 //Start Step 1
 $form->step_start(1, 'Renseignements client');
@@ -52,18 +65,40 @@ $form->input('Code Client', 'code', 'text' ,6 , null, $code_array);*/
 //Denomination
 $denomination_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
 $denomination_array[]  = array('required', 'true', 'Insérer La Dénomination' );
+$denomination_array[]  = array('remote', 'denomination#clients#denomination', 'Ce client existe déja' );
 $form->input('Dénomination', 'denomination', 'text' ,6 , null, $denomination_array);
 
 //Catégorie client
+if($id_prospect == null){
 $cat_array[]  = array('required', 'true', 'Sélectionnez la catégorie' );
 $form->select_table('Catégorie Client', 'id_categorie', 6, 'categorie_client', 'id', 'categorie_client' , 'categorie_client', $indx = '------' ,
 	$selected=2,$multi=NULL, $where='etat=1', $cat_array);
+}
+else{
+$prospects = new Mprospects();
+$prospects->id_prospect = $id_prospect;
+$prospects->get_prospect();
+$cat_array[]  = array('required', 'true', 'Sélectionnez la catégorie' );
+$form->select_table('Catégorie Client', 'id_categorie', 6, 'categorie_client', 'id', 'categorie_client' , 'categorie_client', $indx = '------' ,
+    $selected=$prospects->g("offre"),$multi=NULL, $where='etat=1', $cat_array);
+}
 
 //Raison social
+if($id_prospect == null){
 //$rsocial_array[]  = array('required', 'true', 'Insérer Raison Social ' );
 $rsocial_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
 $rsocial_array[]  = array('remote', 'r_social#clients#r_social', 'Cette société existe déja' );
 $form->input('Raison Social', 'r_social', 'text' ,6 , null, $rsocial_array);
+}
+else{
+$prospects = new Mprospects();
+$prospects->id_prospect = $id_prospect;
+$prospects->get_prospect();
+//$rsocial_array[]  = array('required', 'true', 'Insérer Raison Social ' );
+$rsocial_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
+$rsocial_array[]  = array('remote', 'r_social#clients#r_social', 'Cette société existe déja' );
+$form->input('Raison Social', 'r_social', 'text' ,6 , $prospects->g("raison_sociale"), $rsocial_array);
+}
 
 //r_commerce
 //$rc_array[]  = array('required', 'true', 'Insérer N° de registre de commerce' );
@@ -113,8 +148,9 @@ $opt_ville = array('' => '------');
 $form->select('Ville', 'id_ville', 6, $opt_ville, $indx = NULL ,$selected = null, $multi = NULL);
 
 // Tél
-//$tel_array[]  = array('required', 'true', 'Insérer N° de téléphone' );
+$tel_array[]  = array('required', 'true', 'Insérer N° de téléphone' );
 $tel_array[]  = array('minlength', '8', 'Le N° de téléphone doit contenir au moins 8 chiffres' );
+$tel_array[]  = array('remote', 'tel#clients#tel', 'Ce contact existe déja');
 $tel_array[]  = array('number', 'true', 'Entrez un N° Téléphone Valid' );
 $form->input('N° Téléphone', 'tel', 'text', 6, null, $tel_array);
 
@@ -129,7 +165,8 @@ $form->input('Fax', 'fax', 'text', 6, null, $fax_array);
 $form->input('Boite Postale', 'bp', 'text', 6, null, '');
 
 // email
-//$mail_array[]  = array('required', 'true', 'Insérer Email ' );
+$mail_array[]  = array('required', 'true', 'Insérer Email ' );
+$mail_array[]  = array('remote', 'email#clients#email', 'Ce contact existe déja');
 $mail_array[]  = array('email', 'true', 'Adresse Email non valide' );
 $form->input('Email ', 'email', 'text', 6, null, $mail_array);
 
@@ -177,7 +214,7 @@ $(document).ready(function() {
 
 
             cache: false,
-            url  : '?_tsk=addclient&ajax=1',
+            url  : '?_tsk=addclients&ajax=1',
             type : 'POST',
             data : '&act=1&id='+242+'&<?php echo MInit::crypt_tp('exec', 'load_select_ville') ?>',
             dataType:"JSON",
@@ -199,8 +236,6 @@ $(document).ready(function() {
                 
             }//end success
         });
-
-
     
     $('#id_pays').change(function(e) {
         var $id_pays = $(this).val();
@@ -214,7 +249,7 @@ $(document).ready(function() {
         $.ajax({
 
             cache: false,
-            url  : '?_tsk=addclient&ajax=1',
+            url  : '?_tsk=addclients&ajax=1',
             type : 'POST',
             data : '&act=1&id='+$id_pays+'&<?php echo MInit::crypt_tp('exec', 'load_select_ville') ?>',
             dataType:"JSON",

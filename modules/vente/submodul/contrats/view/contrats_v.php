@@ -13,7 +13,7 @@ $array_column = array(
         'column' => 'contrats.reference',
         'type'   => '',
         'alias'  => 'reference',
-        'width'  => '14',
+        'width'  => '13',
         'header' => 'Référence',
         'align'  => 'C'
     ),
@@ -21,7 +21,7 @@ $array_column = array(
         'column' => 'devis.reference',
         'type'   => '',
         'alias'  => 'devis',
-        'width'  => '14',
+        'width'  => '13',
         'header' => 'Devis',
         'align'  => 'C'
     ),
@@ -37,8 +37,8 @@ $array_column = array(
         'column' => 'CONCAT(clients.reference, " - ",clients.denomination)',
         'type'   => '',
         'alias'  => 'client',
-        'width'  => '20',
-        'header' => 'client',
+        'width'  => '30',
+        'header' => 'Client',
         'align'  => 'L'
     ),
     array(
@@ -74,7 +74,8 @@ $html_data_table->columns_html = $array_column;
 $html_data_table->title_module = "Abonnement";
 $html_data_table->task = 'contrats';
 
-//$html_data_table->use_filter = true;
+$html_data_table->btn_return = array('task' =>'tdb');
+$html_data_table->use_filter = true;
 
 if(!$data = $html_data_table->table_html())
 {
