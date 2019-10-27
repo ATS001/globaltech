@@ -39,7 +39,7 @@ $array_column = array(
         'align'  => 'L'
         ),
     array(
-        'column' => 'ref_prospects_offre.OFFRE',
+        'column' => 'categorie_client.categorie_client',
         'type'   => '',
         'alias'  => 'OFFRE',
         'width'  => '15',
@@ -47,7 +47,7 @@ $array_column = array(
         'align'  => 'C'
         ),
     array(
-        'column' => "DATE_FORMAT(prospects.credat,'%d-%m-%Y')",
+        'column' => "prospects.credat",
         'type'   => 'date',
         'alias'  => 'date_prospect',
         'width'  => '10',
@@ -84,9 +84,9 @@ if($id_service == 7)
 //Creat new instance
 $list_data_table = new Mdatatable();
 //Set tabels used in Query
-$list_data_table->tables = array('prospects, ref_prospects_offre,commerciaux');
+$list_data_table->tables = array('prospects, categorie_client,commerciaux');
 //Set Jointure
-$list_data_table->joint = 'prospects.offre = ref_prospects_offre.id and prospects.id_commercial = commerciaux.id';
+$list_data_table->joint = 'prospects.offre = categorie_client.id and prospects.id_commercial = commerciaux.id';
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query
