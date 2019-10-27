@@ -1,101 +1,69 @@
-<div class="page-header">
-	<h1>
-		Gestion Clients
-		<small>
-			<i class="ace-icon fa fa-angle-double-right"></i>
-		</small>
-	</h1>
-</div><!-- /.page-header -->
+<?php
+//array colomn
+$array_column = array(
+	array(
+        'column' => 'clients.id',
+        'type'   => '',
+        'alias'  => 'id',
+        'width'  => '5',
+        'header' => 'ID',
+        'align'  => 'C'
+    ),
+    array(
+        'column' => 'clients.reference',
+        'type'   => '',
+        'alias'  => 'reference',
+        'width'  => '13',
+        'header' => 'Référence',
+        'align'  => 'L'
+    ),
+    array(
+        'column' => 'clients.denomination',
+        'type'   => '',
+        'alias'  => 'denomination',
+        'width'  => '30',
+        'header' => 'Dénomination',
+        'align'  => 'L'
+    ),
+    array(
+        'column' => 'categorie_client.categorie_client',
+        'type'   => '',
+        'alias'  => 'categorie_client',
+        'width'  => '15',
+        'header' => 'Catégorie ',
+        'align'  => 'C'
+    ),
+    array(
+        'column' => "clients.credat",
+        'type'   => 'date',
+        'alias'  => 'date_client',
+        'width'  => '8',
+        'header' => 'Date Création',
+        'align'  => 'C'
+    ),
+    array(
+        'column' => 'statut',
+        'type'   => '',
+        'alias'  => 'statut',
+        'width'  => '10',
+        'header' => 'Statut',
+        'align'  => 'C'
+    ),
+    
+ );
+//Creat new instance
+$html_data_table = new Mdatatable();
+$html_data_table->columns_html = $array_column;
+$html_data_table->title_module = "Clients";
+$html_data_table->task = 'clients';
 
-<div class="row">
-	<div class="col-xs-12">
-		<div class="clearfix">
-			<div class="pull-right tableTools-container">
-				<div class="btn-group btn-overlap">
-					
-						<?php TableTools::btn_add('addclient','Ajouter Client'); ?>
-						<?php TableTools::btn_csv('clients','Exporter Liste'); ?>
-						<?php TableTools::btn_pdf('clients','Exporter Liste'); ?>
+$html_data_table->btn_return = array('task' =>'tdb');
+$html_data_table->use_filter = true;
 
-			    </div>
-			</div>
-		</div>
-
-		<div class="table-header">
-			Liste "Clients" 
-		</div>
-		<div>
-			<table id="clients_grid" class="table table-bordered table-condensed table-hover table-striped dataTable no-footer">
-				<thead>
-					<tr>
-						
-						<th>
-							ID
-						</th>
-						<th>
-							Référence 
-						</th>
-						<th>
-							Dénomination
-						</th>
-						<th>
-							Raison Sociale
-						</th>
-						<th>
-							Catégorie Client
-						</th>
-						<th>
-							Etat
-						</th>
-						<th>
-							#
-						</th>
-					</tr>
-				</thead>
-			</table>
-		</div>
-	</div>
-</div>
-<script type="text/javascript">
-$(document).ready(function() {
-
-		var table = $('#clients_grid').DataTable({
-			bProcessing: true,
-			notifcol : 5,
-			serverSide: true,
-
-			ajax_url:"clients",
-		//extra_data:"extra_data=1",
-		//ajax:{},
-		aoColumns: [
-	        {"sClass": "center","sWidth":"5%"}, //
-	        {"sClass": "left","sWidth":"13%"},
-	        {"sClass": "left","sWidth":"28%"}, //
-	        {"sClass": "left","sWidth":"29%"},
-	        {"sClass": "center","sWidth":"12%"},
-	        {"sClass": "center","sWidth":"10%"},
-	        {"sClass": "center","sWidth":"3%"},
-	        ],
-	    });
-
-
-		$('.export_csv').on('click', function() {
-			csv_export(table, 'csv');
-		});
-		$('.export_pdf').on('click', function() {
-			csv_export(table, 'pdf');
-		});
-
-		
-		$('#clients_grid').on('click', 'tr button', function() {
-			var $row = $(this).closest('tr')
-	        //alert(table.cell($row, 0).data());
-	        append_drop_menu('clients', table.cell($row, 0).data(), '.btn_action')
-	    });
-
-
-
-
-});
-
-</script>
+if(!$data = $html_data_table->table_html())
+{
+    exit("0#".$html_data_table->log);
+}else{
+    echo $data;
+}
+?>

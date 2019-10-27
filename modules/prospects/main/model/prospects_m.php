@@ -46,9 +46,9 @@ class Mprospects {
 
 		$table = $this->table;
 
-		$sql = "SELECT $table.*, concat(c.prenom,' ',c.nom) as commercial, o.offre as lib_offre,
+		$sql = "SELECT $table.*, concat(c.prenom,' ',c.nom) as commercial, o.categorie_client as lib_offre,
                 DATE_FORMAT($table.date_entree,'%d-%m-%Y') AS date_e , DATE_FORMAT($table.date_cible,'%d-%m-%Y') AS date_c, DATE_FORMAT($table.credat,'%d-%m-%Y') AS date_prospect
-                FROM $table, commerciaux c, ref_prospects_offre o 
+                FROM $table, commerciaux c, categorie_client o 
                 WHERE $table.id_commercial = c.id 
                 and $table.offre=o.id
                 and $table.id = ".$this->id_prospect;

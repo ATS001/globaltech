@@ -40,7 +40,7 @@ $array_column = array(
         'align'  => 'L'
         ),
     array(
-        'column' => 'ref_prospects_offre.OFFRE',
+        'column' => 'categorie_client.categorie_client',
         'type'   => '',
         'alias'  => 'OFFRE',
         'width'  => '15',
@@ -48,7 +48,7 @@ $array_column = array(
         'align'  => 'C'
         ),
     array(
-        'column' => "DATE_FORMAT(prospects.credat,'%d-%m-%Y')",
+        'column' => 'prospects.credat',
         'type'   => 'date',
         'alias'  => 'date_prospect',
         'width'  => '10',

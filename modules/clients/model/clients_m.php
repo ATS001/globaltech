@@ -390,7 +390,7 @@ class Mclients {
             $this->check_non_exist('ref_ville', 'id', $this->_data['id_ville'], 'Ville');
         }
 
-        if ($this->_data['id_ville'] != NULL) {
+        if ($this->_data['id_devise'] != NULL) {
             $this->check_non_exist('ref_devise', 'id', $this->_data['id_devise'], 'Devise');
         }
 
@@ -409,6 +409,7 @@ class Mclients {
             global $db;
 
             $values["reference"] = MySQL::SQLValue($reference);
+            $values["id_prospect"] = MySQL::SQLValue($this->_data['id_prospect']);
             $values["denomination"] = MySQL::SQLValue($this->_data['denomination']);
             $values["id_categorie"] = MySQL::SQLValue($this->_data['id_categorie']);
             $values["r_social"] = MySQL::SQLValue($this->_data['r_social']);

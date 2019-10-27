@@ -47,7 +47,7 @@ $form = new Mform('addprospects', 'addprospects', '', 'prospects', '0', null);
 	$form->input("Raison Sociale", "raison_sociale", "text" ,"6", null, $array_Raison_Sociale, null, $readonly = null);
 //Offre
 	$array_offre[]= array("required", "true", "Sélectionnez Offre ...");
-	$form->select_table('Offre', 'offre', 6, 'ref_prospects_offre', 'id', 'OFFRE' , 'OFFRE', $indx = '------' ,null,$multi=NULL, $where='etat=1', $array_offre);
+	$form->select_table('Offre', 'offre', 6, 'categorie_client', 'id', 'categorie_client' , 'categorie_client', $indx = '------' ,null,$multi=NULL, $where='etat=1', $array_offre);
 //CA Prévisionnel ==> 
 	$array_CA_PREVISIONNEL[]= array("required", "true", "Insérez CA Prévisionnel ...");
     $array_CA_PREVISIONNEL[]= array('number', 'true', 'Entrez un montant valide!!!!');
@@ -55,9 +55,8 @@ $form = new Mform('addprospects', 'addprospects', '', 'prospects', '0', null);
 //Pondération ==> 
 	$array_PONDERATION[]= array("required", "true", "Insérez Pondération ...");
     $array_PONDERATION[]= array('number', 'true', 'Entrez un nombre valide!!!!');
-	$form->input("Pondération %", "ponderation", "text" ,"6", null, $array_PONDERATION, null, $readonly = null);
-//CA Pondéré ==> 
-	$form->input("CA Pondéré", "ca_pondere", "text" ,"6", null, null, null, $readonly = null);
+    $ca_pondere = '<label style="margin-left:10px;margin-right : 20px;">CA Pondéré: </label><input id="ca_pondere" name="ca_pondere" value="0" class="input-large alignRight" readonly="" type="text">';
+	$form->input("Pondération %", "ponderation", "text" ,"1", null, $array_PONDERATION, $ca_pondere, null);
 //Date Entrée ==> 
 	//$array_DATE_ENTREE[]= array("required", "true", "Insérez Date Entrée ...");
 	$form->input("Date Entrée", "date_entree", "date" ,"6", null, null, null, $readonly = null);
@@ -84,7 +83,15 @@ $form->render();
 <script type="text/javascript">
 $(document).ready(function() {
     
-//JS bloc   
+            $('#ponderation').on('change', function () {
+			
+            if ($("#ca_previsionnel").val() != null) {
+
+                $('#ca_pondere').val(parseFloat($('#ca_previsionnel').val())+ ( parseFloat($('#ca_previsionnel').val())) * parseFloat($('#ponderation').val()) / 100 );
+
+            } 
+
+        });
 
 });
 </script>	

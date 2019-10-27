@@ -11,7 +11,6 @@ $prospects = new Mprospects();
 $prospects->id_prospect = Mreq::tp('id');
 $prospects->get_prospect();
 
-
 $etat_archive = Msetting::get_set('archive_prospects');
 $action = new TableTools();
 $action->line_data = $prospects->prospect_info;

@@ -1,13 +1,15 @@
 <?php 
 //SYS GLOBAL TECH
 // Modul: clients => Controller
+$id_prospect=Mreq::tp('id_prospect');
 
 defined('_MEXEC') or die;
-if(MInit::form_verif('addclient',false))
+if(MInit::form_verif('addclients',false))
 {
 	
   $posted_data = array(
    'reference'      => Mreq::tp('reference') ,
+   'id_prospect'    => $id_prospect,
    'denomination'   => Mreq::tp('denomination') ,
    'id_categorie'   => Mreq::tp('id_categorie') ,
    'r_social'       => Mreq::tp('r_social') ,
@@ -77,11 +79,11 @@ if(MInit::form_verif('addclient',false))
     $empty_list .= "<li>Adresse</li>";
     $checker = 1;
   }*/
- /* if($posted_data['tel'] == NULL){
+  if($posted_data['tel'] == NULL){
 
     $empty_list .= "<li>Tél</li>";
     $checker = 1;
-  }*/
+  }
 
   /*if($posted_data['bp'] == NULL){
 
@@ -93,15 +95,17 @@ if(MInit::form_verif('addclient',false))
     $empty_list .= "<li>Pays</li>";
     $checker = 1;
   }
-    if(!is_numeric($posted_data['id_ville'])){
+
+  if(!is_numeric($posted_data['id_ville'])){
 
     $posted_data['id_ville']=NULL;
   }
-  /*if($posted_data['email'] == NULL){
+  if($posted_data['email'] == NULL){
 
     $empty_list .= "<li>Email</li>";
     $checker = 1;
   }
+  /*
    if($posted_data['id_devise'] == NULL){
 
     $empty_list .= "<li>Devise</li>";
@@ -124,15 +128,31 @@ if(MInit::form_verif('addclient',false))
 
   //execute Insert returne false if error
   if($new_client->save_new_client()){
+    if(!$id_prospect == null){
+      $prospects = new Mprospects();
+      $prospects->id_prospect = $id_prospect;
+      $prospects->get_prospect();
+      //Etat for validate row
+      $etat = $prospects->prospects_info['etat'];
 
+      //Execute Validate 
+      if($prospects->valid_prospect($etat,'G'))
+      {
+        exit("1#".$prospects->log);
+      }
+      else{
+        exit("0#".$prospects->log);
+      }
+    }  
+    
     echo("1#".$new_client->log);
-  }else{
+  }  
+  else{
 
     echo("0#".$new_client->log);
   }
-
-
-} else {
-  view::load('clients','addclient');
+}  
+else {
+  view::load('clients','addclients');
 }
 ?>
