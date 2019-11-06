@@ -150,7 +150,7 @@ $form->select('Ville', 'id_ville', 6, $opt_ville, $indx = NULL ,$selected = null
 // Tél
 $tel_array[]  = array('required', 'true', 'Insérer N° de téléphone' );
 $tel_array[]  = array('minlength', '8', 'Le N° de téléphone doit contenir au moins 8 chiffres' );
-$tel_array[]  = array('remote', 'tel#clients#tel', 'Ce contact existe déja');
+//$tel_array[]  = array('remote', 'tel#clients#tel', 'Ce contact existe déja');
 $tel_array[]  = array('number', 'true', 'Entrez un N° Téléphone Valid' );
 $form->input('N° Téléphone', 'tel', 'text', 6, null, $tel_array);
 
@@ -166,7 +166,7 @@ $form->input('Boite Postale', 'bp', 'text', 6, null, '');
 
 // email
 $mail_array[]  = array('required', 'true', 'Insérer Email ' );
-$mail_array[]  = array('remote', 'email#clients#email', 'Ce contact existe déja');
+//$mail_array[]  = array('remote', 'email#clients#email', 'Ce contact existe déja');
 $mail_array[]  = array('email', 'true', 'Adresse Email non valide' );
 $form->input('Email ', 'email', 'text', 6, null, $mail_array);
 
