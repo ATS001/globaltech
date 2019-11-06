@@ -73,6 +73,7 @@ $form->input('Code Client', 'code', 'text' ,6 , $info_client->Shw('code',1), $co
 //Denomination
 $denomination_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
 $denomination_array[]  = array('required', 'true', 'Insérer La Dénomination' );
+$denomination_array[]  = array('remote', 'denomination#clients#denomination', 'Ce client existe déja' );
 $form->input('Dénomination', 'denomination', 'text' ,6 , $info_client->Shw('denomination',1), $denomination_array);
 
 //Catégorie client
@@ -138,6 +139,7 @@ $form->select('Ville', 'id_ville', 6, $opt_ville, $indx = NULL ,$selected = $inf
 //$tel_array[]  = array('required', 'true', 'Insérer N° de téléphone' );
 $tel_array[]  = array('minlength', '8', 'Le N° de téléphone doit contenir au moins 8 chiffres' );
 $tel_array[]  = array('number', 'true', 'Entrez un N° Téléphone Valid' );
+//$tel_array[]  = array('remote', 'tel#clients#tel', 'Ce contact existe déja');
 $form->input('N° Téléphone', 'tel', 'text', 6, $info_client->Shw('tel',1), $tel_array);
 
 // fax
@@ -151,8 +153,9 @@ $form->input('Fax', 'fax', 'text', 6, $info_client->Shw('fax',1), $fax_array);
 $form->input('Boite Postale', 'bp', 'text', 6, $info_client->Shw('bp',1), '');
 
 // email
-//$mail_array[]  = array('required', 'true', 'Insérer Email ' );
+$mail_array[]  = array('required', 'true', 'Insérer Email ' );
 $mail_array[]  = array('email', 'true', 'Adresse Email non valide' );
+//$mail_array[]  = array('remote', 'email#clients#email', 'Ce contact existe déja');
 $form->input('Email ', 'email', 'text', 6, $info_client->Shw('email',1), $mail_array);
 
 //End Step 2
