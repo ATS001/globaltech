@@ -1821,7 +1821,7 @@ UNION
 
         
         $req_sql = "INSERT into compte_client(id_client,type_mouvement,id_facture,montant,description,date_mouvement,solde,creusr) 
-               values($clt,'D',$fact,$mnt,IF('$base'='C', CONCAT('Facture: ', '$reference',' du ','$du',' au ', '$au'),CONCAT('Facture: ','$reference',' du ', '$date')),STR_TO_DATE('$date','%d-%m-%Y'), $sld+$mnt ,1)";
+               values($clt,'D',$fact,$mnt,IF('$base'='C', CONCAT('Facture: ', '$reference',' du ',DATE_FORMAT('$du','%d-%m-%Y'),' au ', DATE_FORMAT('$au','%d-%m-%Y')),CONCAT('Facture: ','$reference',' du ', DATE_FORMAT('$date','%d-%m-%Y'))),STR_TO_DATE('$date','%d-%m-%Y'), $sld+$mnt ,1)";
 
         if (!$db->Query($req_sql)) {
 
