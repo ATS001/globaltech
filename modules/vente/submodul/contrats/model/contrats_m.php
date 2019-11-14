@@ -566,19 +566,42 @@ class Mcontrat {
 
         $table_echeance = $this->table_echeance;
         global $db;
-        $req_sql = "UPDATE  echeances_contrat ec, (SELECT IF((SELECT  ech.date_echeance
-        FROM echeances_contrat ech WHERE e.id <> ech.id  AND ech.`idcontrat`=e.`idcontrat` AND ech.date_echeance < e.date_echeance ORDER BY ech.`date_echeance` LIMIT 1) IS NULL,
-        '$date_d', 
-        e.`date_echeance` )
-         AS du ,IF((SELECT  DATE_ADD(ech.date_echeance, INTERVAL -1 DAY)
-        FROM echeances_contrat ech WHERE e.id <> ech.id  AND ech.`idcontrat`=e.`idcontrat` AND ech.date_echeance > e.date_echeance ORDER BY ech.`date_echeance` LIMIT 1) IS NULL,
-        '$date_f',
-        (SELECT  DATE_ADD(ech.date_echeance, INTERVAL -1 DAY) 
-        FROM echeances_contrat ech WHERE e.id <> ech.id  AND ech.`idcontrat`=e.`idcontrat` AND ech.date_echeance > e.date_echeance ORDER BY ech.`date_echeance` LIMIT 1) 
-        )AS au ,date_echeance, idcontrat, id  FROM echeances_contrat e)AS ech
-        SET ec.`date_fin`= ech.au, ec.`date_debut`=ech.du
-        WHERE  ech.`idcontrat`=ec.`idcontrat`  AND ec.`id`= ech.id 
-        AND ec.`idcontrat`='$id_contrat'";
+        $req_sql = 
+       "UPDATE  echeances_contrat ec,
+       (SELECT IF(
+           (c.`periode_fact`='F'),
+           IF(
+           (SELECT  ech.date_echeance
+               FROM echeances_contrat ech WHERE e.id <> ech.id  AND ech.`idcontrat`= e.`idcontrat`
+               AND ech.date_echeance < e.`date_echeance` ORDER BY ech.`date_echeance` LIMIT 1
+               ) IS NULL,
+               c.`date_effet`,
+               (SELECT  DATE_ADD(ech.date_echeance, INTERVAL +1 DAY)
+               FROM echeances_contrat ech WHERE e.id <> ech.id  AND ech.`idcontrat`= e.`idcontrat`
+               AND ech.date_echeance < e.`date_echeance`  ORDER BY ech.`date_echeance` DESC LIMIT 1
+               )  
+               ),
+               e.date_echeance         
+               )AS du,  
+               IF((c.`periode_fact`='F'),e.`date_echeance`,
+               IF(
+               (SELECT  ech.date_echeance
+                   FROM echeances_contrat ech WHERE e.id <> ech.id  AND ech.`idcontrat`= e.`idcontrat`
+               AND ech.date_echeance > e.`date_echeance` ORDER BY ech.`date_echeance` LIMIT 1
+               ) IS NULL,
+               c.`date_fin`,
+               (SELECT  DATE_ADD(ech.date_echeance, INTERVAL -1 DAY)
+               FROM echeances_contrat ech WHERE e.id <> ech.id  AND ech.`idcontrat`= e.`idcontrat`
+               AND ech.date_echeance > e.`date_echeance`  ORDER BY ech.`date_echeance` LIMIT 1
+               )  
+                   ) 
+               ) AS au,              
+               e.date_echeance, e.idcontrat, e.id     
+              FROM echeances_contrat e,contrats c WHERE c.id=e.`idcontrat` AND e.`idcontrat`='$id_contrat' ORDER BY e.`date_echeance`
+              )AS ech
+                SET ec.`date_fin`= ech.au, ec.`date_debut`=ech.du
+              WHERE  ech.`idcontrat`=ec.`idcontrat`  AND ec.`id`= ech.id 
+                AND ec.`idcontrat`='$id_contrat'";
 
         if (!$db->Query($req_sql)) {
             $this->log .= $db->Error();
