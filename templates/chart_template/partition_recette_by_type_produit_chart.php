@@ -57,7 +57,7 @@ $('.send_modal_chart_filter').on('click', function () {
 }else{
 
 	$chart = new MHighchart();
-	$chart->titre = 'Partition recette par type produit';
+	$chart->titre = 'Partition recette par type de vente';
 	$chart->id_chart = 'partition_recette_by_type_produit';
 	$chart->items = 'Fcfa';
 	//Set to true if called from Ajax after filter
