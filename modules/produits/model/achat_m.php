@@ -450,7 +450,6 @@ private function refresh_products()
         $sql = "SELECT reference FROM produits WHERE id = $id_produit";
         $reference = $db->QuerySingleValue($sql);
         
-        var_dump($sql);
         return $reference;
     }
 
