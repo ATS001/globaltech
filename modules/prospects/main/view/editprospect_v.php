@@ -60,19 +60,19 @@ $form->input_hidden('idh', Mreq::tp('idh'));
 	$array_Raison_Sociale[]= array("required", "true", "Insérez Raison Sociale ...");
 	$form->input("Raison Sociale", "raison_sociale", "text" ,"6", $info_prospects->g("raison_sociale"), $array_Raison_Sociale , null, $readonly = null);
 //Offre ==> 
-	$array_OFFRE[]= array("required", "true", "Sélectionnez Offre ...");
-	$form->select_table('Offre', 'offre', 6, 'ref_prospects_offre', 'id', 'offre' , 'offre', $indx = '------' ,$info_prospects->g("offre"),$multi=NULL, $where='etat=1', $array_OFFRE);
+	$array_offre[]= array("required", "true", "Sélectionnez Offre ...");
+	$form->select_table('Offre', 'offre', 6, 'categorie_client', 'id', 'categorie_client' , 'categorie_client', $indx = '------' ,$info_prospects->g("offre"),$multi=NULL, $where='etat=1', $array_offre);
 
 //CA Prévisionnel ==> 
 	$array_CA_PREVISIONNEL[]= array("required", "true", "Insérez CA Prévisionnel ...");
     $array_CA_PREVISIONNEL[]= array('number', 'true', 'Entrez un montant valide!!!!');
 	$form->input("CA Prévisionnel", "ca_previsionnel", "text" ,"6", $info_prospects->g("ca_previsionnel"), $array_CA_PREVISIONNEL, null, $readonly = null);
+
 //Pondération ==> 
 	$array_PONDERATION[]= array("required", "true", "Insérez Pondération ...");
     $array_PONDERATION[]= array('number', 'true', 'Entrez un nombre valide!!!!');
-	$form->input("Pondération %", "ponderation", "text" ,"6", $info_prospects->g("ponderation"), $array_PONDERATION, null, $readonly = null);
-//CA Pondéré ==> 
-	$form->input("CA Pondéré", "ca_pondere", "text" ,"6", $info_prospects->g("ca_pondere"), null, null, $readonly = null);
+    $ca_pondere = '<label style="margin-left:10px;margin-right : 20px;">CA Pondéré: </label><input id="ca_pondere" name="ca_pondere" value="'.$info_prospects->g("ca_pondere").'" class="input-large alignRight" readonly="" type="text">';
+	$form->input("Pondération %", "ponderation", "text" ,"1", $info_prospects->g("ponderation"), $array_PONDERATION, $ca_pondere, null);
 //Date Entrée ==> 
 	//$array_DATE_ENTREE[]= array("required", "true", "Insérez Date Entrée ...");
 	$form->input("Date Entrée", "date_entree", "date" ,"6", $info_prospects->g("date_entree"), null, null, $readonly = null);
@@ -99,7 +99,16 @@ $form->render();
 <script type="text/javascript">
 $(document).ready(function() {
     
-//JS Bloc    
+            $('#ponderation').on('change', function () {
+			
+            if ($("#ca_previsionnel").val() != null) {
+
+                $('#ca_pondere').val(parseFloat($('#ca_previsionnel').val())+ ( parseFloat($('#ca_previsionnel').val())) * parseFloat($('#ponderation').val()) / 100 );
+
+            } 
+
+        });
+ 
 
 });
 </script>	

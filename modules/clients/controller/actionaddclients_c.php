@@ -9,8 +9,6 @@ if(!MInit::crypt_tp('exec', null, 'D'))
 //Action called from all button of this modul
 $action = Mreq::tp('exec');
 
-
-//Load_categorie by type
 if($action == 'load_select_ville')
 {
 	$where = 'd.id_region=r.id and v.id_departement=d.id and r.id_pays='.MReq::tp('id');

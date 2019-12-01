@@ -8,7 +8,7 @@ if(!defined('_MEXEC'))die();
 $prospects = new Mprospects();
 $prospects->id_prospect = Mreq::tp('id');
 
-if(!MInit::crypt_tp('id', null, 'D')or !$prospects->get_prospect())
+if(!$prospects->get_prospect())
 {  
    // returne message error red to prospects 
    exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
