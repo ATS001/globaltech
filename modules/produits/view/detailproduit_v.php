@@ -48,6 +48,9 @@
                             </a>
                         </li>
                         <?php }   ?>
+                        <div>
+    <b class="blue pull-right margin-left: 30px"><?php TableTools::btn_add('addbuyproduct', 'Ajouter un achat',MInit::crypt_tp('id_produit', Mreq::tp('id')) . MInit::crypt_tp('&tsk_aft', 'detailproduit'), $exec = NULL);  ?> </b></br></br>
+</div> 
                     </ul>
 
                     <div class="tab-content no-border padding-18">

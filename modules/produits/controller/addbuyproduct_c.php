@@ -11,7 +11,8 @@
             'idproduit' => Mreq::tp('idproduit'),
             'date_achat' => Mreq::tp('date_achat'),
             'date_validite' => Mreq::tp('date_validite'),
-            'pj_id' => Mreq::tp('pj-id')
+            'pj_id' => Mreq::tp('pj-id'),
+            'serial_number' => Mreq::tp('serial_number'),
         );
         
         $produit = new Mproduit();
@@ -61,6 +62,12 @@
         if($posted_data['pj_id'] == NULL AND $produit->produit_info['exige-sn'] == "Oui"){
 
             $empty_list .= "<li>Fichier des numéros de séries </li>";
+            $checker = 1;
+        }
+        
+         if($posted_data['pj_id'] != NULL AND $produit->produit_info['serial'] != NULL){
+
+            $empty_list .= "<li>Importer le fichier ou Saisissez le Serial number </li>";
             $checker = 1;
         }
         

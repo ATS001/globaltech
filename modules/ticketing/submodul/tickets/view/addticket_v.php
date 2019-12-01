@@ -6,11 +6,43 @@ if (!defined('_MEXEC'))
 // Modul: tickets
 //Created : 02-04-2018
 //View
+
+//chck if called with client ID then suggest task for after exec
+//id_clnt crypted => id client
+//tsk_aft crypted => Task after exec
+//
+$after_exec     = 'tickets';
+$id_clnt        = MReq::tp('id_clnt');
+$tsk_aft        = MReq::tp('tsk_aft');
+$name_client    = null;
+$title          = 'Ajouter Ticket';
+$btn_return_txt = 'Liste des tickets';
+$btn_task       = 'contrats';
+$btn_setting    = null;
+
+if($id_clnt != null && $tsk_aft != null){
+    if(!MInit::crypt_tp('id_clnt', null, 'D')){
+          Minit::big_message('ID client n\'est pas correcte', 'danger');
+          die();
+    }
+    if(!MInit::crypt_tp('tsk_aft', null, 'D')){
+          Minit::big_message('Erreur Système #aft_exec', 'danger');
+          die();
+    }
+    $after_exec = $tsk_aft.'&'.MInit::crypt_tp('id', $id_clnt);
+    $name_client = Mdevis::get_client_name($id_clnt);
+    $title .=  ' pour le client :'.$name_client;
+    $btn_return_txt = 'Détail Client '.$name_client;
+    $btn_task = $tsk_aft;
+    $btn_setting = MInit::crypt_tp('id', $id_clnt);
+}
 ?>
 <div class="pull-right tableTools-container">
     <div class="btn-group btn-overlap">
 
-        <?php TableTools::btn_add('tickets', 'Liste des tickets', Null, $exec = NULL, 'reply'); ?>
+                  
+<?php TableTools::btn_add($btn_task, $btn_return_txt, $btn_setting, $exec = NULL, 'reply'); ?>
+
 
     </div>
 </div>
@@ -35,12 +67,18 @@ if (!defined('_MEXEC'))
             <div class="widget-box">
 
                 <?php
-                $form = new Mform('addtickets', 'addtickets', '', 'tickets', '0', null);
+                $form = new Mform('addtickets', 'addtickets', '',$after_exec, '0', null);
 
 //Client ==> 
+                if($id_clnt == NULL){
                 $client_array[] = array('required', 'true', 'Choisir un Client');
                 $form->select_table('Client', 'id_client', 6, 'clients', 'id', 'denomination', 'denomination', $indx = '------', $selected = NULL, $multi = NULL, $where = 'etat=1', $client_array, NULL);
-
+}else
+{
+                $form->input_hidden('id_client',$id_clnt);
+                $form->input_hidden('idc', Mreq::tp('idc'));
+                $form->input_hidden('idh', Mreq::tp('idh'));
+}
 //Site ==> 
               
                 $site_array[] = array('required', 'true', 'Choisir un site');
