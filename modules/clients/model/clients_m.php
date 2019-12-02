@@ -24,6 +24,7 @@ class Mclients {
     var $tot_factures_info; //Array stock total factures info
     var $tot_enc_info; //Array stock total encaissement info
     var $solde_final; //Solde final du client 
+    var $tickets_info; //Array list tickets
 
     public function __construct($properties = array()) {
         $this->_data = $properties;
@@ -1110,4 +1111,48 @@ Toute l’équipe de Globaltech vous transmet, cher Client, ses salutations dist
             return TRUE;
         }
     }
+    
+    
+    // Chercher la liste des tickets du client
+
+    public function get_list_tickets() {
+
+        $table = "tickets";
+        global $db;
+
+         $sql = "SELECT tickets.* ,                
+                CONCAT(users_sys.fnom,' ',users_sys.lnom) AS technicien ,
+                clients.denomination AS CLIENT ,
+                produits.designation AS prd,
+                tickets.serial_number AS serial_number,
+                sites.reference AS site,
+                DATE_FORMAT(tickets.credat,'%d-%m-%Y') AS credat            
+                FROM tickets LEFT JOIN produits ON produits.id=tickets.id_produit              
+                LEFT JOIN users_sys ON users_sys.id=tickets.id_technicien
+                LEFT JOIN clients ON clients.id=tickets.id_client
+                LEFT JOIN sites ON sites.id=tickets.projet             
+                WHERE tickets.id_client =  " . $this->id_client;
+        
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->tickets_info = $db->RecordsSimplArray();
+                $this->error = true;
+            }
+        }
+        
+       
+//return Array
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 }

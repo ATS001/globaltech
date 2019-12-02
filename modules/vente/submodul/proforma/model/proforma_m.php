@@ -683,6 +683,27 @@ class Mproforma
         $this->order_detail = $db->QuerySingleValue0($req_sql);
     }
 
+    private function check_detail_have_more_abn($tkn_frm, $sub_group, $type_produit)
+    {
+        if($this->error == false)
+        {
+            return false;
+        }
+        $table_details = $this->table_details;
+        global $db;
+        
+        $req_sql = "SELECT COUNT($table_details.id_produit) FROM $table_details, produits, ref_types_produits WHERE tkn_frm = '$tkn_frm' AND  $table_details.id_produit = produits.id AND produits.idtype = ref_types_produits.id AND ref_types_produits.type_produit like 'Abonnement' AND sub_group = $sub_group ";
+
+         
+        $count_id = intval($db->QuerySingleValue0($req_sql));
+        
+        if($count_id > 0 && $type_produit == 3) 
+        {
+          $this->error = false;
+          $this->log .= '</br>Impossible d\'insérer deux abonnement sur le même sous-group pour le même Proforma';
+        }
+    }
+
     private function check_detail_exist_in_proforma($tkn_frm, $id_produit, $sub_group)
     {
         if($this->error == false)
@@ -799,6 +820,7 @@ class Mproforma
     {
         $table_details = $this->table_details;
         $this->check_detail_exist_in_proforma($tkn_frm, $this->_data['id_produit'], $this->_data['sub_group']);
+        $this->check_detail_have_more_abn($tkn_frm, $this->_data['sub_group'], $this->_data['type_produit']);
         $this->check_non_exist('produits','id',$this->_data['id_produit'] ,'Réference du produit' );
 
 
@@ -889,7 +911,9 @@ class Mproforma
         if($this->h('id_produit') != $this->_data['id_produit'])
         {
             $this->check_detail_exist_in_proforma($tkn_frm, $this->_data['id_produit'], $this->_data['sub_group']); 
+
         }
+        $this->check_detail_have_more_abn($tkn_frm, $this->_data['sub_group'], $this->_data['id_produit']);
 
         $this->check_non_exist('produits','id',$this->_data['id_produit'] ,'Réference du produit' );
 

@@ -185,7 +185,7 @@ $(document).ready(function() {
         }
 
         var $link  = $(this).attr('rel');
-        var $titre = $(this).attr('data_titre'); 
+        var $titre = $(this).attr('data_titre')+" (Sous-group: - " + $('#sub_group').val() + " -)";
         var $data  = $(this).attr('data')+'&commission='+$('#commission').val()+'&type_commission='+$('#type_commission').val()+'&sub_group='+$('#sub_group').val(); 
         ajax_bbox_loader($link, $data, $titre, 'large')
         

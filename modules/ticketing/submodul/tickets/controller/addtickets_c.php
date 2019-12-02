@@ -21,7 +21,7 @@ if (MInit::form_verif('addtickets', false)) {
         'id_technicien'=> Mreq::tp('id_technicien'),
         'serial_number'=>Mreq::tp('serial_number'),
          );
-
+        
     //Check if array have empty element return list
     //for acceptable empty field do not put here
     $checker = null;
