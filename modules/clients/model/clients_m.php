@@ -1120,7 +1120,8 @@ Toute l’équipe de Globaltech vous transmet, cher Client, ses salutations dist
         $table = "tickets";
         global $db;
 
-         $sql = "SELECT tickets.* ,                
+         $sql = "SELECT tickets.id as id ,   
+tickets.etat as etat,             
                 CONCAT(users_sys.fnom,' ',users_sys.lnom) AS technicien ,
                 clients.denomination AS CLIENT ,
                 produits.designation AS prd,
@@ -1141,7 +1142,7 @@ Toute l’équipe de Globaltech vous transmet, cher Client, ses salutations dist
                 $this->error = false;
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
-                $this->tickets_info = $db->RecordsSimplArray();
+                $this->tickets_info = $db->RecordsArray();
                 $this->error = true;
             }
         }
