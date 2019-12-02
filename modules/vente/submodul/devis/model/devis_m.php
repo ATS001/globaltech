@@ -2747,8 +2747,7 @@ class Mdevis
 
     private function get_commerciale_remise_plafond($id_commercial, $valeur_remise)
     {
-        return true;
-        /*global $db;
+        global $db;
         $etat_valid_dg = Msetting::get_set('etat_devis', 'valid_devis_dg');
         $etat_valid_dcm = Msetting::get_set('etat_devis', 'valid_devis_dcm');
         if($etat_valid_dg == null)
@@ -2792,6 +2791,6 @@ class Mdevis
                 $this->etat_valid_devis = $etat_valid_dg;               
             }
             return true;              
-        }*/
+        }
     }
 }
