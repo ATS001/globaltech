@@ -386,7 +386,7 @@ $tab_ticket       = view::tab_render('tickets', 'Tickets', $add_set=NULL, 'money
                                             </br></b> </br></b> 
                                         </div>
 
-                                        <table class="table table-striped table-bordered table-hover" style="width: 800px; align:center">
+                                        <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 ID
                                             </th>
@@ -482,7 +482,7 @@ $tab_ticket       = view::tab_render('tickets', 'Tickets', $add_set=NULL, 'money
                                         echo '<B>Aucun abonnement trouvé</B> ';
                                     else {     
                                     ?>
-                                    <table class="table table-striped table-bordered table-hover" style="width: 800px; align:center">
+                                    <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 ID
                                             </th>
@@ -583,7 +583,7 @@ $tab_ticket       = view::tab_render('tickets', 'Tickets', $add_set=NULL, 'money
                                             </br></b> </br></b> 
                                         </div>
 
-                                        <table class="table table-striped table-bordered table-hover" style="width: 800px; align:center">
+                                        <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 ID
                                             </th>
@@ -687,7 +687,7 @@ $tab_ticket       = view::tab_render('tickets', 'Tickets', $add_set=NULL, 'money
                                             </br></b> </br></b> 
                                         </div>
 
-                                        <table class="table table-striped table-bordered table-hover" style="width: 800px; align:center">
+                                        <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 ID
                                             </th>
@@ -778,7 +778,7 @@ $tab_ticket       = view::tab_render('tickets', 'Tickets', $add_set=NULL, 'money
                                         echo '<B>Aucun BL trouvé</B> ';
                                     else {
                                         ?>
-                                        <table class="table table-striped table-bordered table-hover" style="width: 800px; align:center;">
+                                        <table class="table table-striped table-bordered table-hover" style="width: 800px align:center;">
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 ID
                                             </th>
@@ -873,7 +873,7 @@ $tab_ticket       = view::tab_render('tickets', 'Tickets', $add_set=NULL, 'money
                                         echo '<B>Aucun ticket trouvé</B> ';
                                     else {
                                         ?>
-                                        <table class="table table-striped table-bordered table-hover" style="width: 800px; align:center">
+                                        <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 ID
                                             </th>
