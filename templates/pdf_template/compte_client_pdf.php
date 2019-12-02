@@ -295,16 +295,6 @@ p {
 
 </style>
 <table style="width: 685px; hight: 685px;" cellpadding="2">
-
-<tr>
-    <td colspan="2" style="color: #E99222;font-family: sans-serif;font-weight: bold;">Arrêté le présent Etat de compte à la somme de :
-    </td>
-</tr>
-<tr>
-    <td colspan="2" style="color:#6B6868; width: 650px; border:1pt solid black; background-color: #eeecec; padding: 5px;">
-        <strong>' . $solde_lettre . '</strong>    
-    </td>
-</tr>
            
 <tr>
 <br>
