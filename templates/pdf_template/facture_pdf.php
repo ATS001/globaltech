@@ -317,7 +317,7 @@ class MYPDF extends TCPDF {
 		//}
 		$ste_c = new MSte_info();
         $this->SetY(-30);
-		$ste = $ste_c->get_ste_info_report_footer(1);
+		$ste = $ste_c->get_ste_info_report_footer(1,$this->info_facture['id_banque']);
 		$this->writeHTMLCell(0, 0, '', '', $ste , '', 0, 0, true, 'C', true);
 		// Position at 15 mm from bottom
 		$this->SetY(-15);

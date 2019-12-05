@@ -6,7 +6,7 @@ $id_prospect=Mreq::tp('id_prospect');
 defined('_MEXEC') or die;
 if(MInit::form_verif('addclients',false))
 {
-	
+  
   $posted_data = array(
    'reference'      => Mreq::tp('reference') ,
    'id_prospect'    => $id_prospect,
@@ -24,7 +24,9 @@ if(MInit::form_verif('addclients',false))
    'tel'            => Mreq::tp('tel') ,
    'fax'            => Mreq::tp('fax') ,
    'bp'             => Mreq::tp('bp') ,
-   'email'          => Mreq::tp('email') , 
+
+   'email'          => Mreq::tp('email') ,
+   'id_banque'      => Mreq::tp('id_banque') ,
    'rib'            => Mreq::tp('rib') , 
    'id_devise'      => Mreq::tp('id_devise') ,
    'tva'            => Mreq::tp('tva') , 
@@ -103,6 +105,11 @@ if(MInit::form_verif('addclients',false))
   if($posted_data['email'] == NULL){
 
     $empty_list .= "<li>Email</li>";
+    $checker = 1;
+  }
+  if($posted_data['id_banque'] == NULL){
+
+    $empty_list .= "<li>Banque</li>";
     $checker = 1;
   }
   /*

@@ -7,12 +7,14 @@ class MSte_info
 	
 	private $_data; //data receive from form
 
-	var $table    = 'ste_info'; //Main table of module
-	var $last_id  = null; //return last ID after insert command
-	var $log      = null; //Log of all opération.
-	var $error    = true; //Error bol changed when an error is occured
-	var $id_ste   = null; // Ville ID append when request
-	var $ste_info = null; //Array stock all prminfo 
+	var $table       = 'ste_info'; //Main table of module
+	var $table_b     = 'ste_info_banque'; //Main table of module	
+	var $last_id     = null; //return last ID after insert command
+	var $log         = null; //Log of all opération.
+	var $error       = true; //Error bol changed when an error is occured
+	var $id_ste      = null; // Ville ID append when request
+	var $ste_info    = null; //Array stock all prminfo 
+	var $banque_info = null; //Array stock all prminfo 
 	
 
 
@@ -114,6 +116,40 @@ class MSte_info
 		}
 	}
 
+	/**
+	 * [get_ste_banque Get all info for line]
+	 * @return [type] [fill ste_info_banque array]
+	 */
+	public function get_ste_info_banque($banque)
+	{
+		global $db;
+		$table = $this->table_b;
+		//Format Select commande
+		$sql = "SELECT $table.banque,$table.rib FROM 
+		$table WHERE $table.id = ".$banque;
+		if(!$db->Query($sql))
+		{
+			$this->error = false;
+			$this->log  .= $db->Error();
+		}else{
+			if ($db->RowCount() == 0) {
+				$this->error = false;
+				$this->log .= 'Aucun enregistrement trouvé ';
+			} else {
+				$this->banque_info = $db->RowArray();
+				$this->error = true;
+			}	
+		}
+		//return Array ville_info
+		if($this->error == false)
+		{
+			return false;
+		}else{
+			return true;
+		}
+		
+	}
+
 
 	/**
 	 * [s Echo value from ste_info array]
@@ -157,14 +193,15 @@ class MSte_info
     	return $head;
     }
 
-    public  function get_ste_info_report_footer($id_ste)
+    public  function get_ste_info_report_footer($id_ste,$banque)
     {
     	$this->id_ste = $id_ste;
     	$this->get_ste_info();
-    	
+    	$this->get_ste_info_banque($banque);
+
     	/*$footer = '<h1>'.$this->ste_info['ste_name'].'</h1><p>Télécommunications – Réseaux - Sécurité électronique - Prestation de Services<br/> Numéro d’Identification Fiscale : '.$this->ste_info['ste_if'].'<br/>Compte Orabank n°20403500201</p>';
 */
-    	$footer = '</br><p>Télécommunications – Réseaux - Sécurité électronique - Prestation de Services<br/> Numéro d’Identification Fiscale : '.$this->ste_info['ste_if'].'<br/>Compte SGT N°04271284701-75</p>';
+    	$footer = '</br><p>Télécommunications – Réseaux - Sécurité électronique - Prestation de Services<br/> Numéro d’Identification Fiscale : '.$this->ste_info['ste_if'].'<br/>Compte '.$this->banque_info['banque'].' N° '.$this->banque_info['rib'].'</p>';
     	
     	return $footer;
     }

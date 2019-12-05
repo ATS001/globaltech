@@ -5,39 +5,39 @@
  $id_prospect=Mreq::tp('id');
  ?>
 <div class="pull-right tableTools-container">
-	<div class="btn-group btn-overlap">
-					
-		<?php 
+    <div class="btn-group btn-overlap">
+                    
+        <?php 
         if($id_prospect == null){
               TableTools::btn_add('clients', 'Liste des Clients', Null, $exec = NULL, 'reply');
         }
         else{
              TableTools::btn_add('prospects', 'Liste des Prospects', Null, $exec = NULL, 'reply');
         }  
-		 ?>
+         ?>
 
-					
-	</div>
+                    
+    </div>
 </div>
 <div class="page-header">
-	<h1>
-		<?php echo ACTIV_APP; ?>
-		<small>
-			<i class="ace-icon fa fa-angle-double-right"></i>
-		</small>
-	</h1>
+    <h1>
+        <?php echo ACTIV_APP; ?>
+        <small>
+            <i class="ace-icon fa fa-angle-double-right"></i>
+        </small>
+    </h1>
 </div><!-- /.page-header -->
 <div class="row">
-	<div class="col-xs-12">
-		<div class="clearfix">
-			
-		</div>
-		<div class="table-header">
-			Formulaire: "<?php echo ACTIV_APP; ?>"
-		</div>
-		<div class="widget-content">
-			<div class="widget-box">
-				
+    <div class="col-xs-12">
+        <div class="clearfix">
+            
+        </div>
+        <div class="table-header">
+            Formulaire: "<?php echo ACTIV_APP; ?>"
+        </div>
+        <div class="widget-content">
+            <div class="widget-box">
+                
 <?php
 
 if($id_prospect == null){
@@ -72,7 +72,7 @@ $form->input('Dénomination', 'denomination', 'text' ,6 , null, $denomination_ar
 if($id_prospect == null){
 $cat_array[]  = array('required', 'true', 'Sélectionnez la catégorie' );
 $form->select_table('Catégorie Client', 'id_categorie', 6, 'categorie_client', 'id', 'categorie_client' , 'categorie_client', $indx = '------' ,
-	$selected=2,$multi=NULL, $where='etat=1', $cat_array);
+    $selected=2,$multi=NULL, $where='etat=1', $cat_array);
 }
 else{
 $prospects = new Mprospects();
@@ -142,10 +142,11 @@ $form->input('Adresse', 'adresse', 'text', 6, null, $adresse_array);
 $form->select_table('Pays', 'id_pays', 6, 'ref_pays', 'id', 'pays' , 'pays', $indx = '------' ,242,$multi=NULL, $where='etat=1', null);
 
 //ville
-/*$ville_array[]  = array('required', 'true', 'Choisir la Ville' );
-$form->select_table('Ville', 'id_ville', 6, 'ref_ville', 'id', 'ville' , 'ville', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $ville_array);*/
-$opt_ville = array('' => '------');
-$form->select('Ville', 'id_ville', 6, $opt_ville, $indx = NULL ,$selected = null, $multi = NULL);
+//$opt_ville = array('' => '------');
+
+//$form->select('Ville', 'id_ville', 6, $opt_ville, $indx = NULL ,$selected = 43, $multi = NULL);
+
+$form->select_table('Ville', 'id_ville', 6, 'ref_ville', 'id', 'ville' , 'ville', $indx = '------' ,$selected=43,$multi=NULL, $where='etat=1', null);
 
 // Tél
 $tel_array[]  = array('required', 'true', 'Insérer N° de téléphone' );
@@ -176,9 +177,12 @@ $form->step_end();
 
 $form->step_start(3, 'Complément Informations');
 
+//Banque
+$form->select_table('Banque', 'id_banque', 6, 'ste_info_banque', 'id', 'banque' , 'banque', $indx = '------' ,$selected=1,$multi=NULL, $where='etat=1', null);
+
 // devise
 $form->select_table('Devise', 'id_devise', 6, 'ref_devise', 'id', 'devise' , 'devise', $indx = '------' ,
-	$selected='1',$multi=NULL, $where='etat=1', NULL);
+    $selected='1',$multi=NULL, $where='etat=1', NULL);
 
 // taxe
 $taxe_array[]  = array('Oui' , 'Oui' );
@@ -202,15 +206,15 @@ $form->button('Enregistrer le client');
 //Form render
 $form->render();
 ?>
-			</div>
-		</div>
-	</div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script type="text/javascript">
 $(document).ready(function() {
 //var $id_pays = $(this).val();
-		 $.ajax({
+         $.ajax({
 
 
             cache: false,

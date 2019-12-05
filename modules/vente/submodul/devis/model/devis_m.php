@@ -427,13 +427,17 @@ class Mdevis
             $valeur_remise = $this->valeur_remis_t;
             $total_remise = $this->total_remise;
             $total_commission=$this->total_commission;
-
+            
+            $client = new  Mclients;
+            $client->id_client = $this->_data['id_client']; 
+            $client->get_client();
 
             $values["reference"]       = MySQL::SQLValue($this->reference);
             $values["tkn_frm"]         = MySQL::SQLValue($this->_data['tkn_frm']);
             $values["type_devis"]      = MySQL::SQLValue($this->type_devis);
             $values["reference"]       = MySQL::SQLValue($reference);
-            $values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
+            $values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);           
+            $values["id_banque"]       = $client->client_info['id_banque'];
             $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
             $values["id_commercial"]   = MySQL::SQLValue($this->_data['id_commercial']);
             $values["commission"]      = MySQL::SQLValue($this->_data['commission']);
@@ -545,12 +549,16 @@ class Mdevis
 
             $etat_line = $this->etat_valid_devis;
 
+            $client = new  Mclients;
+            $client->id_client = $this->_data['id_client']; 
+            $client->get_client();
 
         	$values["reference"]       = MySQL::SQLValue($this->reference);
         	$values["tkn_frm"]         = MySQL::SQLValue($this->_data['tkn_frm']);
             $values["type_devis"]      = MySQL::SQLValue($this->type_devis);
             $values["reference"]       = MySQL::SQLValue($reference);
         	$values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
+            $values["id_banque"]       = $client->client_info['id_banque'];
             $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
 
             $values["id_commercial"]   = MySQL::SQLValue($this->_data['id_commercial']);
@@ -660,18 +668,16 @@ class Mdevis
             return false;
         }
         $etat_line = $this->etat_valid_devis;
-
-            
-
-            
-
-
-
+         
+            $client = new  Mclients;
+            $client->id_client = $this->_data['id_client']; 
+            $client->get_client();
 
             $values["reference"]           = MySQL::SQLValue($this->reference);
             $values["tkn_frm"]             = MySQL::SQLValue($this->_data['tkn_frm']);
             $values["type_devis"]          = MySQL::SQLValue($this->type_devis);
             $values["id_client"]           = MySQL::SQLValue($this->_data['id_client']);
+            $values["id_banque"]           = $client->client_info['id_banque'];
             $values["tva"]                 = MySQL::SQLValue($this->_data['tva']);
             
             $values["id_commercial"]       = MySQL::SQLValue($this->_data['id_commercial']);
