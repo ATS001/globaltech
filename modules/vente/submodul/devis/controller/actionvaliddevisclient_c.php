@@ -29,9 +29,9 @@ if(MInit::form_verif('add_temp_achat', false))
         $checker = 1;
     }
 
-    if($posted_data['qte'] < $posted_data['need']){
+    if($posted_data['need'] > ($posted_data['qte'] + $posted_data['qte_exist'])){
 
-        $empty_list .= "<li>la Quantité ne couvre pas le besoin</li>";
+        $empty_list .= "<li>la Quantité ne couvre pas le besoin qte : ".$posted_data['qte']." - need : ".$posted_data['need']." exist : ". $posted_data['qte_exist']."</li>";
         $checker = 1;
     }
 
@@ -55,3 +55,4 @@ if(MInit::form_verif('add_temp_achat', false))
 }
 //No form posted show view
 view::load_view('add_temp_achat');
+
