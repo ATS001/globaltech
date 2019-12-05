@@ -1293,7 +1293,7 @@ class Mfacture {
                 REPLACE(FORMAT(total_ttc_initial,0),',',' ') as total_ttc_initial,
                 REPLACE(FORMAT(total_paye,0),',',' ') as total_paye,
                 REPLACE(FORMAT(reste,0),',',' ') as reste,               
-                client,tva,projet,ref_bc,idcontrat,
+                client,tva,projet,ref_bc,idcontrat,id_banque,
                 DATE_FORMAT(du,'%d-%m-%Y') as du,
                 DATE_FORMAT(au,'%d-%m-%Y') as au,
                 CONCAT(DATE_FORMAT(du,'%d-%m-%Y'),' Au ',DATE_FORMAT(au,'%d-%m-%Y')) as periode,
