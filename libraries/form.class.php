@@ -631,48 +631,48 @@ public function select_option_only($table, $id_table, $order_by , $txt_table ,$s
     $array_exist = '['.str_replace('-', '","', $array_exist).']';
     $array_exist = json_decode($array_exist,true);
 
-  }
-  $multiple = $multi == NULL ? NULL : 'multiple=""';
-  
-
-                     $output = null;
-                     $where   =  $where == NULL ? NULL: " WHERE ".$where." ";
+}
+$multiple = $multi == NULL ? NULL : 'multiple=""';
 
 
-                     global $db;
-                     $sql = "SELECT $id_table as id, $txt_table as text FROM $table $where order by $order_by limit 0,1000 ";
-                     if (!$db->Query($sql)){
-                       $db->Kill($db->Error());
-                     }
-                     if(!$db->RowCount()){
-                        $output .='<option value=""></option>';
-                           
-                     }else{
-                      while (! $db->EndOfSeek()) {
-                      $row = $db->Row();
-                      if($selected != NULL){
-                        if($multiple != NULL) 
-                        {                    
+$output = null;
+$where   =  $where == NULL ? NULL: " WHERE ".$where." ";
 
 
-                            if(in_array($row->id, $array_exist))
-                            {
-                             $bloc_multipl_show .= ' '.$row->text.' - '; 
-                            }
+global $db;
+$sql = "SELECT $id_table as id, $txt_table as text FROM $table $where order by $order_by limit 0,1000 ";
+if (!$db->Query($sql)){
+ $db->Kill($db->Error());
+}
+if(!$db->RowCount()){
+    $output .='<option value=""></option>';
 
-                        }else{
-                            $select =  $row->id == $selected ? "selected":"";
-                        }
+}else{
+  while (! $db->EndOfSeek()) {
+      $row = $db->Row();
+      if($selected != NULL){
+        if($multiple != NULL) 
+        {                    
 
 
-                      }else{
-                        $select ="";
-                      }
-                      $output .= '<option '.$select.' value="'.$row->id.'">'.$row->text.'</option>';               
-                    }
+            if(in_array($row->id, $array_exist))
+            {
+               $bloc_multipl_show .= ' '.$row->text.' - '; 
+           }
 
-                     }
-                     return $output;
+       }else{
+        $select =  $row->id == $selected ? "selected":"";
+    }
+
+
+}else{
+    $select ="";
+}
+$output .= '<option '.$select.' value="'.$row->id.'">'.$row->text.'</option>';               
+}
+
+}
+return $output;
 
 }
 
@@ -708,70 +708,64 @@ public function select_option_only($table, $id_table, $order_by , $txt_table ,$s
         $multiple = $multi == NULL ? NULL : 'multiple=""';
         $output = '<div class="space-2"></div>
         <div class="form-group">
-         <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">'.$input_desc.':</label>
+        <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">'.$input_desc.':</label>
 
-         <div class="col-xs-12 col-sm-9">
-             <div class="clearfix">
-                 <select '.$multiple.' id="'.$input_id.'" name="'.$input_id.'" class="chosen-select col-xs-12 col-sm-'.$input_class.'" chosen-class="'.$class_chosen.'"  >';
+        <div class="col-xs-12 col-sm-9">
+        <div class="clearfix">
+        <select '.$multiple.' id="'.$input_id.'" name="'.$input_id.'" class="chosen-select col-xs-12 col-sm-'.$input_class.'" chosen-class="'.$class_chosen.'"  >';
 
-                     $option_idex = $indx != NULL ? '<option value="">'.$indx.'</option>' : NULL;
+        $option_idex = $indx != NULL ? '<option value="">'.$indx.'</option>' : NULL;
 
-                     $output .= $option_idex;
-                     $where   =  $where == NULL ? NULL: " WHERE ".$where." ";
-
-
-                     global $db;
-                     $sql = "SELECT $id_table as id, $txt_table as text FROM $table $where order by $order_by limit 0,1000 ";
-                     if (!$db->Query($sql)){
-                       $db->Kill($db->Error());
-                     }
-                     if(!$db->RowCount()){
-                        $output .='<option value=""></option>';
-                           
-                     }else{
-                      while (! $db->EndOfSeek()) {
-                      $row = $db->Row();
-                      if($selected != NULL){
-                        if($multiple != NULL) 
-                        {                    
+        $output .= $option_idex;
+        $where   =  $where == NULL ? NULL: " WHERE ".$where." ";
+        $order_by   =  $order_by == NULL ? 'txt' : $order_by;
 
 
-                            if(in_array($row->id, $array_exist))
-                            {
-                             $bloc_multipl_show .= ' '.$row->text.' - '; 
-                            }
+        global $db;
+        $sql = "SELECT $id_table as val, $txt_table as txt FROM $table $where order by $order_by limit 0,1000 ";
+        
+        if (!$db->Query($sql)){
+         $db->Kill($db->Error());
+     }
+     if(!$db->RowCount()){
+        $output .='<option value=""></option>';
 
-                        }else{
-                            $select =  $row->id == $selected ? "selected":"";
-                        }
+    }else{
+      $select = null;
+      $options_arr = $db->RecordsSelectArray();
 
-
-                      }else{
-                        $select ="";
-                      }
-                      $output .= '<option '.$select.' value="'.$row->id.'">'.$row->text.'</option>';               
-                    }
-
-                     } 
-                     
-           $output .='</select>';
-           $output .= $hard_code;
-        //If select multipl selected add this bloc to show existing elements
-        //<span class="help-block">Example block-level help text here.</span>
-           if($multiple != NULL && $selected != NULL)
-           {
-            $output .= '<span class="help-block">Eléments enregitrés : '.$bloc_multipl_show.'.</span>';
+      foreach ($options_arr as $key => $value) {
+        if($multiple != NULL && $selected != NULL && is_array($array_exist[0]))
+        {
+          $select = in_array($key, $array_exist[0]) ? 'selected' : null;          
         }
-        $output .='</div>
-    </div>
-</div>';
-$this->form_fields .= $output;
-if($js_array != null)
-{
-    $this->js_rules($input_id, $js_array);
-}
+      if($multiple == NULL && $selected != NULL){
+          $select =  $key == $selected ? "selected" : null;
+      }
+
+      $output .= '<option  '.$select.'  value="'.$key.'">'.$value.'</option>';
+  }             
 
 } 
+
+$output .='</select>';
+$output .= $hard_code;
+        //If select multipl selected add this bloc to show existing elements
+        //<span class="help-block">Example block-level help text here.</span>
+           /*if($multiple != NULL && $selected != NULL)
+           {
+            $output .= '<span class="help-block">Eléments enregitrés : '.$bloc_multipl_show.'.</span>';
+        }*/
+        $output .='</div>
+        </div>
+        </div>';
+        $this->form_fields .= $output;
+        if($js_array != null)
+        {
+            $this->js_rules($input_id, $js_array);
+        }
+
+    } 
 
     /**
      * Function Select_counter
