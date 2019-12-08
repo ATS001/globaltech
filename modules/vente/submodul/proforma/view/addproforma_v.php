@@ -165,7 +165,7 @@ $(document).ready(function() {
             return false;
         }
         var $link  = $(this).attr('rel');
-        var $titre = $(this).attr('data_titre'); 
+        var $titre = $(this).attr('data_titre')+" (Sous-group: - " + $('#sub_group').val() + " -)"; 
        // var $data  = $('#addproforma').serialize() + $(this).attr('data');
         var $data  = $(this).attr('data')+'&commission='+$('#commission').val()+'&type_commission='+$('#type_commission').val()+'&sub_group='+$('#sub_group').val(); 
         //var $data  = $(this).attr('data') + $('#addproforma').serialize(); 

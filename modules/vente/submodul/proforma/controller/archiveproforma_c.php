@@ -8,7 +8,7 @@ if(!defined('_MEXEC'))die();
 $proforma = new Mproforma();
 $proforma->id_proforma = Mreq::tp('id');
 
-if(!MInit::crypt_tp('id', null, 'D')or !$proforma->get_proforma())
+if(!MInit::crypt_tp('id', null, 'D') or !$proforma->get_proforma())
 {  
    // returne message error red to proforma 
    exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');

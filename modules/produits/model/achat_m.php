@@ -87,7 +87,11 @@
            if($save_sn != NULL){
             $this->extraireNumeroSerieExcel();
            }
-          
+           else
+           {
+               $str = str_replace("'", " ", MySQL::SQLValue($this->_data['serial_number']));
+               $this->listeNumSerie[0] = $str;
+           }
             global $db;
             $values["mouvement"] = MySQL::SQLValue('E');
             $values["qte"] = MySQL::SQLValue($this->_data['qte']);
@@ -405,7 +409,7 @@ private function refresh_products()
         public function enregistrerNumSerieArticle($liste) {
             
         global $db;
-
+        
         foreach ($liste as $value) {
         $values["id_produit"] = MySQL::SQLValue($this->_data['idproduit']);
         $values["serial_number"] = MySQL::SQLValue($value);
@@ -435,9 +439,18 @@ private function refresh_products()
         }
    
          if($index != $this->_data['qte'])
-           exit("0#" . "La quantité doit être égale au nombre des SNs saisies");
+           exit("0#" . "La quantité doit être égale au nombre des SN saisies");
        
         
+    }
+    
+     public static function get_produit_ref($id_produit)
+    {
+        global $db;
+        $sql = "SELECT reference FROM produits WHERE id = $id_produit";
+        $reference = $db->QuerySingleValue($sql);
+        
+        return $reference;
     }
 
     }

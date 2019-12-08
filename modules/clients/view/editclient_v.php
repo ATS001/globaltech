@@ -10,45 +10,45 @@
 
 //Check if Post ID <==> Post idc or get_modul return false. 
  if(!MInit::crypt_tp('id', null, 'D')  or !$info_client->get_client())
- { 	
- 	// returne message error red to client 
- 	exit('3#'.$info_client->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+ {  
+    // returne message error red to client 
+    exit('3#'.$info_client->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
  }
  
  ?>
 <div class="pull-right tableTools-container">
-	<div class="btn-group btn-overlap">
-					
-		<?php 
+    <div class="btn-group btn-overlap">
+                    
+        <?php 
               TableTools::btn_add('clients', 'Liste des Clients', Null, $exec = NULL, 'reply');      
-		 ?>
+         ?>
 
-					
-	</div>
+                    
+    </div>
 </div>
 <div class="page-header">
-	<h1>
-		Modifier le client 
-		<small>
-			<i class="ace-icon fa fa-aechongle-double-right"></i>
-		</small>
+    <h1>
+        Modifier le client 
+        <small>
+            <i class="ace-icon fa fa-aechongle-double-right"></i>
+        </small>
 
-		<?php echo ' ('.$info_client->Shw('denomination',1).' -'.$info_client->Shw('reference',1).'-)' ;
-		
-		?>
-	</h1>
+        <?php echo ' ('.$info_client->Shw('denomination',1).' -'.$info_client->Shw('reference',1).'-)' ;
+        
+        ?>
+    </h1>
 </div><!-- /.page-header -->
 <div class="row">
-	<div class="col-xs-12">
-		<div class="clearfix">
-			
-		</div>
-		<div class="table-header">
-			Formulaire: "<?php echo ACTIV_APP; ?>"
-		</div>
-		<div class="widget-content">
-			<div class="widget-box">
-				
+    <div class="col-xs-12">
+        <div class="clearfix">
+            
+        </div>
+        <div class="table-header">
+            Formulaire: "<?php echo ACTIV_APP; ?>"
+        </div>
+        <div class="widget-content">
+            <div class="widget-box">
+                
 <?php
 //
 $form = new Mform('editclient', 'editclient',$info_client->id,  'clients', '1');//Si on veut un wizzad on saisie 1, sinon null pour afficher un formulaire normal
@@ -73,12 +73,13 @@ $form->input('Code Client', 'code', 'text' ,6 , $info_client->Shw('code',1), $co
 //Denomination
 $denomination_array[]  = array('minlength', '2', 'Minimum 2 caractères' );
 $denomination_array[]  = array('required', 'true', 'Insérer La Dénomination' );
+$denomination_array[]  = array('remote', 'denomination#clients#denomination', 'Ce client existe déja' );
 $form->input('Dénomination', 'denomination', 'text' ,6 , $info_client->Shw('denomination',1), $denomination_array);
 
 //Catégorie client
 $cat_array[]  = array('required', 'true', 'Sélectionnez la catégorie' );
 $form->select_table('Catégorie Client', 'id_categorie', 6, 'categorie_client', 'id', 'categorie_client' , 'categorie_client', $indx = '------' ,
-	$selected=$info_client->Shw('id_categorie',1),$multi=NULL, $where='etat=1', $cat_array);
+    $selected=$info_client->Shw('id_categorie',1),$multi=NULL, $where='etat=1', $cat_array);
 
 
 //Raison social
@@ -130,7 +131,7 @@ $form->select_table('Pays', 'id_pays', 6, 'ref_pays', 'id', 'pays' , 'pays', $in
 
 //ville
 //$ville_array[]  = array('required', 'true', 'Choisir la Ville' );
-$form->select_table('Ville', 'id_ville', 6, 'ref_ville', 'id', 'ville' , 'ville', $indx = '------' ,$selected=$info_client->Shw('id_ville',1),$multi=NULL, $where=NULL, null);
+$form->select_table('Ville', 'id_ville', 6, 'ref_ville', 'id', 'ville' , 'ville', $indx = '------' ,$selected=$info_client->Shw('id_ville',1),$multi=NULL, $where='etat=1', null);
 /*$opt_ville = array('' => '------');
 $form->select('Ville', 'id_ville', 6, $opt_ville, $indx = NULL ,$selected = $info_client->Shw('id_ville',1), $multi = NULL);*/
 
@@ -138,6 +139,7 @@ $form->select('Ville', 'id_ville', 6, $opt_ville, $indx = NULL ,$selected = $inf
 //$tel_array[]  = array('required', 'true', 'Insérer N° de téléphone' );
 $tel_array[]  = array('minlength', '8', 'Le N° de téléphone doit contenir au moins 8 chiffres' );
 $tel_array[]  = array('number', 'true', 'Entrez un N° Téléphone Valid' );
+//$tel_array[]  = array('remote', 'tel#clients#tel', 'Ce contact existe déja');
 $form->input('N° Téléphone', 'tel', 'text', 6, $info_client->Shw('tel',1), $tel_array);
 
 // fax
@@ -151,8 +153,9 @@ $form->input('Fax', 'fax', 'text', 6, $info_client->Shw('fax',1), $fax_array);
 $form->input('Boite Postale', 'bp', 'text', 6, $info_client->Shw('bp',1), '');
 
 // email
-//$mail_array[]  = array('required', 'true', 'Insérer Email ' );
+$mail_array[]  = array('required', 'true', 'Insérer Email ' );
 $mail_array[]  = array('email', 'true', 'Adresse Email non valide' );
+//$mail_array[]  = array('remote', 'email#clients#email', 'Ce contact existe déja');
 $form->input('Email ', 'email', 'text', 6, $info_client->Shw('email',1), $mail_array);
 
 //End Step 2
@@ -161,9 +164,12 @@ $form->step_end();
 
 $form->step_start(3, 'Complément Informations');
 
+//Banque
+$form->select_table('Banque', 'id_banque', 6, 'ste_info_banque', 'id', 'banque' , 'banque', $indx = '------' ,$selected=$info_client->Shw('id_banque',1),$multi=NULL, $where='etat=1', null);
+
 // devise
-$form->select_table('Devise', 'id_devise', 6, 'ref_devise', 'id', 'devise' , 'devise', $indx = '*****' ,
-	$selected=$info_client->Shw('id_devise',1),$multi=NULL, $where='etat=1', NULL);
+$form->select_table('Devise', 'id_devise', 6, 'ref_devise', 'id', 'devise' , 'devise', $indx = '------' ,
+    $selected=$info_client->Shw('id_devise',1),$multi=NULL, $where='etat=1', NULL);
 
 //var_dump($info_client->Shw('tva',1));
 // taxe
@@ -190,9 +196,9 @@ $form->button('Enregistrer Modifications');
 //Form render
 $form->render();
 ?>
-			</div>
-		</div>
-	</div>
+            </div>
+        </div>
+    </div>
 </div>
 
 <script type="text/javascript">

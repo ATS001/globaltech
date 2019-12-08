@@ -24,6 +24,7 @@ class Mclients {
     var $tot_factures_info; //Array stock total factures info
     var $tot_enc_info; //Array stock total encaissement info
     var $solde_final; //Solde final du client 
+    var $tickets_info; //Array list tickets
 
     public function __construct($properties = array()) {
         $this->_data = $properties;
@@ -44,12 +45,13 @@ class Mclients {
     public function get_client() {
         global $db;
 
-        $sql = "SELECT  c.*,cat.categorie_client as categorie_client, p.pays as pays,v.ville as ville, d.devise as devise,d.abreviation as dev, IF(c.tva='O','Oui','Non') AS tva,c.tva as tva_brut, m.motif as motif,DATE_FORMAT(c.`date_blocage`,'%d-%m-%Y') AS date_blocage FROM  clients c
+        $sql = "SELECT  c.*,cat.categorie_client as categorie_client, p.pays as pays,v.ville as ville, d.devise as devise,d.abreviation as dev, IF(c.tva='O','Oui','Non') AS tva,c.tva as tva_brut, m.motif as motif,DATE_FORMAT(c.`date_blocage`,'%d-%m-%Y') AS date_blocage,b.banque as banque FROM  clients c
              LEFT JOIN categorie_client cat on c.id_categorie=cat.id 
              LEFT JOIN ref_pays p on c.id_pays=p.id 
              LEFT JOIN ref_ville v on c.id_ville=v.id
              LEFT JOIN ref_devise d on c.id_devise=d.id
              LEFT JOIN ref_motif_blocage m on c.id_motif_blocage=m.id and m.type='C'
+             LEFT JOIN ste_info_banque b on c.id_banque=b.id
              WHERE c.id = " . $this->id_client;
 
         if (!$db->Query($sql)) {
@@ -425,6 +427,7 @@ class Mclients {
             $values["fax"] = MySQL::SQLValue($this->_data['fax']);
             $values["bp"] = MySQL::SQLValue($this->_data['bp']);
             $values["email"] = MySQL::SQLValue($this->_data['email']);
+            $values["id_banque"] = MySQL::SQLValue($this->_data['id_banque']);
             $values["rib"] = MySQL::SQLValue($this->_data['rib']);
             $values["id_devise"] = MySQL::SQLValue($this->_data['id_devise']);
             if ($this->_data['tva'] == 'Oui') {
@@ -607,6 +610,7 @@ class Mclients {
             $values["fax"] = MySQL::SQLValue($this->_data['fax']);
             $values["bp"] = MySQL::SQLValue($this->_data['bp']);
             $values["email"] = MySQL::SQLValue($this->_data['email']);
+            $values["id_banque"] = MySQL::SQLValue($this->_data['id_banque']);
             $values["rib"] = MySQL::SQLValue($this->_data['rib']);
             $values["id_devise"] = MySQL::SQLValue($this->_data['id_devise']);
             if ($this->_data['tva'] == 'Oui') {
@@ -1087,8 +1091,8 @@ compte_client.date_mouvement BETWEEN  '$date_d' AND '$date_f'AND compte_client.e
                     de vos demandes auprès de nos services.
                     </br></br>
                     Pour toutes vos demandes de renseignements, nous vous suggérons de nous contacter :</br>
-                    Par Téléphone	(+235) 22 51 40 44</br>
-                    Par Email	support@globaltech.td       Service Technique  </br>
+                    Par Téléphone   (+235) 22 51 40 44</br>
+                    Par Email   support@globaltech.td       Service Technique  </br>
                                 commercial@globaltech.td    Service Commercial </br>
 
 </br></br>
@@ -1110,4 +1114,49 @@ Toute l’équipe de Globaltech vous transmet, cher Client, ses salutations dist
             return TRUE;
         }
     }
+    
+    
+    // Chercher la liste des tickets du client
+
+    public function get_list_tickets() {
+
+        $table = "tickets";
+        global $db;
+
+         $sql = "SELECT tickets.id as id ,   
+tickets.etat as etat,             
+                CONCAT(users_sys.fnom,' ',users_sys.lnom) AS technicien ,
+                clients.denomination AS CLIENT ,
+                produits.designation AS prd,
+                tickets.serial_number AS serial_number,
+                sites.reference AS site,
+                DATE_FORMAT(tickets.credat,'%d-%m-%Y') AS credat            
+                FROM tickets LEFT JOIN produits ON produits.id=tickets.id_produit              
+                LEFT JOIN users_sys ON users_sys.id=tickets.id_technicien
+                LEFT JOIN clients ON clients.id=tickets.id_client
+                LEFT JOIN sites ON sites.id=tickets.projet             
+                WHERE tickets.id_client =  " . $this->id_client;
+        
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->tickets_info = $db->RecordsArray();
+                $this->error = true;
+            }
+        }
+        
+       
+//return Array
+        if ($this->error == false) {
+            return false;
+        } else {
+            return true;
+        }
+    }
+
 }

@@ -6,6 +6,7 @@ if(MInit::form_verif('add_detailproforma',false))
 		'tkn_frm'         => Mreq::tp('tkn_frm') ,
 		'sub_group'       => Mreq::tp('sub_group') ,
 		'id_produit'      => Mreq::tp('id_produit') ,
+		'type_produit'    => Mreq::tp('type_produit') ,		
 		'ref_produit'     => Mreq::tp('ref_produit') ,
 		'qte'             => Mreq::tp('qte') ,
 		'prix_unitaire'   => Mreq::tp('prix_unitaire') ,

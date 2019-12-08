@@ -26,7 +26,6 @@
 
  $client->get_list_encaissements();
  $client_enc= $client->enc_info;
- //var_dump($client_enc);
 
  $client-> get_total_enc();
  $total_enc= $client->tot_enc_info;
@@ -34,6 +33,10 @@
  $client-> get_list_bls();
  $client_bl= $client->bl_info;
  
+ $client->get_list_tickets();
+ $client_tickets=$client->tickets_info;
+ 
+
 //Check if Post ID <==> Post idc or get_modul return false. 
 if(!MInit::crypt_tp('id', null, 'D') or !$client->get_client())
 {   
@@ -46,6 +49,7 @@ $tab_bl           = view::tab_render('bl', 'Bons de Livraison', $add_set=NULL, '
 $tab_factures     = view::tab_render('factures', 'Factures', $add_set=NULL, 'money' , false, 'feed2');
 $tab_encaissement = view::tab_render('encaissements', 'Encaissements', $add_set=NULL, 'money' , false, 'feedenc');
 $tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL, 'money' , false, 'etat_compte');
+$tab_ticket       = view::tab_render('tickets', 'Tickets', $add_set=NULL, 'money' , false, 'feedtickets');
 
 ?>
 <div class="pull-right tableTools-container">
@@ -144,14 +148,23 @@ $tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL,
                         { ?>
                         <li>
                             <a data-toggle="tab" href="#etat_compte">
-                                <i class="black ace-icon fa fa-bank bigger-120"></i>
+                                <i class="orange ace-icon fa fa-bank bigger-120"></i>
                                 Etat de compte
                             </a>
                         </li>
                         <?php
                         }
+                        if($tab_encaissement['tb_rl'])
+                        {
                         ?>
-
+                        <li>
+                            <a data-toggle="tab" href="#feedtickets">
+                                <i class="red ace-icon fa fa-ticket bigger-120"></i>
+                                Tickets
+                            </a>
+                        </li>
+                        <?php
+                        }?>
                     </ul>
 
                     <div class="tab-content no-border padding-24">
@@ -766,7 +779,7 @@ $tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL,
                                         echo '<B>Aucun BL trouvé</B> ';
                                     else {
                                         ?>
-                                        <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
+                                        <table class="table table-striped table-bordered table-hover" style="width: 800px align:center;">
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 ID
                                             </th>
@@ -848,6 +861,76 @@ $tab_mvmts_compte = view::tab_render('clients', 'Etat de compte', $add_set=NULL,
                       
                         </div><!-- /#feed etat compte-->
                         
+                        
+                         <div id="feedtickets" class="tab-pane">
+                            <div class="profile-feed row">
+                                   
+                                <span>
+                                    <div>
+    <b class="blue pull-right margin-left: 30px"><?php TableTools::btn_add('addtickets', 'Ajouter Ticket',MInit::crypt_tp('id_clnt', Mreq::tp('id')) . MInit::crypt_tp('&tsk_aft', 'detailsclient'), $exec = NULL);  ?> </b></br></br>
+</div> 
+                                    <?php
+                                    if ($client_tickets == null)
+                                        echo '<B>Aucun ticket trouvé</B> ';
+                                    else {
+                                        ?>
+                                        <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                ID
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Client
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Site
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Date création
+                                            </th>
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Technicien
+                                            </th>                                            
+                                            <th style="text-align: center;"><font color="#5C9EDB">
+                                                Etat
+                                            </th>
+                                            
+                                    <?php                                                                           
+                                            foreach ($client_tickets as $ticket) {?>
+                                                <tr>   
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $ticket["id"]; ?></span>
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $ticket['CLIENT']; ?></span>
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $ticket['site']; ?></span>
+                                                    </td>
+                                                    <td style="text-align: center;">
+                                                        <span><?php echo $ticket['credat']; ?></span>
+                                                    </td>
+                                                     <td style="text-align: center;">
+                                                        <span><?php echo $ticket['technicien']; ?></span>
+                                                    </td>
+                                                     <td style="text-align: center;">
+                                                        <span><?php Mmodul::get_etat_line('tickets', $ticket['etat']); ?>
+                                                        </span>
+                                                    </td>
+                                                                                                                                                                                                               
+                                                </tr>
+
+
+                                                <?php
+                                            }
+                                        }
+                                        ?>
+
+                                        </table>
+                                </span>        
+
+                            </div><!-- /. feed enc row -->
+                      
+                        </div><!-- /#feed tickets -->
                                    
 
                     </div><!-- /#tab-content -->
