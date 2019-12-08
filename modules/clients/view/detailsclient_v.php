@@ -36,6 +36,7 @@
  $client->get_list_tickets();
  $client_tickets=$client->tickets_info;
  
+
 //Check if Post ID <==> Post idc or get_modul return false. 
 if(!MInit::crypt_tp('id', null, 'D') or !$client->get_client())
 {   
@@ -386,7 +387,7 @@ $tab_ticket       = view::tab_render('tickets', 'Tickets', $add_set=NULL, 'money
                                             </br></b> </br></b> 
                                         </div>
 
-                                        <table class="table table-striped table-bordered table-hover" style="width: 800px; align:center">
+                                        <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 ID
                                             </th>
@@ -482,7 +483,7 @@ $tab_ticket       = view::tab_render('tickets', 'Tickets', $add_set=NULL, 'money
                                         echo '<B>Aucun abonnement trouvé</B> ';
                                     else {     
                                     ?>
-                                    <table class="table table-striped table-bordered table-hover" style="width: 800px; align:center">
+                                    <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 ID
                                             </th>
@@ -583,7 +584,7 @@ $tab_ticket       = view::tab_render('tickets', 'Tickets', $add_set=NULL, 'money
                                             </br></b> </br></b> 
                                         </div>
 
-                                        <table class="table table-striped table-bordered table-hover" style="width: 800px; align:center">
+                                        <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 ID
                                             </th>
@@ -687,7 +688,7 @@ $tab_ticket       = view::tab_render('tickets', 'Tickets', $add_set=NULL, 'money
                                             </br></b> </br></b> 
                                         </div>
 
-                                        <table class="table table-striped table-bordered table-hover" style="width: 800px; align:center">
+                                        <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 ID
                                             </th>
@@ -778,7 +779,7 @@ $tab_ticket       = view::tab_render('tickets', 'Tickets', $add_set=NULL, 'money
                                         echo '<B>Aucun BL trouvé</B> ';
                                     else {
                                         ?>
-                                        <table class="table table-striped table-bordered table-hover" style="width: 800px; align:center;">
+                                        <table class="table table-striped table-bordered table-hover" style="width: 800px align:center;">
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 ID
                                             </th>
@@ -873,7 +874,7 @@ $tab_ticket       = view::tab_render('tickets', 'Tickets', $add_set=NULL, 'money
                                         echo '<B>Aucun ticket trouvé</B> ';
                                     else {
                                         ?>
-                                        <table class="table table-striped table-bordered table-hover" style="width: 800px; align:center">
+                                        <table class="table table-striped table-bordered table-hover" style="width: 800px align:center">
                                             <th style="text-align: center;"><font color="#5C9EDB">
                                                 ID
                                             </th>
@@ -893,26 +894,26 @@ $tab_ticket       = view::tab_render('tickets', 'Tickets', $add_set=NULL, 'money
                                                 Etat
                                             </th>
                                             
-                                    <?php
+                                    <?php                                                                           
                                             foreach ($client_tickets as $ticket) {?>
                                                 <tr>   
                                                     <td style="text-align: center;">
-                                                        <span><?php echo $ticket['1']; ?></span>
+                                                        <span><?php echo $ticket["id"]; ?></span>
                                                     </td>
                                                     <td style="text-align: center;">
-                                                        <span><?php echo $ticket['22']; ?></span>
+                                                        <span><?php echo $ticket['CLIENT']; ?></span>
                                                     </td>
                                                     <td style="text-align: center;">
-                                                        <span><?php echo $ticket['25']; ?></span>
+                                                        <span><?php echo $ticket['site']; ?></span>
                                                     </td>
                                                     <td style="text-align: center;">
-                                                        <span><?php echo $ticket['26']; ?></span>
+                                                        <span><?php echo $ticket['credat']; ?></span>
                                                     </td>
                                                      <td style="text-align: center;">
-                                                        <span><?php echo $ticket['21']; ?></span>
+                                                        <span><?php echo $ticket['technicien']; ?></span>
                                                     </td>
                                                      <td style="text-align: center;">
-                                                        <span><?php Mmodul::get_etat_line('tickets', $ticket['16']); ?>
+                                                        <span><?php Mmodul::get_etat_line('tickets', $ticket['etat']); ?>
                                                         </span>
                                                     </td>
                                                                                                                                                                                                                

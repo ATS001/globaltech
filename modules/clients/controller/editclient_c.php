@@ -4,7 +4,7 @@
 defined('_MEXEC') or die;
 if(MInit::form_verif('editclient',false))
 {
-	//Check if id is been the correct id compared with idc
+  //Check if id is been the correct id compared with idc
    if(!MInit::crypt_tp('id', null, 'D'))
    {  
    // returne message error red to client 
@@ -28,6 +28,7 @@ if(MInit::form_verif('editclient',false))
    'fax'            => Mreq::tp('fax') ,
    'bp'             => Mreq::tp('bp') ,
    'email'          => Mreq::tp('email') , 
+   'id_banque'      => Mreq::tp('id_banque') ,
    'rib'            => Mreq::tp('rib') , 
    'id_devise'      => Mreq::tp('id_devise') , 
    'tva'            => Mreq::tp('tva') ,
@@ -107,6 +108,11 @@ $checker = null;
  if($posted_data['email'] == NULL){
 
     $empty_list .= "<li>Email</li>";
+    $checker = 1;
+  }
+    if($posted_data['id_banque'] == NULL){
+
+    $empty_list .= "<li>Banque</li>";
     $checker = 1;
   }
   /*
