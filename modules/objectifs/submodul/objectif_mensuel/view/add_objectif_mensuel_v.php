@@ -9,13 +9,13 @@ if(!defined('_MEXEC'))die();
 <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
 				
-		<?php TableTools::btn_add('objectif_commercial','Liste des objectifs', Null, $exec = NULL, 'reply'); ?>
+		<?php TableTools::btn_add('objectif_mensuel','Liste des objectifs', Null, $exec = NULL, 'reply'); ?>
 					
 	</div>
 </div>
 <div class="page-header">
 	<h1>
-		Ajouter un Objectif Commercial
+		Ajouter un Objectif Mensuel
 		<small>
 			<i class="ace-icon fa fa-angle-double-right"></i>
 		</small>
@@ -35,26 +35,35 @@ if(!defined('_MEXEC'))die();
 				
 <?php
  
-$form = new Mform('add_objectif_commercial', 'add_objectif_commercial', '', 'objectif_commercial', '0', null);
+$form = new Mform('add_objectif_mensuel', 'add_objectif_mensuel', '', 'objectif_mensuel', '0', null);
 
 
 
 	//Description ==> 
-$array_description[]= array("required", "true", "Insérer Description ...");
-$form->input("Description", "description", "text" ,"9", null, $array_description, null, $readonly = null);
+/*$array_description[]= array("required", "true", "Insérer Description ...");
+$form->input("Description", "description", "text" ,"9", null, $array_description, null, $readonly = null);*/
 	//Liste Services	
 $array_commercial[]  = array('required', 'true', 'Choisir un Service....');
 $form->select_table('Commercial ', 'id_commercial', 8, 'commerciaux', 'id', 'CONCAT(commerciaux.nom,\' \',commerciaux.prenom) ' , 'CONCAT(commerciaux.nom,\' \',commerciaux.prenom)', $indx = '------' , $selected=NULL, $multi=NULL, 'is_glbt = "OUI"', $array_commercial, null);	
-	//Date Début ==> 
+//Année
+$array_mois[]= array("required", "true", "Insérer l'année ...");
+$options_mois  = array(date('Y') => date('Y'),  date('Y')+1 => date('Y')+1);
+$form->select('Année', 'annee', 3, $options_mois, $indx = NULL ,$selected = NULL, $multi = NULL, $hard_code = null ); 
+//Mois
+$array_mois[]= array("required", "true", "Insérer le Mois ...");
+$options_mois  = array(0 => 'Toute l\'année' ,1 => 'Janvier'  ,2 =>  'Février' , 3 => 'Mars'  , 4 => 'Avril'  , 5 => 'Mai'  , 6 => 'Juin' , 7 => 'Juillet'  , 8 => 'Août' , 9 => 'Septembre' , 10 => 'Octobre'  , 11 => 'Novembre' , 12 => 'Décembre');
+$form->select('Mois', 'mois', 3, $options_mois, $indx = NULL ,$selected = date('m'), $multi = NULL, $hard_code = null ); 
+/*	//Date Début ==> 
 $array_date_d[]= array("required", "true", "Insérer Date Début ...");
 $form->input_date('Date Début', 'date_s', 4, date('d-m-Y'), $array_date_d);
-
 	//Date Fin ==> 
 $array_date_f[]= array("required", "true", "Insérer Date Fin ...");
-$form->input_date('Date Fin', 'date_e', 4, date('d-m-Y'), $array_date_f);
+$form->input_date('Date Fin', 'date_e', 4, date('d-m-Y'), $array_date_f);*/
 	//Objectif ==> 
 $array_objectif[]= array("required", "true", "Insérer Objectif ...");
-$form->input("Objectif", "objectif", "text" ,"5 is-number alignRight", null, $array_objectif, null, $readonly = null);
+$form->input("Montant de l'objectif", "objectif", "text" ,"5 is-number alignRight", null, $array_objectif, null, $readonly = null);
+$array_seuil[]= array("required", "true", "Insérer Objectif ...");
+$form->input("Seuil de réussite", "seuil", "text" ,"2 is-decimal alignRight", null, $array_seuil, null, $readonly = null);
 
 
 $form->button('Enregistrer');

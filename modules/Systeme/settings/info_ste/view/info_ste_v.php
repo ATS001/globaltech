@@ -47,7 +47,7 @@ defined('_MEXEC') or die;
 <?php
 
 //	function ($id_form, $app_exec, $is_edit, $app_redirect, $is_wizard, $is_modal=null)
-$form = new Mform('edit_info_ste', 'info_ste', $info_ste->g('id'), 'tdb',null);
+$form = new Mform('edit_info_ste', 'info_ste', $info_ste->g('id'), 'info_ste',null);
 
 
 
@@ -60,7 +60,8 @@ $ste_name_arr[]  = array('required', 'true', 'Insérer le nom' );
 $ste_name_arr[]  = array('minlength', '4', 'Minimum 4 caractères' );
 $form->input('Nom Ste', 'ste_name', 'text' ,9 , $info_ste->g('ste_name'), $ste_name_arr);
 
-
+$ste_devise_arr[]  = array('required', 'true', 'Insérer La Devise Principale' );
+$form->input('Devise Principale', 'ste_devise', 'text' ,'6' , $info_ste->g('ste_devise'), $ste_devise_arr);
 
 
 $ste_bp_arr[]  = array('required', 'true', 'Insérer la BP' );
