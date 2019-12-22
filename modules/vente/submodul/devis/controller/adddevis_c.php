@@ -1,9 +1,9 @@
 <?php
 if(MInit::form_verif('adddevis', false))
 {
-	
+
   $posted_data = array(
-   
+
      'id_client'           => Mreq::tp('id_client') ,
      'tva'                 => Mreq::tp('tva') ,
      'tkn_frm'             => Mreq::tp('tkn_frm') ,
@@ -16,7 +16,7 @@ if(MInit::form_verif('adddevis', false))
      'projet'              => Mreq::tp('projet'),
      'vie'                 => Mreq::tp('vie'),
      'claus_comercial'     => Mreq::tp('claus_comercial'),
-     'id_commercial'       => Mreq::tp('id_commercial'),
+     'id_commercial'       => json_encode(Mreq::tp('id_commercial')),
      'commission'          => Mreq::tp('commission'),
      'type_commission'     => Mreq::tp('type_commission'),
      'total_commission'    => Mreq::tp('total_commission'),
@@ -26,10 +26,11 @@ if(MInit::form_verif('adddevis', false))
      'type_commission_ex'  => Mreq::tp('type_commission_ex')
 
    );
+ //var_dump($posted_data['id_commercial']);
+ //var_dump("**************************");
 
-  
   //Check if array have empty element return list
-  //for acceptable empty field do not put here  
+  //for acceptable empty field do not put here
 
     $checker = null;
     $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
@@ -48,11 +49,13 @@ if(MInit::form_verif('adddevis', false))
       $empty_list .= "<li>Type remise est incorrecte</li>";
       $checker = 1;
     }
+    /*
     if($posted_data['type_commission'] == NULL OR !in_array($posted_data['type_commission'],  array( 'C','S' ))){
 
       $empty_list .= "<li>Type commission est incorrecte</li>";
       $checker = 1;
     }
+    */
     if($posted_data['vie'] == NULL OR !in_array($posted_data['vie'],  array( '30','60', '90', '180', '365' ))){
 
       $empty_list .= "<li>Durée de validité</li>";
@@ -89,23 +92,30 @@ if(MInit::form_verif('adddevis', false))
       $empty_list .= "<li>Commercial</li>";
       $checker = 1;
     }
+    /*
     if($posted_data['commission'] == NULL OR !is_numeric($posted_data['commission']) ){
 
       $empty_list .= "<li>Commission</li>";
       $checker = 1;
     }
-    
+     * 
+     */
+
     if($posted_data['commission_ex'] != NULL AND !is_numeric($posted_data['commission_ex']) ){
 
       $empty_list .= "<li>Commission Externe</li>";
       $checker = 1;
     }
+    
+    /*
     $set_comission = Msetting::get_set('plafond_comission');
     if($posted_data['commission'] > $set_comission  ){
 
       $empty_list .= "<li>Commission ne dois pas dépasser $set_comission</li>";
       $checker = 1;
     }
+     * 
+     */
     if($posted_data['total_commission'] == NULL OR !is_numeric($posted_data['total_commission']) ){
 
       $empty_list .= "<li>Total Commission</li>";
@@ -123,21 +133,21 @@ if(MInit::form_verif('adddevis', false))
       $checker = 1;
     }
     */
-    
+
     $empty_list.= "</ul>";
     if($checker == 1)
     {
       exit("0#$empty_list");
     }
 
-    
-  
+
+
   //End check empty element
 
 
   $new_devis = new  Mdevis($posted_data);
-  
-  
+
+
 
   //execute Insert returne false if error
   if($new_devis->save_new_devis()){
