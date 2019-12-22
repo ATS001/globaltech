@@ -504,6 +504,7 @@ class Mdevis {
         $values["type_devis"] = MySQL::SQLValue($this->type_devis);
         $values["reference"] = MySQL::SQLValue($reference);
         $values["id_client"] = MySQL::SQLValue($this->_data['id_client']);
+        $values["id_devise"]       = $client->client_info['id_devise'];            
         $values["id_banque"] = $client->client_info['id_banque'];
         $values["tva"] = MySQL::SQLValue($this->_data['tva']);
 
@@ -615,6 +616,7 @@ class Mdevis {
         $values["tkn_frm"] = MySQL::SQLValue($this->_data['tkn_frm']);
         $values["type_devis"] = MySQL::SQLValue($this->type_devis);
         $values["id_client"] = MySQL::SQLValue($this->_data['id_client']);
+        $values["id_devise"]       = $client->client_info['id_devise'];
         $values["id_banque"] = $client->client_info['id_banque'];
         $values["tva"] = MySQL::SQLValue($this->_data['tva']);
 
@@ -879,6 +881,44 @@ class Mdevis {
         return $arr_return;
     }
 
+    public function prices_update_on_devise_change($tkn_frm, $taux_change)
+    {
+        $table_details = $this->table_details;
+        global $db;
+
+        if($taux_change == null){
+            $req_sql = "UPDATE $table_details d
+                        SET d.`prix_unitaire`= d.`pu_devise_pays`,
+                            d.`prix_ht`=IF(IFNULL(d.`remise_valeur`,0) <> 0,(d.`pu_devise_pays`- (d.`pu_devise_pays`* d.`remise_valeur`)/100),d.`pu_devise_pays`),
+                            d.`total_ht`=(d.`prix_ht` * d.`qte`), d.`total_tva`=((d.`total_ht`* d.`tva`) / 100),
+                            d.`total_ttc`=(d.`total_ht` + d.`total_tva`),
+                            d.`taux_change`= NULL,d.`updusr`=1,d.`upddat`=(SELECT DATE(NOW()) FROM DUAL)
+                        WHERE tkn_frm = '$tkn_frm'";
+        }else{
+            $req_sql = "UPDATE $table_details d
+                        SET d.`prix_unitaire`=(d.`pu_devise_pays` * $taux_change),
+                            d.`prix_ht`=IF(IFNULL(d.`remise_valeur`,0) <> 0,((d.`pu_devise_pays`- (d.`pu_devise_pays`* d.`remise_valeur`)/100)* $taux_change),(d.`pu_devise_pays`* $taux_change)),
+                            d.`total_ht`=(d.`prix_ht` * d.`qte`), d.`total_tva`=((d.`total_ht`* d.`tva`) / 100),
+                            d.`total_ttc`=(d.`total_ht` + d.`total_tva`),
+                            d.`taux_change`= $taux_change,d.`updusr`=1,d.`upddat`=(SELECT DATE(NOW()) FROM DUAL)
+                        WHERE tkn_frm = '$tkn_frm'";
+        }
+
+        //Run adaptation
+        if(!$db->Query($req_sql))
+        {
+            $this->log .= $db->Error();
+            $this->error = false;
+            return false;
+        }else{
+            $this->Get_sum_detail($tkn_frm);
+            $this->log .='Adaptation Taux de change réussite';
+        }
+        $arr_return = array('error' => $this->error, 'mess' => $this->log, 'sum' => $this->sum_total_ht);
+        return $arr_return;
+     
+    }
+
     private function Get_sum_detail($tkn_frm) {
         $table_details = $this->table_details;
         global $db;
@@ -952,7 +992,9 @@ class Mdevis {
             $values["order"] = MySQL::SQLValue($order_detail);
             $values["ref_produit"] = MySQL::SQLValue($ref_produit);
             $values["designation"] = MySQL::SQLValue($designation);
-            $values["qte"] = MySQL::SQLValue($this->_data['qte']);
+            $values["taux_change"]   = MySQL::SQLValue($this->_data['taux_devise']);
+            $values["qte"]           = MySQL::SQLValue($this->_data['qte']);
+            $values["pu_devise_pays"] = MySQL::SQLValue(Mreq::tp('pu_devise_pays')); 
             $values["prix_unitaire"] = MySQL::SQLValue(Mreq::tp('pu'));
             //$this->_data['prix_unitaire']);
             $values["type_remise"] = MySQL::SQLValue($this->_data['type_remise_d']);
