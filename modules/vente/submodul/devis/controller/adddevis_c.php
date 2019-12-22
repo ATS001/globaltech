@@ -26,8 +26,6 @@ if(MInit::form_verif('adddevis', false))
      'type_commission_ex'  => Mreq::tp('type_commission_ex')
 
    );
- //var_dump($posted_data['id_commercial']);
- //var_dump("**************************");
 
   //Check if array have empty element return list
   //for acceptable empty field do not put here

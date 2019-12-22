@@ -2502,8 +2502,7 @@ class Mdevis {
         $commerciauxIds = str_replace(']', '', $commerciauxIds);
         $listCommerciauxInconnus = array();
         $nbr = substr_count($values, ',') + 1;
-       // var_dump('********** ' . $nbr . ' ************');
-       // var_dump('********** ' . $commerciauxIds . ' ************');
+      
         global $db;
 
         $sql = "SELECT * FROM commerciaux WHERE commerciaux.id in (" . $commerciauxIds . ")";
@@ -2513,8 +2512,7 @@ class Mdevis {
             $this->log .= $db->Error();
         } else {
             if ($db->RowCount() != $nbr) {
-                var_dump("ROWCOUNT".$db->RowCount());
-                var_dump($nbr);
+        
                 $this->error = false;
                  $this->log .= '</br>Un élément ne fait pas partie du service commerciale';
             } 
