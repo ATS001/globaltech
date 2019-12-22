@@ -14,13 +14,14 @@ if(!defined('_MEXEC'))die();
 class Mtaux_change {
 	
 	private $_data;                      //data receive from form
-	var $table            = 'sys_taux_change';   //Main table of module
-	var $last_id          = null;        //return last ID after insert command
-	var $log              = null;        //Log of all opération.
-	var $error            = true;        //Error bol changed when an error is occured
-    var $id_taux_change   = null;        // taux_change ID append when request
-	var $token            = null;        //user for recovery function
-	var $taux_change_info = array();     //Array stock all taux_change info
+	var $table              = 'sys_taux_change';   //Main table of module
+	var $last_id            = null;        //return last ID after insert command
+	var $log                = null;        //Log of all opération.
+	var $error              = true;        //Error bol changed when an error is occured
+    var $id_taux_change     = null;        // taux_change ID append when request
+	var $token              = null;        //user for recovery function
+	var $taux_change_info   = array();     //Array stock all taux_change info
+    var $taux_change_devise = array();     //Array stock all taux_change info
 	
 
 	public function __construct($properties = array()){
@@ -39,7 +40,7 @@ class Mtaux_change {
 		;
 	}
 	
-    //Get all info user fro database for edit form
+    //Get all info  from database for edit form
 
 	public function get_taux_change()
 	{
@@ -75,6 +76,43 @@ class Mtaux_change {
 		}
 		
 	}
+
+
+    public function get_taux_change_by_devise($dev)
+    {
+        global $db;
+
+        $table = $this->table;
+
+        $sql = "SELECT $table.*, d.devise as devise , 
+        ( SELECT dd.devise FROM ste_info s, ref_devise dd WHERE s.ste_id_devise = dd.id ) as devise_principale
+        FROM $table, ref_devise d WHERE $table.id_devise = d.id AND $table.id_devise = ".$dev;
+
+        if(!$db->Query($sql))
+        {
+            $this->error = false;
+            $this->log  .= $db->Error();
+        }else{
+            if ($db->RowCount() == 0) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->taux_change_devise = $db->RowArray();
+                $this->error = true;
+            }
+            
+            
+        }
+        //return Array user_info
+        if($this->error == false)
+        {
+            return false;
+        }else{
+            return true ;
+        }
+        
+    }
+
 	/**
 	 * Save new row to main table
 	 * @return [bol] [bol value send to controller]
