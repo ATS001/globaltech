@@ -20,6 +20,7 @@ if(MInit::form_verif('edit_info_ste',false))
 			'ste_if'      => Mreq::tp('ste_if') ,
 			'ste_rc'      => Mreq::tp('ste_rc') ,
 			'ste_website' => Mreq::tp('ste_website') ,
+			'ste_devise' => Mreq::tp('ste_devise')
 
 		);
 
@@ -35,6 +36,11 @@ if(MInit::form_verif('edit_info_ste',false))
 		if($posted_data['ste_name'] == NULL){
 
 			$empty_list .= "<li>Nom de la Société</li>";
+			$checker = 1;
+		}
+		if($posted_data['ste_devise'] == NULL){
+
+			$empty_list .= "<li>Devise principale</li>";
 			$checker = 1;
 		}
 		if($posted_data['ste_bp'] == NULL){

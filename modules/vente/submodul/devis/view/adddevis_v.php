@@ -32,9 +32,9 @@ if($id_clnt != null && $tsk_aft != null){
 ?>
 <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
-				
+
 		<?php TableTools::btn_add($btn_task, $btn_return_txt, $btn_setting, $exec = NULL, 'reply'); ?>
-					
+
 	</div>
 </div>
 <div class="page-header">
@@ -49,16 +49,16 @@ if($id_clnt != null && $tsk_aft != null){
 <div class="row">
 	<div class="col-xs-12">
 		<div class="clearfix">
-			
+
 		</div>
 		<div class="table-header">
 			Formulaire: "<?php echo ACTIV_APP; ?>"
 		</div>
 		<div class="widget-content">
 			<div class="widget-box">
-				
+
 <?php
-$tva  = Mcfg::get('tva'); 
+$tva  = Mcfg::get('tva');
 $form = new Mform('adddevis', 'adddevis', '', $after_exec, '0', null);
 //$form->input_hidden('commission', Mreq::tp('commission'));
 $plafond_remise = session::get('service') == 7 ? Msetting::get_set('plafond_remise_commercial') : 10;
@@ -89,7 +89,9 @@ $form->input('Projet', 'projet', 'text' ,'6', NULL, null, null, null);
 //Commercial
 //$hard_code_commercial = '<span class="help-block returned_span">...</span>';
 $commercial_array[]  = array('required', 'true', 'Choisir un Commercial');
-$form->select_table('Commercial', 'id_commercial', 6, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)' , 'CONCAT(nom," ",prenom)' , $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat=1  AND is_glbt = \'Oui\' ', $commercial_array, null);
+//$form->select_table('Commercial', 'id_commercial', 6, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)' , 'CONCAT(nom," ",prenom)' , $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat=1  AND is_glbt = \'Oui\' ', $commercial_array, null);
+$form->select_table('Commercial', 'id_commercial[]', 8, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)','CONCAT(nom," ",prenom)', $indx = NULL ,null , 1,NULL, NULL);
+
 //Commission du commercial
 $hard_code_commission  = '<label style="margin-left:15px;margin-right : 20px;">Prise en charge par: </label><select id="type_commission" name="type_commission" class="chosen-select col-xs-12 col-sm-3" chosen-class="'.((3 * 100) / 12).'" ><option value="C" >Client</option><option value="S" >Société</option></select>';
 $array_commission[]= array('required', 'true', 'Insérer la commission du commercial');
@@ -106,13 +108,13 @@ $array_commission_ex[]= array('number', 'true', 'Montant invalid' );
 $form->input('Commission du commercial externe (%)', 'commission_ex', 'text' ,'2 is-number alignRight','0', $array_commission_ex, $hard_code_commission, null);
 
 
-//Table 
+//Table
 $columns = array('id' => '1' ,'Item' => '3' , 'Réference'=>'14', 'Produit' => '30', 'P.U HT' => '10', 'T.Rem' => '5', 'V.Remise' => '5', 'Qte' => '5', 'Total HT' => '10', 'TVA' => '7', 'Total' =>'10', '#' =>'3'   );
 $js_addfunct = 'var column = t.column(0);
      column.visible( ! column.visible() );';
 /*$ssid = 'f_v'.$this->_id_form;
-  $verif_value  = md5(session::get($ssid));*/     
-$verif_value = md5(session::get('f_vadddevis'));    
+  $verif_value  = md5(session::get($ssid));*/
+$verif_value = md5(session::get('f_vadddevis'));
 $form->draw_datatabe_form('table_details_devis', $verif_value, $columns, 'adddevis', 'add_detaildevis', 'Ajouter détails Devis', $js_addfunct);
 //Finance bloc
 $form->bloc_title('Zone totaux');
@@ -143,7 +145,7 @@ $form->render();
 	</div>
 </div>
 <!-- End Add devis bloc -->
-		
+
 <script type="text/javascript">
 $(document).ready(function() {
 
@@ -151,7 +153,7 @@ $(document).ready(function() {
     //called when key is pressed in textbox
 	 function calculat_devis($totalht, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc,$commission,$f_total_commission)
 	 {
-    	
+
     	var $totalht         = parseFloat($totalht) ? parseFloat($totalht) : 0;
     	//var $type_remise    = $type_remise == null ? 'P' : $type_remise;
     	var $remise_valeur  = parseFloat($remise_valeur) ? parseFloat($remise_valeur) : 0;
@@ -168,7 +170,7 @@ $(document).ready(function() {
     	}else{
     		var $totalht_remised = $totalht;
     	}
-    	//Total HT 
+    	//Total HT
     	var $total_ht = $totalht_remised;
     	//Calculate TVA
     	if($tva == 'N')
@@ -181,15 +183,15 @@ $(document).ready(function() {
         var $total_commission = ($total_ttc * $commission) / 100;
         $('#'+$f_total_ht).val($total_ht);
         $('#'+$f_total_tva).val($total_tva);
-        $('#'+$f_total_ttc).val($total_ttc);  
-        $('#'+$f_total_commission).val($total_commission);  
- 
-        
-    } 
+        $('#'+$f_total_ttc).val($total_ttc);
+        $('#'+$f_total_commission).val($total_commission);
+
+
+    }
 
     $('#addRow').on( 'click', function () {
         $cms = parseFloat($('#commission').val());
-        
+
         var table = $('#table_details_devis').DataTable();
 
     	if($('#id_client').val() == ''){
@@ -216,12 +218,12 @@ $(document).ready(function() {
         }
 
         var $link  = $(this).attr('rel');
-   		var $titre = $(this).attr('data_titre'); 
+   		var $titre = $(this).attr('data_titre');
    		var $data  = $(this).attr('data')+'&commission='+$('#commission').val()+'&id_commercial='+$('#id_commercial').val();
         ajax_bbox_loader($link, $data, $titre, 'large')
-        
+
     });
-    
+
 
 
     $('#valeur_remise').bind('input change',function() {
@@ -230,11 +232,11 @@ $(document).ready(function() {
         var type_remise             = $('#type_remise').val();
         var remise_valeur           = parseFloat($('#valeur_remise').val());
         var tva                     = $('#tva').val();
-        var commission              = parseFloat($("#commission").val());   
+        var commission              = parseFloat($("#commission").val());
         calculat_devis(totalht, type_remise, remise_valeur, tva, 'totalht', 'totaltva', 'totalttc',commission,'total_commission');
-        
-    });
 
+    });
+/*
     $('#id_commercial').on('change', function () {
         var $id_commercial = $(this).val();
 
@@ -246,30 +248,30 @@ $(document).ready(function() {
             cache: false,
             url  : '?_tsk=add_detaildevis&ajax=1',
             type : 'POST',
-            data : '&act=1&id='+$id_commercial+'&<?php echo MInit::crypt_tp('exec', 'info_commercial') ?>',
+            data : '&act=1&id='+$id_commercial+'&<?php // echo MInit::crypt_tp('exec', 'info_commercial') ?>',
             dataType:"JSON",
             success: function(data){
 
                 if(data['error']== false){
                     ajax_loadmessage(data['mess'],'nok',5000)
-                }else{                                       
+                }else{
                     $('#remise_plafond').val(data['remise']);
-                    $('#remise_dg_plafond').val(data['remise_dg']);                     
+                    $('#remise_dg_plafond').val(data['remise_dg']);
                 }
 
             }
-        });     
+        });
     });
 
-   
-     
+*/
+
     $('#tva').on('change', function () {
         var table = $('#table_details_devis').DataTable();
         var $tva_option;
 
         if (table.data().count()) {
 
-            bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de TVA sera appliqué sur l'ensemble des lignes détails, voulez vous continuer ?</span>", 
+            bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de TVA sera appliqué sur l'ensemble des lignes détails, voulez vous continuer ?</span>",
                 function(result){
                     if(result == true){
                         var $tkn_frm = $(this).attr('tkn_frm');
@@ -288,7 +290,7 @@ $(document).ready(function() {
                                     ajax_loadmessage(data['mess'],'ok',3000);
                                     var t1 = $('.dataTable').DataTable().draw();
                                     $('#sum_table').val(data['sum']);
-                                    $('#valeur_remise').trigger('change'); 
+                                    $('#valeur_remise').trigger('change');
                                 }
 
                             }
@@ -296,50 +298,50 @@ $(document).ready(function() {
                     }else{
                         var $totaltva = parseFloat($('#totaltva').val());
                         if( $totaltva == 0){
-                           $('#tva').val('N'); 
+                           $('#tva').val('N');
                         }else{
                            $('#tva').val('O');
                         }
                         $('#tva').trigger("chosen:updated");
                     }
                 }
-            );  
+            );
         }
 
     });
 
-     
+
 
     $('#commission').focusin( function () {
         $(this).data('exist_val_commission', $(this).val());
-        
+
     });
 
     $('#commission').bind('input change', function () {
         var $exist_value_commission = $(this).data('exist_val_commission');
         $cms = parseFloat($('#commission').val());
-        
+
         $set_commision = parseFloat(<?php echo Msetting::get_set('plafond_comission') ?>);
 
         if($cms > $set_commision){
- 
-            
+
+
             ajax_loadmessage('La commission ne doit pas dépasser '+$set_commision,'nok',5000);
-           
+
             $('#commission').val($exist_value_commission);
-            
+
             return false;
-            
+
         }
-        
+
     });
 
-    
+
 
     $('#commission').on('focusout', function () {
          var $exist_value_commission = $(this).data('exist_val_commission');
         //Get previous data
-        
+
         //var $exist_type_commission = $('#type_commission').data('exist_type_commission');
 
         //First check if PEC commission by US return true
@@ -350,19 +352,19 @@ $(document).ready(function() {
         $set_commision = parseFloat(<?php echo Msetting::get_set('plafond_comission') ?>);
 
         if($cms > $set_commision){
- 
-            
+
+
             //ajax_loadmessage('La commission ne doit pas dépasser '+$set_commision,'nok',5000);
-           
+
             $('#commission').val($exist_value_commission);
             return false;
-            
+
         }
         var table = $('#table_details_devis').DataTable();
-        
+
         if (table.data().count() &&  this.value !== $exist_value_commission) {
 
-            bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de la commission sera appliqué sur l'ensemble des lignes détails, voulez vous continuer ?</span>", 
+            bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de la commission sera appliqué sur l'ensemble des lignes détails, voulez vous continuer ?</span>",
                 function(result){
                     if(result == true){
                         $cms = parseFloat($('#commission').val());
@@ -382,32 +384,32 @@ $(document).ready(function() {
                                     ajax_loadmessage(data['mess'],'ok',3000);
                                     var t1 = $('.dataTable').DataTable().draw();
                                     $('#sum_table').val(data['sum']);
-                                    $('#valeur_remise').trigger('change'); 
+                                    $('#valeur_remise').trigger('change');
                                 }
 
                             }
                         });
                     }else{
-                        
+
                         $('#commission').val($exist_value_commission);
-                        
+
 
                     }
                 }
-            );  
+            );
         }
 
     });
 
     $('#type_commission').on('change', function () {
-        
+
         //Get previous data
         if($(this).val() == 'C'){
             var $exist_type_commission = 'S'
         }else{
             var $exist_type_commission = 'C'
         }
-        
+
 
         //First check if PEC commission by US return true
         if($('#type_commission').val() == 'S' && $(this).val() == 0){
@@ -423,11 +425,11 @@ $(document).ready(function() {
             ajax_loadmessage('La commission ne doit pas dépasser '+$set_commision,'nok',5000);
             $('#commission').val(0);
             return false;
-            
+
         }
         if (table.data().count()) {
 
-            bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de la commission sera appliqué sur l'ensemble des lignes détails, voulez vous continuer ?</span>", 
+            bootbox.confirm("<span class='text-warning bigger-110 orange'>Le changement de la commission sera appliqué sur l'ensemble des lignes détails, voulez vous continuer ?</span>",
                 function(result){
                     if(result == true){
                         $cms = parseFloat($('#commission').val());
@@ -447,36 +449,36 @@ $(document).ready(function() {
                                     ajax_loadmessage(data['mess'],'ok',3000);
                                     var t1 = $('.dataTable').DataTable().draw();
                                     $('#sum_table').val(data['sum']);
-                                    $('#valeur_remise').trigger('change'); 
+                                    $('#valeur_remise').trigger('change');
                                 }
 
                             }
                         });
                     }else{
 
-                        
+
                             $('#type_commission').val($exist_type_commission);
                             $('#type_commission').trigger("chosen:updated");
                             //$('#type_commission').trigger("change");
-                                         
-                        
-                       
+
+
+
                         //$("div.id_100 select").val($exist_type_commission);
 
                     }
                 }
-            );  
+            );
         }
 
     });
-    
+
     /*$('#type_commission').on('change', function () {
-        
+
         var $exist_type_commission = $(this).data('exist_type_commission');
         if($(this).val() != $exist_type_commission ){
             $('#commission').trigger('focusout');
         }
-        
+
     });*/
 
 
@@ -486,7 +488,7 @@ $(document).ready(function() {
     });
 
     $('#id_client').on('input change', function () {
-                
+
         var $id_client = $(this).val();
         $.ajax({
 
@@ -496,18 +498,18 @@ $(document).ready(function() {
             data : '&act=1&<?php echo MInit::crypt_tp('exec', 'info_client') ?>&id='+$id_client,
             dataType:"JSON",
             success: function(data){
-                //info client après               
+                //info client après
                 $('#tva').val(data['tva_brut']);
                 $('#tva').trigger("chosen:updated");
                 $('#tva').trigger("change");
-                
+
 
             }
         });
 
     });
     $('#table_details_devis tbody ').on('click', 'tr .edt_det', function() {
-        
+
         if($('#id_client').val() == ''){
 
             ajax_loadmessage('Il faut choisir un client','nok');
@@ -527,14 +529,14 @@ $(document).ready(function() {
         }
 
         var $link  = $(this).attr('rel');
-        var $titre = 'Modifier détail Devis'; 
-        var $data  = $(this).attr('data')+'&commission='+$('#commission').val()+'&type_commission='+$('#type_commission').val(); 
+        var $titre = 'Modifier détail Devis';
+        var $data  = $(this).attr('data')+'&commission='+$('#commission').val()+'&type_commission='+$('#type_commission').val();
         ajax_bbox_loader($link, $data, $titre, 'large')
-        
+
     });
-    
-    
-    
+
+
+
     $('#table_details_devis tbody ').on('click', 'tr .del_det', function() {
         var $id_detail = $(this).attr('data');
         $.ajax({
@@ -561,18 +563,16 @@ $(document).ready(function() {
     });
 
     $('#add_client_diver').on( 'click', function () {
-        
+
         var $link  = $(this).attr('rel');
-        var $titre = $(this).attr('data_titre'); 
-        var $data  = $(this).attr('data'); 
+        var $titre = $(this).attr('data_titre');
+        var $data  = $(this).attr('data');
         ajax_bbox_loader($link, $data, $titre, 'large')
-        
+
     });
 
 
-     
+
 
 });
-</script>	
-
-		
+</script>
