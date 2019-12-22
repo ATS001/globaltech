@@ -401,6 +401,38 @@ class Mobjectif_mensuel {
 
 
     }
+    /**
+     * [auto_update_realise_objectif_mensuel description]
+     * @param  [type] $id_objectif [description]
+     * @param  [type] $realise     [description]
+     * @return [type]              [description]
+     */
+    public function auto_update_realise_objectif_mensuel($id_objectif, $realise)
+    {
+        global $db;
+        $values["realise"]       = ' realise + '.$realise.' ';
+        $values["updusr"]        = MySQL::SQLValue(session::get('userid'));
+        $values["upddat"]        = MySQL::SQLValue(date("Y-m-d H:i:s"));
+
+        $wheres['id']     = $id_objectif;
+
+        // Execute the update and show error case error
+        if(!$result = $db->UpdateRows($this->table, $values, $wheres))
+        {
+            $this->log   .= '</br>Impossible de changer le statut!';
+            $this->log   .= '</br>'.$db->Error();
+            return false;
+
+        }else{
+            
+            if(!Mlog::log_exec($this->table, $id_objectif, 'Ajout réalisation à l\'objectif', 'Update'))
+            {
+                $this->log .= '</br>Un problème de log ';
+                return false;
+            }
+            return true;            
+        }
+    }
 
     /*public function set_etat_objectif_mensuel_after_month($id_commercial, $month, $year, $montant_benif)
     {

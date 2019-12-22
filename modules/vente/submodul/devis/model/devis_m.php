@@ -135,7 +135,7 @@ class Mdevis {
         , ref_ville.ville
         , ref_devise.abreviation as devise
         , services.service as comercial
-        , CONCAT(commerciaux.nom,' ',commerciaux.prenom) as commercial
+        , 'Commercial (s)' as commercial
         , CONCAT(users_sys.lnom,' ',users_sys.fnom) as cre_usr
         FROM
         devis
@@ -151,8 +151,7 @@ class Mdevis {
         ON (devis.creusr = users_sys.id)
         INNER JOIN services
         ON (users_sys.service = services.id)
-        INNER JOIN commerciaux
-        ON (devis.id_commercial=commerciaux.id)
+        
         WHERE devis.id = " . $this->id_devis;
 
 
@@ -162,7 +161,7 @@ class Mdevis {
         } else {
             if ($db->RowCount() == 0) {
                 $this->error = false;
-                $this->log .= 'Aucun enregistrement trouvé ';
+                $this->log .= 'Aucun enregistrement trouvé';
             } else {
                 $this->devis_info = $db->RowArray();
                 $this->error = true;
@@ -1111,6 +1110,45 @@ class Mdevis {
         }
     }
 
+    private function insert_realise_into_objectif_mensuel($test)
+    {
+        
+        $commercials_array = json_decode($this->devis_info['id_commercial'], true);
+        $nbr_commercials = count($commercials_array);
+        if(!is_array($commercials_array)){
+            $this->log .="</br>Impossible de trouver commercial(s) pour ce devis ";
+            return false;
+        }
+        global $db;
+        $realise = intval($this->g('totalht') / $nbr_commercials); 
+        
+        /*============================================================
+        =            test if all commercial have objectif            =
+        ============================================================*/   
+        $year = date('Y');
+        $month = date('m');    
+        foreach ($commercials_array as $id_commercial) {
+            $sql = "SELECT id FROM objectif_mensuels WHERE id_commercial = $id_commercial AND annee = $year  AND mois = $month";
+            $id_objectif = $db->QuerySingleValue0($sql);
+            if($id_objectif == '0')
+            {
+                $this->log .="</br>Impossible de trouver le ID d'Objectif mensuel de commercial $id_commercial ".$sql;
+                return false;
+            }
+            if($test == 1){
+                $objectif = new Mobjectif_mensuel();
+                if(!$objectif->auto_update_realise_objectif_mensuel($id_objectif, $realise))
+                {
+                    $this->log .="</br>Impossible d'ajouter la réalisation au objectif $id_objectif ";
+                    return false;
+                }
+            }                        
+        } 
+        return true;       
+        /*=====  End of test if all commercial have objectif  ======*/
+       
+    }
+
     /**
      * [validdevisclient_devis Action valid client]
      *  'creat_devis' => string '0' (length=1)
@@ -1125,6 +1163,11 @@ class Mdevis {
      */
     public function validdevisclient_devis() {
         $this->get_devis();
+
+        if(!$this->insert_realise_into_objectif_mensuel(0)){
+            return false;
+        }
+
         $reponse = $this->_data['reponse'];
         if ($this->g('type_devis') == 'VNT' && $reponse == 'valid') {
             //$this->loop_check_qte();
@@ -1169,6 +1212,10 @@ class Mdevis {
         $id_client = $this->devis_info['id_client'];
         if ($etat == 'valid_client' and ! $this->check_client_temp($id_client)) {
             $this->error = false;
+            return false;
+        }
+
+        if($reponse == 'valid' && !$this->insert_realise_into_objectif_mensuel(1)){
             return false;
         }
         $req_sql = " UPDATE $table SET  $new_etat  $ref_bc WHERE id = $id_devis ";
