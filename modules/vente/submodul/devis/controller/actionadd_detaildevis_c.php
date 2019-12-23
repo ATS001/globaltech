@@ -77,8 +77,9 @@ if($action == 'info_client')
 if($action == 'prices_update_on_devise_change')
 {
 
-//var_dump('OLD: '.MReq::tp('old_client'));
-//var_dump('NEW: '.MReq::tp('id'));
+/*var_dump('OLD: '.MReq::tp('old_client'));
+var_dump('NEW: '.MReq::tp('id'));
+var_dump(MReq::tp('id_client'));*/
 	$taux_devise= null;
 
 	//Get Ste Devise 
@@ -86,13 +87,13 @@ if($action == 'prices_update_on_devise_change')
 	$info_ste->id_ste = 1;
 	$info_ste->get_ste_info();
 	$ste_devise = $info_ste->ste_info['ste_id_devise'];
-	//var_dump($ste_devise);
+	//var_dump('Devise Societe: '.$ste_devise);
 
 	$info_client = new Mclients();
-	$info_client->id_client = MReq::tp('id_client');
+	$info_client->id_client = MReq::tp('id');
 	$info_client->get_client();
 	$client_devise = $info_client->client_info['id_devise'];
-    //var_dump($client_devise);
+    //var_dump('Devise Client: '.$client_devise);
 
 	$old_client = new Mclients();
 	$old_client->id_client = MReq::tp('old_client');
