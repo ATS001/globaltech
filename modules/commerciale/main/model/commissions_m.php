@@ -17,6 +17,7 @@ class Mcommission {
     var $exige_photo;
     var $details_commission_info = array();
     public static $reste;
+    var $objectif_commercial_info = array();
 
     public function __construct($properties = array()) {
         $this->_data = $properties;
@@ -39,7 +40,7 @@ class Mcommission {
 
         $sql = "SELECT $table.* FROM 
 		$table WHERE  $table.id = " . $this->id_commission;
-       
+
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
@@ -82,12 +83,9 @@ class Mcommission {
                 $this->error = false;
                 $this->log .= '</br>Enregistrement BD non réussie';
             } else {
-
                 $this->last_id = $result;
 
                 //If Attached required Save file to Archive
-
-
                 $this->log .= '</br>Enregistrement  réussie ' . $this->_data['id_commerciale'] . ' ' . $this->last_id;
                 if (!Mlog::log_exec($this->table, $this->last_id, 'Ajout Commission', 'Insert')) {
                     $this->log .= '</br>Un problème de log ';
@@ -624,8 +622,8 @@ class Mcommission {
             return true;
         }
     }
-    
-     public function get_list_paiement_by_commission() {
+
+    public function get_list_paiement_by_commission() {
         global $db;
 
         $table = $this->table;
@@ -668,7 +666,7 @@ class Mcommission {
             $values["updusr"] = MySQL::SQLValue(session::get('userid'));
             $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
             $wheres["id"] = $this->id_commission;
-            
+
             if (!$result = $db->UpdateRows($this->table, $values, $wheres)) {
                 //$db->Kill();
                 $this->log .= $db->Error();
@@ -678,10 +676,10 @@ class Mcommission {
 
                 $this->last_id = $wheres["id"];
                 //If Attached required Save file to Archive
-		$this->save_file('decharge', 'Décharge.' . $wheres["id"], 'Document');
-				
-               if ($this->error == true) {
-                   
+                $this->save_file('decharge', 'Décharge.' . $wheres["id"], 'Document');
+
+                if ($this->error == true) {
+
                     $this->maj_decharge();
                     $this->log = '</br>Enregistrement réussie: <b>' . 'ID: ' . $this->last_id;
                     //Check $this->error = false return Red message and Bol false
@@ -702,13 +700,13 @@ class Mcommission {
             return true;
         }
     }
-    
+
     //Incrémente l'était du paiement après l'ajout de décharge
     public function maj_decharge() {
         global $db;
 
         $this->get_commission();
-        $etat =1;              
+        $etat = 1;
         $values["etat"] = MySQL::SQLValue($etat);
         $where["id"] = $this->id_commission;
 
@@ -726,13 +724,12 @@ class Mcommission {
             return true;
         }
     }
-    
-    public function Get_detail_paiement_show()
-    {
+
+    public function Get_detail_paiement_show() {
         global $db;
-        
-        $table= $this->table;
-        
+
+        $table = $this->table;
+
         $req_sql = "SELECT $table.*,CONCAT(commerciaux.nom,' ',commerciaux.prenom) as commerciale,
                                     DATE_FORMAT(date_debit,'%d-%m-%Y') as date_debit,
                                     CONCAT(users_sys.fnom,' ',users_sys.lnom) as user
@@ -741,45 +738,99 @@ class Mcommission {
                                     LEFT JOIN users_sys 
                                     ON (compte_commerciale.creusr = users_sys.id) 
                                     WHERE  compte_commerciale.id_commerciale=commerciaux.id AND $table.id = " . $this->id_paiement;
-          
-         
+
+
         /*
-        $req_sql="SELECT compte_commerciale.*,CONCAT(commerciaux.nom,' ',commerciaux.prenom) AS commerciale,
-                                    DATE_FORMAT(date_debit,'%d-%m-%Y') AS date_debit,
-                                    CONCAT(users_sys.fnom,' ',users_sys.lnom) AS USER
-                                    FROM 
-                                    compte_commerciale
-                                    LEFT JOIN users_sys 
-                                    ON (compte_commerciale.creusr = users_sys.id) 
-                                    LEFT JOIN commerciaux
-                                    ON (commerciaux.id = compte_commerciale.id_commerciale)
-                                    WHERE  compte_commerciale.id_commerciale=commerciaux.id AND compte_commerciale.id = ".$this->id_paiement;
+          $req_sql="SELECT compte_commerciale.*,CONCAT(commerciaux.nom,' ',commerciaux.prenom) AS commerciale,
+          DATE_FORMAT(date_debit,'%d-%m-%Y') AS date_debit,
+          CONCAT(users_sys.fnom,' ',users_sys.lnom) AS USER
+          FROM
+          compte_commerciale
+          LEFT JOIN users_sys
+          ON (compte_commerciale.creusr = users_sys.id)
+          LEFT JOIN commerciaux
+          ON (commerciaux.id = compte_commerciale.id_commerciale)
+          WHERE  compte_commerciale.id_commerciale=commerciaux.id AND compte_commerciale.id = ".$this->id_paiement;
          * 
          */
-        
+
         //var_dump($req_sql);
-        if(!$db->Query($req_sql))
-        {
-            
+        if (!$db->Query($req_sql)) {
+
             $this->error = false;
-            $this->log  .= $db->Error();
-        }else{
-            if ($db->RowCount() == 0)
-            {
+            $this->log .= $db->Error();
+        } else {
+            if ($db->RowCount() == 0) {
                 $this->error = false;
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
                 $this->paiements_info = $db->RowArray();
                 $this->error = true;
             }
-
-           }
-        if($this->error == false)
-        {
+        }
+        if ($this->error == false) {
             return false;
-        }else{
-            return true ;
+        } else {
+            return true;
+        }
+    }
+
+    public function calculerCommissionCommerciale() {
+        $this->get_objectif_commercial_list();
+
+        foreach ($this->objectif_commercial_info as $value) {
+            $taux_resalisation = ($value["realise"] / $value["objectif"]) * 100;
+            $commission = $value["realise"] * (150 / 100);
+            if ($taux_resalisation >= 80) {
+                $values["objet"] = MySQL::SQLValue("Commission mensuel");
+                $values["credit"] = MySQL::SQLValue($commission);
+                $values["type"] = MySQL::SQLValue("Automatique");
+                $values["id_commerciale"] = MySQL::SQLValue($value["id_commercial"]);
+                $values["creusr"] = MySQL::SQLValue(session::get('userid'));
+
+                if (!$result = $db->InsertRow($this->table, $values)) {
+                    $this->log .= $db->Error();
+                    $this->error = false;
+                    $this->log .= '</br>Enregistrement BD non réussie';
+                } else {
+                    $this->last_id = $result;
+                    //If Attached required Save file to Archive
+                    $this->log .= '</br>Enregistrement  réussie ' . $this->_data['id_commerciale'] . ' ' . $this->last_id;
+                    if (!Mlog::log_exec($this->table, $this->last_id, 'Ajout Commission', 'Insert')) {
+                        $this->log .= '</br>Un problème de log ';
+                    }
+                }
+            }
+        }
+    }
+
+        function get_objectif_commercial_list() {
+            global $db;
+
+            $table = $this->table;
+
+            $sql = "SELECT $table.*, CONCAT(commerciaux.nom,' ',commerciaux.prenom) AS commercial FROM 
+		$table, commerciaux WHERE commerciaux.id = $table.id_commercial";
+
+            if (!$db->Query($sql)) {
+                $this->error = false;
+                $this->log .= $db->Error();
+            } else {
+                if ($db->RowCount() == 0) {
+                    $this->error = false;
+                    $this->log .= 'Aucun enregistrement trouvé ';
+                } else {
+                    $this->objectif_commercial_info = $db->RecordsArray();
+                    $this->error = true;
+                }
+            }
+            //return Array user_info
+            if ($this->error == false) {
+                return false;
+            } else {
+                return true;
+            }
         }
 
     }
-}
+    
