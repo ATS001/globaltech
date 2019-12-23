@@ -58,7 +58,7 @@ if($action == 'info_commercial')
 		echo json_encode(array('error' => false, 'mess' => 'Problème récuperation plafond remise'));
 	}     
 }
-
+//Get info client
 if($action == 'info_client')
 {
 	$info_client = new Mclients();
@@ -72,6 +72,55 @@ if($action == 'info_client')
 	} 
 }
 
+//Update prices
+
+if($action == 'prices_update_on_devise_change')
+{
+
+/*var_dump('OLD: '.MReq::tp('old_client'));
+var_dump('NEW: '.MReq::tp('id'));
+var_dump(MReq::tp('id_client'));*/
+	$taux_devise= null;
+
+	//Get Ste Devise 
+	$info_ste = new MSte_info();
+	$info_ste->id_ste = 1;
+	$info_ste->get_ste_info();
+	$ste_devise = $info_ste->ste_info['ste_id_devise'];
+	//var_dump('Devise Societe: '.$ste_devise);
+
+	$info_client = new Mclients();
+	$info_client->id_client = MReq::tp('id');
+	$info_client->get_client();
+	$client_devise = $info_client->client_info['id_devise'];
+    //var_dump('Devise Client: '.$client_devise);
+
+	$old_client = new Mclients();
+	$old_client->id_client = MReq::tp('old_client');
+	$old_client->get_client();
+	$old_client_devise = $old_client->client_info['id_devise'];
+
+	if ($client_devise  != $old_client_devise){
+		if ($ste_devise != $client_devise){                      
+			$taux_change = new Mtaux_change();
+			$taux_change->id_ste = 1;
+			$taux_change->get_taux_change_by_devise($client_devise);
+			$taux_devise= $taux_change->taux_change_devise['conversion'];
+			//var_dump($taux_change); 
+			//var_dump($taux_devise); 
+    	}
+
+		$devis = new Mdevis();
+		$arr_return = $devis->prices_update_on_devise_change(MReq::tp('tkn_frm'), $taux_devise);
+		if($devis->error == true)
+		{
+			$result = json_encode($arr_return);
+			echo $result;
+		}else{
+			echo json_encode(array('error' => false, 'mess' => 'Problème Application du taux de change du client !!!'.$devis->log));
+		}
+	}
+}
 
 //update tva for lines 
 

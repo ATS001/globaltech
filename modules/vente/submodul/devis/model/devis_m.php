@@ -135,7 +135,7 @@ class Mdevis {
         , ref_ville.ville
         , ref_devise.abreviation as devise
         , services.service as comercial
-        , CONCAT(commerciaux.nom,' ',commerciaux.prenom) as commercial
+        , 'Commercial (s)' as commercial
         , CONCAT(users_sys.lnom,' ',users_sys.fnom) as cre_usr
         FROM
         devis
@@ -151,8 +151,7 @@ class Mdevis {
         ON (devis.creusr = users_sys.id)
         INNER JOIN services
         ON (users_sys.service = services.id)
-        INNER JOIN commerciaux
-        ON (devis.id_commercial=commerciaux.id)
+        
         WHERE devis.id = " . $this->id_devis;
 
 
@@ -162,7 +161,7 @@ class Mdevis {
         } else {
             if ($db->RowCount() == 0) {
                 $this->error = false;
-                $this->log .= 'Aucun enregistrement trouvé ';
+                $this->log .= 'Aucun enregistrement trouvé';
             } else {
                 $this->devis_info = $db->RowArray();
                 $this->error = true;
@@ -505,6 +504,7 @@ class Mdevis {
         $values["type_devis"] = MySQL::SQLValue($this->type_devis);
         $values["reference"] = MySQL::SQLValue($reference);
         $values["id_client"] = MySQL::SQLValue($this->_data['id_client']);
+        $values["id_devise"]       = $client->client_info['id_devise'];            
         $values["id_banque"] = $client->client_info['id_banque'];
         $values["tva"] = MySQL::SQLValue($this->_data['tva']);
 
@@ -616,6 +616,7 @@ class Mdevis {
         $values["tkn_frm"] = MySQL::SQLValue($this->_data['tkn_frm']);
         $values["type_devis"] = MySQL::SQLValue($this->type_devis);
         $values["id_client"] = MySQL::SQLValue($this->_data['id_client']);
+        $values["id_devise"]       = $client->client_info['id_devise'];
         $values["id_banque"] = $client->client_info['id_banque'];
         $values["tva"] = MySQL::SQLValue($this->_data['tva']);
 
@@ -880,6 +881,45 @@ class Mdevis {
         return $arr_return;
     }
 
+    public function prices_update_on_devise_change($tkn_frm, $taux_change)
+    {
+        $table_details = $this->table_details;
+        global $db;
+//var_dump($taux_change);
+        if($taux_change == null){
+            $req_sql = "UPDATE $table_details d
+                        SET d.`prix_unitaire`= d.`pu_devise_pays`,
+                            d.`prix_ht`=IF(IFNULL(d.`remise_valeur`,0) <> 0,(d.`pu_devise_pays`- (d.`pu_devise_pays`* d.`remise_valeur`)/100),d.`pu_devise_pays`),
+                            d.`total_ht`=(d.`prix_ht` * d.`qte`), d.`total_tva`=((d.`total_ht`* d.`tva`) / 100),
+                            d.`total_ttc`=(d.`total_ht` + d.`total_tva`),
+                            d.`taux_change`= NULL,d.`updusr`=1,d.`upddat`=(SELECT NOW() FROM DUAL)
+                        WHERE tkn_frm = '$tkn_frm'";
+        }else{
+            $req_sql = "UPDATE $table_details d
+                        SET d.`prix_unitaire`=(d.`pu_devise_pays` * $taux_change),
+                            d.`prix_ht`=IF(IFNULL(d.`remise_valeur`,0) <> 0,((d.`pu_devise_pays`- (d.`pu_devise_pays`* d.`remise_valeur`)/100)* $taux_change),(d.`pu_devise_pays`* $taux_change)),
+                            d.`total_ht`=(d.`prix_ht` * d.`qte`), d.`total_tva`=((d.`total_ht`* d.`tva`) / 100),
+                            d.`total_ttc`=(d.`total_ht` + d.`total_tva`),
+                            d.`taux_change`= $taux_change,d.`updusr`=1,d.`upddat`=(SELECT NOW() FROM DUAL)
+                        WHERE tkn_frm = '$tkn_frm'";
+        }
+
+        //Run adaptation
+        if(!$db->Query($req_sql))
+        {
+            $this->log .= $db->Error();
+            $this->error = false;
+            return false;
+        }else{
+            
+            $this->Get_sum_detail($tkn_frm);
+            $this->log .='Adaptation Taux de change réussite';
+        }
+        $arr_return = array('error' => $this->error, 'mess' => $this->log, 'sum' => $this->sum_total_ht);
+        return $arr_return;
+     
+    }
+
     private function Get_sum_detail($tkn_frm) {
         $table_details = $this->table_details;
         global $db;
@@ -953,7 +993,9 @@ class Mdevis {
             $values["order"] = MySQL::SQLValue($order_detail);
             $values["ref_produit"] = MySQL::SQLValue($ref_produit);
             $values["designation"] = MySQL::SQLValue($designation);
-            $values["qte"] = MySQL::SQLValue($this->_data['qte']);
+            $values["taux_change"]   = MySQL::SQLValue(Mreq::tp('taux_devise'));
+            $values["qte"]           = MySQL::SQLValue($this->_data['qte']);
+            $values["pu_devise_pays"] = MySQL::SQLValue(Mreq::tp('pu_devise_pays')); 
             $values["prix_unitaire"] = MySQL::SQLValue(Mreq::tp('pu'));
             //$this->_data['prix_unitaire']);
             $values["type_remise"] = MySQL::SQLValue($this->_data['type_remise_d']);
@@ -1111,6 +1153,45 @@ class Mdevis {
         }
     }
 
+    private function insert_realise_into_objectif_mensuel($test)
+    {
+        
+        $commercials_array = json_decode($this->devis_info['id_commercial'], true);
+        $nbr_commercials = count($commercials_array);
+        if(!is_array($commercials_array)){
+            $this->log .="</br>Impossible de trouver commercial(s) pour ce devis ";
+            return false;
+        }
+        global $db;
+        $realise = intval($this->g('totalht') / $nbr_commercials); 
+        
+        /*============================================================
+        =            test if all commercial have objectif            =
+        ============================================================*/   
+        $year = date('Y');
+        $month = date('m');    
+        foreach ($commercials_array as $id_commercial) {
+            $sql = "SELECT id FROM objectif_mensuels WHERE id_commercial = $id_commercial AND annee = $year  AND mois = $month";
+            $id_objectif = $db->QuerySingleValue0($sql);
+            if($id_objectif == '0')
+            {
+                $this->log .="</br>Impossible de trouver le ID d'Objectif mensuel de commercial $id_commercial ".$sql;
+                return false;
+            }
+            if($test == 1){
+                $objectif = new Mobjectif_mensuel();
+                if(!$objectif->auto_update_realise_objectif_mensuel($id_objectif, $realise))
+                {
+                    $this->log .="</br>Impossible d'ajouter la réalisation au objectif $id_objectif ";
+                    return false;
+                }
+            }                        
+        } 
+        return true;       
+        /*=====  End of test if all commercial have objectif  ======*/
+       
+    }
+
     /**
      * [validdevisclient_devis Action valid client]
      *  'creat_devis' => string '0' (length=1)
@@ -1125,6 +1206,11 @@ class Mdevis {
      */
     public function validdevisclient_devis() {
         $this->get_devis();
+
+        if(!$this->insert_realise_into_objectif_mensuel(0)){
+            return false;
+        }
+
         $reponse = $this->_data['reponse'];
         if ($this->g('type_devis') == 'VNT' && $reponse == 'valid') {
             //$this->loop_check_qte();
@@ -1169,6 +1255,10 @@ class Mdevis {
         $id_client = $this->devis_info['id_client'];
         if ($etat == 'valid_client' and ! $this->check_client_temp($id_client)) {
             $this->error = false;
+            return false;
+        }
+
+        if($reponse == 'valid' && !$this->insert_realise_into_objectif_mensuel(1)){
             return false;
         }
         $req_sql = " UPDATE $table SET  $new_etat  $ref_bc WHERE id = $id_devis ";
