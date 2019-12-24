@@ -71,7 +71,8 @@ $id_facture = Mreq::tp('id');
                 $form->input('Montant', 'montant', 'text', 6, null, $mt_array);
                 
 //Montant devise externe
-                if($info_facture->devise_facture != $info_facture->devise_societe){
+
+                if(($info_facture->devise_facture != $info_facture->devise_societe) AND $info_facture->devise_facture != NULL ){
                 $mt_devise_ext_array[] = array('number', 'true', 'Entrez un montant valide');
                 $form->input('Montant en Devise', 'montant_devise_ext', 'text', 6, null, $mt_devise_ext_array);
                 }                   
