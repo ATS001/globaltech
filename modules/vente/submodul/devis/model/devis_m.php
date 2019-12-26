@@ -146,7 +146,7 @@ class Mdevis {
         LEFT JOIN ref_ville
         ON (clients.id_ville = ref_ville.id)
         INNER JOIN ref_devise
-        ON (clients.id_devise = ref_devise.id)
+        ON (devis.id_devise = ref_devise.id)
         INNER JOIN users_sys
         ON (devis.creusr = users_sys.id)
         INNER JOIN services
@@ -1984,7 +1984,7 @@ class Mdevis {
             $this->error = false;
             $this->log .= $db->Error() . ' ' . $req_sql;
             ini_set('xdebug.var_display_max_data', -1);
-            var_dump($this->log);
+           // var_dump($this->log);
         }
 
 

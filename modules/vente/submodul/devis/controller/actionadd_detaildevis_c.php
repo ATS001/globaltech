@@ -77,9 +77,9 @@ if($action == 'info_client')
 if($action == 'prices_update_on_devise_change')
 {
 
-var_dump('OLD: '.MReq::tp('old_client'));
-var_dump('NEW: '.MReq::tp('id_client'));
-var_dump(MReq::tp('id_client'));
+//var_dump('OLD: '.MReq::tp('old_client'));
+//var_dump('NEW: '.MReq::tp('id_client'));
+//var_dump(MReq::tp('id_client'));
 	$taux_devise= null;
 
 	//Get Ste Devise 
