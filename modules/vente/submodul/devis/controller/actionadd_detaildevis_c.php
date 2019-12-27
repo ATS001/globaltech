@@ -77,9 +77,9 @@ if($action == 'info_client')
 if($action == 'prices_update_on_devise_change')
 {
 
-/*var_dump('OLD: '.MReq::tp('old_client'));
-var_dump('NEW: '.MReq::tp('id'));
-var_dump(MReq::tp('id_client'));*/
+//var_dump('OLD: '.MReq::tp('old_client'));
+//var_dump('NEW: '.MReq::tp('id_client'));
+//var_dump(MReq::tp('id_client'));
 	$taux_devise= null;
 
 	//Get Ste Devise 
@@ -90,10 +90,12 @@ var_dump(MReq::tp('id_client'));*/
 	//var_dump('Devise Societe: '.$ste_devise);
 
 	$info_client = new Mclients();
-	$info_client->id_client = MReq::tp('id');
+	$info_client->id_client = MReq::tp('id_client');
 	$info_client->get_client();
 	$client_devise = $info_client->client_info['id_devise'];
+	$client_banque = $info_client->client_info['id_banque'];
     //var_dump('Devise Client: '.$client_devise);
+    //var_dump('Client'. $info_client->client_info['id']);
 
 	$old_client = new Mclients();
 	$old_client->id_client = MReq::tp('old_client');
@@ -103,7 +105,6 @@ var_dump(MReq::tp('id_client'));*/
 	if ($client_devise  != $old_client_devise){
 		if ($ste_devise != $client_devise){                      
 			$taux_change = new Mtaux_change();
-			$taux_change->id_ste = 1;
 			$taux_change->get_taux_change_by_devise($client_devise);
 			$taux_devise= $taux_change->taux_change_devise['conversion'];
 			//var_dump($taux_change); 
@@ -113,11 +114,22 @@ var_dump(MReq::tp('id_client'));*/
 		$devis = new Mdevis();
 		$arr_return = $devis->prices_update_on_devise_change(MReq::tp('tkn_frm'), $taux_devise);
 		if($devis->error == true)
-		{
-			$result = json_encode($arr_return);
-			echo $result;
+		{ if(MReq::tp('edit')==1)
+	      {
+			if($devis -> devis_update_on_client_change(Mreq::tp('id'), Mreq::tp('id_client'), $client_devise, $client_banque, Mreq::tp('tva'), Mreq::tp('totalht'), Mreq::tp('totalttc'),Mreq::tp('totaltva')))   
+            {
+                    $result = json_encode($arr_return);
+					echo $result;
+			}else{
+					echo json_encode(array('error' => false, 'mess' => 'Problème modification du client !!!'.$devis->log));
+			}
+		  }else{
+		  	$result = json_encode($arr_return);
+					echo $result;
+		  }
+
 		}else{
-			echo json_encode(array('error' => false, 'mess' => 'Problème Application du taux de change du client !!!'.$devis->log));
+					echo json_encode(array('error' => false, 'mess' => 'Problème adaptation taux de change !!!'.$devis->log));
 		}
 	}
 }

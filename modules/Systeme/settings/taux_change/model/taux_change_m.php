@@ -128,10 +128,10 @@ class Mtaux_change {
 			global $db;
 		    //Add all fields for the table
 		    $values["id_devise"]       = MySQL::SQLValue($this->_data["id_devise"]);
-$values["valeur_devise"]       = MySQL::SQLValue($this->_data["valeur_devise"]);
+            $values["valeur_devise"]   = MySQL::SQLValue($this->_data["valeur_devise"]);
 
 		
-		    $values["creusr"]       = MySQL::SQLValue(session::get('userid'));
+		    $values["creusr"]          = MySQL::SQLValue(session::get('userid'));
 
 			if (!$result = $db->InsertRow($this->table, $values)) {
 				

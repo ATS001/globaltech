@@ -529,9 +529,9 @@ $(document).ready(function() {
                         $.ajax({
 
                             cache: false,
-                            url  : '?_tsk=add_detaildevis&ajax=1'+'&act=1&<?php echo MInit::crypt_tp('exec', 'prices_update_on_devise_change')?>&id='+$id_client+'&old_client='+previousClient,
+                            url  : '?_tsk=add_detaildevis&ajax=1'+'&act=1&<?php echo MInit::crypt_tp('exec', 'prices_update_on_devise_change')?>&id_client='+$id_client+'&old_client='+previousClient+'&edit=1',
                             type : 'POST',
-                            data : $('#adddevis').serialize(),
+                            data : $('#editdevis').serialize(),
                             dataType:"JSON",
                             success: function(data){
 

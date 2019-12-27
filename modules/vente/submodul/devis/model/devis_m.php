@@ -146,7 +146,7 @@ class Mdevis {
         LEFT JOIN ref_ville
         ON (clients.id_ville = ref_ville.id)
         INNER JOIN ref_devise
-        ON (clients.id_devise = ref_devise.id)
+        ON (devis.id_devise = ref_devise.id)
         INNER JOIN users_sys
         ON (devis.creusr = users_sys.id)
         INNER JOIN services
@@ -910,12 +910,36 @@ class Mdevis {
             $this->log .= $db->Error();
             $this->error = false;
             return false;
-        }else{
-            
-            $this->Get_sum_detail($tkn_frm);
+        }else
+        {           
+            $this->Get_sum_detail($tkn_frm);            
             $this->log .='Adaptation Taux de change réussite';
         }
         $arr_return = array('error' => $this->error, 'mess' => $this->log, 'sum' => $this->sum_total_ht);
+        return $arr_return;
+     
+    }
+
+    public function devis_update_on_client_change($id, $id_client, $id_devise, $id_banque, $tva, $totalht, $totalttc,$totaltva)
+    {
+        $table = $this->table;
+        global $db;
+        
+        $req_sql = "UPDATE $table d
+                       SET d.`id_client`= $id_client, d.`id_devise`=$id_devise, d.`id_banque`=$id_banque, d.`tva`='$tva', d.`totalht`= $totalht, d.`totalttc`=$totalttc, d.`totaltva`=$totaltva ,d.`updusr`=1,d.`upddat`=(SELECT NOW() FROM DUAL)
+                     WHERE d.`id` = $id";
+
+        //Run adaptation
+        if(!$db->Query($req_sql))
+        {
+            $this->log .= $db->Error();
+            $this->error = false;
+            return false;
+        }else
+        {           
+            $this->log .='Modification client réussite';
+        }
+        $arr_return = array('error' => $this->error, 'mess' => $this->log);
         return $arr_return;
      
     }
@@ -1085,7 +1109,9 @@ class Mdevis {
             $values["id_produit"] = MySQL::SQLValue($this->_data['id_produit']);
             $values["ref_produit"] = MySQL::SQLValue($ref_produit);
             $values["designation"] = MySQL::SQLValue($designation);
-            $values["qte"] = MySQL::SQLValue($this->_data['qte']);
+            $values["taux_change"]   = MySQL::SQLValue(Mreq::tp('taux_devise'));
+            $values["qte"]           = MySQL::SQLValue($this->_data['qte']);
+            $values["pu_devise_pays"] = MySQL::SQLValue(Mreq::tp('pu_devise_pays')); 
             $values["prix_unitaire"] = MySQL::SQLValue(Mreq::tp('pu'));
             //$values["prix_unitaire"] = MySQL::SQLValue($this->_data['prix_unitaire']);
             $values["type_remise"] = MySQL::SQLValue($this->_data['type_remise_d']);
@@ -1958,7 +1984,7 @@ class Mdevis {
             $this->error = false;
             $this->log .= $db->Error() . ' ' . $req_sql;
             ini_set('xdebug.var_display_max_data', -1);
-            var_dump($this->log);
+           // var_dump($this->log);
         }
 
 
@@ -2225,12 +2251,12 @@ class Mdevis {
         $old_devis_id = $this->id_devis;
         //Insert duplicated Devis
         $all_fields_f = "`tkn_frm`, `type_devis`,
-                `projet`, `id_client`, `commission`, `total_commission`, `tva`, `id_commercial`, `reference`,
+                `projet`, `id_client`, `id_devise`, `id_banque`, `commission`, `total_commission`, `tva`, `id_commercial`, `reference`,
                 `date_devis`, `type_remise`, `total_remise`, `valeur_remise`, `totalht`, `totalttc`,
                 `totaltva`, `vie`, `claus_comercial`, `ref_bc`, `scan`, `devis_pdf`, `etat`, `creusr`";
 
         $all_fields_v = "'$verif_value', `type_devis`,
-                `projet`, `id_client`, `commission`, `total_commission`, `tva`, `id_commercial`, '$reference',
+                `projet`, `id_client`, `id_devise`, `id_banque`, `commission`, `total_commission`, `tva`, `id_commercial`, '$reference',
                 '$date_devis', `type_remise`, `total_remise`, `valeur_remise`, `totalht`, `totalttc`,
                 `totaltva`, `vie`, `claus_comercial`, `ref_bc`, `scan`, `devis_pdf`, 0, '$curent_usr' ";
 
@@ -2242,8 +2268,8 @@ class Mdevis {
         }
 
         //Insert duplicated detail devis
-        $all_fields_d_f = "`order`, `id_devis`, `tkn_frm`, `id_produit`, `ref_produit`, `designation`, `qte`, `prix_unitaire`, `type_remise`, `remise_valeur`, `tva`, `prix_ht`, `prix_ttc`, `total_ht`, `total_ttc`, `total_tva`, `creusr`";
-        $all_fields_d_v = "`order`, '$new_devis', '$verif_value', `id_produit`, `ref_produit`, `designation`, `qte`, `prix_unitaire`, `type_remise`, `remise_valeur`, `tva`, `prix_ht`, `prix_ttc`, `total_ht`, `total_ttc`, `total_tva`, '$curent_usr'";
+        $all_fields_d_f = "`order`, `id_devis`, `tkn_frm`, `id_produit`, `ref_produit`, `designation`, `taux_change`, `qte`, `pu_devise_pays`, `prix_unitaire`, `type_remise`, `remise_valeur`, `tva`, `prix_ht`, `prix_ttc`, `total_ht`, `total_ttc`, `total_tva`, `creusr`";
+        $all_fields_d_v = "`order`, '$new_devis', '$verif_value', `id_produit`, `ref_produit`, `designation`, `taux_change`, `qte`, `pu_devise_pays`, `prix_unitaire`, `type_remise`, `remise_valeur`, `tva`, `prix_ht`, `prix_ttc`, `total_ht`, `total_ttc`, `total_tva`, '$curent_usr'";
 
         $sql_duplicat_devis_d = "INSERT INTO $table_details ($all_fields_d_f) SELECT  $all_fields_d_v FROM $table_details WHERE $table_details.id_devis = $old_devis_id";
 
