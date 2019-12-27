@@ -63,23 +63,33 @@ $form = new Mform('adddevis', 'adddevis', '', $after_exec, '0', null);
 //$form->input_hidden('commission', Mreq::tp('commission'));
 $plafond_remise = session::get('service') == 7 ? Msetting::get_set('plafond_remise_commercial') : 10;
 $form->input_hidden('remise_plafond', $plafond_remise);
+$form->input_hidden('old_client', null);
 
 //Date devis
 $array_date[]= array('required', 'true', 'Insérer la date de devis');
 $form->input_date('Date devis', 'date_devis', 2, date('d-m-Y'), $array_date);
-//Client
 
+//Client
 $hard_code_client = '<a id="add_client_diver" href="#" rel="add_client_diver" data="" data_titre="Ajout Client Diver " class=" "><span class="help-block returned_span"><i class="fa fa-plus"></i> Ajouter un client divers</span></a>';
+$client_devise = '<span class="help-block returned_client"><i class="fa fa-money"></i> Devise </span>';
 $where_id_client = null;
 //if client is set no temp clien button
 if($id_clnt != null){
+    $client_d = new MClients();
+    $client_d->id_client = $id_clnt;
+    $client_d->get_client();
+    $devise=$client_d->g('devise');
+    $id_devise_c=$client_d->g('id_devise');
+
     $hard_code_client = null;
     $where_id_client = ' AND id = '.$id_clnt;
+
+    $client_devise = '<span class="help-block returned_client"><i class="fa fa-money"></i> Ce devis sera créé en: '.$devise.' </span>';
 }
 $client_array[]  = array('required', 'true', 'Choisir un Client');
 //Il faut vérifier si le client est préenvoyé
 
-$form->select_table('Client', 'id_client', 6, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' ,$selected = $id_clnt,$multi=NULL, $where='(etat=1 or type_client=\'T\' )'.$where_id_client, $client_array, $hard_code_client);
+$form->select_table('Client', 'id_client', 6, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' ,$selected = $id_clnt,$multi=NULL, $where='(etat=1 or type_client=\'T\' )'.$where_id_client, $client_array, $hard_code_client.$client_devise);
 //TVA
 $tva_opt = array('O' => 'OUI' , 'N' => 'NON' );
 $form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$selected = NULL, $multi = NULL);
@@ -181,12 +191,10 @@ $(document).ready(function() {
     	}
     	var $total_ttc = $total_ht + $total_tva ;
         var $total_commission = ($total_ttc * $commission) / 100;
-        $('#'+$f_total_ht).val($total_ht);
-        $('#'+$f_total_tva).val($total_tva);
-        $('#'+$f_total_ttc).val($total_ttc);
-        $('#'+$f_total_commission).val($total_commission);
-
-
+        $('#'+$f_total_ht).val(Math.round($total_ht));
+        $('#'+$f_total_tva).val(Math.round($total_tva));
+        $('#'+$f_total_ttc).val(Math.round($total_ttc));  
+        $('#'+$f_total_commission).val(Math.round($total_commission));  
     }
 
     $('#addRow').on( 'click', function () {
@@ -219,7 +227,7 @@ $(document).ready(function() {
 
         var $link  = $(this).attr('rel');
    		var $titre = $(this).attr('data_titre');
-   		var $data  = $(this).attr('data')+'&commission='+$('#commission').val()+'&id_commercial='+$('#id_commercial').val();
+   		var $data  = $(this).attr('data')+'&commission='+$('#commission').val()+'&id_commercial='+$('#id_commercial').val()+'&id_client='+$('#id_client').val();
         ajax_bbox_loader($link, $data, $titre, 'large')
 
     });
@@ -481,15 +489,31 @@ $(document).ready(function() {
 
     });*/
 
-
-
     $('#type_remise').on('change', function () {
         $('#valeur_remise').trigger('input');
     });
 
-    $('#id_client').on('input change', function () {
+    $('#id_client').on('focus', function () {
+        // Store the old client on focus 
+        $old_client = $(this.val());
+    });
 
-        var $id_client = $(this).val();
+    var old_client = $("#id_client");
+    old_client.data("prev",old_client.val());
+
+    $('#id_client').on('input change', function () {
+                
+        var $id_client   = $(this).val();        
+        var table = $('#table_details_devis').DataTable();
+
+        var old_id_client = $(this);
+        //alert(old_id_client.data("prev"));
+        $('#old_client').val(old_id_client.data("prev"));
+        old_id_client.data("prev",old_id_client.val());
+
+        var previousClient = $("#old_client").val();
+        //alert(" PreviousValue : " + previousClient);
+
         $.ajax({
 
             cache: false,
@@ -498,16 +522,48 @@ $(document).ready(function() {
             data : '&act=1&<?php echo MInit::crypt_tp('exec', 'info_client') ?>&id='+$id_client,
             dataType:"JSON",
             success: function(data){
+                if($('#id_client').val() == ''){
+                    //$('#id_client option:selected').text() == '------'){
+                    $('.returned_client').remove(); 
+                    $('#id_client').parent('div').after('<span class="show_info_client help-block returned_client"><i class="fa fa-money"></i> Devise </span>');
+                }else{
+                    $('.returned_client').remove(); 
+                    $('#id_client').parent('div').after('<span class="show_info_client help-block returned_client"><i class="fa fa-money"></i>Ce devis sera créé en: '+data['devise']+'</span>');
+                }          
+                //Prices update  after client change
+                if (table.data().count()) {
+
+                        var $tkn_frm = $(this).attr('tkn_frm');
+                        $.ajax({
+
+                            cache: false,
+                            url  : '?_tsk=add_detaildevis&ajax=1'+'&act=1&<?php echo MInit::crypt_tp('exec', 'prices_update_on_devise_change')?>&id_client='+$id_client+'&old_client='+previousClient+'&edit=0',
+                            type : 'POST',
+                            data : $('#adddevis').serialize(),
+                            dataType:"JSON",
+                            success: function(data){
+
+                                if(data['error']== false){
+                                    ajax_loadmessage(data['mess'],'nok',5000)
+                                }else{
+                                    ajax_loadmessage(data['mess'],'ok',3000);
+                                    var t1 = $('.dataTable').DataTable().draw();
+                                    $('#sum_table').val(data['sum']);
+                                    $('#valeur_remise').trigger('change'); 
+                                }
+
+                            }
+                        });
+                }  
+
                 //info client après
                 $('#tva').val(data['tva_brut']);
                 $('#tva').trigger("chosen:updated");
                 $('#tva').trigger("change");
-
-
             }
         });
-
     });
+
     $('#table_details_devis tbody ').on('click', 'tr .edt_det', function() {
 
         if($('#id_client').val() == ''){

@@ -1,4 +1,26 @@
 <?php 
+//Get Ste Devise 
+$info_ste = new MSte_info();
+$info_ste->id_ste = 1;
+$info_ste->get_ste_info();
+$ste_devise = $info_ste->ste_info['ste_id_devise'];
+//var_dump($ste_devise);
+
+$info_client = new Mclients();
+$info_client->id_client = MReq::tp('id_client');
+$info_client->get_client();
+$client_devise = $info_client->client_info['id_devise'];
+//var_dump($client_devise);
+
+if($ste_devise != $client_devise)
+{
+    $taux_change = new Mtaux_change();
+    $taux_change->id_ste = 1;
+    $taux_change->get_taux_change_by_devise($client_devise);
+    $taux_devise= $taux_change->taux_change_devise['conversion'];
+    //var_dump($taux_devise);          
+}
+
 $form = new Mform('add_detaildevis', 'add_detaildevis', '', 'devis', '0', 'is_modal');
 //token main form
 $form->input_hidden('tkn_frm', Mreq::tp('tkn'));
@@ -6,7 +28,14 @@ $form->input_hidden('tva_d', 'O');
 
 $form->input_hidden('commission', Mreq::tp('commission'));
 $form->input_hidden('id_commercial', Mreq::tp('id_commercial'));
+$form->input_hidden('pu_devise_pays', 0);
 $form->input_hidden('pu', 0);
+$form->input_hidden('ste_devise', $ste_devise);
+$form->input_hidden('client_devise', $client_devise);
+if($ste_devise != $client_devise)
+{
+$form->input_hidden('taux_devise', $taux_devise);
+}
 //var_dump(Mreq::tp('commission'));
 
 //Type Produit
@@ -85,9 +114,9 @@ $(document).ready(function() {
     		var $total_tva = ($total_ht * $val_tva) / 100; //TVA value get from app setting
     	}
     	var $total_ttc = $total_ht + $total_tva ;
-    	$('#'+$f_total_ht).val($total_ht);
-    	$('#'+$f_total_tva).val($total_tva);
-    	$('#'+$f_total_ttc).val($total_ttc);  
+        $('#'+$f_total_ht).val(Math.round($total_ht));
+        $('#'+$f_total_tva).val(Math.round($total_tva));
+        $('#'+$f_total_ttc).val(Math.round($total_ttc));   
     }
     $('#id_produit').change(function(e) {
     	var $id_produit = $(this).val();
@@ -124,11 +153,32 @@ $(document).ready(function() {
                         } 
                     }
                     $('#label_qte').text('Quantité: ('+data['unite_vente']+')');
-                    $('#pu').val(data['prix_vente']);
+                    $('#pu_devise_pays').val(Math.round(data['prix_vente'])); 
+                    
+                    if( $('#ste_devise').val() == $('#client_devise').val())
+                    { 
+                        $('#pu').val(Math.round(data['prix_vente'])); 
+                    }else
+                    {
+                        $('#pu').val(Math.round(data['prix_vente'] * $('#taux_devise').val()));
+                    }
+
                     if($('#type_commission').val() == 'C'){
-                        $('#prix_unitaire').val(parseFloat(data['prix_vente'])+ ( parseFloat(data['prix_vente']) * parseFloat($('#commission').val()) / 100 ));
+                        if( $('#ste_devise').val() == $('#client_devise').val())
+                        {
+                          $('#prix_unitaire').val(parseFloat(Math.round(data['prix_vente']))+ ( parseFloat(Math.round(data['prix_vente'])) * parseFloat($('#commission').val()) / 100 ));
+                        }else
+                        {
+                          $('#prix_unitaire').val(parseFloat(Math.round(data['prix_vente'] * $('#taux_devise').val()))+ ( parseFloat(Math.round(data['prix_vente']* $('#taux_devise').val())) * parseFloat($('#commission').val()) / 100 ));
+                        }    
                     }else{
-                        $('#prix_unitaire').val(parseFloat(data['prix_vente'])); 
+                        if( $('#ste_devise').val() == $('#client_devise').val())
+                        {
+                            $('#prix_unitaire').val(parseFloat(Math.round(data['prix_vente'])));
+                        }else
+                        {
+                            $('#prix_unitaire').val(parseFloat(Math.round(data['prix_vente']))* $('#taux_devise').val());
+                        } 
                     }
                     
                     $('#ref_produit').val(data['reference']);
@@ -137,7 +187,14 @@ $(document).ready(function() {
                      $('#ref_produit').parent('div').after('<span class="show_info_product help-block returned_span">Ce produit n\' pas été vendu avant!</span>'); 
                     }else{
                        
-                        $('#ref_produit').parent('div').after('<span class="show_info_product help-block returned_span">Ce produit a été vendu à :'+data['prix_vendu']+' '+data['qte_dispo']+'</span>');
+                        if( $('#ste_devise').val() == $('#client_devise').val())
+                        {
+                            $('#ref_produit').parent('div').after('<span class="show_info_product help-block returned_span">Ce produit a été vendu à :'+(data['prix_vendu'])+' '+data['qte_dispo']+'</span>');
+                        }else
+                        {
+                            $('#ref_produit').parent('div').after('<span class="show_info_product help-block returned_span">Ce produit a été vendu à :'+(Math.round(data['prix_vendu']* $('#taux_devise').val()))+' '+data['qte_dispo']+'</span>');
+                        }
+
                     }
                     $('#prix_unitaire').trigger('change');
                     //check if have already rox in table stop if produit is Abonnement
