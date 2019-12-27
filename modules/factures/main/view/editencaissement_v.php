@@ -12,6 +12,9 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_encaissement->get_encaissement(
     exit('3#' . $info_encaissement->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
 
+$info_facture->getDevise();
+$info_facture->getDeviseSociete();
+
 ?>
 <div class="pull-right tableTools-container">
     <div class="btn-group btn-overlap">
@@ -77,7 +80,12 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_encaissement->get_encaissement(
                 $mt_array[] = array('number', 'true', 'Entrez un montant valide');
                 $form->input('Montant', 'montant', 'text', 6, $info_encaissement->Shw('montant', 1), $mt_array);
 
-
+//Montant devise externe
+                if($info_facture->devise_facture != $info_facture->devise_societe){
+                $mt_devise_ext_array[] = array('number', 'true', 'Entrez un montant valide');
+                $form->input('Montant en Devise', 'montant_devise_ext', 'text', 6, $info_encaissement->Shw('montant_devise_ext', 1), $mt_devise_ext_array);
+                }     
+                
                 $form->button('Modifier encaissement');
 
                 //Form render

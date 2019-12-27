@@ -8,6 +8,9 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_facture->get_facture()) {
     exit('0#' . $info_facture->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur ');
 }
 
+$info_facture->getDevise();
+$info_facture->getDeviseSociete();
+
 $id_facture = Mreq::tp('id');
 ?>
 
@@ -66,7 +69,13 @@ $id_facture = Mreq::tp('id');
                 $mt_array[] = array('required', 'true', 'Insérez le montant');
                 $mt_array[] = array('number', 'true', 'Entrez un montant valide');
                 $form->input('Montant', 'montant', 'text', 6, null, $mt_array);
+                
+//Montant devise externe
 
+                if(($info_facture->devise_facture != $info_facture->devise_societe) AND $info_facture->devise_facture != NULL ){
+                $mt_devise_ext_array[] = array('number', 'true', 'Entrez un montant valide');
+                $form->input('Montant en Devise', 'montant_devise_ext', 'text', 6, null, $mt_devise_ext_array);
+                }                   
 
                 $form->button('Enregistrer');
 

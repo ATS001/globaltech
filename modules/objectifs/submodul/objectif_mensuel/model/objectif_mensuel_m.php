@@ -113,7 +113,36 @@ class Mobjectif_mensuel {
         return true;
 
     }
+    /**
+     * [run_objectifs_first_of_month description]
+     * @return [type] [description]
+     */
+    public function start_objectifs_first_of_month()
+    {        
+        global $db;
+        //Get Etat Objectif to validate
+        $new_etat =  Msetting::get_set('etat_objectif_mensuel', 'objectif_encour');
+        if($new_etat == null)
+        {
+            $this->log   .= 'Impossible de changer le statut!, manque de paramètre';
+            return false;
+        }
+        $table = $this->table;
+        $mois = date('m');
+        $year = date('Y');
+        $sql = "UPDATE $table SET etat = $new_etat WHERE mois = $mois AND annee = $year AND etat <> $new_etat ";
+        if(!$db->Query($sql))
+        {
+            $this->log   .= 'Erreur update Objectif';
+            return false;
+        }        
+        return true;      
+    }
     
+    /**
+     * [save_objectifs_all_year description]
+     * @return [type] [description]
+     */
     public function save_objectifs_all_year()
     {
         for($iM =1; $iM<=12 ;$iM++)

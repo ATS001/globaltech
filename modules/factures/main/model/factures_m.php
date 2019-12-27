@@ -32,7 +32,9 @@ class Mfacture {
     var $reference = null; // Reference 
     var $sum_enc_fact; // Somme encaissements par facture
     var $solde; // Solde client
-
+    var $devise_facture;
+    var $devise_societe;
+    var $taux_change;
     public function __construct($properties = array()) {
         $this->_data = $properties;
     }
@@ -454,6 +456,11 @@ class Mfacture {
             $this->log .= '</br>Le montant doit être inférieur ou égal à ' . $this->facture_info['reste'] . ' FCFA';
             return FALSE;
         }
+        
+        $this->getTauxChange($this->facture_info['id_devise']);
+        $taux = $this->taux_change;
+        
+              
         //$this->Generate_encaissement_reference();
         global $db;
         //Generate reference
@@ -477,6 +484,7 @@ class Mfacture {
             $values["mode_payement"] = MySQL::SQLValue($this->_data['mode_payement']);
             $values["ref_payement"] = MySQL::SQLValue($this->_data['ref_payement']);
             $values["montant"] = MySQL::SQLValue($this->_data['montant']);
+            $values["montant_devise_ext"] = MySQL::SQLValue($this->_data['montant_devise_ext']*$taux);
             $values["depositaire"] = MySQL::SQLValue($this->_data['depositaire']);
             $values["date_encaissement"] = MySQL::SQLValue(date("Y-m-d"));
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
@@ -486,6 +494,7 @@ class Mfacture {
             //Check if Insert Query been executed (False / True)
             if (!$result = $db->InsertRow('encaissements', $values)) {
                 //False => Set $this->log and $this->error = false
+               
                 $this->log .= $db->Error();
                 $this->error = false;
                 $this->log .= '</br>Enregistrement BD non réussie';
@@ -1068,6 +1077,7 @@ class Mfacture {
         $values["mode_payement"] = MySQL::SQLValue($this->_data['mode_payement']);
         $values["ref_payement"] = MySQL::SQLValue($this->_data['ref_payement']);
         $values["montant"] = MySQL::SQLValue($this->_data['montant']);
+        $values["montant_devise_ext"] = MySQL::SQLValue($this->_data['montant_devise_ext']);
         $values["depositaire"] = MySQL::SQLValue($this->_data['depositaire']);
         $values["date_encaissement"] = MySQL::SQLValue(date("Y-m-d"));
         $values["updusr"] = MySQL::SQLValue(session::get('userid'));
@@ -1965,6 +1975,71 @@ UNION
             return false;
         } else {
             return true;
+        }
+    }
+    
+    
+    public function getDevise() {
+        global $db;
+        $result = "SELECT  ref_devise.devise AS devise 
+	FROM factures INNER JOIN ref_devise
+        ON factures.id_devise = ref_devise.id WHERE factures.id = ". $this->id_facture;
+       
+        if (!$db->Query($result)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->devise_facture = $db->QuerySingleValue0($result);
+                $this->error = true;
+            }
+        }
+    }
+    
+    
+    
+    public function getDeviseSociete() {
+        global $db;
+
+        $sql = "SELECT  ref_devise.devise AS devise 
+	FROM ste_info INNER JOIN ref_devise
+        ON ste_info.`ste_id_devise` = ref_devise.id";
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->devise_societe = $db->QuerySingleValue0($sql);
+                $this->error = true;
+            }
+        }
+    }
+    
+    
+    public function getTauxChange($id_devise) {
+        global $db;
+
+        $sql = "SELECT  conversion AS taux_change 
+	FROM sys_taux_change where id_devise = ".$id_devise;
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->taux_change = $db->QuerySingleValue0($sql);
+                $this->error = true;
+            }
         }
     }
 
