@@ -171,7 +171,7 @@ class Mfacture {
         global $db;
         $client = $this->facture_info['client'];
 
-        $sql = "SELECT * FROM clients WHERE  denomination = '$client'";
+        $sql = "SELECT c.*,dev.devise as devise FROM clients c, ref_devise dev WHERE c.id_devise=dev.id AND c.denomination = '$client'";
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -1286,7 +1286,7 @@ class Mfacture {
 
         $table = $this->table;
 
-        $sql = "SELECT id,reference,base_fact,
+        $sql = "SELECT $table.id,reference,base_fact,
                 REPLACE(FORMAT(total_ht,0),',',' ') as total_ht ,  
                 REPLACE(FORMAT(total_tva,0),',',' ') as total_tva ,         
                 REPLACE(FORMAT(total_ttc,0),',',' ') as total_ttc,           
@@ -1297,9 +1297,10 @@ class Mfacture {
                 DATE_FORMAT(du,'%d-%m-%Y') as du,
                 DATE_FORMAT(au,'%d-%m-%Y') as au,
                 CONCAT(DATE_FORMAT(du,'%d-%m-%Y'),' Au ',DATE_FORMAT(au,'%d-%m-%Y')) as periode,
-                DATE_FORMAT(date_facture,'%d-%m-%Y') as date_facture
+                DATE_FORMAT(date_facture,'%d-%m-%Y') as date_facture,
+                dev.abreviation as devise
                 FROM 
-    		$table WHERE  $table.id = " . $this->id_facture;
+    		$table, ref_devise dev WHERE  dev.id = $table.id_devise AND $table.id = " . $this->id_facture;
 
         if (!$db->Query($sql)) {
             $this->error = false;
