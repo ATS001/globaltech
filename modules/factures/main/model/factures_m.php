@@ -449,11 +449,12 @@ class Mfacture {
         //$this->sum_encaissement_by_facture($this->_data['idfacture']);
         $this->id_facture = $this->_data['idfacture'];
         $this->get_facture();
+        $this->getDevise();
         //$total_encaissement= $this->sum_enc_fact + $this->_data['montant'];
         //if($total_encaissement > $this->facture_info['total_ttc'])
         if ($this->_data['montant'] > $this->facture_info['reste']) {
             $this->error = FALSE;
-            $this->log .= '</br>Le montant doit être inférieur ou égal à ' . $this->facture_info['reste'] . ' FCFA';
+            $this->log .= '</br>Le montant doit être inférieur ou égal à ' . $this->facture_info['reste'] . ' '.$this->devise_facture ;
             return FALSE;
         }
            
@@ -1613,8 +1614,13 @@ class Mfacture {
         $this->getDevise();
         $this->getDeviseSociete();
        
-        
-        if ($this->encaissement_info['montant'] > $this->facture_info['reste']) {
+       if(($this->devise_facture != $this->devise_societe) AND $this->devise_facture != NULL ){   
+          $reste_encai=$this->encaissement_info['montant_devise_ext'];  
+       }else{
+          $reste_encai=$this->encaissement_info['montant']; 
+       }   
+
+        if ( $reste_encai > $this->facture_info['reste']) {
             $this->error = false;
             $this->log = 'Le montant doit être inférieur ou égale au reste <b>' . $this->facture_info['reste'] . '</b>';
         } else {
