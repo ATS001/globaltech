@@ -576,8 +576,8 @@ class Mdevis {
 
         $this->check_non_exist('clients', 'id', $this->_data['id_client'], 'Client');
 
-        $this->check_non_exist('commerciaux', 'id', $this->_data['id_commercial'], 'Commercial');
-
+        //$this->check_non_exist('commerciaux', 'id', $this->_data['id_commercial'], 'Commercial');
+        $this->check_commercial_exist('commerciaux', 'id', $this->_data['id_commercial'], 'Commercial');
         //Get sum of details
         $this->Get_sum_detail($this->_data['tkn_frm']);
         //calcul values devis
@@ -603,7 +603,7 @@ class Mdevis {
         $total_commission_ex = $this->total_commission_ex;
         $valeur_remise = number_format($this->valeur_remis_t, 2, '.', '');
         $this->reference = $this->devis_info['reference'];
-        if (!$this->get_commerciale_remise_plafond($this->_data['id_commercial'], $valeur_remise)) {
+         if (!$this->get_commerciale_remise_plafond(session::get('userid'), $valeur_remise)) {
             return false;
         }
         $etat_line = $this->etat_valid_devis;

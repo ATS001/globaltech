@@ -445,7 +445,7 @@ class Mfacture {
 
     //Save new encaissement after all check
     public function save_new_encaissement() {
-    var_dump('test1');
+    
         //$this->sum_encaissement_by_facture($this->_data['idfacture']);
         $this->id_facture = $this->_data['idfacture'];
         $this->get_facture();
@@ -456,10 +456,10 @@ class Mfacture {
             $this->log .= '</br>Le montant doit être inférieur ou égal à ' . $this->facture_info['reste'] . ' FCFA';
             return FALSE;
         }
-            var_dump('test2');
+           
         $this->getTauxChange($this->facture_info['id_devise']);
         $taux = $this->taux_change;
-        
+       
               
         //$this->Generate_encaissement_reference();
         global $db;
@@ -494,7 +494,7 @@ class Mfacture {
             //Check if Insert Query been executed (False / True)
             if (!$result = $db->InsertRow('encaissements', $values)) {
                 //False => Set $this->log and $this->error = false
-               
+                
                 $this->log .= $db->Error();
                 $this->error = false;
                 $this->log .= '</br>Enregistrement BD non réussie';
@@ -548,7 +548,7 @@ class Mfacture {
         $this->get_commerciale_devis();
 
         global $db;
-//var_dump($db);
+
         if ($this->error == true) {
 
             global $db;
@@ -567,7 +567,7 @@ class Mfacture {
 
             //Check if Insert Query been executed (False / True)
             if (!$result = $db->InsertRow('compte_commerciale', $values)) {
-                //var_dump($db);
+                
                 //False => Set $this->log and $this->error = false
                 $this->log .= $db->Error();
                 $this->error = false;
@@ -609,7 +609,7 @@ class Mfacture {
         $this->get_commerciale_ex_devis();
 
         global $db;
-        //var_dump($db);
+       
         if ($this->error == true) {
 
             global $db;
@@ -628,7 +628,7 @@ class Mfacture {
 
             //Check if Insert Query been executed (False / True)
             if (!$result = $db->InsertRow('compte_commerciale', $values)) {
-                //var_dump($db);
+                
                 //False => Set $this->log and $this->error = false
                 $this->log .= $db->Error();
                 $this->error = false;
@@ -682,7 +682,7 @@ class Mfacture {
 
             if (!$result = $db->UpdateRows("compte_commerciale", $values, $wheres)) {
                 //$db->Kill();
-                //var_dump($db);
+               
                 $this->log .= $db->Error();
                 $this->error == false;
                 $this->log .= '</br>Enregistrement BD non réussie';
@@ -1841,7 +1841,7 @@ UNION
             $this->error = false;
             $this->log .= '<br>Problème de mise à jour Etat de compte';
         }
-        //var_dump($db);
+       
     }
 
     function credit_compte_client() {
@@ -1866,8 +1866,7 @@ UNION
         $date=$this->encaissement_info['date_encaissement'];    
         $ref_payement=$this->encaissement_info['ref_payement'];
         
-        //var_dump($this->facture_info);
-        
+              
         $req_sql = "INSERT into compte_client(id_client,type_mouvement,id_encaissement,montant,description,date_mouvement,solde,creusr) 
                values($clt,'C',$enc,$mnt,CONCAT('Paiement: ', '$reference',' du ',DATE_FORMAT('$date','%d-%m-%Y'),"
                 . "IF('$ref_payement'<> null,Concat(': Référence N°: ','$ref_payement'),' '))"
@@ -1879,7 +1878,7 @@ UNION
             $this->error = false;
             $this->log .= '<br>Problème de mise à jour Etat de compte';
         }
-        ////var_dump($db);
+       
         // Verifier Message Aucun Enregistrement apres validation
     }
   
@@ -1948,7 +1947,7 @@ UNION
 
             if (!$result = $db->UpdateRows($table, $values, $wheres)) {
                 //$db->Kill();
-                //var_dump($db);
+                
                 $this->log .= $db->Error();
                 $this->error == false;
                 $this->log .= '</br>Suppression BD non réussie';
@@ -2029,7 +2028,7 @@ UNION
 
         $sql = "SELECT  conversion AS taux_change 
 	FROM sys_taux_change where id_devise = ".$id_devise;
-
+       
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
