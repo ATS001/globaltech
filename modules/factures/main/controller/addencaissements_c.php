@@ -73,7 +73,7 @@
         $fact = new Mfacture();
         $fact->id_facture = Mreq::tp('idfacture');
         $fact->get_commerciale_devis();
-
+    var_dump('test');
         //execute Insert returne false if error
         if ($new_encaissement->save_new_encaissement()) {
            /* if($fact->compte_commercial_info['commission']!=0){

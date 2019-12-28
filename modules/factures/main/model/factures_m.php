@@ -173,7 +173,7 @@ class Mfacture {
         global $db;
         $client = $this->facture_info['client'];
 
-        $sql = "SELECT * FROM clients WHERE  denomination = '$client'";
+        $sql = "SELECT c.*,dev.devise as devise FROM clients c, ref_devise dev WHERE c.id_devise=dev.id AND c.denomination = '$client'";
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -445,7 +445,7 @@ class Mfacture {
 
     //Save new encaissement after all check
     public function save_new_encaissement() {
-
+    var_dump('test1');
         //$this->sum_encaissement_by_facture($this->_data['idfacture']);
         $this->id_facture = $this->_data['idfacture'];
         $this->get_facture();
@@ -456,7 +456,7 @@ class Mfacture {
             $this->log .= '</br>Le montant doit être inférieur ou égal à ' . $this->facture_info['reste'] . ' FCFA';
             return FALSE;
         }
-        
+            var_dump('test2');
         $this->getTauxChange($this->facture_info['id_devise']);
         $taux = $this->taux_change;
         
@@ -1296,7 +1296,7 @@ class Mfacture {
 
         $table = $this->table;
 
-        $sql = "SELECT id,reference,base_fact,
+        $sql = "SELECT $table.id,reference,base_fact,
                 REPLACE(FORMAT(total_ht,0),',',' ') as total_ht ,  
                 REPLACE(FORMAT(total_tva,0),',',' ') as total_tva ,         
                 REPLACE(FORMAT(total_ttc,0),',',' ') as total_ttc,           
@@ -1307,9 +1307,10 @@ class Mfacture {
                 DATE_FORMAT(du,'%d-%m-%Y') as du,
                 DATE_FORMAT(au,'%d-%m-%Y') as au,
                 CONCAT(DATE_FORMAT(du,'%d-%m-%Y'),' Au ',DATE_FORMAT(au,'%d-%m-%Y')) as periode,
-                DATE_FORMAT(date_facture,'%d-%m-%Y') as date_facture
+                DATE_FORMAT(date_facture,'%d-%m-%Y') as date_facture,
+                dev.abreviation as devise
                 FROM 
-    		$table WHERE  $table.id = " . $this->id_facture;
+    		$table, ref_devise dev WHERE  dev.id = $table.id_devise AND $table.id = " . $this->id_facture;
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -1609,14 +1610,14 @@ class Mfacture {
         $this->id_facture = $this->encaissement_info['idfacture'];
         $this->get_facture();
         
+        $this->getDevise();
+        $this->getDeviseSociete();
        
         
         if ($this->encaissement_info['montant'] > $this->facture_info['reste']) {
             $this->error = false;
             $this->log = 'Le montant doit être inférieur ou égale au reste <b>' . $this->facture_info['reste'] . '</b>';
         } else {
-
-
 
             $values["etat"] = MySQL::SQLValue($etat = 1);
             $values["updusr"] = MySQL::SQLValue(session::get('userid'));
@@ -1632,13 +1633,14 @@ class Mfacture {
                 if ($this->error == true) {
                     
                     $this->log = '</br>Enregistrement réussie: <b>' . $this->reference . ' ID: ' . $this->last_id;
+                    if(($this->devise_facture != $this->devise_societe) AND $this->devise_facture != NULL ){       
+                    $this->maj_reste($this->encaissement_info['idfacture'], $this->encaissement_info['montant_devise_ext']);
+                    }else{
+                    $this->maj_reste($this->encaissement_info['idfacture'], $this->encaissement_info['montant']);                        
+                    }
 
-                    $this->maj_reste($this->encaissement_info['idfacture'], $this->encaissement_info['montant']);
                     $this->id_facture = $this->encaissement_info['idfacture'];
                     $this->get_facture();
-
-
-
                     if ($this->facture_info['reste'] > 0) {
                         
                         $this->valid_etat_facture($etat = 2, $this->encaissement_info['idfacture']);
