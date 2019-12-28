@@ -24,7 +24,7 @@ if(MInit::form_verif('editdevis', false))
      'projet'              => Mreq::tp('projet'),
      'vie'                 => Mreq::tp('vie'),
      'claus_comercial'     => Mreq::tp('claus_comercial'),
-     'id_commercial'       => Mreq::tp('id_commercial'),
+      'id_commercial'       => json_encode(Mreq::tp('id_commercial')),
      'commission'          => Mreq::tp('commission'),
      'total_commission'    => Mreq::tp('total_commission'),
      'type_commission'     => Mreq::tp('type_commission'),
@@ -124,13 +124,6 @@ if(MInit::form_verif('editdevis', false))
       $empty_list .= "<li>Total Commission</li>";
       $checker = 1;
     }
-
-    /*if($posted_data['service'] == NULL){
-
-      $empty_list .= "<li>Service</li>";
-      $checker = 1;
-    }
-    */
     
     $empty_list.= "</ul>";
     if($checker == 1)

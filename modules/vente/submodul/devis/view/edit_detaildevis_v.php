@@ -19,7 +19,7 @@ $form->input_hidden('checker_tkn_frm',  MInit::cryptage($info_devis_d->h('tkn_fr
 $form->input_hidden('tkn_frm', $info_devis_d->h('tkn_frm'));
 $form->input_hidden('tva_d', 'O');
 //commission commercial
-$form->input_hidden('commission', Mreq::tp('commission'));
+$form->input_hidden('commission',0);
 //prix unitaire sans commission
 $form->input_hidden('pu', $info_devis_d->h('prix_unitaire'));
 

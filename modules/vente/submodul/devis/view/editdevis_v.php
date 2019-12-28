@@ -72,16 +72,17 @@ $form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$info_devis->g(
 $form->input('Projet', 'projet', 'text' ,'6', $info_devis->g('projet'), null , null, null);
 
 //Commercial
-$hard_code_commercial = '<span class="help-block returned_span">...</span>';
 $commercial_array[]  = array('required', 'true', 'Choisir un Commercial');
-$form->select_table('Commercial', 'id_commercial', 6, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)' , 'CONCAT(nom," ",prenom)' , $indx = '------' ,$selected=$info_devis->g('id_commercial'),$multi=NULL, $where='etat=1 AND is_glbt = \'Oui\' ', $commercial_array, $hard_code_commercial);
+$form->select_table('Commercial', 'id_commercial[]', 8, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)','CONCAT(nom," ",prenom)', $indx = NULL ,$selected=$info_devis->g('id_commercial') , 1,NULL, NULL);
+
 //Commission du commercial
 $select_c = $info_devis->g('type_commission') == 'C' ? 'selected' : null;
 $select_s = $info_devis->g('type_commission') == 'S' ? 'selected' : null;
 $hard_code_commission  = '<label style="margin-left:15px;margin-right : 20px;">Prise en charge par: </label><select id="type_commission" name="type_commission" class="chosen-select col-xs-12 col-sm-3" chosen-class="'.((3 * 100) / 12).'" ><option value="C" '.$select_c.' >Client</option><option value="S" '.$select_s.'>Société</option></select>';
 $array_commission[]= array('required', 'true', 'Insérer la commission du commercial');
 $array_commission[]= array('number', 'true', 'Montant invalid' );
-$form->input('Commission du commercial (%)', 'commission', 'text' ,'2 is-number alignRight',$info_devis->g('commission'), $array_commission, $hard_code_commission, null);
+//$form->input('Commission du commercial (%)', 'commission', 'text' ,'2 is-number alignRight',$info_devis->g('commission'), $array_commission, $hard_code_commission, null);
+
 //Commercial externe
 //$hard_code_commercial = '<span class="help-block returned_span">...</span>';
 //$commercial_array[]  = array('required', 'true', 'Choisir un Commercial externe');
