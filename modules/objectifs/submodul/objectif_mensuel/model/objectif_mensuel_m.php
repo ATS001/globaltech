@@ -120,9 +120,11 @@ class Mobjectif_mensuel {
     public function start_objectifs_first_of_month()
     {        
         global $db;
-        //Get Etat Objectif to validate
-        $new_etat =  Msetting::get_set('etat_objectif_mensuel', 'objectif_encour');
-        if($new_etat == null)
+        //Get Etats Objectif to validate
+        $new_etat_wait  =  Msetting::get_set('etat_objectif_mensuel', 'objectif_wait');
+        $new_etat_start =  Msetting::get_set('etat_objectif_mensuel', 'objectif_encour');
+        $new_etat_stop  =  Msetting::get_set('etat_objectif_mensuel', 'objectif_stop');
+        if($new_etat_wait == null OR $new_etat_start == null OR $new_etat_stop == null)
         {
             $this->log   .= 'Impossible de changer le statut!, manque de paramètre';
             return false;
@@ -130,8 +132,9 @@ class Mobjectif_mensuel {
         $table = $this->table;
         $mois = date('m');
         $year = date('Y');
-        $sql = "UPDATE $table SET etat = $new_etat WHERE mois = $mois AND annee = $year AND etat <> $new_etat ";
-        if(!$db->Query($sql))
+        $sql_start = "UPDATE $table SET etat = $new_etat_start WHERE mois = $mois AND annee = $year AND etat = $new_etat_wait ";
+        $sql_stop  = "UPDATE $table SET etat = $new_etat_stop WHERE mois = $mois AND annee = $year AND etat = $new_etat_start ";
+        if(!$db->Query($sql_start) OR !$db->Query($sql_stop))
         {
             $this->log   .= 'Erreur update Objectif';
             return false;
@@ -294,40 +297,113 @@ class Mobjectif_mensuel {
         }
 
 
-    }   
+    } 
 
-    /**
-     * Valide objectif_commercial
-     * @return bol send to controller
-     */
-    public function valid_objectif_mensuel()
+    public function force_commission_objectif_mensuel()
     {
-        //Get existing data for row
-        $this->get_objectif_mensuel();
+        if(!$this->get_objectif_mensuel())
+        {
+            $this->log   .= '</br>Objictif introuvable';            
+            return false;
+        }
         
-        $this->last_id = $this->id_objectif_mensuel;
         global $db;
         //Get Etat Objectif to validate
-        $etat_validation =  Msetting::get_set('etat_objectifs', 'valid_obj');
-        if($etat_validation == null)
+        $objectif_non     =  Msetting::get_set('etat_objectif_mensuel', 'objectif_non');
+        $objectif_force   =  Msetting::get_set('etat_objectif_mensuel', 'objectif_force');
+
+        if($objectif_non == null OR $objectif_force == null)
         {
-            $this->log   .= '</br>Impossible de changer le statut!';
             $this->log   .= '</br>manque de paramètre';
-            $this->error = false;
             return false;
         }
 
         //Check if line have same value of setting
-        if($etat_validation == $this->objectif_mensuel_info['etat'])
+        if($this->objectif_mensuel_info['etat'] != $objectif_non)
         {
-            $this->log   .= '</br>Cette ligne est dèja validée';
-            $this->error = false;
+            $this->log   .= '</br>Cet Objectif ne peux pas être forcé';
+            return false;
+        }
+        $posted_data["objet"]           = 'Commission forcée Objectif: '.$this->objectif_mensuel_info['mois'].'/'.$this->objectif_mensuel_info['annee'];
+        $posted_data["credit"]          =  $this->_data['montant_benif'];
+        $posted_data["id_encaissement"] =  0;
+        $posted_data["type"]            = 'Manuelle';
+        $posted_data["id_commerciale"]  = $this->objectif_mensuel_info['id_commercial'];
+        $commission = new Mcommission($posted_data);
+        if(!$commission->save_new_commission()){
+            $this->log   .= '</br>Erreur enregistrement commission '.$commission->log;
+            return false;
+        }
+        //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
+        
+        
+        $values["etat"]          = MySQL::SQLValue($objectif_force);
+        $values["updusr"]        = MySQL::SQLValue(session::get('userid'));
+        $values["upddat"]        = MySQL::SQLValue(date("Y-m-d H:i:s"));
+
+        $wheres['id']     = $this->id_objectif_mensuel;
+
+        // Execute the update and show error case error
+        if(!$result = $db->UpdateRows($this->table, $values, $wheres))
+        {
+            $this->log   .= '</br>Impossible de changer le statut!';
+            $this->log   .= '</br>'.$db->Error();
+            return false;
+
+        }else{
+            $this->log   .= '</br>Commission forcé ';
+            $this->error  = true;
+            if(!Mlog::log_exec($this->table, $this->id_objectif_mensuel, 'Forcer commission  objectif mensuel', 'Update'))
+            {
+                $this->log .= '</br>Un problème de log ';
+                return false;
+            }
+               //Esspionage
+            if(!$db->After_update($this->table, $this->id_objectif_mensuel, $values, $this->objectif_mensuel_info))
+            {
+                $this->log .= '</br>Problème Espionnage';
+                return false;   
+            }
+
+        }
+        return true;
+    }
+
+    /**
+     * Suspendre objectif_commercial
+     * @return bol send to controller
+     */
+    public function suspendre_objectif_mensuel()
+    {
+        //Get existing data for row
+        //{"objectif_wait":"0", "objectif_encour":"1", "objectif_stop":"2", "objectif_atteint":"3", "objectif_non":"4", "objectif_force":"5", "objectif_suspendu":"6"}
+        if(!$this->get_objectif_mensuel())
+        {
+            $this->log   .= '</br>Objictif introuvable';            
+            return false;
+        }
+        global $db;
+        //Get Etat Objectif to validate
+        $objectif_wait     =  Msetting::get_set('etat_objectif_mensuel', 'objectif_wait');
+        $objectif_encour   =  Msetting::get_set('etat_objectif_mensuel', 'objectif_encour');
+        $objectif_suspendu =  Msetting::get_set('etat_objectif_mensuel', 'objectif_suspendu');
+
+        if($objectif_wait == null OR $objectif_encour == null OR $objectif_suspendu == null)
+        {
+            $this->log   .= '</br>manque de paramètre';
+            return false;
+        }
+
+        //Check if line have same value of setting
+        if(!in_array($this->objectif_mensuel_info['etat'], array($objectif_wait, $objectif_encour)))
+        {
+            $this->log   .= '</br>cet Objectif ne peux pas être suspenu';
             return false;
         }
         //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
         
 
-        $values["etat"]        = MySQL::SQLValue($etat_validation);
+        $values["etat"]        = MySQL::SQLValue($objectif_suspendu);
         $values["updusr"]      = MySQL::SQLValue(session::get('userid'));
         $values["upddat"]      = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
@@ -338,30 +414,25 @@ class Mobjectif_mensuel {
         {
             $this->log   .= '</br>Impossible de changer le statut!';
             $this->log   .= '</br>'.$db->Error();
-            $this->error  = false;
+            return false;
 
         }else{
-            $this->log   .= '</br>Statut changé! ';
+            $this->log   .= '</br>Objectif suspendu ';
             $this->error  = true;
-            if(!Mlog::log_exec($this->table, $this->last_id, 'Changement ETAT  objectif_mensuel', 'Update'))
+            if(!Mlog::log_exec($this->table, $this->id_objectif_mensuel, 'Suspendre  objectif mensuel', 'Update'))
             {
                 $this->log .= '</br>Un problème de log ';
-                $this->error = false;
+                return false;
             }
                //Esspionage
-            if(!$db->After_update($this->table, $this->id_objectif_mensuel, $values, $this->objectif_mensuel_info)){
+            if(!$db->After_update($this->table, $this->id_objectif_mensuel, $values, $this->objectif_mensuel_info))
+            {
                 $this->log .= '</br>Problème Espionnage';
-                $this->error = false;   
+                return false;   
             }
 
         }
-        if($this->error == false){
-            return false;
-        }else{
-            return true;
-        }
-
-
+        return true;
     }
     /**
      * [debloque_objectif_service description]
