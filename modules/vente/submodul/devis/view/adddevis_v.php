@@ -107,7 +107,7 @@ $hard_code_commission  = '<label style="margin-left:15px;margin-right : 20px;">P
 $array_commission[]= array('required', 'true', 'Insérer la commission du commercial');
 $array_commission[]= array('number', 'true', 'Montant invalid' );
 //$form->input('Commission du commercial (%)', 'commission', 'text' ,'2 is-number alignRight','0', $array_commission, $hard_code_commission, null);
-//$form->input_hidden('commission', '0');
+$form->input_hidden('commission', '0');
 
 
 
