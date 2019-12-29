@@ -1882,12 +1882,12 @@ UNION
         $this->get_facture();
         $this->getDevise();
         $this->getDeviseSociete();
-        $this->existDifferentsDevise($this->facture_info['client'],$this->facture_info['id_devise']);
+        //$this->existDifferentsDevise($this->facture_info['client'],$this->facture_info['id_devise']);
 
         /*var_dump($this->existDiffDevise);
         var_dump($this->devise_facture);
-        var_dump($this->devise_societe);*/   
-        if(($this->devise_facture != $this->devise_societe) AND ($this->existDiffDevise=0)){
+        var_dump($this->devise_societe);*/
+        if($this->devise_facture != $this->devise_societe /*AND ($this->existDiffDevise=0)*/){
 
         $req_sql = "INSERT into compte_client(id_client,type_mouvement,id_encaissement,montant,description,date_mouvement,solde,creusr) 
                values($clt,'C',$enc,$mnt_dev_ext,CONCAT('Paiement: ', '$reference',' du ',DATE_FORMAT('$date','%d-%m-%Y'),"
