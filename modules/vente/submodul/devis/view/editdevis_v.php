@@ -82,7 +82,7 @@ $hard_code_commission  = '<label style="margin-left:15px;margin-right : 20px;">P
 $array_commission[]= array('required', 'true', 'Insérer la commission du commercial');
 $array_commission[]= array('number', 'true', 'Montant invalid' );
 //$form->input('Commission du commercial (%)', 'commission', 'text' ,'2 is-number alignRight',$info_devis->g('commission'), $array_commission, $hard_code_commission, null);
-
+$form->input_hidden('commission', '0');
 //Commercial externe
 //$hard_code_commercial = '<span class="help-block returned_span">...</span>';
 //$commercial_array[]  = array('required', 'true', 'Choisir un Commercial externe');

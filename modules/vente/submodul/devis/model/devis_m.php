@@ -1089,7 +1089,7 @@ class Mdevis {
             $produit = new Mproduit();
             $produit->id_produit = MySQL::SQLValue($this->_data['id_produit']);
             $produit->get_produit();
-            if (!$this->get_commerciale_remise_plafond($this->_data['id_commercial'], $valeur_remis_d)) {
+            if (!$this->get_commerciale_remise_plafond(session::get('userid'), $this->valeur_remis_d)) {
                 return false;
             }
 
