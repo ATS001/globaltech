@@ -535,7 +535,7 @@ class Mcommission {
 
 
         if (!$db->Query($sql)) {
-            //var_dump($db);
+            
             $this->error = false;
             $this->log .= $db->Error();
         } else {
@@ -761,6 +761,8 @@ class Mcommission {
 
     public function calculerCommissionCommerciale() {
        
+        global $db;
+        
         $mois = date('m')-1;
         $annee = date('Y');
         if($mois == 1){
@@ -768,16 +770,16 @@ class Mcommission {
         }
         
         $this->getListCommerciaux($annee,$mois);
-        var_dump($this->objectif_mensuel_list);
         
         foreach ($this->objectif_mensuel_list as $value) {
             
             $taux_resalisation = (intval($value["realise"]) / intval($value["objectif"])) * 100;
             $eligible = FALSE;
-            
+            $commission = 0;
             if ($taux_resalisation >= intval($value["seuil"])) {
                 $eligible = TRUE;
-                $commission = intval($value["realise"]) * (150 / 100);
+                $commission = intval($value["realise"]) * $value["taux_commission"]/100;
+                
                 $values["objet"] = MySQL::SQLValue("Commission mensuel");
                 $values["credit"] = MySQL::SQLValue($commission);
                 $values["type"] = MySQL::SQLValue("Automatique");
@@ -791,12 +793,14 @@ class Mcommission {
                     
                     $this->last_id = $result;
                     //If Attached required Save file to Archive
-                    $this->log .= '</br>Enregistrement  réussie ' . $this->_data['id_commerciale'] . ' ' . $this->last_id;
+                    $this->log .= '</br>Enregistrement  réussie ';
+                   // $this->update_etat_objectif_mensuel($value["id"], $eligible, $commission);
                     if (!Mlog::log_exec($this->table, $this->last_id, 'Ajout Commission', 'Insert')) {
                         $this->log .= '</br>Un problème de log ';
                     }
                 }
             }
+            
             $this->update_etat_objectif_mensuel($value["id"], $eligible, $commission);
         }
     }
@@ -806,8 +810,10 @@ class Mcommission {
             
             global $db;
 
-            //$sql = "SELECT $table.*, CONCAT(commerciaux.nom,' ',commerciaux.prenom) AS commercial FROM $table, commerciaux WHERE commerciaux.id = $table.id_commercial";
-            $sql= "SELECT * FROM `objectif_mensuels` WHERE annee = .$annee. AND mois = .$mois .";
+             $etat = Msetting::get_set('etat_objectif_mensuel','objectif_stop');
+             
+            $sql= "SELECT o.*,c.taux_commission FROM `objectif_mensuels`o inner join commerciaux c on c.id = o.id_commercial WHERE o.etat = ".$etat;
+           
             if (!$db->Query($sql)) {
                 $this->error = false;
                 $this->log .= $db->Error();
@@ -830,6 +836,8 @@ class Mcommission {
 
         public function update_etat_objectif_mensuel($id_objectif_mensuel,$eligible,$montant_benif)
         {
+            
+            
         global $db; 
         $table = 'objectif_mensuels';
         $etat_ok  =  Msetting::get_set('etat_objectif_mensuel', 'objectif_atteint');
@@ -840,32 +848,32 @@ class Mcommission {
         }else{
             $new_etat = $etat_notOk;
         }     
+        
+                
         $values["montant_benif"] = MySQL::SQLValue($montant_benif);
         $values["etat"]          = MySQL::SQLValue($new_etat);
         $values["updusr"]        = MySQL::SQLValue(session::get('userid'));
         $values["upddat"]        = MySQL::SQLValue(date("Y-m-d H:i:s"));
         $wheres['id']            = MySQL::SQLValue($id_objectif_mensuel) ;
 
+        
         // Execute the update and show error case error
         if(!$result = $db->UpdateRows($table, $values, $wheres))
-        {
+        {          
             $this->log   .= '</br>Impossible de changer le statut!';
             $this->log   .= '</br>'.$db->Error();
             $this->error  = false;
 
         }else{
-            $this->log   .= '</br>Statut Objectif changé, Réalisé : '.$percentage_realise.' %';
+            
+            $this->log   .= '</br>Statut Objectif changé, Réalisé : ';
             $this->error  = true;
             if(!Mlog::log_exec($this->table, $this->last_id, 'Calcul de bénifice Objectif', 'Update'))
             {
                 $this->log .= '</br>Un problème de log ';
                 $this->error = false;
             }
-               //Esspionage
-            if(!$db->After_update($this->table, $this->id_objectif_mensuel, $values, $this->objectif_mensuel_info)){
-                $this->log .= '</br>Problème Espionnage';
-                $this->error = false;   
-            }
+                
         }
         if($this->error == false){
             return false;
