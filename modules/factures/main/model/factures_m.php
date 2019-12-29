@@ -35,6 +35,8 @@ class Mfacture {
     var $devise_facture;
     var $devise_societe;
     var $taux_change;
+    var $existDiffDevise;
+
     public function __construct($properties = array()) {
         $this->_data = $properties;
     }
@@ -1853,7 +1855,10 @@ UNION
     function credit_compte_client() {
         global $db;
 
-        $mnt = str_replace(' ', '', $this->encaissement_info['montant'] );
+        $mnt         = str_replace(' ', '', $this->encaissement_info['montant'] );
+        $mnt_dev_ext = str_replace(' ', '', $this->encaissement_info['montant_devise_ext'] );
+        //var_dump($mnt);
+        //var_dump($mnt_dev_ext);        
         $this->get_id_devis();
         $id_devis = $this->id_devis['id'];
 
@@ -1871,13 +1876,30 @@ UNION
         $reference=$this->encaissement_info['reference'];
         $date=$this->encaissement_info['date_encaissement'];    
         $ref_payement=$this->encaissement_info['ref_payement'];
-        
-              
+
+        $this->id_facture=$this->encaissement_info['idfacture'];
+        //var_dump($this->encaissement_info['idfacture']);
+        $this->get_facture();
+        $this->getDevise();
+        $this->getDeviseSociete();
+        $this->existDifferentsDevise($this->facture_info['client'],$this->facture_info['id_devise']);
+
+        /*var_dump($this->existDiffDevise);
+        var_dump($this->devise_facture);
+        var_dump($this->devise_societe);*/   
+        if(($this->devise_facture != $this->devise_societe) AND ($this->existDiffDevise=0)){
+
+        $req_sql = "INSERT into compte_client(id_client,type_mouvement,id_encaissement,montant,description,date_mouvement,solde,creusr) 
+               values($clt,'C',$enc,$mnt_dev_ext,CONCAT('Paiement: ', '$reference',' du ',DATE_FORMAT('$date','%d-%m-%Y'),"
+                . "IF('$ref_payement'<> null,Concat(': Référence N°: ','$ref_payement'),' '))"
+                . ",'$date', $sld-$mnt_dev_ext ,1)";
+        }else{
         $req_sql = "INSERT into compte_client(id_client,type_mouvement,id_encaissement,montant,description,date_mouvement,solde,creusr) 
                values($clt,'C',$enc,$mnt,CONCAT('Paiement: ', '$reference',' du ',DATE_FORMAT('$date','%d-%m-%Y'),"
                 . "IF('$ref_payement'<> null,Concat(': Référence N°: ','$ref_payement'),' '))"
-                . ",'$date', $sld-$mnt ,1)";
-        
+                . ",'$date', $sld-$mnt ,1)";        
+
+        }        
         
         if (!$db->Query($req_sql)) {
             $this->log .= $db->Error();
@@ -1981,6 +2003,26 @@ UNION
             return false;
         } else {
             return true;
+        }
+    }
+
+    public function existDifferentsDevise($client,$devise) {
+        global $db;
+
+        $result = "SELECT IF((SELECT COUNT(*) FROM factures f WHERE f.`client`='$client' AND f.id_devise=$devise) =
+                (SELECT COUNT(*) FROM factures ff WHERE ff.`client`='$client'),1,0)AS existDifferentsDevise FROM DUAL";
+       
+        if (!$db->Query($result)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->existDiffDevise = $db->QuerySingleValue0($result);
+                $this->error = true;
+            }
         }
     }
     
