@@ -10,16 +10,17 @@ if(MInit::form_verif('edit_info_ste',false))
 
 		$posted_data = array(
 
-			'ste_id'      => Mreq::tp('id') ,
-			'ste_name'    => Mreq::tp('ste_name') ,
-			'ste_bp'      => Mreq::tp('ste_bp') ,
-			'ste_adresse' => Mreq::tp('ste_adresse') ,
-			'ste_tel'     => Mreq::tp('ste_tel') ,
-			'ste_fax'     => Mreq::tp('ste_fax') ,
-			'ste_email'   => Mreq::tp('ste_email') ,
-			'ste_if'      => Mreq::tp('ste_if') ,
-			'ste_rc'      => Mreq::tp('ste_rc') ,
-			'ste_website' => Mreq::tp('ste_website') ,
+			'ste_id'        => Mreq::tp('id') ,
+			'ste_name'      => Mreq::tp('ste_name') ,
+			'ste_bp'        => Mreq::tp('ste_bp') ,
+			'ste_id_devise' => Mreq::tp('ste_id_devise') ,
+			'ste_adresse'   => Mreq::tp('ste_adresse') ,
+			'ste_tel'       => Mreq::tp('ste_tel') ,
+			'ste_fax'       => Mreq::tp('ste_fax') ,
+			'ste_email'     => Mreq::tp('ste_email') ,
+			'ste_if'        => Mreq::tp('ste_if') ,
+			'ste_rc'        => Mreq::tp('ste_rc') ,
+			'ste_website'   => Mreq::tp('ste_website')
 
 		);
 
@@ -35,6 +36,11 @@ if(MInit::form_verif('edit_info_ste',false))
 		if($posted_data['ste_name'] == NULL){
 
 			$empty_list .= "<li>Nom de la Société</li>";
+			$checker = 1;
+		}
+		if($posted_data['ste_id_devise'] == NULL){
+
+			$empty_list .= "<li>Devise Principale</li>";
 			$checker = 1;
 		}
 		if($posted_data['ste_bp'] == NULL){

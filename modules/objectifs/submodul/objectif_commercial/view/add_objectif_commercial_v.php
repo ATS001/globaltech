@@ -44,7 +44,7 @@ $array_description[]= array("required", "true", "Insérer Description ...");
 $form->input("Description", "description", "text" ,"9", null, $array_description, null, $readonly = null);
 	//Liste Services	
 $array_commercial[]  = array('required', 'true', 'Choisir un Service....');
-$form->select_table('Commercial ', 'id_commercial', 8, 'commerciaux', 'id', 'text' , 'CONCAT(commerciaux.nom,\' \',commerciaux.prenom)', $indx = '------' , $selected=NULL, $multi=NULL, 'is_glbt = "OUI"', $array_commercial, null);	
+$form->select_table('Commercial ', 'id_commercial', 8, 'commerciaux', 'id', 'CONCAT(commerciaux.nom,\' \',commerciaux.prenom) ' , 'CONCAT(commerciaux.nom,\' \',commerciaux.prenom)', $indx = '------' , $selected=NULL, $multi=NULL, 'is_glbt = "OUI"', $array_commercial, null);	
 	//Date Début ==> 
 $array_date_d[]= array("required", "true", "Insérer Date Début ...");
 $form->input_date('Date Début', 'date_s', 4, date('d-m-Y'), $array_date_d);

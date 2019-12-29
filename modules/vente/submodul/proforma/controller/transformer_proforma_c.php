@@ -43,7 +43,7 @@ if(MInit::form_verif('transformer_proforma', false))
         $transformer_proforma_proforma->id_proforma = $posted_data['id'];
         
         //execute Update returne false if error
-        if($transformer_proforma_proforma->transformer_proforma_proforma()){
+        if($transformer_proforma_proforma->transformer_proforma_proforma_to_devis()){
 
             exit("1#".$transformer_proforma_proforma->log);
         }else{

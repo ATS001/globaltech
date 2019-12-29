@@ -14,6 +14,7 @@ if (MInit::form_verif('editencaissement', false)) {//If form is Posted do Action
         'mode_payement' => Mreq::tp('mode_payement'),
         'ref_payement' => Mreq::tp('ref_payement'),
         'montant' => Mreq::tp('montant'),
+        'montant_devise_ext' => MReq::tp('montant_devise_ext'),
         'pj_id' => Mreq::tp('pj-id'),
          'depositaire' => Mreq::tp('depositaire'),
     );

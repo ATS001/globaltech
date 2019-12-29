@@ -76,7 +76,7 @@ $list_data_table = new Mdatatable();
 //Set tabels used in Query
 $list_data_table->tables = array('devis', 'clients', 'ref_devise');
 //Set Jointure
-$list_data_table->joint = 'clients.id = devis.id_client AND clients.id_devise = ref_devise.id '.$only_owner;
+$list_data_table->joint = 'clients.id = devis.id_client AND devis.id_devise = ref_devise.id '.$only_owner;
 
 
 //Call all columns

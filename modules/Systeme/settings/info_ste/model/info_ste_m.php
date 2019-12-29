@@ -7,12 +7,14 @@ class MSte_info
 	
 	private $_data; //data receive from form
 
-	var $table    = 'ste_info'; //Main table of module
-	var $last_id  = null; //return last ID after insert command
-	var $log      = null; //Log of all opération.
-	var $error    = true; //Error bol changed when an error is occured
-	var $id_ste   = null; // Ville ID append when request
-	var $ste_info = null; //Array stock all prminfo 
+	var $table       = 'ste_info'; //Main table of module
+	var $table_b     = 'ste_info_banque'; //Main table of module	
+	var $last_id     = null; //return last ID after insert command
+	var $log         = null; //Log of all opération.
+	var $error       = true; //Error bol changed when an error is occured
+	var $id_ste      = null; // Ville ID append when request
+	var $ste_info    = null; //Array stock all prminfo 
+	var $banque_info = null; //Array stock all prminfo 
 	
 
 
@@ -70,18 +72,19 @@ class MSte_info
 	{
 
 		global $db;
-		$values["ste_name"]    = MySQL::SQLValue($this->_data['ste_name']);
-		$values["ste_bp"]      = MySQL::SQLValue($this->_data['ste_bp']);
-		$values["ste_adresse"] = MySQL::SQLValue($this->_data['ste_adresse']);
-		$values["ste_tel"]     = MySQL::SQLValue($this->_data['ste_tel']);
-		$values["ste_fax"]     = MySQL::SQLValue($this->_data['ste_fax']);
-		$values["ste_email"]   = MySQL::SQLValue($this->_data['ste_email']);
-		$values["ste_if"]      = MySQL::SQLValue($this->_data['ste_if']);
-		$values["ste_rc"]      = MySQL::SQLValue($this->_data['ste_rc']);
-		$values["ste_website"] = MySQL::SQLValue($this->_data['ste_website']);
-		$values["updusr"]      = MySQL::SQLValue(session::get('userid'));
-		$values["upddat"]      = MySQL::SQLValue(date("Y-m-d H:i:s"));
-		$wheres["id"]          = $this->id_ste;
+		$values["ste_name"]       = MySQL::SQLValue($this->_data['ste_name']);
+		$values["ste_bp"]         = MySQL::SQLValue($this->_data['ste_bp']);
+		$values["ste_id_devise"]  = MySQL::SQLValue($this->_data['ste_id_devise']);
+		$values["ste_adresse"]    = MySQL::SQLValue($this->_data['ste_adresse']);
+		$values["ste_tel"]        = MySQL::SQLValue($this->_data['ste_tel']);
+		$values["ste_fax"]        = MySQL::SQLValue($this->_data['ste_fax']);
+		$values["ste_email"]      = MySQL::SQLValue($this->_data['ste_email']);
+		$values["ste_if"]         = MySQL::SQLValue($this->_data['ste_if']);
+		$values["ste_rc"]         = MySQL::SQLValue($this->_data['ste_rc']);
+		$values["ste_website"]    = MySQL::SQLValue($this->_data['ste_website']);
+		$values["updusr"]         = MySQL::SQLValue(session::get('userid'));
+		$values["upddat"]         = MySQL::SQLValue(date("Y-m-d H:i:s"));
+		$wheres["id"]             = $this->id_ste;
 		
 
         // If we have an error
@@ -112,6 +115,40 @@ class MSte_info
 		}else{
 			return true;
 		}
+	}
+
+	/**
+	 * [get_ste_banque Get all info for line]
+	 * @return [type] [fill ste_info_banque array]
+	 */
+	public function get_ste_info_banque($banque)
+	{
+		global $db;
+		$table = $this->table_b;
+		//Format Select commande
+		$sql = "SELECT $table.banque,$table.rib FROM 
+		$table WHERE $table.id = ".$banque;
+		if(!$db->Query($sql))
+		{
+			$this->error = false;
+			$this->log  .= $db->Error();
+		}else{
+			if ($db->RowCount() == 0) {
+				$this->error = false;
+				$this->log .= 'Aucun enregistrement trouvé ';
+			} else {
+				$this->banque_info = $db->RowArray();
+				$this->error = true;
+			}	
+		}
+		//return Array ville_info
+		if($this->error == false)
+		{
+			return false;
+		}else{
+			return true;
+		}
+		
 	}
 
 
@@ -157,14 +194,15 @@ class MSte_info
     	return $head;
     }
 
-    public  function get_ste_info_report_footer($id_ste)
+    public  function get_ste_info_report_footer($id_ste,$banque)
     {
     	$this->id_ste = $id_ste;
     	$this->get_ste_info();
-    	
+    	$this->get_ste_info_banque($banque);
+
     	/*$footer = '<h1>'.$this->ste_info['ste_name'].'</h1><p>Télécommunications – Réseaux - Sécurité électronique - Prestation de Services<br/> Numéro d’Identification Fiscale : '.$this->ste_info['ste_if'].'<br/>Compte Orabank n°20403500201</p>';
 */
-    	$footer = '</br><p>Télécommunications – Réseaux - Sécurité électronique - Prestation de Services<br/> Numéro d’Identification Fiscale : '.$this->ste_info['ste_if'].'<br/>Compte SGT N°04271284701-75</p>';
+    	$footer = '</br><p>Télécommunications – Réseaux - Sécurité électronique - Prestation de Services<br/> Numéro d’Identification Fiscale : '.$this->ste_info['ste_if'].'<br/>Compte '.$this->banque_info['banque'].' N° '.$this->banque_info['rib'].'</p>';
     	
     	return $footer;
     }
