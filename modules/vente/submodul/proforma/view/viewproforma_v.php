@@ -154,7 +154,7 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_proforma->Get_detail_proforma_sho
 
                                         $liste_sub_group = $info_proforma->get_detail_prforma_by_group();
                                         
-                                        
+                                        $btn_transforme_to_devis = null ;
 
                                         if($liste_sub_group)
                                         {
@@ -192,6 +192,14 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_proforma->Get_detail_proforma_sho
                                         		
                                         	}
                                         	print $output;
+                                        	if($info_proforma->g('etat') == Msetting::get_set('etat_proforma','send_proforma'))
+                                            { 
+                                            	echo '<div class="row"><div class="col-sm-5 pull-right">';
+                                            	TableTools::btn_add('proforma','Liste des proforma', Null, $exec = NULL, 'reply');
+                                            	echo '</div></div>';
+                                        	
+                                            }
+
 
                                         }
 										?>
