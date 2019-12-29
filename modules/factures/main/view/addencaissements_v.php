@@ -11,6 +11,12 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_facture->get_facture()) {
 $info_facture->getDevise();
 $info_facture->getDeviseSociete();
 
+if (($info_facture->devise_facture != $info_facture->devise_societe)) {
+    $taux_change = new Mtaux_change();
+    $taux_change->get_taux_change_by_devise($info_facture->facture_info["id_devise"]);
+    $taux_devise = $taux_change->taux_change_devise["conversion"];
+}
+
 $id_facture = Mreq::tp('id');
 ?>
 
@@ -45,6 +51,12 @@ $id_facture = Mreq::tp('id');
                 $form = new Mform('addencaissements', 'addencaissements', '', 'encaissements&' . MInit::crypt_tp('id', $id_facture), '0');
                 $form->input_hidden('idfacture', $id_facture);
 
+                if (($info_facture->devise_facture != $info_facture->devise_societe)) {
+                    $form->input_hidden('taux_devise', $taux_devise);
+                }
+                $form->input_hidden('ste_devise', $info_facture->devise_societe);
+                $form->input_hidden('devise_facture', $info_facture->devise_facture);
+
 //Justification
                 $form->input('Justification', 'pj', 'file', 6, null, null);
                 $form->file_js('pj', 1000000, 'pdf');
@@ -65,17 +77,19 @@ $id_facture = Mreq::tp('id');
 
                 $form->input('Référence', 'ref_payement', 'text', 6, null, NULL);
 
+
+                //Montant devise externe
+
+                if (($info_facture->devise_facture != $info_facture->devise_societe) AND $info_facture->devise_facture != NULL) {
+                    $mt_devise_ext_array[] = array('number', 'true', 'Entrez un montant valide');
+                    $form->input('Montant en Devise', 'montant_devise_ext', 'text', 6, null, $mt_devise_ext_array);
+                }
 //Montant
                 $mt_array[] = array('required', 'true', 'Insérez le montant');
                 $mt_array[] = array('number', 'true', 'Entrez un montant valide');
                 $form->input('Montant', 'montant', 'text', 6, null, $mt_array);
-                
-//Montant devise externe
 
-                if(($info_facture->devise_facture != $info_facture->devise_societe) AND $info_facture->devise_facture != NULL ){
-                $mt_devise_ext_array[] = array('number', 'true', 'Entrez un montant valide');
-                $form->input('Montant en Devise', 'montant_devise_ext', 'text', 6, null, $mt_devise_ext_array);
-                }                   
+
 
                 $form->button('Enregistrer');
 
@@ -86,3 +100,22 @@ $id_facture = Mreq::tp('id');
         </div>
     </div>
 </div>
+
+
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('#montant_devise_ext').on('input change', function () {
+            var $montant_devise_ext = $(this).val();
+
+            if ($('#ste_devise').val() != $('#devise_facture').val())
+            {
+                $('#montant').val(Math.round($('#montant_devise_ext').val()*$('#taux_devise').val()));
+            } 
+
+        });
+
+    });
+
+</script>
