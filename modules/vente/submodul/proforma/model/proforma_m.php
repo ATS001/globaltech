@@ -1458,8 +1458,8 @@ class Mproforma
     public function transformer_proforma_proforma_to_devis()
     {
         $this->get_proforma();
-        $values["reference"]           = MySQL::SQLValue($this->reference);
-        $values["tkn_frm"]             = MySQL::SQLValue($this->_data['tkn_frm']);
+        $values["reference"]           = MySQL::SQLValue($this->g('reference'));
+        $values["tkn_frm"]             = MySQL::SQLValue($this->g('tkn_frm'));
         $values["type_devis"]          = MySQL::SQLValue($this->type_devis);
         $values["reference"]           = MySQL::SQLValue($reference);
         $values["id_client"]           = MySQL::SQLValue($this->_data['id_client']);
