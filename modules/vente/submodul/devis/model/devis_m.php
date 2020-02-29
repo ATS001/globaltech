@@ -1089,12 +1089,7 @@ class Mdevis {
             $produit = new Mproduit();
             $produit->id_produit = MySQL::SQLValue($this->_data['id_produit']);
             $produit->get_produit();
-            if (!$this->get_commerciale_remise_plafond(session::get('userid'), $this->valeur_remis_d)) {
-                return false;
-            }
-
-            $ref_produit = $produit->produit_info['reference'];
-            $designation = $produit->produit_info['designation'];
+            
             //Valeu finance
             $total_ht = $this->total_ht_d;
 
@@ -1102,6 +1097,14 @@ class Mdevis {
             $total_ttc = $this->total_ttc_d;
             $valeur_remis_d = number_format($this->valeur_remis_d, 2, '.', '');
             $prix_u_final = $this->prix_u_final;
+            
+            if (!$this->get_commerciale_remise_plafond(session::get('userid'), $this->valeur_remis_d)) {
+                return false;
+            }
+
+            $ref_produit = $produit->produit_info['reference'];
+            $designation = $produit->produit_info['designation'];
+            
             $tva = Msetting::get_set('tva');
             //Format values for Insert query
             global $db;
