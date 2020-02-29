@@ -576,8 +576,8 @@ class Mdevis {
 
         $this->check_non_exist('clients', 'id', $this->_data['id_client'], 'Client');
 
-        $this->check_non_exist('commerciaux', 'id', $this->_data['id_commercial'], 'Commercial');
-
+        //$this->check_non_exist('commerciaux', 'id', $this->_data['id_commercial'], 'Commercial');
+        $this->check_commercial_exist('commerciaux', 'id', $this->_data['id_commercial'], 'Commercial');
         //Get sum of details
         $this->Get_sum_detail($this->_data['tkn_frm']);
         //calcul values devis
@@ -603,7 +603,7 @@ class Mdevis {
         $total_commission_ex = $this->total_commission_ex;
         $valeur_remise = number_format($this->valeur_remis_t, 2, '.', '');
         $this->reference = $this->devis_info['reference'];
-        if (!$this->get_commerciale_remise_plafond($this->_data['id_commercial'], $valeur_remise)) {
+         if (!$this->get_commerciale_remise_plafond(session::get('userid'), $valeur_remise)) {
             return false;
         }
         $etat_line = $this->etat_valid_devis;
@@ -1089,15 +1089,22 @@ class Mdevis {
             $produit = new Mproduit();
             $produit->id_produit = MySQL::SQLValue($this->_data['id_produit']);
             $produit->get_produit();
-            
-            //Valeu finance
-            $total_ht = $this->total_ht_d;
+
+             $total_ht = $this->total_ht_d;
 
             $total_tva = $this->total_tva_d;
             $total_ttc = $this->total_ttc_d;
             $valeur_remis_d = number_format($this->valeur_remis_d, 2, '.', '');
             $prix_u_final = $this->prix_u_final;
             $tva = Msetting::get_set('tva');
+            if (!$this->get_commerciale_remise_plafond(session::get('userid'), $this->valeur_remis_d)) {
+                return false;
+            }
+
+            $ref_produit = $produit->produit_info['reference'];
+            $designation = $produit->produit_info['designation'];
+            //Valeu finance
+           
             
             
             if (!$this->get_commerciale_remise_plafond(session::get('userid'), $valeur_remis_d)) {

@@ -26,7 +26,7 @@ $form = new Mform('add_detaildevis', 'add_detaildevis', '', 'devis', '0', 'is_mo
 $form->input_hidden('tkn_frm', Mreq::tp('tkn'));
 $form->input_hidden('tva_d', 'O');
 
-$form->input_hidden('commission', Mreq::tp('commission'));
+$form->input_hidden('commission', 0);
 $form->input_hidden('id_commercial', Mreq::tp('id_commercial'));
 $form->input_hidden('pu_devise_pays', 0);
 $form->input_hidden('pu', 0);

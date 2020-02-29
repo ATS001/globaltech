@@ -12,6 +12,19 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_encaissement->get_encaissement(
     exit('3#' . $info_encaissement->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
 
+$info_encaissement->id_facture= $info_encaissement->encaissement_info["idfacture"];
+$info_encaissement->get_facture();
+$info_encaissement->getDevise();
+$info_encaissement->getDeviseSociete();
+
+
+if (($info_encaissement->devise_facture != $info_encaissement->devise_societe)) {
+    $taux_change = new Mtaux_change();
+    $taux_change->get_taux_change_by_devise($info_encaissement->facture_info["id_devise"]);
+    $taux_devise = $taux_change->taux_change_devise["conversion"];
+  }
+
+
 ?>
 <div class="pull-right tableTools-container">
     <div class="btn-group btn-overlap">
@@ -51,6 +64,12 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_encaissement->get_encaissement(
                 $form->input_hidden('idc', Mreq::tp('idc'));
                 $form->input_hidden('idh', Mreq::tp('idh'));
 
+                if (($info_encaissement->devise_facture != $info_encaissement->devise_societe)) {
+                   
+                    $form->input_hidden('taux_devise', $taux_devise);
+                }
+                $form->input_hidden('ste_devise', $info_encaissement->devise_societe);
+                $form->input_hidden('devise_facture', $info_encaissement->devise_facture);
 
                 //Justification
                 $form->input('Justification', 'pj', 'file', 6, 'Justif_enc.pdf', null);
@@ -72,12 +91,18 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_encaissement->get_encaissement(
                 $form->input('Référence', 'ref_payement', 'text', 6, $info_encaissement->Shw('ref_payement', 1), NULL);
 
 
+                //Montant devise externe
+                if($info_encaissement->devise_facture != $info_encaissement->devise_societe){
+                $mt_devise_ext_array[] = array('number', 'true', 'Entrez un montant valide');
+                $form->input('Montant en Devise', 'montant_devise_ext', 'text', 6, $info_encaissement->Shw('montant_devise_ext', 1), $mt_devise_ext_array);
+                }     
+         
 //Montant
                 $mt_array[] = array('required', 'true', 'Insérez le montant');
                 $mt_array[] = array('number', 'true', 'Entrez un montant valide');
                 $form->input('Montant', 'montant', 'text', 6, $info_encaissement->Shw('montant', 1), $mt_array);
 
-
+       
                 $form->button('Modifier encaissement');
 
                 //Form render
@@ -87,3 +112,21 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_encaissement->get_encaissement(
         </div>
     </div>
 </div>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+
+        $('#montant_devise_ext').on('input change', function () {
+            
+            var $montant_devise_ext = $(this).val();
+
+            if ($('#ste_devise').val() != $('#devise_facture').val())
+            {
+                $('#montant').val(Math.round($('#montant_devise_ext').val()*$('#taux_devise').val()));
+            } 
+
+        });
+
+    });
+
+</script>
