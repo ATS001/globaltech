@@ -52,7 +52,7 @@ $array_column = array(
         'align'  => 'R'
     ),
     array(
-        'column' => 'CONCAT(factures.client, " - ",(SELECT dev.abreviation FROM ref_devise dev WHERE dev.id=factures.id_devise))',
+        'column' => 'CONCAT((SELECT c.reference FROM clients c WHERE c.denomination=factures.client group by denomination), " - ",factures.client)',
         'type'   => '',
         'alias'  => 'con_clt',
         'width'  => '27',
