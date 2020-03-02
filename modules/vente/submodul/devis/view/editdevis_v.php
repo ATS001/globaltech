@@ -10,7 +10,7 @@
  	exit('3#'.$info_user->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
  }
 
- $client_d = new MClients();
+ $client_d = new Mclients();
  $client_d->id_client = $info_devis->g('id_client');
  $client_d->get_client();
  $devise=$client_d->g('devise');
