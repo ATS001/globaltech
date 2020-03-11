@@ -1670,7 +1670,7 @@ class Mdevis {
         $this->log .= "<br/>Opération réussie";
         $this->get_devis();
 
-        $this->send_valid_devis_mail();
+        //$this->send_valid_devis_mail();
 
         return true;
     }
