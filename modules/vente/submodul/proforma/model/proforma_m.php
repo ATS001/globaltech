@@ -9,27 +9,29 @@ class Mproforma
     //Declared Private
     private $_data; //data receive from form
     //Declared Variable
-    var $table           = 'proforma'; //Main table of module
-    var $table_details   = 'd_proforma'; //Tables détails proforma
-    var $last_id         = null; //return last ID after insert command
-    var $log             = null; //Log of all opération.
-    var $id_proforma     = null; // proforma ID append when request
-    var $token           = null; //user for recovery function
-    var $proforma_info   = null; //Array stock all ville info
-    var $proforma_d_info = null;//
-    var $reference       = null; // Reference proforma
-    var $error           = true; //Error bol changed when an error is occured
-    var $valeur_remis_d  = null;//
-    var $prix_u_final   = null;//
-    var $total_ht_d      = null; //
-    var $total_tva_d     = null;//
-    var $total_ttc_d     = null;//
-    var $valeur_remis_t  = null;//
-    var $total_ht_t      = null;// 
-    var $total_tva_t     = null;//
-    var $order_detail    = null; //
-    var $sum_total_ht    = null;//
-    var $total_commission = null;//
+    var $table               = 'proforma'; //Main table of module
+    var $table_details       = 'd_proforma'; //Tables détails proforma
+    var $table_devis         = 'devis'; //Main table of module
+    var $table_details_devis = 'd_devis'; //Tables détails proforma
+    var $last_id             = null; //return last ID after insert command
+    var $log                 = null; //Log of all opération.
+    var $id_proforma         = null; // proforma ID append when request
+    var $token               = null; //user for recovery function
+    var $proforma_info       = null; //Array stock all ville info
+    var $proforma_d_info     = null;//
+    var $reference           = null; // Reference proforma
+    var $error               = true; //Error bol changed when an error is occured
+    var $valeur_remis_d      = null;//
+    var $prix_u_final        = null;//
+    var $total_ht_d          = null; //
+    var $total_tva_d         = null;//
+    var $total_ttc_d         = null;//
+    var $valeur_remis_t      = null;//
+    var $total_ht_t          = null;// 
+    var $total_tva_t         = null;//
+    var $order_detail        = null; //
+    var $sum_total_ht        = null;//
+    var $total_commission    = null;//
 
 
 
@@ -1454,72 +1456,87 @@ class Mproforma
             $this->log .= "Devis envoyé  à ".$this->g('email');
         }
     }
+    
+    public function creat_devis_from_proforma($type_devis = null) {
+        global $db;
+        //Get All devis to be duplicate
+        $table_devis         = $this->table_devis;
+        $table_details_devis = $this->table_details_devis;
+        $table               = $this->table;
+        $table_details       = $this->table_details;
+        global $db;
+        $ssid = 'duplicat_devis';
+        session::clear($ssid);
+        session::set($ssid, session::generate_sid());
+        $verif_value = md5(session::get($ssid));
+        $curent_usr = session::get('userid');
+        //Generate reference
+        if (!$reference = $db->Generate_reference($table_devis, 'DEV')) {
+            $this->log .= '</br>Problème Réference new devis';
+            return false;
+        }
+        $date_devis = date('Y-m-d');
 
+        
+        $id_proforma = $this->id_proforma;
+
+        
+        //Insert duplicated Devis
+        $all_fields_f = "`reference`, `tkn_frm`, `type_devis`,
+                 `id_client`, `id_devise`, `id_banque`, `tva`, `id_commercial`, `commission`, `total_commission`, `type_commission`, id_commercial_ex, commission_ex, total_commission_ex, type_commission_ex, 
+                `date_devis`, `type_remise`, `total_remise`, `valeur_remise`, projet, vie, `claus_comercial`, `totalht`, `totalttc`,
+                `totaltva`, `etat`, `creusr`";
+
+        $all_fields_v = " '$reference', `tkn_frm`, '$type_devis',
+                 `id_client`, `id_devise`, `id_banque`, `tva`, `id_commercial`, `commission`, `total_commission`, `type_commission`, id_commercial_ex, commission_ex, total_commission_ex, type_commission_ex, 
+                '$date_devis', `type_remise`, `total_remise`, `valeur_remise`, projet, vie, `claus_comercial`, `totalht`, `totalttc`,
+                `totaltva`, 0, '$curent_usr' ";        
+
+        
+
+        $sql_duplicat_devis = "INSERT INTO $table_devis ($all_fields_f) SELECT  $all_fields_v FROM $table WHERE $table.id = $id_proforma";
+
+        if (!$new_devis = $db->Query($sql_duplicat_devis)) {
+            $this->log .= "</br>Problème Insert devis  " .$sql_duplicat_devis;
+            return false;
+        }
+
+      
+        $cryp_data = MInit::crypt_tp('id', $new_devis);
+        $this->log .= "</br>Devis crée avec succès sous réf: <b>$reference</b></br><a class='this_url' rel='editdevis' data='$cryp_data'>Modifier le nouveau Devis</a>";
+        return true;
+    }
+
+    
     public function transformer_proforma_proforma_to_devis()
     {
-        $this->get_proforma();
-        $values["reference"]           = MySQL::SQLValue($this->g('reference'));
-        $values["tkn_frm"]             = MySQL::SQLValue($this->g('tkn_frm'));
-        $values["type_devis"]          = MySQL::SQLValue($this->type_devis);
-        $values["reference"]           = MySQL::SQLValue($reference);
-        $values["id_client"]           = MySQL::SQLValue($this->_data['id_client']);
-        $values["id_devise"]           = $client->client_info['id_devise'];            
-        $values["id_banque"]           = $client->client_info['id_banque'];
-        $values["tva"]                 = MySQL::SQLValue($this->_data['tva']);
-        
-        $values["id_commercial"]       = MySQL::SQLValue($this->_data['id_commercial']);
-        $values["commission"]          = MySQL::SQLValue($this->_data['commission']);
-        $values["total_commission"]    = MySQL::SQLValue($total_commission);
-        $values["type_commission"]     = MySQL::SQLValue($this->_data['type_commission']);
-        
-        $values["id_commercial_ex"]    = MySQL::SQLValue($this->_data['id_commercial_ex']);
-        $values["commission_ex"]       = MySQL::SQLValue($this->_data['commission_ex']);
-        $values["total_commission_ex"] = MySQL::SQLValue($total_commission_ex);
-        $values["type_commission_ex"]  = MySQL::SQLValue($this->_data['type_commission_ex']);
-        
-        $values["date_devis"]          = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_devis'])));
-        $values["type_remise"]         = MySQL::SQLValue($this->_data['type_remise']);
-        
-        $values["valeur_remise"]       = MySQL::SQLValue($valeur_remise);
-        $values["total_remise"]        = MySQL::SQLValue($montant_remise);
-        $values["projet"]              = MySQL::SQLValue($this->_data['projet']);
-        $values["vie"]                 = MySQL::SQLValue($this->_data['vie']);
-        $values["claus_comercial"]     = MySQL::SQLValue($this->_data['claus_comercial']);
-        $values["totalht"]             = MySQL::SQLValue($totalht);
-        $values["totalttc"]            = MySQL::SQLValue($totalttc);
-        $values["totaltva"]            = MySQL::SQLValue($totaltva);
-        $values["etat"]                = MySQL::SQLValue($etat_line);
-        $values["creusr"]              = MySQL::SQLValue(session::get('userid'));
-        $values["credat"]              = MySQL::SQLValue(date("Y-m-d H:i:s"));
-        //Check if Insert Query been executed (False / True)
-        if (!$result = $db->InsertRow($this->table, $values)) {
-            //False => Set $this->log and $this->error = false
-            $this->log .= $db->Error();
-            $this->error = false;
-            $this->log .= '</br>Enregistrement BD non réussie';
-        } else {
-            $this->last_id = $result;
-            //Check $this->error = true return Green message and Bol true
-            if ($this->error == true) {
-                $this->log .= '</br>Enregistrement réussie: <b>Réference: ' . $reference;
-                // $this->send_creat_devis_mail($values["id_commercial"]);
-                $this->save_temp_detail($this->_data['tkn_frm'], $this->last_id);
-                //log
-                if (!Mlog::log_exec($this->table, $this->last_id, 'Enregistrement Devis ' . $this->last_id, 'Insert')) {
-                    $this->log .= '</br>Un problème de log ';
-                }
-                //Check $this->error = false return Red message and Bol false
-            } else {
-                $this->log .= '</br>Enregistrement réussie: <b>' . $reference;
-                $this->log .= '</br>Un problème d\'Enregistrement ';
-            }
-        }//Else Error false
-        //check if last error is true then return true else rturn false.
-        if ($this->error == false) {
+        if(!$this->get_proforma()){
             return false;
-        } else {
-            return true;
         }
+        /*===================================================================
+        =            Check if have ABN then save first Devis ABN            =
+        ===================================================================*/
+        $table_details = $this->table_details;
+        global $db;
+        $tkn_frm   = $this->g('tkn_frm');
+        $sub_group = $this->id_proforma_pro;
+
+        $req_sql = "SELECT $table_details.id FROM $table_details, produits, ref_types_produits WHERE tkn_frm = '$tkn_frm' AND  $table_details.id_produit = produits.id AND produits.idtype = ref_types_produits.id AND ref_types_produits.type_produit like 'Abonnement' AND sub_group = $sub_group ";
+
+         
+        $produit_id = intval($db->QuerySingleValue0($req_sql));
+        
+        if($produit_id <> '0')
+        {
+            $this->creat_devis_from_proforma($type_devis = 'ABN');
+
+
+          //$this->log .= '</br>Impossible d\'insérer deux abonnement sur le même sous-group pour le même Proforma '.$produit_id;
+        }
+        
+        
+        /*=====  End of Check if have ABN then save first Devis ABN  ======*/
+        return false;
     }
 /**
  * End Class destrector

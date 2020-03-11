@@ -192,13 +192,13 @@ $id = $info_proforma->id_proforma;
                                         		
                                         	}
                                         	print $output;
-                                        	/*if($info_proforma->g('etat') == Msetting::get_set('etat_proforma','send_proforma'))
+                                        	if($info_proforma->g('etat') == Msetting::get_set('etat_proforma','send_proforma'))
                                             { 
                                             	echo '<div class="row"><div class="col-sm-5 pull-right">';
                                             	TableTools::btn_add('transformer_proforma','Transformer la proposition à un Devis', MInit::crypt_tp('id', $id).'&'.MInit::crypt_tp('pro', $id_sub_group), $exec = 'this_exec', 'paper-plane-o green');
                                             	echo '</div></div>';
                                         	
-                                            }*/
+                                            }
 
 
                                         }
