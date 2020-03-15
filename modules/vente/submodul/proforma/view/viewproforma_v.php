@@ -14,7 +14,7 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_proforma->Get_detail_proforma_sho
  	// returne message error red to client 
 		exit('3#'.$info_proforma->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 	}
-
+$id = $info_proforma->id_proforma;
 	?>
 	<div class="pull-right tableTools-container">
 		<div class="btn-group btn-overlap">
@@ -192,13 +192,13 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_proforma->Get_detail_proforma_sho
                                         		
                                         	}
                                         	print $output;
-                                        	if($info_proforma->g('etat') == Msetting::get_set('etat_proforma','send_proforma'))
+                                        	/*if($info_proforma->g('etat') == Msetting::get_set('etat_proforma','send_proforma'))
                                             { 
                                             	echo '<div class="row"><div class="col-sm-5 pull-right">';
-                                            	TableTools::btn_add('proforma','Liste des proforma', Null, $exec = NULL, 'reply');
+                                            	TableTools::btn_add('transformer_proforma','Transformer la proposition à un Devis', MInit::crypt_tp('id', $id).'&'.MInit::crypt_tp('pro', $id_sub_group), $exec = 'this_exec', 'paper-plane-o green');
                                             	echo '</div></div>';
                                         	
-                                            }
+                                            }*/
 
 
                                         }

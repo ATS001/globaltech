@@ -505,7 +505,7 @@ class Mclients {
             $this->error = false;
         } else {
             $this->log .= '</br>Statut changé! ';
-            $this->send_welcome_client_mail();
+            //$this->send_welcome_client_mail();
             $this->error = true;
             if (!Mlog::log_exec($this->table, $this->id_client, 'Validation client', 'Validate')) {
                 $this->log .= '</br>Un problème de log ';
