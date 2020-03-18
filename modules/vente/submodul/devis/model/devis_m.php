@@ -2595,7 +2595,7 @@ class Mdevis {
             return false;
         }
 
-        $req_sql = "SELECT remise, remise_valid_dcm, remise_valid_dg FROM commerciaux WHERE id = $id_commercial";
+        $req_sql = "SELECT remise, remise_valid_dcm, remise_valid_dg FROM commerciaux WHERE id_user_sys = $id_commercial";
         //var_dump($req_sql);
         if (!$db->Query($req_sql)) {
             $this->log .= '</br>Impossible récuperation plafonds remises #SQL';
