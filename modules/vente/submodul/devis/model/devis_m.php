@@ -1097,6 +1097,14 @@ class Mdevis {
             $total_ttc = $this->total_ttc_d;
             $valeur_remis_d = number_format($this->valeur_remis_d, 2, '.', '');
             $prix_u_final = $this->prix_u_final;
+            
+            if (!$this->get_commerciale_remise_plafond(session::get('userid'), $this->valeur_remis_d)) {
+                return false;
+            }
+
+            $ref_produit = $produit->produit_info['reference'];
+            $designation = $produit->produit_info['designation'];
+            
             $tva = Msetting::get_set('tva');
             
             
@@ -1671,7 +1679,7 @@ class Mdevis {
         $this->log .= "<br/>Opération réussie";
         $this->get_devis();
 
-        $this->send_valid_devis_mail();
+        //$this->send_valid_devis_mail();
 
         return true;
     }
