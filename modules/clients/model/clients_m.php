@@ -579,7 +579,7 @@ class Mclients {
         }
 
 
-        //$this->check_non_exist('ref_devise', 'id', $this->_data['id_devise'], 'Devise');
+        $this->check_non_exist('ref_devise', 'id', $this->_data['id_devise'], 'Devise');
 
 //Check if PJ attached required
         if ($this->exige_pj) {
@@ -612,7 +612,7 @@ class Mclients {
             $values["email"] = MySQL::SQLValue($this->_data['email']);
             $values["id_banque"] = MySQL::SQLValue($this->_data['id_banque']);
             $values["rib"] = MySQL::SQLValue($this->_data['rib']);
-            //$values["id_devise"] = MySQL::SQLValue($this->_data['id_devise']);
+            $values["id_devise"] = MySQL::SQLValue($this->_data['id_devise']);
             if ($this->_data['tva'] == 'Oui') {
 
                 $values["tva"] = MySQL::SQLValue('O');

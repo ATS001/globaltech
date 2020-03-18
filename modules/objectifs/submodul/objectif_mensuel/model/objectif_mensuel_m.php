@@ -118,7 +118,7 @@ class Mobjectif_mensuel {
      * @return [type] [description]
      */
     public function start_objectifs_first_of_month()
-    {       
+    {        
         global $db;
         //Get Etats Objectif to validate
         $new_etat_wait  =  Msetting::get_set('etat_objectif_mensuel', 'objectif_wait');

@@ -5,8 +5,8 @@ if(!defined('_MEXEC'))die();
 // Modul: proforma
 //Created : 17-11-2019
 //Controller EDIT Form
-$proforma = new  Mproforma();
-$proforma->id_proforma = Mreq::tp('id');
+$proforma                  = new  Mproforma();
+$proforma->id_proforma     = Mreq::tp('id');
 $proforma->id_proforma_pro = Mreq::tp('pro');
 
 if(!MInit::crypt_tp('id', null, 'D') OR !$proforma->get_proforma())

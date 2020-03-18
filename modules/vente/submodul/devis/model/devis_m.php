@@ -576,8 +576,8 @@ class Mdevis {
 
         $this->check_non_exist('clients', 'id', $this->_data['id_client'], 'Client');
 
-        //$this->check_non_exist('commerciaux', 'id', $this->_data['id_commercial'], 'Commercial');
-        $this->check_commercial_exist('commerciaux', 'id', $this->_data['id_commercial'], 'Commercial');
+        $this->check_non_exist('commerciaux', 'id', $this->_data['id_commercial'], 'Commercial');
+
         //Get sum of details
         $this->Get_sum_detail($this->_data['tkn_frm']);
         //calcul values devis
@@ -603,7 +603,7 @@ class Mdevis {
         $total_commission_ex = $this->total_commission_ex;
         $valeur_remise = number_format($this->valeur_remis_t, 2, '.', '');
         $this->reference = $this->devis_info['reference'];
-         if (!$this->get_commerciale_remise_plafond(session::get('userid'), $valeur_remise)) {
+        if (!$this->get_commerciale_remise_plafond($this->_data['id_commercial'], $valeur_remise)) {
             return false;
         }
         $etat_line = $this->etat_valid_devis;
@@ -1106,6 +1106,15 @@ class Mdevis {
             $designation = $produit->produit_info['designation'];
             
             $tva = Msetting::get_set('tva');
+            
+            
+            if (!$this->get_commerciale_remise_plafond(session::get('userid'), $valeur_remis_d)) {
+                return false;
+            }
+
+            $ref_produit = $produit->produit_info['reference'];
+            $designation = $produit->produit_info['designation'];
+            
             //Format values for Insert query
             global $db;
 
@@ -2586,14 +2595,14 @@ class Mdevis {
             return false;
         }
 
-        $req_sql = "SELECT remise, remise_valid_dcm, remise_valid_dg FROM commerciaux WHERE id = $id_commercial";
+        $req_sql = "SELECT remise, remise_valid_dcm, remise_valid_dg FROM commerciaux WHERE id_user_sys = $id_commercial";
         //var_dump($req_sql);
         if (!$db->Query($req_sql)) {
-            $this->log .= '</br>Impossible récuperation plafonds remises';
+            $this->log .= '</br>Impossible récuperation plafonds remises #SQL';
             return false;
         } else {
             if (!$db->RowCount()) {
-                $this->log .= '</br>Impossible récuperation plafonds remises';
+                $this->log .= '</br>Impossible récuperation plafonds remises pour ce commercial';
                 return false;
             }
             $arr_result = $db->RowArray();

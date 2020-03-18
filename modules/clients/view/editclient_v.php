@@ -168,7 +168,8 @@ $form->step_start(3, 'Complément Informations');
 $form->select_table('Banque', 'id_banque', 6, 'ste_info_banque', 'id', 'banque' , 'banque', $indx = '------' ,$selected=$info_client->Shw('id_banque',1),$multi=NULL, $where='etat=1', null);
 
 // devise
-//$form->select_table('Devise', 'id_devise', 6, 'ref_devise', 'id', 'devise' , 'devise', $indx = '------' ,$selected=$info_client->Shw('id_devise',1),$multi=NULL, $where='etat=1', NULL);
+$form->select_table('Devise', 'id_devise', 6, 'ref_devise', 'id', 'devise' , 'devise', $indx = '------' ,
+    $selected=$info_client->Shw('id_devise',1),$multi=NULL, $where='etat=1', NULL);
 
 //var_dump($info_client->Shw('tva',1));
 // taxe

@@ -25,7 +25,7 @@ defined('_MEXEC') or die;
 </div>
 <div class="page-header">
 	<h1>
-		Modifier les informations de la société 
+		Modifier les information de la société 
 		<small>
 			<i class="ace-icon fa fa-aechongle-double-right"></i>
 		</small>
@@ -61,7 +61,8 @@ $ste_name_arr[]  = array('minlength', '4', 'Minimum 4 caractères' );
 $form->input('Nom Ste', 'ste_name', 'text' ,9 , $info_ste->g('ste_name'), $ste_name_arr);
 
 $ste_devise_arr[]  = array('required', 'true', 'Insérer La Devise Principale' );
-$form->select_table('Devise Principale', 'ste_id_devise', 6, 'ref_devise', 'id', 'devise' , 'devise', $indx = '------' , $info_ste->g('ste_id_devise'),$multi=NULL, $where='etat=1', $ste_devise_arr);
+$form->input('Devise Principale', 'ste_devise', 'text' ,'6' , $info_ste->g('ste_devise'), $ste_devise_arr);
+
 
 $ste_bp_arr[]  = array('required', 'true', 'Insérer la BP' );
 $ste_bp_arr[]  = array('minlength', '2', 'Minimum 2 caractères' );

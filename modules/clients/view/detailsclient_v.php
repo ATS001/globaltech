@@ -286,16 +286,6 @@ $tab_ticket       = view::tab_render('tickets', 'Tickets', $add_set=NULL, 'money
                                                     <b class="blue pull-right"><?php echo $client->s('ville');?></b>
                                             </li>
 
-                                            <li>
-                                                <i class="ace-icon fa fa-caret-right blue"></i> Devise 
-                                                    <b class="blue pull-right"><?php echo $client->s('devise');?></b>
-                                            </li>                                            
-
-                                            <li>
-                                                <i class="ace-icon fa fa-caret-right blue"></i> Banque 
-                                                    <b class="blue pull-right"><?php echo $client->s('banque');?></b>
-                                            </li>  
-
                                         </ul>
                                     </div>
                                 </div><!-- /.col sm 6-->
@@ -321,7 +311,7 @@ $tab_ticket       = view::tab_render('tickets', 'Tickets', $add_set=NULL, 'money
 
 
                                             <li>
-                                                <i class="ace-icon fa fa-caret-right green"></i> Civilité 
+                                                <i class="ace-icon fa fa-caret-right green"></i>Civilité 
                                                     <b class="blue pull-right"><?php echo $client->s('civilite');?></b>
                                             </li>
                                             <li>
@@ -349,6 +339,10 @@ $tab_ticket       = view::tab_render('tickets', 'Tickets', $add_set=NULL, 'money
                                                     <b class="blue pull-right"><?php echo $client->s('email');?></b>
                                             </li>
 
+                                            <li>
+                                                <i class="ace-icon fa fa-caret-right green"></i> Devise 
+                                                    <b class="blue pull-right"><?php echo $client->s('devise');?></b>
+                                            </li>
 
                                             <li>
                                                 <i class="ace-icon fa fa-caret-right green"></i> TVA 

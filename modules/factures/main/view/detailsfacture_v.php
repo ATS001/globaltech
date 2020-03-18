@@ -175,11 +175,6 @@ $encaissements = $info_facture->encaissement_info;
                                             NIF
                                             <b class="blue pull-right"><?php echo $info_facture->printattribute_clt('nif'); ?></b>
                                         </li>
-                                        <li>
-                                            <i class="ace-icon fa fa-caret-right green"></i>
-                                            Devise
-                                            <b class="blue pull-right"><?php echo $info_facture->printattribute_clt('devise'); ?></b>
-                                        </li>                                        
                                     </ul>
                                 </div>
                             </div><!-- /.col -->
