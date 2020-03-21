@@ -1007,20 +1007,15 @@ class Mobjectif_mensuel {
         $date_e        = date('Y-m-d', strtotime($this->g('date_e')));
         $id_commercial = $this->g('id_commercial');
         
-        $req_sql = "SELECT devis.`id` id,devis.`reference`, clients.denomination,
-        CONCAT(commerciaux.`nom`,' ',commerciaux.`prenom`) AS commercial,
+        $req_sql = "SELECT devis.`id` id,devis.`reference`, clients.denomination,        
         REPLACE(FORMAT(devis.`totalttc`,0),',',' ') total_ttc,
-        DATE_FORMAT(devis.`date_devis`,'%d-%m-%Y') AS date_devis, '#' 
-        FROM `factures` 
-        INNER JOIN `devis` ON (`devis`.`id` = IF(factures.`base_fact`='C',(SELECT ctr.iddevis FROM contrats ctr WHERE                  ctr.id=factures.`idcontrat`),`factures`.`iddevis` )) 
-        INNER JOIN `clients` ON (`clients`.`id` = `devis`.`id_client`) 
-        INNER JOIN `encaissements` ON (`encaissements`.`idfacture` = `factures`.`id`) 
-        INNER JOIN `commerciaux`ON (`commerciaux`.`id` = `devis`.`id_commercial`) 
-        INNER JOIN `services` ON (`commerciaux`.`id_service` = `services`.`id`) 
-        WHERE encaissements.etat IN(1, 0) 
-        AND encaissements.`date_encaissement` BETWEEN '$date_s' AND '$date_e' 
-        AND devis.etat <> 200 AND services.id = $id_commercial";
-       // exit($req_sql);
+        DATE_FORMAT(devis.`date_valid_client`,'%d-%m-%Y') AS date_valid_client, '#' 
+        FROM `devis`  
+        INNER JOIN `clients` 
+        ON (`devis`.`id_client` = `clients`.`id`)
+        WHERE devis.`date_valid_client` BETWEEN '$date_s' AND '$date_e' 
+        AND devis.id_commercial LIKE '%\"$id_commercial\"%'";
+        //exit($req_sql);
         
         if(!$db->Query($req_sql))
         {
@@ -1038,8 +1033,7 @@ class Mobjectif_mensuel {
         $headers = array(
             'ID'           => '5[#]center',
             'Référence'    => '10[#]center',
-            'Client'       => '10[#]',
-            'Commercial'   => '15[#]center',
+            'Client'       => '25[#]',
             'Montant'      => '10[#]center',
             'Date'         => '5[#]',     
             '#'            => '3[#]center[#]crypt', 
