@@ -121,9 +121,11 @@ class Mobjectif_mensuel {
     {        
         global $db;
         //Get Etats Objectif to validate
-        $new_etat_wait  =  Msetting::get_set('etat_objectif_mensuel', 'objectif_wait');
-        $new_etat_start =  Msetting::get_set('etat_objectif_mensuel', 'objectif_encour');
-        $new_etat_stop  =  Msetting::get_set('etat_objectif_mensuel', 'objectif_stop');
+        $new_etat_wait    =  Msetting::get_set('etat_objectif_mensuel', 'objectif_wait');
+        $new_etat_start   =  Msetting::get_set('etat_objectif_mensuel', 'objectif_encour');
+        $new_etat_stop    =  Msetting::get_set('etat_objectif_mensuel', 'objectif_stop');
+        $new_etat_atteint =  Msetting::get_set('etat_objectif_mensuel', 'objectif_atteint');
+        $new_etat_non     =  Msetting::get_set('etat_objectif_mensuel', 'objectif_non');
         if($new_etat_wait == null OR $new_etat_start == null OR $new_etat_stop == null)
         {
             $this->log   .= 'Impossible de changer le statut!, manque de paramètre';
@@ -132,11 +134,33 @@ class Mobjectif_mensuel {
         $table = $this->table;
         $mois = date('m');
         $year = date('Y');
-        $sql_start = "UPDATE $table SET etat = $new_etat_start WHERE mois = $mois AND annee = $year AND etat = $new_etat_wait ";
-        $sql_stop  = "UPDATE $table SET etat = $new_etat_stop WHERE mois = $mois AND annee = $year AND etat = $new_etat_start ";
-        if(!$db->Query($sql_start) OR !$db->Query($sql_stop))
+
+        $sql_start        = "UPDATE $table o SET etat = $new_etat_start  WHERE NOW() BETWEEN o.`date_s` AND o.`date_e` ";
+
+        $sql_stop         = "UPDATE $table o SET etat = $new_etat_stop WHERE NOW() >  o.`date_e` ";
+
+        $sql_etat_atteint = "UPDATE $table o SET etat = $new_etat_atteint WHERE ((o.`realise` * 100) / o.objectif) >= o.seuil AND etat = $new_etat_stop ";
+
+        $sql_etat_non     = "UPDATE $table o SET etat = $new_etat_non WHERE ((o.`realise` * 100) / o.objectif) < o.seuil AND etat = $new_etat_stop ";
+
+        if(!$db->Query($sql_start))
         {
-            $this->log   .= 'Erreur update Objectif';
+            $this->log   .= 'Erreur update Objectif on wait';
+            return false;
+        }
+        if(!$db->Query($sql_stop))
+        {
+            $this->log   .= 'Erreur update Objectif started';
+            return false;
+        }
+        if(!$db->Query($sql_etat_atteint))
+        {
+            $this->log   .= 'Erreur update Objectif succes ';
+            return false;
+        }
+        if(!$db->Query($sql_etat_non))
+        {
+            $this->log   .= 'Erreur update Objectif faild';
             return false;
         }        
         return true;      
