@@ -80,9 +80,9 @@ if (MInit::form_verif('renouveler_contrat', false)) {
   }
 
 
-  if($posted_data['date_fin'] <= $posted_data['date_effet']){
+  if(date('Y-m-d', strtotime($posted_data['date_fin'])) <= date('Y-m-d', strtotime($posted_data['date_effet'])) ){
 
-    $control_date = "<ul>La date de fin doit être supérieur de la date d'effet !!!</ul>";
+    $control_date = "<ul>La date de fin doit être supérieur à la date d'effet !!!</ul>";
     $checker = 2;
   }
 
@@ -91,20 +91,20 @@ if (MInit::form_verif('renouveler_contrat', false)) {
     exit("0#$control_date");
   }
 
- if($posted_data['date_notif'] >= $posted_data['date_fin']  or $posted_data['date_notif'] <= $posted_data['date_effet'] ){
+  if(date('Y-m-d', strtotime($posted_data['date_notif'])) >= date('Y-m-d', strtotime($posted_data['date_fin']))  or date('Y-m-d', strtotime($posted_data['date_notif'])) <= date('Y-m-d', strtotime($posted_data['date_effet'])) ){
 
-    $control_notif = "<ul>La date de notification doit être supérieur de la date d'effet et  inférieur de la date de fin !!!</ul>";
-    $checker = 3;
-   }
+        $control_notif = "<ul>La date de notification doit être supérieur à la date d'effet et  inférieur de la date de fin !!!</ul>" ;
+        $checker = 3;
+  }
   if($checker == 3)
   {
     exit("0#$control_notif");
   }
 
 
-   if(date('Y-m-d', strtotime($posted_data['date_effet']))  < $new_contrats_frn->Shw('date_fin',1)){
+   if(date('Y-m-d', strtotime($posted_data['date_effet']))  < date('Y-m-d', strtotime($new_contrats_frn->Shw('date_fin',1))) ){
 
-    $control_renouvelement = "<ul>La date d'effet doit être supérieur de la fin de l'ancien contrat !!!</ul>";
+    $control_renouvelement = "<ul>La date d'effet doit être supérieur à la fin de l'ancien contrat !!!</ul>";
     $checker = 4;
    }
   if($checker == 4)
