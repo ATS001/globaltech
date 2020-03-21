@@ -46,7 +46,7 @@ class Mobjectif_mensuel {
 
         $table = $this->table;
 
-        $sql = "SELECT $table.*, CONCAT(commerciaux.nom,' ',commerciaux.prenom) AS commercial FROM 
+        $sql = "SELECT $table.*, CONCAT(commerciaux.nom,' ',commerciaux.prenom) AS commercial, commerciaux.taux_commission FROM 
         $table, commerciaux WHERE commerciaux.id = $table.id_commercial AND  $table.id = ".$this->id_objectif_mensuel;
         //exit($sql);
         if(!$db->Query($sql))
@@ -54,7 +54,7 @@ class Mobjectif_mensuel {
             $this->error = false;
             $this->log  .= $db->Error();
         }else{
-            if ($db->RowCount() == 0) {
+            if (!$db->RowCount()) {
                 $this->error = false;
                 $this->log .= 'Aucun enregistrement trouvé ';
             } else {
@@ -126,7 +126,7 @@ class Mobjectif_mensuel {
         $new_etat_stop    =  Msetting::get_set('etat_objectif_mensuel', 'objectif_stop');
         $new_etat_atteint =  Msetting::get_set('etat_objectif_mensuel', 'objectif_atteint');
         $new_etat_non     =  Msetting::get_set('etat_objectif_mensuel', 'objectif_non');
-        if($new_etat_wait == null OR $new_etat_start == null OR $new_etat_stop == null)
+        if($new_etat_wait == null OR $new_etat_start == null OR $new_etat_stop == null OR $new_etat_atteint == null OR $new_etat_non == null)
         {
             $this->log   .= 'Impossible de changer le statut!, manque de paramètre';
             return false;
@@ -138,7 +138,7 @@ class Mobjectif_mensuel {
         $sql_start        = "UPDATE $table o SET etat = $new_etat_start  WHERE NOW() BETWEEN o.`date_s` AND o.`date_e` ";
 
         $sql_stop         = "UPDATE $table o SET etat = $new_etat_stop WHERE NOW() >  o.`date_e` ";
-
+        
         $sql_etat_atteint = "UPDATE $table o SET etat = $new_etat_atteint WHERE ((o.`realise` * 100) / o.objectif) >= o.seuil AND etat = $new_etat_stop ";
 
         $sql_etat_non     = "UPDATE $table o SET etat = $new_etat_non WHERE ((o.`realise` * 100) / o.objectif) < o.seuil AND etat = $new_etat_stop ";
@@ -162,10 +162,11 @@ class Mobjectif_mensuel {
         {
             $this->log   .= 'Erreur update Objectif faild';
             return false;
-        }        
+        }
+         
         return true;      
-    }
-    
+    }  
+
     /**
      * [save_objectifs_all_year description]
      * @return [type] [description]
@@ -321,8 +322,112 @@ class Mobjectif_mensuel {
         }
 
 
+    }
+    /**
+     * [auto_save_comission_objectif_mensuel description]
+     * @return [type] [description]
+     */
+    public function auto_save_comission_objectif_mensuel()
+    {
+        global $db;
+        $table = $this->table;
+        $new_etat_atteint =  Msetting::get_set('etat_objectif_mensuel', 'objectif_atteint');
+        $new_etat_paye =  Msetting::get_set('etat_objectif_mensuel', 'objectif_paye');
+        $sql_get_atteint = "SELECT id FROM $table WHERE etat = $new_etat_atteint ";
+        if(!$db->Query($sql_get_atteint))
+        {
+            $this->log   .= 'Erreur Get All Objectifs succes ';
+            return false;
+        }
+        if(!$db->RowCount()){
+            return false; 
+        }
+        $objectif_atteint = $db->RecordsArray();
+        var_dump($objectif_atteint);
+        foreach ($objectif_atteint as $key => $value) 
+        {
+            $this->save_commission_objectif_atteint($value['id']);
+        }  
+        return true;   
     } 
+    /**
+     * [force_commission_objectif_mensuel description]
+     * @return [type] [description]
+     */
+    public function save_commission_objectif_atteint($id_objectif)
+    {
+        $this->id_objectif_mensuel = $id_objectif;
+        if(!$this->get_objectif_mensuel())
+        {
+            $this->log   .= '</br>Objictif introuvable';            
+            return false;
+        }
+        
+        global $db;
+        //Get Etat Objectif to validate
+        $objectif_atteint =  Msetting::get_set('etat_objectif_mensuel', 'objectif_atteint');
+        $objectif_paye    =  Msetting::get_set('etat_objectif_mensuel', 'objectif_paye');
 
+        if($objectif_atteint == null OR $objectif_paye == null)
+        {
+            $this->log   .= '</br>manque de paramètre';
+            return false;
+        }
+
+        //Check if line have same value of setting
+        if($this->objectif_mensuel_info['etat'] != $objectif_atteint)
+        {
+            $this->log   .= '</br>Cet Objectif -'.$id_objectif.'- ne peux pas être payé';
+            return false;
+        }
+        $posted_data["objet"]           = 'Commission Objectif atteint: '.$this->objectif_mensuel_info['mois'].'/'.$this->objectif_mensuel_info['annee'];
+        $posted_data["credit"] =  $this->objectif_mensuel_info['realise'] * $this->objectif_mensuel_info['taux_commission']/100 ;
+        $posted_data["id_encaissement"] =  0;
+        $posted_data["type"]            = 'Automatique';
+        $posted_data["id_commerciale"]  = $this->objectif_mensuel_info['id_commercial'];
+        $commission = new Mcommission($posted_data);
+        if(!$commission->save_new_commission()){
+            $this->log   .= '</br>Erreur enregistrement commission '.$commission->log;
+            return false;
+        }
+        //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
+        
+        
+        $values["etat"]          = MySQL::SQLValue($objectif_paye);
+        $values["updusr"]        = MySQL::SQLValue(session::get('userid'));
+        $values["upddat"]        = MySQL::SQLValue(date("Y-m-d H:i:s"));
+
+        $wheres['id']     = $this->id_objectif_mensuel;
+
+        // Execute the update and show error case error
+        if(!$result = $db->UpdateRows($this->table, $values, $wheres))
+        {
+            $this->log   .= '</br>Impossible de changer le statut!';
+            $this->log   .= '</br>'.$db->Error();
+            return false;
+
+        }else{
+            $this->log   .= '</br>Commission Payé ';
+            $this->error  = true;
+            if(!Mlog::log_exec($this->table, $this->id_objectif_mensuel, 'Payer commission  objectif mensuel', 'Update'))
+            {
+                $this->log .= '</br>Un problème de log ';
+                return false;
+            }
+               //Esspionage
+            if(!$db->After_update($this->table, $this->id_objectif_mensuel, $values, $this->objectif_mensuel_info))
+            {
+                $this->log .= '</br>Problème Espionnage';
+                return false;   
+            }
+
+        }
+        return true;
+    }
+    /**
+     * [force_commission_objectif_mensuel description]
+     * @return [type] [description]
+     */
     public function force_commission_objectif_mensuel()
     {
         if(!$this->get_objectif_mensuel())
