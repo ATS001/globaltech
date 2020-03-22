@@ -32,6 +32,10 @@ class Mfacture {
     var $reference = null; // Reference 
     var $sum_enc_fact; // Somme encaissements par facture
     var $solde; // Solde client
+    var $devise_facture;
+    var $devise_societe;
+    var $taux_change;
+    var $existDiffDevise;
 
     public function __construct($properties = array()) {
         $this->_data = $properties;
@@ -171,7 +175,7 @@ class Mfacture {
         global $db;
         $client = $this->facture_info['client'];
 
-        $sql = "SELECT * FROM clients WHERE  denomination = '$client'";
+         $sql = "SELECT c.*,dev.devise as devise FROM clients c, ref_devise dev WHERE c.id_devise=dev.id AND c.denomination = '$client'";
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -447,13 +451,18 @@ class Mfacture {
         //$this->sum_encaissement_by_facture($this->_data['idfacture']);
         $this->id_facture = $this->_data['idfacture'];
         $this->get_facture();
+        $this->getDevise();
         //$total_encaissement= $this->sum_enc_fact + $this->_data['montant'];
         //if($total_encaissement > $this->facture_info['total_ttc'])
         if ($this->_data['montant'] > $this->facture_info['reste']) {
             $this->error = FALSE;
-            $this->log .= '</br>Le montant doit être inférieur ou égal à ' . $this->facture_info['reste'] . ' FCFA';
+            $this->log .= '</br>Le montant doit être inférieur ou égal à ' . $this->facture_info['reste'] . ' '.$this->devise_facture ;
             return FALSE;
         }
+
+        $this->getTauxChange($this->facture_info['id_devise']);
+        $taux = $this->taux_change;
+
         //$this->Generate_encaissement_reference();
         global $db;
         //Generate reference
@@ -477,11 +486,11 @@ class Mfacture {
             $values["mode_payement"] = MySQL::SQLValue($this->_data['mode_payement']);
             $values["ref_payement"] = MySQL::SQLValue($this->_data['ref_payement']);
             $values["montant"] = MySQL::SQLValue($this->_data['montant']);
+            $values["montant_devise_ext"] = MySQL::SQLValue($this->_data['montant_devise_ext']*$taux);
             $values["depositaire"] = MySQL::SQLValue($this->_data['depositaire']);
             $values["date_encaissement"] = MySQL::SQLValue(date("Y-m-d"));
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
-
 
             //Check if Insert Query been executed (False / True)
             if (!$result = $db->InsertRow('encaissements', $values)) {
@@ -539,7 +548,7 @@ class Mfacture {
         $this->get_commerciale_devis();
 
         global $db;
-//var_dump($db);
+
         if ($this->error == true) {
 
             global $db;
@@ -558,7 +567,6 @@ class Mfacture {
 
             //Check if Insert Query been executed (False / True)
             if (!$result = $db->InsertRow('compte_commerciale', $values)) {
-                //var_dump($db);
                 //False => Set $this->log and $this->error = false
                 $this->log .= $db->Error();
                 $this->error = false;
@@ -600,7 +608,7 @@ class Mfacture {
         $this->get_commerciale_ex_devis();
 
         global $db;
-        //var_dump($db);
+
         if ($this->error == true) {
 
             global $db;
@@ -619,7 +627,6 @@ class Mfacture {
 
             //Check if Insert Query been executed (False / True)
             if (!$result = $db->InsertRow('compte_commerciale', $values)) {
-                //var_dump($db);
                 //False => Set $this->log and $this->error = false
                 $this->log .= $db->Error();
                 $this->error = false;
@@ -1068,6 +1075,7 @@ class Mfacture {
         $values["mode_payement"] = MySQL::SQLValue($this->_data['mode_payement']);
         $values["ref_payement"] = MySQL::SQLValue($this->_data['ref_payement']);
         $values["montant"] = MySQL::SQLValue($this->_data['montant']);
+        $values["montant_devise_ext"] = MySQL::SQLValue($this->_data['montant_devise_ext']);
         $values["depositaire"] = MySQL::SQLValue($this->_data['depositaire']);
         $values["date_encaissement"] = MySQL::SQLValue(date("Y-m-d"));
         $values["updusr"] = MySQL::SQLValue(session::get('userid'));
@@ -1286,7 +1294,7 @@ class Mfacture {
 
         $table = $this->table;
 
-        $sql = "SELECT id,reference,base_fact,
+        $sql = "SELECT $table.id,reference,base_fact,
                 REPLACE(FORMAT(total_ht,0),',',' ') as total_ht ,  
                 REPLACE(FORMAT(total_tva,0),',',' ') as total_tva ,         
                 REPLACE(FORMAT(total_ttc,0),',',' ') as total_ttc,           
@@ -1297,9 +1305,10 @@ class Mfacture {
                 DATE_FORMAT(du,'%d-%m-%Y') as du,
                 DATE_FORMAT(au,'%d-%m-%Y') as au,
                 CONCAT(DATE_FORMAT(du,'%d-%m-%Y'),' Au ',DATE_FORMAT(au,'%d-%m-%Y')) as periode,
-                DATE_FORMAT(date_facture,'%d-%m-%Y') as date_facture
+                DATE_FORMAT(date_facture,'%d-%m-%Y') as date_facture,
+                dev.abreviation as devise
                 FROM 
-    		$table WHERE  $table.id = " . $this->id_facture;
+    		    $table, ref_devise dev WHERE  dev.id = $table.id_devise AND $table.id = " . $this->id_facture;
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -1599,9 +1608,16 @@ class Mfacture {
         $this->id_facture = $this->encaissement_info['idfacture'];
         $this->get_facture();
         
-       
+        $this->getDevise();
+        $this->getDeviseSociete();
+
+        if(($this->devise_facture != $this->devise_societe) AND $this->devise_facture != NULL ){   
+          $reste_encai=$this->encaissement_info['montant_devise_ext'];  
+        }else{
+          $reste_encai=$this->encaissement_info['montant']; 
+        }
         
-        if ($this->encaissement_info['montant'] > $this->facture_info['reste']) {
+        if ( $reste_encai > $this->facture_info['reste']) {
             $this->error = false;
             $this->log = 'Le montant doit être inférieur ou égale au reste <b>' . $this->facture_info['reste'] . '</b>';
         } else {
@@ -1623,11 +1639,14 @@ class Mfacture {
                     
                     $this->log = '</br>Enregistrement réussie: <b>' . $this->reference . ' ID: ' . $this->last_id;
 
-                    $this->maj_reste($this->encaissement_info['idfacture'], $this->encaissement_info['montant']);
+                    if(($this->devise_facture != $this->devise_societe) AND $this->devise_facture != NULL ){       
+                    $this->maj_reste($this->encaissement_info['idfacture'], $this->encaissement_info['montant_devise_ext']);
+                    }else{
+                    $this->maj_reste($this->encaissement_info['idfacture'], $this->encaissement_info['montant']);                        
+                    }
+
                     $this->id_facture = $this->encaissement_info['idfacture'];
                     $this->get_facture();
-
-
 
                     if ($this->facture_info['reste'] > 0) {
                         
@@ -1829,13 +1848,14 @@ UNION
             $this->error = false;
             $this->log .= '<br>Problème de mise à jour Etat de compte';
         }
-        //var_dump($db);
+
     }
 
     function credit_compte_client() {
         global $db;
+        $mnt         = str_replace(' ', '', $this->encaissement_info['montant'] );
+        $mnt_dev_ext = str_replace(' ', '', $this->encaissement_info['montant_devise_ext'] );
 
-        $mnt = str_replace(' ', '', $this->encaissement_info['montant'] );
         $this->get_id_devis();
         $id_devis = $this->id_devis['id'];
 
@@ -1854,21 +1874,31 @@ UNION
         $date=$this->encaissement_info['date_encaissement'];    
         $ref_payement=$this->encaissement_info['ref_payement'];
         
-        //var_dump($this->facture_info);
+        $this->id_facture=$this->encaissement_info['idfacture'];
+        $this->get_facture();
+        $this->getDevise();
+        $this->getDeviseSociete();
+        //$this->existDifferentsDevise($this->facture_info['client'],$this->facture_info['id_devise']);
+
+        if($this->devise_facture != $this->devise_societe /*AND ($this->existDiffDevise=0)*/){
+
+        $req_sql = "INSERT into compte_client(id_client,type_mouvement,id_encaissement,montant,description,date_mouvement,solde,creusr) 
+               values($clt,'C',$enc,$mnt_dev_ext,CONCAT('Paiement: ', '$reference',' du ',DATE_FORMAT('$date','%d-%m-%Y'),"
+                . "IF('$ref_payement'<> null,Concat(': Référence N°: ','$ref_payement'),' '))"
+                . ",'$date', $sld-$mnt_dev_ext ,1)";
+        }else{
         
         $req_sql = "INSERT into compte_client(id_client,type_mouvement,id_encaissement,montant,description,date_mouvement,solde,creusr) 
                values($clt,'C',$enc,$mnt,CONCAT('Paiement: ', '$reference',' du ',DATE_FORMAT('$date','%d-%m-%Y'),"
                 . "IF('$ref_payement'<> null,Concat(': Référence N°: ','$ref_payement'),' '))"
                 . ",'$date', $sld-$mnt ,1)";
-        
-        
+        }
+                
         if (!$db->Query($req_sql)) {
             $this->log .= $db->Error();
             $this->error = false;
             $this->log .= '<br>Problème de mise à jour Etat de compte';
         }
-        ////var_dump($db);
-        // Verifier Message Aucun Enregistrement apres validation
     }
   
     private function send_valid_facture_mail() {
@@ -1964,6 +1994,91 @@ UNION
             return false;
         } else {
             return true;
+        }
+    }
+
+    public function existDifferentsDevise($client,$devise) {
+        global $db;
+
+        $result = "SELECT IF((SELECT COUNT(*) FROM factures f WHERE f.`client`='$client' AND f.id_devise=$devise) =
+                (SELECT COUNT(*) FROM factures ff WHERE ff.`client`='$client'),1,0)AS existDifferentsDevise FROM DUAL";
+       
+        if (!$db->Query($result)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->existDiffDevise = $db->QuerySingleValue0($result);
+                $this->error = true;
+            }
+        }
+    }
+    
+    
+    public function getDevise() {
+        global $db;
+        $result = "SELECT  ref_devise.devise AS devise 
+    FROM factures INNER JOIN ref_devise
+        ON factures.id_devise = ref_devise.id WHERE factures.id = ". $this->id_facture;
+       
+        if (!$db->Query($result)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->devise_facture = $db->QuerySingleValue0($result);
+                $this->error = true;
+            }
+        }
+    }
+    
+    
+    
+    public function getDeviseSociete() {
+        global $db;
+
+        $sql = "SELECT  ref_devise.devise AS devise 
+    FROM ste_info INNER JOIN ref_devise
+        ON ste_info.`ste_id_devise` = ref_devise.id";
+
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->devise_societe = $db->QuerySingleValue0($sql);
+                $this->error = true;
+            }
+        }
+    }
+    
+    
+    public function getTauxChange($id_devise) {
+        global $db;
+
+        $sql = "SELECT  conversion AS taux_change 
+    FROM sys_taux_change where id_devise = ".$id_devise;
+       
+        if (!$db->Query($sql)) {
+            $this->error = false;
+            $this->log .= $db->Error();
+        } else {
+            if (!$db->RowCount()) {
+                $this->error = false;
+                $this->log .= 'Aucun enregistrement trouvé ';
+            } else {
+                $this->taux_change = $db->QuerySingleValue0($sql);
+                $this->error = true;
+            }
         }
     }
 
