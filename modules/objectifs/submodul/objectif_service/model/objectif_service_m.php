@@ -644,7 +644,7 @@ class Mobjectif_service {
     {
         global $db;
         
-        $add_set = array('return' => '<a href="#" class="this_url" rel="viewdevis" data="%crypt%"> <i class="ace-icon fa fa-eye blue bigger-100"></i></a>', 'data' => 'id');
+       /* $add_set = array('return' => '<a href="#" class="this_url" rel="viewdevis" data="%crypt%"> <i class="ace-icon fa fa-eye blue bigger-100"></i></a>', 'data' => 'id');
         $id_objectif = $this->id_objectif_service;
         $date_s     = date('Y-m-d', strtotime($this->g('date_s')));
         $date_e     = date('Y-m-d', strtotime($this->g('date_e')));
@@ -662,7 +662,20 @@ class Mobjectif_service {
         INNER JOIN `services` ON (`commerciaux`.`id_service` = `services`.`id`) 
         WHERE encaissements.etat IN(1, 0) 
         AND encaissements.`date_encaissement` BETWEEN '$date_s' AND '$date_e' 
-        AND devis.etat <> 200 AND services.id = $id_service GROUP BY devis.id";
+        AND devis.etat <> 200 AND services.id = $id_service GROUP BY devis.id";*/
+        $add_set       = array('return' => '<a href="#" class="this_url" rel="viewdevis" data="%crypt%"> <i class="ace-icon fa fa-eye blue bigger-100"></i></a>', 'data' => 'id');
+        $id_objectif   = $this->id_objectif_mensuel;
+        $date_s        = date('Y-m-d', strtotime($this->g('date_s')));
+        $date_e        = date('Y-m-d', strtotime($this->g('date_e')));
+        //$id_commercial = $this->g('id_commercial');
+        
+        $req_sql = "SELECT devis.`id` id,devis.`reference`, clients.denomination,        
+        REPLACE(FORMAT(devis.`totalttc`,0),',',' ') total_ttc,
+        DATE_FORMAT(devis.`date_valid_client`,'%d-%m-%Y') AS date_valid_client, '#' 
+        FROM `devis`  
+        INNER JOIN `clients` 
+        ON (`devis`.`id_client` = `clients`.`id`)
+        WHERE devis.`date_valid_client` BETWEEN '$date_s' AND '$date_e' ";
         //exit($req_sql);
         
         if(!$db->Query($req_sql))
@@ -681,8 +694,7 @@ class Mobjectif_service {
         $headers = array(
             'ID'           => '5[#]center',
             'Référence'    => '10[#]center',
-            'Client'       => '10[#]',
-            'Commercial'   => '15[#]center',
+            'Client'       => '25[#]',
             'Montant'      => '10[#]center',
             'Date'         => '5[#]',     
             '#'            => '3[#]center[#]crypt',          
