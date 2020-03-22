@@ -1,0 +1,2 @@
+UPDATE sys_setting SET sys_setting.`value` = '{"creat_devis":"0", "valid_devis":"1",  "send_devis":"2", "modif_client": "3", "valid_client":"4", "refus_client":"5", "devis_expir":"6", "devis_archive":"7", "valid_devis_dg":"8", "valid_devis_dcm":"9", "devis_livr":"10"}'
+WHERE sys_setting.`key` = 'etat_devis';
