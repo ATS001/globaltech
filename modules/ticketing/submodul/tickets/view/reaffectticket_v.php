@@ -39,7 +39,7 @@ $form->input_hidden('idh', Mreq::tp('idh'));
 
 //Technicien ==> 
 $array_technicien[] = array("required", "true", "Choisir un technicien");
-$form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', 'CONCAT(users_sys.lnom," ",users_sys.fnom)', $indx = '------', $selected = $ticket->g('id_technicien'), $multi = NULL, $where = ' service=6 AND etat=1', $array_technicien, NULL);
+$form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', 'CONCAT(users_sys.lnom," ",users_sys.fnom)', $indx = '------', $selected = $ticket->g('id_technicien'), $multi = NULL, $where = ' service=6 AND etat=1 and id_technicien <> '.$ticket->g('id_technicien'), $array_technicien, NULL);
 
 //var_dump($ticket);
 ?>

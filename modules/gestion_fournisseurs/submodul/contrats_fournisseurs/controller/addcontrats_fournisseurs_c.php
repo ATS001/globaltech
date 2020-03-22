@@ -5,7 +5,7 @@
 
 
 defined('_MEXEC') or die;
-if(MInit::form_verif('addcontrat_frn',false))
+if(MInit::form_verif('addcontrats_fournisseurs',false))
 {
 	
   $posted_data = array(
@@ -74,7 +74,7 @@ if(MInit::form_verif('addcontrat_frn',false))
 
     if(date('Y-m-d', strtotime($posted_data['date_fin'])) <= date('Y-m-d', strtotime($posted_data['date_effet'])) ){
 
-         $control_date = "<ul>La date de fin doit être supérieur de la date d'effet !!!</ul>";
+         $control_date = "<ul>La date de fin doit être supérieur à la date d'effet !!!</ul>";
          $checker = 2;
     }
 
@@ -85,7 +85,7 @@ if(MInit::form_verif('addcontrat_frn',false))
 
     if(date('Y-m-d', strtotime($posted_data['date_notif'])) >= date('Y-m-d', strtotime($posted_data['date_fin']))  or date('Y-m-d', strtotime($posted_data['date_notif'])) <= date('Y-m-d', strtotime($posted_data['date_effet'])) ){
 
-        $control_notif = "<ul>La date de notification doit être supérieur de la date d'effet et  inférieur de la date de fin !!!</ul>" ;
+        $control_notif = "<ul>La date de notification doit être supérieur à la date d'effet et  inférieur de la date de fin !!!</ul>" ;
         $checker = 3;
     }
 
@@ -112,6 +112,6 @@ if(MInit::form_verif('addcontrat_frn',false))
 
 
 } else {
-  view::load_view('addcontrat_frn');
+  view::load_view('addcontrats_fournisseurs');
 }
 ?>

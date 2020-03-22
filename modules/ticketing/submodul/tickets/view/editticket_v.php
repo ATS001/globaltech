@@ -53,14 +53,14 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_tickets->get_tickets()) {
                 $form->input_hidden('idc', Mreq::tp('idc'));
                 $form->input_hidden('idh', Mreq::tp('idh'));
 
-//var_dump($info_tickets);
-//For more Example see form class
-                $client_array[] = array('required', 'true', 'Choisir un Client');
-                $form->select_table('Client ', 'id_client', 8, 'clients', 'id', 'id', 'denomination', $indx = '------', $info_tickets->g('id_client'), $multi = NULL, $where = 'etat=1', $client_array, NULL);
 
-//Site ==> 
-               //  $st_array[] = array('required', 'true', 'Choisir un site');
-               // $form->select_table('Site ', 'id_site', 8, 'sites', 'id', 'id', 'reference', $indx = '------', $info_tickets->g('projet'), $multi = NULL, $where = 'etat=1', $st_array, NULL);
+$hard_code_site_client = '<label style="margin-left:15px;margin-right : 20px;">Site: </label><select id="projet" name="projet" class="chosen-select col-xs-6 col-sm-4" chosen-class="' . ((6 * 100) / 12) . '" ><option >' . $info_tickets->g('site') . '</option></select>';
+
+
+                $client_array[] = array('required', 'true', 'Choisir un Client');
+                $form->select_table('Client ', 'id_client', 5, 'clients', 'id', 'id', 'denomination', $indx = '------', $info_tickets->g('id_client'), $multi = NULL, $where = 'etat=1', $client_array, $hard_code_site_client);
+
+
 
               
 //Serial number ==> 
@@ -171,7 +171,41 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_tickets->get_tickets()) {
 
 
         });
+/* ******************************************************************************* */
+ $('#id_client').change(function (e) {
+            var $id_client = $(this).val();
 
+            if ($id_client == null) {
+                return true;
+            }
+            //$('#id_client').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
+            $.ajax({
+
+                cache: false,
+                url: '?_tsk=addtickets&ajax=1',
+                type: 'POST',
+                data: '&act=1&id=' + $id_client + '&<?php echo MInit::crypt_tp('exec', 'load_client_site') ?>',
+                dataType: "JSON",
+                success: function (data) {
+                    if (data['error'] == false) {
+                        ajax_loadmessage(data['mess'], 'nok', 5000);
+                        return false;
+                    } else {
+                        $.each(data, function (key, value) {
+                            $('#projet')
+                                    .append($("<option></option>")
+                                            .attr("value", key)
+                                            .text(value));
+                        });
+                        $('#projet').trigger("chosen:updated");
+
+                    }
+
+
+                }//end success
+            });
+
+        });
 
     });
 </script>	

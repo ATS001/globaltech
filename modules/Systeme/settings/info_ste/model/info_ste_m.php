@@ -72,19 +72,19 @@ class MSte_info
 	{
 
 		global $db;
-		$values["ste_name"]    = MySQL::SQLValue($this->_data['ste_name']);
-		$values["ste_bp"]      = MySQL::SQLValue($this->_data['ste_bp']);
-		$values["ste_devise"]  = MySQL::SQLValue($this->_data['ste_devise']);
-		$values["ste_adresse"] = MySQL::SQLValue($this->_data['ste_adresse']);
-		$values["ste_tel"]     = MySQL::SQLValue($this->_data['ste_tel']);
-		$values["ste_fax"]     = MySQL::SQLValue($this->_data['ste_fax']);
-		$values["ste_email"]   = MySQL::SQLValue($this->_data['ste_email']);
-		$values["ste_if"]      = MySQL::SQLValue($this->_data['ste_if']);
-		$values["ste_rc"]      = MySQL::SQLValue($this->_data['ste_rc']);
-		$values["ste_website"] = MySQL::SQLValue($this->_data['ste_website']);
-		$values["updusr"]      = MySQL::SQLValue(session::get('userid'));
-		$values["upddat"]      = MySQL::SQLValue(date("Y-m-d H:i:s"));
-		$wheres["id"]          = $this->id_ste;
+		$values["ste_name"]       = MySQL::SQLValue($this->_data['ste_name']);
+		$values["ste_bp"]         = MySQL::SQLValue($this->_data['ste_bp']);
+		$values["ste_id_devise"]  = MySQL::SQLValue($this->_data['ste_id_devise']);
+		$values["ste_adresse"]    = MySQL::SQLValue($this->_data['ste_adresse']);
+		$values["ste_tel"]        = MySQL::SQLValue($this->_data['ste_tel']);
+		$values["ste_fax"]        = MySQL::SQLValue($this->_data['ste_fax']);
+		$values["ste_email"]      = MySQL::SQLValue($this->_data['ste_email']);
+		$values["ste_if"]         = MySQL::SQLValue($this->_data['ste_if']);
+		$values["ste_rc"]         = MySQL::SQLValue($this->_data['ste_rc']);
+		$values["ste_website"]    = MySQL::SQLValue($this->_data['ste_website']);
+		$values["updusr"]         = MySQL::SQLValue(session::get('userid'));
+		$values["upddat"]         = MySQL::SQLValue(date("Y-m-d H:i:s"));
+		$wheres["id"]             = $this->id_ste;
 		
 
         // If we have an error

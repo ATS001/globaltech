@@ -15,12 +15,13 @@ if(MInit::form_verif('validdevisclient', false))
             
             
             $posted_data = array(
-                'id'      => Mreq::tp('id') ,
-                'reponse' => Mreq::tp('reponse') ,
-                'modcom'  => Mreq::tp('modcom') ,
-                'ref_bc'  => Mreq::tp('ref_bc') ,
-                'scan_id' => Mreq::tp('scan-id') ,
-                'line_d_d'=> MReq::tp('line_d_d'),
+                'id'                => Mreq::tp('id') ,
+                'date_valid_client' => Mreq::tp('date_valid_client') ,
+                'reponse'           => Mreq::tp('reponse') ,
+                'modcom'            => Mreq::tp('modcom') ,
+                'ref_bc'            => Mreq::tp('ref_bc') ,
+                'scan_id'           => Mreq::tp('scan-id') ,
+                'line_d_d'          => MReq::tp('line_d_d'),
 
 
             );
@@ -33,14 +34,19 @@ if(MInit::form_verif('validdevisclient', false))
             $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
 
         //Check if array have empty element return list
+            if($posted_data['date_valid_client'] == NULL ){
+
+                $empty_list .= "<li>Date d'opération</li>";
+                $checker = 1;
+            }
             if($posted_data['reponse'] == NULL OR !in_array($posted_data['reponse'] , array('valid', 'modif', 'refus'))){
 
-                $empty_list .= "<li>Nom</li>";
+                $empty_list .= "<li>Réponse</li>";
                 $checker = 1;
             }
             if($posted_data['modcom'] == NULL OR !in_array($posted_data['modcom'] , array('bc', 'ar', 'email', 'tel'))){
 
-                $empty_list .= "<li>Nom</li>";
+                $empty_list .= "<li>Mode réponse</li>";
                 $checker = 1;
             }
             if($posted_data['modcom'] == 'bc' && $posted_data['reponse']== 'valid' && $posted_data['ref_bc'] == NULL){

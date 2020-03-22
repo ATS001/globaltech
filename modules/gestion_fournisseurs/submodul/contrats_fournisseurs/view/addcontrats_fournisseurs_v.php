@@ -35,7 +35,7 @@
 				
 <?php
 
-$form = new Mform('addcontrat_frn', 'addcontrat_frn','',  'contrats_fournisseurs', null);//Si on veut un wizzad on saisie 1, sinon null pour afficher un formulaire normal
+$form = new Mform('addcontrats_fournisseurs', 'addcontrats_fournisseurs','',  'contrats_fournisseurs', null);//Si on veut un wizzad on saisie 1, sinon null pour afficher un formulaire normal
 
 //Step Wizard
 $wizard_array[] = array(1,'Etape 1','active');

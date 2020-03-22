@@ -82,6 +82,10 @@ $list_data_table->task = 'bl';
 $list_data_table->file_name = 'bl';
 //Set Title of report
 $list_data_table->title_report = 'Liste bl';
+
+//Set Fliter setting
+$list_data_table->data_filter = array('id' => array('int','5'), 'client' => array('text','9'), 'date_bl' => array('date','5'));
+
 //Print JSON DATA
 if(!$data = $list_data_table->Query_maker())
 {

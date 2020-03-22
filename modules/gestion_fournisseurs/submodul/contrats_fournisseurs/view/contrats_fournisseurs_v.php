@@ -58,7 +58,6 @@ $html_data_table = new Mdatatable();
 $html_data_table->columns_html = $array_column;
 $html_data_table->title_module = "Contrats Fournisseurs";
 $html_data_table->task = 'contrats_fournisseurs';
-$html_data_table->btn_add_check=TRUE;
 
 if(!$data = $html_data_table->table_html())
 {

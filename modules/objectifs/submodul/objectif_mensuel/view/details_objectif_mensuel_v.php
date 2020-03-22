@@ -17,8 +17,6 @@ if(!MInit::crypt_tp('id', null, 'D') or !$info_objectif_mensuel->Get_detail_obje
 
 $tab_details_objectif_mensuel = view::tab_render('objectif_mensuel', 'Objectif', $add_set=NULL, 'paper-plane-o' , $active = true, 'home');
 $tab_liste_devis = view::tab_render('devis', 'Liste Devis', $add_set=NULL, 'bookmark' , false, 'bl');
-$tab_liste_factures = view::tab_render('factures', 'Factures', $add_set=NULL, 'file' , false, 'factures');
-$tab_liste_encaissement = view::tab_render('encaissements', 'Encaissements', $add_set=NULL, 'money' , false, 'encaissement');
 
 
 ?>
@@ -59,8 +57,6 @@ $tab_liste_encaissement = view::tab_render('encaissements', 'Encaissements', $ad
 					<?php 
 					echo $tab_details_objectif_mensuel['tab_index']; 
 					echo $tab_liste_devis['tab_index']; 
-					echo $tab_liste_factures['tab_index']; 
-					echo $tab_liste_encaissement['tab_index']; 
 					
 					?>
 					
@@ -86,21 +82,7 @@ $tab_liste_encaissement = view::tab_render('encaissements', 'Encaissements', $ad
 					 	echo $tab_liste_devis['tce'];
 					 }
 
-					 if($tab_liste_factures['tb_rl'])
-					 {
-					 	echo $tab_liste_factures['tcs'];
-					 	
-					 	echo $info_objectif_mensuel->get_list_factures_for_objectif();
-					 	echo $tab_liste_factures['tce'];
-					 }
-
-					 if($tab_liste_encaissement['tb_rl'])
-					 {
-					 	echo $tab_liste_encaissement['tcs'];
-					 	//Content (includ file - simple string - function return string)
-					 	echo $info_objectif_mensuel->get_list_encaissemen_for_objectif();
-					 	echo $tab_liste_encaissement['tce'];
-					 }
+					 
 
 					 
 

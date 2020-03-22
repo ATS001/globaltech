@@ -19,9 +19,11 @@ if(!MInit::crypt_tp('id', null, 'D') or !$objectif_mensuel->get_objectif_mensuel
 //$etat = $objectif_mensuel->objectif_mensuel_info['etat'];
 //$objectif_mensuel->suspendre_objectif_mensuel($etat)
 //Execute Validate - delete
+//if($objectif_mensuel->suspendre_objectif_mensuel())
 
 
-if($objectif_mensuel->suspendre_objectif_mensuel())
+if($objectif_mensuel->auto_save_comission_objectif_mensuel())
+
 {
 	exit("1#".$objectif_mensuel->log);
 

@@ -656,6 +656,7 @@ public function Gettable_d_bl()
         , ref_devise.abreviation as devise
         , services.service as comercial
         , CONCAT(commerciaux.nom,' ',commerciaux.prenom) as commercial
+        , devis.id_banque as banque
         FROM
         bl
         LEFT JOIN devis 
@@ -673,7 +674,7 @@ public function Gettable_d_bl()
         INNER JOIN services
         ON (users_sys.service = services.id)
         INNER JOIN commerciaux
-        ON (devis.id_commercial=commerciaux.id)
+        ON (commerciaux.id IN (REPLACE((REPLACE(devis.id_commercial,'[\"','')),'\"]','')) )
         WHERE bl.id = ".$this->id_bl;
         if(!$db->Query($req_sql))
         {

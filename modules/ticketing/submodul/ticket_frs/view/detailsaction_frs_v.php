@@ -67,20 +67,25 @@ $id_ticket = $info_tickets->ticket_action_info["id_ticket_frs"];
                                                             <i class="ace-icon fa fa-caret-right green"></i>Date action :
                                                             <b style="color:green"><?php $info_tickets->sa("date_act") ?></b>
                                                         </li>
+                                                 <?php	if($info_tickets->sa("pj") != null) {  ?>
                                                         <li>
                                                             <i class="ace-icon fa fa-caret-right green"></i>Pièce jointe :
                                                             <a href="#" class="iframe_pdf" rel=<?php $info_tickets->sa("pj") ?> >
                                                                 <i class="ace-icon fa fa-file-pdf-o"></i>
                                                             </a>
                                                         </li> 
+													<?php 	} ?>
+														
+														<?php	if($info_tickets->sa("photo") != null) {  ?>
                                                         <li>
                                                             <i class="ace-icon fa fa-caret-right green"></i>Photo :
                                                             <a href="#" class="iframe_pdf" rel=<?php $info_tickets->sa("photo") ?> >
                                                                 <i class="ace-icon fa fa-search show_file"></i>
                                                             </a>
                                                         </li> 
+														<?php 	} ?>
 
-
+<?php	if($info_tickets->sa("message") != null) {  ?>
                                                         <div class="col-sm-8">
                                                             <div>
                                                                 <div class="space-6"></div>
@@ -88,7 +93,8 @@ $id_ticket = $info_tickets->ticket_action_info["id_ticket_frs"];
                                                                     <?php $info_tickets->sa("message") ?>
                                                                 </div>
                                                             </div>
-                                                        </div><!-- /.col -->                                                  
+                                                        </div><!-- /.col -->          
+<?php 	} ?>														                                               
 
                                                     </ul>
 

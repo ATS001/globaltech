@@ -235,7 +235,7 @@ if ($ticket->get_action_ticket()) {
                                             }//End IF 
 
                                             if ($ticket->g("etat") == 1) {
-                                                TableTools::btn_add('addaction', 'Ajouter une action', MInit::crypt_tp('id', Mreq::tp('id')));
+                                                TableTools::btn_add('addaction_frs', 'Ajouter une action', MInit::crypt_tp('id', Mreq::tp('id')));
                                             }
                                             ?>
 

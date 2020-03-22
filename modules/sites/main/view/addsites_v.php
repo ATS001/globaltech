@@ -54,9 +54,9 @@ $date_mes_array[]= array('required', 'true', 'Insérez la date de mise en servic
 $form->input_date('Date mise en service', 'date_mes', 2, date('d-m-Y'), $date_mes_array);
 
 
-//basestation
-$form->select_table('Station de base', 'basestation', 6, 'sites', 'id', 'reference', 'reference', $indx = '------', $selected =1, $multi = NULL, $where = 'etat= 1 ', NULL);
-
+//Station de base
+ $array_site = array('BTS CDG' => 'BTS CDG', 'BTS NDJARI' => 'BTS NDJARI');
+ $form->select('Station de base', 'basestation', 2, $array_site, $indx = NULL, $selected = 'BTS CDG', $multi = NULL);
 
 //secteur
 $form->input('Secteur', 'secteur', 'text', 6, null, null);
@@ -112,9 +112,7 @@ $(document).ready(function() {
             $('#modem').attr('readonly', false);
             $('#sn_modem').attr('readonly', false);          
             
-              document.getElementById('basestation').style.display = 'none';
-              //document.getElementById('label_basestation').style.display = 'none';  
-                       
+                                   
               document.getElementById('bande').style.display = 'none';
               document.getElementById('label_bande').style.display = 'none';
               
@@ -141,9 +139,7 @@ $(document).ready(function() {
             $('#modem').attr('readonly', false);
             $('#sn_modem').attr('readonly', false);          
             
-              document.getElementById('basestation').style.display = 'none';
-                       //document.getElementById('label_basestation').style.display = 'none'; 
-                       
+                                    
               document.getElementById('bande').style.display = 'none';
               document.getElementById('label_bande').style.display = 'none';
               
@@ -157,8 +153,7 @@ $(document).ready(function() {
               document.getElementById('label_lnb').style.display = 'none';
             
         }else{
-               document.getElementById('basestation').style.display = 'block';
-              //document.getElementById('label_basestation').style.display = 'block';
+               
               
               document.getElementById('bande').style.display = 'block';
               document.getElementById('label_bande').style.display = 'block';
