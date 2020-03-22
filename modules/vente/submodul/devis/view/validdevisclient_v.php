@@ -53,28 +53,9 @@ $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
 
 
-//Date Example
-//$array_date[]= array('required', 'true', 'Insérer la date de ...');
-//$form->input_date('Date', 'date_', 4, date('d-m-Y'), $array_date);
-//Select Table Example
-
-
-//$select_array[]  = array('required', 'true', 'Choisir un ....');
-//$form->select_table('Select ', 'select', 8, 'table', 'id', 'text' , 'text', $indx = '------' ,$selected=NULL,$multi=NULL, $where=NULL, $select_array, null);
-
-
-
-//Select Simple Example
-//$field_opt = array('O' => 'OUI' , 'N' => 'NON' );
-//$form->select('Label Field', 'field', 2, $field_opt, $indx = NULL ,$selected = NULL, $multi = NULL);
-
-//Separate Zone title
-//$form->bloc_title('Zone separated');
-
-
-//Input Example
-//$form->input('Label field', 'field', 'text' ,'class', '0', null, null, $readonly = null);
-//For more Example see form class
+//Date devis
+$array_date[]= array('required', 'true', 'Insérer la date de devis');
+$form->input_date('Date Validation', 'date_valid_client', 2, date('d-m-Y'), $array_date);
 
 //Add fields input here
 //Réponse client

@@ -1206,8 +1206,8 @@ class Mdevis {
         /*============================================================
         =            test if all commercial have objectif            =
         ============================================================*/   
-        $year = date('Y');
-        $month = date('m');    
+        $year = date('Y', strtotime($this->_data['date_valid_client']));
+        $month = date('m', strtotime($this->_data['date_valid_client']));    
         foreach ($commercials_array as $id_commercial) {
             $sql = "SELECT id FROM objectif_mensuels WHERE id_commercial = $id_commercial AND annee = $year  AND mois = $month";
             $id_objectif = $db->QuerySingleValue0($sql);
@@ -1243,6 +1243,12 @@ class Mdevis {
      */
     public function validdevisclient_devis() {
         $this->get_devis();
+        
+        if(!MInit::compare_date($this->devis_info['date_devis'], $this->_data['date_valid_client']))
+        {
+            $this->log .= '</br>La date de validation doit être égale ou plus que la date d\'enregistrement';
+            return false;
+        }
 
         if(!$this->insert_realise_into_objectif_mensuel(0)){
             return false;
@@ -1260,7 +1266,7 @@ class Mdevis {
         switch ($reponse) {
             case 'valid':
                 $etat = 'valid_client';
-                $ref_bc = " , ref_bc = '" . $this->_data['ref_bc'] . "'";
+                $ref_bc = " , ref_bc = '" . MySQL::SQLValue($this->_data['ref_bc']) . "'";
                 $message = "Validation client";
                 break;
             case 'modif':
@@ -1294,11 +1300,11 @@ class Mdevis {
             $this->error = false;
             return false;
         }
-
+        $date_valid_client = MySQL::SQLValue($this->_data['date_valid_client'], 'date');
         if($reponse == 'valid' && !$this->insert_realise_into_objectif_mensuel(1)){
             return false;
         }
-        $req_sql = " UPDATE $table SET  $new_etat  $ref_bc WHERE id = $id_devis ";
+        $req_sql = " UPDATE $table SET  $new_etat, date_valid_client = $date_valid_client  $ref_bc WHERE id = $id_devis ";
 
         if (!$db->Query($req_sql)) {
             $this->error = false;
