@@ -69,8 +69,9 @@ $form->select_table('Client', 'id_client', 6, 'clients', 'id', 'denomination', '
 $date_mes_array[]= array('required', 'true', 'Insérez la date de mise en service');
 $form->input_date('Date mise en service', 'date_mes', 2, $info_sites->g("date_mes"), $date_mes_array);
 
-//basestation
-$form->select_table('Station de base', 'basestation', 6, 'sites', 'id', 'reference', 'reference', $indx = '------', $info_sites->g("basestation"), $multi = NULL, $where = 'etat= 1  AND type_site="RADIO"', NULL);
+//Station de base
+ $array_site = array('BTS CDG' => 'BTS CDG', 'BTS NDJARI' => 'BTS NDJARI');
+ $form->select('Station de base', 'basestation', 2, $array_site, $indx = NULL, $info_sites->g("basestation"), $multi = NULL);
 
 //secteur
 $form->input('Secteur', 'secteur', 'text', 6, $info_sites->g("secteur"),null, null);

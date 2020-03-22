@@ -150,6 +150,7 @@ if ($ticket->get_action_ticket()) {
                                 </div><!-- /.col -->
 
 
+                               <?php if($ticket->s("message") { ?>
                                 <div class="col-sm-8">
                                     <div>
                                         <div class="space-6"></div>
@@ -158,6 +159,7 @@ if ($ticket->get_action_ticket()) {
                                         </div>
                                     </div>
                                 </div><!-- /.col -->
+								<?php } ?>
                             </div>
 
                         </div><!-- /#home -->

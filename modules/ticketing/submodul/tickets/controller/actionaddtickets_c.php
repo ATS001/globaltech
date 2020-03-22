@@ -54,3 +54,19 @@ if ($action == 'check_exist_sn') {
         echo json_encode(array('error' => false, 'mess' => 'Pas de SN trouvée ','sn'=>$val));
     }
 }
+
+//Load_site by client
+if ($action == 'load_client_site') {
+    
+    $val= MReq::tp('id');
+    $where = "id_client = '$val'";
+    $table = 'sites';
+    $value = 'id';
+    $text = 'reference';
+    
+    if ($output = Mform::load_select($table, $value, $text, $where)) {
+       echo json_encode($output);       
+                   } else {
+        echo json_encode(array('error' => false, 'mess' => 'Pas de SN trouvée ','sn'=>$val));
+    }
+	}

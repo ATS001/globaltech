@@ -70,21 +70,19 @@ if($id_clnt != null && $tsk_aft != null){
                 $form = new Mform('addtickets', 'addtickets', '',$after_exec, '0', null);
 
 //Client ==> 
+
+$hard_code_site_client = '<label style="margin-left:15px;margin-right : 20px;">Site: </label><select id="projet" name="projet" class="chosen-select col-xs-6 col-sm-4" chosen-class="' . ((6 * 100) / 12) . '" ><option >----</option></select>';
+
+
                 if($id_clnt == NULL){
                 $client_array[] = array('required', 'true', 'Choisir un Client');
-                $form->select_table('Client', 'id_client', 6, 'clients', 'id', 'denomination', 'denomination', $indx = '------', $selected = NULL, $multi = NULL, $where = 'etat=1', $client_array, NULL);
+                $form->select_table('Client', 'id_client', 5, 'clients', 'id', 'denomination', 'denomination', $indx = '------', $selected = NULL, $multi = NULL, $where = 'etat=1', $client_array, $hard_code_site_client);
 }else
 {
                 $form->input_hidden('id_client',$id_clnt);
                 $form->input_hidden('idc', Mreq::tp('idc'));
                 $form->input_hidden('idh', Mreq::tp('idh'));
 }
-//Site ==> 
-              
-                $site_array[] = array('required', 'true', 'Choisir un site');
-                $form->select_table('Site', 'projet', 6, 'sites', 'id', 'reference', 'reference', $indx = '------',NULL, $multi = NULL, $where = 'etat=1', $site_array, NULL);
-
- 
 
 //Serial number==> 
                  $form->input("Serial number", "serial_number", "text", "9", null, NULL, null, $readonly = null);
@@ -235,8 +233,46 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
                 }//end success
             });
 
-        });
+        });        
         
+        //************************************
+		
+		 //************************************
+		
+		  $('#id_client').change(function (e) {
+            var $id_client = $(this).val();
+
+            if ($id_client == null) {
+                return true;
+            }
+            //$('#id_client').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
+            $.ajax({
+
+                cache: false,
+                url: '?_tsk=addtickets&ajax=1',
+                type: 'POST',
+                data: '&act=1&id=' + $id_client + '&<?php echo MInit::crypt_tp('exec', 'load_client_site') ?>',
+                dataType: "JSON",
+                success: function (data) {
+                    if (data['error'] == false) {
+                        ajax_loadmessage(data['mess'], 'nok', 5000);
+                        return false;
+                    } else {
+                        $.each(data, function (key, value) {
+                            $('#projet')
+                                    .append($("<option></option>")
+                                            .attr("value", key)
+                                            .text(value));
+                        });
+                        $('#projet').trigger("chosen:updated");
+
+                    }
+
+
+                }//end success
+            });
+
+        });
         
         //************************************
 
