@@ -454,7 +454,7 @@ class Mdevis {
 
         $this->check_non_exist('clients', 'id', $this->_data['id_client'], 'Client');
 
-        $this->check_commercial_exist('commerciaux', 'id', $this->_data['id_commercial'], 'Commercial');
+        $this->check_commercial_exist($this->_data['id_commercial']);
 
         //Get sum of details
         $this->Get_sum_detail($this->_data['tkn_frm']);
@@ -508,7 +508,7 @@ class Mdevis {
         $values["id_banque"] = $client->client_info['id_banque'];
         $values["tva"] = MySQL::SQLValue($this->_data['tva']);
 
-        $values["id_commercial"] = MySQL::SQLValue($this->_data['id_commercial']);
+        $values["id_commercial"] = MySQL::SQLValue(json_encode($this->_data['id_commercial']));
         $values["commission"] = MySQL::SQLValue($this->_data['commission']);
         $values["total_commission"] = MySQL::SQLValue($total_commission);
         $values["type_commission"] = MySQL::SQLValue($this->_data['type_commission']);
@@ -576,8 +576,7 @@ class Mdevis {
 
         $this->check_non_exist('clients', 'id', $this->_data['id_client'], 'Client');
 
-        $this->check_non_exist('commerciaux', 'id', $this->_data['id_commercial'], 'Commercial');
-
+        $this->check_commercial_exist($this->_data['id_commercial']);
         //Get sum of details
         $this->Get_sum_detail($this->_data['tkn_frm']);
         //calcul values devis
@@ -603,7 +602,8 @@ class Mdevis {
         $total_commission_ex = $this->total_commission_ex;
         $valeur_remise = number_format($this->valeur_remis_t, 2, '.', '');
         $this->reference = $this->devis_info['reference'];
-        if (!$this->get_commerciale_remise_plafond($this->_data['id_commercial'], $valeur_remise)) {
+
+        if (!$this->get_commerciale_remise_plafond(session::get('userid'), $valeur_remise)) {
             return false;
         }
         $etat_line = $this->etat_valid_devis;
@@ -620,7 +620,7 @@ class Mdevis {
         $values["id_banque"]           = $client->client_info['id_banque'];
         $values["tva"]                 = MySQL::SQLValue($this->_data['tva']);
         
-        $values["id_commercial"]       = MySQL::SQLValue($this->_data['id_commercial']);
+        $values["id_commercial"] = MySQL::SQLValue(json_encode($this->_data['id_commercial']));
         $values["commission"]          = MySQL::SQLValue($this->_data['commission']);
         $values["total_commission"]    = MySQL::SQLValue($total_commission);
         $values["type_commission"]     = MySQL::SQLValue($this->_data['type_commission']);
@@ -1201,7 +1201,7 @@ class Mdevis {
             return false;
         }
         global $db;
-        $realise = intval($this->g('totalht') / $nbr_commercials); 
+        $realise = intval(($this->g('totalht') - $this->g('total_commission_ex')) / $nbr_commercials); 
         
         /*============================================================
         =            test if all commercial have objectif            =
@@ -1218,7 +1218,7 @@ class Mdevis {
             }
             if($test == 1){
                 $objectif = new Mobjectif_mensuel();
-                if(!$objectif->auto_update_realise_objectif_mensuel($id_objectif, $realise))
+                if(!$objectif->auto_update_realise_objectif_mensuel($id_objectif, $realise, $this->devis_info['id']))
                 {
                     $this->log .="</br>Impossible d'ajouter la réalisation au objectif $id_objectif ";
                     return false;
@@ -1476,7 +1476,7 @@ class Mdevis {
         if ($result == 0) {
             $etat_devis = 'valid_client';
         } else {
-            $etat_devis = 'en_livre';
+            $etat_devis = 'devis_livr';
         }
         $new_etat = Msetting::get_set('etat_devis', $etat_devis);
         $req_sql = " UPDATE $table SET etat = $new_etat  WHERE id = $id_devis ";
@@ -2630,25 +2630,29 @@ class Mdevis {
     }
 
     //Vérifie si l'un des commerciaux n'existe pas
-    private function check_commercial_exist($table, $column, $values, $message) {
-        $commerciauxIds = str_replace('[', '', $values);
+    private function check_commercial_exist($commerciaux) {
+        /*$commerciauxIds = str_replace('[', '', $values);
         $commerciauxIds = str_replace(']', '', $commerciauxIds);
         $listCommerciauxInconnus = array();
-        $nbr = substr_count($values, ',') + 1;
-      
-        global $db;
-
-        $sql = "SELECT * FROM commerciaux WHERE commerciaux.id in (" . $commerciauxIds . ")";
-
-        if (!$db->Query($sql)) {
-            $this->error = false;
-            $this->log .= $db->Error();
-        } else {
-            if ($db->RowCount() != $nbr) {
+        $nbr = substr_count($values, ',') + 1;*/
         
+        global $db;
+        foreach ($commerciaux as $key) 
+        {
+            $sql = "SELECT * FROM commerciaux WHERE commerciaux.id = $key";
+
+            if (!$db->Query($sql)) {
                 $this->error = false;
-                 $this->log .= '</br>Un élément ne fait pas partie du service commerciale';
-            } 
+                $this->log .= $db->Error();
+            } else {
+                if (!$db->RowCount()) 
+                {
+                    $this->error = false;
+                    $this->log .= '</br>Un élément ne fait pas partie du service commerciale';
+                } 
+            }            
         }
-       }
+
+        
+    }
 }

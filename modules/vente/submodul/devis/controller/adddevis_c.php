@@ -16,9 +16,9 @@ if(MInit::form_verif('adddevis', false))
      'projet'              => Mreq::tp('projet'),
      'vie'                 => Mreq::tp('vie'),
      'claus_comercial'     => Mreq::tp('claus_comercial'),
-     'id_commercial'       => json_encode(Mreq::tp('id_commercial')),
-     'commission'          => Mreq::tp('commission'),
-     'type_commission'     => Mreq::tp('type_commission'),
+     'id_commercial'       => Mreq::tp('id_commercial'),
+     'commission'          => 0,
+     'type_commission'     => 'C',
      'total_commission'    => Mreq::tp('total_commission'),
      'id_commercial_ex'    => Mreq::tp('id_commercial_ex'),
      'commission_ex'       => Mreq::tp('commission_ex'),
@@ -90,14 +90,13 @@ if(MInit::form_verif('adddevis', false))
       $empty_list .= "<li>Commercial</li>";
       $checker = 1;
     }
-    /*
-    if($posted_data['commission'] == NULL OR !is_numeric($posted_data['commission']) ){
+    
+    if($posted_data['commission_ex'] != 0  AND $posted_data['id_commercial_ex'] == NULL ){
 
-      $empty_list .= "<li>Commission</li>";
+      $empty_list .= "<li>Il faut choisir le commercial externe</li>";
       $checker = 1;
     }
-     * 
-     */
+    
 
     if($posted_data['commission_ex'] != NULL AND !is_numeric($posted_data['commission_ex']) ){
 
@@ -114,11 +113,11 @@ if(MInit::form_verif('adddevis', false))
     }
      * 
      */
-    if($posted_data['total_commission'] == NULL OR !is_numeric($posted_data['total_commission']) ){
+    /*if($posted_data['total_commission'] == NULL OR !is_numeric($posted_data['total_commission']) ){
 
       $empty_list .= "<li>Total Commission</li>";
       $checker = 1;
-    }
+    }*/
 
     if($posted_data['total_commission_ex'] != NULL AND !is_numeric($posted_data['total_commission_ex']) ){
 
