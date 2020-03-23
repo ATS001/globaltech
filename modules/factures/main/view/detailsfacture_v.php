@@ -161,7 +161,7 @@ $encaissements = $info_facture->encaissement_info;
                                         </li>
 
                                         <li>
-                                            <i class="ace-icon fa fa-caret-right green"></i>Raison social
+                                            <i class="ace-icon fa fa-caret-right green"></i> Raison social
                                             <b class="blue pull-right"><?php $info_facture->printattribute_clt('r_social'); ?></b>
                                         </li>
 
@@ -210,7 +210,7 @@ $encaissements = $info_facture->encaissement_info;
                                         </li>
 
                                         <li>
-                                            <i class="ace-icon fa fa-caret-right yellow"></i>Date fin
+                                            <i class="ace-icon fa fa-caret-right yellow"></i> Date fin
                                             <b class="blue pull-right"><?php $info_facture->printattribute_ctr('date_fin'); ?></b>
                                         </li>                                        
 
