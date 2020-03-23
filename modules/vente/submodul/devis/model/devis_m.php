@@ -126,6 +126,7 @@ class Mdevis {
         ,  REPLACE(FORMAT(devis.total_remise + devis.totalht ,0),',',' ') as total_no_remise
         , clients.reference as reference_client
         , clients.denomination
+        , devis.id_banque
         , clients.adresse
         , CONCAT('BP', clients.bp) as bp
         , clients.tel
@@ -2165,7 +2166,7 @@ class Mdevis {
         }
         //prepare all variables
         $ste_c = new MSte_info();
-        $ste = $ste_c->get_ste_info_report_footer(1);
+        $ste = $ste_c->get_ste_info_report_footer(1, $this->g('id_banque'));
 
         $agent = new Musers();
         $agent->id_user = session::get('userid');
