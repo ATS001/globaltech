@@ -38,8 +38,7 @@ class Mobjectif_mensuel {
         : null
         ;
     }
-        //Get all info user fro database for edit form
-
+    //Get all info user fro database for edit form
     public function get_objectif_mensuel()
     {
         global $db;
@@ -636,7 +635,7 @@ class Mobjectif_mensuel {
      * @param  [type] $realise     [description]
      * @return [type]              [description]
      */
-    public function auto_update_realise_objectif_mensuel($id_objectif, $realise)
+    public function auto_update_realise_objectif_mensuel($id_objectif, $realise, $id_devis)
     {
         global $db;
         $values["realise"]       = ' realise + '.$realise.' ';
@@ -654,7 +653,7 @@ class Mobjectif_mensuel {
 
         }else{
             
-            if(!Mlog::log_exec($this->table, $id_objectif, 'Ajout réalisation à l\'objectif', 'Update'))
+            if(!Mlog::log_exec($this->table, $id_objectif, 'Ajout réalisation à l\'objectif ('.$realise.') #'.$id_devis, 'Update'))
             {
                 $this->log .= '</br>Un problème de log ';
                 return false;
