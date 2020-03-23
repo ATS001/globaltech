@@ -9,7 +9,7 @@ if (!defined('_MEXEC'))
 //Controller EDIT Form
 if (MInit::form_verif('editvisite', false)) {
     if (!MInit::crypt_tp('id', null, 'D')) {
-        // returne message error red to client 
+        // returne message error red to client
         exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
     }
     $posted_data = array(
@@ -18,6 +18,8 @@ if (MInit::form_verif('editvisite', false)) {
         'raison_sociale' => Mreq::tp('raison_sociale'),
         'nature_visite' => Mreq::tp('nature_visite'),
         'objet_visite' => Mreq::tp('objet_visite'),
+        'id_client' => Mreq::tp('id_client'),
+        'id_prospects' => Mreq::tp('id_prospects'),
         'date_visite' => Mreq::tp('date_visite'),
         'interlocuteur' => Mreq::tp('interlocuteur'),
         'fonction_interloc' => Mreq::tp('fonction_interloc'),
