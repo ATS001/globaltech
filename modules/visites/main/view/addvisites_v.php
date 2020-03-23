@@ -1,4 +1,4 @@
-<?php 
+<?php
 //First check target no Hack
 if(!defined('_MEXEC'))die();
 //SYS GLOBAL TECH
@@ -8,9 +8,9 @@ if(!defined('_MEXEC'))die();
 ?>
 <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
-				
+
 		<?php TableTools::btn_add('visites','Liste des visites', Null, $exec = NULL, 'reply'); ?>
-					
+
 	</div>
 </div>
 <div class="page-header">
@@ -25,47 +25,60 @@ if(!defined('_MEXEC'))die();
 <div class="row">
 	<div class="col-xs-12">
 		<div class="clearfix">
-			
+
 		</div>
 		<div class="table-header">
 			Formulaire: "<?php echo ACTIV_APP; ?>"
 		</div>
 		<div class="widget-content">
 			<div class="widget-box">
-				
+
 <?php
- 
+
 $form = new Mform('addvisites', 'addvisites', '', 'visites', '0', null);
 
 
-//Commerciale ==> 
+//Commerciale ==>
 	$commercial_array[]  = array('required', 'true', 'Choisir un Commercial');
         $form->select_table('Commerciale', 'commerciale', 6, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)' , 'CONCAT(nom," ",prenom)' , $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat=1', $commercial_array, null);
 
-//Raison sociale ==> 
+//Raison sociale ==>
 	$array_raison_sociale[]= array("required", "true", "Insérer Raison sociale ");
 	$form->input("Raison sociale", "raison_sociale", "text" ,"9", null, $array_raison_sociale, null, $readonly = null);
-//Client / Prospect ==> 
-	$array_nature_visite = array('Client' => 'Client', 'Prospect' => 'Prospect');
-        $form->select('Client / Prospect', 'nature_visite', 2, $array_nature_visite, $indx = NULL, $selected = 'Client', $multi = NULL);
 
-//Objet Visite ==> 
+
+	//Client / Prospect ==>
+		$array_nature_visite = array('Client' => 'Client', 'Prospect' => 'Prospect');
+	        $form->select('Client / Prospect', 'nature_visite', 2, $array_nature_visite, $indx = NULL, $selected = 'Client', $multi = NULL);
+
+	//$nv_array[]  = array('Client' , 'Client');
+	//$nv_array[]  = array('Prospect' , 'Prospect' );
+	//$form->radio('Client / Prospect', 'nature_visite', 'Client', $nv_array, null);
+
+			//Clients ==>
+	                $form->select_table('Client', 'id_client', 6, 'clients', 'id', 'denomination', 'denomination', $indx = '------', $selected = 'etat = 1', $multi = NULL, $where = 'etat=1', null, NULL);
+
+			//Prospects ==>
+	        $form->select_table('Prospect', 'id_prospects', 6, 'prospects', 'id', 'reference' , 'reference' , $indx = '------' ,$selected=NULL,$multi=NULL, $where='etat=1',null, null);
+
+
+//Objet Visite ==>
 	$array_objet_visite[]= array("required", "true", "Insérer Objet Visite ...");
 	$form->input("Objet Visite", "objet_visite", "text" ,"9", null, $array_objet_visite, null, $readonly = null);
-//Date Visite ==> 
+//Date Visite ==>
 	$array_date_visite[]= array("required", "true", "Insérer Date Visite");
         $form->input_date('Date Visite', 'date_visite', 2, date('d-m-Y'), $array_date_visite);
 
-//Interlocuteur ==> 
+//Interlocuteur ==>
 	$array_interlocuteur[]= array("required", "true", "Insérer Interlocuteur ...");
 	$form->input("Interlocuteur", "interlocuteur", "text" ,"9", null, $array_interlocuteur, null, $readonly = null);
-//Fonction Interlocuteur ==> 
+//Fonction Interlocuteur ==>
 	$array_fonction_interloc[]= array("required", "true", "Insérer Fonction Interlocuteur ...");
 	$form->input("Fonction Interlocuteur", "fonction_interloc", "text" ,"9", null, $array_fonction_interloc, null, $readonly = null);
-//Coordonnées Interlocuteur ==> 
+//Coordonnées Interlocuteur ==>
 	$array_coordonees_interloc[]= array("required", "true", "Insérer Coordonnées Interlocuteur ...");
 	$form->input("Coordonnées Interlocuteur", "coordonees_interloc", "text" ,"9", null, $array_coordonees_interloc, null, $readonly = null);
-//Commentaire ==> 
+//Commentaire ==>
 	$array_commentaire[]= array("required", "true", "Insérer Commentaire ...");
 $form->input_editor('Commentaire', 'commentaire', 8, NULL, $array_commentaire, $input_height = 200);
 
@@ -78,13 +91,18 @@ $form->render();
 	</div>
 </div>
 <!-- End Add devis bloc -->
-		
 <script type="text/javascript">
+
 $(document).ready(function() {
-    
-//JS bloc   
-
+	document.getElementById("xid_prospectsx").style.display = 'none';
+ $('#nature_visite').on('change', function () {
+ if ($("#nature_visite option:selected").text() == 'Client') {
+document.getElementById("xid_prospectsx").style.display = 'none';
+document.getElementById("xid_clientx").style.display = 'block';
+}else {
+document.getElementById("xid_clientx").style.display = 'none';
+document.getElementById("xid_prospectsx").style.display = 'block';
+}
 });
-</script>	
-
-		
+});
+</script>

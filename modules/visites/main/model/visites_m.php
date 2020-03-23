@@ -9,9 +9,9 @@ if (!defined('_MEXEC'))
 //Created : 29-08-2019
 //Model
 /**
- * M%modul% 
+ * M%modul%
  * Version 1.0
- * 
+ *
  */
 class Mvisites {
 
@@ -45,8 +45,8 @@ class Mvisites {
 
         $table = $this->table;
 
-        $sql = "SELECT $table.* FROM 
-		$table,commerciaux WHERE  $table.id = " . $this->id_visites ;
+        $sql = "SELECT $table.* FROM
+        $table,commerciaux WHERE  $table.id = " . $this->id_visites ;
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -67,15 +67,15 @@ class Mvisites {
             return true;
         }
     }
-    
-    
+
+
     public function get_visites_infos() {
         global $db;
 
         $table = $this->table;
 
-        $sql = "SELECT CONCAT(commerciaux.nom,' ' ,commerciaux.prenom) as com , $table.* FROM 
-		$table,commerciaux WHERE  visites.commerciale=commerciaux.id AND $table.id = " . $this->id_visites ;
+        $sql = "SELECT CONCAT(commerciaux.nom,' ' ,commerciaux.prenom) as com , $table.* FROM
+        $table,commerciaux WHERE  visites.commerciale=commerciaux.id AND $table.id = " . $this->id_visites ;
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -111,6 +111,8 @@ class Mvisites {
             $values["raison_sociale"] = MySQL::SQLValue($this->_data["raison_sociale"]);
             $values["nature_visite"] = MySQL::SQLValue($this->_data["nature_visite"]);
             $values["objet_visite"] = MySQL::SQLValue($this->_data["objet_visite"]);
+                  $values["id_client"] = MySQL::SQLValue($this->_data["id_client"]);
+                      $values["id_prospects"] = MySQL::SQLValue($this->_data["id_prospects"]);
             $values["date_visite"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
             $values["interlocuteur"] = MySQL::SQLValue($this->_data["interlocuteur"]);
             $values["fonction_interloc"] = MySQL::SQLValue($this->_data["fonction_interloc"]);
@@ -165,6 +167,8 @@ class Mvisites {
             $values["raison_sociale"] = MySQL::SQLValue($this->_data["raison_sociale"]);
             $values["nature_visite"] = MySQL::SQLValue($this->_data["nature_visite"]);
             $values["objet_visite"] = MySQL::SQLValue($this->_data["objet_visite"]);
+            $values["id_client"] = MySQL::SQLValue($this->_data["id_client"]);
+                $values["id_prospects"] = MySQL::SQLValue($this->_data["id_prospects"]);
             $values["date_visite"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
             $values["interlocuteur"] = MySQL::SQLValue($this->_data["interlocuteur"]);
             $values["fonction_interloc"] = MySQL::SQLValue($this->_data["fonction_interloc"]);
@@ -263,8 +267,8 @@ class Mvisites {
      */
     private function check_non_exist($table, $column, $value, $message) {
         global $db;
-        $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
-			WHERE $table.$column = " . MySQL::SQLValue($value));
+        $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table
+            WHERE $table.$column = " . MySQL::SQLValue($value));
         if ($result == "0") {
             $this->error = false;
             $this->log .= '</br>' . $message . ' n\'exist pas';
@@ -283,8 +287,8 @@ class Mvisites {
         global $db;
         $table = $this->table;
         $sql_edit = $edit == null ? null : " AND  <> $edit";
-        $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
-    		WHERE $table.$column = " . MySQL::SQLValue($value) . " $sql_edit ");
+        $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table
+            WHERE $table.$column = " . MySQL::SQLValue($value) . " $sql_edit ");
 
         if ($result != "0") {
             $this->error = false;
