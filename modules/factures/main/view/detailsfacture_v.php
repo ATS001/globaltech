@@ -1,6 +1,10 @@
 <?php
 $info_facture = new Mfacture();
 $info_facture->id_facture = Mreq::tp('id');
+
+$info_facture->get_facture();
+$etat=$info_facture->facture_info['etat'];
+
 $info_facture->get_facture_info();
 $facture = $info_facture->facture_info;
 
@@ -37,7 +41,9 @@ $encaissements = $info_facture->encaissement_info;
 
 <!-- /.page-header -->
 <div class="row">
-
+ <?php Mmodul::get_statut_etat_line('factures', $etat);
+//echo $actions;
+?>
     <div>
         <div id="user-profile-2" class="user-profile">
             <div class="tabbable">
