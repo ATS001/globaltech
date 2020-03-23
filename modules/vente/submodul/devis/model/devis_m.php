@@ -125,7 +125,7 @@ class Mdevis {
         ,  REPLACE(FORMAT(devis.total_remise,0),',',' ') as total_remise
         ,  REPLACE(FORMAT(devis.total_remise + devis.totalht ,0),',',' ') as total_no_remise
         , clients.reference as reference_client
-        , clients.denomination,
+        , clients.denomination
         , devis.id_banque
         , clients.adresse
         , CONCAT('BP', clients.bp) as bp
