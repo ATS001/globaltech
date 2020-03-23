@@ -25,9 +25,9 @@ if(MInit::form_verif('editdevis', false))
      'vie'                 => Mreq::tp('vie'),
      'claus_comercial'     => Mreq::tp('claus_comercial'),
      'id_commercial'       => Mreq::tp('id_commercial'),
-     'commission'          => Mreq::tp('commission'),
+     'commission'          => 0,
      'total_commission'    => Mreq::tp('total_commission'),
-     'type_commission'     => Mreq::tp('type_commission'),
+     'type_commission'     => 'C',
      'id_commercial_ex'    => Mreq::tp('id_commercial_ex'),
      'commission_ex'       => Mreq::tp('commission_ex'),
      'total_commission_ex' => Mreq::tp('total_commission_ex'),
@@ -97,28 +97,33 @@ if(MInit::form_verif('editdevis', false))
       $empty_list .= "<li>Commercial</li>";
       $checker = 1;
     }
-    if($posted_data['commission'] == NULL OR !is_numeric($posted_data['commission']) ){
+    /*if($posted_data['commission'] == NULL OR !is_numeric($posted_data['commission']) ){
 
       $empty_list .= "<li>Commission</li>";
       $checker = 1;
-    }
+    }*/
     if($posted_data['commission_ex'] != NULL AND !is_numeric($posted_data['commission_ex']) ){
 
       $empty_list .= "<li>Commission Externe</li>";
       $checker = 1;
     }
     $set_comission = Msetting::get_set('plafond_comission');
-    if($posted_data['commission'] > $set_comission  ){
+    /*if($posted_data['commission'] > $set_comission  ){
 
       $empty_list .= "<li>Commission ne dois pas dépasser $set_comission</li>";
       $checker = 1;
-    }
-    if($posted_data['total_commission'] == NULL OR !is_numeric($posted_data['total_commission']) ){
+    }*/
+    /*if($posted_data['total_commission'] == NULL OR !is_numeric($posted_data['total_commission']) ){
 
       $empty_list .= "<li>Total Commission</li>";
       $checker = 1;
     }
+*/
+    if($posted_data['commission_ex'] != 0  AND $posted_data['id_commercial_ex'] == NULL ){
 
+      $empty_list .= "<li>Il faut choisir le commercial externe</li>";
+      $checker = 1;
+    }
     if($posted_data['total_commission_ex'] != NULL AND !is_numeric($posted_data['total_commission_ex']) ){
 
       $empty_list .= "<li>Total Commission</li>";
