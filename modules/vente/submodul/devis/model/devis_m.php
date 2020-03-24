@@ -1250,7 +1250,8 @@ class Mdevis {
         {
             $this->log .= '</br>La date de validation doit être égale ou plus que la date d\'enregistrement';
             return false;
-        }        
+        }
+        $reponse = $this->_data['reponse'];        
         $ref_bc = null;
         switch ($reponse) {
             case 'valid':
@@ -1284,7 +1285,7 @@ class Mdevis {
             }
             $this->check_livraison();
         }
-        $reponse = $this->_data['reponse'];
+        
         if($reponse == 'valid' && !$this->insert_realise_into_objectif_mensuel(1)){
             return false;
         }
