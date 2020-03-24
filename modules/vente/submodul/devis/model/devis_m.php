@@ -1256,7 +1256,7 @@ class Mdevis {
         switch ($reponse) {
             case 'valid':
                 $etat = 'valid_client';
-                $ref_bc = " , ref_bc = '" . MySQL::SQLValue($this->_data['ref_bc']) . "'";
+                $ref_bc = " , ref_bc = " . MySQL::SQLValue($this->_data['ref_bc']);
                 $message = "Validation client";
                 break;
             case 'modif':
@@ -1310,7 +1310,7 @@ class Mdevis {
 
         if (!$db->Query($req_sql)) {
             $this->error = false;
-            $this->log .= "Erreur Opération";
+            $this->log .= "Erreur Opération ".$req_sql;
             return false;
         } else {
             //log
