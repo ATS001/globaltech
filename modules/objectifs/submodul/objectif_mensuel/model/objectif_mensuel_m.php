@@ -342,7 +342,7 @@ class Mobjectif_mensuel {
             return false; 
         }
         $objectif_atteint = $db->RecordsArray();
-        var_dump($objectif_atteint);
+        
         foreach ($objectif_atteint as $key => $value) 
         {
             $this->save_commission_objectif_atteint($value['id']);
