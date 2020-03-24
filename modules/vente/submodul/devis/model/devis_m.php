@@ -2405,11 +2405,10 @@ class Mdevis {
         } elseif ($id_service == 7) {
             $where_user = " AND id_user_sys = $id_user";
         }
-        $req_sql = "SELECT
-        COUNT(`devis`.`id`) AS nbr_devis FROM `devis`
-        INNER JOIN `commerciaux` ON (`devis`.`id_commercial` = `commerciaux`.`id`)
+        $req_sql = "SELECT COUNT(`devis`.`id`) AS nbr_devis FROM `devis`
+        INNER JOIN `commerciaux` ON (`devis`.`id_commercial` LIKE CONCAT('%',`commerciaux`.`id`,'%'))
         INNER JOIN `users_sys` ON (`commerciaux`.`id_user_sys` = `users_sys`.`id`)
-        WHERE 1=1 $where_user";
+        WHERE YEAR(`devis`.date_devis) = YEAR(CURDATE()) $where_user";
 
         if (!$db->Query($req_sql)) {
             return false;
@@ -2450,9 +2449,9 @@ class Mdevis {
         $req_sql = "SELECT
         COUNT(`factures`.`id`) AS nbr_facture FROM `factures`
         INNER JOIN `devis` ON (`devis`.`id` = `factures`.`iddevis`)
-        INNER JOIN `commerciaux` ON (`devis`.`id_commercial` = `commerciaux`.`id`)
+        INNER JOIN `commerciaux` ON (`devis`.`id_commercial` LIKE CONCAT('%',`commerciaux`.`id`,'%'))
         INNER JOIN `users_sys` ON (`commerciaux`.`id_user_sys` = `users_sys`.`id`)
-        WHERE  factures.etat IN(3 ,2) $where_user";
+        WHERE  YEAR(`factures`.date_facture) = YEAR(CURDATE()) AND factures.etat IN(3 ,2) $where_user";
 
         if (!$db->Query($req_sql)) {
             return false;
