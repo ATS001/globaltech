@@ -1254,6 +1254,14 @@ class Mdevis {
 
 
         $reponse = $this->_data['reponse'];
+        if($reponse == 'valid' && !$this->insert_realise_into_objectif_mensuel(1)){
+            return false;
+        }
+        $id_client = $this->devis_info['id_client'];
+        if ($etat == 'valid_client' and ! $this->check_client_temp($id_client)) {
+            $this->error = false;
+            return false;
+        }
         if ($this->g('type_devis') == 'VNT' && $reponse == 'valid') {
             $this->loop_check_qte();
             if ($id_bl = $this->generate_bl($this->id_devis)) {
@@ -1294,15 +1302,9 @@ class Mdevis {
             $this->log .= "Manque paramètre etat_devis => $etat";
             return false;
         }
-        $id_client = $this->devis_info['id_client'];
-        if ($etat == 'valid_client' and ! $this->check_client_temp($id_client)) {
-            $this->error = false;
-            return false;
-        }
+        
         $date_valid_client = MySQL::SQLValue($this->_data['date_valid_client'], 'date');
-        if($reponse == 'valid' && !$this->insert_realise_into_objectif_mensuel(1)){
-            return false;
-        }
+        
         $req_sql = " UPDATE $table SET  $new_etat, date_valid_client = $date_valid_client  $ref_bc WHERE id = $id_devis ";
 
         if (!$db->Query($req_sql)) {
