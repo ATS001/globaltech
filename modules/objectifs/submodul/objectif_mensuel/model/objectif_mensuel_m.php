@@ -345,8 +345,13 @@ class Mobjectif_mensuel {
         
         foreach ($objectif_atteint as $key => $value) 
         {
-            $this->save_commission_objectif_atteint($value['id']);
+            if(!$this->save_commission_objectif_atteint($value['id']))
+            {
+                $this->log   .= 'Erreur Save commission ' .$value['id'];
+                return false;
+            }
         }  
+        $this->log   .= 'Save All commission ';
         return true;   
     } 
     /**
