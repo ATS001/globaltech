@@ -1243,6 +1243,7 @@ class Mdevis {
      * @return [type] [update etat depend the choise of action]
      */
     public function validdevisclient_devis() {
+        
         $this->get_devis();
         
         if(!MInit::compare_date($this->devis_info['date_devis'], $this->_data['date_valid_client']))
@@ -1251,13 +1252,10 @@ class Mdevis {
             return false;
         }
 
-        if(!$this->insert_realise_into_objectif_mensuel(0)){
-            return false;
-        }
 
         $reponse = $this->_data['reponse'];
         if ($this->g('type_devis') == 'VNT' && $reponse == 'valid') {
-            //$this->loop_check_qte();
+            $this->loop_check_qte();
             if ($id_bl = $this->generate_bl($this->id_devis)) {
                 $this->insert_d_bl($id_bl);
             }
@@ -1350,7 +1348,7 @@ class Mdevis {
             }
             $this->check_livraison();
             $id_bl = 'id=' . $id_bl;
-            $task = MInit::crypt_tp('task', 'detailsbl');
+            $task = MInit::crypt_tp('task', 'detailbl');
             $this->log .= '</br>Opération réussie ' . '<a left_menu="1" class="fa-double_angle_right this_url_jump" rel="seturl" title="Detail BL" data="' . $id_bl . '&' . $task . '"><b> : Détail Bon de livraison</a>';
         }
         //$this->get_devis();
@@ -1370,8 +1368,6 @@ class Mdevis {
         $count_lines = count($data_d_bl);
         $all_liv_qte = 0;
         for ($i = 0, $c = $count_lines; $i < $c; $i++) {
-
-
 
             $id_line = $data_d_bl[$i];
             $qte_liv = MReq::tp('qte_liv_' . $id_line);
@@ -2061,13 +2057,11 @@ class Mdevis {
             AND d_devis.id_produit = d_bl.id_produit ) ,'\" type=\"text\">') AS qte_l, d_devis.`qte` - ( SELECT IFNULL(SUM(d_bl.qte),0)              FROM d_bl, bl
             WHERE d_devis.id_devis = bl.iddevis  AND d_devis.id_devis = bl.iddevis AND d_bl.id_bl = bl.id
             AND d_devis.id_produit = d_bl.id_produit ) AS qte_rest
-            FROM d_devis, qte_actuel, d_bl, bl
+            FROM d_devis, qte_actuel, bl
             WHERE d_devis.id_devis = $id_devis AND qte_actuel.id_produit = d_devis.id_produit
             GROUP BY d_devis.id_produit HAVING qte_rest > 0 ORDER BY item ";
+            
 
-
-        /* $req_sql  = " SELECT $colms FROM $table, qte_actuel, d_bl, bl WHERE  d_devis.id_devis = bl.iddevis AND d_bl.id_bl = bl.id AND d_devis.id_produit = d_bl.id_produit AND d_devis.id_devis = $id_devis AND qte_actuel.id_produit = d_devis.id_produit   GROUP BY d_devis.id_produit HAVING qte_rest > 0 ORDER BY item";
-          exit($req_sql); */
         if (!$db->Query($req_sql)) {
             $this->error = false;
             $this->log .= $db->Error() . ' ' . $req_sql;
@@ -2304,7 +2298,7 @@ class Mdevis {
     public function get_list_bl() {
         global $db;
 
-        $add_set = array('return' => '<a href="#" class="report_tplt" rel="' . MInit::crypt_tp('tplt', 'devis') . '" data="%crypt%"> <i class="ace-icon fa fa-print"></i></a>', 'data' => 'id');
+        $add_set = array('return' => '<a href="#" class="report_tplt" rel="' . MInit::crypt_tp('tplt', 'bl') . '" data="%crypt%"> <i class="ace-icon fa fa-print"></i></a>', 'data' => 'id');
         $id_devis = $this->id_devis;
         $req_sql = " SELECT id, reference, date_bl, '#' FROM bl WHERE iddevis = $id_devis ";
 
