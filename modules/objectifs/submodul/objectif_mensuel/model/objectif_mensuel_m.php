@@ -1055,20 +1055,23 @@ class Mobjectif_mensuel {
     {
         
         global $db;
-        $table = 'objectif_mensuel';
+        $table = 'objectif_mensuels';
         $id_user = session::get('userid');
         $req_sql ="SELECT $table.id, REPLACE(FORMAT($table.objectif,0),',',' ') AS objectif,
                    REPLACE(FORMAT($table.realise,0),',',' ') AS realise,
                    ROUND($table.realise * 100 / $table.objectif, 2) AS percent,
                    $table.objectif - $table.realise AS reste_int FROM  $table, commerciaux 
-                   WHERE commerciaux.id = $table.id_commercial AND  commerciaux.id_user_sys = $id_user";
+                   WHERE commerciaux.id = $table.id_commercial AND  commerciaux.id_user_sys = $id_user
+                   AND $table.annee = YEAR(CURDATE()) AND $table.mois = MONTH(CURDATE())";
 
         if(!$db->Query($req_sql))
         {
+            var_dump($req_sql);
             return false;
         }else{
             if (!$db->RowCount())
             {
+                var_dump($req_sql);
                 return false;
             } else {
                 $arr_result = $db->RowArray();                
@@ -1079,12 +1082,12 @@ class Mobjectif_mensuel {
                         <div class="small-box btn-info">                        
                             <div class="inner">                               
                                 <h3>'.$arr_result['percent'].'<sup style="font-size: 20px">%</sup></h3>
-                                <p class="info-box-text">CA personnel: '.$arr_result['realise'].'</p>
+                                <p class="info-box-text">CA personnel du mois: '.$arr_result['realise'].'</p>
                             </div>
                             <div class="icon">
                                 <i class="ace-icon fa fa-line-chart home-icon"></i>
                             </div>
-                            <a href="#" rel="detail_objectif_commercial" data="'.$idc.'"  class="small-box-footer this_url">Voir détails <i class="fa fa-arrow-circle-right"></i></a>
+                            <a href="#" rel="details_objectif_mensuel" data="'.$idc.'"  class="small-box-footer this_url">Voir détails <i class="fa fa-arrow-circle-right"></i></a>
                         </div>
                     </div>';
         return print($output);            
