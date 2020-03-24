@@ -1250,25 +1250,7 @@ class Mdevis {
         {
             $this->log .= '</br>La date de validation doit être égale ou plus que la date d\'enregistrement';
             return false;
-        }
-
-
-        $reponse = $this->_data['reponse'];
-        if($reponse == 'valid' && !$this->insert_realise_into_objectif_mensuel(1)){
-            return false;
-        }
-        $id_client = $this->devis_info['id_client'];
-        if ($etat == 'valid_client' and ! $this->check_client_temp($id_client)) {
-            $this->error = false;
-            return false;
-        }
-        if ($this->g('type_devis') == 'VNT' && $reponse == 'valid') {
-            $this->loop_check_qte();
-            if ($id_bl = $this->generate_bl($this->id_devis)) {
-                $this->insert_d_bl($id_bl);
-            }
-            $this->check_livraison();
-        }
+        }        
         $ref_bc = null;
         switch ($reponse) {
             case 'valid':
@@ -1287,6 +1269,24 @@ class Mdevis {
             default:
                 # code...
                 break;
+        }
+        
+        $id_client = $this->devis_info['id_client'];
+        if ($etat == 'valid_client' and ! $this->check_client_temp($id_client)) {
+            $this->error = false;
+            return false;
+        }
+
+        if ($this->g('type_devis') == 'VNT' && $reponse == 'valid') {
+            $this->loop_check_qte();
+            if ($id_bl = $this->generate_bl($this->id_devis)) {
+                $this->insert_d_bl($id_bl);
+            }
+            $this->check_livraison();
+        }
+        $reponse = $this->_data['reponse'];
+        if($reponse == 'valid' && !$this->insert_realise_into_objectif_mensuel(1)){
+            return false;
         }
         global $db;
         $table = $this->table;
