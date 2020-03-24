@@ -52,7 +52,7 @@ $form->input_hidden('id', $info_objectif_mensuel->g('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
 
-$form->input("Montant commission générée", "commission_reel", "text" ,"5 is-number alignRight", $info_objectif_mensuel->g('montant_benif'), null, null, $readonly = 1);
+$form->input("Montant commission générée", "commission_reel", "text" ,"5 is-number alignRight", (($info_objectif_mensuel->g('realise')* $info_objectif_mensuel->g('taux_commission'))/100), null, null, $readonly = 1);
 $array_objectif[]= array("required", "true", "Insérer Objectif ...");
 $form->input("Montant commission forcé", "montant_benif", "text" ,"5 is-number alignRight", $info_objectif_mensuel->g('montant_benif'), $array_objectif, null, $readonly = null);
 
