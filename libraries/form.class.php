@@ -2,12 +2,12 @@
 /**
 * Mform Class V1.0.0
 * Generate dynamique Form
-* 
-* 
+*
+*
 */
 class Mform
 {
-	private $_id_form;
+    private $_id_form;
     private $_app_exec;
     private $_is_edit;
     private $_app_redirect;
@@ -36,22 +36,22 @@ class Mform
     var $form_subbloc          = null;
     var $verif_value           = null;
     var $extra_html            = null;
-    
-    
 
 
-	/**
+
+
+  /**
      * [__construct description]
      * @param [string] $id_form      [Id de formulaire]
      * @param [string] $app_exec     [Action de formulaire]
      * @param [int] $is_edit [set to id of item if is form edit]
-     * @param [string] $app_redirect [Application de redirection] 
+     * @param [string] $app_redirect [Application de redirection]
      * @param [string] $is_wizard [Set to 1 if is an Wizard Form]
      * @param [string] $is_modal [Set to 1 if is an Modal Form]
      */
-	function __construct($id_form, $app_exec, $is_edit, $app_redirect, $is_wizard, $is_modal=null)
-	{
-		    $this->_id_form      = $id_form;
+  function __construct($id_form, $app_exec, $is_edit, $app_redirect, $is_wizard, $is_modal=null)
+  {
+        $this->_id_form      = $id_form;
         $this->_app_exec     = $app_exec;
         $this->_is_edit      = $is_edit;
         $this->_app_redirect = $app_redirect;
@@ -62,28 +62,28 @@ class Mform
 
     }
 
-	/**
-	 * Function form render
-	 * @return html [Form bloc all fields]
-	 */
+  /**
+   * Function form render
+   * @return html [Form bloc all fields]
+   */
 
-	public function render()
-	{
+  public function render()
+  {
         //Set Form Token
         $ssid = 'f_v'.$this->_id_form;
         session::clear($ssid);
         session::set($ssid,session::generate_sid());
         $verif_value       = session::get($ssid);
         $this->verif_value = $verif_value;
-        
 
-        //If is Wizard start with bloc Wizard 
+
+        //If is Wizard start with bloc Wizard
         if($this->_is_wizard == 1)
         {
             $this->form_bloc .= '<div class="widget-body">
             <div class="widget-main">
                 <div id="fuelux-wizard-container">';
-                    $this->form_bloc .= $this->wizard_form_steps();                            
+                    $this->form_bloc .= $this->wizard_form_steps();
                 }
 
 
@@ -107,7 +107,7 @@ class Mform
 
                 $this->form_bloc .= '</form>';
 
-        //If is Wizard End with bloc Wizard 
+        //If is Wizard End with bloc Wizard
                 if($this->_is_wizard == 1)
                 {
                     $this->form_bloc .= '</div>
@@ -131,7 +131,7 @@ class Mform
 
         $this->form_bloc .= $this->js_render();
 
-        return print($this->form_bloc);  
+        return print($this->form_bloc);
     }
 
     /**
@@ -142,7 +142,7 @@ class Mform
     public function wizard_form_steps()
     {
         $this->wizard_steps_bloc .= '<div><ul class="steps">';
-        $array_steps = $this->wizard_steps; 
+        $array_steps = $this->wizard_steps;
 
 
         foreach ($array_steps as $step) {
@@ -150,14 +150,14 @@ class Mform
             $active = '';
             if(isset($step[2]) && $step[2] == 'active')
             {
-                $active = ' class="active" '; 
+                $active = ' class="active" ';
             }
-            
+
             $this->wizard_steps_bloc .= '<li data-step="'.$step[0].'" '.$active.'>
             <span class="step">'.$step[0].'</span>
             <span class="title">'.$step[1].'</span>
         </li>';
-    }                                                
+    }
     $this->wizard_steps_bloc .= '</ul></div><hr />';
 
 
@@ -216,7 +216,7 @@ public function sub_bloc_start($large, $title)
         <div class="widget-body">
             <div class="widget-main">
                 <div id="container">';
-                    
+
                 }
 
                 public function sub_bloc_end()
@@ -227,42 +227,42 @@ public function sub_bloc_start($large, $title)
         </div>';
     }
 
-	/**
-	 * Function form JS render
-	 * @return JS  [JavaScript]
-	 * 
-	 */
-	private function js_render()
-	{
-		
+  /**
+   * Function form JS render
+   * @return JS  [JavaScript]
+   *
+   */
+  private function js_render()
+  {
 
-		$this->form_js_bloc .= '<script type="text/javascript">jQuery(function($) {'; //Start bloc
-		$this->form_js_bloc .= '$("#'.$this->_id_form.'").validate({'; // Start Validate Bloc
-		$this->form_js_bloc .= 'execApp:"'.$this->_app_exec.'",'; 
-		$this->form_js_bloc .= 'execNext:"'.$this->_app_redirect.'",';
+
+    $this->form_js_bloc .= '<script type="text/javascript">jQuery(function($) {'; //Start bloc
+    $this->form_js_bloc .= '$("#'.$this->_id_form.'").validate({'; // Start Validate Bloc
+    $this->form_js_bloc .= 'execApp:"'.$this->_app_exec.'",';
+    $this->form_js_bloc .= 'execNext:"'.$this->_app_redirect.'",';
     $this->form_js_bloc .= 'isedit:"'.$this->_is_edit.'",';
     $this->form_js_bloc .= 'ismodal:"'.$this->_is_modal.'",';
     $this->form_js_bloc .= 'addFunct:function(){'.$this->js_addfunct.'},';
-		$this->form_js_bloc .= 'rules:{'; // Start Rules Bloc
-		$this->form_js_bloc .= $this->js_rules;
-		$this->form_js_bloc .= '},'; //ENd Rules Bloc
-		$this->form_js_bloc .= 'messages:{'; // Start Rules Bloc
-		$this->form_js_bloc .= $this->js_message;
-		$this->form_js_bloc .= '},'; //ENd Rules Bloc
-		$this->form_js_bloc .= '});'; //End Validate Bloc
+    $this->form_js_bloc .= 'rules:{'; // Start Rules Bloc
+    $this->form_js_bloc .= $this->js_rules;
+    $this->form_js_bloc .= '},'; //ENd Rules Bloc
+    $this->form_js_bloc .= 'messages:{'; // Start Rules Bloc
+    $this->form_js_bloc .= $this->js_message;
+    $this->form_js_bloc .= '},'; //ENd Rules Bloc
+    $this->form_js_bloc .= '});'; //End Validate Bloc
     $this->form_js_bloc .= $this->input_js_file; // Bloc of format input files
     $this->form_js_bloc .= $this->input_js_date; // Bloc of Date input element
     $this->form_js_bloc .= $this->input_js_editor; // Bloc of Editor input element
     $this->form_js_bloc .= $this->input_js_autocomplete; //Bloc of Autocomplete Input
     $this->form_js_bloc .= $this->select_js_onchange; //Bloc of Autocomplete Input
     $this->form_js_bloc .= $this->input_tag; //Bloc of input Tag
-    $this->form_js_bloc .= $this->gallery_bloc_js; //Bloc of gallery_bloc 
+    $this->form_js_bloc .= $this->gallery_bloc_js; //Bloc of gallery_bloc
     $this->form_js_bloc .= $this->js_datatable; //Bloc of DataTable JS
     $this->form_js_bloc .= "$('.chosen-select').chosen({allow_single_deselect:true});";
-        
+
         //$this->form_js_bloc .= "$('.chosen-select').chosen({allow_single_deselect:true});";
-        
-        
+
+
         //Check if is Wizard form insert JS for wizard
         if($this->_is_wizard == 1)
         {
@@ -282,10 +282,10 @@ public function sub_bloc_start($large, $title)
                     //e.preventDefault();//this will prevent clicking and selecting steps
             });';
 
-            
+
         }
-        
-        
+
+
 
         $this->form_js_bloc .= '});</script>'; //End Bloc
         return $this->form_js_bloc;
@@ -303,12 +303,12 @@ public function sub_bloc_start($large, $title)
       $this->js_message .= $field. ':{';
       foreach ($array_rules as $rule) {
 
-			//Rule
+      //Rule
        $value = $rule[1] == 'true' ? $rule[1] : '\''. $rule[1].'\'';
        $depend_rule = isset($rule[3]) ? $rule[3] : null;
        $value = $depend_rule == null ? $value : $depend_rule;
        $this->js_rules .= $rule[0].' : '.$value.',';
-		  //Message
+      //Message
        $this->js_message .= $rule[0].' : \''.$rule[2].'\''.',';
 
    }
@@ -324,7 +324,7 @@ public function sub_bloc_start($large, $title)
      * @param int $[file_size] [Size of uplaoded file]
      * @param string $[file_type] [Type of uploaded file]
      * @return JS code [Append JS Render]
-     * 
+     *
      */
     public function file_js($input_id, $file_size, $file_type, $value = null, $edit = NULL)
     {
@@ -351,9 +351,9 @@ public function sub_bloc_start($large, $title)
 
     public function button($btn_value='')
     {
-    	$this->form_button .=
-    	'<div class=" clearfix form-actions">
-    	<div class="col-md-offset-3 col-md-9">
+      $this->form_button .=
+      '<div class=" clearfix form-actions">
+      <div class="col-md-offset-3 col-md-9">
          <button class="btn btn-primary" type="submit">
              <i class="ace-icon fa fa-check bigger-110"></i>'.$btn_value.'
          </button>
@@ -410,9 +410,9 @@ $this->gallery_bloc_js .= "$('#btn_add_pic').on('click', '.this_add_pic', functi
 
     public function extra_html($id_bloc, $html_code)
     {
-      
+
       $input = '<div id="'.$id_bloc.'" class="widget-main padding-24">'.$html_code.'</div>';
-      
+
       $this->form_fields .= $input;
 
     }
@@ -425,15 +425,15 @@ $this->gallery_bloc_js .= "$('#btn_add_pic').on('click', '.this_add_pic', functi
      * @param integer $[input_class] [class of input]
      * @param string $[input_value] [value of input default NULL]
      * @return append string into form_fields [Input render]
-     * 
+     *
      */
-    
+
     public function input($input_desc, $input_id, $input_type, $input_class, $input_value = null, $js_array = null, $hard_code = null, $readonly = null)
     {
-    	$value = $input_value == null ? null : 'value = "'.$input_value.'"';
+      $value = $input_value == null ? null : 'value = "'.$input_value.'"';
       $readonly_use = $readonly == null ? null : 'readonly=""';
-    	$input = '<div class="space-2"></div>
-    	<div class="form-group">
+      $input = '<div class="space-2"></div>
+      <div class="form-group">
          <label id="label_'.$input_id.'" class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">'.$input_desc.':</label>
 
          <div class="col-xs-12 col-sm-9">
@@ -470,7 +470,7 @@ $this->gallery_bloc_js .= "$('#btn_add_pic').on('click', '.this_add_pic', functi
 /**
  * [alert_message Show message Alert ]
  * @param  [string] $message [Message to be show]
- * @param  [string] $style   [Style of tag 
+ * @param  [string] $style   [Style of tag
  * (red => danger, orange => warning , green => success, blue => info)]
  * @return [type]          [description]
  */
@@ -483,7 +483,7 @@ public function alert_message($message, $style)
                       '.$message.'
                       <br>
                     </div>';
-  $this->form_fields .= $message;                  
+  $this->form_fields .= $message;
 }
 
 public function input_date($input_desc, $input_id, $input_class, $input_value = null, $js_array = null, $hard_code = null)
@@ -566,7 +566,7 @@ public function input_date($input_desc, $input_id, $input_class, $input_value = 
             }
 
 
-            
+
             if($js_array != null)
             {
                 $this->js_rules($input_id, $js_array);
@@ -610,9 +610,9 @@ public function radio($radio_desc, $radio_id, $radio_value = null, $array_radio,
 
 /**
 * Function select_option_only used generally when have load on select
-     * Generate Select options from Table 
-     
-     
+     * Generate Select options from Table
+
+
      * @param string table Table name
      * @param string $[id_table] [<column of value option>]
      * @param string $[order_by] [<column of order>]
@@ -651,13 +651,13 @@ if(!$db->RowCount()){
   while (! $db->EndOfSeek()) {
       $row = $db->Row();
       if($selected != NULL){
-        if($multiple != NULL) 
-        {                    
+        if($multiple != NULL)
+        {
 
 
             if(in_array($row->id, $array_exist))
             {
-               $bloc_multipl_show .= ' '.$row->text.' - '; 
+               $bloc_multipl_show .= ' '.$row->text.' - ';
            }
 
        }else{
@@ -668,7 +668,7 @@ if(!$db->RowCount()){
 }else{
     $select ="";
 }
-$output .= '<option '.$select.' value="'.$row->id.'">'.$row->text.'</option>';               
+$output .= '<option '.$select.' value="'.$row->id.'">'.$row->text.'</option>';
 }
 
 }
@@ -678,7 +678,7 @@ return $output;
 
     /**
      * Function Select_table
-     * Generate Select field from Table 
+     * Generate Select field from Table
      * @param string $[input_id] [id of input]
      * @param integer $[input_class] [class of input]
      * @param string $[input_value] [value of input default NULL]
@@ -691,11 +691,11 @@ return $output;
      * @return append string into form_fields [Input render]
      */
 
-    public function select_table($input_desc, $input_id, $input_class, $table, $id_table, $order_by , $txt_table, $indx = NULL ,$selected = NULL, $multi = NULL, $where = NULL, $js_array = null, $hard_code = null ) 
+    public function select_table($input_desc, $input_id, $input_class, $table, $id_table, $order_by , $txt_table, $indx = NULL ,$selected = NULL, $multi = NULL, $where = NULL, $js_array = null, $hard_code = null )
     {
         $class_chosen = ($input_class * 100) / 12;
         $bloc_multipl_show = $select = $array_exist = NULL ;
-        
+
         if($multi != NULL && $selected != NULL)
         {
             $array_exist = str_replace('[-', '"', $selected);
@@ -704,10 +704,10 @@ return $output;
             $array_exist = json_decode($array_exist,true);
 
         }
-        
+
         $multiple = $multi == NULL ? NULL : 'multiple=""';
         $output = '<div class="space-2"></div>
-        <div class="form-group">
+        <div class="form-group" id="x'.$input_id.'x">
         <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">'.$input_desc.':</label>
 
         <div class="col-xs-12 col-sm-9">
@@ -723,7 +723,7 @@ return $output;
 
         global $db;
         $sql = "SELECT $id_table as val, $txt_table as txt FROM $table $where order by $order_by limit 0,1000 ";
-        
+
         if (!$db->Query($sql)){
          $db->Kill($db->Error());
      }
@@ -737,16 +737,16 @@ return $output;
       foreach ($options_arr as $key => $value) {
         if($multiple != NULL && $selected != NULL && is_array($array_exist[0]))
         {
-          $select = in_array($key, $array_exist[0]) ? 'selected' : null;          
+          $select = in_array($key, $array_exist[0]) ? 'selected' : null;
         }
       if($multiple == NULL && $selected != NULL){
           $select =  $key == $selected ? "selected" : null;
       }
 
       $output .= '<option  '.$select.'  value="'.$key.'">'.$value.'</option>';
-  }             
+  }
 
-} 
+}
 
 $output .='</select>';
 $output .= $hard_code;
@@ -765,11 +765,11 @@ $output .= $hard_code;
             $this->js_rules($input_id, $js_array);
         }
 
-    } 
+    }
 
     /**
      * Function Select_counter
-     * Generate Select field from counter 
+     * Generate Select field from counter
      * @param string $[input_id] [id of input]
      * @param integer $[input_class] [class of input]
      * @param string $[input_value] [value of input default NULL]
@@ -777,9 +777,9 @@ $output .= $hard_code;
      * @return append string into form_fields [Input render]
      */
 
-    public function select_count($input_desc, $input_id, $input_class, $count, $indx = NULL ,$selected = NULL, $no_zero = false ) 
+    public function select_count($input_desc, $input_id, $input_class, $count, $indx = NULL ,$selected = NULL, $no_zero = false )
     {
-    	$class_chosen = ($input_class * 100) / 12;
+      $class_chosen = ($input_class * 100) / 12;
       $start_zero = !$no_zero ? 0 : 1 ;
         $output = '<div class="space-2"></div>
         <div class="form-group">
@@ -796,12 +796,12 @@ $output .= $hard_code;
 
                      for($i = $start_zero; $i <= $count; $i++ ) {
 
-                      if($selected != NULL){  
-                       $select =  $i == $selected ? "selected":""; 
+                      if($selected != NULL){
+                       $select =  $i == $selected ? "selected":"";
                    }else{
                        $select="";
                    }
-                   $output .= '<option '.$select.' value="'.$i.'">'.$i.'</option>';               
+                   $output .= '<option '.$select.' value="'.$i.'">'.$i.'</option>';
                }
 
                $output .='</select>';
@@ -810,12 +810,12 @@ $output .= $hard_code;
        </div>';
        $this->form_fields .= $output;
 
-   }  
+   }
 
 
 
     /**
-     * Function Select 
+     * Function Select
      * Costum Select define options
      * @param string $[input_id] [id of input]
      * @param integer $[input_class] [class of input]
@@ -823,14 +823,14 @@ $output .= $hard_code;
      * @param integer count [number of option]
      * @return append html into form_fields [Input render]
      */
-    public function select($input_desc, $input_id, $input_class, $options, $indx = NULL ,$selected = NULL, $multi = NULL, $hard_code = null ) 
+    public function select($input_desc, $input_id, $input_class, $options, $indx = NULL ,$selected = NULL, $multi = NULL, $hard_code = null )
     {
-    	$multiple = $multi == NULL ? NULL : 'multiple=""';
+      $multiple = $multi == NULL ? NULL : 'multiple=""';
         //Get class for chosen plugin
 
         $class_chosen = ($input_class * 100) / 12;
-        
-        
+
+
         $output = '<div class="space-2"></div>
         <div class="form-group">
          <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">'.$input_desc.':</label>
@@ -847,8 +847,8 @@ $output .= $hard_code;
 
                      }else{
                       foreach($options as $value => $text):
-                      if($selected != NULL){  
-                       $select =  $value == $selected ? "selected":""; 
+                      if($selected != NULL){
+                       $select =  $value == $selected ? "selected":"";
                    }else{
                        $select="";
                    }
@@ -856,7 +856,7 @@ $output .= $hard_code;
                     endforeach;
 
                      }
-                     
+
 
 
 
@@ -934,7 +934,7 @@ public function draw_datatabe_form($id_table, $verif_value, $columns = array(), 
     session::set($ssid,session::generate_sid());
     $verif_value       = md5(session::get($ssid));
   }
-  
+
   $button_action = "$('#".$id_table."').on('click', 'tr button', function() {
   var row = $(this).closest('tr')
   append_drop_menu('".$url_data."', t.cell(row, 0).data(), '.btn_action')
@@ -945,9 +945,9 @@ public function draw_datatabe_form($id_table, $verif_value, $columns = array(), 
   $table = '<div class="space-2"></div>';
   $table .= '<div class="col-xs-12 '.$id_table.'">'.$button_add_row.'<table id="'.$id_table.'" class="display table table-bordered table-condensed table-hover table-striped dataTable no-footer" cellspacing="0">';
   $table .= '<thead><tr>';
- 
+
   foreach ($columns as $column => $width) {
-    
+
     $table .= '<th>'.$column.'</th>';
     $js_table .= '{"sClass": "center","sWidth":"'.$width.'%"},';
   }
@@ -968,7 +968,7 @@ static public function load_select($table, $value, $text, $where = null)
   $sql = "SELECT $value as val, $text as txt FROM $table $where order by $text limit 0,1000 ";
   if ($db->Query($sql) && $db->RowCount()){
       $output = $db->RecordsSelectArray();
-      
+
   }else{
     $output = $db->Error();
   }
@@ -993,14 +993,14 @@ static public function input_x($input_id, $description, $class = 5)
 static public function date_x($input_id, $description, $class = 5)
 {
   $value = null;
- 
-  
+
+
   $input = '<div class="space-2"></div>
   <div class="form-group">
     <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">'.$description.' entre:</label>
     <div class="col-xs-12 col-sm-3">
       <div class="clearfix input-group">';
-      $input .= '<input type="text" name="'.$input_id.'_s" id="'.$input_id.'_s" class="form-control col-xs-12 col-sm-3" '.$value.'  />';       
+      $input .= '<input type="text" name="'.$input_id.'_s" id="'.$input_id.'_s" class="form-control col-xs-12 col-sm-3" '.$value.'  />';
       $input .= '<span class="input-group-addon"><i class="fa fa-calendar bigger-110"></i></span>';
       $input .= '</div></div>';
       $input .= '<label class="control-label col-xs-12 col-sm-1" for="email">Et :</label>';

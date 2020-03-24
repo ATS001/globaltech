@@ -14,6 +14,8 @@ if (MInit::form_verif('addvisites', false)) {
         'raison_sociale' => Mreq::tp('raison_sociale'),
         'nature_visite' => Mreq::tp('nature_visite'),
         'objet_visite' => Mreq::tp('objet_visite'),
+          'id_client' => Mreq::tp('id_client'),
+          'id_prospects' => Mreq::tp('id_prospects'),
         'date_visite' => Mreq::tp('date_visite'),
         'interlocuteur' => Mreq::tp('interlocuteur'),
         'fonction_interloc' => Mreq::tp('fonction_interloc'),

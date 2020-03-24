@@ -1,4 +1,3 @@
-
     <?php
    
     defined('_MEXEC') or die;
@@ -10,6 +9,7 @@
             'mode_payement' => Mreq::tp('mode_payement'),
             'ref_payement' => Mreq::tp('ref_payement'),
             'montant' => Mreq::tp('montant'),
+            'montant_devise_ext' => Mreq::tp('montant_devise_ext'),
             'pj_id'          => Mreq::tp('pj-id'),
             'depositaire' => Mreq::tp('depositaire'),
             );
@@ -72,10 +72,14 @@
         $fact = new Mfacture();
         $fact->id_facture = Mreq::tp('idfacture');
         $fact->get_commerciale_devis();
-//var_dump(Mreq::tp('idfacture'));
-//var_dump($fact->compte_commercial_info['commission']);
+   
         //execute Insert returne false if error
         if ($new_encaissement->save_new_encaissement()) {
+             $objectif_mensuel = new Mobjectif_mensuel();
+        $objectif_mensuel->start_objectifs_first_of_month();
+        
+        $commission = new Mcommission();
+        $commission->calculerCommissionCommerciale();
            /* if($fact->compte_commercial_info['commission']!=0){
                 
                 if($new_encaissement->credit_compte_commerciale()){

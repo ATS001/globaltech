@@ -155,7 +155,7 @@ if(!$info_contrat->get_devis_info())
 											</li>
 
 											<li>
-											<i class="ace-icon fa fa-caret-right green"></i>Client
+											<i class="ace-icon fa fa-caret-right green"></i> Client
                                             <b class="blue pull-right"><?php echo $info_contrat->g('client');?></b>
 											</li>
 

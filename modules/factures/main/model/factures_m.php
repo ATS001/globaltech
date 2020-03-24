@@ -855,6 +855,7 @@ class Mfacture {
             return null;
         }
     }
+  
 
     /**
      * [save_file For save anattached file for entrie ]
@@ -1493,7 +1494,7 @@ class Mfacture {
         INNER JOIN services
         ON (users_sys.service = services.id)
         INNER JOIN commerciaux
-        ON (devis.id_commercial=commerciaux.id)
+        ON (commerciaux.id IN (REPLACE((REPLACE( devis.id_commercial ,'[\"','')),'\"]','')) )
         WHERE devis.id = " . $id_devis;
 
         if (!$db->Query($req_sql)) {

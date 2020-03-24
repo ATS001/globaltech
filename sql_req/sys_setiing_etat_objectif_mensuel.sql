@@ -35,7 +35,7 @@ SET time_zone = "+00:00";
 --
 
 INSERT INTO `sys_setting` (`id`, `key`, `value`, `comment`, `modul`, `etat`, `creusr`, `credat`, `updusr`, `upddat`) VALUES
-(33, 'etat_objectif_mensuel', '{\"objectif_wait\":\"0\", \"objectif_encour\":\"1\", \"objectif_stop\":\"2\", \"objectif_atteint\":\"3\", \"objectif_non\":\"4\",  \"objectif_force\":\"5\", \"objectif_suspendu\":\"6\"}', 'Etat Objectif mensuel', 178, 1, '1', '2019-12-16 19:50:19', '1', '2019-12-27 16:01:21');
+(33, 'etat_objectif_mensuel', '{"objectif_wait":"0", "objectif_encour":"1", "objectif_stop":"2", "objectif_atteint":"3", "objectif_non":"4",  "objectif_force":"5", "objectif_suspendu":"6", "objectif_paye":"7"}', 'Etat Objectif mensuel', 178, 1, '1', '2019-12-16 19:50:19', '1', '2019-12-27 16:01:21');
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
