@@ -765,8 +765,8 @@ class Mdevis {
         $this->total_ttc_t = $this->total_ht_t + $this->total_tva_t;
 
         //Total commission
-        $this->total_commission = ($this->total_ttc_t * $commission) / 100;
-        $this->total_commission_ex = ($this->total_ttc_t * $commission_ex) / 100;
+        $this->total_commission = ($this->total_ht_t * $commission) / 100;
+        $this->total_commission_ex = ($this->total_ht_t * $commission_ex) / 100;
 
         return true;
     }
