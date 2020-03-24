@@ -1310,7 +1310,7 @@ class Mdevis {
 
         if (!$db->Query($req_sql)) {
             $this->error = false;
-            $this->log .= "Erreur Opération ".$req_sql;
+            $this->log .= "Erreur Opération ";
             return false;
         } else {
             //log
