@@ -711,6 +711,7 @@ class Mobjectif_service {
     {
         
         global $db;
+        $etat_objectif = Msetting::get_set('etat_objectifs', 'valid_obj');
         $table = 'objectif_service';
         $id_service = session::get('service');
         $where = null;
@@ -723,7 +724,7 @@ class Mobjectif_service {
                    REPLACE(FORMAT($table.realise,0),',',' ') AS realise,
                    ROUND($table.realise * 100 / $table.objectif, 2) AS percent,
                    $table.objectif - $table.realise AS reste_int FROM  $table 
-                   WHERE 1=1  $where ";
+                   WHERE $table.etat = $etat_objectif  $where ";
         
         if(!$db->Query($req_sql))
         {
