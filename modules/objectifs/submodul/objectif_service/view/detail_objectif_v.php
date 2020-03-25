@@ -73,6 +73,7 @@ $data_array	 =  array(
 	array('name' => 'Reste',  'nbr' => $info_objectif_service->g('reste_int')) , 
 	
 );
+
 $chart->Pie_render_from_array($data_array, $info_objectif_service->g('objectif_int'), 12);
 
 																	?>
