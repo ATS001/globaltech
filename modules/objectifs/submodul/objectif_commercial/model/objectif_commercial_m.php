@@ -656,7 +656,7 @@ class Mobjectif_commercial {
         INNER JOIN `devis` ON (`devis`.`id` = IF(factures.`base_fact`='C',(SELECT ctr.iddevis FROM contrats ctr WHERE                  ctr.id=factures.`idcontrat`),`factures`.`iddevis` )) 
         INNER JOIN `clients` ON (`clients`.`id` = `devis`.`id_client`) 
         INNER JOIN `encaissements` ON (`encaissements`.`idfacture` = `factures`.`id`) 
-        INNER JOIN `commerciaux`ON (`commerciaux`.`id` = `devis`.`id_commercial`) 
+        INNER JOIN `commerciaux`ON (`devis`.`id_commercial` IN (REPLACE((REPLACE(`commerciaux`.`id`,'[\"','')),'\"]',''))) 
         INNER JOIN `services` ON (`commerciaux`.`id_service` = `services`.`id`) 
         WHERE encaissements.etat IN(1, 0) 
         AND encaissements.`date_encaissement` BETWEEN '$date_s' AND '$date_e' 
