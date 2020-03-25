@@ -1066,12 +1066,12 @@ class Mobjectif_mensuel {
 
         if(!$db->Query($req_sql))
         {
-            var_dump($req_sql);
+            //var_dump($req_sql);
             return false;
         }else{
             if (!$db->RowCount())
             {
-                var_dump($req_sql);
+                //var_dump($req_sql);
                 return false;
             } else {
                 $arr_result = $db->RowArray();                
