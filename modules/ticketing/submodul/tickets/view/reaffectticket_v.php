@@ -7,9 +7,9 @@ $ticket = new Mtickets();
 //Set ID of Module with POST id
 $ticket->id_tickets = Mreq::tp('id');
 //$ticket->get_tickets();
-//Check if Post ID <==> Post idc or get_modul return false. 
+//Check if Post ID <==> Post idc or get_modul return false.
 if (!MInit::crypt_tp('id', null, 'D') or ! $ticket->get_tickets()) {
-    // returne message error red to client 
+    // returne message error red to client
     exit('3#' . $ticket->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
 ?>
@@ -37,9 +37,9 @@ $form->input_hidden('id', $ticket->g('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
 
-//Technicien ==> 
+//Technicien ==>
 $array_technicien[] = array("required", "true", "Choisir un technicien");
-$form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', 'CONCAT(users_sys.lnom," ",users_sys.fnom)', $indx = '------', $selected = $ticket->g('id_technicien'), $multi = NULL, $where = ' service=6 AND etat=1 and id_technicien <> '.$ticket->g('id_technicien'), $array_technicien, NULL);
+$form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', 'CONCAT(users_sys.lnom," ",users_sys.fnom)', $indx = '------', $selected = $ticket->g('id_technicien'), $multi = NULL, $where = ' service=6 AND etat=1 and id <> '.$ticket->g('id_technicien'), $array_technicien, NULL);
 
 //var_dump($ticket);
 ?>
@@ -74,7 +74,7 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
                                                             <li>
                                                                 <i class="ace-icon fa fa-caret-right green"></i>Technicien précèdent :
                                                                 <b style="color:green"><?php $ticket->s("technicien") ?></b>
-                                                            </li> 
+                                                            </li>
                                                             <li>
                                                                 <i class="ace-icon fa fa-caret-right green"></i>Date affectation :
                                                                 <b style="color:green"><?php $ticket->s("date_affectation") ?></b>
@@ -82,7 +82,7 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
                                                             <li>
                                                                 <i class="ace-icon fa fa-caret-right green"></i>Nombre de jour :
                                                                 <b style="color:green"><?php $ticket->s("nbrj") ?></b>
-                                                            </li> 
+                                                            </li>
 <?php } ?>
                                                         <li>
                                                             <i class="ace-icon fa fa-caret-right green"></i>Client :
@@ -92,7 +92,7 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
                                                             <li>
                                                                 <i class="ace-icon fa fa-caret-right green"></i>Site :
                                                                 <b style="color:green"><?php $ticket->s("projet") ?></b>
-                                                            </li> 
+                                                            </li>
 <?php } ?>
                                                         <?php if ($ticket->g("serial_number") != NULL) { ?>
                                                             <li>
@@ -165,7 +165,7 @@ $form->render();
 
 
     });
-</script>	
+</script>
 
 <style>
     .ayoub {

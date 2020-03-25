@@ -75,11 +75,14 @@
    
         //execute Insert returne false if error
         if ($new_encaissement->save_new_encaissement()) {
-             $objectif_mensuel = new Mobjectif_mensuel();
-        $objectif_mensuel->start_objectifs_first_of_month();
+        //Début commentaire FZ le 25-03-2020
+        //$objectif_mensuel = new Mobjectif_mensuel();
+        //$objectif_mensuel->start_objectifs_first_of_month();
         
-        $commission = new Mcommission();
-        $commission->calculerCommissionCommerciale();
+        //$commission = new Mcommission();
+        //$commission->calculerCommissionCommerciale();
+        //Fin commentaire FZ le 25-03-2020
+
            /* if($fact->compte_commercial_info['commission']!=0){
                 
                 if($new_encaissement->credit_compte_commerciale()){

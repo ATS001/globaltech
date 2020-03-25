@@ -91,8 +91,3 @@ if (MInit::form_verif('editticket_frs', false)) {
 
         exit("0#" . $edit_ticket_frs->log);
     }
-}
-
-//No form posted show view
-view::load_view('editticket_frs');
-?>
