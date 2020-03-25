@@ -74,8 +74,11 @@ class Mvisites {
 
         $table = $this->table;
 
-        $sql = "SELECT CONCAT(commerciaux.nom,' ' ,commerciaux.prenom) as com , $table.* FROM
-        $table,commerciaux WHERE  visites.commerciale=commerciaux.id AND $table.id = " . $this->id_visites ;
+        $sql = "SELECT CONCAT(commerciaux.nom,' ' ,commerciaux.prenom) as com ,clients.denomination as client ,
+        if(nature_visite = 'Prospect',(select reference from prospects WHERE id = visites.id_prospects),
+        (select denomination from clients where id = visites.id_client)) as pc,
+         visites.* FROM visites,commerciaux, clients WHERE visites.id_client = clients.id and visites.commerciale=commerciaux.id
+         AND visites.id = " . $this->id_visites ;
 
         if (!$db->Query($sql)) {
             $this->error = false;
