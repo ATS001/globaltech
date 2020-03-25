@@ -1004,7 +1004,7 @@ class Mobjectif_mensuel {
     public function get_list_devis_for_objectif()
     {
         global $db;
-        
+        $etat_devis = Msetting::get_set('etat_devis', 'valid_client').', '.Msetting::get_set('etat_devis', 'devis_livr') ;
         $add_set       = array('return' => '<a href="#" class="this_url" rel="viewdevis" data="%crypt%"> <i class="ace-icon fa fa-eye blue bigger-100"></i></a>', 'data' => 'id');
         $id_objectif   = $this->id_objectif_mensuel;
         $date_s        = date('Y-m-d', strtotime($this->g('date_s')));
@@ -1018,7 +1018,7 @@ class Mobjectif_mensuel {
         INNER JOIN `clients` 
         ON (`devis`.`id_client` = `clients`.`id`)
         WHERE devis.`date_valid_client` BETWEEN '$date_s' AND '$date_e' 
-        AND devis.id_commercial LIKE '%\"$id_commercial\"%'";
+        AND devis.id_commercial LIKE '%\"$id_commercial\"%' AND devis.etat IN( $etat_devis )";
         //exit($req_sql);
         
         if(!$db->Query($req_sql))

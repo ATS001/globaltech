@@ -644,25 +644,7 @@ class Mobjectif_service {
     {
         global $db;
         
-       /* $add_set = array('return' => '<a href="#" class="this_url" rel="viewdevis" data="%crypt%"> <i class="ace-icon fa fa-eye blue bigger-100"></i></a>', 'data' => 'id');
-        $id_objectif = $this->id_objectif_service;
-        $date_s     = date('Y-m-d', strtotime($this->g('date_s')));
-        $date_e     = date('Y-m-d', strtotime($this->g('date_e')));
-        $id_service = $this->g('id_service');
-        
-        $req_sql = "SELECT devis.`id` id,devis.`reference`, clients.denomination,
-        CONCAT(commerciaux.`nom`,' ',commerciaux.`prenom`) AS commercial,
-        REPLACE(FORMAT(devis.`totalttc`,0),',',' ') total_ttc,
-        DATE_FORMAT(devis.`date_devis`,'%d-%m-%Y') AS date_devis, '#' 
-        FROM `factures` 
-        INNER JOIN `devis` ON (`devis`.`id` = IF(factures.`base_fact`='C',(SELECT ctr.iddevis FROM contrats ctr WHERE                  ctr.id=factures.`idcontrat`),`factures`.`iddevis` )) 
-        INNER JOIN `clients` ON (`clients`.`id` = `devis`.`id_client`) 
-        INNER JOIN `encaissements` ON (`encaissements`.`idfacture` = `factures`.`id`) 
-        INNER JOIN `commerciaux`ON (`commerciaux`.`id` = `devis`.`id_commercial`) 
-        INNER JOIN `services` ON (`commerciaux`.`id_service` = `services`.`id`) 
-        WHERE encaissements.etat IN(1, 0) 
-        AND encaissements.`date_encaissement` BETWEEN '$date_s' AND '$date_e' 
-        AND devis.etat <> 200 AND services.id = $id_service GROUP BY devis.id";*/
+        $etat_devis = Msetting::get_set('etat_devis', 'valid_client').', '.Msetting::get_set('etat_devis', 'devis_livr') ;
         $add_set       = array('return' => '<a href="#" class="this_url" rel="viewdevis" data="%crypt%"> <i class="ace-icon fa fa-eye blue bigger-100"></i></a>', 'data' => 'id');
         $id_objectif   = $this->id_objectif_mensuel;
         $date_s        = date('Y-m-d', strtotime($this->g('date_s')));
@@ -675,7 +657,7 @@ class Mobjectif_service {
         FROM `devis`  
         INNER JOIN `clients` 
         ON (`devis`.`id_client` = `clients`.`id`)
-        WHERE devis.`date_valid_client` BETWEEN '$date_s' AND '$date_e' ";
+        WHERE devis.`date_valid_client` BETWEEN '$date_s' AND '$date_e' AND devis.etat IN( $etat_devis )";
         //exit($req_sql);
         
         if(!$db->Query($req_sql))
