@@ -6,14 +6,14 @@ if (!defined('_MEXEC'))
 // Modul: tickets
 //Created : 02-04-2018
 //View
-//Get all tickets info 
+//Get all tickets info
 $info_tickets = new Mticket_frs;
 //Set ID of Module with POST id
 $info_tickets->id_tickets = Mreq::tp('id');
 
-//Check if Post ID <==> Post idc or get_modul return false. 
+//Check if Post ID <==> Post idc or get_modul return false.
 if (!MInit::crypt_tp('id', null, 'D') or ! $info_tickets->get_ticket_frs()) {
-    // returne message error red to client 
+    // returne message error red to client
     exit('3#' . $info_tickets->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
 //var_dump($info_tickets->tickets_info);
@@ -53,12 +53,12 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_tickets->get_ticket_frs()) {
                 $form->input_hidden('idh', Mreq::tp('idh'));
 
 //For more Example see form class
-//Fournisseur ==> 
+//Fournisseur ==>
                 $frn_array[] = array('required', 'true', 'Choisir un fournisseur');
                 $form->select_table('Fournisseur', 'id_fournisseur', 6, 'fournisseurs', 'id', 'id', 'denomination', $indx = '------', $info_tickets->g('id_fournisseur'), $multi = NULL, $where = 'etat=1', $frn_array, NULL);
 
 
-//Date incident ==> 
+//Date incident ==>
                 $date_incident[] = array('required', 'true', 'Insérer la date incident');
                 $form->input_date('Date incident', 'date_incident', 4, $info_tickets->g('date_incident'), $date_incident);
 
@@ -75,14 +75,14 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_tickets->get_ticket_frs()) {
                     'Autres' => 'Autres');
                 $form->select('Nature incident', 'nature_incident', 4, $nature_incident, $indx = NULL, $info_tickets->g('nature_incident'), $multi = NULL, $hard_code_remise);
 
-//Prise en charge par fournisseur 
+//Prise en charge par fournisseur
                 $hard_code_remise = '<label style="margin-left:30px;margin-right : 20px;">'
                         . '</label><input  id="autre_pecf" name="autre_pecf" class="input-large alignLeft" value="' . $info_tickets->g('autre_pecf') . '" type="text"><span class="help-block"></span>';
                 $pec_frs = array('Equipe Noc' => 'Equipe Noc',
                     'Autres' => 'Autres');
                 $form->select('PEC Fournisseur', 'prise_charge_frs', 4, $pec_frs, $indx = NULL, $info_tickets->g('prise_charge_frs'), $multi = NULL, $hard_code_remise);
 
-//Prise en charge par Globaltech 
+//Prise en charge par Globaltech
                 $hard_code_remise = '<label style="margin-left:30px;margin-right : 20px;">'
                         . '</label><input  id="autre_pecg" name="autre_pecg" class="input-large alignLeft" value="' . $info_tickets->g('autre_pecg') . '" type="text"><span class="help-block"></span>';
                 $pec_glbt = array('Support Technique' => 'Support Technique',
@@ -110,7 +110,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_tickets->get_ticket_frs()) {
 
 
         if ($('#autre_pecg').val() == "")
-            $('#autre_pecg').hide
+            $('#autre_pecg').hide();
         if ($('#autre_pecf').val() == "")
             $('#autre_pecf').hide();
         if ($('#autre_nt').val() == "")
@@ -165,4 +165,4 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_tickets->get_ticket_frs()) {
 
     });
 
-</script>  
+</script>

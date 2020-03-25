@@ -41,15 +41,15 @@ if ($action == 'load_select_produit') {
 
 //Load_categorie by type
 if ($action == 'check_exist_sn') {
-    
+
     $val= MReq::tp('id');
     $where = "serial_number = '$val'";
     $table = 'serial_number';
     $value = 'id';
     $text = 'serial_number';
-    
+
     if ($output = Mform::load_select($table, $value, $text, $where)) {
-       echo json_encode($output);       
+       echo json_encode($output);
                    } else {
         echo json_encode(array('error' => false, 'mess' => 'Pas de SN trouvée ','sn'=>$val));
     }
@@ -57,16 +57,16 @@ if ($action == 'check_exist_sn') {
 
 //Load_site by client
 if ($action == 'load_client_site') {
-    
+
     $val= MReq::tp('id');
     $where = "id_client = '$val'";
     $table = 'sites';
     $value = 'id';
     $text = 'reference';
-    
+
     if ($output = Mform::load_select($table, $value, $text, $where)) {
-       echo json_encode($output);       
+       echo json_encode($output);
                    } else {
-        echo json_encode(array('error' => false, 'mess' => 'Pas de SN trouvée ','sn'=>$val));
+        echo json_encode(array('error' => false, 'mess' => 'Pas de site trouvée ','sn'=>$val));
     }
-	}
+    }

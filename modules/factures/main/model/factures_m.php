@@ -460,8 +460,8 @@ class Mfacture {
             return FALSE;
         }
 
-        $this->getTauxChange($this->facture_info['id_devise']);
-        $taux = $this->taux_change;
+        //$this->getTauxChange($this->facture_info['id_devise']);
+        //$taux = $this->taux_change;
 
         //$this->Generate_encaissement_reference();
         global $db;
@@ -486,7 +486,7 @@ class Mfacture {
             $values["mode_payement"] = MySQL::SQLValue($this->_data['mode_payement']);
             $values["ref_payement"] = MySQL::SQLValue($this->_data['ref_payement']);
             $values["montant"] = MySQL::SQLValue($this->_data['montant']);
-            $values["montant_devise_ext"] = MySQL::SQLValue($this->_data['montant_devise_ext']*$taux);
+            $values["montant_devise_ext"] = MySQL::SQLValue($this->_data['montant_devise_ext']);
             $values["depositaire"] = MySQL::SQLValue($this->_data['depositaire']);
             $values["date_encaissement"] = MySQL::SQLValue(date("Y-m-d"));
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));

@@ -17,12 +17,12 @@ $visites->get_visites_infos();
 
         <?php
         TableTools::btn_add('visites', 'Liste visites', Null, $exec = NULL, 'reply');
-        ?>		
+        ?>
     </div>
 </div>
 <div class="page-header">
     <h1>
-        Détails du visites:     <?php $visites->s('id'); ?> 
+        Détails du visites:     <?php $visites->s('id'); ?>
 
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
@@ -38,7 +38,7 @@ $visites->get_visites_infos();
                         <li class="active">
                             <a data-toggle="tab" href="#home">
                                 <i class="green ace-icon fa fa-installer bigger-120"></i>
-                                visites 
+                                visites
                             </a>
                         </li>
 
@@ -49,7 +49,7 @@ $visites->get_visites_infos();
                         <div id="home" class="tab-pane in active">
                             <div class="row">
                                 <div class="col-xs-6 col-sm-6">
-                                    
+
                                     <div class="col-sm-10">
                                 <div class="row">
                                     <div class="col-xs-11 label label-lg label-success arrowed-in arrowed-right">
@@ -62,45 +62,52 @@ $visites->get_visites_infos();
                                         <li>
                                             <i class="ace-icon fa fa-caret-right green"></i> Commerciale
                                             <b class="blue pull-right"><?php $visites->s('com'); ?></b>
-                                        </li> 
+                                        </li>
                                         <li>
                                             <i class="ace-icon fa fa-caret-right green"></i> Raison sociale
                                             <b class="blue pull-right"><?php $visites->s('raison_sociale'); ?></b>
-                                        </li> 
+                                        </li>
                                         <li>
                                             <i class="ace-icon fa fa-caret-right green"></i> Nature visite
                                             <b class="blue pull-right"><?php $visites->s('nature_visite'); ?></b>
-                                        </li> 
+                                        </li>
+
+                                        <li>
+                                            <i class="ace-icon fa fa-caret-right green"></i> Client/Prospect
+                                            <b class="blue pull-right"><?php $visites->s('pc'); ?></b>
+                                        </li>
+
+
                                         <li>
                                             <i class="ace-icon fa fa-caret-right green"></i> Objet visite
                                             <b class="blue pull-right"><?php $visites->s('objet_visite'); ?></b>
-                                        </li> 
+                                        </li>
                                         <li>
                                             <i class="ace-icon fa fa-caret-right green"></i> Date visite
                                             <b class="blue pull-right"><?php $visites->s('date_visite'); ?></b>
-                                        </li> 
+                                        </li>
                                         <li>
                                             <i class="ace-icon fa fa-caret-right green"></i> Interlocuteur
                                             <b class="blue pull-right"><?php $visites->s('interlocuteur'); ?></b>
-                                        </li> 
+                                        </li>
                                         <li>
                                             <i class="ace-icon fa fa-caret-right green"></i> Fonction interlocuteur
                                             <b class="blue pull-right"><?php $visites->s('fonction_interloc'); ?></b>
-                                        </li> 
+                                        </li>
                                         <li>
                                             <i class="ace-icon fa fa-caret-right green"></i> Coordonées interlocuteur
                                             <b class="blue pull-right"><?php $visites->s('coordonees_interloc'); ?></b>
-                                        </li> 
+                                        </li>
                                         <li>
                                             <i class="ace-icon fa fa-caret-right green"></i> Commentaire
                                             <b class="blue pull-right"><?php $visites->s('commentaire'); ?></b>
-                                        </li> 
+                                        </li>
                                     </ul>
                                 </div>
                             </div><!-- /.col -->
-                                    
-                                    
-                                    
+
+
+
                                 </div>
                             </div>
                         </div>
