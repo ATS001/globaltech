@@ -32,18 +32,18 @@ class MHighchart
 		$crc = 0;
 		foreach ($data_array as $key => $value) {
 
-			$percentage_part = ((int)$value['nbr'] / (int)$total_part) * 100;
+			$percentage_part = ((float)$value['nbr'] / (float)$total_part) * 100;
 
 			array_push($arr_nbr_sta,
 			    array('name' => $value['name'], 'nbr'  => $value['nbr'], 'y' => $percentage_part)
 			);
-			$crc += $percentage_part;
+			$crc += (float)$percentage_part;
 			
 		 	
 		}
         
-		if($crc < 100){
-			$output = '<div class="alert alert-danger">Les valeurs ne donnent pas de résultat</div> ';
+		if($crc < (float)99){
+			$output = '<div class="alert alert-danger">Les valeurs ne donnent pas de résultat ( '.$crc.' )</div> ';
 			return print($output);
 		}
 
