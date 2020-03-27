@@ -1210,6 +1210,23 @@ class Mdevis {
         $year = date('Y', strtotime($this->_data['date_valid_client']));
         $month = date('m', strtotime($this->_data['date_valid_client']));    
         foreach ($commercials_array as $id_commercial) {
+        //Début FZ pour éliminer la vérification de l'objectif mensuel s'il s'agit de la DG ou Admin le 27/03/2020
+        $commercial = new Mcommerciale();
+        $commercial->id_commerciale= $id_commercial;
+        $commercial->get_commerciale();
+        $commercial_id_user = $commercial->g('id_user_sys');
+        var_dump($commercial_id_user);
+
+        $commercial_d = new Musers();
+        $commercial_d->id_user = $commercial_id_user;
+        $commercial_d->get_user();
+        $service_comm = $commercial_d->g('service');
+        var_dump($service_comm);
+
+        if (in_array($service_comm, array(1, 3))) {
+                null;
+        } 
+        else{
             $sql = "SELECT id FROM objectif_mensuels WHERE id_commercial = $id_commercial AND annee = $year  AND mois = $month";
             $id_objectif = $db->QuerySingleValue0($sql);
             if($id_objectif == '0')
@@ -1224,7 +1241,11 @@ class Mdevis {
                     $this->log .="</br>Impossible d'ajouter la réalisation au objectif $id_objectif ";
                     return false;
                 }
-            }                        
+            }  
+
+        }
+        // FIN FZ le 27/03/2020
+                      
         } 
         return true;       
         /*=====  End of test if all commercial have objectif  ======*/       
@@ -1286,20 +1307,9 @@ class Mdevis {
             $this->check_livraison();
         }
         
-        //Début FZ pour éliminer l'insertion des réalisations s'il s'agit de la DG ou Admin le 27/03/2020
-        $id_service = session::get('service');
-        if (in_array($id_service, array(1, 3))) {
-            $where_user = null;
-        } 
-        else{
-
-            if($reponse == 'valid' && !$this->insert_realise_into_objectif_mensuel(1)){
-                return false;
-            }
+        if($reponse == 'valid' && !$this->insert_realise_into_objectif_mensuel(1)){
+            return false;
         }
-        // FIN FZ le 27/03/2020        
-        
-        
         global $db;
         $table = $this->table;
         $id_devis = $this->id_devis;
