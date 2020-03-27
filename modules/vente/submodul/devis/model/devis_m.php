@@ -1194,7 +1194,7 @@ class Mdevis {
 
     private function insert_realise_into_objectif_mensuel($test)
     {
-        
+
         $commercials_array = json_decode($this->devis_info['id_commercial'], true);
         $nbr_commercials = count($commercials_array);
         if(!is_array($commercials_array)){
@@ -1286,9 +1286,20 @@ class Mdevis {
             $this->check_livraison();
         }
         
-        if($reponse == 'valid' && !$this->insert_realise_into_objectif_mensuel(1)){
-            return false;
+        //Début FZ pour éliminer l'insertion des réalisations s'il s'agit de la DG ou Admin le 27/03/2020
+        $id_service = session::get('service');
+        if (in_array($id_service, array(1, 3))) {
+            $where_user = null;
+        } 
+        else{
+
+            if($reponse == 'valid' && !$this->insert_realise_into_objectif_mensuel(1)){
+                return false;
+            }
         }
+        // FIN FZ le 27/03/2020        
+        
+        
         global $db;
         $table = $this->table;
         $id_devis = $this->id_devis;
