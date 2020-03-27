@@ -1215,13 +1215,13 @@ class Mdevis {
         $commercial->id_commerciale= $id_commercial;
         $commercial->get_commerciale();
         $commercial_id_user = $commercial->g('id_user_sys');
-        var_dump($commercial_id_user);
+        //var_dump($commercial_id_user);
 
         $commercial_d = new Musers();
         $commercial_d->id_user = $commercial_id_user;
         $commercial_d->get_user();
         $service_comm = $commercial_d->g('service');
-        var_dump($service_comm);
+        //var_dump($service_comm);
 
         if (in_array($service_comm, array(1, 3))) {
                 null;
