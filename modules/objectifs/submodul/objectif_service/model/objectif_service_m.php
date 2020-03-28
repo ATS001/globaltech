@@ -644,7 +644,7 @@ class Mobjectif_service {
     {
         global $db;
         
-        $etat_devis = Msetting::get_set('etat_devis', 'valid_client').', '.Msetting::get_set('etat_devis', 'devis_livr') ;
+        $etat_devis = Msetting::get_set('etat_devis', 'valid_client').', '.Msetting::get_set('etat_devis', 'devis_livr').', '.Msetting::get_set('etat_devis', 'devis_archive') ;
         $add_set       = array('return' => '<a href="#" class="this_url" rel="viewdevis" data="%crypt%"> <i class="ace-icon fa fa-eye blue bigger-100"></i></a>', 'data' => 'id');
         $id_objectif   = $this->id_objectif_mensuel;
         $date_s        = date('Y-m-d', strtotime($this->g('date_s')));
