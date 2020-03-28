@@ -136,7 +136,7 @@ class Mdevis {
         , ref_ville.ville
         , ref_devise.abreviation as devise
         , services.service as comercial
-        , 'Commercial (s)' as commercial
+        , (SELECT  GROUP_CONCAT(CONCAT(c.prenom,' ',c.nom) ORDER BY c.id ASC SEPARATOR ', ') AS prenoms FROM commerciaux c WHERE FIND_IN_SET(c.id, REPLACE(REPLACE(REPLACE((REPLACE(devis.id_commercial,'[','')),']',''),'\"',''),'\"','')) > 0 ) as commercial
         , CONCAT(users_sys.lnom,' ',users_sys.fnom) as cre_usr
         FROM
         devis

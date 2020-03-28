@@ -81,7 +81,7 @@ class Mclients {
         $table = "devis";
         global $db;
 
-        $sql = "SELECT d.`id`,d.`reference`,DATE_FORMAT(d.`date_devis`,'%d-%m-%Y') AS date_devis,CONCAT(c.`nom`,' ',c.`prenom`) as commercial,REPLACE(FORMAT(d.`totalht`,0),',',' '),REPLACE(FORMAT(d.`totaltva`,0),',',' '),REPLACE(FORMAT(d.`total_remise`,0),',',' '),REPLACE(FORMAT(d.`totalttc`,0),',',' '), d.etat as etat FROM devis d, commerciaux c WHERE c.`id` IN (REPLACE((REPLACE(d.`id_commercial`,'[\"','')),'\"]','')) and d.etat <> 200 and d.`id_client` = " . $this->id_client . " order by d.date_devis desc";
+        $sql = "SELECT d.`id`,d.`reference`,DATE_FORMAT(d.`date_devis`,'%d-%m-%Y') AS date_devis,(SELECT  GROUP_CONCAT(CONCAT(c.prenom,' ',c.nom) ORDER BY c.id ASC SEPARATOR ', ') AS prenoms FROM commerciaux c WHERE FIND_IN_SET(c.id, REPLACE(REPLACE(REPLACE((REPLACE(d.id_commercial,'[','')),']',''),'\"',''),'\"','')) > 0 ) as commercial,REPLACE(FORMAT(d.`totalht`,0),',',' '),REPLACE(FORMAT(d.`totaltva`,0),',',' '),REPLACE(FORMAT(d.`total_remise`,0),',',' '),REPLACE(FORMAT(d.`totalttc`,0),',',' '), d.etat as etat FROM devis d WHERE d.etat <> 200 and d.`id_client` = " . $this->id_client . " order by d.date_devis desc";
 
         if (!$db->Query($sql)) {
             $this->error = false;
