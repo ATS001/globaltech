@@ -93,6 +93,10 @@ $plafond_remise = session::get('service') == 7 ? Msetting::get_set('plafond_remi
 $form->input_hidden('remise_plafond', $plafond_remise);
 $form->input_hidden('old_client', null);
 
+if($devis_base != null){
+  $form->input_hidden('id_client',$client);
+}
+
 //Date devis
 $array_date[]= array('required', 'true', 'Insérer la date de devis');
 $form->input_date('Date devis', 'date_devis', 2, date('d-m-Y'), $array_date);

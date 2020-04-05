@@ -11,6 +11,7 @@ $info_client->id_client = MReq::tp('id_client');
 $info_client->get_client();
 $client_devise = $info_client->client_info['id_devise'];
 //var_dump($client_devise);
+//var_dump(MReq::tp('id_client'));
 
 if($ste_devise != $client_devise)
 {
