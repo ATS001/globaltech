@@ -17,6 +17,7 @@
  $devise=$client_d->g('devise');
  $id_devise_c=$client_d->g('id_devise');
  $client = $info_devis->g('id_client');
+ $devis_base = $info_devis->devis_info['devis_base'];
 
 ?>
 
