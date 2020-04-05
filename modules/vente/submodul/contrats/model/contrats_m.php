@@ -320,9 +320,10 @@ class Mcontrat {
     public function generate_facture($id_echeance) {
         global $db;
         $tva = Msetting::get_set('tva');
-        $sql_req = " CALL manuel_generate_facturation($tva,$id_echeance)";
+        $sql_req   = " CALL manuel_generate_facturation($tva,$id_echeance)";
+        $sql_req_2 = " CALL manuel_generate_facturation_upgrade($tva,$id_echeance)";
 
-        if (!$db->Query($sql_req)) {
+        if (!$db->Query($sql_req) or !$db->Query($sql_req_2)) {
             $this->error = false;
             $this->log .= '</br>Erreur génération de facture' . $sql_req;
             return false;
@@ -338,7 +339,7 @@ class Mcontrat {
         }
     }
 
-    //Generate contrat reference
+   //Generate contrat reference
     private function Generate_contrat_reference() {
         if ($this->error == false) {
             return false;

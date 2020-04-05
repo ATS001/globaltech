@@ -1202,8 +1202,27 @@ class Mdevis {
             return false;
         }
         global $db;
-        $realise = intval(($this->g('totalht') - $this->g('total_commission_ex')) / $nbr_commercials); 
+
+        //Début FZ pour Upgrade le 04/04/2020
+        if ($this->devis_info['devis_base'] == NULL){
+            $realise = intval(($this->g('totalht') - $this->g('total_commission_ex')) / $nbr_commercials);             
+        }else{
+            $devis_upgrade = new  Mdevis();
+            $devis_upgrade->id_devis = $this->devis_info['devis_base'];
+            $devis_upgrade->get_devis();
+
+            $realis_devis  = ($this->g('totalht') - $this->g('total_commission_ex'));
+            $realis_upgrade= ($devis_upgrade->g('totalht') - $devis_upgrade->g('total_commission_ex'));
+
+            if( $realis_devis > $realis_upgrade){
+                $realise = intval(( $realis_devis - $realis_upgrade)/ $nbr_commercials);
+            }else{
+                $realise = 0;                 
+            }              
         
+        }
+        //Fin FZ le 04/04/2020
+
         /*============================================================
         =            test if all commercial have objectif            =
         ============================================================*/   
