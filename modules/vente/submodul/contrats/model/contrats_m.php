@@ -409,7 +409,7 @@ class Mcontrat {
             $values["date_notif"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_notif'])));
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
-            $values["contrat_base"] = MySQL::SQLValue($this->_data['contrat_base']);
+            $values["abn_base"] = MySQL::SQLValue($this->_data['abn_base']);
             $values["date_up"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_up'])));
 
             //Check if Insert Query been executed (False / True)
@@ -1179,7 +1179,7 @@ class Mcontrat {
 
         $table = $this->table;
 
-         $sql = "SELECT $table.* ,IF(contrats.contrat_base != null,(select reference from contrats where id = contrats.contrat_base), null) as cb,DATE_FORMAT(contrats.date_contrat,'%d-%m-%Y') AS date_contrat,DATE_FORMAT($table.date_contrat,'%d-%m-%Y') AS date_contrat , DATE_FORMAT($table.date_effet,'%d-%m-%Y') AS date_effet ,DATE_FORMAT($table.date_fin,'%d-%m-%Y') AS date_fin , ref_type_echeance.type_echeance AS type_echeance
+         $sql = "SELECT $table.* ,IF(contrats.abn_base != null,(select reference from contrats where id = contrats.abn_base), null) as cb,DATE_FORMAT(contrats.date_contrat,'%d-%m-%Y') AS date_contrat,DATE_FORMAT($table.date_contrat,'%d-%m-%Y') AS date_contrat , DATE_FORMAT($table.date_effet,'%d-%m-%Y') AS date_effet ,DATE_FORMAT($table.date_fin,'%d-%m-%Y') AS date_fin , ref_type_echeance.type_echeance AS type_echeance
                    FROM $table,ref_type_echeance
                   WHERE  $table.idtype_echeance=ref_type_echeance.id AND $table.id = " . $this->id_contrat;
 

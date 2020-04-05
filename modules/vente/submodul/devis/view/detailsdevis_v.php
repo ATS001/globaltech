@@ -2,7 +2,9 @@
 									<div class="widget-header widget-header-large">
 										<h3 class="widget-title grey lighter">
 											<i class="ace-icon fa fa-adress-card-o green"></i>
-											Client: <?php $info_devis->s('denomination')?>
+											<?php if($info_devis->s('db') != null) { ?>
+											Devis révisé: <?php $info_devis->s('db')?>
+										<?php } else { Client: $info_devis->s('denomination'); } ?>
 										</h3>
 
 										<!-- #section:pages/invoice.info -->
@@ -27,7 +29,7 @@
 												<i class="ace-icon fa fa-print"></i>
 											</a>
 
-										</div>       
+										</div>
 
 
 
@@ -48,37 +50,37 @@
 														<ul class="list-unstyled spaced">
 															<li>
 																<i class="ace-icon fa fa-caret-right blue"></i>
-																Identifiant: 
+																Identifiant:
 																<b class="blue pull-right"><?php echo $info_devis->g('denomination').'  #'.$info_devis->g('reference_client')?></b>
 															</li>
 
 															<li>
 																<i class="ace-icon fa fa-caret-right blue"></i>
-																Adresse: 
+																Adresse:
 																<b class="blue pull-right"><?php echo $info_devis->g('adresse').'  '.$info_devis->g('bp').' '.$info_devis->g('ville').'  '.$info_devis->g('pays')?></b>
 															</li>
 
 															<li>
 																<i class="ace-icon fa fa-caret-right blue"></i>
-																Email: 
+																Email:
 																<b class="blue pull-right"><?php $info_devis->s('email')?></b>
 															</li>
 															<li>
 																<i class="ace-icon fa fa-caret-right blue"></i>
-																Téléphone: 
+																Téléphone:
 																<b class="blue pull-right"><?php $info_devis->s('tel')?></b>
 															</li>
 															<?php if($info_devis->g('projet') != null){?>
 																<li>
 																	<i class="ace-icon fa fa-caret-right blue"></i>
-																	Projet: 
+																	Projet:
 																	<b class="blue pull-right"><?php $info_devis->s('projet')?></b>
 																</li>
 															<?php }?>
 															<?php if($info_devis->g('nif') != null){?>
 																<li>
 																	<i class="ace-icon fa fa-caret-right blue"></i>
-																	Identifiant Fiscal: 
+																	Identifiant Fiscal:
 																	<b class="blue pull-right"><?php $info_devis->s('nif')?></b>
 																</li>
 															<?php }?>
@@ -101,23 +103,23 @@
 														<ul class="list-unstyled  spaced">
 															<li>
 																<i class="ace-icon fa fa-caret-right green"></i>
-																Commercial: 
+																Commercial:
 																<b class="blue pull-right"><?php $info_devis->s('commercial');?></b>
 															</li>
 
 															<li>
 																<i class="ace-icon fa fa-caret-right green"></i>
-																Total: 
+																Total:
 																<b class="blue pull-right"><?php $info_devis->s('total_no_remise'); echo ' ';$info_devis->s('devise') ?></b>
 															</li>
 															<li>
 																<i class="ace-icon fa fa-caret-right green"></i>
-																Total Remises <?php $info_devis->s('valeur_remise')?> %: 
+																Total Remises <?php $info_devis->s('valeur_remise')?> %:
 																<b class="blue pull-right"><?php $info_devis->s('total_remise'); echo ' ';$info_devis->s('devise')?></b>
 															</li>
 															<li>
 																<i class="ace-icon fa fa-caret-right green"></i>
-																Total hors Taxes: 
+																Total hors Taxes:
 																<b class="blue pull-right"><?php $info_devis->s('totalht'); echo ' ';$info_devis->s('devise')?></b>
 															</li>
 
@@ -125,7 +127,7 @@
 
 															<li>
 																<i class="ace-icon fa fa-caret-right green"></i>
-																Total TVA: 
+																Total TVA:
 																<b class="blue pull-right"><?php $info_devis->s('totaltva'); echo ' ';$info_devis->s('devise')?></b>
 															</li>
 
@@ -133,7 +135,7 @@
 
 															<li>
 																<i class="ace-icon fa fa-caret-right green"></i>
-																Total TTC: 
+																Total TTC:
 																<b class="blue pull-right"><?php $info_devis->s('totalttc'); echo ' ';$info_devis->s('devise')?></b>
 															</li>
 														</ul>
@@ -158,11 +160,11 @@
 														<span class="red"><?php $info_devis->s('totalttc'); echo ' ';$info_devis->s('devise')?></span>
 													</h4>
 												</div>
-												<div class="col-sm-7 pull-left"> 
+												<div class="col-sm-7 pull-left">
 													<b class="red">
-														<?php 
+														<?php
 														$devise = $info_devis->g('devise');
-														
+
 
 														$obj = new nuts($info_devis->g('totalttc'), $devise);
 														$ttc_lettre = $obj->convert("fr-FR");

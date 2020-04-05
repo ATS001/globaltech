@@ -14,7 +14,7 @@ if (MInit::form_verif('addcontrats', false)) {
         'date_notif' => Mreq::tp('date_notif'),
         'pj_id' => Mreq::tp('pj-id'),
         'pj_photo_id' => Mreq::tp('pj_photo-id'),
-        'contrat_base' => Mreq::tp('contrat_base'),
+        'abn_base' => Mreq::tp('abn_base'),
         'date_up' => Mreq::tp('date_up')
     );
 
