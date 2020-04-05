@@ -5,9 +5,10 @@
  $info_devis->id_devis = Mreq::tp('id');
 //Check if Post ID <==> Post idc or get_modul return false. 
  if(!MInit::crypt_tp('id', null, 'D') or !$info_devis->get_devis())
- { 	
- 	// returne message error red to client 
- 	exit('3#'.$info_user->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
+
+ {  
+    // returne message error red to client 
+    exit('3#'.$info_user->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
  }
 
  $client_d = new Mclients();
@@ -15,36 +16,41 @@
  $client_d->get_client();
  $devise=$client_d->g('devise');
  $id_devise_c=$client_d->g('id_devise');
+ $client = $info_devis->g('id_client');
 
 ?>
 
 <div class="pull-right tableTools-container">
-	<div class="btn-group btn-overlap">
-				
-		<?php TableTools::btn_add('devis','Liste des Devis', Null, $exec = NULL, 'reply'); ?>
-					
-	</div>
+    <div class="btn-group btn-overlap">
+
+                
+        <?php TableTools::btn_add('devis','Liste des Devis', Null, $exec = NULL, 'reply'); ?>
+
+                    
+    </div>
 </div>
 <div class="page-header">
-	<h1>
-		Modifier le Devis: <?php $info_devis->s('reference')?>
-		<small>
-			<i class="ace-icon fa fa-angle-double-right"></i>
-		</small>
-	</h1>
+    <h1>
+        Modifier le Devis: <?php $info_devis->s('reference')?>
+        <small>
+            <i class="ace-icon fa fa-angle-double-right"></i>
+        </small>
+    </h1>
 </div><!-- /.page-header   -->
 <!-- Bloc form Add Devis-->
 <div class="row">
-	<div class="col-xs-12">
-		<div class="clearfix">
-			
-		</div>
-		<div class="table-header">
-			Formulaire: "<?php echo ACTIV_APP; ?>"
-		</div>
-		<div class="widget-content">
-			<div class="widget-box">
-				
+    <div class="col-xs-12">
+        <div class="clearfix">
+
+            
+        </div>
+        <div class="table-header">
+            Formulaire: "<?php echo ACTIV_APP; ?>"
+        </div>
+        <div class="widget-content">
+            <div class="widget-box">
+
+                
 <?php
 $form = new Mform('editdevis', 'editdevis', '1', 'devis', '0', null);
 $form->input_hidden('old_client', null);
@@ -52,7 +58,11 @@ $form->input_hidden('old_client', null);
 $form->input_hidden('id', $info_devis->g('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
+
 //Reference
+if($devis_base != null){
+  $form->input_hidden('id_client',$client);
+}
 $form->input_hidden('checker_reference',  MInit::cryptage($info_devis->g('reference'), 1));
 $form->input_hidden('reference', $info_devis->g('reference'));
 $plafond_remise = session::get('service') == 7 ? Msetting::get_set('plafond_remise_commercial') : 10;
@@ -64,7 +74,10 @@ $form->input_date('Date devis', 'date_devis', 4, $info_devis->g('date_devis'), $
 $hard_code_client = '<a id="add_client_diver" href="#" rel="add_client_diver" data="" data_titre="Ajout Client Diver " class=" "><span class="help-block returned_span"><i class="fa fa-plus"></i> Ajouter un client divers</span></a>';
 $client_devise = '<span class="help-block returned_client"><i class="fa fa-money"></i> Ce devis sera créé en: '.$devise.' </span>';
 $client_array[]  = array('required', 'true', 'Choisir un Client');
+
+if($devis_base == null){
 $form->select_table('Client ', 'id_client', 8, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' , $info_devis->g('id_client'),$multi=NULL, $where='etat=1 or type_client=\'T\'', $client_array, $hard_code_client.$client_devise);
+}
 //TVA
 $tva_opt = array('O' => 'OUI' , 'N' => 'NON' );
 $form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$info_devis->g('tva'), $multi = NULL);
@@ -133,64 +146,70 @@ $form->button('Enregistrer');
 //Form render
 $form->render();
 ?>
-			</div>
-		</div>
-	</div>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- End Add devis bloc -->
-		
+
+        
 <script type="text/javascript">
 $(document).ready(function() {
     $cms = parseFloat($('#commission').val());
+
     
     //called when key is pressed in textbox
-	 function calculat_devis($totalht, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc,$commission,$f_total_commission)
-	 {
-    	
-    	var $totalht         = parseFloat($totalht) ? parseFloat($totalht) : 0;
-    	//var $type_remise    = $type_remise == null ? 'P' : $type_remise;
-    	var $remise_valeur  = parseFloat($remise_valeur) ? parseFloat($remise_valeur) : 0;
-    	var $tva            = $tva == null ? 'O' : $tva;
+     function calculat_devis($totalht, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc,$commission,$f_total_commission)
+     {
+
+        
+        var $totalht         = parseFloat($totalht) ? parseFloat($totalht) : 0;
+        //var $type_remise    = $type_remise == null ? 'P' : $type_remise;
+        var $remise_valeur  = parseFloat($remise_valeur) ? parseFloat($remise_valeur) : 0;
+        var $tva            = $tva == null ? 'O' : $tva;
         var $val_tva = <?php echo Mcfg::get('tva')?>
-    	
-    	//calculate remise
-    	if($type_remise == 'P')
-    	{
-    		$totalht_remised = $totalht - ($totalht * $remise_valeur) / 100;
 
-    	}else if($type_remise == 'M'){
-    		var $totalht_remised = $totalht - $remise_valeur;
+        
+        //calculate remise
+        if($type_remise == 'P')
+        {
+            $totalht_remised = $totalht - ($totalht * $remise_valeur) / 100;
 
-    	}else{
-    		var $totalht_remised = $totalht;
-    	}
-    	//Total HT 
-    	var $total_ht = $totalht_remised;
-    	//Calculate TVA
-    	if($tva == 'N')
-    	{
-    		var $total_tva = 0;
-    	}else{
-    		var $total_tva = ($total_ht * $val_tva) / 100; //TVA value get from app setting
-    	}
-    	var $total_ttc = $total_ht + $total_tva ;
+        }else if($type_remise == 'M'){
+            var $totalht_remised = $totalht - $remise_valeur;
+
+        }else{
+            var $totalht_remised = $totalht;
+        }
+        //Total HT 
+        var $total_ht = $totalht_remised;
+        //Calculate TVA
+        if($tva == 'N')
+        {
+            var $total_tva = 0;
+        }else{
+            var $total_tva = ($total_ht * $val_tva) / 100; //TVA value get from app setting
+        }
+        var $total_ttc = $total_ht + $total_tva ;
         var $total_commission = ($total_ttc * $commission) / 100;
         $('#'+$f_total_ht).val(Math.round($total_ht));
         $('#'+$f_total_tva).val(Math.round($total_tva));
         $('#'+$f_total_ttc).val(Math.round($total_ttc));  
+
+
         //$('#'+$f_total_commission).val(Math.round($total_commission));    
     } 
     $('#addRow').on( 'click', function () {
 
         $cms = parseFloat($('#commission').val());
 
-    	var table = $('#table_details_devis').DataTable();
+        var table = $('#table_details_devis').DataTable();
 
-    	if($('#id_client').val() == ''){
+        if($('#id_client').val() == ''){
 
-    		ajax_loadmessage('Il faut choisir un client','nok');
-    		return false;
-    	}
+            ajax_loadmessage('Il faut choisir un client','nok');
+            return false;
+        }
 
         if($('#id_commercial').val() == ''){
 
@@ -209,9 +228,10 @@ $(document).ready(function() {
             return false;
         }
         var $link  = $(this).attr('rel');
-   		var $titre = $(this).attr('data_titre'); 
-   		var $data  = $(this).attr('data')+'&commission='+$('#commission').val()+'&id_client='+$('#id_client').val(); 
+        var $titre = $(this).attr('data_titre'); 
+        var $data  = $(this).attr('data')+'&commission='+$('#commission').val()+'&id_client='+$('#id_client').val(); 
         ajax_bbox_loader($link, $data, $titre, 'large')
+
         
     });
 
@@ -255,6 +275,10 @@ $(document).ready(function() {
                     }
 
 
+
+
+
+
                 });  
             
             
@@ -266,30 +290,39 @@ $(document).ready(function() {
 
     $('#commission').focusin( function () {
         $(this).data('exist_val_commission', $(this).val());
+
         
     });
     $('#commission').bind('input change', function () {
         var $exist_value_commission = $(this).data('exist_val_commission');
         $cms = parseFloat($('#commission').val());
+
         
         $set_commision = parseFloat(<?php echo Msetting::get_set('plafond_comission') ?>);
 
         if($cms > $set_commision){
+
+
  
             
             ajax_loadmessage('La commission ne doit pas dépasser '+$set_commision,'nok',5000);
+
            
             $('#commission').val($exist_value_commission);
+
             
             return false;
+
             
         }
+
         
     });
 
     $('#commission').focusout( function () {
          var $exist_value_commission = $(this).data('exist_val_commission');
         //Get previous data
+
         
         //var $exist_type_commission = $('#type_commission').data('exist_type_commission');
 
@@ -305,9 +338,11 @@ $(document).ready(function() {
 
         if($cms > $set_commision){
 
+
             
             $('#commission').val($exist_value_commission);
             return false;
+
             
         }
         if (table.data().count() &&  this.value !== $exist_value_commission) {
@@ -338,12 +373,15 @@ $(document).ready(function() {
                             }
                         });
                     }else{
+
                         
                         $('#commission').val($exist_value_commission);
+
                         
 
                     }
                 }
+
             );  
         }
 
@@ -351,6 +389,7 @@ $(document).ready(function() {
 
 
     $('#type_commission').on('change', function () {
+
         
         //Get previous data
         if($(this).val() == 'C'){
@@ -358,6 +397,7 @@ $(document).ready(function() {
         }else{
             var $exist_type_commission = 'C'
         }
+
         
 
         //First check if PEC commission by US return true
@@ -374,6 +414,7 @@ $(document).ready(function() {
             ajax_loadmessage('La commission ne doit pas dépasser '+$set_commision,'nok',5000);
             $('#commission').val(0);
             return false;
+
             
         }
         if (table.data().count()) {
@@ -405,10 +446,14 @@ $(document).ready(function() {
                         });
                     }else{
 
+
                         
                             $('#type_commission').val($exist_type_commission);
                             $('#type_commission').trigger("chosen:updated");
                             //$('#type_commission').trigger("change");
+
+
+
                                          
                         
                        
@@ -416,6 +461,7 @@ $(document).ready(function() {
 
                     }
                 }
+
             );  
         }
 
@@ -425,6 +471,7 @@ $(document).ready(function() {
 
 
     $('#table_details_devis tbody ').on('click', 'tr .edt_det', function() {
+
         
         if($('#id_client').val() == ''){
 
@@ -447,6 +494,7 @@ $(document).ready(function() {
         var $titre = 'Modifier détail Devis';
         var $data  = $(this).attr('data')+'&commission='+$('#commission').val()+'&type_commission='+$('#type_commission').val(); 
         ajax_bbox_loader($link, $data, $titre, 'large')
+
         
     });
 
@@ -458,6 +506,7 @@ $(document).ready(function() {
         var tva                     = $('#tva').val();
         var commission              = parseFloat($("#commission").val());
         var percentage_othorized    = parseFloat($("#remise_plafond").val());
+
         
         <?php
         if(session::get('service') == 3 OR session::get('service') == 1){
@@ -467,6 +516,7 @@ $(document).ready(function() {
         }
 
         ?>
+
         
         var dix_per_ht              = parseFloat((totalht * percentage_othorized) / 100);
         var dix_per_ht_dg           = parseFloat((totalht * percentage_othorized_dg) / 100);
@@ -479,10 +529,12 @@ $(document).ready(function() {
                     $('#valeur_remise').val(percentage_othorized_dg);
                     return false;
             }
+
             
             calculat_devis(totalht, null, 0, tva, 'totalht', 'totaltva', 'totalttc',commission,'total_commission');         
         }
         calculat_devis(totalht, type_remise, remise_valeur, tva, 'totalht', 'totaltva', 'totalttc',commission,'total_commission');
+
         
     });
     $('#type_remise').on('change', function () {
@@ -496,8 +548,10 @@ $(document).ready(function() {
 
     var old_client = $("#id_client");
     old_client.data("prev",old_client.val());    
+
     
     $('#id_client').on('input change', function () {
+
                 
         var $id_client = $(this).val();
         var table = $('#table_details_devis').DataTable();
@@ -525,6 +579,7 @@ $(document).ready(function() {
                 }else{
                     $('.returned_client').remove(); 
                     $('#id_client').parent('div').after('<span class="show_info_client help-block returned_client"><i class="fa fa-money"></i>Ce devis sera créé en: '+data['devise']+'</span>');
+
                     } 
 
         //Prices update  after client change
@@ -551,6 +606,7 @@ $(document).ready(function() {
 
                             }
                         });
+
         }              
 
                 //info client après               
@@ -587,17 +643,19 @@ $(document).ready(function() {
     });
 
     $('#add_client_diver').on( 'click', function () {
+
         
         var $link  = $(this).attr('rel');
         var $titre = $(this).attr('data_titre'); 
         var $data  = $(this).attr('data'); 
         ajax_bbox_loader($link, $data, $titre, 'large')
+
         
     });
 
 
      
 
-});
-</script>	
 
+});
+</script>

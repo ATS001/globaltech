@@ -11,6 +11,7 @@ $title          = 'Ajouter Abonnement';
 $btn_return_txt = 'Liste des abonnements';
 $btn_task       = 'contrats';
 $btn_setting    = null;
+$contrat_base = MReq::tp('id');
 
 if($id_clnt != null && $tsk_aft != null){
     if(!MInit::crypt_tp('id_clnt', null, 'D')){
@@ -31,40 +32,50 @@ if($id_clnt != null && $tsk_aft != null){
 
 ?>
  <div class="pull-right tableTools-container">
-	<div class="btn-group btn-overlap">
+    <div class="btn-group btn-overlap">
+
         
 <?php TableTools::btn_add($btn_task, $btn_return_txt, $btn_setting, $exec = NULL, 'reply'); ?>
-					
-	</div>
+
+                    
+    </div>
 </div>
 <div class="page-header">
-	<h1>
-		Ajouter un abonnement
-		<small>
-			<i class="ace-icon fa fa-angle-double-right"></i>
-		</small>
-	</h1>
+    <h1>
+        Ajouter un abonnement
+        <small>
+            <i class="ace-icon fa fa-angle-double-right"></i>
+        </small>
+    </h1>
 </div><!-- /.page-header -->
 <!-- Bloc form Add Devis-->
 <div class="row">
-	<div class="col-xs-12">
-		<div class="clearfix">
-			
-		</div>
-		<div class="table-header">
-			Formulaire: "<?php echo "Ajouter un abonnement"; ?>"
-		</div>
-		<div class="widget-content">
-			<div class="widget-box">
-				
+    <div class="col-xs-12">
+        <div class="clearfix">
+
+            
+        </div>
+        <div class="table-header">
+            Formulaire: "<?php echo "Ajouter un abonnement"; ?>"
+        </div>
+        <div class="widget-content">
+            <div class="widget-box">
+
+                
 <?php
 $form = new Mform('addcontrats', 'addcontrats', '', $after_exec , '0', null);
 $list_devis = Mcontrat::select_devis(null,$id_clnt);
+$form->input_hidden('contrat_base', Mreq::tp('id'));
 
 
 //Devis
 $form->select('Devis', 'iddevis', 8, $list_devis, '------', null, null, null);
 
+//Date UPGRADE
+if($contrat_base != null){
+$array_date_up[]= array('required', 'true', 'Insérer la date upgrade');
+$form->input_date('Date upgrade', 'date_up', 4, date('d-m-Y'), $array_date_up);
+}
 //Date effet
 $array_date_effet[]= array('required', 'true', 'Insérer la date effet');
 $form->input_date('Date début', 'date_effet', 4, date('d-m-Y'), $array_date_effet);
@@ -104,6 +115,7 @@ $form->file_js('pj_photo', 1000000, 'image');*/
 $columns = array('id' => '1','Item' => '5', 'Date échéance' => '12','Montant TTC' => '20', 'Commentaire' => '52', '#' =>'5'   );
 $js_addfunct = 'var column = t.column(0);
      column.visible( ! column.visible() );';
+
    
 $verif_value = md5(session::get('f_vaddcontrat'));    
 //var_dump($verif_value);
@@ -115,14 +127,16 @@ $form->button('Enregistrer');
 $form->render();
 
 ?>
-			</div>
-		</div>
-	</div>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- End Add devis bloc -->
-		
+
+        
 <script type="text/javascript">
     $(document).ready(function () {
+
         
         if ($("#idtype_echeance option:selected").text() == 'Autres') {
 
@@ -131,6 +145,7 @@ $form->render();
             } else {
 
                 $('.table_echeance').hide();
+
             }    
 
         $('#idtype_echeance').bind('select change', function () {

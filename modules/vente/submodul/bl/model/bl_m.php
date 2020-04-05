@@ -208,7 +208,7 @@ class Mbl {
             $etat_devis = 'valid_client';
 
         }else{
-            $etat_devis = 'en_livre';
+            $etat_devis = 'devis_livr';
         }
         $new_etat = Msetting::get_set('etat_devis', $etat_devis);
         $req_sql = " UPDATE devis SET etat = $new_etat  WHERE id = $id_devis ";

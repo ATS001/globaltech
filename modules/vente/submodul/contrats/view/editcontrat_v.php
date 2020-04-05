@@ -53,6 +53,11 @@ $form->input_hidden('ref', $info_contrat->s('reference'));
 //Devis
 $form->select('Devis', 'iddevis', 8, $list_devis, '------', $info_contrat->s('iddevis'), null, null);
 
+//Date UPGRADE
+if($info_contrat->s('date_up') != null){
+$array_date_up[]= array('required', 'true', 'Insérer la date upgrade')
+$form->input_date('Date upgrade', 'date_up', 4,$info_contrat->s('date_up'), $array_date_up);
+}
 
 //Date effet
 $array_date_effet[] = array('required', 'true', 'Insérer la date effet');
@@ -110,6 +115,7 @@ $form->render();
 
 <script type="text/javascript">
     $(document).ready(function () {
+
         
         if ($("#idtype_echeance option:selected").text() == 'Autres') {
 
@@ -118,6 +124,7 @@ $form->render();
             } else {
 
                 $('.table_echeance').hide();
+
             }    
 
         $('#idtype_echeance').bind('select change', function () {
@@ -200,5 +207,4 @@ $form->render();
 
 
     });
-</script>	
-
+</script>

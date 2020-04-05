@@ -23,7 +23,9 @@ if(MInit::form_verif('adddevis', false))
      'id_commercial_ex'    => Mreq::tp('id_commercial_ex'),
      'commission_ex'       => Mreq::tp('commission_ex'),
      'total_commission_ex' => Mreq::tp('total_commission_ex'),
-     'type_commission_ex'  => Mreq::tp('type_commission_ex')
+     'type_commission_ex'  => Mreq::tp('type_commission_ex'),
+      'devis_base'  => Mreq::tp('devis_base')
+
 
    );
 
@@ -90,20 +92,23 @@ if(MInit::form_verif('adddevis', false))
       $empty_list .= "<li>Commercial</li>";
       $checker = 1;
     }
-    
+
+
     if($posted_data['commission_ex'] != 0  AND $posted_data['id_commercial_ex'] == NULL ){
 
       $empty_list .= "<li>Il faut choisir le commercial externe</li>";
       $checker = 1;
     }
-    
+
+
 
     if($posted_data['commission_ex'] != NULL AND !is_numeric($posted_data['commission_ex']) ){
 
       $empty_list .= "<li>Commission Externe</li>";
       $checker = 1;
     }
-    
+
+
     /*
     $set_comission = Msetting::get_set('plafond_comission');
     if($posted_data['commission'] > $set_comission  ){
@@ -111,7 +116,8 @@ if(MInit::form_verif('adddevis', false))
       $empty_list .= "<li>Commission ne dois pas dépasser $set_comission</li>";
       $checker = 1;
     }
-     * 
+     *
+
      */
     /*if($posted_data['total_commission'] == NULL OR !is_numeric($posted_data['total_commission']) ){
 
