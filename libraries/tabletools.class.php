@@ -3,11 +3,12 @@
 /**
 * Class generate tools for a table
 */
-class TableTools 
+class TableTools
 {
 	var $app_action; //Array action for each row
 	var $line_data; //Array info for each row
 	var $log = null; //Sitring log errors
+	var $clause_facultative;
 	/*function __construct(argument)
 	{
 		# code...
@@ -29,13 +30,13 @@ class TableTools
 		1
 		FROM
 		`rules_action`
-		INNER JOIN `task` 
+		INNER JOIN `task`
 		ON (`rules_action`.`appid` = `task`.`id`)
-		INNER JOIN `task_action` 
+		INNER JOIN `task_action`
 		ON (`task_action`.`appid` = `task`.`id`) AND (`rules_action`.`action_id` = `task_action`.`id`)
-		INNER JOIN `users_sys` 
+		INNER JOIN `users_sys`
 		ON (`rules_action`.`userid` = `users_sys`.`id`)
-		WHERE (users_sys.id = $userid OR $userid = 1)  
+		WHERE (users_sys.id = $userid OR $userid = 1)
 
 		AND task.app =  ".MySQL::SQLValue($app)." ";
 
@@ -67,13 +68,13 @@ class TableTools
 		1
 		FROM
 		`rules_action`
-		INNER JOIN `task` 
+		INNER JOIN `task`
 		ON (`rules_action`.`appid` = `task`.`id`)
-		INNER JOIN `task_action` 
+		INNER JOIN `task_action`
 		ON (`task_action`.`appid` = `task`.`id`) AND (`rules_action`.`action_id` = `task_action`.`id`)
-		INNER JOIN `users_sys` 
+		INNER JOIN `users_sys`
 		ON (`rules_action`.`userid` = `users_sys`.`id`)
-		WHERE (users_sys.id = $userid OR $userid = 1) 
+		WHERE (users_sys.id = $userid OR $userid = 1)
 
 		AND task.app =  ".MySQL::SQLValue($app)." ";
 
@@ -155,7 +156,7 @@ class TableTools
 			print($this->app_action);
 			return false;
 		}
-		//Etat line is not 
+		//Etat line is not
 
 		global $db;
 		$user = session::get('userid');
@@ -171,29 +172,29 @@ class TableTools
 		$service       = session::get('service');
 		$service_f     = '%-'.$service.'-%';
 
-		$sql = "SELECT task_action.code FROM 
-		task_action, task, rules_action $table_from 
-		WHERE rules_action.action_id = task_action.id 
-		AND $table_modul.etat = task_action.etat_line 
-		$and_task 
-		AND task.id = task_action.appid 
+		$sql = "SELECT task_action.code FROM
+		task_action, task, rules_action $table_from
+		WHERE rules_action.action_id = task_action.id
+		AND $table_modul.etat = task_action.etat_line
+		$and_task
+		AND task.id = task_action.appid
 		AND (rules_action.userid = $user OR $user = 1)
 		AND rules_action.service = $service
-		AND $table_modul.etat = $etat 
+		AND $table_modul.etat = $etat
 		AND $table_modul.id = $id
-		AND task_action.type = 0 
+		AND task_action.type = 0
+	 	$this->clause_facultative
 		GROUP BY task_action.id ";
-        //for more secure add this AND task_action.service LIKE  '$service_f' 
+        //for more secure add this AND task_action.service LIKE  '$service_f'
         //exit($sql);
-
-
+				
 		if(!$db->Query($sql))
 		{
 			$this->error = false;
 			$this->log  .= $db->Error();
 			//return false;
 		}else{
-			
+
 			if ($db->RowCount() == false) {
 				$this->error = false;
 				$this->app_action .= 'Pas d\'action trouvée!';
@@ -201,7 +202,7 @@ class TableTools
 			} else {
 				//$this->log = $sql;
 				//$this->app_action = $db->RowArray();
-				
+
 				$this->error = true;
 				while (!$db->EndOfSeek())
 				{
@@ -210,7 +211,7 @@ class TableTools
 
 				}
 				//Get array form setting for this modul
-				
+
 				$stanadr_archive = null;
 				//check if current line have the max etat_line then show archive action.
 				//var_dump($etat.' '.$etat_archive);
@@ -218,7 +219,7 @@ class TableTools
 				{
 					$stanadr_archive = '<li><a href="#" class="this_exec" data="'.MInit::crypt_tp('id',$id).'" rel="archive'.$app.'"  ><i class="ace-icon fa fa-archive bigger-100"></i> Archiver ligne</a></li>';
 				}
-				
+
 				$stanadr_delete = null;
 				if($etat == 0 AND ($cre_usr == session::get('userid') OR session::get('service') == 1) AND $task_exec != null)
 				{
@@ -242,11 +243,11 @@ class TableTools
 		1
 		FROM
 		`rules_action`
-		INNER JOIN `task` 
+		INNER JOIN `task`
 		ON (`rules_action`.`appid` = `task`.`id`)
-		INNER JOIN `users_sys` 
+		INNER JOIN `users_sys`
 		ON (`rules_action`.`userid` = `users_sys`.`id`)
-		WHERE users_sys.id = ".$user." 
+		WHERE users_sys.id = ".$user."
 
 		AND task.app =  ".MySQL::SQLValue($app)." ";
 		if($db->QuerySingleValue0($sql) == '0')
@@ -270,7 +271,7 @@ class TableTools
 			print($this->app_action);
 			return false;
 		}
-		//Etat line is not 
+		//Etat line is not
 
 		global $db;
 		$user = session::get('userid');
@@ -285,21 +286,21 @@ class TableTools
 		$id            = $this->line_data['id'];
 		$service       = session::get('service');
 		$service_f     = '%-'.$service.'-%';
-		
+
 
 		$sql = "SELECT task_action.app, task_action.descrip,
 		 task_action.mode_exec, task_action.etat_desc ,
 		 task_action.message_class, task_action.class
-		  FROM 
-		task_action, task, rules_action $table_from 
-		WHERE rules_action.action_id = task_action.id 
-		AND $table_modul.etat = task_action.etat_line 
-		$and_task 
-		AND task.id = task_action.appid 
-		AND (rules_action.userid = $user OR $user = 1) 
+		  FROM
+		task_action, task, rules_action $table_from
+		WHERE rules_action.action_id = task_action.id
+		AND $table_modul.etat = task_action.etat_line
+		$and_task
+		AND task.id = task_action.appid
+		AND (rules_action.userid = $user OR $user = 1)
 		AND task_action.service LIKE  '$service_f'
 		AND rules_action.service = $service
-		AND $table_modul.etat = $etat 
+		AND $table_modul.etat = $etat
 		AND $table_modul.id = $id
 		AND task_action.type = 0 ";
 
@@ -312,7 +313,7 @@ class TableTools
 			$this->log  .= $db->Error();
 			//return false;
 		}else{
-			
+
 			if ($db->RowCount() == false) {
 				$this->error = false;
 				$this->app_action .= 'Pas d\'action trouvée!';
@@ -320,7 +321,7 @@ class TableTools
 			} else {
 				//$this->log = $sql;
 				//$this->app_action = $db->RowArray();
-				
+
 				$this->error = true;
 				while (!$db->EndOfSeek())
 				{
@@ -353,16 +354,16 @@ class TableTools
     static public function line_notif($table, $task_name)
     {
     	$get_notif = "CASE 1
-    	WHEN (SELECT 
-    		COUNT(task_action.notif) 
+    	WHEN (SELECT
+    		COUNT(task_action.notif)
     		FROM
     		task_action, rules_action , task
     		WHERE task_action.`etat_line` = `$table`.etat
-    		AND task_action.appid = task.id 
-    		AND task_action.`notif` = 1 
-    		AND task.`app` = '$task_name'  
+    		AND task_action.appid = task.id
+    		AND task_action.`notif` = 1
+    		AND task.`app` = '$task_name'
     		AND task_action.id = rules_action.`action_id`
-    		AND (rules_action.`userid` = ".session::get('userid')." OR ".session::get('userid')." = 1)   
+    		AND (rules_action.`userid` = ".session::get('userid')." OR ".session::get('userid')." = 1)
     		AND task_action.`type` = 0) > 0
     		THEN '<input type=hidden value=isnotif>'
     		ELSE ' ' END";
@@ -381,34 +382,34 @@ class TableTools
     	if(Mreq::tp('export') == 1)
     	{
     			$message_etat = "CASE
-    			WHEN SUM(task_action.`notif`) > 0 
-    			THEN 
-    			task_action.`etat_desc`                            
-    			ELSE CONCAT(task_action.`etat_desc`,'*') 
+    			WHEN SUM(task_action.`notif`) > 0
+    			THEN
+    			task_action.`etat_desc`
+    			ELSE CONCAT(task_action.`etat_desc`,'*')
     			END ";
     	}else{
     			$message_etat = " CASE
-    			WHEN SUM(task_action.`notif`) > 0 
+    			WHEN SUM(task_action.`notif`) > 0
     			THEN CONCAT(
     				task_action.`message_etat`,
     				'<input type=hidden value=isnotif>'
-    			) 
+    			)
     			WHEN task_action.`message_etat` IS NULL THEN 'No ETAT'
-    			ELSE CONCAT(task_action.`message_etat`) 
+    			ELSE CONCAT(task_action.`message_etat`)
     			END ";
     	}
-    		$get_notif = "(SELECT 
-    			$message_etat 
+    		$get_notif = "(SELECT
+    			$message_etat
     			FROM
     			task_action,
     			rules_action,
-    			task 
-    			WHERE task_action.`etat_line` = `$table`.etat 
-    			AND task_action.appid = task.id 
+    			task
+    			WHERE task_action.`etat_line` = `$table`.etat
+    			AND task_action.appid = task.id
     			AND task_action.etat_desc IS NOT NULL
-    			AND task.`app` = '$task_name' 
-    			AND task_action.id = rules_action.`action_id` 
-    			AND (rules_action.`userid` = ".session::get('userid')." OR ".session::get('userid')." = 1)   
+    			AND task.`app` = '$task_name'
+    			AND task_action.id = rules_action.`action_id`
+    			AND (rules_action.`userid` = ".session::get('userid')." OR ".session::get('userid')." = 1)
     			AND task_action.`type` = 0) AS statut";
     			return $get_notif;
     }
@@ -419,17 +420,17 @@ class TableTools
      */
     static public function order_bloc($order_column)
     {
-    	
+
     	if(Mreq::tp('export') == 1)
     	{
     		$order_notif = " CASE WHEN LOCATE('*', statut) = 0  THEN 0 ELSE 1 END DESC, ";
     	}else{
-    		$order_notif = " CASE WHEN LOCATE('notif', statut) = 0  THEN 0 ELSE 1 END DESC, ";    		
+    		$order_notif = " CASE WHEN LOCATE('notif', statut) = 0  THEN 0 ELSE 1 END DESC, ";
     	}
     	return $order_notif;
     }
 
-       
+
     /**
      * [where_etat_line description]
      * @param  [type] $table     [description]
@@ -441,19 +442,19 @@ class TableTools
     	$etat = Cookie::Get($task_name."_grid_zip", null);
 
     	$wher_etat = $etat == null ? ' AND task_action.`etat_line` <> 100 ' : ' AND task_action.`etat_line` = 100 ';
-    	
 
-    	$where_etat_line = " WHERE   (SELECT 
-    		COUNT(task_action.id) 
+
+    	$where_etat_line = " WHERE   (SELECT
+    		COUNT(task_action.id)
     		FROM
     		task_action, rules_action , task
     		WHERE task_action.`etat_line` = `$table`.etat
     		$wher_etat
-    		AND task_action.appid = task.id 
-    		AND task.`app` = '$task_name'  
+    		AND task_action.appid = task.id
+    		AND task.`app` = '$task_name'
     		AND task_action.id = rules_action.`action_id`
     		AND (rules_action.`userid` = ".session::get('userid')." OR ".session::get('userid')." = 1)) > 0 " ;
-    	return $where_etat_line; 
+    	return $where_etat_line;
     }
     /**
      * [where_search_etat description]
@@ -466,22 +467,22 @@ class TableTools
     {
 
 
-    	$where_search_etat = " OR (SELECT 
-    		COUNT(task_action.id) 
+    	$where_search_etat = " OR (SELECT
+    		COUNT(task_action.id)
     		FROM
     		task_action,
     		rules_action,
-    		task 
-    		WHERE task_action.`etat_line` = `$table`.etat 
-    		AND task_action.appid = task.id 
-    		AND task_action.etat_desc IS NOT NULL 
-    		AND task.`app` = '$task_name' 
-    		AND task_action.id = rules_action.`action_id` 
+    		task
+    		WHERE task_action.`etat_line` = `$table`.etat
+    		AND task_action.appid = task.id
+    		AND task_action.etat_desc IS NOT NULL
+    		AND task.`app` = '$task_name'
+    		AND task_action.id = rules_action.`action_id`
     		AND (rules_action.`userid` = ".session::get('userid')." OR ".session::get('userid')." = 1)
     		AND task_action.`type` = 0
     		AND task_action.`message_etat` LIKE '%$search%')
     	)";
-    	return $where_search_etat;                        
+    	return $where_search_etat;
     }
 
 

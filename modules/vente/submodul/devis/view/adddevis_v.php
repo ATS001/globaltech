@@ -12,6 +12,34 @@ $btn_return_txt = 'Liste des Devis';
 $btn_task       = 'devis';
 $btn_setting    = null;
 
+$devis_base     = MReq::tp('id');
+
+$date_devis = null;
+$client = null;
+$soumis_tva = null;
+$projet = null;
+$commercials = null;
+$commercials_ext = null;
+$commission_commercial_ext = null;
+$remise_excep = null;
+if($devis_base != null)
+{
+  $devis = new  Mdevis();
+  $devis->id_devis = $devis_base;
+  $devis->get_devis();
+
+  $date_devis = $devis->devis_info["date_devis"];
+  $client = $devis->devis_info["id_client"];
+  $soumis_tva = $devis->devis_info["tva"];
+  $projet = $devis->devis_info["projet"];
+  $commercials = $devis->devis_info["id_commercial"];
+  $commercial_ext = $devis->devis_info["id_commercial_ex"];
+  $commission_commercial_ex = $devis->devis_info["commission_ex"];
+  //$pec = $devis->devis_info[""];
+  $remise_excep = $devis->devis_info["type_remise"];
+  //$valeur_remise_excep = $devis->devis_info[""];
+
+}
 if($id_clnt != null && $tsk_aft != null){
     if(!MInit::crypt_tp('id_clnt', null, 'D')){
           Minit::big_message('ID client n\'est pas correcte', 'danger');
@@ -31,36 +59,36 @@ if($id_clnt != null && $tsk_aft != null){
 
 ?>
 <div class="pull-right tableTools-container">
-	<div class="btn-group btn-overlap">
+    <div class="btn-group btn-overlap">
 
-		<?php TableTools::btn_add($btn_task, $btn_return_txt, $btn_setting, $exec = NULL, 'reply'); ?>
+        <?php TableTools::btn_add($btn_task, $btn_return_txt, $btn_setting, $exec = NULL, 'reply'); ?>
 
-	</div>
+    </div>
 </div>
 <div class="page-header">
-	<h1>
-		<?php echo $title; ?>
-		<small>
-			<i class="ace-icon fa fa-angle-double-right"></i>
-		</small>
-	</h1>
+    <h1>
+        <?php echo $title; ?>
+        <small>
+            <i class="ace-icon fa fa-angle-double-right"></i>
+        </small>
+    </h1>
 </div><!-- /.page-header -->
 <!-- Bloc form Add Devis-->
 <div class="row">
-	<div class="col-xs-12">
-		<div class="clearfix">
+    <div class="col-xs-12">
+        <div class="clearfix">
 
-		</div>
-		<div class="table-header">
-			Formulaire: "<?php echo ACTIV_APP; ?>"
-		</div>
-		<div class="widget-content">
-			<div class="widget-box">
+        </div>
+        <div class="table-header">
+            Formulaire: "<?php echo ACTIV_APP; ?>"
+        </div>
+        <div class="widget-content">
+            <div class="widget-box">
 
 <?php
 $tva  = Mcfg::get('tva');
 $form = new Mform('adddevis', 'adddevis', '', $after_exec, '0', null);
-//$form->input_hidden('commission', Mreq::tp('commission'));
+$form->input_hidden('devis_base', Mreq::tp('id'));
 $plafond_remise = session::get('service') == 7 ? Msetting::get_set('plafond_remise_commercial') : 10;
 $form->input_hidden('remise_plafond', $plafond_remise);
 $form->input_hidden('old_client', null);
@@ -89,7 +117,10 @@ if($id_clnt != null){
 $client_array[]  = array('required', 'true', 'Choisir un Client');
 //Il faut vérifier si le client est préenvoyé
 
+if($devis_base == null)
+{
 $form->select_table('Client', 'id_client', 6, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' ,$selected = $id_clnt,$multi=NULL, $where='(etat=1 or type_client=\'T\' )'.$where_id_client, $client_array, $hard_code_client.$client_devise);
+}
 //TVA
 $tva_opt = array('O' => 'OUI' , 'N' => 'NON' );
 $form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$selected = NULL, $multi = NULL);
@@ -151,9 +182,9 @@ $form->button('Enregistrer');
 //Form render
 $form->render();
 ?>
-			</div>
-		</div>
-	</div>
+            </div>
+        </div>
+    </div>
 </div>
 <!-- End Add devis bloc -->
 
@@ -161,36 +192,37 @@ $form->render();
 $(document).ready(function() {
 
 
+
     //called when key is pressed in textbox
-	 function calculat_devis($totalht, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc,$commission,$f_total_commission)
-	 {
+     function calculat_devis($totalht, $type_remise, $remise_valeur, $tva, $f_total_ht, $f_total_tva, $f_total_ttc,$commission,$f_total_commission)
+     {
 
-    	var $totalht         = parseFloat($totalht) ? parseFloat($totalht) : 0;
-    	//var $type_remise    = $type_remise == null ? 'P' : $type_remise;
-    	var $remise_valeur  = parseFloat($remise_valeur) ? parseFloat($remise_valeur) : 0;
-    	var $tva            = $tva == null ? 'O' : $tva;
-    	var $val_tva = <?php echo Mcfg::get('tva')?>
-    	//calculate remise
-    	if($type_remise == 'P')
-    	{
-    		$totalht_remised = $totalht - ($totalht * $remise_valeur) / 100;
+        var $totalht         = parseFloat($totalht) ? parseFloat($totalht) : 0;
+        //var $type_remise    = $type_remise == null ? 'P' : $type_remise;
+        var $remise_valeur  = parseFloat($remise_valeur) ? parseFloat($remise_valeur) : 0;
+        var $tva            = $tva == null ? 'O' : $tva;
+        var $val_tva = <?php echo Mcfg::get('tva')?>
+        //calculate remise
+        if($type_remise == 'P')
+        {
+            $totalht_remised = $totalht - ($totalht * $remise_valeur) / 100;
 
-    	}else if($type_remise == 'M'){
-    		var $totalht_remised = $totalht - $remise_valeur;
+        }else if($type_remise == 'M'){
+            var $totalht_remised = $totalht - $remise_valeur;
 
-    	}else{
-    		var $totalht_remised = $totalht;
-    	}
-    	//Total HT
-    	var $total_ht = $totalht_remised;
-    	//Calculate TVA
-    	if($tva == 'N')
-    	{
-    		var $total_tva = 0;
-    	}else{
-    		var $total_tva = ($total_ht * $val_tva) / 100; //TVA value get from app setting
-    	}
-    	var $total_ttc = $total_ht + $total_tva ;
+        }else{
+            var $totalht_remised = $totalht;
+        }
+        //Total HT
+        var $total_ht = $totalht_remised;
+        //Calculate TVA
+        if($tva == 'N')
+        {
+            var $total_tva = 0;
+        }else{
+            var $total_tva = ($total_ht * $val_tva) / 100; //TVA value get from app setting
+        }
+        var $total_ttc = $total_ht + $total_tva ;
         var $total_commission = ($total_ttc * $commission) / 100;
         $('#'+$f_total_ht).val(Math.round($total_ht));
         $('#'+$f_total_tva).val(Math.round($total_tva));
@@ -203,11 +235,11 @@ $(document).ready(function() {
 
         var table = $('#table_details_devis').DataTable();
 
-    	if($('#id_client').val() == ''){
+        if($('#id_client').val() == ''){
 
-    		ajax_loadmessage('Il faut choisir un client','nok');
-    		return false;
-    	}
+            ajax_loadmessage('Il faut choisir un client','nok');
+            return false;
+        }
 
         if($('#id_commercial').val() == ''){
 
@@ -227,8 +259,8 @@ $(document).ready(function() {
         }
 
         var $link  = $(this).attr('rel');
-   		var $titre = $(this).attr('data_titre');
-   		var $data  = $(this).attr('data')+'&commission='+$('#commission').val()+'&id_commercial='+$('#id_commercial').val()+'&id_client='+$('#id_client').val();
+        var $titre = $(this).attr('data_titre');
+        var $data  = $(this).attr('data')+'&commission='+$('#commission').val()+'&id_commercial='+$('#id_commercial').val()+'&id_client='+$('#id_client').val();
         ajax_bbox_loader($link, $data, $titre, 'large')
 
     });
@@ -236,7 +268,7 @@ $(document).ready(function() {
 
 
     $('#valeur_remise').bind('input change',function() {
-    	// Calcul values
+        // Calcul values
         var totalht                 = parseInt($('#sum_table').val());
         var type_remise             = $('#type_remise').val();
         var remise_valeur           = parseFloat($('#valeur_remise').val());
@@ -503,6 +535,7 @@ $(document).ready(function() {
     old_client.data("prev",old_client.val());
 
     $('#id_client').on('input change', function () {
+
                 
         var $id_client   = $(this).val();        
         var table = $('#table_details_devis').DataTable();
@@ -530,6 +563,7 @@ $(document).ready(function() {
                 }else{
                     $('.returned_client').remove(); 
                     $('#id_client').parent('div').after('<span class="show_info_client help-block returned_client"><i class="fa fa-money"></i>Ce devis sera créé en: '+data['devise']+'</span>');
+
                 }          
                 //Prices update  after client change
                 if (table.data().count()) {
@@ -555,6 +589,7 @@ $(document).ready(function() {
 
                             }
                         });
+
                 }  
 
                 //info client après

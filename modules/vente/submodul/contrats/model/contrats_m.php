@@ -45,7 +45,7 @@ class Mcontrat {
         $table = $this->table;
 
         $sql = "SELECT $table.* FROM 
-    		$table WHERE  $table.id = " . $this->id_contrat;
+            $table WHERE  $table.id = " . $this->id_contrat;
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -325,7 +325,7 @@ class Mcontrat {
 
         if (!$db->Query($sql_req) or !$db->Query($sql_req_2)) {
             $this->error = false;
-            $this->log .= '</br>Erreur génération de facture' . $sql_req;
+            $this->log .= '</br>Erreur génération de facture' . $sql_req .' '.$sql_req_2;
             return false;
         } else {
 
@@ -409,6 +409,8 @@ class Mcontrat {
             $values["date_notif"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_notif'])));
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+            $values["contrat_base"] = MySQL::SQLValue($this->_data['contrat_base']);
+            $values["date_up"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_up'])));
 
             //Check if Insert Query been executed (False / True)
             if (!$result = $db->InsertRow($this->table, $values)) {
@@ -434,14 +436,14 @@ class Mcontrat {
                     if (!Mlog::log_exec($this->table, $this->last_id, 'Insertion contrat abonnement', 'Insert')) {
                         $this->log .= '</br>Un problème de log ';
                     }
-                    //Check $this->error = false return Red message and Bol false	
+                    //Check $this->error = false return Red message and Bol false   
                 } else {
                     $this->log .= '</br>Enregistrement non réussie: <b>' . $this->reference;
 
                     $this->log .= '</br>Un problème d\'Enregistrement ';
                 }
             }
-            //Else Error false	
+            //Else Error false  
         } else {
             $this->log .= '</br>Enregistrement non réussie';
         }
@@ -502,6 +504,7 @@ class Mcontrat {
             $values["periode_fact"] = MySQL::SQLValue($this->_data['periode_fact']);
             $values["updusr"] = MySQL::SQLValue(session::get('userid'));
             $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+            $values["date_up"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_up'])));
             $wheres["id"] = $this->id_contrat;
 
             //Check if Insert Query been executed (False / True)
@@ -580,9 +583,11 @@ class Mcontrat {
                (SELECT  DATE_ADD(ech.date_echeance, INTERVAL +1 DAY)
                FROM echeances_contrat ech WHERE e.id <> ech.id  AND ech.`idcontrat`= e.`idcontrat`
                AND ech.date_echeance < e.`date_echeance`  ORDER BY ech.`date_echeance` DESC LIMIT 1
+
                )  
                ),
                e.date_echeance         
+
                )AS du,  
                IF((c.`periode_fact`='F'),e.`date_echeance`,
                IF(
@@ -594,6 +599,9 @@ class Mcontrat {
                (SELECT  DATE_ADD(ech.date_echeance, INTERVAL -1 DAY)
                FROM echeances_contrat ech WHERE e.id <> ech.id  AND ech.`idcontrat`= e.`idcontrat`
                AND ech.date_echeance > e.`date_echeance`  ORDER BY ech.`date_echeance` LIMIT 1
+
+
+
                )  
                    ) 
                ) AS au,              
@@ -1171,9 +1179,10 @@ class Mcontrat {
 
         $table = $this->table;
 
-        $sql = "SELECT $table.* ,DATE_FORMAT($table.date_contrat,'%d-%m-%Y') AS date_contrat , DATE_FORMAT($table.date_effet,'%d-%m-%Y') AS date_effet ,DATE_FORMAT($table.date_fin,'%d-%m-%Y') AS date_fin , ref_type_echeance.type_echeance AS type_echeance "
-                . "FROM $table,ref_type_echeance "
-                . "WHERE  $table.idtype_echeance=ref_type_echeance.id AND $table.id = " . $this->id_contrat;
+         $sql = "SELECT $table.* ,IF(contrats.contrat_base != null,(select reference from contrats where id = contrats.contrat_base), null) as cb,DATE_FORMAT(contrats.date_contrat,'%d-%m-%Y') AS date_contrat,DATE_FORMAT($table.date_contrat,'%d-%m-%Y') AS date_contrat , DATE_FORMAT($table.date_effet,'%d-%m-%Y') AS date_effet ,DATE_FORMAT($table.date_fin,'%d-%m-%Y') AS date_fin , ref_type_echeance.type_echeance AS type_echeance
+                   FROM $table,ref_type_echeance
+                  WHERE  $table.idtype_echeance=ref_type_echeance.id AND $table.id = " . $this->id_contrat;
+
 
         if (!$db->Query($sql)) {
             $this->error = false;
@@ -1213,6 +1222,7 @@ class Mcontrat {
             return false;
         } else {
             $this->log .= "Validation réussie";
+
             
             if (!Mlog::log_exec($this->table, $this->id_contrat, 'Validation contrat abonnement', 'Validate')) {
                 $this->log .= '</br>Un problème de log ';
@@ -1255,6 +1265,7 @@ class Mcontrat {
 
             $this->log .= '</br>Statut changé! ';
             $this->send_valid_abonnement_mail();
+
             
             if (!Mlog::log_exec($this->table, $this->id_contrat, 'Validation contrat abonnement', 'Validate')) {
                 $this->log .= '</br>Un problème de log ';
@@ -1308,8 +1319,8 @@ class Mcontrat {
         global $db;
 
         $sql = "SELECT $table.*,
-		clients.denomination AS client , 
-		clients.tel as tel , DATE_FORMAT($table.date_devis,'%d-%m-%Y') AS date_devis "
+        clients.denomination AS client , 
+        clients.tel as tel , DATE_FORMAT($table.date_devis,'%d-%m-%Y') AS date_devis "
                 . "FROM $table,clients "
                 . "WHERE $table.id_client=clients.id  AND $table.id = " . $this->id_devis;
 
@@ -1461,11 +1472,13 @@ class Mcontrat {
     }
 
      private function send_welcome_client_mail() {
+
          
         //Get info abonnement
         $this->get_contrat();
         $this->get_devis_info();
         $client_info = $this->client_info;
+
         
         if ($this->verif_email2($this->devis_info["client"]) == FALSE) {
             $this->log .= '<br/>Ce client n\'a pas une adresse Mail';
@@ -1476,12 +1489,14 @@ class Mcontrat {
         $client->id_client = $client_info["id"];
         $client->get_client();
         $agent_name = $client->g('denomination');
+
         
         $mail = new PHPMailer();
         $mail->isSMTP(); // Paramétrer le Mailer pour utiliser SMTP 
         $mail->SMTPSecure = 'ssl'; // Accepter SSL
         $mail->setFrom($mail->Username, 'GlobalTech Direction'); // Personnaliser l'envoyeur
         $mail->addAddress($client_info["email"], $client_info["denomination"]);
+
        
         $mail->isHTML(true); // Paramétrer le format des emails en HTML ou non
 
@@ -1495,8 +1510,8 @@ class Mcontrat {
                     de vos demandes auprès de nos services.
                     </br></br>
                     Pour toutes vos demandes de renseignements, nous vous suggérons de nous contacter :</br>
-                    Par Téléphone	(+235) 22 51 40 44</br>
-                    Par Email	support@globaltech.td       Service Technique  </br>
+                    Par Téléphone   (+235) 22 51 40 44</br>
+                    Par Email   support@globaltech.td       Service Technique  </br>
                                 commercial@globaltech.td    Service Commercial </br>
 
 </br></br>
@@ -1508,6 +1523,8 @@ Toute l’équipe de Globaltech vous transmet, cher Client, ses salutations dist
             $this->log .= "Mail validation clients envoyé  à " . $client_info["email"];
         }
     }
+
+
     
     
     private function verif_email2($client) {

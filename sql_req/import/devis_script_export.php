@@ -1,5 +1,5 @@
 <?php 
-//Export Module 'devis' Date: 01-04-2020
+//Export Module 'devis' Date: 05-04-2020
 global $db;
 if(!$result_insert_modul = $db->Query("insert into modul (modul, description, rep_modul, tables, app_modul, modul_setting, is_setting, etat, services)values('devis', 'Gestion Devis','vente/submodul/devis','devis','devis','vente','2', '0', '[-1-2-3-7-]')")){$this->error = false; $this->log .= "<li> Error Import Modul 'devis' </li>";}
   //Task 'devis' 'Gestion Devis'

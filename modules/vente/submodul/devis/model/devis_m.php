@@ -137,7 +137,8 @@ class Mdevis {
         , ref_devise.abreviation as devise
         , services.service as comercial
         , (SELECT  GROUP_CONCAT(CONCAT(c.prenom,' ',c.nom) ORDER BY c.id ASC SEPARATOR ', ') AS prenoms FROM commerciaux c WHERE FIND_IN_SET(c.id, REPLACE(REPLACE(REPLACE((REPLACE(devis.id_commercial,'[','')),']',''),'\"',''),'\"','')) > 0 ) as commercial
-        , CONCAT(users_sys.lnom,' ',users_sys.fnom) as cre_usr
+        , CONCAT(users_sys.lnom,' ',users_sys.fnom) as cre_usr,
+        IF(devis.devis_base  != null, (select reference from devis where id = devis.devis_base),null) as db 
         FROM
         devis
         INNER JOIN clients
@@ -522,6 +523,8 @@ class Mdevis {
         $values["date_devis"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_devis'])));
         $values["type_remise"] = MySQL::SQLValue($this->_data['type_remise']);
 
+        $values["devis_base"] = MySQL::SQLValue($this->_data['devis_base']);
+
         $values["valeur_remise"] = MySQL::SQLValue($valeur_remise);
         $values["total_remise"] = MySQL::SQLValue($montant_remise);
         $values["projet"] = MySQL::SQLValue($this->_data['projet']);
@@ -546,6 +549,17 @@ class Mdevis {
                 $this->log .= '</br>Enregistrement réussie: <b>Réference: ' . $reference;
                 // $this->send_creat_devis_mail($values["id_commercial"]);
                 $this->save_temp_detail($this->_data['tkn_frm'], $this->last_id);
+
+                if($this->_data['devis_base'] != null){
+
+                  $etat_devis_revise = Msetting::get_set('etat_devis', 'devis_revise');
+                  $etat_contrat_revise = Msetting::get_set('archive_contrats', 'abonnement_revise');
+
+                  $this->change_etat($etat_devis_revise,$this->table, $this->_data['devis_base']); // Etat résvisé pour le devis (Parent
+
+                  $this->change_etat($etat_contrat_revise,'contrats',$this->_data['devis_base']); // Etat annulé/expiré  pour l'abonnement lié au devis (Parent)
+                } 
+
                 //log
                 if (!Mlog::log_exec($this->table, $this->last_id, 'Enregistrement Devis ' . $this->last_id, 'Insert')) {
                     $this->log .= '</br>Un problème de log ';
@@ -2672,9 +2686,9 @@ class Mdevis {
         $commerciauxIds = str_replace(']', '', $commerciauxIds);
         $listCommerciauxInconnus = array();
         $nbr = substr_count($values, ',') + 1;*/
-        
+
         global $db;
-        foreach ($commerciaux as $key) 
+        foreach ($commerciaux as $key)
         {
             $sql = "SELECT * FROM commerciaux WHERE commerciaux.id = $key";
 
@@ -2682,14 +2696,52 @@ class Mdevis {
                 $this->error = false;
                 $this->log .= $db->Error();
             } else {
-                if (!$db->RowCount()) 
+                if (!$db->RowCount())
                 {
                     $this->error = false;
                     $this->log .= '</br>Un élément ne fait pas partie du service commerciale';
-                } 
-            }            
+                }
+            }
+
+
         }
 
-        
     }
+
+    //Fonction pour changer etat - A deplacer dans une classe utilitaire après la rendre générique
+   public function change_etat($etat,$tab,$id_ligne) {
+       global $db;
+
+       $values["etat"] = MySQL::SQLValue($etat);
+       $values["updusr"] = MySQL::SQLValue(session::get('userid'));
+       $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+       $wheres = array();
+
+      if($tab == 'devis'){
+          $wheres['id'] = $id_ligne;}
+     if($tab == 'contrats'){
+          $wheres['iddevis'] = $id_ligne;}
+       // Execute the update and show error case error
+       if (!$result = $db->UpdateRows($tab, $values, $wheres)) {
+           $this->log .= '</br>Impossible de changer le statut!';
+           $this->log .= '</br>' . $db->Error();
+           $this->error = false;
+       } else {
+
+           $this->log .= '</br>Statut '.$tab. 'changé!';
+           $this->error = true;
+
+                   if(!Mlog::log_exec($this->table, $this->id_produit , 'Changement Etat', 'Validate'))
+                   {
+                       $this->log .= '</br>Un problème de log ';
+                   }
+       }
+
+
+       if ($this->error == false) {
+           return false;
+       } else {
+           return true;
+       }
+   }
 }
