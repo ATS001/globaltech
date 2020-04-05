@@ -9,6 +9,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_contrat->get_contrat()) {
     exit('3#' . $info_contrat->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
   $ref=$info_contrat->s('reference');
+  $abn_base=$info_contrat->s('abn_base');
 ?>
 
 <div class="pull-right tableTools-container">
@@ -44,7 +45,7 @@ $form->input_hidden('id', Mreq::tp('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
 
-$list_devis = Mcontrat::select_devis($info_contrat->s('iddevis'));
+$list_devis = Mcontrat::select_devis($info_contrat->s('iddevis'),null,$abn_base);
 
 //Reference
 $form->input_hidden('checker_reference', MInit::cryptage($info_contrat->s('reference'), 1));
@@ -54,8 +55,8 @@ $form->input_hidden('ref', $info_contrat->s('reference'));
 $form->select('Devis', 'iddevis', 8, $list_devis, '------', $info_contrat->s('iddevis'), null, null);
 
 //Date UPGRADE
-if($info_contrat->s('date_up') != null){
-$array_date_up[]= array('required', 'true', 'Insérer la date upgrade')
+if($abn_base != null){
+$array_date_up[]= array('required', 'true', 'Insérer la date upgrade');
 $form->input_date('Date upgrade', 'date_up', 4,$info_contrat->s('date_up'), $array_date_up);
 }
 
