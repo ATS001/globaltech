@@ -644,8 +644,12 @@ class Mobjectif_service {
     {
         global $db;
         
-        $etat_devis = Msetting::get_set('etat_devis', 'valid_client').', '.Msetting::get_set('etat_devis', 'devis_livr') ;
+        $etat_devis = Msetting::get_set('etat_devis', 'valid_client').', '.Msetting::get_set('etat_devis', 'devis_livr').', '.Msetting::get_set('etat_devis', 'devis_archive') ;
         $add_set       = array('return' => '<a href="#" class="this_url" rel="viewdevis" data="%crypt%"> <i class="ace-icon fa fa-eye blue bigger-100"></i></a>', 'data' => 'id');
+        $id_commerciaux = $db->QuerySingleValue0("SELECT JSON_ARRAYAGG(CONCAT('', c.id, '')) 
+                           FROM commerciaux c 
+                           INNER JOIN users_sys u ON  u.id = c.`id_user_sys`
+                           WHERE u.`service` NOT IN (1, 3)");
         $id_objectif   = $this->id_objectif_mensuel;
         $date_s        = date('Y-m-d', strtotime($this->g('date_s')));
         $date_e        = date('Y-m-d', strtotime($this->g('date_e')));
@@ -657,7 +661,8 @@ class Mobjectif_service {
         FROM `devis`  
         INNER JOIN `clients` 
         ON (`devis`.`id_client` = `clients`.`id`)
-        WHERE devis.`date_valid_client` BETWEEN '$date_s' AND '$date_e' AND devis.etat IN( $etat_devis )";
+        WHERE devis.`date_valid_client` BETWEEN '$date_s' AND '$date_e' AND devis.etat IN( $etat_devis )
+        AND JSON_CONTAINS( '$id_commerciaux', devis.`id_commercial`)";
         //exit($req_sql);
         
         if(!$db->Query($req_sql))

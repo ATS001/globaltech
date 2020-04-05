@@ -17,8 +17,7 @@ if(!MInit::crypt_tp('id', null, 'D')or !$contrat->get_echeance_contrat())
 
 	if($contrat->generate_facture(Mreq::tp('id')))
 	{
-		exit("1#".$contrat->log);
-
+		exit("1#".$contrat->log);			
 	}else{
 		exit("0#".$contrat->log);
-	}
+    }
