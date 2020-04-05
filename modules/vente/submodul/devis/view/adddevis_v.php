@@ -3,16 +3,23 @@
 //id_clnt crypted => id client
 //tsk_aft crypted => Task after exec
 //
+$devis_base     = MReq::tp('id');
+
 $after_exec     = 'devis';
 $id_clnt        = MReq::tp('id_clnt');
 $tsk_aft        = MReq::tp('tsk_aft');
 $name_client    = null;
+
+if($devis_base == null)
+{
 $title          = 'Ajouter un Devis';
+}else{
+$title          = 'Upgrade Devis';    
+}
 $btn_return_txt = 'Liste des Devis';
 $btn_task       = 'devis';
 $btn_setting    = null;
 
-$devis_base     = MReq::tp('id');
 
 $date_devis = null;
 $client = null;
@@ -80,7 +87,13 @@ if($id_clnt != null && $tsk_aft != null){
 
         </div>
         <div class="table-header">
-            Formulaire: "<?php echo ACTIV_APP; ?>"
+            Formulaire: "<?php 
+                        if($devis_base == null){
+                            echo ACTIV_APP; 
+                        }else{
+                            echo 'Upgrade Devis';
+                        }
+                         ?>"
         </div>
         <div class="widget-content">
             <div class="widget-box">
