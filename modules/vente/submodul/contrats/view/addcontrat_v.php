@@ -11,7 +11,7 @@ $title          = 'Ajouter Abonnement';
 $btn_return_txt = 'Liste des abonnements';
 $btn_task       = 'contrats';
 $btn_setting    = null;
-$contrat_base = MReq::tp('id');
+$abn_base = MReq::tp('id');
 
 if($id_clnt != null && $tsk_aft != null){
     if(!MInit::crypt_tp('id_clnt', null, 'D')){
@@ -65,14 +65,14 @@ if($id_clnt != null && $tsk_aft != null){
 <?php
 $form = new Mform('addcontrats', 'addcontrats', '', $after_exec , '0', null);
 $list_devis = Mcontrat::select_devis(null,$id_clnt);
-$form->input_hidden('contrat_base', Mreq::tp('id'));
+$form->input_hidden('abn_base', Mreq::tp('id'));
 
 
 //Devis
 $form->select('Devis', 'iddevis', 8, $list_devis, '------', null, null, null);
 
 //Date UPGRADE
-if($contrat_base != null){
+if($abn_base != null){
 $array_date_up[]= array('required', 'true', 'Insérer la date upgrade');
 $form->input_date('Date upgrade', 'date_up', 4, date('d-m-Y'), $array_date_up);
 }
