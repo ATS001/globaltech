@@ -433,6 +433,14 @@ class Mcontrat {
                     $this->log = '</br>Enregistrement réussie: <b>' . $this->reference . ' ID: ' . $this->last_id;
                     $this->save_temp_detail($this->_data['tkn_frm'], $this->last_id);
 
+                if($this->_data['abn_base'] != null){
+
+                  $etat_contrat_revise = Msetting::get_set('etat_contrat', 'contrat_revise');
+
+                  $this->valid_contrats($etat_contrat_revise); 
+
+                } 
+                    ;
                     if (!Mlog::log_exec($this->table, $this->last_id, 'Insertion contrat abonnement', 'Insert')) {
                         $this->log .= '</br>Un problème de log ';
                     }

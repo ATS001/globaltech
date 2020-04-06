@@ -553,7 +553,7 @@ class Mdevis {
                 if($this->_data['devis_base'] != null){
 
                   $etat_devis_revise = Msetting::get_set('etat_devis', 'devis_revise');
-                  $etat_contrat_revise = Msetting::get_set('archive_contrats', 'abonnement_revise');
+                  $etat_contrat_revise = Msetting::get_set('etat_contrat', 'devis_revise');
 
                   $this->change_etat($etat_devis_revise,$this->table, $this->_data['devis_base']); // Etat résvisé pour le devis (Parent
 
