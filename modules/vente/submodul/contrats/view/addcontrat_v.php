@@ -2,16 +2,25 @@
 //chck if called with client ID then suggest task for after exec
 //id_clnt crypted => id client
 //tsk_aft crypted => Task after exec
-//
+
+$abn_base = MReq::tp('id');
+
+$info_contrat = new Mcontrat();
+$info_contrat->id_contrat = $abn_base;
+$info_contrat->get_contrat();
+
 $after_exec     = 'contrats';
 $id_clnt        = MReq::tp('id_clnt');
 $tsk_aft        = MReq::tp('tsk_aft');
 $name_client    = null;
-$title          = 'Ajouter Abonnement';
+if ($abn_base  == null){
+$title          = 'Ajouter Abonnement';    
+}else{
+$title          = 'Upgrade Abonnement';
+}
 $btn_return_txt = 'Liste des abonnements';
 $btn_task       = 'contrats';
 $btn_setting    = null;
-$abn_base = MReq::tp('id');
 
 if($id_clnt != null && $tsk_aft != null){
     if(!MInit::crypt_tp('id_clnt', null, 'D')){
@@ -42,7 +51,12 @@ if($id_clnt != null && $tsk_aft != null){
 </div>
 <div class="page-header">
     <h1>
-        Ajouter un abonnement
+        <?php  if ($abn_base  == null){
+                   echo 'Ajouter Abonnement';    
+               }else{
+                   echo 'Upgrade Abonnement';
+               }
+         ?>      
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
         </small>
@@ -56,7 +70,12 @@ if($id_clnt != null && $tsk_aft != null){
             
         </div>
         <div class="table-header">
-            Formulaire: "<?php echo "Ajouter un abonnement"; ?>"
+            Formulaire: "<?php 
+                         if ($abn_base  == null){
+                             echo 'Ajouter Abonnement';    
+                         }else{
+                             echo 'Upgrade Abonnement';
+                         } ?>"
         </div>
         <div class="widget-content">
             <div class="widget-box">
@@ -64,7 +83,8 @@ if($id_clnt != null && $tsk_aft != null){
                 
 <?php
 $form = new Mform('addcontrats', 'addcontrats', '', $after_exec , '0', null);
-$list_devis = Mcontrat::select_devis(null,$id_clnt,$abn_base);
+$devis_base=$info_contrat->s('iddevis');
+$list_devis = Mcontrat::select_devis(null,$id_clnt,$devis_base);
 $form->input_hidden('abn_base', Mreq::tp('id'));
 
 
