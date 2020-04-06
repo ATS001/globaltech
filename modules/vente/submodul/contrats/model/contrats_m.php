@@ -437,7 +437,7 @@ class Mcontrat {
 
                   $etat_contrat_revise = Msetting::get_set('etat_contrat', 'contrat_revise');
 
-                  $this->valid_contrats($etat_contrat_revise); 
+                  $this->valid_contrats($etat_contrat_revise,$this->_data['abn_base'] );
 
                 } 
                     ;
@@ -1240,7 +1240,7 @@ class Mcontrat {
     }
 
     //activer ou desactiver un contrats_frn
-    public function valid_contrats($etat) {
+    public function valid_contrats($etat,$id=null) {
 
         global $db;
         //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
@@ -1257,7 +1257,12 @@ class Mcontrat {
         $values["updusr"] = MySQL::SQLValue(session::get('userid'));
         $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
-        $where["id"] = $this->id_contrat;
+        if ($id == null){
+            $where["id"] = $this->id_contrat;            
+        }else{
+            $where["id"] = $id;
+        }
+
 
         // Execute the update and show error case error
         if (!$result = $db->UpdateRows($this->table, $values, $where)) {
@@ -1543,6 +1548,6 @@ Toute l’équipe de Globaltech vous transmet, cher Client, ses salutations dist
         } else {
             return TRUE;
         }
-    }
+    }    
 
 }
