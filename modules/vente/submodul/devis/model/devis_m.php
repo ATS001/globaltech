@@ -1329,6 +1329,7 @@ class Mdevis {
         $id_client = $this->devis_info['id_client'];
         if ($etat == 'valid_client' and ! $this->check_client_temp($id_client)) {
             $this->error = false;
+            var_dump('test1');
             return false;
         }
 
@@ -1341,6 +1342,7 @@ class Mdevis {
         }
         
         if($reponse == 'valid' && !$this->insert_realise_into_objectif_mensuel(1)){
+                        var_dump('test1');
             return false;
         }
         global $db;
@@ -1351,6 +1353,7 @@ class Mdevis {
         } else {
             $new_etat = 'etat = ' . Msetting::get_set('etat_devis', $etat);
         }
+        var_dump($etat);
         //$new_etat = $this->g('type_devis') == 'VNT' ? 'etat = etat' : 'etat = '.Msetting::get_set('etat_devis', $etat) ;
         if ($etat == null) {
             $this->error = false;
@@ -1361,7 +1364,7 @@ class Mdevis {
         $date_valid_client = MySQL::SQLValue($this->_data['date_valid_client'], 'date');
         
         $req_sql = " UPDATE $table SET  $new_etat, date_valid_client = $date_valid_client  $ref_bc WHERE id = $id_devis ";
-
+var_dump($req_sql);
         if (!$db->Query($req_sql)) {
             $this->error = false;
             $this->log .= "Erreur Opération ";
@@ -1382,7 +1385,7 @@ class Mdevis {
             } else {
                 $this->log .= '</br>Opération réussie: <b> ' . $message;
             }
-
+var_dump('fin');
             //$this->get_devis();
             //If TYPE Devis is VNT then Generate Facture
         }
