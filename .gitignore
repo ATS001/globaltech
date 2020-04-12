@@ -14,4 +14,3 @@ pdfreport/
 *.xlsx
 *.pdf
 *.log
-templates/pdf_template/compte_client_pdf.php
