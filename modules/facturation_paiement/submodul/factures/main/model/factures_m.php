@@ -29,7 +29,7 @@ class Mfacture {
     var $type_echeance_info; // Array details facture
     var $compte_commercial_info;
     var $compte_commercial_ex_info;
-    var $reference = null; // Reference 
+    var $reference = null; // Reference
     var $sum_enc_fact; // Somme encaissements par facture
     var $solde; // Solde client
     var $devise_facture;
@@ -51,12 +51,12 @@ class Mfacture {
         ;
     }
 
-    //Get devis commercial from database 
+    //Get devis commercial from database
     public function get_commerciale_devis() {
         global $db;
 
-        $sql = "SELECT  c.id AS commercial, IFNULL(d.commission,0) AS commission, f.reference AS ref_facture, 'Automatique' AS type_commission 
-            FROM devis d,factures f,commerciaux c WHERE  
+        $sql = "SELECT  c.id AS commercial, IFNULL(d.commission,0) AS commission, f.reference AS ref_facture, 'Automatique' AS type_commission
+            FROM devis d,factures f,commerciaux c WHERE
             d.id= IF(f.`base_fact`='C',(SELECT ctr.iddevis FROM contrats ctr WHERE ctr.id=f.`idcontrat`),f.`iddevis`)
             AND d.`id_commercial`=c.id AND f.id  = " . $this->id_facture;
 
@@ -81,12 +81,12 @@ class Mfacture {
         }
     }
 
-    //Get devis external commercial from database 
+    //Get devis external commercial from database
     public function get_commerciale_ex_devis() {
         global $db;
 
-        $sql = "SELECT  c.id AS commercial_ex, IFNULL(d.commission_ex,0) AS commission_ex, f.reference AS ref_facture, 'Automatique' AS type_commission_ex 
-            FROM devis d,factures f,commerciaux c WHERE  
+        $sql = "SELECT  c.id AS commercial_ex, IFNULL(d.commission_ex,0) AS commission_ex, f.reference AS ref_facture, 'Automatique' AS type_commission_ex
+            FROM devis d,factures f,commerciaux c WHERE
             d.id= IF(f.`base_fact`='C',(SELECT ctr.iddevis FROM contrats ctr WHERE ctr.id=f.`idcontrat`),f.`iddevis`)
             AND d.`id_commercial_ex`=c.id AND f.id  = " . $this->id_facture;
 
@@ -143,7 +143,7 @@ class Mfacture {
         global $db;
         $table = $this->table;
 
-        $sql = "SELECT ech.`type_echeance` FROM factures f, contrats ctr, ref_type_echeance ech   
+        $sql = "SELECT ech.`type_echeance` FROM factures f, contrats ctr, ref_type_echeance ech
                 WHERE f.idcontrat=ctr.id AND  ctr.idtype_echeance=ech.id
                 AND f.id=" . $this->id_facture;
 
@@ -203,7 +203,7 @@ class Mfacture {
 
         $table_complement = $this->table_complement;
 
-        $sql = "SELECT $table_complement.* FROM 
+        $sql = "SELECT $table_complement.* FROM
     		$table_complement WHERE  $table_complement.id = " . $this->id_complement;
 
         if (!$db->Query($sql)) {
@@ -298,7 +298,7 @@ class Mfacture {
 
         $table_encaissement = $this->table_encaissement;
 
-        $sql = "SELECT $table_encaissement.* FROM 
+        $sql = "SELECT $table_encaissement.* FROM
     		$table_encaissement WHERE  $table_encaissement.id = " . $this->id_encaissement;
 
         if (!$db->Query($sql)) {
@@ -329,8 +329,8 @@ class Mfacture {
         $sql = "SELECT id,reference,designation,
                 REPLACE(FORMAT(montant,0),',',' ') as montant,
                 DATE_FORMAT(date_encaissement,'%d-%m-%Y') as date_encaissement ,
-                pj as pj                       
-                FROM 
+                pj as pj
+                FROM
     		$table_encaissement WHERE  $table_encaissement.idfacture = " . $this->id_facture;
 
         if (!$db->Query($sql)) {
@@ -365,7 +365,7 @@ class Mfacture {
         global $db;
         $table = $this->table;
         $sql_edit = $edit == null ? null : " AND id <> $edit";
-        $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
+        $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table
 		 		WHERE $table.$column = " . MySQL::SQLValue($value) . " $sql_edit ");
 
         if ($result != "0") {
@@ -384,7 +384,7 @@ class Mfacture {
      */
     private function check_non_exist($table, $column, $value, $message) {
         global $db;
-        $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
+        $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table
     		WHERE $table.$column = " . MySQL::SQLValue($value));
         if ($result == "0") {
             $this->error = false;
@@ -517,7 +517,7 @@ class Mfacture {
                       if ($this->facture_info['reste'] == 0) {
                       $this->valid_etat_facture($etat = 3, $this->_data['idfacture']);
                       }
-                     * 
+                     *
                      */
                 } else {
                     $this->log .= '</br>Enregistrement réussie: <b>' . $this->reference;
@@ -525,7 +525,7 @@ class Mfacture {
                     $this->log .= '</br>Un problème d\'Enregistrement ';
                 }
             }
-            //Else Error false	
+            //Else Error false
         } else {
             $this->log .= '</br>Enregistrement non réussie';
         }
@@ -585,7 +585,7 @@ class Mfacture {
                     $this->log .= '</br>Un problème d\'Enregistrement ';
                 }
             }
-            //Else Error false  
+            //Else Error false
         } else {
             $this->log .= '</br>Enregistrement non réussie';
         }
@@ -645,7 +645,7 @@ class Mfacture {
                     $this->log .= '</br>Un problème d\'Enregistrement ';
                 }
             }
-            //Else Error false  
+            //Else Error false
         } else {
             $this->log .= '</br>Enregistrement non réussie';
         }
@@ -696,7 +696,7 @@ class Mfacture {
                     $this->log .= '</br>Un problème d\'Enregistrement ';
                 }
             }
-            //Else Error false  
+            //Else Error false
         } else {
             $this->log .= '</br>Enregistrement non réussie';
         }
@@ -855,7 +855,7 @@ class Mfacture {
             return null;
         }
     }
-  
+
 
     /**
      * [save_file For save anattached file for entrie ]
@@ -1107,13 +1107,13 @@ class Mfacture {
 //                    {
 //                        $this->invalid_etat_facture($etat=3,$this->_data['idfacture']);
 //                    }
-                    //Check $this->error = false return Red message and Bol false	
+                    //Check $this->error = false return Red message and Bol false
                 } else {
                     $this->log .= '</br>Modification non réussie: <b>' . $this->_data['id'];
                     $this->log .= '</br>Un problème d\'Enregistrement ';
                 }
             }
-            //Else Error false	
+            //Else Error false
         } else {
             $this->log .= '</br>Enregistrement non réussie';
         }
@@ -1265,7 +1265,7 @@ class Mfacture {
 
         $table_encaissement = $this->table_encaissement;
 
-        $sql = "SELECT $table_encaissement.* ,DATE_FORMAT($table_encaissement.date_encaissement,'%d-%m-%Y') as date_encaissement, factures.reference as facture FROM 
+        $sql = "SELECT $table_encaissement.* ,DATE_FORMAT($table_encaissement.date_encaissement,'%d-%m-%Y') as date_encaissement, factures.reference as facture FROM
     		$table_encaissement,factures WHERE $table_encaissement.idfacture=factures.id AND $table_encaissement.id = " . $this->id_encaissement;
 
         if (!$db->Query($sql)) {
@@ -1296,12 +1296,12 @@ class Mfacture {
         $table = $this->table;
 
         $sql = "SELECT $table.id,reference,base_fact,
-                REPLACE(FORMAT(total_ht,0),',',' ') as total_ht ,  
-                REPLACE(FORMAT(total_tva,0),',',' ') as total_tva ,         
-                REPLACE(FORMAT(total_ttc,0),',',' ') as total_ttc,           
+                REPLACE(FORMAT(total_ht,0),',',' ') as total_ht ,
+                REPLACE(FORMAT(total_tva,0),',',' ') as total_tva ,
+                REPLACE(FORMAT(total_ttc,0),',',' ') as total_ttc,
                 REPLACE(FORMAT(total_ttc_initial,0),',',' ') as total_ttc_initial,
                 REPLACE(FORMAT(total_paye,0),',',' ') as total_paye,
-                REPLACE(FORMAT(reste,0),',',' ') as reste,               
+                REPLACE(FORMAT(reste,0),',',' ') as reste,
                 client,tva,projet,ref_bc,idcontrat,id_banque,
                 DATE_FORMAT(du,'%d-%m-%Y') as du,
                 DATE_FORMAT(au,'%d-%m-%Y') as au,
@@ -1310,7 +1310,7 @@ class Mfacture {
                 dev.abreviation as devise,
                 total_remise,valeur_remise,
                 REPLACE(FORMAT(total_remise + total_ht ,0),',',' ') as total_sans_remise
-                FROM 
+                FROM
     		    $table, ref_devise dev WHERE  dev.id = $table.id_devise AND $table.id = " . $this->id_facture;
 
         if (!$db->Query($sql)) {
@@ -1341,11 +1341,11 @@ class Mfacture {
         d_factures.ref_produit
         , d_factures.designation
         , d_factures.qte
-       
+
         , d_factures.prix_unitaire
-       
+
         ,  REPLACE(FORMAT(d_factures.total_ht,0),',',' ') as totalht
-      
+
         FROM
         d_factures
         WHERE d_factures.id_facture = " . $id_facture;
@@ -1483,9 +1483,9 @@ class Mfacture {
         , CONCAT(commerciaux.nom,' ',commerciaux.prenom) as commercial
         FROM
         devis
-        INNER JOIN clients 
+        INNER JOIN clients
         ON (devis.id_client = clients.id)
-        LEFT JOIN ref_pays 
+        LEFT JOIN ref_pays
         ON (clients.id_pays = ref_pays.id)
         LEFT JOIN ref_ville
         ON (clients.id_ville = ref_ville.id)
@@ -1519,7 +1519,7 @@ class Mfacture {
 
         $contrat = $this->facture_info['idcontrat'] == NULL ? 'NULL' : $this->facture_info['idcontrat'];
         $devis = $this->facture_info['iddevis'] == NULL ? 'NULL' : $this->facture_info['iddevis'];
-        $sql = "SELECT IF('" . $this->facture_info['base_fact'] . "'='C', (SELECT iddevis FROM contrats WHERE id=$contrat), id ) as id FROM 
+        $sql = "SELECT IF('" . $this->facture_info['base_fact'] . "'='C', (SELECT iddevis FROM contrats WHERE id=$contrat), id ) as id FROM
     		devis WHERE  devis.id =if( '" . $this->facture_info['base_fact'] . "'='C', (SELECT iddevis FROM contrats WHERE id=$contrat), $devis)";
 
         if (!$db->Query($sql)) {
@@ -1547,7 +1547,7 @@ class Mfacture {
 
         $table_encaissement = $this->table_encaissement;
 
-        $sql = "SELECT sum(montant) FROM 
+        $sql = "SELECT sum(montant) FROM
     		$table_encaissement WHERE  $table_encaissement.idfacture = " . $id_facture;
 
         if (!$db->Query($sql)) {
@@ -1579,7 +1579,7 @@ class Mfacture {
             DATE_FORMAT(contrats.date_fin,'%d-%m-%Y') AS date_fin,
             DATE_FORMAT(contrats.date_contrat,'%d-%m-%Y') AS date_contrat,contrats.commentaire,
             devis.`reference` as ref_devis, DATE_FORMAT(devis.`date_devis`,'%d-%m-%Y') as date_devis
-            FROM contrats ,devis 
+            FROM contrats ,devis
             WHERE contrats.iddevis=devis.`id` AND contrats.id = " . $idcontrat;
 
 
@@ -1610,16 +1610,16 @@ class Mfacture {
 
         $this->id_facture = $this->encaissement_info['idfacture'];
         $this->get_facture();
-        
+
         $this->getDevise();
         $this->getDeviseSociete();
 
-        if(($this->devise_facture != $this->devise_societe) AND $this->devise_facture != NULL ){   
-          $reste_encai=$this->encaissement_info['montant_devise_ext'];  
+        if(($this->devise_facture != $this->devise_societe) AND $this->devise_facture != NULL ){
+          $reste_encai=$this->encaissement_info['montant_devise_ext'];
         }else{
-          $reste_encai=$this->encaissement_info['montant']; 
+          $reste_encai=$this->encaissement_info['montant'];
         }
-        
+
         if ( $reste_encai > $this->facture_info['reste']) {
             $this->error = false;
             $this->log = 'Le montant doit être inférieur ou égale au reste <b>' . $this->facture_info['reste'] . '</b>';
@@ -1639,46 +1639,46 @@ class Mfacture {
                 $this->error = false;
             } else {
                 if ($this->error == true) {
-                    
+
                     $this->log = '</br>Enregistrement réussie: <b>' . $this->reference . ' ID: ' . $this->last_id;
 
-                    if(($this->devise_facture != $this->devise_societe) AND $this->devise_facture != NULL ){       
+                    if(($this->devise_facture != $this->devise_societe) AND $this->devise_facture != NULL ){
                     $this->maj_reste($this->encaissement_info['idfacture'], $this->encaissement_info['montant_devise_ext']);
                     }else{
-                    $this->maj_reste($this->encaissement_info['idfacture'], $this->encaissement_info['montant']);                        
+                    $this->maj_reste($this->encaissement_info['idfacture'], $this->encaissement_info['montant']);
                     }
 
                     $this->id_facture = $this->encaissement_info['idfacture'];
                     $this->get_facture();
 
                     if ($this->facture_info['reste'] > 0) {
-                        
+
                         $this->valid_etat_facture($etat = 2, $this->encaissement_info['idfacture']);
                     }
 
                     if ($this->facture_info['reste'] == 0) {
-                        
+
                         $this->valid_etat_facture($etat = 3, $this->encaissement_info['idfacture']);
                     }
                 } else {
-                    
+
                     $this->log .= '</br>Enregistrement réussie: <b>' . $this->reference;
 
                     $this->log .= '</br>Un problème d\'Enregistrement ';
                 }
                 $this->log .= '</br>Statut changé! ';
-                
-                
+
+
                 $this->credit_compte_client();
 
                 $this->get_commerciale_devis();
                 if($this->compte_commercial_info['commission']!=0){
-               
+
                 if($this->credit_compte_commerciale()){
 
                     $this->get_commerciale_ex_devis();
                     if($this->compte_commercial_ex_info['commission_ex']!=0){
-               
+
                         if($this->credit_compte_commerciale_ex()){
 
                             $this->error = true;
@@ -1687,17 +1687,17 @@ class Mfacture {
 
                             $this->error = false;
 
-                        } 
+                        }
                     }
                 }
                 }
-                
+
                 $this->error = true;
-                
+
                 if (!Mlog::log_exec($this->table_encaissement, $this->id_encaissement, 'Validation encaissement', 'Validate')) {
                     $this->log .= '</br>Un problème de log ';
                 }
-                
+
             }
         }
         if ($this->error == false) {
@@ -1715,13 +1715,13 @@ class Mfacture {
         , factures.reference as reference_facture
         ,encaissements.montant
 		,encaissements.mode_payement AS mode_payement
-		,encaissements.ref_payement       
+		,encaissements.ref_payement
         , CONCAT(users_sys.fnom,' ',users_sys.lnom) as commercial
         FROM
         encaissements
-        INNER JOIN factures 
+        INNER JOIN factures
         ON (encaissements.idfacture = factures.id)
-        LEFT JOIN users_sys 
+        LEFT JOIN users_sys
         ON (encaissements.creusr = users_sys.id)
         WHERE encaissements.id = " . $this->id_encaissement;
 
@@ -1827,22 +1827,22 @@ UNION
 
         $mnt = str_replace(' ', '', $this->facture_info['total_ttc']);
         $clt = $this->devis_info['id_client'];
-        
+
         $fact=$this->facture_info['id'];
 
         $this->getSoldeClient($clt);
-      
+
         $sld = $this->solde;
 
         $base=$this->facture_info['base_fact'];
         $reference=$this->facture_info['reference'];
-        $date=$this->facture_info['date_facture'];  
-        
+        $date=$this->facture_info['date_facture'];
+
         $du=$this->facture_info['du'];
         $au=$this->facture_info['au'];
 
-        
-        $req_sql = "INSERT into compte_client(id_client,type_mouvement,id_facture,montant,description,date_mouvement,solde,creusr) 
+
+        $req_sql = "INSERT into compte_client(id_client,type_mouvement,id_facture,montant,description,date_mouvement,solde,creusr)
                values($clt,'D',$fact,$mnt,IF('$base'='C', CONCAT('Facture: ', '$reference',' du ','$du',' au ', '$au'),CONCAT('Facture: ','$reference',' du ', '$date')),STR_TO_DATE('$date','%d-%m-%Y'), $sld+$mnt ,1)";
 
         if (!$db->Query($req_sql)) {
@@ -1863,20 +1863,20 @@ UNION
         $id_devis = $this->id_devis['id'];
 
         $enc=$this->encaissement_info['id'];
-        
+
         $this->Get_detail_facture_show();
         $devis_info = $this->devis_info;
-        
+
         $clt = $this->devis_info['id_client'];
-        
+
         $this->getSoldeClient($clt);
-      
+
         $sld = $this->solde;
 
         $reference=$this->encaissement_info['reference'];
-        $date=$this->encaissement_info['date_encaissement'];    
+        $date=$this->encaissement_info['date_encaissement'];
         $ref_payement=$this->encaissement_info['ref_payement'];
-        
+
         $this->id_facture=$this->encaissement_info['idfacture'];
         $this->get_facture();
         $this->getDevise();
@@ -1885,25 +1885,25 @@ UNION
 
         if($this->devise_facture != $this->devise_societe /*AND ($this->existDiffDevise=0)*/){
 
-        $req_sql = "INSERT into compte_client(id_client,type_mouvement,id_encaissement,montant,description,date_mouvement,solde,creusr) 
+        $req_sql = "INSERT into compte_client(id_client,type_mouvement,id_encaissement,montant,description,date_mouvement,solde,creusr)
                values($clt,'C',$enc,$mnt_dev_ext,CONCAT('Paiement: ', '$reference',' du ',DATE_FORMAT('$date','%d-%m-%Y'),"
                 . "IF('$ref_payement'<> null,Concat(': Référence N°: ','$ref_payement'),' '))"
                 . ",'$date', $sld-$mnt_dev_ext ,1)";
         }else{
-        
-        $req_sql = "INSERT into compte_client(id_client,type_mouvement,id_encaissement,montant,description,date_mouvement,solde,creusr) 
+
+        $req_sql = "INSERT into compte_client(id_client,type_mouvement,id_encaissement,montant,description,date_mouvement,solde,creusr)
                values($clt,'C',$enc,$mnt,CONCAT('Paiement: ', '$reference',' du ',DATE_FORMAT('$date','%d-%m-%Y'),"
                 . "IF('$ref_payement'<> null,Concat(': Référence N°: ','$ref_payement'),' '))"
                 . ",'$date', $sld-$mnt ,1)";
         }
-                
+
         if (!$db->Query($req_sql)) {
             $this->log .= $db->Error();
             $this->error = false;
             $this->log .= '<br>Problème de mise à jour Etat de compte';
         }
     }
-  
+
     private function send_valid_facture_mail() {
         //Get info abonnement
         $this->get_facture();
@@ -1922,7 +1922,7 @@ UNION
         $agent_tel = $commerciale->g('tel');
 
         $mail = new PHPMailer();
-        $mail->isSMTP(); // Paramétrer le Mailer pour utiliser SMTP 
+        $mail->isSMTP(); // Paramétrer le Mailer pour utiliser SMTP
         $mail->SMTPSecure = 'ssl'; // Accepter SSL
         $mail->setFrom($mail->Username, 'GlobalTech Direction'); // Personnaliser l'envoyeur
         $mail->addAddress('contact@globaltech.td', 'Globaltech DG');
@@ -1931,7 +1931,7 @@ UNION
 
         $mail->Subject = "Facture Réf: #" . $facture_info['reference'];
 
-        $mail->Body = "<b> Bonjour " . $commerciale->g('fnom') . " " . $commerciale->g('lnom') 
+        $mail->Body = "<b> Bonjour " . $commerciale->g('fnom') . " " . $commerciale->g('lnom')
                 . ",</br></br> La facture REF: " . $facture_info['reference'] . " a été validée. </br></br> Cordialement</b>";
         if (!$mail->send()) {
             $this->log .= "Mailer Error: " . $mail->ErrorInfo;
@@ -1988,7 +1988,7 @@ UNION
                     $this->log .= '</br>Un problème d\'Enregistrement ';
                 }
             }
-            //Else Error false  
+            //Else Error false
         } else {
             $this->log .= '</br>Suppression non réussie';
         }
@@ -2005,7 +2005,7 @@ UNION
 
         $result = "SELECT IF((SELECT COUNT(*) FROM factures f WHERE f.`client`='$client' AND f.id_devise=$devise) =
                 (SELECT COUNT(*) FROM factures ff WHERE ff.`client`='$client'),1,0)AS existDifferentsDevise FROM DUAL";
-       
+
         if (!$db->Query($result)) {
             $this->error = false;
             $this->log .= $db->Error();
@@ -2019,14 +2019,14 @@ UNION
             }
         }
     }
-    
-    
+
+
     public function getDevise() {
         global $db;
-        $result = "SELECT  ref_devise.devise AS devise 
+        $result = "SELECT  ref_devise.devise AS devise
     FROM factures INNER JOIN ref_devise
         ON factures.id_devise = ref_devise.id WHERE factures.id = ". $this->id_facture;
-       
+
         if (!$db->Query($result)) {
             $this->error = false;
             $this->log .= $db->Error();
@@ -2040,13 +2040,13 @@ UNION
             }
         }
     }
-    
-    
-    
+
+
+
     public function getDeviseSociete() {
         global $db;
 
-        $sql = "SELECT  ref_devise.devise AS devise 
+        $sql = "SELECT  ref_devise.devise AS devise
     FROM ste_info INNER JOIN ref_devise
         ON ste_info.`ste_id_devise` = ref_devise.id";
 
@@ -2063,14 +2063,14 @@ UNION
             }
         }
     }
-    
-    
+
+
     public function getTauxChange($id_devise) {
         global $db;
 
-        $sql = "SELECT  conversion AS taux_change 
+        $sql = "SELECT  conversion AS taux_change
     FROM sys_taux_change where id_devise = ".$id_devise;
-       
+
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
