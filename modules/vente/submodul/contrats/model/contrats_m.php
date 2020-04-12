@@ -69,17 +69,17 @@ class Mcontrat {
 
     //Get  liste devis
 
-    static public function select_devis($is_edit = null,$client_filtre = null, $devis_base =null) {
+    static public function select_devis($is_edit = null,$client_filtre = null, $devis_base =null, $abn_base =null) {
         global $db;
 
         $table = 'devis';
         $etat_devis_valid = Msetting::get_set('etat_devis', 'valid_client');
         $is_edit = $is_edit == null ? null : "and devis.id <> $is_edit";
         $client_filtre = $client_filtre == null ? null : "and clients.id = $client_filtre";
-        $devis_base = $devis_base == null ? null : "and devis.devis_base = $devis_base";
+        $abn_base = $abn_base == null ? null : "and (devis.devis_base = $devis_base OR devis.id = $devis_base)";
 
         $sql = "SELECT devis.id as val, CONCAT(devis.reference,' / Client: ',clients.denomination,IF(devis.projet IS NOT NULL,CONCAT(' / Projet: ',devis.projet),' '),' / Total: ',devis.totalttc,IF(ref_devise.abreviation IS NOT NULL,CONCAT(' ',ref_devise.abreviation),' ')) as txt FROM 
-            devis,clients,ref_devise WHERE  devis.id_client=clients.id and ref_devise.id=clients.id_devise and devis.type_devis='ABN' and devis.etat = $etat_devis_valid $client_filtre  $devis_base AND  devis.id NOT IN (SELECT iddevis FROM contrats c WHERE devis.id = c.iddevis $is_edit )";
+            devis,clients,ref_devise WHERE  devis.id_client=clients.id and ref_devise.id=clients.id_devise and devis.type_devis='ABN' and devis.etat = $etat_devis_valid $client_filtre  $abn_base AND  devis.id NOT IN (SELECT iddevis FROM contrats c WHERE devis.id = c.iddevis $is_edit )";
 
         if (!$db->Query($sql)) {
             $list_devis = $db->Error();
@@ -1183,11 +1183,18 @@ class Mcontrat {
     }
 
     public function get_contrat_info() {
-        global $db;
+      global $db;
+      $this->get_contrat();
+
+      $abn_base = $this->contrat_info["abn_base"];
+      if($abn_base == null)
+      {
+      $abn_base = 0;
+      }
 
         $table = $this->table;
 
-         $sql = "SELECT $table.* ,IF(contrats.abn_base != null,(select reference from contrats where id = contrats.abn_base), null) as cb,DATE_FORMAT(contrats.date_contrat,'%d-%m-%Y') AS date_contrat,DATE_FORMAT($table.date_contrat,'%d-%m-%Y') AS date_contrat , DATE_FORMAT($table.date_effet,'%d-%m-%Y') AS date_effet ,DATE_FORMAT($table.date_fin,'%d-%m-%Y') AS date_fin , ref_type_echeance.type_echeance AS type_echeance
+         $sql = "SELECT $table.* ,IF(contrats.abn_base is not null,(select reference from contrats where id = $abn_base), null) as cb,DATE_FORMAT(contrats.date_contrat,'%d-%m-%Y') AS date_contrat,DATE_FORMAT($table.date_contrat,'%d-%m-%Y') AS date_contrat , DATE_FORMAT($table.date_effet,'%d-%m-%Y') AS date_effet ,DATE_FORMAT($table.date_fin,'%d-%m-%Y') AS date_fin , ref_type_echeance.type_echeance AS type_echeance
                    FROM $table,ref_type_echeance
                   WHERE  $table.idtype_echeance=ref_type_echeance.id AND $table.id = " . $this->id_contrat;
 
@@ -1548,6 +1555,7 @@ Toute l’équipe de Globaltech vous transmet, cher Client, ses salutations dist
         } else {
             return TRUE;
         }
-    }    
+
+    }
 
 }
