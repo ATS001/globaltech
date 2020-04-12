@@ -115,6 +115,14 @@ class Mdevis {
     }
 
     public function Get_detail_devis_show() {
+
+      $this->get_devis();
+      $devis_base = $this->devis_info["devis_base"];
+      if($devis_base == null)
+      {
+      $devis_base = 0;  
+      }
+
         global $db;
         $req_sql = "SELECT
         devis.*
@@ -137,8 +145,8 @@ class Mdevis {
         , ref_devise.abreviation as devise
         , services.service as comercial
         , (SELECT  GROUP_CONCAT(CONCAT(c.prenom,' ',c.nom) ORDER BY c.id ASC SEPARATOR ', ') AS prenoms FROM commerciaux c WHERE FIND_IN_SET(c.id, REPLACE(REPLACE(REPLACE((REPLACE(devis.id_commercial,'[','')),']',''),'\"',''),'\"','')) > 0 ) as commercial
-        , CONCAT(users_sys.lnom,' ',users_sys.fnom) as cre_usr,
-        IF(devis.devis_base  != null, (select reference from devis where id = devis.devis_base),null) as db 
+        , CONCAT(users_sys.lnom,' ',users_sys.fnom) as cre_usr
+        , IF(devis.devis_base  is not null, (select reference from devis where id = $devis_base ),null) as db
         FROM
         devis
         INNER JOIN clients
@@ -153,7 +161,7 @@ class Mdevis {
         ON (devis.creusr = users_sys.id)
         INNER JOIN services
         ON (users_sys.service = services.id)
-        
+
         WHERE devis.id = " . $this->id_devis;
 
 

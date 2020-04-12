@@ -55,11 +55,17 @@ if(!$info_contrat->get_devis_info())
 					<div class="widget-header widget-header-large">
 						<h3 class="widget-title grey lighter">
 							<i class="ace-icon fa fa-adress-card-o green"></i>
-							Devis: <?php echo $info_contrat->g('reference')?></br>
 
-						<?php 	if($info_contrat->g('cb') != null)  {  ?>
- 							Contrat UP : <?php echo $info_contrat->g('cb')?></br>
-						<?php }  ?>
+							<?php
+																		if($info_contrat->contrat_info["abn_base"] != null) {
+																	    //echo 'Devis révisé : '; echo $info_devis->s('db');
+																			echo 'Abonnement révisé : '.$info_contrat->contrat_info["cb"];
+																		}else{
+																			echo 'Devis : '.$info_contrat->contrat_info["reference"];
+																		 }
+																			?>
+
+
 						</h3>
 
 						<!-- #section:pages/invoice.info -->
