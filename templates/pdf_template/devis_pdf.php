@@ -39,7 +39,7 @@ $headers = array(
             'Description' => '43[#]', 
             'Qte'         => '5[#]C', 
             'P.Unitaire'  => '10[#]R',
-            'P.Total'       => '15[#]R',
+            'P.Total'     => '15[#]R',
 
         );
 $devis_info   = $devis->devis_info;
@@ -119,8 +119,8 @@ class MYPDF extends TCPDF {
 	    $pays = $this->info_devis['pays'] != null ? $this->info_devis['pays'] : null;
 		$detail_client = '<table cellspacing="3" cellpadding="2" border="0">
 		<tbody>
-		<tr style="background-color:#495375; font-size:14; font-weight:bold; color:#fff;">
-		<td colspan="3"><strong>Informations client</strong></td>
+		<tr style="background-color:#495375; font-size:11; font-weight:bold; color:#fff;">
+		<td colspan="3"><strong>Informations du client</strong></td>
 		</tr>
 		<tr>
 		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Réf Client</td>

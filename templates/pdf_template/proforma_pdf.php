@@ -124,7 +124,7 @@ class MYPDF extends TCPDF {
 		//Ste
 		
 		// Title
-		$titre_doc = '<h1 style="letter-spacing: 2px;color;#495375;font-size: 20pt;">PROFORMA</h1>';
+		$titre_doc = '<h1 style="letter-spacing: 2px;color;#495375;font-size: 14pt;">PROFORMA</h1>';
 		$this->writeHTMLCell(0, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true);
 		$this->SetTextColor(0, 0, 0);
 		$this->SetFont('helvetica', '', 9);
@@ -230,7 +230,7 @@ class MYPDF extends TCPDF {
 			$this->write2DBarcode($qr_content, 'QRCODE,H', 15, '', 25, 25, $style, 'N');
 		//}
         $this->SetY(-30);
-		$ste = $ste_c->get_ste_info_report_footer(1);
+		$ste = $ste_c->get_ste_info_report_footer(1, $this->info_proforma['id_banque']);
 		$this->writeHTMLCell(0, 0, '', '', $ste , '', 0, 0, true, 'C', true);
 		// Position at 15 mm from bottom
 		$this->SetY(-15);

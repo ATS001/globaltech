@@ -23,6 +23,7 @@ class Mdevis {
     var $total_remise        = null; //
     var $prix_u_final        = null; //
     var $total_ht_d          = null; //
+    var $max_remise_details  = null;
     var $total_tva_d         = null; //
     var $total_ttc_d         = null; //
     var $valeur_remis_t      = null; //
@@ -491,7 +492,7 @@ class Mdevis {
 
         //var_dump("ID User connectée".session::get('userid'));
 
-        if (!$this->get_commerciale_remise_plafond(session::get('userid'), $valeur_remise)) {
+        if (!$this->get_commerciale_remise_plafond(session::get('userid'), $valeur_remise, $this->_data['tkn_frm'])) {
             return false;
         }
 
@@ -618,7 +619,7 @@ class Mdevis {
         $valeur_remise = number_format($this->valeur_remis_t, 2, '.', '');
         $this->reference = $this->devis_info['reference'];
 
-        if (!$this->get_commerciale_remise_plafond(session::get('userid'), $valeur_remise)) {
+        if (!$this->get_commerciale_remise_plafond(session::get('userid'), $valeur_remise, $this->_data['tkn_frm'])) {
             return false;
         }
         $etat_line = $this->etat_valid_devis;
@@ -2638,7 +2639,7 @@ class Mdevis {
         }
     }
 
-    private function get_commerciale_remise_plafond($id_commercial, $valeur_remise) {
+    private function get_commerciale_remise_plafond($id_commercial, $valeur_remise, $tkn_frm = null) {
         global $db;
         $etat_valid_dg = Msetting::get_set('etat_devis', 'valid_devis_dg');
         $etat_valid_dcm = Msetting::get_set('etat_devis', 'valid_devis_dcm');
@@ -2650,6 +2651,9 @@ class Mdevis {
         if ($etat_valid_dcm == null) {
             $this->error = false;
             $this->log .= "Manque paramètre valid_devis_dcm";
+            return false;
+        }
+        if(!$this->get_max_remise_plafond_for_details($tkn_frm)){
             return false;
         }
 
@@ -2667,16 +2671,39 @@ class Mdevis {
             $plafond_remise = $arr_result['remise'];
             $plafond_remise_valid_dcm = $arr_result['remise_valid_dcm'];
             $plafond_remise_valid_dg = $arr_result['remise_valid_dg'];
-            if ($valeur_remise > $plafond_remise_valid_dg) {
+            if ($valeur_remise > $plafond_remise_valid_dg OR $this->max_remise_details > $plafond_remise_valid_dg) {
                 $this->log .= '</br>La remise appliquée dépasse le plafond autorisé (' . $plafond_remise_valid_dg . '%)';
                 return false;
-            } elseif ($valeur_remise > $plafond_remise && $valeur_remise <= $plafond_remise_valid_dcm) {
+            } elseif (($valeur_remise > $plafond_remise && $valeur_remise <= $plafond_remise_valid_dcm) OR ($this->max_remise_details > $plafond_remise && $this->max_remise_details <= $plafond_remise_valid_dcm)) {
                 $this->log .= '</br>La remise appliquée dépasse le plafond autorisé (' . $plafond_remise . '%)</br>Le devis doit être validé par le DCM';
                 $this->etat_valid_devis = $etat_valid_dcm;
-            } elseif ($valeur_remise > $plafond_remise && $valeur_remise > $plafond_remise_valid_dcm) {
+            } elseif (($valeur_remise > $plafond_remise && $valeur_remise > $plafond_remise_valid_dcm) OR ($this->max_remise_details > $plafond_remise && $this->max_remise_details > $plafond_remise_valid_dcm)) {
                 $this->log .= '</br>La remise appliquée dépasse le plafond autorisé (' . $plafond_remise_valid_dcm . '%)</br>Le devis doit être validé par le DG';
                 $this->etat_valid_devis = $etat_valid_dg;
             }
+            return true;
+        }
+    }
+    /**
+     * [get_max_remise_plafond_for_details description]
+     * @param  [type] $tkn_frm [description]
+     * @return [type]          [description]
+     */
+    private function get_max_remise_plafond_for_details($tkn_frm) {
+        global $db;
+        
+        $req_sql = "SELECT MAX(dd.`remise_valeur`) AS max_remise FROM d_devis dd WHERE dd.tkn_frm = '$tkn_frm'";
+        //var_dump($req_sql);
+        if (!$db->Query($req_sql)) {
+            $this->log .= '</br>Impossible récuperation MAX remise détails #SQL';
+            return false;
+        } else {
+            if (!$db->RowCount()) {
+                $this->log .= '</br>Impossible récuperation MAX remise pour ce devis';
+                return false;
+            }
+            $arr_result = $db->RowArray();
+            $this->max_remise_details = $arr_result['max_remise'];           
             return true;
         }
     }
