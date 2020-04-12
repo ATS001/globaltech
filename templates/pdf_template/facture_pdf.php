@@ -405,7 +405,7 @@ $block_ttc = '<tr>
 $block_remise = $pdf->info_facture['valeur_remise'] == 0 ? null : $block_remise; 
 $block_tt_no_remise = $pdf->info_facture['valeur_remise'] == 0 ? null : $block_tt_no_remise;  
 $block_ttc    = $pdf->info_facture['total_tva'] == 0 ? null : $block_ttc;
-$titl_ht = $pdf->info_facture['total_tva'] == 0 ? 'Total' : 'Total HT';
+$titl_ht = $pdf->info_facture['total_tva'] == 0 ? 'Total à payer' : 'Total HT';
 //$signature = $pdf->info_proforma['comercial']; 
 
 $signature = 'La Direction'; 
