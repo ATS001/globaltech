@@ -84,7 +84,7 @@ if($id_clnt != null && $tsk_aft != null){
 <?php
 $form = new Mform('addcontrats', 'addcontrats', '', $after_exec , '0', null);
 $devis_base=$info_contrat->s('iddevis');
-$list_devis = Mcontrat::select_devis(null,$id_clnt,$devis_base);
+$list_devis = Mcontrat::select_devis(null,$id_clnt,$devis_base,$abn_base);
 $form->input_hidden('abn_base', Mreq::tp('id'));
 
 
