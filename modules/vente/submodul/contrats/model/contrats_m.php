@@ -1183,11 +1183,18 @@ class Mcontrat {
     }
 
     public function get_contrat_info() {
-        global $db;
+      global $db;
+      $this->get_contrat();
+
+      $abn_base = $this->contrat_info["abn_base"];
+      if($abn_base == null)
+      {
+      $abn_base = 0;
+      }
 
         $table = $this->table;
 
-         $sql = "SELECT $table.* ,IF(contrats.abn_base != null,(select reference from contrats where id = contrats.abn_base), null) as cb,DATE_FORMAT(contrats.date_contrat,'%d-%m-%Y') AS date_contrat,DATE_FORMAT($table.date_contrat,'%d-%m-%Y') AS date_contrat , DATE_FORMAT($table.date_effet,'%d-%m-%Y') AS date_effet ,DATE_FORMAT($table.date_fin,'%d-%m-%Y') AS date_fin , ref_type_echeance.type_echeance AS type_echeance
+         $sql = "SELECT $table.* ,IF(contrats.abn_base is not null,(select reference from contrats where id = $abn_base), null) as cb,DATE_FORMAT(contrats.date_contrat,'%d-%m-%Y') AS date_contrat,DATE_FORMAT($table.date_contrat,'%d-%m-%Y') AS date_contrat , DATE_FORMAT($table.date_effet,'%d-%m-%Y') AS date_effet ,DATE_FORMAT($table.date_fin,'%d-%m-%Y') AS date_fin , ref_type_echeance.type_echeance AS type_echeance
                    FROM $table,ref_type_echeance
                   WHERE  $table.idtype_echeance=ref_type_echeance.id AND $table.id = " . $this->id_contrat;
 
