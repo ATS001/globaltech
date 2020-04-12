@@ -1,13 +1,13 @@
 <?php
-//Get all contrat info 
+//Get all contrat info
 $info_contrat = new Mcontrat();
 //Set ID of Module with POST id
 $info_contrat->id_contrat = Mreq::tp('id');
 
-//Check if Post ID <==> Post idc or get_modul return false. 
+//Check if Post ID <==> Post idc or get_modul return false.
 if(!MInit::crypt_tp('id', null, 'D') or !$info_contrat->get_contrat_info())
-{ 	
- 	// returne message error red to client 
+{
+ 	// returne message error red to client
 	exit('3#'.$info_contrat->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur ');
 }
 //Get all client info
@@ -27,7 +27,7 @@ if(!$info_contrat->get_devis_info())
 
 		<?php TableTools::btn_action('contrats', $info_contrat->id_contrat, 'detailcontrat');
                 TableTools::btn_add('contrats','Liste des abonnements', Null, $exec = NULL, 'reply'); ?>
-         
+
 
 	</div>
 </div>
@@ -55,7 +55,11 @@ if(!$info_contrat->get_devis_info())
 					<div class="widget-header widget-header-large">
 						<h3 class="widget-title grey lighter">
 							<i class="ace-icon fa fa-adress-card-o green"></i>
-							Devis: <?php echo $info_contrat->g('reference')?>
+							Devis: <?php echo $info_contrat->g('reference')?></br>
+
+						<?php 	if($info_contrat->g('cb') != null)  {  ?>
+ 							Contrat UP : <?php echo $info_contrat->g('cb')?></br>
+						<?php }  ?>
 						</h3>
 
 						<!-- #section:pages/invoice.info -->
@@ -66,18 +70,18 @@ if(!$info_contrat->get_devis_info())
                             		</td>
                             		<td>&nbsp;&nbsp;
                             <b class="red pull-right"><?php echo $info_contrat->s('reference');
-                                                                        
+
                                                           ?></span>
-                                    </td>                      
+                                    </td>
                                  </tr>
                                  <tr><td>
 							<span class="invoice-info-label">Date:</span>
 									</td>
                             		<td>&nbsp;&nbsp;
-							<b class="blue pull-right"><?php echo $info_contrat->s('date_contrat'); 
-                                                       
+							<b class="blue pull-right"><?php echo $info_contrat->s('date_contrat');
+
                                                         ?></span>
-                                   </td>                      
+                                   </td>
                                  </tr>
                             </table>
 						</div>
@@ -87,9 +91,9 @@ if(!$info_contrat->get_devis_info())
 							<a href="#" class="iframe_pdf" rel="<?php echo $info_contrat->s('pj') ?>">
 								<i class="ace-icon fa fa-print"></i>
 							</a>
-						</div>       
+						</div>
                        <?php } ?>
-						
+
 
 						<!-- /section:pages/invoice.info -->
 					</div>
@@ -107,24 +111,24 @@ if(!$info_contrat->get_devis_info())
 									<div>
 										<ul class="list-unstyled spaced">
 											<li>
-											<i class="ace-icon fa fa-caret-right blue"></i> Date d'effet                            
-                                             <b class="blue pull-right"> <?php echo $info_contrat->s('date_effet');?> </b>                             							
+											<i class="ace-icon fa fa-caret-right blue"></i> Date d'effet
+                                             <b class="blue pull-right"> <?php echo $info_contrat->s('date_effet');?> </b>
 											</li>
 
 											<li>
 											<i class="ace-icon fa fa-caret-right blue"></i> Date de fin
-                                            <b class="blue pull-right"><?php echo $info_contrat->s('date_fin');?>  </b>          
-                                                                                                    
+                                            <b class="blue pull-right"><?php echo $info_contrat->s('date_fin');?>  </b>
+
 											</li>
 
-											<li>    
+											<li>
                  							<i class="ace-icon fa fa-caret-right blue"></i> Type échéance
                     						<b class="blue pull-right"><?php if($info_contrat->s('periode_fact')=='D'){ echo $info_contrat->s('type_echeance')." => Début";}
                      else {
                          echo $info_contrat->s('type_echeance')." => Fin";
                      }
-                     ?></b>     
-											</li>											
+                     ?></b>
+											</li>
 
 											<li>
 											<i class="ace-icon fa fa-caret-right blue"></i>
@@ -170,21 +174,21 @@ if(!$info_contrat->get_devis_info())
 							</div><!-- /.row -->
 
 							<div class="space"></div>
-							<?php 
+							<?php
 							if ($info_contrat->contrat_info['type_echeance'] == "Autres"){
 							?>
 							<div>
 							<?php print $info_contrat->Gettable_echeance_contrat_autres();?>
 
-								
+
 							</div>
 							<?php }else { ?> <div>
 							<?php print $info_contrat->Gettable_echeance_contrat();?>
 
-								
+
 							</div> <?php } ?>
 
-						
+
 						</div>
 					</div>
 				</div>

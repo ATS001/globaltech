@@ -10,6 +10,7 @@ if (!MInit::crypt_tp('id', null, 'D') or ! $info_contrat->get_contrat()) {
 }
   $ref=$info_contrat->s('reference');
   $abn_base=$info_contrat->s('abn_base');
+  $devis_base=$info_contrat->s('iddevis');
 ?>
 
 <div class="pull-right tableTools-container">
@@ -45,7 +46,7 @@ $form->input_hidden('id', Mreq::tp('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
 
-$list_devis = Mcontrat::select_devis($info_contrat->s('iddevis'),null,$abn_base);
+$list_devis = Mcontrat::select_devis($info_contrat->s('iddevis'),null,$devis_base,$abn_base);
 
 //Reference
 $form->input_hidden('checker_reference', MInit::cryptage($info_contrat->s('reference'), 1));

@@ -2,7 +2,8 @@
 									<div class="widget-header widget-header-large">
 										<h3 class="widget-title grey lighter">
 											<i class="ace-icon fa fa-adress-card-o green"></i>
-											<?php if($info_devis->s('db') != null) { ?>
+											<?php
+											if($info_devis->s('db') != null) { ?>
 											Devis révisé: <?php $info_devis->s('db')?>
 										<?php } else { Client: $info_devis->s('denomination'); } ?>
 										</h3>

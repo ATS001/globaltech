@@ -1307,7 +1307,9 @@ class Mfacture {
                 DATE_FORMAT(au,'%d-%m-%Y') as au,
                 CONCAT(DATE_FORMAT(du,'%d-%m-%Y'),' Au ',DATE_FORMAT(au,'%d-%m-%Y')) as periode,
                 DATE_FORMAT(date_facture,'%d-%m-%Y') as date_facture,
-                dev.abreviation as devise
+                dev.abreviation as devise,
+                total_remise,valeur_remise,
+                REPLACE(FORMAT(total_remise + total_ht ,0),',',' ') as total_sans_remise
                 FROM 
     		    $table, ref_devise dev WHERE  dev.id = $table.id_devise AND $table.id = " . $this->id_facture;
 
