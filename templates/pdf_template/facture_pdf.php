@@ -403,7 +403,7 @@ $block_ttc = '<tr>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_ttc'].' '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>';                
 $block_remise = $pdf->info_facture['valeur_remise'] == 0 ? null : $block_remise; 
-//$block_tt_no_remise = $pdf->info_facture['valeur_remise'] == 0 ? null : $block_tt_no_remise;  
+$block_tt_no_remise = $pdf->info_facture['valeur_remise'] == 0 ? null : $block_tt_no_remise;  
 $block_ttc    = $pdf->info_facture['total_tva'] == 0 ? null : $block_ttc;
 $titl_ht = $pdf->info_facture['total_tva'] == 0 ? 'Total à payer' : 'Total HT';
 //$signature = $pdf->info_proforma['comercial']; 
