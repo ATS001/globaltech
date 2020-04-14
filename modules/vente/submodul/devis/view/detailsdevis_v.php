@@ -2,9 +2,14 @@
 									<div class="widget-header widget-header-large">
 										<h3 class="widget-title grey lighter">
 											<i class="ace-icon fa fa-adress-card-o green"></i>
-											<?php if($info_devis->s('db') != null) { ?>
-											Devis révisé: <?php $info_devis->s('db')?>
-										<?php } else { Client: $info_devis->s('denomination'); } ?>
+											<?php
+											if($info_devis->devis_info["devis_base"] != null) {
+										    //echo 'Devis révisé : '; echo $info_devis->s('db');
+												echo 'Devis révisé : '.$info_devis->devis_info["db"];
+											}else{
+												echo 'Client : '.$info_devis->devis_info["denomination"];
+											 }
+												?>
 										</h3>
 
 										<!-- #section:pages/invoice.info -->
