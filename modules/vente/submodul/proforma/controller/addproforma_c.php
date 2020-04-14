@@ -4,21 +4,22 @@ if(MInit::form_verif('addproforma', false))
 	
  $posted_data = array(
    
-   'id_client'     => Mreq::tp('id_client') ,
-   'tva'           => Mreq::tp('tva') ,
-   'tkn_frm'       => Mreq::tp('tkn_frm') ,
-   'vie'           => Mreq::tp('vie') ,
-   'date_proforma' => Mreq::tp('date_proforma') ,
-     /* 'type_remise'     => Mreq::tp('type_remise') ,
-     'valeur_remise'   => Mreq::tp('remise_montant') ,
-     'totalht'         => Mreq::tp('totalht') ,
-     'totalttc'        => Mreq::tp('totalttc') ,
-     'totaltva'        => Mreq::tp('totaltva') ,*/
-     'claus_comercial' => Mreq::tp('claus_comercial'),
-     'id_commercial'   => Mreq::tp('id_commercial'),
-     /*'commission'      => Mreq::tp('commission'),
-     'type_commission'      => Mreq::tp('type_commission'),
-     'total_commission'=> Mreq::tp('total_commission')*/
+     'id_client'           => Mreq::tp('id_client') ,
+     'tva'                 => Mreq::tp('tva') ,
+     'tkn_frm'             => Mreq::tp('tkn_frm') ,
+     'vie'                 => Mreq::tp('vie') ,
+     'date_proforma'       => Mreq::tp('date_proforma') ,
+     'projet'              => Mreq::tp('projet') ,
+     /* 'type_remise'      => Mreq::tp('type_remise') ,
+     'valeur_remise'       => Mreq::tp('remise_montant') ,
+     'totalht'             => Mreq::tp('totalht') ,
+     'totalttc'            => Mreq::tp('totalttc') ,
+     'totaltva'            => Mreq::tp('totaltva') ,*/
+     'claus_comercial'     => Mreq::tp('claus_comercial'),
+     'id_commercial'       => Mreq::tp('id_commercial'),
+     /*'commission'        => Mreq::tp('commission'),
+     'type_commission'     => Mreq::tp('type_commission'),
+     'total_commission'    => Mreq::tp('total_commission')*/
      'id_commercial_ex'    => Mreq::tp('id_commercial_ex'),
      'commission_ex'       => Mreq::tp('commission_ex'),
      'total_commission_ex' => Mreq::tp('total_commission_ex'),

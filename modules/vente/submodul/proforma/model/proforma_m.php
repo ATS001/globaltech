@@ -580,6 +580,8 @@ class Mproforma
             //$values["type_remise"]       = MySQL::SQLValue($this->_data['type_remise']);
             //$values["valeur_remise"]     = MySQL::SQLValue($valeur_remise);
         $values["claus_comercial"]     = MySQL::SQLValue($this->_data['claus_comercial']);
+
+        $values["projet"]              = MySQL::SQLValue($this->_data['projet']);
             //$values["totalht"]           = MySQL::SQLValue($totalht);
             //$values["totalttc"]          = MySQL::SQLValue($totalttc);
             //$values["totaltva"]          = MySQL::SQLValue($totaltva);

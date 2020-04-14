@@ -15,6 +15,7 @@ if(MInit::form_verif('editproforma', false))
 		'tkn_frm'             => Mreq::tp('tkn_frm') ,
 		'vie'                 => Mreq::tp('vie') ,
 		'date_proforma'       => Mreq::tp('date_proforma') ,
+		'projet'              => Mreq::tp('projet') ,
 		/* 'type_remise'      => Mreq::tp('type_remise') ,
 		'valeur_remise'       => Mreq::tp('remise_montant') ,
 		'totalht'             => Mreq::tp('totalht') ,
