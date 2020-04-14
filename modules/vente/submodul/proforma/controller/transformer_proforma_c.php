@@ -19,12 +19,12 @@ if(!MInit::crypt_tp('id', null, 'D') OR !$proforma->get_proforma())
 
         
         //execute Update returne false if error
-if($proforma->transformer_proforma_proforma_to_devis()){
-
-    exit("1#".$proforma->log);
-}else{
+if(!$proforma->transformer_proforma_proforma_to_devis()){
 
     exit("0#".$proforma->log);
+}else{
+
+    exit("1#".$proforma->log);
 }
 
 ?>

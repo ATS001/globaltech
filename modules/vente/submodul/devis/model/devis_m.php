@@ -432,7 +432,7 @@ class Mdevis {
             $this->last_id = $result;
             //Check $this->error = true return Green message and Bol true
             if ($this->error == true) {
-                $this->log = '</br>Enregistrement réussie: <b>Réference: ' . $reference;
+                $this->log = '</br>Enregistrement réussie: </br><b>Réference: ' . $reference;
                 $this->save_temp_detail($this->_data['tkn_frm'], $this->last_id);
                 //log
                 if (!Mlog::log_exec($this->table, $this->last_id, 'Enregistrement Devis ' . $this->last_id, 'Insert')) {
@@ -440,7 +440,7 @@ class Mdevis {
                 }
                 //Check $this->error = false return Red message and Bol false
             } else {
-                $this->log .= '</br>Enregistrement réussie: <b>' . $reference;
+                $this->log .= '</br>Enregistrement réussie: </br><b>' . $reference;
                 $this->log .= '</br>Un problème d\'Enregistrement ';
             }
         }//Else Error false
@@ -510,41 +510,41 @@ class Mdevis {
         $client->id_client = $this->_data['id_client'];
         $client->get_client();
 
-        $values["reference"] = MySQL::SQLValue($this->reference);
-        $values["tkn_frm"] = MySQL::SQLValue($this->_data['tkn_frm']);
-        $values["type_devis"] = MySQL::SQLValue($this->type_devis);
-        $values["reference"] = MySQL::SQLValue($reference);
-        $values["id_client"] = MySQL::SQLValue($this->_data['id_client']);
-        $values["id_devise"]       = $client->client_info['id_devise'];            
-        $values["id_banque"] = $client->client_info['id_banque'];
-        $values["tva"] = MySQL::SQLValue($this->_data['tva']);
-
-        $values["id_commercial"] = MySQL::SQLValue(json_encode($this->_data['id_commercial']));
-        $values["commission"] = MySQL::SQLValue($this->_data['commission']);
-        $values["total_commission"] = MySQL::SQLValue($total_commission);
-        $values["type_commission"] = MySQL::SQLValue($this->_data['type_commission']);
-
-        $values["id_commercial_ex"] = MySQL::SQLValue($this->_data['id_commercial_ex']);
-        $values["commission_ex"] = MySQL::SQLValue($this->_data['commission_ex']);
+        $values["reference"]           = MySQL::SQLValue($this->reference);
+        $values["tkn_frm"]             = MySQL::SQLValue($this->_data['tkn_frm']);
+        $values["type_devis"]          = MySQL::SQLValue($this->type_devis);
+        $values["reference"]           = MySQL::SQLValue($reference);
+        $values["id_client"]           = MySQL::SQLValue($this->_data['id_client']);
+        $values["id_devise"]           = $client->client_info['id_devise'];            
+        $values["id_banque"]           = $client->client_info['id_banque'];
+        $values["tva"]                 = MySQL::SQLValue($this->_data['tva']);
+        
+        $values["id_commercial"]       = MySQL::SQLValue(json_encode($this->_data['id_commercial']));
+        $values["commission"]          = MySQL::SQLValue($this->_data['commission']);
+        $values["total_commission"]    = MySQL::SQLValue($total_commission);
+        $values["type_commission"]     = MySQL::SQLValue($this->_data['type_commission']);
+        
+        $values["id_commercial_ex"]    = MySQL::SQLValue($this->_data['id_commercial_ex']);
+        $values["commission_ex"]       = MySQL::SQLValue($this->_data['commission_ex']);
         $values["total_commission_ex"] = MySQL::SQLValue($total_commission_ex);
-        $values["type_commission_ex"] = MySQL::SQLValue($this->_data['type_commission_ex']);
-
-        $values["date_devis"] = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_devis'])));
-        $values["type_remise"] = MySQL::SQLValue($this->_data['type_remise']);
-
-        $values["devis_base"] = MySQL::SQLValue($this->_data['devis_base']);
-
-        $values["valeur_remise"] = MySQL::SQLValue($valeur_remise);
-        $values["total_remise"] = MySQL::SQLValue($montant_remise);
-        $values["projet"] = MySQL::SQLValue($this->_data['projet']);
-        $values["vie"] = MySQL::SQLValue($this->_data['vie']);
-        $values["claus_comercial"] = MySQL::SQLValue($this->_data['claus_comercial']);
-        $values["totalht"] = MySQL::SQLValue($totalht);
-        $values["totalttc"] = MySQL::SQLValue($totalttc);
-        $values["totaltva"] = MySQL::SQLValue($totaltva);
-        $values["etat"] = MySQL::SQLValue($etat_line);
-        $values["creusr"] = MySQL::SQLValue(session::get('userid'));
-        $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
+        $values["type_commission_ex"]  = MySQL::SQLValue($this->_data['type_commission_ex']);
+        
+        $values["date_devis"]          = MySQL::SQLValue(date('Y-m-d', strtotime($this->_data['date_devis'])));
+        $values["type_remise"]         = MySQL::SQLValue($this->_data['type_remise']);
+        
+        $values["devis_base"]          = MySQL::SQLValue($this->_data['devis_base']);
+        
+        $values["valeur_remise"]       = MySQL::SQLValue($valeur_remise);
+        $values["total_remise"]        = MySQL::SQLValue($montant_remise);
+        $values["projet"]              = MySQL::SQLValue($this->_data['projet']);
+        $values["vie"]                 = MySQL::SQLValue($this->_data['vie']);
+        $values["claus_comercial"]     = MySQL::SQLValue($this->_data['claus_comercial']);
+        $values["totalht"]             = MySQL::SQLValue($totalht);
+        $values["totalttc"]            = MySQL::SQLValue($totalttc);
+        $values["totaltva"]            = MySQL::SQLValue($totaltva);
+        $values["etat"]                = MySQL::SQLValue($etat_line);
+        $values["creusr"]              = MySQL::SQLValue(session::get('userid'));
+        $values["credat"]              = MySQL::SQLValue(date("Y-m-d H:i:s"));
         //Check if Insert Query been executed (False / True)
         if (!$result = $db->InsertRow($this->table, $values)) {
             //False => Set $this->log and $this->error = false

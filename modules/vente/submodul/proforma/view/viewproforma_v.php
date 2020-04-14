@@ -158,9 +158,9 @@ $id = $info_proforma->id_proforma;
 
                                         if($liste_sub_group)
                                         {
-                                        	$output = null;
+                                        	
                                         	foreach ($liste_sub_group as $key => $value) {
-                                        		
+                                        		$output = null;
                                         		$id_sub_group = $value['sub_group'];
                                         		$output .= '<div class="hr hr8 hr-double hr-dotted"></div><h4 class="widget-title grey lighter">
 								                                <i class="ace-icon fa fa-adress-card-o green"></i>
@@ -189,18 +189,15 @@ $id = $info_proforma->id_proforma;
                                         				<b class="blue pull-right">'.$liste_sum[0]['sum_tt_ttc'].' '.$info_proforma->g('devise').'</b>
                                         		    </li>
                                         		</ul></div></div>';
-                                        		
-                                        	}
-                                        	print $output;
-                                        	if($info_proforma->g('etat') == Msetting::get_set('etat_proforma','send_proforma'))
-                                            { 
-                                            	echo '<div class="row"><div class="col-sm-5 pull-right">';
-                                            	TableTools::btn_add('transformer_proforma','Transformer la proposition à un Devis', MInit::crypt_tp('id', $id).'&'.MInit::crypt_tp('pro', $id_sub_group), $exec = 'this_exec', 'paper-plane-o green');
-                                            	echo '</div></div>';
+                                        		print $output;
+                                        		if($info_proforma->g('etat') == Msetting::get_set('etat_proforma','send_proforma'))
+                                                { 
+                                                	echo '<div class="row"><div class="col-sm-5 pull-right">';
+                                                	TableTools::btn_add('transformer_proforma','Transformer la proposition à un Devis', MInit::crypt_tp('id', $id).'&'.MInit::crypt_tp('pro', $id_sub_group), $exec = 'this_exec', 'paper-plane-o green');
+                                                	echo '</div></div>';
                                         	
-                                            }
-
-
+                                                }                                        		
+                                        	}                          	
                                         }
 										?>
 

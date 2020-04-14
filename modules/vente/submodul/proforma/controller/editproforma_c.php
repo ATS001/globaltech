@@ -8,28 +8,29 @@ if(MInit::form_verif('editproforma', false))
 	}
 	
 	$posted_data = array(
-
-		'id'                => Mreq::tp('id') ,
-		'id_client'         => Mreq::tp('id_client') ,
-		'tva'               => Mreq::tp('tva') ,
-		'tkn_frm'           => Mreq::tp('tkn_frm') ,
-		'vie'               => Mreq::tp('vie') ,
-		'reference'         => Mreq::tp('reference') ,
-		'checker_reference' => Mreq::tp('checker_reference') ,
-		'date_proforma'     => Mreq::tp('date_proforma') ,
-		/*'type_remise'     => Mreq::tp('type_remise') ,
-		'valeur_remise'     => Mreq::tp('remise_montant') ,
-		'totalht'           => Mreq::tp('totalht') ,
-		'totalttc'          => Mreq::tp('totalttc') ,
-		'totaltva'          => Mreq::tp('totaltva') ,*/
-		'claus_comercial'   => Mreq::tp('claus_comercial'),
-		'id_commercial'     => Mreq::tp('id_commercial'),
-   		'commission'        => Mreq::tp('commission'),
-	    'total_commission'  => Mreq::tp('total_commission'),
-	     'type_commission'  => Mreq::tp('type_commission')
-
-
-		);
+		
+		'id'                  => Mreq::tp('id') ,
+		'id_client'           => Mreq::tp('id_client') ,
+		'tva'                 => Mreq::tp('tva') ,
+		'tkn_frm'             => Mreq::tp('tkn_frm') ,
+		'vie'                 => Mreq::tp('vie') ,
+		'date_proforma'       => Mreq::tp('date_proforma') ,
+		/* 'type_remise'      => Mreq::tp('type_remise') ,
+		'valeur_remise'       => Mreq::tp('remise_montant') ,
+		'totalht'             => Mreq::tp('totalht') ,
+		'totalttc'            => Mreq::tp('totalttc') ,
+		'totaltva'            => Mreq::tp('totaltva') ,*/
+		'claus_comercial'     => Mreq::tp('claus_comercial'),
+		'id_commercial'       => Mreq::tp('id_commercial'),
+		/*'commission'        => Mreq::tp('commission'),
+		'type_commission'     => Mreq::tp('type_commission'),
+		'total_commission'    => Mreq::tp('total_commission')*/
+		'id_commercial_ex'    => Mreq::tp('id_commercial_ex'),
+		'commission_ex'       => Mreq::tp('commission_ex'),
+		'total_commission_ex' => Mreq::tp('total_commission_ex'),
+		'type_commission_ex'  => Mreq::tp('type_commission_ex'),
+		
+	);
 
 
   //Check if array have empty element return list
@@ -37,11 +38,11 @@ if(MInit::form_verif('editproforma', false))
 
 	$checker = null;
 	$empty_list = "Les champs suivants sont obligatoires:\n<ul>";
-	if($posted_data['checker_reference'] != MInit::cryptage($posted_data['reference'],1)){
+	/*if($posted_data['checker_reference'] != MInit::cryptage($posted_data['reference'],1)){
 
 		$empty_list .= "<li>La réference est invalide</li>";
 		$checker = 1;
-	}
+	}*/
 	if($posted_data['id_client'] == NULL){
 
 		$empty_list .= "<li>Client</li>";
@@ -93,28 +94,28 @@ if(MInit::form_verif('editproforma', false))
       $checker = 1;
     }
     */
-      if($posted_data['type_commission'] == NULL OR !in_array($posted_data['type_commission'],  array( 'C','S' ))){
+    /*if($posted_data['type_commission_ex'] == NULL OR !in_array($posted_data['type_commission'],  array( 'C','S' ))){
 
-      $empty_list .= "<li>Type commission est incorrecte</li>";
+      $empty_list .= "<li>Type commission extern est incorrecte</li>";
       $checker = 1;
-    }
+    }*/
 
   if($posted_data['id_commercial'] == NULL){
 
       $empty_list .= "<li>Commercial</li>";
       $checker = 1;
     }
-    if($posted_data['commission'] == NULL OR !is_numeric($posted_data['commission']) ){
+    if($posted_data['commission_ex'] == NULL OR !is_numeric($posted_data['commission_ex']) ){
 
-      $empty_list .= "<li>Commission</li>";
+      $empty_list .= "<li>Commission Externe</li>";
       $checker = 1;
     }
-    $set_comission = Msetting::get_set('plafond_comission');
+    /*$set_comission = Msetting::get_set('plafond_comission');
     if($posted_data['commission'] > $set_comission ){
 
       $empty_list .= "<li>Commission ne dois pas dépasser $set_comission</li>";
       $checker = 1;
-    }
+    }*/
     
 /*    if($posted_data['total_commission'] == NULL OR !is_numeric($posted_data['total_commission']) ){
 
