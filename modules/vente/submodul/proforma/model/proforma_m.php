@@ -450,6 +450,9 @@ class Mproforma
                 $this->log .= '</br>Problème Réference';
                 return false;
             }
+            $client = new Mclients;
+            $client->id_client = $this->_data['id_client'];
+            $client->get_client();
 
             $montant_remise      = $this->sum_total_ht - $this->total_ht_t;
             $totalht             = $this->total_ht_t;
@@ -463,6 +466,8 @@ class Mproforma
             $values["reference"]           = MySQL::SQLValue($reference);
             $values["tkn_frm"]             = MySQL::SQLValue($this->_data['tkn_frm']);
             $values["id_client"]           = MySQL::SQLValue($this->_data['id_client']);
+            $values["id_banque"]           = MySQL::SQLValue($client->client_info['id_banque']);
+            $values["id_devise"]           = MySQL::SQLValue($client->client_info['id_devise']);
             $values["tva"]                 = MySQL::SQLValue($this->_data['tva']);
             $values["vie"]                 = MySQL::SQLValue($this->_data['vie']);
             $values["id_commercial"]       = MySQL::SQLValue(json_encode($this->_data['id_commercial']));
@@ -547,6 +552,9 @@ class Mproforma
         }
         //Get existing info
         $this->get_proforma();
+        $client = new Mclients;
+        $client->id_client = $this->_data['id_client'];
+        $client->get_client();
 
     //Format values for Insert query 
         global $db;
@@ -563,6 +571,8 @@ class Mproforma
 
         $values["tkn_frm"]             = MySQL::SQLValue($this->_data['tkn_frm']);
         $values["id_client"]           = MySQL::SQLValue($this->_data['id_client']);
+        $values["id_banque"]           = MySQL::SQLValue($client->client_info['id_banque']);
+        $values["id_devise"]           = MySQL::SQLValue($client->client_info['id_devise']);
         $values["tva"]                 = MySQL::SQLValue($this->_data['tva']);
         $values["vie"]                 = MySQL::SQLValue($this->_data['vie']);
         $values["id_commercial"]       = MySQL::SQLValue(json_encode($this->_data['id_commercial']));
