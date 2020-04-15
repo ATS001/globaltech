@@ -18,8 +18,8 @@ $proforma = new Mproforma();
 $proforma->id_proforma = Mreq::tp('id');
 
 if(!MInit::crypt_tp('id', null, 'D') or !$proforma->get_proforma())
-{  
-   // returne message error red to proforma 
+{
+   // returne message error red to proforma
    exit('0#<br>Les informations pour cette template sont erronées, contactez l\'administrateur');
 }
 
@@ -37,8 +37,8 @@ $tableau_body = null;
 $headers = array(
             '#'           => '5[#]C',
             'Réf'         => '17[#]C',
-            'Description' => '43[#]', 
-            'Qte'         => '5[#]C', 
+            'Description' => '43[#]',
+            'Qte'         => '5[#]C',
             'P.Unitaire'  => '10[#]R',
             'P.Total'       => '15[#]R',
 
@@ -49,13 +49,13 @@ $liste_sub_group = $proforma->get_detail_prforma_by_group();
 $tableau_head = MySQL::make_table_head($headers);
 if($liste_sub_group){
     $tableau_body = null;
-    foreach ($liste_sub_group as $key => $value) 
-    {   
+    foreach ($liste_sub_group as $key => $value)
+    {
     	$id_sub_group = $value['sub_group'];
     	$tableau_body .= '<h3>Proposition N°: '.$id_sub_group.' </h3>';
-    	
+
     	$proforma->Get_detail_proforma_pdf($id_sub_group);
-    	
+
     	$tableau_body .= $tableau_head;
     	$tableau_body .= $db->GetMTable_pdf($headers);
     	$liste_sum = $proforma->get_sum_by_sub_group($id_sub_group);
@@ -63,26 +63,26 @@ if($liste_sub_group){
     	<table style="width: 685px;" cellpadding="2">
     <tr>
         <td width="50%" align="left">
-            
+
         </td>
         <td width="50%">
     	<table class="table" cellspacing="2" cellpadding="2"  style="width: 300px; border:1pt solid black;" >
-            <tbody>                
+            <tbody>
                 <tr>
                     <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Total HT</td>
                     <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;">'.$liste_sum[0]['sum_tt_ht'].' '.$proforma->g('devise').'</td>
-                </tr> 
+                </tr>
                 <tr>
                     <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Total TVA</td>
                     <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;">'.$liste_sum[0]['sum_tt_tva'].' '.$proforma->g('devise').'</td>
-                </tr>   
+                </tr>
                 <tr>
                     <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Total TTC</td>
                     <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;">'.$liste_sum[0]['sum_tt_ttc'].' '.$proforma->g('devise').'</td>
-                </tr>              
+                </tr>
             </tbody>
         </table>
         </td></tr></table> ';
@@ -103,26 +103,40 @@ class MYPDF extends TCPDF {
      var $info_proforma = array();
      var $info_ste   = array();
      var $qr         = false;
-     
+
 	//Page header
 	public function Header() {
 		//writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
-		
-		// Logo
-		$image_file = MPATH_IMG.MCfg::get('logo');
-		$this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
-		$this->Image($image_file, 22, 6, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
-		
+
+
+        if (date('Y-m-d', strtotime($this->info_proforma['date_proforma'])) < date('Y-m-d', strtotime('2020-04-16'))) {
+      		// Logo 1
+      		$image_file = MPATH_IMG.MCfg::get('logo');
+      		$this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
+          	$this->Image($image_file, 22, 6, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
+
+      }else{
+          // Logo 2
+      		$image_file = MPATH_IMG.MCfg::get('logo2');
+      		$this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
+      		$this->Image($image_file, 22, 6, 34, 18, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
+      }
+
 		//Get info ste from DB
 		$ste_c = new MSte_info();
-        
-		$ste = $ste_c->get_ste_info_report_head(1);
+
+        if($this->info_proforma['date_proforma'] < '16-04-2020'){
+		$ste = $ste_c->get_ste_info_report_head(1,$this->info_proforma['date_proforma']);
+	    }else{
+		$ste = $ste_c->get_ste_info_report_head(2,$this->info_proforma['date_proforma']);
+	    }
+
 		$this->writeHTMLCell(0, 0, '', 30, $ste , '', 0, 0, true, 'L', true);
 		$this->SetTextColor(0, 50, 127);
 		// Set font
 		$this->SetFont('helvetica', 'B', 22);
 		//Ste
-		
+
 		// Title
 		$titre_doc = '<h1 style="letter-spacing: 2px;color;#004073;font-size: 14pt;">PROFORMA</h1>';
 		$this->writeHTMLCell(0, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true);
@@ -133,7 +147,7 @@ class MYPDF extends TCPDF {
 		<td style="width:45%; color:#004073"><strong>Réf proforma</strong></td>
 		<td style="width:5%;">:</td>
 		<td style="width:50%; background-color: #eeecec;">'.$this->info_proforma['reference'].'</td>
-		</tr> 
+		</tr>
 		<tr>
 		<td style="width:45%; color:#004073"><strong>Date</strong></td>
 		<td style="width:5%;">:</td>
@@ -173,7 +187,7 @@ class MYPDF extends TCPDF {
 		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;"><strong>'.$this->info_proforma['denomination'].'</strong></td>
 		</tr>';
-		
+
 		if($adresse.$bp.$ville.$pays != null){
 			$detail_client .= '<tr>
 	    <td align="right" style="width: 30%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Adresse</td>
@@ -182,8 +196,8 @@ class MYPDF extends TCPDF {
 		</tr>';
 
 		}
-		
-		
+
+
 		if($tel != null && $email != null){
 			$detail_client .= '<tr>
 		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Contact</td>
@@ -196,7 +210,7 @@ class MYPDF extends TCPDF {
 		</tbody>
 		</table>';
 		$this->writeHTMLCell(100, 0, 99, 40, $detail_client, 0, 0, 0, true, 'L', true);
-		
+
 		$this->Ln();
 		$this->setCellPadding(0);
 		$height = $this->getLastH() + $this->GetY();
@@ -204,7 +218,7 @@ class MYPDF extends TCPDF {
 		$tableau_head = $this->Table_head;
 		$this->writeHTMLCell('', '', 15, 83, $tableau_head, 0, 0, 0, true, 'L', true);
 		$height = $this->getLastH();
-       
+
         $this->SetTopMargin($height + $this->GetY());
 		//$pdf->writeHTMLCell('', '','' , '', $html , 0, 0, 0, true, 'L', true);
 
@@ -230,7 +244,13 @@ class MYPDF extends TCPDF {
 			$this->write2DBarcode($qr_content, 'QRCODE,H', 15, '', 25, 25, $style, 'N');
 		//}
         $this->SetY(-30);
-		$ste = $ste_c->get_ste_info_report_footer(1, $this->info_proforma['id_banque']);
+
+        if($this->info_proforma['date_proforma'] < '16-04-2020'){
+		$ste = $ste_c->get_ste_info_report_footer(1, $this->info_proforma['id_banque'],$this->info_proforma['date_proforma']);
+		}else{
+		$ste = $ste_c->get_ste_info_report_footer(2, $this->info_proforma['id_banque'],$this->info_proforma['date_proforma']);
+		}
+
 		$this->writeHTMLCell(0, 0, '', '', $ste , '', 0, 0, true, 'C', true);
 		// Position at 15 mm from bottom
 		$this->SetY(-15);
@@ -248,13 +268,13 @@ class MYPDF extends TCPDF {
     if ($this->getPage() > $cp) {
          $this->rollbackTransaction(true);//true is very important
          $this->AddPage();
-         $this->writeHTML($html, $ln, $fill, $reseth, $cell, $align);           
-    } else {            
-         $this->commitTransaction();            
+         $this->writeHTML($html, $ln, $fill, $reseth, $cell, $align);
+    } else {
+         $this->commitTransaction();
     }
     }
 
-	
+
 }
 
 
@@ -315,7 +335,7 @@ $pdf->Table_body = $tableau_body;
 $html = $pdf->Table_body;
 // ---------------------------------------------------------
 
-//$signature = $pdf->info_proforma['comercial']; 
+//$signature = $pdf->info_proforma['comercial'];
 
 $signature = 'La Direction';
 $block_sum = '<div></div>
@@ -323,9 +343,9 @@ $block_sum = '<div></div>
 
 <tr>
     <td colspan="2" style="color: #E99222;font-family: sans-serif;font-weight: bold;">
-        
+
         <strong>Conditions générales:</strong>
-        
+
     </td>
 </tr>
 <tr>
@@ -353,14 +373,14 @@ if($p->proforma_info['etat'] == 0){
 $block_sum .= '</table>';
 
 }else{
-	//var_dump(' 0');	
+	//var_dump(' 0');
 $block_sum .= '
 <tr>
 <td colspan="2" align="right" style="font: underline; width: 620px;  padding-right: 200px;">
         <br>
         <span class="profile-picture">
 			<img width="150" height="150" class="editable img-responsive" alt="logo_global.png" id="avatar2" src="./upload/signature/signature_ali.jpg" />
-		</span>	
+		</span>
 
     </td>
 </tr>
@@ -378,4 +398,3 @@ $pdf->Output($file_export,'F');
 //============================================================+
 // END OF FILE
 //============================================================+
-
