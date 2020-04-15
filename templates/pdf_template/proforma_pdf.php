@@ -124,18 +124,18 @@ class MYPDF extends TCPDF {
 		//Ste
 		
 		// Title
-		$titre_doc = '<h1 style="letter-spacing: 2px;color;#495375;font-size: 14pt;">PROFORMA</h1>';
+		$titre_doc = '<h1 style="letter-spacing: 2px;color;#004073;font-size: 14pt;">PROFORMA</h1>';
 		$this->writeHTMLCell(0, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true);
 		$this->SetTextColor(0, 0, 0);
 		$this->SetFont('helvetica', '', 9);
 		$detail_proforma = '<table cellspacing="3" cellpadding="2" border="0">
 		<tr>
-		<td style="width:45%; color:#A1A0A0;"><strong>Réf proforma</strong></td>
+		<td style="width:45%; color:#004073"><strong>Réf proforma</strong></td>
 		<td style="width:5%;">:</td>
 		<td style="width:50%; background-color: #eeecec;">'.$this->info_proforma['reference'].'</td>
 		</tr> 
 		<tr>
-		<td style="width:45%; color:#A1A0A0;"><strong>Date</strong></td>
+		<td style="width:45%; color:#004073"><strong>Date</strong></td>
 		<td style="width:5%;">:</td>
 		<td style="width:50%; background-color: #eeecec; ">'.$this->info_proforma['date_proforma'].'</td>
 		</tr>
@@ -160,7 +160,7 @@ class MYPDF extends TCPDF {
 	    $pays = $this->info_proforma['pays'] != null ? $this->info_proforma['pays'] : null;
 		$detail_client = '<table cellspacing="3" cellpadding="2" border="0">
 		<tbody>
-		<tr style="background-color:#495375; font-size:14; font-weight:bold; color:#fff;">
+		<tr style="background-color:#004073; font-size:14; font-weight:bold; color:#fff;">
 		<td colspan="3"><strong>Informations client</strong></td>
 		</tr>
 		<tr>
