@@ -76,7 +76,11 @@ class MYPDF extends TCPDF {
 		//Get info ste from DB
 		$ste_c = new MSte_info();
         
-		$ste = $ste_c->get_ste_info_report_head(1);
+        if($this->info_devis['date_devis'] < '11-04-2020'){
+		$ste = $ste_c->get_ste_info_report_head(1,$this->info_devis['date_devis']);
+	    }else{
+		$ste = $ste_c->get_ste_info_report_head(2,$this->info_devis['date_devis']);	    	
+	    }
 		$this->writeHTMLCell(0, 0, '', 30, $ste , '', 0, 0, true, 'L', true);
 		$this->SetTextColor(0, 50, 127);
 		// Set font
@@ -202,7 +206,13 @@ class MYPDF extends TCPDF {
 		//}
 		$ste_c = new MSte_info();
         $this->SetY(-30);
-		$ste = $ste_c->get_ste_info_report_footer(1,$this->info_devis['id_banque']);
+
+        if($this->info_devis['date_devis'] < '11-04-2020'){
+		$ste = $ste_c->get_ste_info_report_footer(1,$this->info_devis['id_banque'],$this->info_devis['date_devis']);
+	    }else{
+		$ste = $ste_c->get_ste_info_report_footer(2,$this->info_devis['id_banque'],$this->info_devis['date_devis']);
+	    }
+
 		$this->writeHTMLCell(0, 0, '', '', $ste , '', 0, 0, true, 'C', true);
 		// Position at 15 mm from bottom
 		$this->SetY(-15);
