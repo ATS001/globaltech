@@ -18,8 +18,8 @@ $devis = new Mdevis();
 $devis->id_devis = Mreq::tp('id');
 
 if(!MInit::crypt_tp('id', null, 'D') or !$devis->get_devis())
-{  
-   // returne message error red to devis 
+{
+   // returne message error red to devis
    exit('0#<br>Les informations pour cette template sont erronées, contactez l\'administrateur');
 }
 
@@ -36,8 +36,8 @@ global $db;
 $headers = array(
             '#'           => '5[#]C',
             'Réf'         => '17[#]C',
-            'Description' => '43[#]', 
-            'Qte'         => '5[#]C', 
+            'Description' => '43[#]',
+            'Qte'         => '5[#]C',
             'P.Unitaire'  => '10[#]R',
             'P.Total'     => '15[#]R',
 
@@ -62,39 +62,53 @@ class MYPDF extends TCPDF {
      var $info_devis   = array();
      var $info_ste     = array();
      var $qr           = false;
-     
+
 	//Page header
 	public function Header() {
 		//writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
-		
-		// Logo
-		$image_file = MPATH_IMG.MCfg::get('logo');
-		$this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
-		$this->Image($image_file, 22, 6, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
-		
+
+    if (date('Y-m-d', strtotime($this->info_devis['date_devis'])) < date('Y-m-d', strtotime('2020-04-16'))) {
+      // Logo 1
+      $image_file = MPATH_IMG.MCfg::get('logo');
+      $this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
+        $this->Image($image_file, 22, 6, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
+
+  }else{
+      // Logo 2
+      $image_file = MPATH_IMG.MCfg::get('logo2');
+      $this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
+      $this->Image($image_file, 22, 6, 34, 18, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
+  }
+
 		//Get info ste from DB
 		$ste_c = new MSte_info();
-        
-		$ste = $ste_c->get_ste_info_report_head(1);
+
+        if($this->info_devis['date_devis'] < '16-04-2020'){
+		$ste = $ste_c->get_ste_info_report_head(1,$this->info_devis['date_devis']);
+	    }else{
+		$ste = $ste_c->get_ste_info_report_head(2,$this->info_devis['date_devis']);
+	    }
 		$this->writeHTMLCell(0, 0, '', 30, $ste , '', 0, 0, true, 'L', true);
 		$this->SetTextColor(0, 50, 127);
 		// Set font
 		$this->SetFont('helvetica', 'B', 22);
 		//Ste
-		
+
 		// Title
-		$titre_doc = '<h1 style="letter-spacing: 2px;color;#495375;font-size: 20pt;">DEVIS</h1>';
-		$this->writeHTMLCell(0, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true);
+
+		$titre_doc = '
+		<h1 style="letter-spacing: 2px;color;#004073;font-size: 20pt;">D E V I S</h1>';
+		$this->writeHTMLCell(0, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true, 2);
 		$this->SetTextColor(0, 0, 0);
 		$this->SetFont('helvetica', '', 9);
 		$detail_devis = '<table cellspacing="3" cellpadding="2" border="0">
 		<tr>
-		<td style="width:35%; color:#A1A0A0;"><strong>Réf Devis</strong></td>
+		<td style="width:35%; color:#004073;"><strong>Réf Devis</strong></td>
 		<td style="width:5%;">:</td>
 		<td style="width:60%; background-color: #eeecec;">'.$this->info_devis['reference'].'</td>
-		</tr> 
+		</tr>
 		<tr>
-		<td style="width:35%; color:#A1A0A0;"><strong>Date</strong></td>
+		<td style="width:35%; color:#004073;"><strong>Date</strong></td>
 		<td style="width:5%;">:</td>
 		<td style="width:60%; background-color: #eeecec; ">'.$this->info_devis['date_devis'].'</td>
 		</tr>
@@ -119,7 +133,7 @@ class MYPDF extends TCPDF {
 	    $pays = $this->info_devis['pays'] != null ? $this->info_devis['pays'] : null;
 		$detail_client = '<table cellspacing="3" cellpadding="2" border="0">
 		<tbody>
-		<tr style="background-color:#495375; font-size:11; font-weight:bold; color:#fff;">
+		<tr style="background-color:#004073; font-size:11; font-weight:bold; color:#fff;">
 		<td colspan="3"><strong>Informations du client</strong></td>
 		</tr>
 		<tr>
@@ -141,9 +155,9 @@ class MYPDF extends TCPDF {
 		</tr>';
 
 		}
-			
-		
-		
+
+
+
 		if($tel != null && $email != null){
 			$detail_client .= '<tr>
 		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Contact</td>
@@ -155,7 +169,7 @@ class MYPDF extends TCPDF {
 		$detail_client .= $nif.'
 		</tbody>
 		</table>';
-		//$marge_after_detail_client = 
+		//$marge_after_detail_client =
 		$this->writeHTMLCell(100, 0, 99, 40, $detail_client, 0, 0, 0, true, 'L', true);
 		if($this->info_devis['projet'] != null){
 			$projet = '<span style="width: 65%;font-family: sans-serif;ont-weight: bold;font-size: 10pt;"><strong>'.$this->info_devis['projet'].'</span>';
@@ -176,7 +190,7 @@ class MYPDF extends TCPDF {
 		    $height = $this->getLastH();
             $this->SetTopMargin($height + $this->GetY());
 		}
-		
+
 	}
 
 	// Page footer
@@ -199,7 +213,13 @@ class MYPDF extends TCPDF {
 		//}
 		$ste_c = new MSte_info();
         $this->SetY(-30);
-		$ste = $ste_c->get_ste_info_report_footer(1,$this->info_devis['id_banque']);
+
+        if($this->info_devis['date_devis'] < '16-04-2020'){
+		$ste = $ste_c->get_ste_info_report_footer(1,$this->info_devis['id_banque'],$this->info_devis['date_devis']);
+	    }else{
+		$ste = $ste_c->get_ste_info_report_footer(2,$this->info_devis['id_banque'],$this->info_devis['date_devis']);
+	    }
+
 		$this->writeHTMLCell(0, 0, '', '', $ste , '', 0, 0, true, 'C', true);
 		// Position at 15 mm from bottom
 		$this->SetY(-15);
@@ -217,13 +237,13 @@ class MYPDF extends TCPDF {
     if ($this->getPage() > $cp) {
          $this->rollbackTransaction(true);//true is very important
          $this->AddPage();
-         $this->writeHTML($html, $ln, $fill, $reseth, $cell, $align);           
-    } else {            
-         $this->commitTransaction();            
+         $this->writeHTML($html, $ln, $fill, $reseth, $cell, $align);
+    } else {
+         $this->commitTransaction();
     }
     }
 
-	
+
 }
 
 
@@ -311,16 +331,16 @@ $block_ttc = '<tr>
                     <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Total TTC</strong></td>
                     <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_devis['totalttc'].' '.$pdf->info_devis['devise'].'</strong></td>
-                </tr>';                
-$block_remise = $pdf->info_devis['valeur_remise'] == 0 ? null : $block_remise; 
-$block_tt_no_remise = $pdf->info_devis['valeur_remise'] == 0 ? null : $block_tt_no_remise;  
+                </tr>';
+$block_remise = $pdf->info_devis['valeur_remise'] == 0 ? null : $block_remise;
+$block_tt_no_remise = $pdf->info_devis['valeur_remise'] == 0 ? null : $block_tt_no_remise;
 $block_ttc    = $pdf->info_devis['totaltva'] == 0 ? null : $block_ttc;
 $titl_ht = $pdf->info_devis['totaltva'] == 0 ? 'Total à payer' : 'Total HT';
-//$signature = $pdf->info_proforma['comercial']; 
+//$signature = $pdf->info_proforma['comercial'];
 
-//$signature = 'La Direction'; 
+//$signature = 'La Direction';
 $signature = 'Autorisé par : ';
-$creusr = $pdf->info_devis['cre_usr']; 
+$creusr = $pdf->info_devis['cre_usr'];
 
 $block_sum = '<div></div>
 <style>
@@ -342,7 +362,7 @@ p {
 <table style="width: 685px;" cellpadding="2">
     <tr>
         <td width="50%" align="left">
-            
+
         </td>
         <td width="50%">
            <table class="table" cellspacing="2" cellpadding="2"  style="width: 300px; border:1pt solid black;" >
@@ -355,9 +375,9 @@ p {
                 </tr>
 
                 '.$block_ttc.'
-                
+
             </tbody>
-        </table> 
+        </table>
     </td>
 </tr>
 <tr>
@@ -367,12 +387,12 @@ p {
 </tr>
 <tr>
     <td colspan="2" style="color:#6B6868; width: 650px; border:1pt solid black; background-color: #eeecec; padding: 5px;">
-        <strong>'.$ttc_lettre.'</strong>    
+        <strong>'.$ttc_lettre.'</strong>
     </td>
 </tr>
 <tr>
-    <td colspan="2" style="color: #E99222;font-family: sans-serif;font-weight: bold;">       
-        <strong>Conditions générales:</strong>        
+    <td colspan="2" style="color: #E99222;font-family: sans-serif;font-weight: bold;">
+        <strong>Conditions générales:</strong>
     </td>
 </tr>
 
@@ -380,25 +400,25 @@ p {
     <td colspan="2" style="color:#6B6868; width: 650px; border:1pt solid black; background-color: #eeecec; padding: 5px;">
         '.$pdf->info_devis['claus_comercial'].'
     </td>
-    
+
 </tr>
 <tr><td><br><br><br></td></tr>
 <tr align="center">
 <td style="font: underline; width: 200px;" > </td>
 <td style="font: underline; width: 200px;" > </td>
     <td style="font: underline;">
-                <strong>'.$signature.'</strong>       
+                <strong>'.$signature.'</strong>
     </td>
 </tr>
 <tr align="center">
 <td style="font: underline; width: 200px;" > </td>
 <td style="font: underline; width: 200px;"> </td>
     <td style="font: underline;">
-                
+
         <strong>'.$creusr.'</strong>
     </td>
 </tr>';
-//$pdf->lastPage(); 
+//$pdf->lastPage();
 //$block_sum .= '</table>';
 
 $d = new Mdevis();
@@ -410,17 +430,17 @@ if($d->devis_info['etat'] == 0){
 $block_sum .= '</table>';
 
 }else{
-	//var_dump(' 0');	
+	//var_dump(' 0');
 $block_sum .= '
 <tr>
 <td colspan="2" align="right" style="font: underline; width: 620px;  padding-right: 200px;">
         <br>
         <span class="profile-picture">
-			<img width="170" height="170" 
-                        class="editable img-responsive" 
-                        alt="logo_global.png" 
+			<img width="170" height="170"
+                        class="editable img-responsive"
+                        alt="logo_global.png"
                         id="avatar2" src="'.$signature_foto.'"/>
-		</span>	
+		</span>
 
     </td>
 </tr>
@@ -458,4 +478,3 @@ $pdf->Output($file_export,'F');
 //============================================================+
 // END OF FILE
 //============================================================+
-
