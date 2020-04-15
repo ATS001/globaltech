@@ -69,6 +69,7 @@ class MYPDF extends TCPDF {
 		
 		// Logo
 		$image_file = MPATH_IMG.MCfg::get('logo');
+
 		$this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
 		$this->Image($image_file, 22, 6, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
 		
@@ -83,18 +84,20 @@ class MYPDF extends TCPDF {
 		//Ste
 		
 		// Title
-		$titre_doc = '<h1 style="letter-spacing: 2px;color;#495375;font-size: 20pt;">DEVIS</h1>';
-		$this->writeHTMLCell(0, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true);
+
+		$titre_doc = '
+		<h1 style="letter-spacing: 2px;color;#004073;font-size: 20pt;">D E V I S</h1>';
+		$this->writeHTMLCell(0, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true, 2);
 		$this->SetTextColor(0, 0, 0);
 		$this->SetFont('helvetica', '', 9);
 		$detail_devis = '<table cellspacing="3" cellpadding="2" border="0">
 		<tr>
-		<td style="width:35%; color:#A1A0A0;"><strong>Réf Devis</strong></td>
+		<td style="width:35%; color:#004073;"><strong>Réf Devis</strong></td>
 		<td style="width:5%;">:</td>
 		<td style="width:60%; background-color: #eeecec;">'.$this->info_devis['reference'].'</td>
 		</tr> 
 		<tr>
-		<td style="width:35%; color:#A1A0A0;"><strong>Date</strong></td>
+		<td style="width:35%; color:#004073;"><strong>Date</strong></td>
 		<td style="width:5%;">:</td>
 		<td style="width:60%; background-color: #eeecec; ">'.$this->info_devis['date_devis'].'</td>
 		</tr>
@@ -119,7 +122,7 @@ class MYPDF extends TCPDF {
 	    $pays = $this->info_devis['pays'] != null ? $this->info_devis['pays'] : null;
 		$detail_client = '<table cellspacing="3" cellpadding="2" border="0">
 		<tbody>
-		<tr style="background-color:#495375; font-size:11; font-weight:bold; color:#fff;">
+		<tr style="background-color:#004073; font-size:11; font-weight:bold; color:#fff;">
 		<td colspan="3"><strong>Informations du client</strong></td>
 		</tr>
 		<tr>
