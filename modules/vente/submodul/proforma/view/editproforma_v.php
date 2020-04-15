@@ -60,23 +60,31 @@ $form->input_date('Date proforma', 'date_proforma', 4, date('d-m-Y'), $array_dat
 //Client
 $hard_code_client = '<a id="add_client_diver" href="#" rel="add_client_diver" data="" data_titre="Ajout Client Diver " class=" "><span class="help-block returned_span"><i class="fa fa-plus"></i> Ajouter un client divers</span></a>';
 $client_array[]  = array('required', 'true', 'Choisir un Client');
-$form->select_table('Client ', 'id_client', 8, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' , $info_proforma->g('id_client'),$multi=NULL, $where='etat=1 or type_client=\'T\'', $client_array);
+$form->select_table('Client ', 'id_client', 8, 'clients', 'id', 'denomination' , 'denomination', $indx = '------' , $info_proforma->g('id_client'),$multi=NULL, $where='etat=1 or type_client=\'T\'', $client_array, $hard_code_client);
 //TVA
 $tva_opt = array('O' => 'OUI' , 'N' => 'NON' );
 $form->select('Soumis à TVA', 'tva', 2, $tva_opt, $indx = NULL ,$info_proforma->g('tva'), $multi = NULL);
-
+//Projet
+$form->input('Projet', 'projet', 'text' ,'6', $info_proforma->g('projet'), null, null, null);
 //Commercial
 $hard_code_commercial = '<span class="help-block returned_span">...</span>';
 $commercial_array[]  = array('required', 'true', 'Choisir un Commercial');
-$form->select_table('Commercial', 'id_commercial', 6, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)' , 'CONCAT(nom," ",prenom)' , $indx = '------' ,$selected=$info_proforma->g('id_commercial'),$multi=NULL, $where='etat=1', $commercial_array, $hard_code_commercial);
+//$form->select_table('Commercial', 'id_commercial', 6, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)' , 'CONCAT(nom," ",prenom)' , $indx = '------' ,$selected=$info_proforma->g('id_commercial'),$multi=NULL, $where='etat=1', $commercial_array, $hard_code_commercial);
+$form->select_table('Commercial', 'id_commercial[]', 8, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)','CONCAT(nom," ",prenom)', $indx = NULL ,$info_proforma->g('id_commercial') , 1, $where='etat=1 AND is_glbt = \'Oui\' ', NULL);
 //Commission du commercial
-//Commission du commercial
-$select_c = $info_proforma->g('type_commission') == 'C' ? 'selected' : null;
-$select_s = $info_proforma->g('type_commission') == 'S' ? 'selected' : null;
-$hard_code_commission  = '<label style="margin-left:15px;margin-right : 20px;">Prise en charge par: </label><select id="type_commission" name="type_commission" class="chosen-select col-xs-12 col-sm-3" chosen-class="'.((3 * 100) / 12).'" ><option value="C" '.$select_c.' >Client</option><option value="S" '.$select_s.'>Société</option></select>';
+
+$select_c = $info_proforma->g('type_commission_ex') == 'C' ? 'selected' : null;
+$select_s = $info_proforma->g('type_commission_ex') == 'S' ? 'selected' : null;
+/*$hard_code_commission  = '<label style="margin-left:15px;margin-right : 20px;">Prise en charge par: </label><select id="type_commission" name="type_commission" class="chosen-select col-xs-12 col-sm-3" chosen-class="'.((3 * 100) / 12).'" ><option value="C" '.$select_c.' >Client</option><option value="S" '.$select_s.'>Société</option></select>';
 $array_commission[]= array('required', 'true', 'Insérer la commission du commercial');
 $array_commission[]= array('number', 'true', 'Montant invalid' );
-$form->input('Commission du commercial (%)', 'commission', 'text' ,'2 is-number alignRight',$info_proforma->g('commission'), $array_commission, $hard_code_commission, null);
+$form->input('Commission du commercial (%)', 'commission', 'text' ,'2 is-number alignRight',$info_proforma->g('commission'), $array_commission, $hard_code_commission, null);*/
+$form->select_table('Commercial externe', 'id_commercial_ex', 6, 'commerciaux', 'id', 'CONCAT(nom," ",prenom)' , 'CONCAT(nom," ",prenom)' , $indx = '------' ,$selected=$info_proforma->g('id_commercial_ex'),$multi=NULL, $where='etat=1 AND is_glbt = \'Non\' ', $commercial_array, null);
+//Commission du commercial
+$hard_code_commission_ex  = '<label style="margin-left:15px;margin-right : 20px;">Prise en charge par: </label><select id="type_commission_ex" name="type_commission_ex" class="chosen-select col-xs-12 col-sm-3" chosen-class="'.((3 * 100) / 12).'" ><option value="'.$select_c.'" >Client</option><option value="'.$select_s.'" >Société</option></select>';
+//$array_commission[]= array('required', 'true', 'Insérer la commission du commercial');
+$array_commission_ex[]= array('number', 'true', 'Montant invalid' );
+$form->input('Commission du commercial externe (%)', 'commission_ex', 'text' ,'2 is-number alignRight',$info_proforma->g('commission_ex'), $array_commission_ex, $hard_code_commission_ex, null);
 $form->step_end();
 $form->step_start(2, 'Tableau des Produits / Services');
 //Groupes

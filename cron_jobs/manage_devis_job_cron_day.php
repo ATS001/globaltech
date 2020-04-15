@@ -17,7 +17,7 @@ if($etat_expir == null OR $etat_archiv == null)
 		log_cron('Traitement réussi', 'manage_devis');
 
 	}else{
-		log_cron('Erreur Opération', 'manage_devis');
+		log_cron('Erreur Opération '.$sql, 'manage_devis');
 	}
 
 }

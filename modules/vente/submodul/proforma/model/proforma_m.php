@@ -32,6 +32,7 @@ class Mproforma
     var $order_detail        = null; //
     var $sum_total_ht        = null;//
     var $total_commission    = null;//
+    var $total_commission_ex = null;
 
 
 
@@ -55,16 +56,15 @@ class Mproforma
         global $db;
 
         $sql = "SELECT $table.*, DATE_FORMAT($table.date_proforma,'%d-%m-%Y') AS date_proforma from $table where $table.id = ".$this->id_proforma;
-
         if(!$db->Query($sql))
         {
             $this->error = false;
             $this->log  .= $db->Error();
         }else{
-            if ($db->RowCount() == 0)
+            if (!$db->RowCount())
             {
                 $this->error = false;
-                $this->log .= 'Aucun enregistrement trouvé ';
+                $this->log .= 'Aucun enregistrement trouvé '.$sql;
             } else {
                 $this->proforma_info = $db->RowArray();
                 $this->error = true;
@@ -131,8 +131,14 @@ class Mproforma
         $req_sql = "SELECT
         proforma.*
         , DATE_FORMAT(proforma.date_proforma,'%d-%m-%Y') as date_proforma
+        ,  REPLACE(FORMAT(proforma.totalht,0),',',' ') as totalht
+        ,  REPLACE(FORMAT(proforma.totaltva,0),',',' ') as totaltva
+        ,  REPLACE(FORMAT(proforma.totalttc,0),',',' ') as totalttc
+        ,  REPLACE(FORMAT(proforma.total_remise,0),',',' ') as total_remise
+        ,  REPLACE(FORMAT(proforma.total_remise + proforma.totalht ,0),',',' ') as total_no_remise
         , clients.reference as reference_client
         , clients.denomination
+        , proforma.id_banque
         , clients.adresse
         , CONCAT('BP', clients.bp) as bp
         , clients.tel
@@ -142,24 +148,24 @@ class Mproforma
         , ref_ville.ville
         , ref_devise.abreviation as devise
         , services.service as comercial
-        , CONCAT(commerciaux.nom,' ',commerciaux.prenom) as commercial
+        , (SELECT  GROUP_CONCAT(CONCAT(c.prenom,' ',c.nom) ORDER BY c.id ASC SEPARATOR ', ') AS prenoms FROM commerciaux c WHERE FIND_IN_SET(c.id, REPLACE(REPLACE(REPLACE((REPLACE(proforma.id_commercial,'[','')),']',''),'\"',''),'\"','')) > 0 ) as commercial
+        , CONCAT(users_sys.lnom,' ',users_sys.fnom) as cre_usr
+         
         FROM
         proforma
-        INNER JOIN clients 
+        INNER JOIN clients
         ON (proforma.id_client = clients.id)
-        LEFT JOIN ref_pays 
+        LEFT JOIN ref_pays
         ON (clients.id_pays = ref_pays.id)
         LEFT JOIN ref_ville
         ON (clients.id_ville = ref_ville.id)
         INNER JOIN ref_devise
-        ON (clients.id_devise = ref_devise.id)
+        ON (proforma.id_devise = ref_devise.id)
         INNER JOIN users_sys
         ON (proforma.creusr = users_sys.id)
         INNER JOIN services
         ON (users_sys.service = services.id)
-        INNER JOIN commerciaux
-        ON (proforma.id_commercial=commerciaux.id)
- 
+        
         WHERE proforma.id = ".$this->id_proforma;
         if(!$db->Query($req_sql))
         {
@@ -382,6 +388,32 @@ class Mproforma
                 $this->log .='</br>Ce proforma est déjà enregitré '.$count_id;
             }
         }
+         private function check_commercial_exist($commerciaux) {
+        /*$commerciauxIds = str_replace('[', '', $values);
+        $commerciauxIds = str_replace(']', '', $commerciauxIds);
+        $listCommerciauxInconnus = array();
+        $nbr = substr_count($values, ',') + 1;*/
+
+        global $db;
+        foreach ($commerciaux as $key)
+        {
+            $sql = "SELECT * FROM commerciaux WHERE commerciaux.id = $key";
+
+            if (!$db->Query($sql)) {
+                $this->error = false;
+                $this->log .= $db->Error();
+            } else {
+                if (!$db->RowCount())
+                {
+                    $this->error = false;
+                    $this->log .= '</br>Un élément ne fait pas partie du service commerciale';
+                }
+            }
+
+
+        }
+
+    }
     /////////////////////////////////////////////////////////////////////////////////
         public function save_new_proforma()
         {
@@ -396,12 +428,11 @@ class Mproforma
 
             $this->check_non_exist('clients','id',$this->_data['id_client'] ,'Client' );
 
-            $this->check_non_exist('commerciaux','id',$this->_data['id_commercial'] ,'Commercial' );
+            //$this->check_non_exist('commerciaux','id',$this->_data['id_commercial'] ,'Commercial' );
       //Get sum of details
             $this->Get_sum_detail($this->_data['tkn_frm']); 
-      //calcul values proforma
-           // $this->Calculate_proforma_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva']);
-
+            $this->check_commercial_exist($this->_data['id_commercial']);
+            //$this->Calculate_proforma_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva'], $this->_data['commission'], $this->_data['commission_ex']);
             
       //Check $this->error (true / false)
             if($this->error == false)
@@ -419,28 +450,42 @@ class Mproforma
                 $this->log .= '</br>Problème Réference';
                 return false;
             }
-            //$totalht  = $this->total_ht_t;
-            //$totaltva = $this->total_tva_t;
-            //$totalttc = $this->total_ttc_t;
-            //$valeur_remise = $this->valeur_remis_t;
+            $client = new Mclients;
+            $client->id_client = $this->_data['id_client'];
+            $client->get_client();
 
-            $values["reference"]       = MySQL::SQLValue($reference);
-            $values["tkn_frm"]         = MySQL::SQLValue($this->_data['tkn_frm']);
-            $values["id_client"]       = MySQL::SQLValue($this->_data['id_client']);
-            $values["tva"]             = MySQL::SQLValue($this->_data['tva']);
-            $values["vie"]             = MySQL::SQLValue($this->_data['vie']);
-            $values["id_commercial"]   = MySQL::SQLValue($this->_data['id_commercial']);
-            $values["date_proforma"]   = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_proforma'])));
-            //$values["type_remise"]   = MySQL::SQLValue($this->_data['type_remise']);
-            //$values["valeur_remise"] = MySQL::SQLValue($valeur_remise);
-            $values["claus_comercial"] = MySQL::SQLValue($this->_data['claus_comercial']);
-            //$values["totalht"]       = MySQL::SQLValue($totalht);
-            //$values["totalttc"]      = MySQL::SQLValue($totalttc);
-            //$values["totaltva"]      = MySQL::SQLValue($totaltva);
-            $values["commission"]      = MySQL::SQLValue($this->_data['commission']);
-            $values["type_commission"] = MySQL::SQLValue($this->_data['type_commission']);
-            $values["creusr"]          = MySQL::SQLValue(session::get('userid'));
-            $values["credat"]          = MySQL::SQLValue(date("Y-m-d H:i:s"));
+            $montant_remise      = $this->sum_total_ht - $this->total_ht_t;
+            $totalht             = $this->total_ht_t;
+            $totaltva            = $this->total_tva_t;
+            $totalttc            = $this->total_ttc_t;
+            $valeur_remise       = $this->valeur_remis_t;
+            $total_remise        = $this->total_remise;
+            $total_commission    = $this->total_commission;
+            $total_commission_ex = $this->total_commission_ex;
+
+            $values["reference"]           = MySQL::SQLValue($reference);
+            $values["tkn_frm"]             = MySQL::SQLValue($this->_data['tkn_frm']);
+            $values["id_client"]           = MySQL::SQLValue($this->_data['id_client']);
+            $values["id_banque"]           = MySQL::SQLValue($client->client_info['id_banque']);
+            $values["id_devise"]           = MySQL::SQLValue($client->client_info['id_devise']);
+            $values["tva"]                 = MySQL::SQLValue($this->_data['tva']);
+            $values["vie"]                 = MySQL::SQLValue($this->_data['vie']);
+            $values["id_commercial"]       = MySQL::SQLValue(json_encode($this->_data['id_commercial']));
+            $values["date_proforma"]       = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_proforma'])));
+            //$values["type_remise"]       = MySQL::SQLValue($this->_data['type_remise']);
+            //$values["valeur_remise"]     = MySQL::SQLValue($valeur_remise);
+            $values["claus_comercial"]     = MySQL::SQLValue($this->_data['claus_comercial']);
+            //$values["totalht"]           = MySQL::SQLValue($totalht);
+            //$values["totalttc"]          = MySQL::SQLValue($totalttc);
+            //$values["totaltva"]          = MySQL::SQLValue($totaltva);
+            $values["id_commercial_ex"]    = MySQL::SQLValue($this->_data['id_commercial_ex']);
+            $values["commission_ex"]       = MySQL::SQLValue($this->_data['commission_ex']);
+            $values["total_commission_ex"] = MySQL::SQLValue($total_commission_ex);
+            $values["type_commission_ex"]  = MySQL::SQLValue($this->_data['type_commission_ex']);
+            //$values["commission"]        = MySQL::SQLValue($this->_data['commission']);
+            //$values["type_commission"]   = MySQL::SQLValue($this->_data['type_commission']);
+            $values["creusr"]              = MySQL::SQLValue(session::get('userid'));
+            $values["credat"]              = MySQL::SQLValue(date("Y-m-d H:i:s"));
         //Check if Insert Query been executed (False / True)
             if(!$result = $db->InsertRow($table, $values))
             {
@@ -479,7 +524,7 @@ class Mproforma
 
     public function edit_exist_proforma()
     {
-        $this->reference = $this->_data['reference'];
+        //$this->reference = $this->_data['reference'];
       //Check if proforma exist
         $this->Check_proforma_exist($this->_data['tkn_frm'], 1);
       //Check if proforma have détails
@@ -487,16 +532,16 @@ class Mproforma
       //Make reference
       //$this->Make_proforma_reference();
         //Before execute do the multiple check
-        $this->Check_exist('reference', $this->reference, 'Réference proforma', 1);
+        //$this->Check_exist('reference', $this->reference, 'Réference proforma', 1);
 
         $this->check_non_exist('clients','id',$this->_data['id_client'] ,'Client' );
 
-        $this->check_non_exist('commerciaux','id',$this->_data['id_commercial'] ,'Commercial' );
+        $this->check_commercial_exist($this->_data['id_commercial']);
 
       //Get sum of details
         $this->Get_sum_detail($this->_data['tkn_frm']); 
       //calcul values proforma
-        //$this->Calculate_proforma_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva']);
+        //$this->Calculate_proforma_t($this->sum_total_ht, $this->_data['type_remise'], $this->_data['valeur_remise'], $this->_data['tva'], $this->_data['commission'], $this->_data['commission_ex']);
 
 
       //Check $this->error (true / false)
@@ -507,36 +552,46 @@ class Mproforma
         }
         //Get existing info
         $this->get_proforma();
+        $client = new Mclients;
+        $client->id_client = $this->_data['id_client'];
+        $client->get_client();
 
     //Format values for Insert query 
         global $db;
         $table = $this->table;
-        //$totalht  = $this->total_ht_t;
-        //$totaltva = $this->total_tva_t;
-        //$totalttc = $this->total_ttc_t;
-        //$valeur_remise = $this->valeur_remis_t;
-        //$this->reference = $this->_data['reference'];
+        $montant_remise      = $this->sum_total_ht - $this->total_ht_t;
+        $totalht             = $this->total_ht_t;
+        $totaltva            = $this->total_tva_t;
+        $totalttc            = $this->total_ttc_t;
+        $valeur_remise       = $this->valeur_remis_t;
+        $total_remise        = $this->total_remise;
+        $total_commission    = $this->total_commission;
+        $total_commission_ex = $this->total_commission_ex;
 
 
-        $values["reference"]          = MySQL::SQLValue($this->reference);
-        $values["tkn_frm"]            = MySQL::SQLValue($this->_data['tkn_frm']);
-        $values["id_client"]          = MySQL::SQLValue($this->_data['id_client']);
-        $values["tva"]                = MySQL::SQLValue($this->_data['tva']);
-        $values["vie"]                = MySQL::SQLValue($this->_data['vie']);
-        $values["id_commercial"]      = MySQL::SQLValue($this->_data['id_commercial']);
-        $values["commission"]         = MySQL::SQLValue($this->_data['commission']);
-        $values["type_commission"]    = MySQL::SQLValue($this->_data['type_commission']);
-        /*$values["total_commission"] = MySQL::SQLValue($total_commission);*/
-        $values["date_proforma"]      = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_proforma'])));
-        //$values["type_remise"]      = MySQL::SQLValue($this->_data['type_remise']);
-        //$values["valeur_remise"]    = MySQL::SQLValue($valeur_remise);
-        $values["claus_comercial"]  = MySQL::SQLValue($this->_data['claus_comercial']);
-        //$values["totalht"]          = MySQL::SQLValue($totalht);
-        //$values["totalttc"]         = MySQL::SQLValue($totalttc);
-        //$values["totaltva"]         = MySQL::SQLValue($totaltva);
-        $values["updusr"]             = MySQL::SQLValue(session::get('userid'));
-        $values["upddat"]             = ' CURRENT_TIMESTAMP ';
-        $wheres["id"]                 = MySQL::SQLValue($this->id_proforma);
+        $values["tkn_frm"]             = MySQL::SQLValue($this->_data['tkn_frm']);
+        $values["id_client"]           = MySQL::SQLValue($this->_data['id_client']);
+        $values["id_banque"]           = MySQL::SQLValue($client->client_info['id_banque']);
+        $values["id_devise"]           = MySQL::SQLValue($client->client_info['id_devise']);
+        $values["tva"]                 = MySQL::SQLValue($this->_data['tva']);
+        $values["vie"]                 = MySQL::SQLValue($this->_data['vie']);
+        $values["id_commercial"]       = MySQL::SQLValue(json_encode($this->_data['id_commercial']));
+        $values["date_proforma"]       = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_proforma'])));
+            //$values["type_remise"]       = MySQL::SQLValue($this->_data['type_remise']);
+            //$values["valeur_remise"]     = MySQL::SQLValue($valeur_remise);
+        $values["claus_comercial"]     = MySQL::SQLValue($this->_data['claus_comercial']);
+
+        $values["projet"]              = MySQL::SQLValue($this->_data['projet']);
+            //$values["totalht"]           = MySQL::SQLValue($totalht);
+            //$values["totalttc"]          = MySQL::SQLValue($totalttc);
+            //$values["totaltva"]          = MySQL::SQLValue($totaltva);
+        $values["id_commercial_ex"]    = MySQL::SQLValue($this->_data['id_commercial_ex']);
+        $values["commission_ex"]       = MySQL::SQLValue($this->_data['commission_ex']);
+        $values["total_commission_ex"] = MySQL::SQLValue($total_commission_ex);
+        $values["type_commission_ex"]  = MySQL::SQLValue($this->_data['type_commission_ex']);
+        $values["updusr"]              = MySQL::SQLValue(session::get('userid'));
+        $values["upddat"]              = ' CURRENT_TIMESTAMP ';
+        $wheres["id"]                  = MySQL::SQLValue($this->id_proforma);
         //Check if Insert Query been executed (False / True)
         if (!$result = $db->UpdateRows($table, $values, $wheres)) 
         {
@@ -640,8 +695,39 @@ class Mproforma
         return true;
 
     }
+    private function Calculate_proforma_t($totalht, $type_remise, $value_remise, $tva, $commission, $commission_ex) {
+        if ($type_remise == 'P') {
+            $totalht_remised = $totalht - ($totalht * $value_remise) / 100;
+            $this->valeur_remis_t = $value_remise;
+            $this->total_remise = ($totalht * $value_remise) / 100;
+        } elseif ($type_remise == 'M') {
+            $totalht_remised = $totalht - $value_remise;
+            $this->valeur_remis_t = ($value_remise * 100) / $totalht;
+            $this->total_remise = $value_remise;
+        } else {
+            $totalht_remised = $totalht;
+        }
 
-    private function Calculate_proforma_t($totalht, $type_remise, $value_remise, $tva,$commission)
+        //Valeur remised en percentage
+        //Total HT
+        $this->total_ht_t = $totalht_remised;
+        //TVA value get from app setting
+        $tva_value = Msetting::get_set('tva');
+        //Calculate TVA
+        if ($tva == 'N') {
+            $this->total_tva_t = 0;
+        } else {
+            $this->total_tva_t = ($this->total_ht_t * $tva_value) / 100; //TVA value get from app setting
+        }
+        $this->total_ttc_t = $this->total_ht_t + $this->total_tva_t;
+
+        //Total commission
+        $this->total_commission = ($this->total_ht_t * $commission) / 100;
+        $this->total_commission_ex = ($this->total_ht_t * $commission_ex) / 100;
+
+        return true;
+    }
+    /*private function Calculate_proforma_t($totalht, $type_remise, $value_remise, $tva,$commission)
     {
         if($type_remise == 'P')
         {
@@ -675,7 +761,7 @@ class Mproforma
         $this->total_commission = ($this->total_ttc_t * $commission) / 100;
         return true;
 
-    }
+    }*/
 
     private function get_order_detail($tkn_frm, $sub_group)
     {
@@ -817,6 +903,64 @@ class Mproforma
         $req_sql = "SELECT SUM($table_details.total_ht)  FROM $table_details WHERE tkn_frm = '$tkn_frm' ";
         $this->sum_total_ht = $db->QuerySingleValue0($req_sql);
     }
+    private function get_commerciale_remise_plafond($id_commercial, $valeur_remise, $tkn_frm = null) {
+        global $db;
+        
+        
+        /*if(!$this->get_max_remise_plafond_for_details($tkn_frm)){
+            return false;
+        }*/
+
+        $req_sql = "SELECT remise, remise_valid_dcm, remise_valid_dg FROM commerciaux WHERE id_user_sys = $id_commercial";
+        //var_dump($req_sql);
+        if (!$db->Query($req_sql)) {
+            $this->log .= '</br>Impossible récuperation plafonds remises #SQL';
+            return false;
+        } else {
+            if (!$db->RowCount()) {
+                $this->log .= '</br>Impossible récuperation plafonds remises pour ce commercial';
+                return false;
+            }
+            $arr_result = $db->RowArray();
+            $plafond_remise = $arr_result['remise'];
+            $plafond_remise_valid_dcm = $arr_result['remise_valid_dcm'];
+            $plafond_remise_valid_dg = $arr_result['remise_valid_dg'];
+            if ($valeur_remise > $plafond_remise_valid_dg OR $this->max_remise_details > $plafond_remise_valid_dg) {
+                $this->log .= '</br>La remise appliquée dépasse le plafond autorisé (' . $plafond_remise_valid_dg . '%)';
+                return false;
+            }/* elseif (($valeur_remise > $plafond_remise && $valeur_remise <= $plafond_remise_valid_dcm) OR ($this->max_remise_details > $plafond_remise && $this->max_remise_details <= $plafond_remise_valid_dcm)) {
+                $this->log .= '</br>La remise appliquée dépasse le plafond autorisé (' . $plafond_remise . '%)</br>Le devis doit être validé par le DCM';
+                $this->etat_valid_devis = $etat_valid_dcm;
+            } elseif (($valeur_remise > $plafond_remise && $valeur_remise > $plafond_remise_valid_dcm) OR ($this->max_remise_details > $plafond_remise && $this->max_remise_details > $plafond_remise_valid_dcm)) {
+                $this->log .= '</br>La remise appliquée dépasse le plafond autorisé (' . $plafond_remise_valid_dcm . '%)</br>Le devis doit être validé par le DG';
+                $this->etat_valid_devis = $etat_valid_dg;
+            }*/
+            return true;
+        }
+    }
+    /**
+     * [get_max_remise_plafond_for_details description]
+     * @param  [type] $tkn_frm [description]
+     * @return [type]          [description]
+     */
+    private function get_max_remise_plafond_for_details($tkn_frm) {
+        global $db;
+        
+        $req_sql = "SELECT MAX(dd.`remise_valeur`) AS max_remise FROM d_devis dd WHERE dd.tkn_frm = '$tkn_frm'";
+        //var_dump($req_sql);
+        if (!$db->Query($req_sql)) {
+            $this->log .= '</br>Impossible récuperation MAX remise détails #SQL';
+            return false;
+        } else {
+            if (!$db->RowCount()) {
+                $this->log .= '</br>Impossible récuperation MAX remise pour ce devis';
+                return false;
+            }
+            $arr_result = $db->RowArray();
+            $this->max_remise_details = $arr_result['max_remise'];           
+            return true;
+        }
+    }
 
     public function save_new_details_proforma($tkn_frm)
     {
@@ -844,6 +988,10 @@ class Mproforma
             //$valeur_remis_d = $this->valeur_remis_d;
             $valeur_remis_d = number_format($this->valeur_remis_d, 2,'.', '');
             $prix_u_final   = $this->prix_u_final;
+            if (!$this->get_commerciale_remise_plafond(session::get('userid'), $valeur_remis_d)) {
+                //var_dump("USER ID CONNECTE".session::get('userid'));
+                return false;
+            }
           //Get order line into proforma
             $sub_group = $this->_data['sub_group'];
             $this->get_order_detail($tkn_frm,  $sub_group);
@@ -1464,79 +1612,172 @@ class Mproforma
         $table_details_devis = $this->table_details_devis;
         $table               = $this->table;
         $table_details       = $this->table_details;
-        global $db;
-        $ssid = 'duplicat_devis';
-        session::clear($ssid);
-        session::set($ssid, session::generate_sid());
-        $verif_value = md5(session::get($ssid));
-        $curent_usr = session::get('userid');
+
+        $tkn_frm   = $this->g('tkn_frm');
+        $sub_group = $this->id_proforma_pro;
+        if($type_devis == 'ABN'){
+             $type_produit = "LIKE 'Abonnement' ";
+             $new_tkn_frm = MD5($tkn_frm.'ABN');
+             $type_devis = 'ABN';
+        }else{
+            $type_produit = "NOT LIKE 'Abonnement' ";
+            $new_tkn_frm = $tkn_frm;
+            $type_devis = 'VNT';
+        }
+        $creusr = session::get('userid');
         //Generate reference
-        if (!$reference = $db->Generate_reference($table_devis, 'DEV')) {
+        if(!$reference = $db->Generate_reference($table_devis, 'DEV')) 
+        {
             $this->log .= '</br>Problème Réference new devis';
             return false;
         }
         $date_devis = date('Y-m-d');
-
-        
-        $id_proforma = $this->id_proforma;
-
-        
-        //Insert duplicated Devis
-        $all_fields_f = "`reference`, `tkn_frm`, `type_devis`,
-                 `id_client`, `id_devise`, `id_banque`, `tva`, `id_commercial`, `commission`, `total_commission`, `type_commission`, id_commercial_ex, commission_ex, total_commission_ex, type_commission_ex, 
-                `date_devis`, `type_remise`, `total_remise`, `valeur_remise`, projet, vie, `claus_comercial`, `totalht`, `totalttc`,
-                `totaltva`, `etat`, `creusr`";
-
-        $all_fields_v = " '$reference', `tkn_frm`, '$type_devis',
-                 `id_client`, `id_devise`, `id_banque`, `tva`, `id_commercial`, `commission`, `total_commission`, `type_commission`, id_commercial_ex, commission_ex, total_commission_ex, type_commission_ex, 
-                '$date_devis', `type_remise`, `total_remise`, `valeur_remise`, projet, vie, `claus_comercial`, `totalht`, `totalttc`,
-                `totaltva`, 0, '$curent_usr' ";        
-
-        
-
-        $sql_duplicat_devis = "INSERT INTO $table_devis ($all_fields_f) SELECT  $all_fields_v FROM $table WHERE $table.id = $id_proforma";
-
-        if (!$new_devis = $db->Query($sql_duplicat_devis)) {
-            $this->log .= "</br>Problème Insert devis  " .$sql_duplicat_devis;
+        /* INSERT détails from Proforma to Devis */
+        $sql_details_insert = "INSERT INTO $table_details_devis (tkn_frm, id_produit, `order`, ref_produit, designation, taux_change, qte, pu_devise_pays, prix_unitaire, type_remise, prix_ht, remise_valeur, tva, total_ht, total_ttc, total_tva, creusr) SELECT '$new_tkn_frm', id_produit, dp.order, ref_produit, dp.designation, taux_change, qte, pu_devise_pays, prix_unitaire, type_remise, prix_ht, remise_valeur, tva, total_ht, total_ttc, total_tva, '$creusr' FROM $table_details dp, produits p, ref_types_produits WHERE tkn_frm = '$tkn_frm' AND  dp.id_produit = p.id AND p.idtype = ref_types_produits.id AND ref_types_produits.type_produit $type_produit AND sub_group = $sub_group  ";
+        if(!$db->Query($sql_details_insert))
+        {
+            $this->log .= '</br>Erreur Insert Détails '.$db->Error();
+            $this->log .= '</br>'.$sql_details_insert;
             return false;
         }
-
-      
-        $cryp_data = MInit::crypt_tp('id', $new_devis);
-        $this->log .= "</br>Devis crée avec succès sous réf: <b>$reference</b></br><a class='this_url' rel='editdevis' data='$cryp_data'>Modifier le nouveau Devis</a>";
+        
+        if(!$this->save_devis_from_proforma($new_tkn_frm))
+        {
+            return false;
+        }        
+        /*$sql_insert_devis = "INSERT $table_devis (reference, tkn_frm, type_devis, id_client, id_devise, id_banque, tva, id_commercial, commission, total_commission, type_commission, id_commercial_ex, commission_ex, total_commission_ex, type_commission_ex, date_devis, type_remise, valeur_remise, total_remise, projet, vie, claus_comercial, totalht, totalttc, totaltva, etat, creusr) SELECT '$reference', '$new_tkn_frm', '$type_devis', id_client, id_devise, id_banque, tva, id_commercial, commission, total_commission, type_commission, id_commercial_ex, commission_ex, total_commission_ex, type_commission_ex, '$date_devis', type_remise, valeur_remise, total_remise, projet, vie, claus_comercial, totalht, totalttc, totaltva, 0, '$creusr' FROM $table WHERE tkn_frm = '$tkn_frm'";
+        if(!$result = $db->Query($sql_insert_devis))
+        {
+            $this->log .= '</br>Erreur Insert Devis '.$db->Error();
+            $this->log .= '</br>'.$sql_insert_devis;
+            return false;
+        }
+        $this->log .= '</br>Devis ID :'.$result;*/      
         return true;
     }
 
-    
+    private function save_devis_from_proforma($tkn_frm)
+    {
+        $posted_data = array(
+
+            'id_client'           => $this->g('id_client') ,
+            'tva'                 => $this->g('tva') ,
+            'tkn_frm'             => $tkn_frm,
+            'date_devis'          => date('Y-m-d') ,
+            'type_remise'         => $this->g('type_remise') ,
+            'valeur_remise'       => $this->g('valeur_remise') ,
+            'totalht'             => $this->g('totalht') ,
+            'totalttc'            => $this->g('totalttc') ,
+            'totaltva'            => $this->g('totaltva') ,
+            'projet'              => $this->g('projet'),
+            'vie'                 => $this->g('vie'),
+            'claus_comercial'     => $this->g('claus_comercial'),
+            'id_commercial'       => json_decode($this->g('id_commercial'), true),
+            'commission'          => 0,
+            'type_commission'     => 'C',
+            'total_commission'    => $this->g('total_commission'),
+            'id_commercial_ex'    => $this->g('id_commercial_ex'),
+            'commission_ex'       => $this->g('commission_ex'),
+            'total_commission_ex' => $this->g('total_commission_ex'),
+            'type_commission_ex'  => $this->g('type_commission_ex'),
+            'devis_base'          => null
+        );
+        
+        $new_devis = new  Mdevis($posted_data);
+  
+        if(!$new_devis->save_new_devis())
+        {
+            $this->log .= '</br>Problème création Devis';
+            $this->log .= $new_devis->log;
+            return false;
+        }
+        $this->log .= $new_devis->log;
+        return true;
+    }
+    /**
+     * [transformer_proforma_proforma_to_devis description]
+     * @return [type] [description]
+     */
     public function transformer_proforma_proforma_to_devis()
     {
         if(!$this->get_proforma()){
             return false;
         }
+        $old_etat = Msetting::get_set('etat_proforma', 'send_proforma');
+        $new_etat = Msetting::get_set('etat_proforma', 'proforma_devis');
+        if($old_etat == null)
+        {
+            $this->error = false;
+            $this->log .= "Manque paramètre etat_proforma => send_proforma";
+            return false;
+        }
+        if($new_etat == null)
+        {
+            $this->error = false;
+            $this->log .= "Manque paramètre etat_proforma => send_proforma";
+            return false;
+        }
+        if($this->g('etat') != $old_etat)
+        {
+            $this->error = false;
+            $this->log .= "Ce proforma ne peux pas être transformé pour le momement #Etat faild";
+            return false;
+        }
+        
         /*===================================================================
         =            Check if have ABN then save first Devis ABN            =
         ===================================================================*/
-        $table_details = $this->table_details;
+        
         global $db;
-        $tkn_frm   = $this->g('tkn_frm');
-        $sub_group = $this->id_proforma_pro;
+        $tkn_frm       = $this->g('tkn_frm');
+        $sub_group     = $this->id_proforma_pro;
+        $table         = $this->table;
+        $table_details = $this->table_details;
+        $id_proforma   = $this->id_proforma;
 
-        $req_sql = "SELECT $table_details.id FROM $table_details, produits, ref_types_produits WHERE tkn_frm = '$tkn_frm' AND  $table_details.id_produit = produits.id AND produits.idtype = ref_types_produits.id AND ref_types_produits.type_produit like 'Abonnement' AND sub_group = $sub_group ";
+        $req_sql_abn = "SELECT COUNT($table_details.id) FROM $table_details, produits, ref_types_produits WHERE tkn_frm = '$tkn_frm' AND  $table_details.id_produit = produits.id AND produits.idtype = ref_types_produits.id AND ref_types_produits.type_produit like 'Abonnement' AND sub_group = $sub_group AND id_proforma = $id_proforma";
+
+        $req_sql_no_abn = "SELECT COUNT($table_details.id) FROM $table_details, produits, ref_types_produits WHERE tkn_frm = '$tkn_frm' AND  $table_details.id_produit = produits.id AND produits.idtype = ref_types_produits.id AND ref_types_produits.type_produit NOT like 'Abonnement' AND sub_group = $sub_group AND id_proforma = $id_proforma";
 
          
-        $produit_id = intval($db->QuerySingleValue0($req_sql));
-        
-        if($produit_id <> '0')
+        $produit_abn    = intval($db->QuerySingleValue0($req_sql_abn));
+        $produit_no_abn = intval($db->QuerySingleValue0($req_sql_no_abn));
+        /*var_dump($produit_abn);
+        die();*/
+        if($produit_abn > 1)
         {
-            $this->creat_devis_from_proforma($type_devis = 'ABN');
-
-
-          //$this->log .= '</br>Impossible d\'insérer deux abonnement sur le même sous-group pour le même Proforma '.$produit_id;
+            $this->log .= '</br>Cette Proposition contient plus qu\'un Abonnement !';
+            return false;
+        }
+        if($produit_abn == 1)
+        {
+            if(!$this->creat_devis_from_proforma($type_devis = 'ABN'))
+            {
+                $this->log .= '</br>Impossible d\'enregistrer le devis Abonnement';
+                return false;
+            }
+        }
+        if($produit_no_abn > 0)
+        {
+            if(!$this->creat_devis_from_proforma($type_devis = 'VNT'))
+            {
+                $this->log .= '</br>Impossible d\'enregistrer le devis Vente';
+                return false;
+            }
+            
         }
         
         
         /*=====  End of Check if have ABN then save first Devis ABN  ======*/
-        return false;
+        
+        $req_sql = " UPDATE $table SET etat = $new_etat WHERE id = $id_proforma ";
+        
+        if (!$db->Query($req_sql)) 
+        {
+            $this->log .= "</br>Problème MAJ etat Proforma ";
+            return false;
+        }
+        return true;
     }
 /**
  * End Class destrector

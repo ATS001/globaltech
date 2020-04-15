@@ -2,24 +2,29 @@
 if(MInit::form_verif('addproforma', false))
 {
 	
-  $posted_data = array(
+ $posted_data = array(
    
-   'id_client'     => Mreq::tp('id_client') ,
-   'tva'           => Mreq::tp('tva') ,
-   'tkn_frm'       => Mreq::tp('tkn_frm') ,
-   'vie'           => Mreq::tp('vie') ,
-   'date_proforma' => Mreq::tp('date_proforma') ,
-/* 'type_remise'     => Mreq::tp('type_remise') ,
-   'valeur_remise'   => Mreq::tp('remise_montant') ,
-   'totalht'         => Mreq::tp('totalht') ,
-   'totalttc'        => Mreq::tp('totalttc') ,
-   'totaltva'        => Mreq::tp('totaltva') ,*/
-   'claus_comercial' => Mreq::tp('claus_comercial'),
-   'id_commercial'   => Mreq::tp('id_commercial'),
-   'commission'      => Mreq::tp('commission'),
-   'type_commission'      => Mreq::tp('type_commission'),
-   'total_commission'=> Mreq::tp('total_commission')
-
+     'id_client'           => Mreq::tp('id_client') ,
+     'tva'                 => Mreq::tp('tva') ,
+     'tkn_frm'             => Mreq::tp('tkn_frm') ,
+     'vie'                 => Mreq::tp('vie') ,
+     'date_proforma'       => Mreq::tp('date_proforma') ,
+     'projet'              => Mreq::tp('projet') ,
+     /* 'type_remise'      => Mreq::tp('type_remise') ,
+     'valeur_remise'       => Mreq::tp('remise_montant') ,
+     'totalht'             => Mreq::tp('totalht') ,
+     'totalttc'            => Mreq::tp('totalttc') ,
+     'totaltva'            => Mreq::tp('totaltva') ,*/
+     'claus_comercial'     => Mreq::tp('claus_comercial'),
+     'id_commercial'       => Mreq::tp('id_commercial'),
+     /*'commission'        => Mreq::tp('commission'),
+     'type_commission'     => Mreq::tp('type_commission'),
+     'total_commission'    => Mreq::tp('total_commission')*/
+     'id_commercial_ex'    => Mreq::tp('id_commercial_ex'),
+     'commission_ex'       => Mreq::tp('commission_ex'),
+     'total_commission_ex' => Mreq::tp('total_commission_ex'),
+     'type_commission_ex'  => Mreq::tp('type_commission_ex'),
+     
    );
 
   
@@ -43,12 +48,12 @@ if(MInit::form_verif('addproforma', false))
       $empty_list .= "<li>Type remise est incorrecte</li>";
       $checker = 1;
     }
-    $set_comission = Msetting::get_set('plafond_comission');
+    /*$set_comission = Msetting::get_set('plafond_comission');
     if($posted_data['commission'] > $set_comission ){
 
       $empty_list .= "<li>Commission ne dois pas dépasser $set_comission</li>";
       $checker = 1;
-    }
+    }*/
     if($posted_data['vie'] == NULL OR !in_array($posted_data['vie'],  array( '30','60', '90', '180', '365' ))){
 
       $empty_list .= "<li>Durée de validité</li>";
@@ -90,11 +95,11 @@ if(MInit::form_verif('addproforma', false))
       $empty_list .= "<li>Commercial</li>";
       $checker = 1;
     }
-    if($posted_data['commission'] == NULL OR !is_numeric($posted_data['commission']) ){
+    /*if($posted_data['commission'] == NULL OR !is_numeric($posted_data['commission']) ){
 
       $empty_list .= "<li>Commission</li>";
       $checker = 1;
-    }
+    }*/
     /*if($posted_data['total_commission'] == NULL OR !is_numeric($posted_data['total_commission']) ){
 
       $empty_list .= "<li>Total Commission</li>";
