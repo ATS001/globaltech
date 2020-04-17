@@ -61,7 +61,7 @@ if($liste_sub_group){
     	$liste_sum = $proforma->get_sum_by_sub_group($id_sub_group);
     	$table_sum_sub_group = '
     	<table style="width: 685px;" cellpadding="2">
-    <tr>
+        <tr>
         <td width="50%" align="left">
 
         </td>
@@ -69,18 +69,18 @@ if($liste_sub_group){
     	<table class="table" cellspacing="2" cellpadding="2"  style="width: 300px; border:1pt solid black;" >
             <tbody>
                 <tr>
-                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Total HT</td>
-                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
+                    <td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;">Total HT</td>
+                    <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;">'.$liste_sum[0]['sum_tt_ht'].' '.$proforma->g('devise').'</td>
                 </tr>
                 <tr>
-                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Total TVA</td>
-                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
+                    <td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;">Total TVA</td>
+                    <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;">'.$liste_sum[0]['sum_tt_tva'].' '.$proforma->g('devise').'</td>
                 </tr>
                 <tr>
-                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Total TTC</td>
-                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
+                    <td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;">Total TTC</td>
+                    <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;">'.$liste_sum[0]['sum_tt_ttc'].' '.$proforma->g('devise').'</td>
                 </tr>
             </tbody>
@@ -134,14 +134,14 @@ class MYPDF extends TCPDF {
 		$this->writeHTMLCell(0, 0, '', 30, $ste , '', 0, 0, true, 'L', true);
 		$this->SetTextColor(0, 50, 127);
 		// Set font
-		$this->SetFont('helvetica', 'B', 22);
+		$this->SetFont('kameron', 'B', 22);
 		//Ste
 
 		// Title
 		$titre_doc = '<h1 style="letter-spacing: 2px;color;#004073;font-size: 14pt;">PROFORMA</h1>';
 		$this->writeHTMLCell(0, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true);
 		$this->SetTextColor(0, 0, 0);
-		$this->SetFont('helvetica', '', 9);
+		$this->SetFont('kameron', '', 9);
 		$detail_proforma = '<table cellspacing="3" cellpadding="2" border="0">
 		<tr>
 		<td style="width:45%; color:#004073"><strong>Réf proforma</strong></td>
@@ -160,8 +160,8 @@ class MYPDF extends TCPDF {
 	    if($this->info_proforma['nif'] != null)
 	    {
 	    	$nif = '<tr>
-		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">NIF</td>
-		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
+		<td align="right" style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">NIF</td>
+		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$this->info_proforma['nif'].'</td>
 		</tr>';
 	    }
@@ -175,23 +175,23 @@ class MYPDF extends TCPDF {
 		$detail_client = '<table cellspacing="3" cellpadding="2" border="0">
 		<tbody>
 		<tr style="background-color:#004073; font-size:14; font-weight:bold; color:#fff;">
-		<td colspan="3"><strong>Informations client</strong></td>
+		<td colspan="3"><strong>Informations du client</strong></td>
 		</tr>
 		<tr>
-		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Réf Client</td>
-		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
+		<td align="right" style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Réf Client</td>
+		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;"><strong>'.$ref_client.'</strong></td>
 		</tr>
 		<tr>
-		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Dénomination</td>
-		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
+		<td align="right" style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Dénomination</td>
+		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;"><strong>'.$this->info_proforma['denomination'].'</strong></td>
 		</tr>';
 
 		if($adresse.$bp.$ville.$pays != null){
 			$detail_client .= '<tr>
-	    <td align="right" style="width: 30%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Adresse</td>
-		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
+	    <td align="right" style="width: 30%;color: #E99222;font-weight: bold;font-size: 9pt;">Adresse</td>
+		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$adresse.' '.$bp.' '.$ville.' '.$pays.'</td>
 		</tr>';
 
@@ -200,8 +200,8 @@ class MYPDF extends TCPDF {
 
 		if($tel != null && $email != null){
 			$detail_client .= '<tr>
-		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Contact</td>
-		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
+		<td align="right" style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Contact</td>
+		<td style="width: 5%; color: #E99222; font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$tel.' '.$email.'</td>
 		</tr>
 		';
@@ -255,7 +255,7 @@ class MYPDF extends TCPDF {
 		// Position at 15 mm from bottom
 		$this->SetY(-15);
 		// Set font
-		$this->SetFont('helvetica', 'I', 8);
+		$this->SetFont('kameron', 'I', 8);
 		// Page number
 		$this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
 	}
@@ -285,6 +285,8 @@ $pdf = new MYPDF(PDF_PAGE_ORIENTATION, PDF_UNIT, PDF_PAGE_FORMAT, true, 'UTF-8',
 $pdf->info_proforma = $proforma->proforma_info;
 $pdf->qr = isset($qr_code) ? $qr_code : false;
 
+
+//$fontname = TCPDF_FONTS::addTTFfont(K_PATH_FONTS .'/kameron/Kameron-Regular.ttf', 'TrueTypeUnicode','', 32);
 
 // set document information
 $pdf->SetCreator(MCfg::get('sys_titre'));
@@ -321,9 +323,10 @@ $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 // Set font
 // dejavusans is a UTF-8 Unicode font, if you only need to
 // print standard ASCII chars, you can use core fonts like
-// helvetica or times to reduce file size.
+// kameron or times to reduce file size.
 // set font
-$pdf->SetFont('helvetica', '', 9);
+//$pdf->SetFont('kameron', '', 9);
+$pdf->SetFont('kameron', '', 9, '', false);
 
 // Add a page
 // This method has several options, check the source code documentation for more information.
@@ -342,7 +345,7 @@ $block_sum = '<div></div>
 <table style="width: 685px;" cellpadding="2">
 
 <tr>
-    <td colspan="2" style="color: #E99222;font-family: sans-serif;font-weight: bold;">
+    <td colspan="2" style="color: #E99222;font-weight: bold;">
 
         <strong>Conditions générales:</strong>
 
