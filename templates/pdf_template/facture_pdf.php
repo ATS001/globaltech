@@ -154,9 +154,9 @@ class MYPDF extends TCPDF {
 		$ste_c = new MSte_info();
 
         if($this->info_facture['date_facture'] < '16-04-2020'){
-		$ste = $ste_c->get_ste_info_report_head(1,$this->info_facture['date_facture'],$this->info_facture['date_facture']);
+		$ste = $ste_c->get_ste_info_report_head(1,$this->info_facture['date_facture'],'Facture');
 	    }else{
-		$ste = $ste_c->get_ste_info_report_head(2,$this->info_facture['date_facture'],$this->info_facture['date_facture']);
+		$ste = $ste_c->get_ste_info_report_head(2,$this->info_facture['date_facture'],'Facture');
 		}
 		$this->writeHTMLCell(0, 0, '', 30, $ste , '', 0, 0, true, 'L', true);
 		$this->SetTextColor(0, 50, 127);
@@ -301,9 +301,9 @@ class MYPDF extends TCPDF {
 		$ste_c = new MSte_info();
         $this->SetY(-30);
         if($this->info_facture['date_facture'] < '16-04-2020'){
-		$ste = $ste_c->get_ste_info_report_footer(1,$this->info_facture['id_banque'],$this->info_facture['date_facture']);
+		$ste = $ste_c->get_ste_info_report_footer(1,$this->info_facture['id_banque'],$this->info_facture['date_facture'],'Facture');
 	    }else{
-	    $ste = $ste_c->get_ste_info_report_footer(2,$this->info_facture['id_banque'],$this->info_facture['date_facture']);	
+	    $ste = $ste_c->get_ste_info_report_footer(2,$this->info_facture['id_banque'],$this->info_facture['date_facture'],'Facture');	
 	    }
 		$this->writeHTMLCell(0, 0, '', '', $ste , '', 0, 0, true, 'C', true);
 		// Position at 15 mm from bottom

@@ -183,22 +183,26 @@ class MSte_info
 
     }
 
-    public  function get_ste_info_report_head($id_ste,$date)
+    public  function get_ste_info_report_head($id_ste,$date,$object)
     {
     	$this->id_ste = $id_ste;
     	$this->get_ste_info();
-    	
-    	if($date < '11-04-2020'){
 
-    	$head = '<div style="color:#4A5375;font-size: 9pt;font-family: sans-serif;"><address><br>'.$this->ste_info['ste_adresse'].'<br>'.$this->ste_info['ste_ville'].' '.$this->ste_info['ste_pays'].'<br><abbr title="Phone">Tél: </abbr>'.$this->ste_info['ste_tel'].'<br>BP: </abbr>'.$this->ste_info['ste_bp'].' N\'Djamena<br>Email: '.$this->ste_info['ste_email'].'<br>Site web: '.$this->ste_info['ste_website'].'</address></div>';
-        }else{
-        $head = '<div style="color:#4A5375;font-size: 9pt;font-family: sans-serif;"><address><br>'.$this->ste_info['ste_adresse'].'<br>BP: </abbr>'.$this->ste_info['ste_bp'].' '.$this->ste_info['ste_ville'].'-'.$this->ste_info['ste_pays'].'<br><abbr title="Phone">Tél: </abbr>'.$this->ste_info['ste_tel'].'</address></div>';
+    	if($date < '16-04-2020'){
 
-        }
+	    	$head = '<div style="color:#4A5375;font-size: 9pt;font-family: sans-serif;"><address><br>'.$this->ste_info['ste_adresse'].'<br>'.$this->ste_info['ste_ville'].' '.$this->ste_info['ste_pays'].'<br><abbr title="Phone">Tél: </abbr>'.$this->ste_info['ste_tel'].'<br>BP: </abbr>'.$this->ste_info['ste_bp'].' N\'Djamena<br>Email: '.$this->ste_info['ste_email'].'<br>Site web: '.$this->ste_info['ste_website'].'</address></div>';
+	    }else{
+	    	if($object == 'Facture'){
+	        	$head = '<div style="color:#4A5375;font-size: 9pt;font-family: sans-serif;"><address><br>'.$this->ste_info['ste_adresse'].'<br>BP: </abbr>'.$this->ste_info['ste_bp'].' '.$this->ste_info['ste_ville'].'-'.$this->ste_info['ste_pays'].'<br><abbr title="Phone">Tél: </abbr>'.$this->ste_info['ste_tel_fact'].'</address></div>';
+	        }else{
+	        	$head = '<div style="color:#4A5375;font-size: 9pt;font-family: sans-serif;"><address><br>'.$this->ste_info['ste_adresse'].'<br>BP: </abbr>'.$this->ste_info['ste_bp'].' '.$this->ste_info['ste_ville'].'-'.$this->ste_info['ste_pays'].'<br><abbr title="Phone">Tél: </abbr>'.$this->ste_info['ste_tel'].'</address></div>';    		
+    	    }
+	    }
+
     	return $head;
     }
 
-    public  function get_ste_info_report_footer($id_ste,$banque,$date)
+    public  function get_ste_info_report_footer($id_ste,$banque,$date,$object)
     {
     	$this->id_ste = $id_ste;
     	$this->get_ste_info();
@@ -206,10 +210,14 @@ class MSte_info
 
     	/*$footer = '<h1>'.$this->ste_info['ste_name'].'</h1><p>Télécommunications – Réseaux - Sécurité électronique - Prestation de Services<br/> Numéro d’Identification Fiscale : '.$this->ste_info['ste_if'].'<br/>Compte Orabank n°20403500201</p>';
 */		
-    	if($date < '11-04-2020'){
-    	$footer = '</br><p>Télécommunications – Réseaux - Sécurité électronique - Prestation de Services<br/> Numéro d’Identification Fiscale : '.$this->ste_info['ste_if'].'<br/>Compte '.$this->banque_info['banque'].' N° '.$this->banque_info['rib'].'</p>';
+    	if($date < '16-04-2020'){
+    		$footer = '</br><p>Télécommunications – Réseaux - Sécurité électronique - Prestation de Services<br/> Numéro d’Identification Fiscale : '.$this->ste_info['ste_if'].'<br/>Compte '.$this->banque_info['banque'].' N° '.$this->banque_info['rib'].'</p>';
     	}else{
-    	$footer = '</br><p>Numéro d’Identification Fiscale : '.$this->ste_info['ste_if'].'<br/>Compte '.$this->banque_info['banque'].' N° '.$this->banque_info['rib'].'</p>';
+    		if($object == 'Facture'){
+    			$footer = '</br><p>NIF : '.$this->ste_info['ste_if'].'<br/>Compte '.$this->banque_info['banque'].' N° :'.$this->banque_info['rib'].'<br>Email: '.$this->ste_info['ste_email_fact'].'<br>Site web :'.$this->ste_info['ste_website'].'</p>';
+    		}else{
+    			$footer = '</br><p>Email: '.$this->ste_info['ste_email'].'<br>Site web :'.$this->ste_info['ste_website'].'</p>';
+    		}
     	}
     	    	
     	return $footer;

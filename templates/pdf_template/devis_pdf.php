@@ -84,9 +84,9 @@ class MYPDF extends TCPDF {
 		$ste_c = new MSte_info();
 
         if($this->info_devis['date_devis'] < '16-04-2020'){
-		$ste = $ste_c->get_ste_info_report_head(1,$this->info_devis['date_devis']);
+		$ste = $ste_c->get_ste_info_report_head(1,$this->info_devis['date_devis'],'Devis');
 	    }else{
-		$ste = $ste_c->get_ste_info_report_head(2,$this->info_devis['date_devis']);
+		$ste = $ste_c->get_ste_info_report_head(2,$this->info_devis['date_devis'],'Devis');
 	    }
 		$this->writeHTMLCell(0, 0, '', 30, $ste , '', 0, 0, true, 'L', true);
 		$this->SetTextColor(0, 50, 127);
@@ -215,9 +215,9 @@ class MYPDF extends TCPDF {
         $this->SetY(-30);
 
         if($this->info_devis['date_devis'] < '16-04-2020'){
-		$ste = $ste_c->get_ste_info_report_footer(1,$this->info_devis['id_banque'],$this->info_devis['date_devis']);
+		$ste = $ste_c->get_ste_info_report_footer(1,$this->info_devis['id_banque'],$this->info_devis['date_devis'],'Devis');
 	    }else{
-		$ste = $ste_c->get_ste_info_report_footer(2,$this->info_devis['id_banque'],$this->info_devis['date_devis']);
+		$ste = $ste_c->get_ste_info_report_footer(2,$this->info_devis['id_banque'],$this->info_devis['date_devis'],'Devis');
 	    }
 
 		$this->writeHTMLCell(0, 0, '', '', $ste , '', 0, 0, true, 'C', true);
