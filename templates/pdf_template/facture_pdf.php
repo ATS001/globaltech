@@ -261,7 +261,7 @@ class MYPDF extends TCPDF {
 		    $this->SetTopMargin($height + $this->GetY() + 5);
 		    //writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
 		    $this->setCellPadding(1);
-		    $this->writeHTMLCell(183, '', 15.6, '', $projet, 1, 0, 0, true, 'L', true);
+		    $this->writeHTMLCell(182.6, '', 15.5, '', $projet, 1, 0, 0, true, 'L', true);
 		}
 		//$this->Ln();
 		//Comment fati 04/03 pour probleme tableau complement
@@ -425,9 +425,12 @@ $block_tt_no_remise = $pdf->info_facture['valeur_remise'] == 0 ? null : $block_t
 $block_ttc    = $pdf->info_facture['total_tva'] == 0 ? null : $block_ttc;
 $titl_ht = $pdf->info_facture['total_tva'] == 0 ? 'Total à payer' : 'Total HT';
 
-//$signature = $pdf->info_proforma['comercial']; 
+if($pdf->info_facture['date_facture'] < '16-04-2020'){
+	$signature = 'La Direction';
+}else{
+	$signature = 'La Comptabilité'; 	
+}
 
-$signature = 'La Direction'; 
 $table_complement = null;
 if ($pdf->info_complement != null)
 {
@@ -507,8 +510,9 @@ p {
 $f = new Mfacture();
 $f->id_facture = Mreq::tp('id');
 $f->get_facture();
+
 //var_dump($f->facture_info['etat']);
-if($f->facture_info['etat'] == 0){
+if($f->facture_info['etat'] == 0 or (date('d-m-Y', strtotime($f->facture_info['date_facture']))>= '16-04-2020')){
 	//var_dump('ohhh 0');
 $block_sum .= '</table>';
 
