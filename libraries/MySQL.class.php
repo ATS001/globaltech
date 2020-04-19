@@ -24,7 +24,7 @@ class MySQL
 	private $db_charset = "utf8";           // optional character set (i.e. utf8)
 	private $db_pcon    = false;
 
-	
+
 
 	// constants for SQLValue function
 	const SQLVALUE_BIT      = "bit";
@@ -75,13 +75,13 @@ class MySQL
 		$this->db_user    = $username == null ? MCfg::get('user'): $username;
 		$this->db_pass    = $password == null ? MCfg::get('pass'): $password;
 
-		
 
 
 
 
-		
-		
+
+
+
 		if ($charset  != null) $this->db_charset = 'utf8';
 
 		if (strlen($this->db_host) > 0 &&
@@ -392,7 +392,7 @@ class MySQL
 	public function EndOfSeek1() {
 		$this->ResetError();
 		if ($this->IsConnected()) {
-			
+
 			if ($this->active_row >= ($this->RowCount()+1)) {
 				return true;
 			} else {
@@ -720,26 +720,26 @@ class MySQL
 	/**
 	 * [GetCSV description]
 	 * @param [string] $file_target [file targer created]
-	 * @return string $file target loaded using js 
+	 * @return string $file target loaded using js
 	 */
 	public function GetCSV($headers = array(), $file_target)
 	{
 		  // On cherche des infos sur le fichier à ouvrir
 		$donnees = $this->RecordsSimplArray($resultType = MYSQL_ASSOC);
 		$file_target = MPATH_TEMP.$file_target;
-		
 
-  // Si le fichier est inexistant ou vide, on va le créer et y ajouter les 
+
+  // Si le fichier est inexistant ou vide, on va le créer et y ajouter les
   // libellés de colonne.
 		if(!file_exists($file_target) ) {
 
     // On ouvre le fichier en écriture seule et on le vide de son contenu
 			$fp = @fopen($file_target, 'w');
-			if($fp === false) 
+			if($fp === false)
 				throw new Exception("Le fichier ${$file_target} n'a pas pu être créé.");
 
     // Les entêtes sont les clés du tableau associatif
-			
+
 
 			$entetes = $headers; //array_keys($header);
 
@@ -752,12 +752,12 @@ class MySQL
 
   // Écriture des données
 		foreach ($donnees as $donnee) {
-			
+
 			fputcsv($fp, $donnee, ';');
 		}
 
 		fclose($fp);
-		
+
 		return $file_target;
 	}
 
@@ -854,7 +854,7 @@ class MySQL
 			$html .= $style;
 			$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px;\">\n";
 
-			$html .= "\t<tr style=\"background-color: #004073; color: #fff; font-weight: bold;  padding:15px; \">\n";
+			$html .= "\t<tr style=\"background-color: #495375; color: #fff; font-weight: bold;  padding:15px; \">\n";
 
 			foreach ($headers as $key => $value) {
 
@@ -868,16 +868,16 @@ class MySQL
 					$width = 'style="width:'.$width.'%;"' ;
 					switch ($align) {
 					    case 'C':
-					        $align = 'class="center"' ;						
+					        $align = 'class="center"' ;
 						    break;
 					    case 'R':
-					        $align = 'class="alignRight"' ;						
+					        $align = 'class="alignRight"' ;
 						    break;
 					    default:
 						    $align = 'class=""' ;
 						    break;
 				    }
-					
+
 				}
 
 
@@ -897,11 +897,11 @@ class MySQL
 			$styl_array = array_values($style);
 
 					//print_r($data);
-            
+
 
 			if(count($keys_data) != count($styl_array)){
                 $this->SetError('Error Combine Array Header => Body');
-                $this->Kill($this->Error());                
+                $this->Kill($this->Error());
 			}
             $array_styl_last = array_combine($keys_data, $styl_array);
 			foreach ($data as $key => $value) {
@@ -913,10 +913,10 @@ class MySQL
 					$width = 'style="width:'.$width.'%;"' ;
 					switch ($align) {
 					    case 'C':
-					        $align_f = 'class="center"' ;						
+					        $align_f = 'class="center"' ;
 						    break;
 					    case 'R':
-					        $align_f = 'class="alignRight"' ;						
+					        $align_f = 'class="alignRight"' ;
 						    break;
 					    default:
 						    $align_f = 'class=""' ;
@@ -941,7 +941,7 @@ class MySQL
 	 * @return string HTML containing a table with all records listed
 	 */
 	public function GetMTable_pdf($headers) {
-		
+
 		if ($this->last_result) {
 			if ($this->RowCount() > 0) {
 				$html = "";
@@ -964,8 +964,8 @@ class MySQL
                 //$html .= $this->make_table_head($headers, $styleData);
 				$i = 0;
 				while ($member = mysql_fetch_object($this->last_result))
-				{					
-					$html .= "\t<tr nobr=\"true\" class=\"row".($i++ & 1)."\">\n";	
+				{
+					$html .= "\t<tr nobr=\"true\" class=\"row".($i++ & 1)."\">\n";
 					$html .= $this->make_table_body($member, $headers);
 					$html .= "\t</tr>\n";
 
@@ -984,14 +984,14 @@ class MySQL
 	}
 
     /**
-     * [Generate_reference  Get max or missing rank] 
+     * [Generate_reference  Get max or missing rank]
      * table must have culomn named reference else return false
      * @param [type] $table [table of element ]
      * @param [type] $abr   [abreviation]
      * @param [type] $year   [Add Year to referrence default false]
      * @return [string or false] [<description>]
      */
-    public function Generate_reference($table, $abr, $year = true) 
+    public function Generate_reference($table, $abr, $year = true)
     {
         //SET Ranking value
     	$this->QuerySingleValue0('SET @i = 1 ;');
@@ -999,16 +999,16 @@ class MySQL
 
         if(!$year){
         	$sql_req = "SELECT MAX(IF(@i = id, @i := id + 1, @i)) AS next_ref FROM
-                    (SELECT  ( SUBSTRING_INDEX(a.reference, '-', - 1) * 1 ) AS id 
+                    (SELECT  ( SUBSTRING_INDEX(a.reference, '-', - 1) * 1 ) AS id
                     FROM  $table a ORDER BY reference LIMIT 0,99999999999) AS refs;";
         }
     	$max_id = $this->QuerySingleValue0($sql_req);
     	$max_id = $max_id == 0 ? 1 : $max_id;
         //$lent
     	if($max_id != '0')
-    	{  
-            
-            
+    	{
+
+
     		$lettre_ste = Msetting::get_set('abr_ste');
     		$lettre_ste = $lettre_ste == null ? null : $lettre_ste.'_';
         	$num_padded = sprintf("%04d", $max_id); //Format Number to 4 char with 0
@@ -1020,7 +1020,7 @@ class MySQL
         }else{
         	return false;
         }
-        
+
         return $reference;
     }
 
@@ -1035,9 +1035,9 @@ class MySQL
 	 * @return string HTML containing a table with all records listed
 	 */
 		public function GetMTable($headers = null, $add_set = null) {
-			
+
 			$tb = 'class="table table-striped table-bordered"';
-			
+
 			$array_width = array();
 			$array_align = array();
 			$array_crypt = array();
@@ -1055,7 +1055,7 @@ class MySQL
 					array_push($array_crypt, $crypt);
 				}
 			}
-			
+
 			//$array_header = array_combine($array_titl, $array_width);
 
 			if ($this->last_result) {
@@ -1073,8 +1073,8 @@ class MySQL
 							$html .= "\t<tr>\n";
 							if($headers != null){
 								foreach ($array_titl as $key => $titls) {
-									
-									
+
+
 									$width = $array_width[$key];
 									$align = $array_align[$key];
 
@@ -1106,8 +1106,8 @@ class MySQL
 						$array_last_align = array_combine($keys_member, $array_align);
 						$array_last_crypt = array_combine($keys_member, $array_crypt);
 
-						
-                        
+
+
 
 						foreach ($member as $key => $value) {
 
@@ -1304,7 +1304,7 @@ class MySQL
 	 * @return integer Returns last insert ID on success or FALSE on failure
 	 */
 	public function InsertRow($tableName, $valuesArray) {
-		
+
 
 		$this->ResetError();
 		if (! $this->IsConnected()) {
@@ -1312,14 +1312,14 @@ class MySQL
 			return false;
 		} else {
 
-			
+
 
 			// Execute the query
 			$sql = self::BuildSQLInsert($tableName, $valuesArray);
 			if (! $this->Query($sql)) {
 				return false;
 			} else {
-				
+
 				return $this->GetLastInsertID();
 			}
 		}
@@ -1525,7 +1525,7 @@ class MySQL
 		}
 	}
 
-	
+
 
 	/**
 	 * Executes the given SQL query and returns only one (the first) row
@@ -1586,7 +1586,7 @@ class MySQL
 		if ($this->RowCount() > 0 && $this->GetColumnCount() > 0) {
 			$row = $this->RowArray(0, MYSQL_NUM);
 			$returned = $row[0] == NULL? "0" : $row[0];
-			
+
 			return $returned;
 
 		} else {
@@ -1697,7 +1697,7 @@ class MySQL
 			} else {
 				//while($member = mysql_fetch_object($this->last_result)){
 				while ($member = mysql_fetch_array($this->last_result, $resultType)){
-					
+
 					if(!array_key_exists('val', $member) OR !array_key_exists('txt', $member)){
 						$this->SetError("Query must have val - txt key only", -1);
 						return array();
@@ -1937,7 +1937,7 @@ class MySQL
 		$return_value = true;
 		if (! $charset) $charset = $this->db_charset;
 		$this->ResetError();
-		
+
 		if (! (mysql_select_db($database))) {
 			$this->SetError();
 			$return_value = false;
@@ -2099,7 +2099,7 @@ class MySQL
 				}else{
 					$return_value = 0;
 				}
-				
+
 			} else {
 				if (get_magic_quotes_gpc()) {
 					$value = stripslashes($value);
@@ -2322,14 +2322,14 @@ class MySQL
 			if (!$this->Query($sql)) {
 				return false;
 			} else {
-				
+
 
 				return true;
 			}
 		}
 	}
 	/**
-	 * After Update used for save any update for any column 
+	 * After Update used for save any update for any column
 	 * used only on called after UpdateRows
 	 * @param  [string] $table   [Table updated]
 	 * @param  [int] $id      [Id of row updated]
@@ -2359,8 +2359,8 @@ class MySQL
 				}
 			}
 		}
-		
-        //Exploit returned Array	
+
+        //Exploit returned Array
 		foreach ($aReturn as $key_g => $values) {
 			foreach ($values as $key => $value) {
 				$arr_insert[$key] = $value;
@@ -2392,8 +2392,8 @@ class MySQL
 			$this->SetError("No connection");
 			return false;
 		} else {
-			
-			$sql = "UPDATE $tableName 
+
+			$sql = "UPDATE $tableName
 			set $Column = ".$this->SQLValue($values)
 			." where id = ".$this->SQLValue($whereV) ;
 			// Execute the UPDATE
@@ -2409,10 +2409,10 @@ class MySQL
 	{
 		print $this->db_dbname;
 
-		
+
 	}
 
-	
+
 }
 
 

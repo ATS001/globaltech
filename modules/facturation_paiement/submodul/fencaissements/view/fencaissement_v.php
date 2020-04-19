@@ -75,7 +75,7 @@ $array_column = array(
 //Creat new instance
 $html_data_table = new Mdatatable();
 $html_data_table->columns_html = $array_column;
-$html_data_table->title_module = "fencaissement";
+$html_data_table->title_module = "Encaissements";
 $html_data_table->task = 'fencaissement';
 $html_data_table->btn_add_check=TRUE;
 

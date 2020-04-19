@@ -116,19 +116,19 @@ class MYPDF extends TCPDF {
           	$this->Image($image_file, 22, 6, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
 
       }else{
-          // Logo 2
-      		$image_file = MPATH_IMG.MCfg::get('logo2');
-      		$this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
-      		$this->Image($image_file, 22, 6, 34, 18, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
-      }
+        // Logo 2
+        $image_file = MPATH_IMG.MCfg::get('logo2');
+        $this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
+        $this->Image($image_file, 13, 13, 50, 20, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
+       }
 
 		//Get info ste from DB
 		$ste_c = new MSte_info();
 
-        if($this->info_proforma['date_proforma'] < '16-04-2020'){
-		$ste = $ste_c->get_ste_info_report_head(1,$this->info_proforma['date_proforma']);
+        if((date('Y-m-d', strtotime($this->info_proforma['date_proforma']))) < (date('Y-m-d', strtotime('16-04-2020')))){
+		$ste = $ste_c->get_ste_info_report_head(1,$this->info_proforma['date_proforma'],'Proforma');
 	    }else{
-		$ste = $ste_c->get_ste_info_report_head(2,$this->info_proforma['date_proforma']);
+		$ste = $ste_c->get_ste_info_report_head(2,$this->info_proforma['date_proforma'],'Proforma');
 	    }
 
 		$this->writeHTMLCell(0, 0, '', 30, $ste , '', 0, 0, true, 'L', true);
@@ -138,18 +138,18 @@ class MYPDF extends TCPDF {
 		//Ste
 
 		// Title
-		$titre_doc = '<h1 style="letter-spacing: 2px;color;#004073;font-size: 14pt;">PROFORMA</h1>';
+		$titre_doc = '<h1 style="letter-spacing: 2px;color;#495375;font-size: 14pt;">PROFORMA</h1>';
 		$this->writeHTMLCell(0, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true);
 		$this->SetTextColor(0, 0, 0);
 		$this->SetFont('kameron', '', 9);
 		$detail_proforma = '<table cellspacing="3" cellpadding="2" border="0">
 		<tr>
-		<td style="width:45%; color:#004073"><strong>Réf proforma</strong></td>
+		<td style="width:45%; color:#A1A0A0"><strong>Réf proforma</strong></td>
 		<td style="width:5%;">:</td>
 		<td style="width:50%; background-color: #eeecec;">'.$this->info_proforma['reference'].'</td>
 		</tr>
 		<tr>
-		<td style="width:45%; color:#004073"><strong>Date</strong></td>
+		<td style="width:45%; color:#A1A0A0"><strong>Date</strong></td>
 		<td style="width:5%;">:</td>
 		<td style="width:50%; background-color: #eeecec; ">'.$this->info_proforma['date_proforma'].'</td>
 		</tr>
@@ -174,7 +174,7 @@ class MYPDF extends TCPDF {
 	    $pays = $this->info_proforma['pays'] != null ? $this->info_proforma['pays'] : null;
 		$detail_client = '<table cellspacing="3" cellpadding="2" border="0">
 		<tbody>
-		<tr style="background-color:#004073; font-size:14; font-weight:bold; color:#fff;">
+		<tr style="background-color:#495375; font-size:14; font-weight:bold; color:#fff;">
 		<td colspan="3"><strong>Informations du client</strong></td>
 		</tr>
 		<tr>
@@ -245,10 +245,10 @@ class MYPDF extends TCPDF {
 		//}
         $this->SetY(-30);
 
-        if($this->info_proforma['date_proforma'] < '16-04-2020'){
-		$ste = $ste_c->get_ste_info_report_footer(1, $this->info_proforma['id_banque'],$this->info_proforma['date_proforma']);
+        if((date('Y-m-d', strtotime($this->info_proforma['date_proforma']))) < (date('Y-m-d', strtotime('16-04-2020')))){
+		$ste = $ste_c->get_ste_info_report_footer(1, $this->info_proforma['id_banque'],$this->info_proforma['date_proforma'],'Proforma');
 		}else{
-		$ste = $ste_c->get_ste_info_report_footer(2, $this->info_proforma['id_banque'],$this->info_proforma['date_proforma']);
+		$ste = $ste_c->get_ste_info_report_footer(2, $this->info_proforma['id_banque'],$this->info_proforma['date_proforma'],'Proforma');
 		}
 
 		$this->writeHTMLCell(0, 0, '', '', $ste , '', 0, 0, true, 'C', true);

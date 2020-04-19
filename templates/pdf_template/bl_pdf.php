@@ -60,26 +60,39 @@ class MYPDF extends TCPDF {
 	public function Header() {
 		//writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
 		
-		// Logo
-		$image_file = MPATH_IMG.MCfg::get('logo');
-		$this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
-		$this->Image($image_file, 22, 6, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
-		
+		 if (date('Y-m-d', strtotime($this->info_bl['date_bl'])) < date('Y-m-d', strtotime('2020-04-16'))) {
+      // Logo 1
+      $image_file = MPATH_IMG.MCfg::get('logo');
+      $this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
+        $this->Image($image_file, 22, 6, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
+
+  }else{
+      // Logo 2
+      $image_file = MPATH_IMG.MCfg::get('logo2');
+      $this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
+      $this->Image($image_file, 13, 13, 50, 20, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
+  }
+  
 		//Get info ste from DB
 		$ste_c = new MSte_info();
-        
-		$ste = $ste_c->get_ste_info_report_head(1);
+
+        if((date('Y-m-d', strtotime($this->info_bl['date_bl']))) < (date('Y-m-d', strtotime('16-04-2020')))){
+		$ste = $ste_c->get_ste_info_report_head(1,$this->info_bl['date_bl'],'BL');
+	    }else{
+		$ste = $ste_c->get_ste_info_report_head(2,$this->info_bl['date_bl'],'BL');
+		}
+
 		$this->writeHTMLCell(0, 0, '', 30, $ste , '', 0, 0, true, 'L', true);
 		$this->SetTextColor(0, 50, 127);
 		// Set font
-		$this->SetFont('helvetica', 'B', 22);
+		$this->SetFont('kameron', 'B', 22);
 		//Ste
 		
 		// Title
 		$titre_doc = '<h1 style="letter-spacing: 2px;color;#495375;font-size: 20pt;">Bon de Livraison</h1>';
 		$this->writeHTMLCell(0, 0, 128, 10, $titre_doc , 'B', 0, 0, true, 'R', true);
 		$this->SetTextColor(0, 0, 0);
-		$this->SetFont('helvetica', '', 9);
+		$this->SetFont('kameron', '', 9);
 		$detail_bl = '<table cellspacing="3" cellpadding="2" border="0">
 		<tr>
 		<td style="width:35%; color:#A1A0A0;"><strong>Réf BL</strong></td>
@@ -98,8 +111,8 @@ class MYPDF extends TCPDF {
 	    if($this->info_bl['nif'] != null)
 	    {
 	    	$nif = '<tr>
-		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">NIF</td>
-		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
+		<td align="right" style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">NIF</td>
+		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$this->info_bl['nif'].'</td>
 		</tr>';
 	    }
@@ -116,20 +129,20 @@ class MYPDF extends TCPDF {
 		<td colspan="3"><strong>Informations client</strong></td>
 		</tr>
 		<tr>
-		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Réf Client</td>
-		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
+		<td align="right" style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Réf Client</td>
+		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;"><strong>'.$ref_client.'</strong></td>
 		</tr>
 		<tr>
-		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Dénomination</td>
-		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
+		<td align="right" style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Dénomination</td>
+		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;"><strong>'.$this->info_bl['denomination'].'</strong></td>
 		</tr>';
 
 		if($adresse.$bp.$ville.$pays != null){
 			$detail_client .= '<tr>
-	    <td align="right" style="width: 30%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Adresse</td>
-		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
+	    <td align="right" style="width: 30%;color: #E99222;font-weight: bold;font-size: 9pt;">Adresse</td>
+		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$adresse.' '.$bp.' '.$ville.' '.$pays.'</td>
 		</tr>';
 
@@ -139,8 +152,8 @@ class MYPDF extends TCPDF {
 		
 		if($tel != null && $email != null){
 			$detail_client .= '<tr>
-		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Contact</td>
-		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
+		<td align="right" style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Contact</td>
+		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$tel.' '.$email.'</td>
 		</tr>
 		';
@@ -192,12 +205,18 @@ class MYPDF extends TCPDF {
 		//}
 		$ste_c = new MSte_info();
         $this->SetY(-30);
-		$ste = $ste_c->get_ste_info_report_footer(1,$this->info_bl['banque']);
+
+	    if((date('Y-m-d', strtotime($this->info_bl['date_bl']))) < (date('Y-m-d', strtotime('16-04-2020')))){
+		$ste = $ste_c->get_ste_info_report_footer(1,$this->info_bl['banque'],$this->info_bl['date_bl'],'BL');
+	    }else{
+	    $ste = $ste_c->get_ste_info_report_footer(2,$this->info_bl['banque'],$this->info_bl['date_bl'],'BL');	
+	    }
+
 		$this->writeHTMLCell(0, 0, '', '', $ste , '', 0, 0, true, 'C', true);
 		// Position at 15 mm from bottom
 		$this->SetY(-15);
 		// Set font
-		$this->SetFont('helvetica', 'I', 8);
+		$this->SetFont('kameron', 'I', 8);
 		// Page number
 		$this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
 	}
@@ -263,9 +282,9 @@ $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 // Set font
 // dejavusans is a UTF-8 Unicode font, if you only need to
 // print standard ASCII chars, you can use core fonts like
-// helvetica or times to reduce file size.
+// kameron or times to reduce file size.
 // set font
-$pdf->SetFont('helvetica', '', 9);
+$pdf->SetFont('kameron', '', 9, '', false);
 
 // Add a page
 // This method has several options, check the source code documentation for more information.
