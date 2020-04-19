@@ -177,22 +177,22 @@ class MYPDF extends TCPDF {
         $per = NULL;
         if ($this->info_facture['periode'] != NULL) {
             $per = ' <tr>
-        <td style="width:25%; color:#A1A0A0;"><strong>Période facturée
+        <td style="width:31%; color:#A1A0A0;"><strong>Période facturée
                 </strong></td>
         <td style="width:5%;">:</td>
-        <td style="width:75%; background-color: #eeecec; ">' . $this->info_facture['periode'] . '</td>
+        <td style="width:68%; background-color: #eeecec; ">' . $this->info_facture['periode'] . '</td>
         </tr>';
         }
 		$detail_facture = '<table cellspacing="3" cellpadding="2" border="0">
 		<tr>
-		<td style="width:25%; color:#A1A0A0;"><strong>Réf Facture</strong></td>
+		<td style="width:31%; color:#A1A0A0;"><strong>Réf Facture</strong></td>
 		<td style="width:5%;">:</td>
-		<td style="width:75%; background-color: #eeecec;">'.$this->info_facture['reference'].'</td>
+		<td style="width:68%; background-color: #eeecec;">'.$this->info_facture['reference'].'</td>
 		</tr> 
 		<tr>
-		<td style="width:25%; color:#A1A0A0;"><strong>Date</strong></td>
+		<td style="width:31%; color:#A1A0A0;"><strong>Date</strong></td>
 		<td style="width:5%;">:</td>
-		<td style="width:75%; background-color: #eeecec; ">'.$this->info_facture['date_facture'].'</td>
+		<td style="width:68%; background-color: #eeecec; ">'.$this->info_facture['date_facture'].'</td>
 		</tr>'. $per . '</table>';
         
 
@@ -222,19 +222,19 @@ class MYPDF extends TCPDF {
 		<td colspan="3"><strong>Informations du client</strong></td>
 		</tr>
 		<tr>
-		<td align="right" style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Réf Client</td>
+		<td style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Réf Client</td>
 		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;"><strong>'.$ref_client.'</strong></td>
 		</tr>
 		<tr>
-		<td align="right" style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Dénomination</td>
+		<td style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Dénomination</td>
 		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;"><strong>'.$this->info_devis['denomination'].'</strong></td>
 		</tr>';
 
 		if($adresse.$bp.$ville.$pays != null){
 			$detail_client .= '<tr>
-	    <td align="right" style="width: 30%;color: #E99222;font-weight: bold;font-size: 9pt;">Adresse</td>
+	    <td style="width: 30%;color: #E99222;font-weight: bold;font-size: 9pt;">Adresse</td>
 		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$adresse.' '.$bp.' '.$ville.' '.$pays.'</td>
 		</tr>';
@@ -248,7 +248,7 @@ class MYPDF extends TCPDF {
 
 		if($tel != null && $email != null){
 			$detail_client .= '<tr>
-		<td align="right" style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Contact</td>
+		<td style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Contact</td>
 		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$tel.' '.$email.'</td>
 		</tr>
