@@ -170,8 +170,8 @@ class MYPDF extends TCPDF {
 
 		// Title
         $titre_doc = '<h1 style="letter-spacing: 2px;color;#495375;font-size: 20pt;">FACTURE</h1>';
-		$this->writeHTMLCell(0, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true, 2);
-		$this->writeHTMLCell(0, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true);
+		$this->writeHTMLCell(58, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true, 2);
+		$this->writeHTMLCell(58, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true);
 		$this->SetTextColor(0, 0, 0);
 		$this->SetFont('kameron', '', 9);
         $per = NULL;
