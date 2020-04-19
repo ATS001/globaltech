@@ -65,6 +65,7 @@ $html_data_table = new Mdatatable();
 $html_data_table->columns_html = $array_column;
 $html_data_table->title_module = "bl";
 $html_data_table->task = 'bl';
+$html_data_table->btn_add_check=TRUE;
 
 $html_data_table->btn_return = array('task' =>'tdb');
 $html_data_table->use_filter = true;

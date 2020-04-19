@@ -19,6 +19,7 @@ $facture->id_facture = Mreq::tp('id');
 
 if(!MInit::crypt_tp('id', null, 'D') or !$facture->get_facture())
 {  
+
    // returne message error red to facture 
    exit('0#<br>Les informations pour cette template sont erronées, contactez l\'administrateur');
 }
@@ -136,6 +137,7 @@ class MYPDF extends TCPDF {
 	public function Header() {
 		//writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
 		
+
 		// Logo
 		if (date('Y-m-d', strtotime($this->info_facture['date_facture'])) < date('Y-m-d', strtotime('2020-04-16'))) {
 		// Logo 1
@@ -144,63 +146,66 @@ class MYPDF extends TCPDF {
     	$this->Image($image_file, 22, 6, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
 
 		}else{
-    	// Logo 2
-		$image_file = MPATH_IMG.MCfg::get('logo2');
-		$this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
-		$this->Image($image_file, 22, 6, 34, 18, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
+      // Logo 2
+      $image_file = MPATH_IMG.MCfg::get('logo2');
+      $this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
+      $this->Image($image_file, 13, 13, 50, 20, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
 		}
 		
+
 		//Get info ste from DB
 		$ste_c = new MSte_info();
 
-        if($this->info_facture['date_facture'] < '16-04-2020'){
-		$ste = $ste_c->get_ste_info_report_head(1,$this->info_facture['date_facture'],$this->info_facture['date_facture']);
+        if((date('Y-m-d', strtotime($this->info_facture['date_facture']))) < (date('Y-m-d', strtotime('16-04-2020')))){
+		$ste = $ste_c->get_ste_info_report_head(1,$this->info_facture['date_facture'],'Facture');
 	    }else{
-		$ste = $ste_c->get_ste_info_report_head(2,$this->info_facture['date_facture'],$this->info_facture['date_facture']);
+		$ste = $ste_c->get_ste_info_report_head(2,$this->info_facture['date_facture'],'Facture');
 		}
 		$this->writeHTMLCell(0, 0, '', 30, $ste , '', 0, 0, true, 'L', true);
 		$this->SetTextColor(0, 50, 127);
 		// Set font
-		$this->SetFont('helvetica', 'B', 22);
+		$this->SetFont('kameron', 'B', 22);
 		//Ste
 		
+
 		// Title
-        $titre_doc = '<h1 style="letter-spacing: 2px;color;#004073;font-size: 20pt;">FACTURE</h1>';
+        $titre_doc = '<h1 style="letter-spacing: 2px;color;#495375;font-size: 20pt;">FACTURE</h1>';
 		$this->writeHTMLCell(0, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true, 2);
 		$this->writeHTMLCell(0, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true);
 		$this->SetTextColor(0, 0, 0);
-		$this->SetFont('helvetica', '', 9);
+		$this->SetFont('kameron', '', 9);
         $per = NULL;
         if ($this->info_facture['periode'] != NULL) {
             $per = ' <tr>
-        <td style="width:25%; color:#004073;"><strong>Période facturée
+        <td style="width:31%; color:#A1A0A0;"><strong>Période facturée
                 </strong></td>
         <td style="width:5%;">:</td>
-        <td style="width:75%; background-color: #eeecec; ">' . $this->info_facture['periode'] . '</td>
+        <td style="width:68%; background-color: #eeecec; ">' . $this->info_facture['periode'] . '</td>
         </tr>';
         }
 		$detail_facture = '<table cellspacing="3" cellpadding="2" border="0">
 		<tr>
-		<td style="width:25%; color:#004073;"><strong>Réf Facture</strong></td>
+		<td style="width:31%; color:#A1A0A0;"><strong>Réf Facture</strong></td>
 		<td style="width:5%;">:</td>
-		<td style="width:75%; background-color: #eeecec;">'.$this->info_facture['reference'].'</td>
+		<td style="width:68%; background-color: #eeecec;">'.$this->info_facture['reference'].'</td>
 		</tr> 
 		<tr>
-		<td style="width:25%; color:#004073;"><strong>Date</strong></td>
+		<td style="width:31%; color:#A1A0A0;"><strong>Date</strong></td>
 		<td style="width:5%;">:</td>
-		<td style="width:75%; background-color: #eeecec; ">'.$this->info_facture['date_facture'].'</td>
+		<td style="width:68%; background-color: #eeecec; ">'.$this->info_facture['date_facture'].'</td>
 		</tr>'. $per . '</table>';
         
+
 		'</table>';
 
-		$this->writeHTMLCell(0, 0, 105, 23, $detail_facture, '', 0, 0, true, 'L', true);
+		$this->writeHTMLCell(0, 0, 99, 23, $detail_facture, '', 0, 0, true, 'L', true);
 	    //Info Client
 	    $nif = null;
 	    if($this->info_devis['nif'] != null)
 	    {
 	    	$nif = '<tr>
-		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">NIF</td>
-		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
+		<td align="right" style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">NIF</td>
+		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$this->info_devis['nif'].'</td>
 		</tr>';
 	    }
@@ -213,24 +218,24 @@ class MYPDF extends TCPDF {
 	    $pays = $this->info_devis['pays'] != null ? $this->info_devis['pays'] : null;
 		$detail_client = '<table cellspacing="3" cellpadding="2" border="0">
 		<tbody>
-		<tr style="background-color:#004073; font-size:11; font-weight:bold; color:#fff;">
+		<tr style="background-color:#495375; font-size:11; font-weight:bold; color:#fff;">
 		<td colspan="3"><strong>Informations du client</strong></td>
 		</tr>
 		<tr>
-		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Réf Client</td>
-		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
+		<td style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Réf Client</td>
+		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;"><strong>'.$ref_client.'</strong></td>
 		</tr>
 		<tr>
-		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Dénomination</td>
-		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
+		<td style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Dénomination</td>
+		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;"><strong>'.$this->info_devis['denomination'].'</strong></td>
 		</tr>';
 
 		if($adresse.$bp.$ville.$pays != null){
 			$detail_client .= '<tr>
-	    <td align="right" style="width: 30%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Adresse</td>
-		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
+	    <td style="width: 30%;color: #E99222;font-weight: bold;font-size: 9pt;">Adresse</td>
+		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$adresse.' '.$bp.' '.$ville.' '.$pays.'</td>
 		</tr>';
 
@@ -238,10 +243,13 @@ class MYPDF extends TCPDF {
 			
 		
 		
+
+
+
 		if($tel != null && $email != null){
 			$detail_client .= '<tr>
-		<td align="right" style="width: 30%; color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">Contact</td>
-		<td style="width: 5%; color: #E99222;font-family: sans-serif;font-weight: bold;">:</td>
+		<td style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Contact</td>
+		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$tel.' '.$email.'</td>
 		</tr>
 		';
@@ -254,14 +262,14 @@ class MYPDF extends TCPDF {
 		$this->writeHTMLCell(100, 0, 99, null, $detail_client, 0, 0, 0, true, 'L', true);
 		if($this->info_facture['projet'] != null){
 
-			$projet = '<span style="width: 65%;font-family: sans-serif;ont-weight: bold;font-size: 10pt;"><strong>'.$this->info_facture['projet'].'</strong></span>';
+			$projet = '<span style="width: 65%;ont-weight: bold;font-size: 10pt;"><strong>'.$this->info_facture['projet'].'</strong></span>';
 
 
 		    $height = $this->getLastH();
 		    $this->SetTopMargin($height + $this->GetY() + 5);
 		    //writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
 		    $this->setCellPadding(1);
-		    $this->writeHTMLCell(183, '', 15.6, '', $projet, 1, 0, 0, true, 'L', true);
+		    $this->writeHTMLCell(182.6, '', 15.5, '', $projet, 1, 0, 0, true, 'L', true);
 		}
 		//$this->Ln();
 		//Comment fati 04/03 pour probleme tableau complement
@@ -278,6 +286,7 @@ class MYPDF extends TCPDF {
 
 		}
 		
+
 	}
 
 	// Page footer
@@ -300,16 +309,16 @@ class MYPDF extends TCPDF {
 		//}
 		$ste_c = new MSte_info();
         $this->SetY(-30);
-        if($this->info_facture['date_facture'] < '16-04-2020'){
-		$ste = $ste_c->get_ste_info_report_footer(1,$this->info_facture['id_banque'],$this->info_facture['date_facture']);
+        if((date('Y-m-d', strtotime($this->info_facture['date_facture']))) < (date('Y-m-d', strtotime('16-04-2020')))){
+		$ste = $ste_c->get_ste_info_report_footer(1,$this->info_facture['id_banque'],$this->info_facture['date_facture'],'Facture');
 	    }else{
-	    $ste = $ste_c->get_ste_info_report_footer(2,$this->info_facture['id_banque'],$this->info_facture['date_facture']);	
+	    $ste = $ste_c->get_ste_info_report_footer(2,$this->info_facture['id_banque'],$this->info_facture['date_facture'],'Facture');	
 	    }
 		$this->writeHTMLCell(0, 0, '', '', $ste , '', 0, 0, true, 'C', true);
 		// Position at 15 mm from bottom
 		$this->SetY(-15);
 		// Set font
-		$this->SetFont('helvetica', 'I', 8);
+		$this->SetFont('kameron', 'I', 8);
 		// Page number
 		$this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
 	}
@@ -324,11 +333,13 @@ class MYPDF extends TCPDF {
          $this->AddPage();
          $this->writeHTML($html, $ln, $fill, $reseth, $cell, $align);           
     } else {            
+
          $this->commitTransaction();            
     }
     }
 
 	
+
 }
 
 
@@ -382,7 +393,7 @@ $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 // print standard ASCII chars, you can use core fonts like
 // helvetica or times to reduce file size.
 // set font
-$pdf->SetFont('helvetica', '', 9);
+$pdf->SetFont('kameron', '', 9);
 
 // Add a page
 // This method has several options, check the source code documentation for more information.
@@ -401,33 +412,37 @@ $obj = new nuts($pdf->info_facture['total_ttc'], $pdf->info_facture['devise']);/
 $ttc_lettre = $obj->convert("fr-FR");
 $total_no_remise = $pdf->info_facture['total_sans_remise'];
 $block_tt_no_remise = '<tr>
-                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Total</strong></td>
-                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
+                    <td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;"><strong>Total</strong></td>
+                    <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$total_no_remise .'  '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>';
 $block_remise = '<tr>
-                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Remise '.$pdf->info_facture['valeur_remise'].' %</strong></td>
-                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
+                    <td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;"><strong>Remise '.$pdf->info_facture['valeur_remise'].' %</strong></td>
+                    <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_remise'].'  '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>';
 $block_ttc = '<tr>
-                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>TVA 18%</strong></td>
-                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
+                    <td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;"><strong>TVA 18%</strong></td>
+                    <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_tva'].'  '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>
                 <tr>
-                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>Total TTC</strong></td>
-                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
+                    <td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;"><strong>Total TTC</strong></td>
+                    <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_ttc'].' '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>';                
+
 $block_remise = $pdf->info_facture['valeur_remise'] == 0 ? null : $block_remise; 
 $block_tt_no_remise = $pdf->info_facture['valeur_remise'] == 0 ? null : $block_tt_no_remise;  
 $block_ttc    = $pdf->info_facture['total_tva'] == 0 ? null : $block_ttc;
 $titl_ht = $pdf->info_facture['total_tva'] == 0 ? 'Total à payer' : 'Total HT';
 
-//$signature = $pdf->info_proforma['comercial']; 
+if((date('Y-m-d', strtotime($pdf->info_facture['date_facture']))) < (date('Y-m-d', strtotime('16-04-2020')))){
+	$signature = 'La Direction';
+}else{
+	$signature = 'La Comptabilité'; 	
+}
 
-$signature = 'La Direction'; 
 $table_complement = null;
 if ($pdf->info_complement != null)
 {
@@ -456,6 +471,7 @@ p {
     <tr>
         <td width="50%" align="left">
             
+
         </td>
         <td width="50%">
            <table class="table" cellspacing="2" cellpadding="2"  style="width: 300px; border:1pt solid black;" >
@@ -463,8 +479,8 @@ p {
                 '.$block_tt_no_remise.'
                 '.$block_remise.'
                 <tr>
-                    <td style="width:35%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;"><strong>'.$titl_ht.'</strong></td>
-                    <td style="width:5%;color: #E99222;font-family: sans-serif;font-weight: bold;font-size: 9pt;">:</td>
+                    <td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;"><strong>'.$titl_ht.'</strong></td>
+                    <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_ht'].' '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>
 
@@ -474,7 +490,7 @@ p {
     </td>
 </tr>
 <tr>
-    <td colspan="2" style="color: #E99222;font-family: sans-serif;font-weight: bold;">
+    <td colspan="2" style="color: #E99222;font-weight: bold;">
         Arrêté la présente Facture à la somme de :
     </td>
 </tr>
@@ -484,7 +500,7 @@ p {
     </td>
 </tr>
 <tr>
-    <td colspan="2" style="color: #E99222;font-family: sans-serif;font-weight: bold;">       
+    <td colspan="2" style="color: #E99222;font-weight: bold;">       
         <strong>Conditions générales:</strong>        
     </td>
 </tr>
@@ -507,8 +523,9 @@ p {
 $f = new Mfacture();
 $f->id_facture = Mreq::tp('id');
 $f->get_facture();
+
 //var_dump($f->facture_info['etat']);
-if($f->facture_info['etat'] == 0){
+if($f->facture_info['etat'] == 0 or (date('Y-m-d', strtotime($f->facture_info['date_facture'])) >= (date('Y-m-d', strtotime('16-04-2020'))))){
 	//var_dump('ohhh 0');
 $block_sum .= '</table>';
 
@@ -557,4 +574,3 @@ $pdf->Output($file_export,'F');
 //============================================================+
 // END OF FILE
 //============================================================+
-
