@@ -340,7 +340,28 @@ $html = $pdf->Table_body;
 
 //$signature = $pdf->info_proforma['comercial'];
 
-$signature = 'La Direction';
+$signature = 'Autorisé par : ';
+
+$commercials_array = json_decode($pdf->info_proforma['id_commercial'], true);
+
+//var_dump($commercials_array);
+//var_dump(count($commercials_array));
+//var_dump(count($commercials_array) == 1);
+
+
+if(count($commercials_array) == 1){
+  $commercial = new Mcommerciale();
+  $commerciauxIds = str_replace('[', '',   $pdf->info_proforma['id_commercial']);
+  $commerciauxIds = str_replace(']', '', $commerciauxIds);
+  $commercial->id_commerciale = $commerciauxIds;
+  $commercial->get_commerciale();
+  $creusr = $commercial->commerciale_info['prenom']. " ". $commercial->commerciale_info['nom'];
+
+}else{
+$creusr = 'Le Service Commercial';
+}
+
+
 $block_sum = '<div></div>
 <table style="width: 685px;" cellpadding="2">
 
@@ -358,11 +379,20 @@ $block_sum = '<div></div>
      Merci de nous avoir consulté.
  </td>
 </tr>
+<tr><td><br><br><br></td></tr>
+<tr align="center">
+<td style="font: underline; width: 200px;" > </td>
+<td style="font: underline; width: 200px;" > </td>
+    <td style="font: underline;">
+                <strong>'.$signature.'</strong>
+    </td>
+</tr>
+<tr align="center">
+<td style="font: underline; width: 200px;" > </td>
+<td style="font: underline; width: 200px;"> </td>
+    <td style="font: underline;">
 
-<tr>
-    <td colspan="2" align="right" style="font: underline; width: 550px; padding-right: 200px;">
-        <br><br><br><br><br>
-        <strong>'.$signature.'</strong>
+        <strong>'.$creusr.'</strong>
     </td>
 </tr>';
 
@@ -371,7 +401,11 @@ $p = new Mproforma();
 $p->id_proforma = Mreq::tp('id');
 $p->get_proforma();
 
-if($p->proforma_info['etat'] == 0){
+//var_dump($p->proforma_info['etat'] == 0);
+//var_dump(date('Y-m-d', strtotime($p->proforma_info['date_proforma'])));
+//var_dump(date('Y-m-d', strtotime('16-04-2020')));
+
+if($p->proforma_info['etat'] == 0 OR (date('Y-m-d', strtotime($p->proforma_info['date_proforma'])) >= (date('Y-m-d', strtotime('2020-04-16'))))){
 	//var_dump('ohhh 0');
 $block_sum .= '</table>';
 

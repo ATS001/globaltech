@@ -50,7 +50,8 @@ $tableau_body = $db->GetMTable_pdf($headers);
  $user = new Musers();
  $user->id_user = $devis_info['creusr'];
  $user->get_user();
- $signature_foto = Minit::get_file_archive($user->user_info['signature']);
+ //$signature_foto = Minit::get_file_archive($user->user_info['signature']);
+ $signature_foto ='';
  //**************************************************
 
 
@@ -340,7 +341,25 @@ $titl_ht = $pdf->info_devis['totaltva'] == 0 ? 'Total à payer' : 'Total HT';
 
 //$signature = 'La Direction';
 $signature = 'Autorisé par : ';
-$creusr = $pdf->info_devis['cre_usr'];
+
+$commercials_array = json_decode($pdf->info_devis['id_commercial'], true);
+
+//var_dump($commercials_array);
+//var_dump(count($commercials_array));
+//var_dump(count($commercials_array) == 1);
+
+
+if(count($commercials_array) == 1){
+  $commercial = new Mcommerciale();
+  $commerciauxIds = str_replace('[', '',   $pdf->info_devis['id_commercial']);
+  $commerciauxIds = str_replace(']', '', $commerciauxIds);
+  $commercial->id_commerciale = $commerciauxIds;
+  $commercial->get_commerciale();
+  $creusr = $commercial->commerciale_info['prenom']. " ". $commercial->commerciale_info['nom'];
+
+}else{
+$creusr = 'Le Service Commercial';
+}
 
 $block_sum = '<div></div>
 <style>
