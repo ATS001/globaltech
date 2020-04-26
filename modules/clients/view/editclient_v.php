@@ -153,7 +153,7 @@ $form->input('Fax', 'fax', 'text', 6, $info_client->Shw('fax',1), $fax_array);
 $form->input('Boite Postale', 'bp', 'text', 6, $info_client->Shw('bp',1), '');
 
 // email
-$mail_array[]  = array('required', 'true', 'Insérer Email ' );
+//$mail_array[]  = array('required', 'true', 'Insérer Email ' );
 $mail_array[]  = array('email', 'true', 'Adresse Email non valide' );
 //$mail_array[]  = array('remote', 'email#clients#email', 'Ce contact existe déja');
 $form->input('Email ', 'email', 'text', 6, $info_client->Shw('email',1), $mail_array);
@@ -165,7 +165,7 @@ $form->step_end();
 $form->step_start(3, 'Complément Informations');
 
 //Banque
-$form->select_table('Banque', 'id_banque', 6, 'ste_info_banque', 'id', 'banque' , 'banque', $indx = '------' ,$selected=$info_client->Shw('id_banque',1),$multi=NULL, $where='etat=1', null);
+$form->select_table('Banque', 'id_banque', 6, 'ste_info_banque', 'id', 'banque' , 'banque', $indx = '------' ,$selected=$info_client->Shw('id_banque',1),$multi=NULL, $where='etat=1 and id_ste=2', null);
 
 // devise
 //$form->select_table('Devise', 'id_devise', 6, 'ref_devise', 'id', 'devise' , 'devise', $indx = '------' ,$selected=$info_client->Shw('id_devise',1),$multi=NULL, $where='etat=1', NULL);
