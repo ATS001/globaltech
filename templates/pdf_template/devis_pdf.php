@@ -50,7 +50,8 @@ $tableau_body = $db->GetMTable_pdf($headers);
  $user = new Musers();
  $user->id_user = $devis_info['creusr'];
  $user->get_user();
- $signature_foto = Minit::get_file_archive($user->user_info['signature']);
+ //$signature_foto = Minit::get_file_archive($user->user_info['signature']);
+ $signature_foto ='';
  //**************************************************
 
 
@@ -71,7 +72,7 @@ class MYPDF extends TCPDF {
       // Logo 1
       $image_file = MPATH_IMG.MCfg::get('logo');
       $this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
-        $this->Image($image_file, 22, 6, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
+        $this->Image($image_file, 14, 10, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
 
   }else{
       // Logo 2
@@ -340,7 +341,25 @@ $titl_ht = $pdf->info_devis['totaltva'] == 0 ? 'Total à payer' : 'Total HT';
 
 //$signature = 'La Direction';
 $signature = 'Autorisé par : ';
-$creusr = $pdf->info_devis['cre_usr'];
+
+$commercials_array = json_decode($pdf->info_devis['id_commercial'], true);
+
+//var_dump($commercials_array);
+//var_dump(count($commercials_array));
+//var_dump(count($commercials_array) == 1);
+
+
+if(count($commercials_array) == 1){
+  $commercial = new Mcommerciale();
+  $commerciauxIds = str_replace('[', '',   $pdf->info_devis['id_commercial']);
+  $commerciauxIds = str_replace(']', '', $commerciauxIds);
+  $commercial->id_commerciale = $commerciauxIds;
+  $commercial->get_commerciale();
+  $creusr = $commercial->commerciale_info['prenom']. " ". $commercial->commerciale_info['nom'];
+
+}else{
+$creusr = 'Le Service Commercial';
+}
 
 $block_sum = '<div></div>
 <style>
