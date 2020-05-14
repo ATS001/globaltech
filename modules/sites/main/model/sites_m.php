@@ -33,10 +33,10 @@ class Msites {
 
     public function get_sites() {
         global $db;
-       
+
         $table = $this->table;
 
-        $sql = "SELECT $table.* , clients.denomination as client FROM 
+        $sql = "SELECT $table.* , clients.denomination as client FROM
 		$table, clients WHERE $table.id_client=clients.id AND $table.id = " . $this->id_sites;
 
         if (!$db->Query($sql)) {
@@ -67,10 +67,10 @@ class Msites {
         //$this->check_exist($column, $value, $message, $edit = null);
         //$this->check_non_exist($table, $column, $value, $message)
         // If we have an error
-        
-        
-        
-        
+
+
+
+
         if ($this->error == true) {
             global $db;
             //Add all fields for the table
@@ -79,7 +79,7 @@ class Msites {
                 $this->log .= '</br>Problème Réference';
                 return false;
         }
-                        
+
             $values["type_site"] = MySQL::SQLValue($this->_data['type_site']);
             $values["reference"] = MySQL::SQLValue($reference);
             $values["id_client"] = MySQL::SQLValue($this->_data['id_client']);
@@ -93,12 +93,18 @@ class Msites {
             $values["satellite"] = MySQL::SQLValue($this->_data['satellite']);
             $values["lnb"] = MySQL::SQLValue($this->_data['lnb']);
             $values["buc"] = MySQL::SQLValue($this->_data['buc']);
+              $values["routeur"] = MySQL::SQLValue($this->_data['routeur']);
+                $values["radio"] = MySQL::SQLValue($this->_data['radio']);
+            $values["addr_mac_router"] = MySQL::SQLValue($this->_data['addr_mac_router']);
+            $values["addr_mac_radio"] = MySQL::SQLValue($this->_data['addr_mac_radio']);
+              $values["cable"] = MySQL::SQLValue($this->_data['cable']);
+                $values["site_name"] = MySQL::SQLValue($this->_data['site_name']);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
-            
+
             //var_dump( $values["date_mes"]);
             //var_dump(MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_mes']))));
-            
+
             if (!$result = $db->InsertRow($this->table, $values)) {
                 $this->log .= $db->Error();
                 $this->error = false;
@@ -153,6 +159,12 @@ class Msites {
             $values["satellite"] = MySQL::SQLValue($this->_data['satellite']);
             $values["lnb"] = MySQL::SQLValue($this->_data['lnb']);
             $values["buc"] = MySQL::SQLValue($this->_data['buc']);
+            $values["routeur"] = MySQL::SQLValue($this->_data['routeur']);
+              $values["radio"] = MySQL::SQLValue($this->_data['radio']);
+            $values["addr_mac_router"] = MySQL::SQLValue($this->_data['addr_mac_router']);
+            $values["addr_mac_radio"] = MySQL::SQLValue($this->_data['addr_mac_radio']);
+            $values["cable"] = MySQL::SQLValue($this->_data['cable']);
+                $values["site_name"] = MySQL::SQLValue($this->_data['site_name']);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
             $values["updusr"] = MySQL::SQLValue(session::get('userid'));
@@ -247,7 +259,7 @@ class Msites {
      */
     private function check_non_exist($table, $column, $value, $message) {
         global $db;
-        $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
+        $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table
 			WHERE $table.$column = " . MySQL::SQLValue($value));
         if ($result == "0") {
             $this->error = false;
@@ -267,7 +279,7 @@ class Msites {
         global $db;
         $table = $this->table;
         $sql_edit = $edit == null ? null : " AND  <> $edit";
-        $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
+        $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table
     		WHERE $table.$column = " . MySQL::SQLValue($value) . " $sql_edit ");
 
         if ($result != "0") {
@@ -334,9 +346,9 @@ class Msites {
             return null;
         }
     }
-    
-    
-     public function Generate_reference($table, $abr, $year = true) 
+
+
+     public function Generate_reference($table, $abr, $year = true)
     {
         //SET Ranking value
     	$this->QuerySingleValue0('SET @i = 1 ;');
@@ -344,16 +356,16 @@ class Msites {
 
         if(!$year){
         	$sql_req = "SELECT MAX(IF(@i = id, @i := id + 1, @i)) AS next_ref FROM
-                    (SELECT  ( SUBSTRING_INDEX(a.reference, '-', - 1) * 1 ) AS id 
+                    (SELECT  ( SUBSTRING_INDEX(a.reference, '-', - 1) * 1 ) AS id
                     FROM  $table a ORDER BY reference LIMIT 0,99999999999) AS refs;";
         }
     	$max_id = $this->QuerySingleValue0($sql_req);
     	$max_id = $max_id == 0 ? 1 : $max_id;
         //$lent
     	if($max_id != '0')
-    	{  
-            
-            
+    	{
+
+
     		$lettre_ste = Msetting::get_set('abr_ste');
     		$lettre_ste = $lettre_ste == null ? null : $lettre_ste.'_';
         	$num_padded = sprintf("%04d", $max_id); //Format Number to 4 char with 0
@@ -365,17 +377,17 @@ class Msites {
         }else{
         	return false;
         }
-        
+
         return $reference;
-        
+
     }
-    
-    
+
+
     private function save_file($item, $titre, $type)
-    {    
+    {
     	//Format all parameteres
     	$temp_file     = $this->_data[$item.'_id'];
-            
+
         //If nofile uploaded return kill function
       if($temp_file == Null){
         return true;

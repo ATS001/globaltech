@@ -20,8 +20,9 @@ if (MInit::form_verif('addtickets', false)) {
         'id_produit'=> Mreq::tp('id_produit'),
         'id_technicien'=> Mreq::tp('id_technicien'),
         'serial_number'=>Mreq::tp('serial_number'),
+          'contact'=>Mreq::tp('contact')
          );
-        
+
     //Check if array have empty element return list
     //for acceptable empty field do not put here
     $checker = null;
@@ -31,29 +32,25 @@ if (MInit::form_verif('addtickets', false)) {
         $empty_list .= "<li>Client</li>";
         $checker = 1;
     }
-    
+
     if ($posted_data["message"] == NULL) {
-        $empty_list .= "<li>Message</li>";
+        $empty_list .= "<li>Description</li>";
         $checker = 1;
     }
     if ($posted_data["date_previs"] == NULL) {
         $empty_list .= "<li>Date prévisionnelle</li>";
         $checker = 1;
     }
-        
-    if (date('Y-m-d', strtotime($posted_data['date_previs'])) < date('Y-m-d')) 
+
+    if (date('Y-m-d', strtotime($posted_data['date_previs'])) < date('Y-m-d'))
       {
         $control_date = " <li>Date prévisionnelle doit être supérieur ou égale à la date d'aujourd'hui</li>";
         $checker = 2;
     }
-   
-    if ($posted_data["type_produit"] == NULL) {
-        $empty_list .= "<li>Type produit</li>";
-        $checker = 1;
-    }
-    
+
+
     $empty_list .= "</ul>";
-    
+
     if ($checker == 1) {
         exit("0#$empty_list");
     }
@@ -63,7 +60,7 @@ if (MInit::form_verif('addtickets', false)) {
 
     //End check empty element
     $new_tickets = new Mtickets($posted_data);
-
+/*
     //execute Insert returne false if error
     if ($new_tickets->save_new_tickets()) {
 
@@ -72,6 +69,28 @@ if (MInit::form_verif('addtickets', false)) {
 
         exit("0#" . $new_tickets->log);
     }
+
+*/
+    /*  ******************************************************************  */
+    //Etat for validate row
+    $etat = Msetting::get_set('etat_ticket', 'resolution_encours');
+
+        //execute Insert returne false if error
+    if ($new_tickets->save_new_tickets()) {
+            if($new_tickets->valid_tickets($etat)){
+                exit("1#" . $new_tickets->log);
+            } else {
+                exit("0#" . $new_tickets->log);
+            }
+
+            exit("1#" . $new_tickets->log);
+        } else {
+
+            exit("0#" . $new_tickets->log);
+        }
+
+
+        /* ****************************************************************** */
 }
 
 //No form posted show view

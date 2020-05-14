@@ -433,7 +433,7 @@ $this->gallery_bloc_js .= "$('#btn_add_pic').on('click', '.this_add_pic', functi
       $value = $input_value == null ? null : 'value = "'.$input_value.'"';
       $readonly_use = $readonly == null ? null : 'readonly=""';
       $input = '<div class="space-2"></div>
-      <div class="form-group">
+      <div class="form-group" id="x'.$input_id.'x">
          <label id="label_'.$input_id.'" class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">'.$input_desc.':</label>
 
          <div class="col-xs-12 col-sm-9">
@@ -832,7 +832,7 @@ $output .= $hard_code;
 
 
         $output = '<div class="space-2"></div>
-        <div class="form-group">
+          <div class="form-group" id="x'.$input_id.'x">
          <label class="control-label col-xs-12 col-sm-3 no-padding-right" for="email">'.$input_desc.':</label>
 
          <div class="col-xs-12 col-sm-9">
