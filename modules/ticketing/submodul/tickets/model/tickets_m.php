@@ -56,21 +56,21 @@ class Mtickets {
                 CONCAT(users_sys.fnom,' ',users_sys.lnom) AS technicien ,
                 clients.denomination AS client ,
                 ref_categories_produits.categorie_produit AS categorie_produit ,
-                ref_types_produits.type_produit AS typep , 
+                ref_types_produits.type_produit AS typep ,
                 produits.designation AS prd,
                 code_cloture.code_cloture AS code_cloture,
                 tickets.serial_number AS serial_number,
                 sites.reference AS site,
-                DATE_FORMAT(tickets.credat,'%d-%m-%Y') AS credat            
-                FROM tickets LEFT JOIN produits ON produits.id=tickets.id_produit 
+                DATE_FORMAT(tickets.credat,'%d-%m-%Y') AS credat
+                FROM tickets LEFT JOIN produits ON produits.id=tickets.id_produit
                 LEFT JOIN ref_categories_produits  ON ref_categories_produits.id=tickets.categorie_produit
                  LEFT JOIN ref_types_produits ON ref_types_produits.id=tickets.type_produit
                  LEFT JOIN clients ON clients.id=tickets.id_client
                  LEFT JOIN users_sys ON users_sys.id=tickets.id_technicien
-                 LEFT JOIN code_cloture ON code_cloture.id=tickets.code_cloture 
-                 LEFT JOIN sites ON sites.id=tickets.projet             
+                 LEFT JOIN code_cloture ON code_cloture.id=tickets.code_cloture
+                 LEFT JOIN sites ON sites.id=tickets.projet
                  WHERE tickets.id =  " . $this->id_tickets;
-       
+
         if (!$db->Query($sql)) {
             $this->error = false;
             $this->log .= $db->Error();
@@ -84,7 +84,7 @@ class Mtickets {
                 $this->error = true;
             }
         }
-        
+
         //return Array user_info
         if ($this->error == false) {
             return false;
@@ -145,6 +145,7 @@ class Mtickets {
             $values["categorie_produit"] = MySQL::SQLValue($this->_data["categorie_produit"]);
             $values["id_produit"] = MySQL::SQLValue($this->_data["id_produit"]);
             $values["serial_number"] = MySQL::SQLValue($this->_data["serial_number"]);
+            $values["contact"] = MySQL::SQLValue($this->_data["contact"]);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
 
@@ -206,7 +207,7 @@ class Mtickets {
                 $this->save_file('pj', 'PJ' . $this->_data['id_ticket'], 'Document');
 
                 $this->save_file('photo', 'Photo' . $this->_data['id_ticket'], 'Image');
- 
+
                 $this->log .= '</br>Enregistrement  réussie ' . $this->last_id . ' -';
                 if (!Mlog::log_exec($this->table_action, $this->last_id, 'Création action', 'Insert')) {
                     $this->log .= '</br>Un problème de log ';
@@ -359,6 +360,7 @@ class Mtickets {
             $values["categorie_produit"] = MySQL::SQLValue($this->_data["categorie_produit"]);
             $values["serial_number"] = MySQL::SQLValue($this->_data["serial_number"]);
             $values["id_produit"] = MySQL::SQLValue($this->_data["id_produit"]);
+            $values["contact"] = MySQL::SQLValue($this->_data["contact"]);
             $values["updusr"] = MySQL::SQLValue(session::get('userid'));
             $values["upddat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
             $wheres["id"] = $this->id_tickets;
@@ -445,7 +447,7 @@ class Mtickets {
 
             $this->log .= '</br>Enregistrement non réussie';
         }
-        
+
         //check if last error is true then return true else rturn false.
         if ($this->error == false) {
             return false;
@@ -592,7 +594,7 @@ class Mtickets {
      */
     private function check_non_exist($table, $column, $value, $message) {
         global $db;
-        $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
+        $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table
 			WHERE $table.$column = " . MySQL::SQLValue($value));
         if ($result == "0") {
             $this->error = false;
@@ -612,7 +614,7 @@ class Mtickets {
         global $db;
         $table = $this->table;
         $sql_edit = $edit == null ? null : " AND  <> $edit";
-        $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
+        $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table
     		WHERE $table.$column = " . MySQL::SQLValue($value) . " $sql_edit ");
 
         if ($result != "0") {
@@ -731,11 +733,11 @@ class Mtickets {
         }
     }
 
-    /* Fonction qui ajoute une ligne dans la table action_ticket 
-     * après la création,l'affectation , la réaffectation et la cloture 
-     * afin de garder l'historique des technciens et spécifier 
+    /* Fonction qui ajoute une ligne dans la table action_ticket
+     * après la création,l'affectation , la réaffectation et la cloture
+     * afin de garder l'historique des technciens et spécifier
      * tous les actions liées au ticket
-     * 
+     *
      */
 
     public function init_action($action, $old_technicien) {
@@ -765,7 +767,7 @@ class Mtickets {
             }
 
             $values["date_action"] = MySQL::SQLValue(date('Y-m-d'));
-            $values["etat"] = MySQL::SQLValue(1);
+            $values["etat"] = MySQL::SQLValue(2);
             $values["id_ticket"] = MySQL::SQLValue($this->tickets_info["id"]);
             $values["creusr"] = MySQL::SQLValue(session::get('userid'));
             $values["credat"] = MySQL::SQLValue(date("Y-m-d H:i:s"));
@@ -803,7 +805,7 @@ class Mtickets {
         //Get info ticket
         $this->get_tickets();
         $tickets_info = $this->tickets_info;
-        
+
         if ($this->verif_email($tickets_info["id_technicien"]) == FALSE) {
             $this->log .= '<br/>Ce technicien n\'a pas une adresse Mail';
             return false;
@@ -817,7 +819,7 @@ class Mtickets {
         $agent_tel = $agent->g('tel');
 
         $mail = new PHPMailer();
-        $mail->isSMTP(); // Paramétrer le Mailer pour utiliser SMTP 
+        $mail->isSMTP(); // Paramétrer le Mailer pour utiliser SMTP
         $mail->Host = 'mail.globaltech.td'; // Spécifier le serveur SMTP
         $mail->SMTPAuth = true; // Activer authentication SMTP
         $mail->Username = Msetting::get_set('mail_comercial', 'user');
@@ -903,7 +905,7 @@ class Mtickets {
                 CONCAT(users_sys.fnom,' ',users_sys.lnom) as technicien ,
                 clients.denomination as client ,
                 ref_categories_produits.categorie_produit as categorie_produit ,
-                ref_types_produits.type_produit as typep , 
+                ref_types_produits.type_produit as typep ,
                 produits.designation as prd,
                 code_cloture.code_cloture as code_cloture,
                 $table.serial_number as serial_number,
@@ -1000,14 +1002,14 @@ class Mtickets {
             return true;
         }
     }
-    
+
     public function getTechnicien($id_technicien)
     {
         $agent = new Musers();
         $agent->id_user = $id_technicien;
         $agent->get_user();
         $agent_name = $agent->g('fnom') . ' ' . $agent->g('lnom');
-        
+
         return $agent_name;
     }
 

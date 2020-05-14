@@ -6,14 +6,14 @@ if (!defined('_MEXEC'))
 // Modul: tickets
 //Created : 02-04-2018
 //View
-//Get all tickets info 
+//Get all tickets info
 $info_tickets = new Mtickets();
 //Set ID of Module with POST id
 $info_tickets->id_tickets = Mreq::tp('id');
 
-//Check if Post ID <==> Post idc or get_modul return false. 
+//Check if Post ID <==> Post idc or get_modul return false.
 if (!MInit::crypt_tp('id', null, 'D') or ! $info_tickets->get_tickets()) {
-    // returne message error red to client 
+    // returne message error red to client
     exit('3#' . $info_user->log . '<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
 
@@ -60,14 +60,17 @@ $hard_code_site_client = '<label style="margin-left:15px;margin-right : 20px;">S
                 $client_array[] = array('required', 'true', 'Choisir un Client');
                 $form->select_table('Client ', 'id_client', 5, 'clients', 'id', 'id', 'denomination', $indx = '------', $info_tickets->g('id_client'), $multi = NULL, $where = 'etat=1', $client_array, $hard_code_site_client);
 
+//contact==>
+                $form->input("Contact", "contact", "text", "9", $info_tickets->g('contact'), NULL, null, $readonly = null);
 
+//Serial number ==>
 
-              
-//Serial number ==> 
-                
-                $form->input("Serial number", "serial_number", "text", "9", $info_tickets->g('serial_number'), NULL, null, $readonly = null);
+              $form->input("Serial number", "serial_number", "text", "9", $info_tickets->g('serial_number'), NULL, null, $readonly = null);
 
-//Date prévisionnelle ==> 
+                //Date problème ==>
+              $date_prob[] = array('required', 'true', 'Insérer une date prévisionnelle');
+              $form->input_date('Date problème', 'date_probleme', 2,$info_tickets->g('date_probleme'), $date_prob);
+//Date prévisionnelle ==>
                 $date_prev[] = array('required', 'true', 'Insérer une date prévisionnelle');
                 $form->input_date('Date prévisionnelle', 'date_previs', 2, $info_tickets->g('date_previs'), $date_prev);
 
@@ -75,14 +78,13 @@ $hard_code_site_client = '<label style="margin-left:15px;margin-right : 20px;">S
 //Type produit old
                 $form->input_hidden('type_produit_old', $info_tickets->g('type_produit'));
                 $hard_code_type_produit = '<label style="margin-left:15px;margin-right : 20px;">Catégorie: </label><select id="categorie_produit" name="categorie_produit" class="chosen-select col-xs-12 col-sm-6" chosen-class="' . ((6 * 100) / 12) . '" ><option value="' . $info_tickets->g('categorie_produit') . '" >' . $info_tickets->g('categorie_produit') . '</option></select>';
-                $type_produit_array[] = array('required', 'true', 'Choisir un Type Produit');
-                $form->select_table('Type Produit', 'type_produit', 3, 'ref_types_produits', 'id', 'id', 'type_produit', $indx = '------', $info_tickets->g('type_produit'), $multi = NULL, NULL, $type_produit_array, $hard_code_type_produit); //Produit
+               $form->select_table('Type Produit', 'type_produit', 3, 'ref_types_produits', 'id', 'id', 'type_produit', $indx = '------', $info_tickets->g('type_produit'), $multi = NULL, NULL, null, $hard_code_type_produit); //Produit
 
 
                 $opt_produit = array($info_tickets->g('id_produit') => $info_tickets->g('prd'));
                 $form->select('Produit / Service', 'id_produit', 8, $opt_produit, $indx = NULL, $selected = NULL, $multi = NULL, null);
 
-//Technicien ==> 
+//Technicien ==>
                 //$array_technicien[] = array("required", "true", "Choisir un technicien");
                 //$form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', 'CONCAT(users_sys.lnom," ",users_sys.fnom)', $indx = '------', $info_tickets->g('id_technicien'), $multi = NULL, $where = 'etat=1', $array_technicien, NULL);
 //Message
@@ -188,6 +190,7 @@ $hard_code_site_client = '<label style="margin-left:15px;margin-right : 20px;">S
                 dataType: "JSON",
                 success: function (data) {
                     if (data['error'] == false) {
+                        $('#projet').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
                         ajax_loadmessage(data['mess'], 'nok', 5000);
                         return false;
                     } else {
@@ -208,5 +211,4 @@ $hard_code_site_client = '<label style="margin-left:15px;margin-right : 20px;">S
         });
 
     });
-</script>	
-
+</script>

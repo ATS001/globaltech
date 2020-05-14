@@ -1,4 +1,4 @@
-<?php 
+<?php
 //First check target no Hack
 if(!defined('_MEXEC'))die();
 //SYS GLOBAL TECH
@@ -19,10 +19,20 @@ $array_column = array(
         'column' => 'sites.reference',
         'type'   => '',
         'alias'  => 'reference',
-        'width'  => '12',
+        'width'  => '10',
         'header' => 'Reference',
         'align'  => 'L'
     ),
+
+		array(
+        'column' => 'sites.site_name',
+        'type'   => '',
+        'alias'  => 'site_name',
+        'width'  => '12',
+        'header' => 'Nom site',
+        'align'  => 'L'
+    ),
+
     array(
         'column' => 'sites.type_site',
         'type'   => '',
@@ -63,7 +73,7 @@ $array_column = array(
         'header' => 'SN Modem',
         'align'  => 'L'
     ),
-       
+
     array(
         'column' => 'statut',
         'type'   => '',
@@ -72,7 +82,7 @@ $array_column = array(
         'header' => 'Statut',
         'align'  => 'C'
     ),
-    
+
  );
 //Creat new instance
 $html_data_table = new Mdatatable();
@@ -86,53 +96,3 @@ if(!$data = $html_data_table->table_html())
 }else{
     echo $data;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

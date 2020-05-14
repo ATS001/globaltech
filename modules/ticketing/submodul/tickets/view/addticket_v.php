@@ -17,7 +17,7 @@ $tsk_aft        = MReq::tp('tsk_aft');
 $name_client    = null;
 $title          = 'Ajouter Ticket';
 $btn_return_txt = 'Liste des tickets';
-$btn_task       = 'contrats';
+$btn_task       = 'tickets';
 $btn_setting    = null;
 
 if($id_clnt != null && $tsk_aft != null){
@@ -40,7 +40,7 @@ if($id_clnt != null && $tsk_aft != null){
 <div class="pull-right tableTools-container">
     <div class="btn-group btn-overlap">
 
-                  
+
 <?php TableTools::btn_add($btn_task, $btn_return_txt, $btn_setting, $exec = NULL, 'reply'); ?>
 
 
@@ -69,7 +69,7 @@ if($id_clnt != null && $tsk_aft != null){
                 <?php
                 $form = new Mform('addtickets', 'addtickets', '',$after_exec, '0', null);
 
-//Client ==> 
+//Client ==>
 
 $hard_code_site_client = '<label style="margin-left:15px;margin-right : 20px;">Site: </label><select id="projet" name="projet" class="chosen-select col-xs-6 col-sm-4" chosen-class="' . ((6 * 100) / 12) . '" ><option >----</option></select>';
 
@@ -84,31 +84,33 @@ $hard_code_site_client = '<label style="margin-left:15px;margin-right : 20px;">S
                 $form->input_hidden('idh', Mreq::tp('idh'));
 }
 
-//Serial number==> 
+//contact==>
+                 $form->input("Contact", "contact", "text", "9", null, NULL, null, $readonly = null);
+
+//Serial number==>
                  $form->input("Serial number", "serial_number", "text", "9", null, NULL, null, $readonly = null);
-                 //Technicien ==> 
+                 //Technicien ==>
 $array_technicien[] = array("required", "true", "Choisir un technicien");
 $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', 'CONCAT(users_sys.lnom," ",users_sys.fnom)', $indx = '------', $selected = NULL, $multi = NULL, $where = ' service=6 AND etat=1', $array_technicien, NULL);
 
-//Date problème ==> 
+//Date problème ==>
                 $date_prob[] = array('required', 'true', 'Insérer une date prévisionnelle');
                 $form->input_date('Date problème', 'date_probleme', 2, date('d-m-Y'), $date_prob);
 
-//Date prévisionnelle ==> 
+//Date prévisionnelle ==>
                 $date_prev[] = array('required', 'true', 'Insérer une date prévisionnelle');
                 $form->input_date('Date prévisionnelle', 'date_previs', 2, date('d-m-Y'), $date_prev);
 
 //Type Produit
 
-                $hard_code_type_produit = '<label style="margin-left:15px;margin-right : 20px;">Catégorie: </label><select id="categorie_produit" name="categorie_produit" class="chosen-select col-xs-12 col-sm-6" chosen-class="' . ((6 * 100) / 12) . '" ><option >----</option></select>';
-                $type_produit_array[] = array('required', 'true', 'Choisir un Type Produit');
-                $form->select_table('Type Produit', 'type_produit', 3, 'ref_types_produits', 'id', 'type_produit', 'type_produit', $indx = '------', $selected = NULL, $multi = NULL, $where = 'etat = 1', $type_produit_array, $hard_code_type_produit);
+                $hard_code_type_produit = '<label style="margin-left:15px;margin-right : 20px;">Catégorie: </label><select id="categorie_produit" name="categorie_produit" class="chosen-select col-xs-12 col-sm-6" chosen-class="' . ((6 * 100) / 12) . '" ><option ></option></select>';
+              $form->select_table('Type Produit', 'type_produit', 3, 'ref_types_produits', 'id', 'type_produit', 'type_produit', $indx = '------', $selected = NULL, $multi = NULL, $where = 'etat = 1', null, $hard_code_type_produit);
 
-                $opt_produit = array('' => '------');
-                $form->select('Produit / Service', 'id_produit', 8, $opt_produit, $indx = NULL, $selected = NULL, $multi = NULL, null);
+
+                $form->select('Produit / Service', 'id_produit', 8, null, $indx = NULL, $selected = NULL, $multi = NULL, null);
 
 //Message
-                $array_message[] = array("required", "true", "Insérer un message ");
+                $array_message[] = array("required", "true", "Insérer une description ");
                 $form->input_editor('Description', 'message', 8, NULL, $array_message, $input_height = 200);
 
                 $form->button('Enregistrer');
@@ -194,15 +196,15 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
             });
 
         });
-        
+
         //************************************
          $('#serial_number').blur(function (e) {
             var $serial_number = $(this).val();
-            
+
             if ($serial_number == null) {
                 return true;
             }
-           
+
             $.ajax({
 
                 cache: false,
@@ -211,18 +213,18 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
                 data: '&act=1&id=' + $serial_number + '&<?php echo MInit::crypt_tp('exec', 'check_exist_sn') ?>',
                 dataType: "JSON",
                 success: function (data) {
-                                      
+
                   if ( data['sn'] == "") {
                      $('.show_info_product').remove();
-                     $('#serial_number').parent('div').after('<span class="show_info_product help-block returned_span">Vous devez saisir un Serial number</span>');
+                     $('#serial_number').parent('div').after('<span class="show_info_product help-block returned_span"></span>');
                   }else
                      if (typeof data['sn'] != "" && data['error'] == false){
                      $('.show_info_product').remove();
-                     $('#serial_number').parent('div').after('<span class="show_info_product help-block returned_span">Ce produit n\' a pas été fourni par GLOBALTECH</span>'); 
+                     $('#serial_number').parent('div').after('<span class="show_info_product help-block returned_span">Ce produit n\' a pas été fourni par GLOBALTECH</span>');
                     }
                     else
                     if(data[$serial_number] !== 'undefined')
-                    {      
+                    {
                      $('.show_info_product').remove();
                      $('#serial_number').parent('div').after('<span class="show_info_product help-block returned_span">Ce produit a été fourni par GLOBALTECH</span>');
                     }
@@ -233,12 +235,12 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
                 }//end success
             });
 
-        });        
-        
+        });
+
         //************************************
-		
+
 		 //************************************
-		
+
 		  $('#id_client').change(function (e) {
             var $id_client = $(this).val();
 
@@ -255,6 +257,7 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
                 dataType: "JSON",
                 success: function (data) {
                     if (data['error'] == false) {
+                      $('#projet').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
                         ajax_loadmessage(data['mess'], 'nok', 5000);
                         return false;
                     } else {
@@ -273,9 +276,8 @@ $form->select_table('Technicien', 'id_technicien', 6, 'users_sys', 'id', 'id', '
             });
 
         });
-        
+
         //************************************
 
     });
-</script>	
-
+</script>
