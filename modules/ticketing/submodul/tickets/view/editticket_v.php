@@ -174,41 +174,43 @@ $hard_code_site_client = '<label style="margin-left:15px;margin-right : 20px;">S
 
         });
 /* ******************************************************************************* */
- $('#id_client').change(function (e) {
-            var $id_client = $(this).val();
+$('#id_client').change(function (e) {
+      var $id_client = $(this).val();
 
-            if ($id_client == null) {
-                return true;
-            }
-            //$('#id_client').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
-            $.ajax({
+      if ($id_client == null) {
+          return true;
+      }
+      //$('#id_client').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
+      $.ajax({
 
-                cache: false,
-                url: '?_tsk=addtickets&ajax=1',
-                type: 'POST',
-                data: '&act=1&id=' + $id_client + '&<?php echo MInit::crypt_tp('exec', 'load_client_site') ?>',
-                dataType: "JSON",
-                success: function (data) {
-                    if (data['error'] == false) {
-                        $('#projet').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
-                        ajax_loadmessage(data['mess'], 'nok', 5000);
-                        return false;
-                    } else {
-                        $.each(data, function (key, value) {
-                            $('#projet')
-                                    .append($("<option></option>")
-                                            .attr("value", key)
-                                            .text(value));
-                        });
-                        $('#projet').trigger("chosen:updated");
+          cache: false,
+          url: '?_tsk=addtickets&ajax=1',
+          type: 'POST',
+          data: '&act=1&id=' + $id_client + '&<?php echo MInit::crypt_tp('exec', 'load_client_site') ?>',
+          dataType: "JSON",
+          success: function (data) {
+              if (data['error'] == false) {
+                $('#projet').find('option').remove().end().trigger("chosen:updated").append('<option>----</option>');
+                  ajax_loadmessage(data['mess'], 'nok', 5000);
+                  return false;
+              } else {
+                  $.each(data, function (key, value) {
+                      $('#projet')
+                              .append($("<option></option>")
+                                      .attr("value", key)
+                                      .text(value));
+                  });
+                  $('#projet').trigger("chosen:updated");
 
-                    }
+              }
 
 
-                }//end success
-            });
+          }//end success
+      });
 
-        });
+  });
 
-    });
+  //************************************
+
+});
 </script>

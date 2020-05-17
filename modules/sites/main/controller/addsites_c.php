@@ -36,6 +36,12 @@ if(MInit::form_verif('addsites', false))
         $checker = null;
         $empty_list = "Les champs suivants sont obligatoires:\n<ul>";
 
+        if ($posted_data['site_name'] == NULL) {
+
+         $empty_list .= "<li>Nom du site</li>";
+         $checker = 1;
+        }
+
 
            if ($posted_data['id_client'] == NULL) {
 
