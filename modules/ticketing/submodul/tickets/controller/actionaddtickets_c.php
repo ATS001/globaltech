@@ -62,7 +62,8 @@ if ($action == 'load_client_site') {
     $where = "id_client = '$val'";
     $table = 'sites';
     $value = 'id';
-    $text = 'reference';
+      $text = "CONCAT(reference,' ',site_name)";
+      //$text = 'reference';
 
     if ($output = Mform::load_select($table, $value, $text, $where)) {
        echo json_encode($output);
