@@ -430,7 +430,23 @@ $block_ttc = '<tr>
                     <td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;"><strong>Total TTC</strong></td>
                     <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_ttc'].' '.$pdf->info_facture['devise'].'</strong></td>
-                </tr>';                
+                </tr>';  
+
+if($pdf->info_facture['total_paye'] > 0 and $pdf->info_facture['reste'] > 0) {
+
+$reste_a_payer = ' <tr>
+                    	<td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;"><strong>Total payé </strong></td>
+                   		<td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
+                    	<td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_paye'].'  '.$pdf->info_facture['devise'].'</strong></td>
+                	</tr>
+                 	<tr>
+                    	<td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;"><strong>Reste à payer </strong></td>
+                    	<td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
+                    	<td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['reste'].'  '.$pdf->info_facture['devise'].'</strong></td>
+                	</tr>'; 
+}else{
+$reste_a_payer = null;	
+}
 
 $block_remise = $pdf->info_facture['valeur_remise'] == 0 ? null : $block_remise; 
 $block_tt_no_remise = $pdf->info_facture['valeur_remise'] == 0 ? null : $block_tt_no_remise;  
@@ -485,6 +501,7 @@ p {
                 </tr>
 
                 '.$block_ttc.'
+                '.$reste_a_payer.'
             </tbody>
         </table> 
     </td>
