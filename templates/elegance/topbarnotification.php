@@ -85,7 +85,7 @@ $(document).ready(function() {
   <div class="navbar-inner top-nav">
     <div class="container-fluid">
       <div class="branding">
-        <div class="logo"> <a href="./" title="Acceuil"><img src="img/logo.png"  alt="Logo"></a> </div>
+        <div class="logo"> <a href="./" title="Acceuil"><img src="img/logo2.png"  alt="Logo"></a> </div>
       </div>
       
       <ul class="nav pull-right">
