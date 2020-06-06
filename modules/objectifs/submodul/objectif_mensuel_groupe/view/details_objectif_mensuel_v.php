@@ -1,16 +1,17 @@
 <?php
-//Get all Devis info 
+//Get all Devis info
 $info_objectif_mensuel = new Mobjectif_mensuel();
 $action = new TableTools();
 $info_objectif_mensuel->id_objectif_mensuel = Mreq::tp('id');
 $info_objectif_mensuel->get_objectif_mensuel();
+$id_commercial = $info_objectif_mensuel->objectif_mensuel_info["id_commercial"];
 
 //Set ID of Module with POST id
 $info_objectif_mensuel->id_objectif_mensuel = Mreq::tp('id');
-//Check if Post ID <==> Post idc or get_modul return false. 
+//Check if Post ID <==> Post idc or get_modul return false.
 if(!MInit::crypt_tp('id', null, 'D') or !$info_objectif_mensuel->Get_detail_objectif_mensuel_show())
-{ 	
- 	// returne message error red to client 
+{
+ 	// returne message error red to client
 	exit('3#'.$info_objectif_mensuel->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
 }
 
@@ -23,9 +24,9 @@ $tab_liste_devis = view::tab_render('devis', 'Liste Devis', $add_set=NULL, 'book
 <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
 
-		<?php 
+		<?php
 		TableTools::btn_action('objectif_mensuel', $info_objectif_mensuel->id_objectif_mensuel, 'objectif_mensuel');
-		TableTools::btn_add('objectif_mensuel','Liste des Objectifs', Null, $exec = NULL, 'reply'); 
+		TableTools::btn_add('objectif_mensuel','Liste des Objectifs', MInit::crypt_tp('id_commercial', $id_commercial), $exec = NULL, 'reply');
 
 		?>
 
@@ -53,18 +54,18 @@ $tab_liste_devis = view::tab_render('devis', 'Liste Devis', $add_set=NULL, 'book
 							Devis
 						</a>
 					</li> -->
-                    
-					<?php 
-					echo $tab_details_objectif_mensuel['tab_index']; 
-					echo $tab_liste_devis['tab_index']; 
-					
+
+					<?php
+					echo $tab_details_objectif_mensuel['tab_index'];
+					echo $tab_liste_devis['tab_index'];
+
 					?>
-					
+
 				</ul>
 
 				<div class="tab-content no-border padding-24">
-					<?php 
-					 
+					<?php
+
 
 					 if($tab_details_objectif_mensuel['tb_rl'])
 					 {
@@ -82,9 +83,9 @@ $tab_liste_devis = view::tab_render('devis', 'Liste Devis', $add_set=NULL, 'book
 					 	echo $tab_liste_devis['tce'];
 					 }
 
-					 
 
-					 
+
+
 
 
 					?>
@@ -102,4 +103,3 @@ $tab_liste_devis = view::tab_render('devis', 'Liste Devis', $add_set=NULL, 'book
 
 
 </script>
-

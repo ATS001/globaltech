@@ -1,11 +1,21 @@
-<?php 
+<?php
 //First check target no Hack
 if(!defined('_MEXEC'))die();
-//SYS GLOBAL TECH
-// Modul: objectif_mensuel
-//Created : 01-11-2018
-//View
-//array colomn
+
+
+if (Mreq::tp('id') != null) {
+    $info_objectif_annuel = new Mobjectif_mensuel_groupe();
+    $info_objectif_annuel->id_objectif_mensuel_groupe = Mreq::tp('id');
+    $info_objectif_annuel->get_objectif_mensuel_groupe();
+    $id_commercial = $info_objectif_annuel->objectif_mensuel_groupe_info["id_commercial"];
+    $id_commercial_c = MInit::crypt_tp('id_commercial', $id_commercial);
+
+}else{
+
+  $id_commercial = Mreq::tp('id_commercial');
+  $id_commercial_c = MInit::crypt_tp('id_commercial', $id_commercial);
+}
+
 $array_column = array(
     array(
         'column' => 'objectif_mensuel.id',
@@ -55,7 +65,7 @@ $array_column = array(
         'header' => 'Seuil',
         'align'  => 'C'
     ),
-    
+
     /*array(
         'column' => 'objectif_mensuel.date_s',
         'type'   => 'date',
@@ -80,7 +90,7 @@ $array_column = array(
         'alias'  => 'statut',
         'width'  => '12',
         'header' => 'Statut',
-        'align'  => 'L'
+        'align'  => 'C'
     ),
 
 );
@@ -91,59 +101,18 @@ $html_data_table->title_module = "Objectifs par Commercial";
 $html_data_table->task = 'objectif_mensuel';
 $html_data_table->task_add = 'add_objectif_mensuel';
 
+if (Mreq::tp('id') != null) {
+    $html_data_table->js_extra_data = "id_commercial=$id_commercial";
+    $html_data_table->btn_add_data = MInit::crypt_tp('id_commercial', $id_commercial);
+  }
+
+  if (Mreq::tp('id_commercial') != null) {
+    $html_data_table->js_extra_data = "id_commercial=$id_commercial";
+  }
+
 if(!$data = $html_data_table->table_html())
 {
     exit("0#".$html_data_table->log);
 }else{
     echo $data;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
