@@ -9,11 +9,14 @@ if (Mreq::tp('id') != null) {
     $info_objectif_annuel->get_objectif_mensuel_groupe();
     $id_commercial = $info_objectif_annuel->objectif_mensuel_groupe_info["id_commercial"];
     $id_commercial_c = MInit::crypt_tp('id_commercial', $id_commercial);
-
+$annee = $info_objectif_annuel->objectif_mensuel_groupe_info["annee"];
+$annee_c = MInit::crypt_tp('annee', $annee);
 }else{
 
   $id_commercial = Mreq::tp('id_commercial');
   $id_commercial_c = MInit::crypt_tp('id_commercial', $id_commercial);
+  $annee = Mreq::tp('annee');
+  $annee_c = MInit::crypt_tp('annee', $annee);
 }
 
 $array_column = array(
@@ -100,14 +103,16 @@ $html_data_table->columns_html = $array_column;
 $html_data_table->title_module = "Objectifs par Commercial";
 $html_data_table->task = 'objectif_mensuel';
 $html_data_table->task_add = 'add_objectif_mensuel';
+$html_data_table->btn_return = array('task' => 'objectif_mensuel_groupe', 'title' => 'Retour liste Objectifs');
 
 if (Mreq::tp('id') != null) {
-    $html_data_table->js_extra_data = "id_commercial=$id_commercial";
-    $html_data_table->btn_add_data = MInit::crypt_tp('id_commercial', $id_commercial);
+    $html_data_table->js_extra_data = "id_commercial=$id_commercial&annee=$annee";
+    //$html_data_table->btn_add_data = MInit::crypt_tp('id_commercial', $id_commercial)&MInit::crypt_tp('annee', $annee);
+    $html_data_table->btn_add_data = "id_commercial=$id_commercial&annee=$annee";
   }
 
   if (Mreq::tp('id_commercial') != null) {
-    $html_data_table->js_extra_data = "id_commercial=$id_commercial";
+    $html_data_table->js_extra_data = "id_commercial=$id_commercial&annee=$annee";
   }
 
 if(!$data = $html_data_table->table_html())

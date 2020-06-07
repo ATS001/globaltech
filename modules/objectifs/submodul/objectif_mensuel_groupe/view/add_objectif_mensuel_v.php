@@ -8,6 +8,8 @@ if(!defined('_MEXEC'))die();
 
 
 $id_commercial = Mreq::tp('id_commercial');
+$annee = Mreq::tp('annee');
+
 /*
 $info_objectif_mensuel =  new Mobjectif_mensuel();
 $info_objectif_mensuel->id_objectif_mensuel = Mreq::tp('id_commercial');
@@ -18,7 +20,7 @@ $id_commercial = $info_objectif_mensuel->objectif_mensuel_info["id_commercial"];
 <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
 
-		<?php TableTools::btn_add('objectif_mensuel','Liste des objectifs', MInit::crypt_tp('id_commercial', $id_commercial), $exec = NULL, 'reply'); ?>
+		<?php TableTools::btn_add('objectif_mensuel','Liste des objectifs',"id_commercial=$id_commercial&annee=$annee", $exec = NULL, 'reply'); ?>
 
 	</div>
 </div>
@@ -44,7 +46,7 @@ $id_commercial = $info_objectif_mensuel->objectif_mensuel_info["id_commercial"];
 
 <?php
 
-$form = new Mform('add_objectif_mensuel', 'add_objectif_mensuel', '', 'objectif_mensuel', '0', null);
+$form = new Mform('add_objectif_mensuel', 'add_objectif_mensuel', '', 'objectif_mensuel&'."id_commercial=$id_commercial&annee=$annee", '0', null);
 
 
 

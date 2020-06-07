@@ -5,6 +5,7 @@ $action = new TableTools();
 $info_objectif_mensuel->id_objectif_mensuel = Mreq::tp('id');
 $info_objectif_mensuel->get_objectif_mensuel();
 $id_commercial = $info_objectif_mensuel->objectif_mensuel_info["id_commercial"];
+$annee = $info_objectif_mensuel->objectif_mensuel_info["annee"];
 
 //Set ID of Module with POST id
 $info_objectif_mensuel->id_objectif_mensuel = Mreq::tp('id');
@@ -26,7 +27,7 @@ $tab_liste_devis = view::tab_render('devis', 'Liste Devis', $add_set=NULL, 'book
 
 		<?php
 		TableTools::btn_action('objectif_mensuel', $info_objectif_mensuel->id_objectif_mensuel, 'objectif_mensuel');
-		TableTools::btn_add('objectif_mensuel','Liste des Objectifs', MInit::crypt_tp('id_commercial', $id_commercial), $exec = NULL, 'reply');
+		TableTools::btn_add('objectif_mensuel','Liste des Objectifs', "id_commercial=$id_commercial&annee=$annee", $exec = NULL, 'reply');
 
 		?>
 

@@ -82,6 +82,7 @@ $array_column = array(
     ),
 
 );
+
 //Check if is commercial show only his lines
 $only_my_lines = null;
 if(session::get('service') == 7){
@@ -92,7 +93,7 @@ $list_data_table = new Mdatatable();
 //Set tabels used in Query
 $list_data_table->tables = array('objectif_mensuels', 'commerciaux');
 //Set Jointure
-$list_data_table->joint = 'commerciaux.id = objectif_mensuels.id_commercial AND id_commercial = ' .Mreq::tp('id_commercial');
+$list_data_table->joint = 'commerciaux.id = objectif_mensuels.id_commercial AND objectif_mensuels.annee = '.Mreq::tp('annee'). ' AND id_commercial = ' .Mreq::tp('id_commercial');
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query
