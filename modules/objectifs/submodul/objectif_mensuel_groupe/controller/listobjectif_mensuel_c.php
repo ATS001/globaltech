@@ -1,10 +1,9 @@
-<?php 
+<?php
 //First check target no Hack
 if(!defined('_MEXEC'))die();
-//SYS GLOBAL TECH
-// Modul: objectif_mensuel
-//Created : 01-11-2018
-//Controller Liste
+
+
+
 $array_column = array(
     array(
         'column' => 'objectif_mensuels.id',
@@ -54,7 +53,7 @@ $array_column = array(
         'header' => 'Réalisation',
         'align'  => 'C'
     ),
-    
+
     /*array(
         'column' => 'objectif_mensuels.date_s',
         'type'   => 'date',
@@ -71,18 +70,19 @@ $array_column = array(
         'header' => 'Date fin',
         'align'  => 'L'
     ),*/
-    
-    
+
+
     array(
         'column' => 'statut',
         'type'   => '',
         'alias'  => 'statut',
         'width'  => '15',
         'header' => 'Statut',
-        'align'  => 'L'
+        'align'  => 'C'
     ),
-    
+
 );
+
 //Check if is commercial show only his lines
 $only_my_lines = null;
 if(session::get('service') == 7){
@@ -93,7 +93,7 @@ $list_data_table = new Mdatatable();
 //Set tabels used in Query
 $list_data_table->tables = array('objectif_mensuels', 'commerciaux');
 //Set Jointure
-$list_data_table->joint = 'commerciaux.id = objectif_mensuels.id_commercial '.$only_my_lines;
+$list_data_table->joint = 'commerciaux.id = objectif_mensuels.id_commercial AND objectif_mensuels.annee = '.Mreq::tp('annee'). ' AND id_commercial = ' .Mreq::tp('id_commercial');
 //Call all columns
 $list_data_table->columns = $array_column;
 //Set main table of Query
@@ -111,6 +111,3 @@ if(!$data = $list_data_table->Query_maker())
 }else{
     echo $data;
 }
-
-    
-

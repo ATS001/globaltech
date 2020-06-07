@@ -97,8 +97,7 @@ class MYPDF extends TCPDF {
 
         //Get info ste from DB
         $ste_c = new MSte_info();
-
-        $ste = $ste_c->get_ste_info_report_head(1);
+        $ste = $ste_c->get_ste_info_report_head(1,date("M Y"),null);
         $this->writeHTMLCell(0, 0, '', 25, $ste, '', 0, 0, true, 'L', true);
         $this->SetTextColor(0, 50, 127);
         // Set font
@@ -182,7 +181,7 @@ class MYPDF extends TCPDF {
         //}
         $ste_c = new MSte_info();
         $this->SetY(-20);
-        $ste = $ste_c->get_ste_info_report_footer(1,$this->client_info_2['id_banque']);
+        $ste = $ste_c->get_ste_info_report_footer(1,$this->client_info_2['id_banque'],date("M Y"),null);
         $this->writeHTMLCell(0, 0, '', '', $ste, '', 0, 0, true, 'C', true);
         // Position at 15 mm from bottom
         $this->SetY(-15);
