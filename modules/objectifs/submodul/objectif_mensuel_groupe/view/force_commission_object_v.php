@@ -9,6 +9,11 @@ if(!defined('_MEXEC'))die();
  $info_objectif_mensuel = new Mobjectif_mensuel();
 //Set ID of Module with POST id
  $info_objectif_mensuel->id_objectif_mensuel = Mreq::tp('id');
+ $info_objectif_mensuel->get_objectif_mensuel();
+
+$id_commercial =  $info_objectif_mensuel->objectif_mensuel_info["id_commercial"]; 
+$annee = $info_objectif_mensuel->objectif_mensuel_info["annee"]; 
+
 //Check if Post ID <==> Post idc or get_modul return false. 
  if(!MInit::crypt_tp('id', null, 'D') or !$info_objectif_mensuel->get_objectif_mensuel())
  { 	
@@ -22,7 +27,8 @@ if(!defined('_MEXEC'))die();
 <div class="pull-right tableTools-container">
 	<div class="btn-group btn-overlap">
 				
-		<?php TableTools::btn_add('objectif_mensuel','Liste des objectif_mensuel', Null, $exec = NULL, 'reply'); ?>
+		<?php TableTools::btn_add('objectif_mensuel','Liste des objectifs',"id_commercial=$id_commercial&annee=$annee", $exec = NULL, 'reply'); ?>
+
 					
 	</div>
 </div>
@@ -47,7 +53,7 @@ if(!defined('_MEXEC'))die();
 			<div class="widget-box">
 				
 <?php
-$form = new Mform('force_commission_object', 'force_commission_object', '', 'objectif_mensuel', '0', null);
+$form = new Mform('force_commission_object', 'force_commission_object', '', 'objectif_mensuel&'."id_commercial=$id_commercial&annee=$annee", '0', null);
 $form->input_hidden('id', $info_objectif_mensuel->g('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
