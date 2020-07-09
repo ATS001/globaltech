@@ -496,13 +496,14 @@ class Mdevis {
         $total_commission = $this->total_commission;
         $total_commission_ex = $this->total_commission_ex;
 
-
+var_dump('test');
 
         //var_dump("ID User connectée".session::get('userid'));
 
         if (!$this->get_commerciale_remise_plafond(session::get('userid'), $valeur_remise, $this->_data['tkn_frm'])) {
             return false;
         }
+        var_dump('test2');
 
         $etat_line = $this->etat_valid_devis;
 
@@ -2689,7 +2690,7 @@ class Mdevis {
                 var_dump($valeur_remise);
                 var_dump($plafond_remise);
                 var_dump($plafond_remise_valid_dcm);
-                var_dump($max_remise_details);
+                var_dump($this->max_remise_details);
                 //var_dump($sql_req);
                 $this->log .= '</br>La remise appliquée dépasse le plafond autorisé (' . $plafond_remise_valid_dcm . '%)</br>Le devis doit être validé par le DG';
                 $this->etat_valid_devis = $etat_valid_dg;
