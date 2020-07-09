@@ -2688,10 +2688,14 @@ class Mdevis {
             } elseif (($valeur_remise > $plafond_remise && $valeur_remise > $plafond_remise_valid_dcm) OR ($this->max_remise_details > $plafond_remise && $this->max_remise_details > $plafond_remise_valid_dcm)) {
                 var_dump($valeur_remise);
                 var_dump($plafond_remise);
-                var_dump($valeur_remise);
-                var_dump($sql_req);
+                var_dump($plafond_remise_valid_dcm);
+                var_dump($max_remise_details);
+                //var_dump($sql_req);
                 $this->log .= '</br>La remise appliquée dépasse le plafond autorisé (' . $plafond_remise_valid_dcm . '%)</br>Le devis doit être validé par le DG';
                 $this->etat_valid_devis = $etat_valid_dg;
+
+                var_dump($etat_valid_dg);
+                var_dump($this->etat_valid_devis);
             }
             return true;
         }
