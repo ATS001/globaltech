@@ -496,14 +496,13 @@ class Mdevis {
         $total_commission = $this->total_commission;
         $total_commission_ex = $this->total_commission_ex;
 
-var_dump('test');
+
 
         //var_dump("ID User connectée".session::get('userid'));
 
         if (!$this->get_commerciale_remise_plafond(session::get('userid'), $valeur_remise, $this->_data['tkn_frm'])) {
             return false;
         }
-        var_dump('test2');
 
         $etat_line = $this->etat_valid_devis;
 
@@ -552,7 +551,6 @@ var_dump('test');
             $this->log .= $db->Error();
             $this->error = false;
             $this->log .= '</br>Enregistrement BD non réussie';
-            var_dump($db);
         } else {
             $this->last_id = $result;
             //Check $this->error = true return Green message and Bol true
@@ -2688,16 +2686,8 @@ var_dump('test');
                 $this->log .= '</br>La remise appliquée dépasse le plafond autorisé (' . $plafond_remise . '%)</br>Le devis doit être validé par le DCM';
                 $this->etat_valid_devis = $etat_valid_dcm;
             } elseif (($valeur_remise > $plafond_remise && $valeur_remise > $plafond_remise_valid_dcm) OR ($this->max_remise_details > $plafond_remise && $this->max_remise_details > $plafond_remise_valid_dcm)) {
-                var_dump($valeur_remise);
-                var_dump($plafond_remise);
-                var_dump($plafond_remise_valid_dcm);
-                var_dump($this->max_remise_details);
-                //var_dump($sql_req);
                 $this->log .= '</br>La remise appliquée dépasse le plafond autorisé (' . $plafond_remise_valid_dcm . '%)</br>Le devis doit être validé par le DG';
                 $this->etat_valid_devis = $etat_valid_dg;
-
-                var_dump($etat_valid_dg);
-                var_dump($this->etat_valid_devis);
             }
             return true;
         }
