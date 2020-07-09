@@ -552,6 +552,7 @@ var_dump('test');
             $this->log .= $db->Error();
             $this->error = false;
             $this->log .= '</br>Enregistrement BD non réussie';
+            var_dump($db);
         } else {
             $this->last_id = $result;
             //Check $this->error = true return Green message and Bol true
