@@ -333,7 +333,7 @@ class Mobjectif_mensuel {
         $new_etat_atteint =  Msetting::get_set('etat_objectif_mensuel', 'objectif_atteint');
         $new_etat_paye =  Msetting::get_set('etat_objectif_mensuel', 'objectif_paye');
         $sql_get_atteint = "SELECT id FROM $table WHERE etat = $new_etat_atteint ";
-        var_dump($sql_get_atteint);
+        //var_dump($sql_get_atteint);
         if(!$db->Query($sql_get_atteint))
         {
             $this->log   .= 'Erreur Get All Objectifs succes ';
