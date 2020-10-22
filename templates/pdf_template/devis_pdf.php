@@ -436,10 +436,14 @@ p {
 
         <strong>'.$creusr.'</strong>
     </td>
-</tr>';
+</tr>
+</table>';
 //$pdf->lastPage();
 //$block_sum .= '</table>';
 
+//Problème d'affichage devis sur 2 page 
+//FZ le 22/10/2020
+/*
 $d = new Mdevis();
 $d->id_devis = Mreq::tp('id');
 $d->get_devis();
@@ -464,7 +468,7 @@ $block_sum .= '
     </td>
 </tr>
 </table>';
-}
+}*/
 
 //var_dump($block_sum2);
 
