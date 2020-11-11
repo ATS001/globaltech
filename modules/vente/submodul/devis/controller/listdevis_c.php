@@ -66,7 +66,8 @@ $array_column = array(
 //Show line for owner
 $only_owner = null;
 $id_service = session::get('service');
-if($id_service == 7)
+//Afficher tous les devis pour le commercial de Salahedine (22 dans user_sys) le 11/11/2020 
+if($id_service == 7 and (session::get('userid')!="22"))
 {
     $only_owner = ' AND devis.creusr = '.session::get('userid');
 }
