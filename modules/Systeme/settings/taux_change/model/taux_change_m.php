@@ -49,7 +49,7 @@ class Mtaux_change {
 		$table = $this->table;
 
 		$sql = "SELECT $table.*, d.devise as devise , 
-        ( SELECT dd.devise FROM ste_info s, ref_devise dd WHERE s.ste_id_devise = dd.id ) as devise_principale
+        ( SELECT dd.devise FROM ste_info s, ref_devise dd WHERE s.ste_id_devise = dd.id AND s.id=2) as devise_principale
         FROM $table, ref_devise d WHERE $table.id_devise = d.id AND $table.id = ".$this->id_taux_change;
 
 		if(!$db->Query($sql))
@@ -85,7 +85,7 @@ class Mtaux_change {
         $table = $this->table;
 
         $sql = "SELECT $table.*, d.devise as devise , 
-        ( SELECT dd.devise FROM ste_info s, ref_devise dd WHERE s.ste_id_devise = dd.id ) as devise_principale
+        ( SELECT dd.devise FROM ste_info s, ref_devise dd WHERE s.ste_id_devise = dd.id  AND s.id=2 ) as devise_principale
         FROM $table, ref_devise d WHERE $table.id_devise = d.id AND $table.id_devise = ".$dev;
 
         if(!$db->Query($sql))
