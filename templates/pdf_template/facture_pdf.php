@@ -164,7 +164,7 @@ class MYPDF extends TCPDF {
 		$this->writeHTMLCell(0, 0, '', 30, $ste , '', 0, 0, true, 'L', true);
 		$this->SetTextColor(0, 50, 127);
 		// Set font
-		$this->SetFont('kameron', 'B', 22);
+		$this->SetFont('gotham-book', 'B', 22);
 		//Ste
 		
 
@@ -173,7 +173,7 @@ class MYPDF extends TCPDF {
 		$this->writeHTMLCell(58, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true, 2);
 		$this->writeHTMLCell(58, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true);
 		$this->SetTextColor(0, 0, 0);
-		$this->SetFont('kameron', '', 9);
+		$this->SetFont('gotham-book', '', 9);
         $per = NULL;
         if ($this->info_facture['periode'] != NULL) {
             $per = ' <tr>
@@ -318,7 +318,7 @@ class MYPDF extends TCPDF {
 		// Position at 15 mm from bottom
 		$this->SetY(-15);
 		// Set font
-		$this->SetFont('kameron', 'I', 8);
+		$this->SetFont('gotham-book', 'I', 8);
 		// Page number
 		$this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
 	}
@@ -393,7 +393,7 @@ $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 // print standard ASCII chars, you can use core fonts like
 // helvetica or times to reduce file size.
 // set font
-$pdf->SetFont('kameron', '', 9);
+$pdf->SetFont('gotham-book', '', 9);
 
 // Add a page
 // This method has several options, check the source code documentation for more information.
