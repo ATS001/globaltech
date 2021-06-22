@@ -854,7 +854,7 @@ class MySQL
 			$html .= $style;
 			$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px;\">\n";
 
-			$html .= "\t<tr style=\"background-color: #495375; color: #fff; font-weight: bold;  padding:15px; \">\n";
+			$html .= "\t<tr style=\"background-color: #00D7B9; color: #fff; font-weight: bold;  padding:15px; \">\n";
 
 			foreach ($headers as $key => $value) {
 
@@ -947,9 +947,12 @@ class MySQL
 				$html = "";
 				$style = '<style type="text/css">
 				.row0
-				{
-					background-color: #eaebed;
-					border:1pt solid black;
+				{'
+			    // Pour avoir l'arrière plan des lignes du tableau en blan
+                //Désactivation du backgroud depuis .row0
+	            // background-color: #eaebed;
+
+				.'	border:1pt solid black;
 				}
 				.row1{
 					border:1px solid black;

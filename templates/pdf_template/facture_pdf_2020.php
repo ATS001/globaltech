@@ -46,9 +46,9 @@ if($facture->facture_info['base_fact']=='C'){
 			}
 
 		$headers = array(
-            //'#'           => '5[#]C',
-            //'Réf'         => '17[#]C',
-            'DESCRIPTION DES SERVICES FACTURÉS' => '73[#]', 
+            '#'           => '5[#]C',
+            'Réf'         => '17[#]C',
+            'Description' => '73[#]', 
 
         );
 	}else
@@ -60,12 +60,12 @@ if($facture->facture_info['base_fact']=='C'){
 		}
 
 		$headers = array(
-            //'#'           => '5[#]C',
-            //'Réf'         => '17[#]C',
-            'DESCRIPTION DES SERVICES FACTURÉS' => '43[#]', 
-            'QTE'         => '5[#]C', 
-            'P. MENSUEL'  => '10[#]R',
-            'P. TOTAL'     => '15[#]R',
+            '#'           => '5[#]C',
+            'Réf'         => '17[#]C',
+            'Description' => '43[#]', 
+            'Qte'         => '5[#]C', 
+            'P.Unitaire'  => '10[#]R',
+            'P.Total'     => '15[#]R',
 
         );
 	}
@@ -80,12 +80,12 @@ else{
 		}
 
 		$headers = array(
-            //'#'           => '5[#]C',
-            //'Réf'         => '17[#]C',
-            'DESCRIPTION DES SERVICES FACTURÉS' => '65[#]', 
-            'QTE'                               => '5[#]C', 
-            'P. MENSUEL'                        => '10[#]R',
-            'P. TOTAL'                          => '15[#]R',
+            '#'           => '5[#]C',
+            'Réf'         => '17[#]C',
+            'Description' => '43[#]', 
+            'Qte'         => '5[#]C', 
+            'P.Unitaire'  => '10[#]R',
+            'P.Total'     => '15[#]R',
 
         );
 }
@@ -260,17 +260,17 @@ class MYPDF extends TCPDF {
 		//$marge_after_detail_client = 
         $this->Ln();
 		$this->writeHTMLCell(100, 0, 99, null, $detail_client, 0, 0, 0, true, 'L', true);
-		// if($this->info_facture['projet'] != null){
+		if($this->info_facture['projet'] != null){
 
-		// 	$projet = '<span style="width: 65%;ont-weight: bold;font-size: 10pt;"><strong>'.$this->info_facture['projet'].'</strong></span>';
+			$projet = '<span style="width: 65%;ont-weight: bold;font-size: 10pt;"><strong>'.$this->info_facture['projet'].'</strong></span>';
 
 
-		//     $height = $this->getLastH();
-		//     $this->SetTopMargin($height + $this->GetY() + 5);
-		//     //writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
-		//     $this->setCellPadding(1);
-		//     $this->writeHTMLCell(182.6, '', 15.5, '', $projet, 1, 0, 0, true, 'L', true);
-		// }
+		    $height = $this->getLastH();
+		    $this->SetTopMargin($height + $this->GetY() + 5);
+		    //writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
+		    $this->setCellPadding(1);
+		    $this->writeHTMLCell(182.6, '', 15.5, '', $projet, 1, 0, 0, true, 'L', true);
+		}
 		//$this->Ln();
 		//Comment fati 04/03 pour probleme tableau complement
 		$this->setCellPadding(0);

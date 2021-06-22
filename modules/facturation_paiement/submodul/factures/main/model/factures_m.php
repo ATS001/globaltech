@@ -1392,14 +1392,14 @@ class Mfacture {
 
 
         $colms = null;
-        $colms .= " d_factures.order item, ";
-        $colms .= " d_factures.ref_produit, ";
+        //$colms .= " d_factures.order item, ";
+        //$colms .= " d_factures.ref_produit, ";
         $colms .= " d_factures.designation, ";
         $colms .= " CONCAT(REPLACE(FORMAT(d_factures.qte,0),',',' '),' ',IFNULL(d_factures.qte_designation,' ')) as qte, ";
         $colms .= " REPLACE(FORMAT(d_factures.prix_ht,0),',',' '), ";
         $colms .= " REPLACE(FORMAT(d_factures.total_ht,0),',', ' ') ";
 
-        $req_sql = " SELECT $colms FROM d_factures WHERE d_factures.id_facture = $id_facture order by item";
+        $req_sql = " SELECT $colms FROM d_factures WHERE d_factures.id_facture = $id_facture order by d_factures.order";
         if (!$db->Query($req_sql)) {
             $this->error = false;
             $this->log .= $db->Error() . ' ' . $req_sql;
