@@ -149,29 +149,244 @@ class MYPDF extends TCPDF {
       // Logo 2
       $image_file = MPATH_IMG.MCfg::get('logo2');
       $this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
-      $this->Image($image_file, 13, 13, 50, 20, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
+      $this->Image($image_file, 13, 13, 80, 20, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
 		}
 		
-
-		//Get info ste from DB
+                
+                             //Get info ste from DB
 		$ste_c = new MSte_info();
+	
 
         if((date('Y-m-d', strtotime($this->info_facture['date_facture']))) < (date('Y-m-d', strtotime('16-04-2020')))){
 		$ste = $ste_c->get_ste_info_report_head(1,$this->info_facture['date_facture'],'Facture');
 	    }else{
 		$ste = $ste_c->get_ste_info_report_head(2,$this->info_facture['date_facture'],'Facture');
 		}
-		$this->writeHTMLCell(0, 0, '', 30, $ste , '', 0, 0, true, 'L', true);
+		//$this->writeHTMLCell(0, 0, '', 30, $ste , '', 0, 0, true, 'L', true);
 		$this->SetTextColor(0, 50, 127);
 		// Set font
 		$this->SetFont('gotham-book', 'B', 22);
+                
+                
+                $type_echeance = new Mfacture();
+                $type_echeance->id_facture = Mreq::tp('id');
+                $type_echeance->get_facture_type_echeance();
+                $dateLimiteReglement = null;
+                	if ($type_echeance->type_echeance_info['periode_fact'] == 'D'){                           
+                            
+                        $dateLimiteReglement ='<tr style= "font-size:9; color:black;" >
+                        <td style="width: 30%; font-weight: bold;">Date limite de règlement </td>
+                        <td style="width: 5%;  font-weight: bold;">:</td>
+                        <td style="width: 63%; ">'.date('d/m/Y', strtotime($this->info_facture['du']. ' + 14 days')).'</td>
+                        </tr>';
+                            
+                           
+                        }else 	if ($type_echeance->type_echeance_info['periode_fact'] == 'F'){
+                            $dateLimiteReglement ='<tr style= "font-size:9; color:black;" >
+                        <td style="width: 30%; font-weight: bold;">Date limite de règlement </td>
+                        <td style="width: 5%;  font-weight: bold;">:</td>
+                        <td style="width: 63%; ">'.date('d/m/Y', strtotime($this->info_facture['du']. ' + 7 days')).'</td>
+                        </tr>';
+
+                        }
+
+                
+                 $ref_client = $this->info_devis['reference_client'] != null ? $this->info_devis['reference_client'] : null;
+	    $tel = $this->info_devis['tel'] != null ? 'Tél.'.$this->info_devis['tel'] : null;
+	    $email = $this->info_devis['email'] != null ? 'Email.'.$this->info_devis['email'] : null;
+	    $adresse = $this->info_devis['adresse'] != null ? $this->info_devis['adresse'] : null;
+	    $bp = $this->info_devis['bp'] != null ? 'BP. '.$this->info_devis['bp'] : null;
+	    $ville = $this->info_devis['ville'] != null ? $this->info_devis['ville'] : null;
+	    $pays = $this->info_devis['pays'] != null ? $this->info_devis['pays'] : null;
+            
+            
+         //Période factuée
+         $per = NULL;
+        if ($this->info_facture['periode'] != NULL) {
+            $per = ' <tr style= "font-size:9; color:black;" >
+		<td style="width: 30%; font-weight: bold;">Période facturée</td>
+		<td style="width: 5%;  font-weight: bold;">:</td>
+		<td style="width: 63%;color:#00D7B9;">'.$this->info_facture['periode'].'</td>
+                </tr>';
+        }
+         
+        
+        //Adresse Client
+        $adresseClient = null;
+        if($adresse.$bp.$ville.$pays != null){
+			$adresseClient =   ' <tr style= "font-size:9; color:black;" >
+		<td style="width: 30%; font-weight: bold;">Adresse</td>
+		<td style="width: 5%; font-weight: bold;">:</td>
+		<td style="width: 63%;">'.$adresse.' '.$bp.' '.$ville.' '.$pays.'</td>
+		</tr>';
+
+		}
+                
+          //Tél Client
+          $telClient = null;
+          if($tel != null){
+			$telClient = '<tr style= "font-size:9; color:black;" >
+		<td style="width: 30%; font-weight: bold;">Téléphone</td>
+		<td style="width: 5%;  font-weight: bold;">:</td>
+		<td style="width: 63%; ">'.$tel.'</td>
+		</tr>
+		';
+		}
+                
+                
+             //Mail Client
+          $mailClient = null;
+          if($email != null){
+			$mailClient = '<tr style= "font-size:9; color:black;" >
+		<td style="width: 30%;font-weight: bold;">Email</td>
+		<td style="width: 5%; font-weight: bold;">:</td>
+		<td style="width: 63%;">'.$email.'</td>
+		</tr>
+		';
+		}
+            
+         // ------------------------------ Début Tableau 1 --------------------------------------------------------------------     
+
+            
+                
+                $detail_facturex = '<br><br><br>
+                    <table>
+    <tr>
+	<td>
+	<table cellpadding="2" border="0">
+    <tr>
+       <td style="width:90%; background-color:#495375; font-size:9; font-weight:bold; color:#fff;"><strong>FACTURE</strong></td>
+	</tr>
+	<tr>
+        <td>'.$ste.'</td>
+	</tr> 
+	</table>
+	</td>
+	
+	<td>
+	
+<table   cellpadding="2" border="0">
+    <tr style="background-color:#00D7B9; font-size:9; font-weight:bold; color:#fff;">
+       <td><strong>INFORMATIONS CLIENT</strong></td>
+	 </tr>
+	
+		<tr style= "font-size:9; color:black;" >
+		<td style="width: 30%; font-weight: bold;">Dénomination</td>
+		<td style="width: 5%; font-weight: bold;">:</td>
+		<td style="width: 63%;">'.$this->info_devis['denomination'].'</td>
+		</tr>'
+                
+        . $adresseClient.''.$telClient.''.$mailClient.
+                
+	'</table>
+	</td>
+        </tr>
+        
+<tr>
+<td>	
+<table   cellpadding="2" border="0">
+    <tr style=" font-size:9; font-weight:bold; color:black;">
+       <td><strong>.....................................................................................................</strong></td>
+	 </tr>
+	
+		<tr style= "font-size:9; color:black;" >
+		<td style="width: 30%; font-weight: bold;">FACTURE N°</td>
+		<td style="width: 5%; font-weight: bold;">:</td>
+		<td style="width: 63%;color:#00D7B9;">'.$this->info_facture['reference'].'</td>
+		</tr>
+                
+              <tr style= "font-size:9; color:black;" >
+		<td style="width: 30%; font-weight: bold;">Date de facturation</td>
+		<td style="width: 5%; font-weight: bold;">:</td>
+		<td style="width: 63%;color:#00D7B9;">'.$this->info_facture['date_facture'].'</td>
+		</tr>
+                
+               '.$per.'
+                                
+	</table>
+
+
+	</td>
+	
+	<td>	
+<table   cellpadding="2" border="0">
+    <tr style="; font-size:9; font-weight:bold; color:#fff;">
+       <td><strong>........................................................</strong></td>
+	 </tr>
+	
+		<tr style= "font-size:9; color:black;" >
+		<td style="width: 30%; font-weight: bold;">N° Compte facturation</td>
+		<td style="width: 5%; font-weight: bold;">:</td>
+		<td style="width: 63%;">Y</td>
+		</tr>
+                
+              <tr style= "font-size:9; color:black;" >
+		<td style="width: 30%; font-weight: bold;">N° Compte client</td>
+		<td style="width: 5%; font-weight: bold;">:</td>
+		<td style="width: 63%;">'.$ref_client.'</td>
+		</tr>
+                
+               '.$dateLimiteReglement.'
+                                
+	</table>
+
+
+	</td>
+
+</tr>
+	
+</table>
+<br><br>';
+        
+
+	
+                $this->Ln();
+                $this->writeHTMLCell(0, 0, '', 30, $detail_facturex , '', 0, 0, true, 'L', true);
+                
+		
+           // ------------------------ Fin Tableau 1 --------------------------------------------------------------------     
+                
+                
+     
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
 		//Ste
 		
 
 		// Title
-        $titre_doc = '<h1 style="letter-spacing: 2px;color;#495375;font-size: 20pt;">FACTURE</h1>';
+        /*$titre_doc = '<h1 style="letter-spacing: 2px;color;#495375;font-size: 20pt;">FACTURE</h1>';
 		$this->writeHTMLCell(58, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true, 2);
 		$this->writeHTMLCell(58, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true);
+         * 
+         */
+                            
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
+                
 		$this->SetTextColor(0, 0, 0);
 		$this->SetFont('gotham-book', '', 9);
         $per = NULL;
@@ -183,6 +398,7 @@ class MYPDF extends TCPDF {
         <td style="width:68%; background-color: #eeecec; ">' . $this->info_facture['periode'] . '</td>
         </tr>';
         }
+        /*
 		$detail_facture = '<table cellspacing="3" cellpadding="2" border="0">
 		<tr>
 		<td style="width:31%; color:#A1A0A0;"><strong>Réf Facture</strong></td>
@@ -199,6 +415,9 @@ class MYPDF extends TCPDF {
 		'</table>';
 
 		$this->writeHTMLCell(0, 0, 99, 23, $detail_facture, '', 0, 0, true, 'L', true);
+         * 
+         */
+        
 	    //Info Client
 	    $nif = null;
 	    if($this->info_devis['nif'] != null)
@@ -209,13 +428,8 @@ class MYPDF extends TCPDF {
 		<td style="width: 65%; background-color: #eeecec;">'.$this->info_devis['nif'].'</td>
 		</tr>';
 	    }
-	    $ref_client = $this->info_devis['reference_client'] != null ? $this->info_devis['reference_client'] : null;
-	    $tel = $this->info_devis['tel'] != null ? 'Tél.'.$this->info_devis['tel'] : null;
-	    $email = $this->info_devis['email'] != null ? 'Email.'.$this->info_devis['email'] : null;
-	    $adresse = $this->info_devis['adresse'] != null ? $this->info_devis['adresse'] : null;
-	    $bp = $this->info_devis['bp'] != null ? 'BP. '.$this->info_devis['bp'] : null;
-	    $ville = $this->info_devis['ville'] != null ? $this->info_devis['ville'] : null;
-	    $pays = $this->info_devis['pays'] != null ? $this->info_devis['pays'] : null;
+	   
+            
 		$detail_client = '<table cellspacing="3" cellpadding="2" border="0">
 		<tbody>
 		<tr style="background-color:#495375; font-size:11; font-weight:bold; color:#fff;">
@@ -240,12 +454,7 @@ class MYPDF extends TCPDF {
 		</tr>';
 
 		}
-			
-		
-		
-
-
-
+	
 		if($tel != null && $email != null){
 			$detail_client .= '<tr>
 		<td style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Contact</td>
@@ -258,8 +467,8 @@ class MYPDF extends TCPDF {
 		</tbody>
 		</table>';
 		//$marge_after_detail_client = 
-        $this->Ln();
-		$this->writeHTMLCell(100, 0, 99, null, $detail_client, 0, 0, 0, true, 'L', true);
+                // $this->Ln();
+		//$this->writeHTMLCell(100, 0, 99, null, $detail_client, 0, 0, 0, true, 'L', true);
 		// if($this->info_facture['projet'] != null){
 
 		// 	$projet = '<span style="width: 65%;ont-weight: bold;font-size: 10pt;"><strong>'.$this->info_facture['projet'].'</strong></span>';

@@ -143,7 +143,7 @@ class Mfacture {
         global $db;
         $table = $this->table;
 
-        $sql = "SELECT ech.`type_echeance` FROM factures f, contrats ctr, ref_type_echeance ech
+        $sql = "SELECT ech.`type_echeance`,ctr.periode_fact FROM factures f, contrats ctr, ref_type_echeance ech
                 WHERE f.idcontrat=ctr.id AND  ctr.idtype_echeance=ech.id
                 AND f.id=" . $this->id_facture;
 

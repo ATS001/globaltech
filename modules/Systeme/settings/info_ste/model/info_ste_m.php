@@ -190,12 +190,12 @@ class MSte_info
 
     	if((date('Y-m-d', strtotime($date))) < (date('Y-m-d', strtotime('16-04-2020')))){
 
-	    	$head = '<div style="color:#4A5375;font-size: 9pt;font-family: sans-serif;"><address><br>'.$this->ste_info['ste_adresse'].'<br>'.$this->ste_info['ste_ville'].' '.$this->ste_info['ste_pays'].'<br><abbr title="Phone">Tél: </abbr>'.$this->ste_info['ste_tel'].'<br>BP: </abbr>'.$this->ste_info['ste_bp'].' N\'Djamena<br>Email: '.$this->ste_info['ste_email'].'<br>Site web: '.$this->ste_info['ste_website'].'</address></div>';
+	    	$head = '<div style="color:#4A5375;font-size: 9pt;"><address><br>'.$this->ste_info['ste_adresse'].'<br>'.$this->ste_info['ste_ville'].' '.$this->ste_info['ste_pays'].'<br><abbr title="Phone">Tél: </abbr>'.$this->ste_info['ste_tel'].'<br>BP: </abbr>'.$this->ste_info['ste_bp'].' N\'Djamena<br>Email: '.$this->ste_info['ste_email'].'<br>Site web: '.$this->ste_info['ste_website'].'</address></div>';
 	    }else{
 	    	if($object == 'Facture'){
-	        	$head = '<div style="color:#4A5375;font-size: 9pt;font-family: sans-serif;"><address><br>'.$this->ste_info['ste_adresse'].'<br>BP: </abbr>'.$this->ste_info['ste_bp'].' '.$this->ste_info['ste_ville'].'-'.$this->ste_info['ste_pays'].'<br><abbr title="Phone">Tél: </abbr>'.$this->ste_info['ste_tel_fact'].'</address></div>';
+	        	$head = '<div style="color:black;font-size: 9pt;"><address><br>'.$this->ste_info['ste_adresse'].'<br>BP: </abbr>'.$this->ste_info['ste_bp'].' '.$this->ste_info['ste_ville'].'-'.$this->ste_info['ste_pays'].'<br><abbr title="Phone">Tél: </abbr>'.$this->ste_info['ste_tel_fact'].'<br><abbr title="email">Email: </abbr>admin.finance@globaltelnetworks.net<br><abbr title="siteweb">https://www.globaltelnetworks.net</abbr>  </address></div>';
 	        }else{
-	        	$head = '<div style="color:#4A5375;font-size: 9pt;font-family: sans-serif;"><address><br>'.$this->ste_info['ste_adresse'].'<br>BP: </abbr>'.$this->ste_info['ste_bp'].' '.$this->ste_info['ste_ville'].'-'.$this->ste_info['ste_pays'].'<br><abbr title="Phone">Tél: </abbr>'.$this->ste_info['ste_tel'].'</address></div>';    		
+	        	$head = '<div style="color:black;font-size: 9pt;"><address><br>'.$this->ste_info['ste_adresse'].'<br>BP: </abbr>'.$this->ste_info['ste_bp'].' '.$this->ste_info['ste_ville'].'-'.$this->ste_info['ste_pays'].'<br><abbr title="Phone">Tél: </abbr>'.$this->ste_info['ste_tel'].'<br><abbr title="email">Email: </abbr>admin.finance@globaltelnetworks.net<br><abbr title="siteweb">https://www.globaltelnetworks.net</abbr>  </address></div>';  		
     	    }
 	    }
 
