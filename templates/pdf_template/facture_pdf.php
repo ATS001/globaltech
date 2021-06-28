@@ -430,10 +430,10 @@ $block_ttc = '<tr>
 $block_ttc .='<td class="alignRight" style="width:45%; background-color: #fff;"><strong>'.$pdf->info_facture['total_tva'].'  '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>
                 <tr>
-                    <td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;"><strong>Total à payer</strong></td>';
+                    <td style="width:35%;color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>Total à payer</strong></td>';
                     //Eliminer les : FZ HANOUNOU le 28/06/2021
                     //<td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
-$block_ttc .='<td class="alignRight" style="width:45%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_ttc'].' '.$pdf->info_facture['devise'].'</strong></td>
+$block_ttc .='<td class="alignRight" style="width:45%; background-color: #fff;"><strong>'.$pdf->info_facture['total_ttc'].' '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>';  
 
 if($pdf->info_facture['total_paye'] > 0 and $pdf->info_facture['reste'] > 0) {
