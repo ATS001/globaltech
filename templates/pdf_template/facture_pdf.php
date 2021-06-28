@@ -412,17 +412,19 @@ $obj = new nuts($pdf->info_facture['total_ttc'], $pdf->info_facture['devise']);/
 $ttc_lettre = $obj->convert("fr-FR");
 $total_no_remise = $pdf->info_facture['total_sans_remise'];
 $block_tt_no_remise = '<tr>
-                    <td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;"><strong>Total</strong></td>
-                    <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$total_no_remise .'  '.$pdf->info_facture['devise'].'</strong></td>
+                    <td style="width:30%;color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>Total</strong></td>';
+                    //Eliminer les : FZ HANOUNOU le 28/06/2021
+                    //<td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
+$block_tt_no_remise .= '<td class="alignRight" style="width:45%; background-color: #fff;"><strong>'.$total_no_remise .'  '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>';
 $block_remise = '<tr>
-                    <td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;"><strong>Remise '.$pdf->info_facture['valeur_remise'].' %</strong></td>
-                    <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_remise'].'  '.$pdf->info_facture['devise'].'</strong></td>
+                    <td style="width:30%;color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>Remise '.$pdf->info_facture['valeur_remise'].' %</strong></td>'
+                    //Eliminer les : FZ HANOUNOU le 28/06/2021
+                    //<td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
+$block_remise .= '<td class="alignRight" style="width:45%; background-color: #fff;"><strong>'.$pdf->info_facture['total_remise'].'  '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>';
 $block_ttc = '<tr>
-                    <td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;"><strong>TVA 18%</strong></td>
+                    <td style="width:35%;color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>TVA 18%</strong></td>
                     <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_tva'].'  '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>
@@ -485,20 +487,20 @@ p {
 </style>
 <table style="width: 685px;" cellpadding="2">
     <tr>
-        <td width="50%" align="left">
+        <td width="60%" align="left">
             
 
         </td>
-        <td width="50%">
+        <td width="40%">
            <table class="table" cellspacing="0" cellpadding="0"  style="width: 300px; border:0pt solid black;" >
             <tbody>
                 '.$block_tt_no_remise.'
                 '.$block_remise.'
                 <tr>
-                    <td style="width:35%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>'.$titl_ht.'</strong></td>';
-//Eliminer les : FZ HANOUNOU
+                    <td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>'.$titl_ht.'</strong></td>';
+//Eliminer les : FZ HANOUNOU le 28/06/2021
 //'<td style="width:5%;color: #fff;font-weight: bold;font-size: 9pt;">:</td>'
-$block_sum .=       '<td class="alignRight" style="width:60%; background-color: #fff;"><strong>'.$pdf->info_facture['total_ht'].' '.$pdf->info_facture['devise'].'</strong></td>
+$block_sum .=       '<td class="alignRight" style="width:45%; background-color: #fff;"><strong>'.$pdf->info_facture['total_ht'].' '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>
 
                 '.$block_ttc.'
