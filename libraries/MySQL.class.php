@@ -852,7 +852,7 @@ class MySQL
 				</style>';
 			$html = "";
 			$html .= $style;
-			$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px;\">\n";
+			$html .= "<table cellspacing=\"0\" cellpadding=\"2\"  style=\"width: 685px;\">\n";
 
 			$html .= "\t<tr style=\"background-color: #00D7B9; color: #fff; font-weight: bold;  padding:15px; \">\n";
 
@@ -879,9 +879,12 @@ class MySQL
 				    }
 
 				}
+                //Début FZ HANOUNOU le 22/06/2021
+				//Aligner désignation à gauche
 
-
-				$html .= "\t\t<td $width class=\"center\">" . htmlspecialchars($key) . "</td>\n";
+				//$html .= "\t\t<td $width class=\"center\">" . htmlspecialchars($key) . "</td>\n";
+				$html .= "\t\t<td $width $align>" . htmlspecialchars($key) . "</td>\n";
+				//Fin FZ HANOUNOU le 22/06/2021
 			}
 			$html .= "\t</tr>\n";
 			$html .= "</table>";
@@ -971,7 +974,14 @@ class MySQL
 					$html .= "\t<tr nobr=\"true\" class=\"row".($i++ & 1)."\">\n";
 					$html .= $this->make_table_body($member, $headers);
 					$html .= "\t</tr>\n";
-
+					//Début FZ HANOUNOU le 22/06/2021
+					//Rajout des ... après chaque ligne du tableau
+					$html .= "</table>";
+					$html .= "<table cellspacing=\"0\" cellpadding=\"2\"  style=\"width: 685px;\">\n";
+					$html .= "<tr><td>...........................................................................................................................................................................................................................................</td></tr>";
+					$html .= "</table>";
+					$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px;\">\n";
+					//FZ HANOUNOU le 22/06/2021
 				}
 				$this->MoveFirst();
 				$html .= "</table>";

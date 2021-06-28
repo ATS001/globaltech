@@ -48,7 +48,7 @@ if($facture->facture_info['base_fact']=='C'){
 		$headers = array(
             //'#'           => '5[#]C',
             //'Réf'         => '17[#]C',
-            'DESCRIPTION DES SERVICES FACTURÉS' => '73[#]', 
+            'DESCRIPTION DES SERVICES FACTURÉS' => '95[#]', 
 
         );
 	}else
@@ -62,10 +62,10 @@ if($facture->facture_info['base_fact']=='C'){
 		$headers = array(
             //'#'           => '5[#]C',
             //'Réf'         => '17[#]C',
-            'DESCRIPTION DES SERVICES FACTURÉS' => '43[#]', 
-            'QTE'         => '5[#]C', 
-            'P. MENSUEL'  => '10[#]R',
-            'P. TOTAL'     => '15[#]R',
+            'DESCRIPTION DES SERVICES FACTURÉS' => '61[#]', 
+            'QTE'                               => '7[#]C', 
+            'P. MENSUEL'                        => '12[#]R',
+            'P. TOTAL'                          => '15[#]R',
 
         );
 	}
@@ -82,9 +82,9 @@ else{
 		$headers = array(
             //'#'           => '5[#]C',
             //'Réf'         => '17[#]C',
-            'DESCRIPTION DES SERVICES FACTURÉS' => '65[#]', 
-            'QTE'                               => '5[#]C', 
-            'P. MENSUEL'                        => '10[#]R',
+            'DESCRIPTION DES SERVICES FACTURÉS' => '61[#]', 
+            'QTE'                               => '7[#]C', 
+            'P. MENSUEL'                        => '12[#]R',
             'P. TOTAL'                          => '15[#]R',
 
         );
@@ -490,14 +490,15 @@ p {
 
         </td>
         <td width="50%">
-           <table class="table" cellspacing="2" cellpadding="2"  style="width: 300px; border:1pt solid black;" >
+           <table class="table" cellspacing="0" cellpadding="0"  style="width: 300px; border:0pt solid black;" >
             <tbody>
                 '.$block_tt_no_remise.'
                 '.$block_remise.'
                 <tr>
-                    <td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;"><strong>'.$titl_ht.'</strong></td>
-                    <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_ht'].' '.$pdf->info_facture['devise'].'</strong></td>
+                    <td style="width:35%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>'.$titl_ht.'</strong></td>';
+//Eliminer les : FZ HANOUNOU
+//'<td style="width:5%;color: #fff;font-weight: bold;font-size: 9pt;">:</td>'
+$block_sum .=       '<td class="alignRight" style="width:60%; background-color: #fff;"><strong>'.$pdf->info_facture['total_ht'].' '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>
 
                 '.$block_ttc.'
@@ -505,8 +506,9 @@ p {
             </tbody>
         </table> 
     </td>
-</tr>
-<tr>
+</tr>';
+
+/*<tr>
     <td colspan="2" style="color: #E99222;font-weight: bold;">
         Arrêté la présente Facture à la somme de :
     </td>
@@ -527,7 +529,8 @@ p {
         '.$pdf->info_devis['claus_comercial'].'
     </td>
 </tr>
-
+*/
+$block_sum .= '
 <tr>
     <td colspan="2" align="right" style="font: underline; width: 550px;  padding-right: 200px;">
         <br><br><br><br><br>
