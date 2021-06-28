@@ -418,20 +418,22 @@ $block_tt_no_remise = '<tr>
 $block_tt_no_remise .= '<td class="alignRight" style="width:45%; background-color: #fff;"><strong>'.$total_no_remise .'  '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>';
 $block_remise = '<tr>
-                    <td style="width:30%;color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>Remise '.$pdf->info_facture['valeur_remise'].' %</strong></td>'
+                    <td style="width:30%;color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>Remise '.$pdf->info_facture['valeur_remise'].' %</strong></td>';
                     //Eliminer les : FZ HANOUNOU le 28/06/2021
                     //<td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
 $block_remise .= '<td class="alignRight" style="width:45%; background-color: #fff;"><strong>'.$pdf->info_facture['total_remise'].'  '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>';
 $block_ttc = '<tr>
-                    <td style="width:35%;color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>TVA 18%</strong></td>
-                    <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_tva'].'  '.$pdf->info_facture['devise'].'</strong></td>
+                    <td style="width:30%;color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>TVA</strong></td>';
+                    //Eliminer les : FZ HANOUNOU le 28/06/2021
+                    //<td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
+$block_ttc .='<td class="alignRight" style="width:45%; background-color: #fff;"><strong>'.$pdf->info_facture['total_tva'].'  '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>
                 <tr>
-                    <td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;"><strong>Total TTC</strong></td>
-                    <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_ttc'].' '.$pdf->info_facture['devise'].'</strong></td>
+                    <td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;"><strong>Total à payer</strong></td>';
+                    //Eliminer les : FZ HANOUNOU le 28/06/2021
+                    //<td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
+$block_ttc .='<td class="alignRight" style="width:45%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_ttc'].' '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>';  
 
 if($pdf->info_facture['total_paye'] > 0 and $pdf->info_facture['reste'] > 0) {
@@ -453,7 +455,7 @@ $reste_a_payer = null;
 $block_remise = $pdf->info_facture['valeur_remise'] == 0 ? null : $block_remise; 
 $block_tt_no_remise = $pdf->info_facture['valeur_remise'] == 0 ? null : $block_tt_no_remise;  
 $block_ttc    = $pdf->info_facture['total_tva'] == 0 ? null : $block_ttc;
-$titl_ht = $pdf->info_facture['total_tva'] == 0 ? 'Total à payer' : 'Total HT';
+$titl_ht = $pdf->info_facture['total_tva'] == 0 ? 'Total à payer' : 'Total Net';
 
 if((date('Y-m-d', strtotime($pdf->info_facture['date_facture']))) < (date('Y-m-d', strtotime('16-04-2020')))){
 	$signature = 'La Direction';
