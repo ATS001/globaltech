@@ -149,7 +149,7 @@ class MYPDF extends TCPDF {
       // Logo 2
       $image_file = MPATH_IMG.MCfg::get('logo2');
       $this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
-      $this->Image($image_file, 13, 13, 80, 20, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
+      $this->Image($image_file, 14, 11, 80, 20, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
 		}
 		
                 
@@ -175,25 +175,25 @@ class MYPDF extends TCPDF {
                 	if ($type_echeance->type_echeance_info['periode_fact'] == 'D'){                           
                             
                         $dateLimiteReglement ='<tr style= "font-size:9; color:black;" >
-                        <td style="width: 30%; font-weight: bold;">Date limite de règlement </td>
+                        <td style="width: 50%; font-weight: bold;">Date limite de règlement </td>
                         <td style="width: 5%;  font-weight: bold;">:</td>
-                        <td style="width: 63%; ">'.date('d/m/Y', strtotime($this->info_facture['du']. ' + 14 days')).'</td>
+                        <td style="width: 55%; ">'.date('d/m/Y', strtotime($this->info_facture['du']. ' + 14 days')).'</td>
                         </tr>';
                             
                            
                         }else 	if ($type_echeance->type_echeance_info['periode_fact'] == 'F'){
                             $dateLimiteReglement ='<tr style= "font-size:9; color:black;" >
-                        <td style="width: 30%; font-weight: bold;">Date limite de règlement </td>
+                        <td style="width: 50%; font-weight: bold;">Date limite de règlement </td>
                         <td style="width: 5%;  font-weight: bold;">:</td>
-                        <td style="width: 63%; ">'.date('d/m/Y', strtotime($this->info_facture['du']. ' + 7 days')).'</td>
+                        <td style="width: 55%; ">'.date('d/m/Y', strtotime($this->info_facture['du']. ' + 7 days')).'</td>
                         </tr>';
 
                         }
 
                 
                  $ref_client = $this->info_devis['reference_client'] != null ? $this->info_devis['reference_client'] : null;
-	    $tel = $this->info_devis['tel'] != null ? 'Tél.'.$this->info_devis['tel'] : null;
-	    $email = $this->info_devis['email'] != null ? 'Email.'.$this->info_devis['email'] : null;
+	    $tel = $this->info_devis['tel'] != null ? $this->info_devis['tel'] : null;
+	    $email = $this->info_devis['email'] != null ? $this->info_devis['email'] : null;
 	    $adresse = $this->info_devis['adresse'] != null ? $this->info_devis['adresse'] : null;
 	    $bp = $this->info_devis['bp'] != null ? 'BP. '.$this->info_devis['bp'] : null;
 	    $ville = $this->info_devis['ville'] != null ? $this->info_devis['ville'] : null;
@@ -204,9 +204,9 @@ class MYPDF extends TCPDF {
          $per = NULL;
         if ($this->info_facture['periode'] != NULL) {
             $per = ' <tr style= "font-size:9; color:black;" >
-		<td style="width: 30%; font-weight: bold;">Période facturée</td>
+		<td style="width: 38%; font-weight: bold;color:#173C5A;">Période facturée</td>
 		<td style="width: 5%;  font-weight: bold;">:</td>
-		<td style="width: 63%;color:#00D7B9;">'.$this->info_facture['periode'].'</td>
+		<td style="width: 55%;color:#00D7B9;">'.$this->info_facture['periode'].'</td>
                 </tr>';
         }
          
@@ -249,13 +249,13 @@ class MYPDF extends TCPDF {
 
             
                 
-                $detail_facturex = '<br><br><br>
+                $detail_facturex = '<br><br>
                     <table>
     <tr>
 	<td>
 	<table cellpadding="2" border="0">
     <tr>
-       <td style="width:90%; background-color:#495375; font-size:9; font-weight:bold; color:#fff;"><strong>FACTURE</strong></td>
+       <td style="width:90%; background-color:#173C5A; font-size:9; font-weight:bold; color:#fff;"><strong>FACTURE</strong></td>
 	</tr>
 	<tr>
         <td>'.$ste.'</td>
@@ -290,15 +290,15 @@ class MYPDF extends TCPDF {
 	 </tr>
 	
 		<tr style= "font-size:9; color:black;" >
-		<td style="width: 30%; font-weight: bold;">FACTURE N°</td>
+		<td style="width: 38%; font-weight: bold;color:#173C5A;">FACTURE N°</td>
 		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 63%;color:#00D7B9;">'.$this->info_facture['reference'].'</td>
+		<td style="width: 50%;color:#00D7B9;">'.$this->info_facture['reference'].'</td>
 		</tr>
                 
               <tr style= "font-size:9; color:black;" >
-		<td style="width: 30%; font-weight: bold;">Date de facturation</td>
+		<td style="width: 38%; font-weight: bold;color:#173C5A;">Date de facturation</td>
 		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 63%;color:#00D7B9;">'.$this->info_facture['date_facture'].'</td>
+		<td style="width: 50%;color:#00D7B9;">'.$this->info_facture['date_facture'].'</td>
 		</tr>
                 
                '.$per.'
@@ -315,15 +315,15 @@ class MYPDF extends TCPDF {
 	 </tr>
 	
 		<tr style= "font-size:9; color:black;" >
-		<td style="width: 30%; font-weight: bold;">N° Compte facturation</td>
+		<td style="width: 50%; font-weight: bold;">N° Compte facturation</td>
 		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 63%;">Y</td>
+		<td style="width: 55%;">Y</td>
 		</tr>
                 
               <tr style= "font-size:9; color:black;" >
-		<td style="width: 30%; font-weight: bold;">N° Compte client</td>
+		<td style="width: 50%; font-weight: bold;">N° Compte client</td>
 		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 63%;">'.$ref_client.'</td>
+		<td style="width: 55%;">'.$ref_client.'</td>
 		</tr>
                 
                '.$dateLimiteReglement.'
@@ -341,7 +341,7 @@ class MYPDF extends TCPDF {
 
 	
                 $this->Ln();
-                $this->writeHTMLCell(0, 0, '', 30, $detail_facturex , '', 0, 0, true, 'L', true);
+                $this->writeHTMLCell(0, 0,10, 30, $detail_facturex , '', 0, 0, true, 'L', true);
                 
 		
            // ------------------------ Fin Tableau 1 --------------------------------------------------------------------     
