@@ -513,12 +513,12 @@ class MYPDF extends TCPDF {
 	            'module_height' => 0 // height of a single module in points
             );
 	//write2DBarcode($code, $type, $x='', $y='', $w='', $h='', $style='', $align='', $distort=false)
-	        $this->SetY(-30);
+	        $this->SetY(-15);
 	         //Supprimer le code à barre FZ HANOUNOU le 03/07/2021
 			//$this->write2DBarcode($qr_content, 'QRCODE,H', 15, '', 25, 25, $style, 'N');
 		//}
 		$ste_c = new MSte_info();
-        $this->SetY(-30);
+        $this->SetY(-15);
         if((date('Y-m-d', strtotime($this->info_facture['date_facture']))) < (date('Y-m-d', strtotime('16-04-2020')))){
 		$ste = $ste_c->get_ste_info_report_footer(1,$this->info_facture['id_banque'],$this->info_facture['date_facture'],'Facture');
 	    }else{
