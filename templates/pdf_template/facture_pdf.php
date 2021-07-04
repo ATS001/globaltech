@@ -113,7 +113,7 @@ $tableau_body_product = $db->GetMTable_pdf($headers);
 $facture->get_complement_by_facture();
 $complement_info = $facture->complement_info;
 $tableau_head_complement = MySQL::make_table_head($headers2);
-$tableau_body_complement = $db->GetMTable_pdf($headers2);
+$tableau_body_complement = $db->GetMTable_pdf_compl($headers2);
 
 
 
