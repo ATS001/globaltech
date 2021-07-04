@@ -212,14 +212,14 @@ class MSte_info
     	/*$footer = '<h1>'.$this->ste_info['ste_name'].'</h1><p>Télécommunications – Réseaux - Sécurité électronique - Prestation de Services<br/> Numéro d’Identification Fiscale : '.$this->ste_info['ste_if'].'<br/>Compte Orabank n°20403500201</p>';
 */	
     	if((date('Y-m-d', strtotime($date))) < (date('Y-m-d', strtotime('16-04-2020')))){
-    		//Modification du footer FZ HANOUNOU le 03/07/2021
-    		//$footer = '</br><p>Télécommunications – Réseaux - Sécurité électronique - Prestation de Services<br/> Numéro d’Identification Fiscale : '.$this->ste_info['ste_if'].'<br/>Compte '.$this->banque_info['banque'].' N° '.$this->banque_info['rib'].'</p>';
-    		$footer = '<style>.div-1 {background-color: #173C5A;color: #fff;}</style>
-					  </br><div class="div-1"><p>Règlement à effectuer par virement à l’ordre de GLOBALTEL au compte '.$this->banque_info['banque'].' : '.$this->banque_info['rib']. '<br/>RCC : '.$this->ste_info['ste_rc'].'- NIF : '.$this->ste_info['ste_if'].'</p></div>';     		
+    		$footer = '</br><p>Télécommunications – Réseaux - Sécurité électronique - Prestation de Services<br/> Numéro d’Identification Fiscale : '.$this->ste_info['ste_if'].'<br/>Compte '.$this->banque_info['banque'].' N° '.$this->banque_info['rib'].'</p>';
+   		
     	}else{
     		if($object == 'Facture'){
-    			 
-    			 $footer = '</br><p>NIF : '.$this->ste_info['ste_if'].'<br/>Compte '.$this->banque_info['banque'].' N° :'.$this->banque_info['rib'].'<br>Email: '.$this->ste_info['ste_email_fact'].'<br>Site web :'.$this->ste_info['ste_website'].'</p>';
+    		      //Modification du footer FZ HANOUNOU le 03/07/2021
+    			 //$footer = '</br><p>NIF : '.$this->ste_info['ste_if'].'<br/>Compte '.$this->banque_info['banque'].' N° :'.$this->banque_info['rib'].'<br>Email: '.$this->ste_info['ste_email_fact'].'<br>Site web :'.$this->ste_info['ste_website'].'</p>';
+    			$footer = '<style>.div-1 {background-color: #173C5A;color: #fff;}</style>
+					  </br><div class="div-1"><p>Règlement à effectuer par virement à l’ordre de GLOBALTEL au compte '.$this->banque_info['banque'].' : '.$this->banque_info['rib']. '<br/>RCC : '.$this->ste_info['ste_rc'].'- NIF : '.$this->ste_info['ste_if'].'</p></div>';  
 
     		}else{
     			$footer = '</br><p>Email: '.$this->ste_info['ste_email'].'<br>Site web :'.$this->ste_info['ste_website'].'</p>';
