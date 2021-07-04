@@ -206,7 +206,7 @@ class MYPDF extends TCPDF {
             $per = ' <tr style= "font-size:9; color:black;" >
 		<td style="width: 38%; font-weight: bold;color:#173C5A;">Période facturée</td>
 		<td style="width: 5%;  font-weight: bold;">:</td>
-		<td style="width: 55%;color:#00D7B9;">'.$this->info_facture['periode'].'</td>
+		<td style="width: 55%;color:#00D7B9;">'.date('d/m/Y', strtotime($this->info_facture['du'])).' Au '.date('d/m/Y', strtotime($this->info_facture['au'])).'</td>
                 </tr>';
         }
          
@@ -250,7 +250,7 @@ class MYPDF extends TCPDF {
             
                 
                 $detail_facturex = '<br><br>
-                    <table>
+                    <table style = "width:650px;">
     <tr>
 	<td>
 	<table cellpadding="2" border="0">
@@ -298,7 +298,7 @@ class MYPDF extends TCPDF {
               <tr style= "font-size:9; color:black;" >
 		<td style="width: 38%; font-weight: bold;color:#173C5A;">Date de facturation</td>
 		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 50%;color:#00D7B9;">'.$this->info_facture['date_facture'].'</td>
+		<td style="width: 50%;color:#00D7B9;">'.date('d/m/Y', strtotime($this->info_facture['date_facture'])).'</td>
 		</tr>
                 
                '.$per.'
@@ -341,7 +341,7 @@ class MYPDF extends TCPDF {
 
 	
                 $this->Ln();
-                $this->writeHTMLCell(0, 0,10, 30, $detail_facturex , '', 0, 0, true, 'L', true);
+                $this->writeHTMLCell(0,0,10, 30, $detail_facturex , '', 0, 0, true, 'L', true);
                 
 		
            // ------------------------ Fin Tableau 1 --------------------------------------------------------------------     
@@ -626,36 +626,29 @@ $block_tt_no_remise = '<tr><td style="background-color: #fff;"></td>
 					 	   <td style="background-color: #fff;"></td>
 			     	   </tr>
 				 <tr>
-                    <td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>Total</strong></td>';
+                    <td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;border-bottom:1px white;"><strong>Total</strong></td>';
                     //Eliminer les : FZ HANOUNOU le 28/06/2021
                     //<td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
 $block_tt_no_remise .= '<td class="alignRight" style="width:45%; background-color: #fff;"><strong>'.$total_no_remise .'  '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>';
-$block_remise = '<tr><td style="background-color: #fff;"></td>
-					 <td style="background-color: #fff;"></td>
-			     </tr>
+$block_remise = '
 				 <tr>
-                    <td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>Remise '.$pdf->info_facture['valeur_remise'].' %</strong></td>';
+                    <td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;border-bottom:1px white;"><strong>Remise '.$pdf->info_facture['valeur_remise'].' %</strong></td>';
                     //Eliminer les : FZ HANOUNOU le 28/06/2021
                     //<td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
 $block_remise .= '<td class="alignRight" style="width:45%; background-color: #fff;"><strong>'.$pdf->info_facture['total_remise'].'  '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>
-                <tr><td style="background-color: #fff;"></td>
-					<td style="background-color: #fff;"></td>
-				</tr>';
-$block_ttc = '<tr><td style="background-color: #fff;"></td>
-				  <td style="background-color: #fff;"></td>
-			  </tr>
+               ';
+$block_ttc = '
 			  <tr>
-                    <td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>TVA</strong></td>';
+                    <td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;border-bottom:1px white;"><strong>TVA</strong></td>';
                     //Eliminer les : FZ HANOUNOU le 28/06/2021
                     //<td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
 $block_ttc .='<td class="alignRight" style="width:45%; background-color: #fff;"><strong>'.$pdf->info_facture['total_tva'].'  '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>
-                <tr><td style="background-color: #fff;"></td>
-					<td style="background-color: #fff;"></td></tr>
+               
                 <tr>
-                    <td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>Total à payer</strong></td>';
+                    <td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;border-bottom:1px white;"><strong>Total à payer</strong></td>';
                     //Eliminer les : FZ HANOUNOU le 28/06/2021
                     //<td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
 $block_ttc .='<td class="alignRight" style="width:45%;color: #00D7B9;background-color: #fff;"><strong>'.$pdf->info_facture['total_ttc'].' '.$pdf->info_facture['devise'].'</strong></td>
@@ -663,15 +656,12 @@ $block_ttc .='<td class="alignRight" style="width:45%;color: #00D7B9;background-
 
 if($pdf->info_facture['total_paye'] > 0 and $pdf->info_facture['reste'] > 0) {
 
-$reste_a_payer = '  <tr><td style="background-color: #fff;"></td>
-						<td style="background-color: #fff;"></td>
-				    </tr>
+$reste_a_payer = '  
 					<tr>
-                    	<td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>Total payé </strong></td>
+                    	<td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;border-bottom:1px white;"><strong>Total payé </strong></td>
                     	<td class="alignRight" style="width:45%; background-color: #fff;"><strong>'.$pdf->info_facture['total_paye'].'  '.$pdf->info_facture['devise'].'</strong></td>
                 	</tr>
-                	<tr><td style="background-color: #fff;"></td>
-					    <td style="background-color: #fff;"></td></tr>
+                	
                  	<tr>
                     	<td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>Reste à payer </strong></td>
                     	<td class="alignRight" style="width:45%; color: #00D7B9;background-color: #fff;"><strong>'.$pdf->info_facture['reste'].'  '.$pdf->info_facture['devise'].'</strong></td>
@@ -722,15 +712,15 @@ p {
 
         </td>
         <td width="40%" style="background-color: #fff;">
-           <table class="table" cellspacing="0" cellpadding="0"  style="width: 300px; border:0pt solid black;" >
+           <table class="table" cellspacing="0" cellpadding="2"  style="width: 300px;" >
             <tbody>
                 '.$block_tt_no_remise.'
                 '.$block_remise.'
                 <tr>
-                    <td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>'.$titl_ht.'</strong></td>';
+                    <td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;border-bottom:1px white;"><strong>'.$titl_ht.'</strong></td>';
 //Eliminer les : FZ HANOUNOU le 28/06/2021
 //'<td style="width:5%;color: #fff;font-weight: bold;font-size: 9pt;">:</td>'
-$block_sum .=       '<td class="alignRight" style="width:45%; background-color: #fff;"><strong>'.$pdf->info_facture['total_ht'].' '.$pdf->info_facture['devise'].'</strong></td>
+$block_sum .=       '<td class="alignRight" style="width:45%; background-color: #fff;border-bottom:1px white;"><strong>'.$pdf->info_facture['total_ht'].' '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>
 
                 '.$block_ttc.'
