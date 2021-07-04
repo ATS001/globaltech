@@ -185,7 +185,7 @@ class MYPDF extends TCPDF {
                             $dateLimiteReglement ='<tr style= "font-size:9; color:black;" >
                         <td style="width: 50%; font-weight: bold;">Date limite de règlement </td>
                         <td style="width: 5%;  font-weight: bold;">:</td>
-                        <td style="width: 55%; ">'.date('d/m/Y', strtotime($this->info_facture['du']. ' + 7 days')).'</td>
+                        <td style="width: 55%; ">'.date('d/m/Y', strtotime($this->info_facture['au']. ' + 7 days')).'</td>
                         </tr>';
 
                         }
@@ -317,7 +317,7 @@ class MYPDF extends TCPDF {
 		<tr style= "font-size:9; color:black;" >
 		<td style="width: 50%; font-weight: bold;">N° Compte facturation</td>
 		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 55%;">Y</td>
+		<td style="width: 55%;"> 000000000000 </td>
 		</tr>
                 
               <tr style= "font-size:9; color:black;" >
