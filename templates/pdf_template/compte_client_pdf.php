@@ -61,10 +61,10 @@ $compte_client_info = $compte_client->compte_client_info;
 $headers = array(
     '#' => '5[[#]C',
     'Date' => '10[#]C',
-    'Description' => '46[#]L',
+    'Description' => '43[#]L',
     'Montant' => '11[#]R',
     'Paiement' => '11[#]R',
-    'Solde(' . $devise . ')' => '11[#]R',
+    'Solde(' . $devise . ')' => '15[#]R',
 );
 
 $tableau_head_product = MySQL::make_table_head($headers);
@@ -92,8 +92,9 @@ class MYPDF extends TCPDF {
         //writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
         // Logo
         $image_file = MPATH_IMG . MCfg::get('logo2');
-        $this->writeHTMLCell(50, 20, '', '', '', 0, 0, 0, true, 'C', true);
-        $this->Image($image_file, 22, 6, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
+       $this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
+    	 $this->Image($image_file, 14, 6, 80, 20, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
+
 
         //Get info ste from DB
         $ste_c = new MSte_info();
@@ -101,13 +102,13 @@ class MYPDF extends TCPDF {
         $this->writeHTMLCell(0, 0, '', 25, $ste, '', 0, 0, true, 'L', true);
         $this->SetTextColor(0, 50, 127);
         // Set font
-        $this->SetFont('helvetica', 'B', 22);
+        $this->SetFont('gotham-book', 'B', 22);
         //Ste
         // Title
-        $titre_doc = '<h1 style="letter-spacing: 2px;color;#495375;font-size: 20pt;">ETAT DE COMPTE</h1>';
+        $titre_doc = '<h1 style="letter-spacing: 2px;color;#495375;font-size: 19pt;">ETAT DE COMPTE</h1>';
         $this->writeHTMLCell(0, 0, 122, 7, $titre_doc, 'B', 0, 0, true, 'R', true);
         $this->SetTextColor(0, 0, 0);
-        $this->SetFont('helvetica', '', 9);
+        $this->SetFont('gotham-book', '', 9);
         $date_ref = date("M Y");
 
 //var_dump($this->client_info_2);
@@ -115,31 +116,31 @@ class MYPDF extends TCPDF {
         $detail_client = '<table cellspacing="3" cellpadding="2" border="0">
             <tr>
                
-                <td style="width:40%; color:#A1A0A0;"><strong>REFERENCE 
+                <td style="width:42%; color:#173C5A;"><strong>REFERENCE 
                 </strong></td>
                 <td style="width:5%;">:</td>
-                <td style="width:57%; background-color: #eeecec; ">GT-EC/' . $date_ref . '</td>
+                <td style="width:57%;color:#00D7B9;">GT-EC/' . $date_ref . '</td>
                 </tr>
                 <tr>
-		<td style="width:40%; color:#A1A0A0;"><strong>REFERENCE CLIENT</strong></td>
+		<td style="width:42%; color:#173C5A;"><strong>REFERENCE CLIENT</strong></td>
 		<td style="width:5%;">:</td>
-		<td style="width:57%; background-color: #eeecec;">' . $this->client_info_2['reference'] . '</td>
+		<td style="width:57%;color:#00D7B9;">' . $this->client_info_2['reference'] . '</td>
 		</tr> 
                 <tr>
-		<td style="width:40%; color:#A1A0A0;"><strong>DENOMINATION</strong></td>
+		<td style="width:42%; color:#173C5A;"><strong>DENOMINATION</strong></td>
 		<td style="width:5%;">:</td>
-		<td style="width:57%; background-color: #eeecec;">' . $this->client_info_2['denomination'] . '</td>
+		<td style="width:57%;color:#00D7B9;">' . $this->client_info_2['denomination'] . '</td>
 		</tr> 
 		<tr>
-		<td style="width:40%; color:#A1A0A0;"><strong>MONTANT DÛ</strong></td>
+		<td style="width:42%;color:#173C5A;"><strong>MONTANT DÛ</strong></td>
 		<td style="width:5%;">:</td>
-		<td  style="width:57%; text-align: right; background-color: #E99222; ">' . $this->solde_final . ' ' . $this->client_info_2['dev'] . '</td>
+		<td  style="width:57%;color:#00D7B9;">' . $this->solde_final . ' ' . $this->client_info_2['dev'] . '</td>
 		</tr>
                 <tr>
-                <td style="width:40%; color:#A1A0A0;"><strong>DELAI DE PAIEMENT
+                <td style="width:42%; color:#173C5A;;"><strong>DELAI DE PAIEMENT
                 </strong></td>
                 <td style="width:5%;">:</td>
-                <td style="width:57%; background-color: #eeecec; "> 10 Jours </td>
+                <td style="width:57%;color:#00D7B9;"> 10 Jours </td>
                 </tr>
                 </table>';
 
@@ -186,7 +187,7 @@ class MYPDF extends TCPDF {
         // Position at 15 mm from bottom
         $this->SetY(-15);
         // Set font
-        $this->SetFont('helvetica', 'I', 8);
+        $this->SetFont('gotham-book', 'I', 8);
         // Page number
         $this->Cell(0, 10, 'Page ' . $this->getAliasNumPage() . '/' . $this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
     }
@@ -255,7 +256,7 @@ $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 // print standard ASCII chars, you can use core fonts like
 // helvetica or times to reduce file size.
 // set font
-$pdf->SetFont('helvetica', '', 9);
+$pdf->SetFont('gotham-book', '', 9);
 
 // Add a page
 // This method has several options, check the source code documentation for more information.
