@@ -286,7 +286,7 @@ class MYPDF extends TCPDF {
 <td>	
 <table   cellpadding="2" border="0">
     <tr style=" font-size:9; font-weight:bold; color:black;">
-       <td><strong>.....................................................................................................</strong></td>
+       <td><strong>.....................................................................................................</strong><br></td>
 	 </tr>
 	
 		<tr style= "font-size:9; color:black;" >
@@ -311,22 +311,23 @@ class MYPDF extends TCPDF {
 	<td>	
 <table   cellpadding="2" border="0">
     <tr style="; font-size:9; font-weight:bold; color:#fff;">
-       <td><strong>........................................................</strong></td>
+       <td><strong>........................................................</strong><br></td>
 	 </tr>
-	
-		<tr style= "font-size:9; color:black;" >
-		<td style="width: 50%; font-weight: bold;">N° Compte facturation</td>
-		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 55%;"> 000000000000 </td>
-		</tr>
-                
-              <tr style= "font-size:9; color:black;" >
+         
+  <tr style= "font-size:9; color:black;" >
 		<td style="width: 50%; font-weight: bold;">N° Compte client</td>
 		<td style="width: 5%; font-weight: bold;">:</td>
 		<td style="width: 55%;">'.$ref_client.'</td>
 		</tr>
+	                    
                 
                '.$dateLimiteReglement.'
+                   
+<tr style= "font-size:9; color:black;" >
+		<td style="width: 50%; font-weight: bold;"></td>
+		<td style="width: 5%; font-weight: bold;"></td>
+		<td style="width: 55%;"></td>
+		</tr>
                                 
 	</table>
 
@@ -336,7 +337,7 @@ class MYPDF extends TCPDF {
 </tr>
 	
 </table>
-<br><br>';
+<br><br><br>';
         
 
 	
