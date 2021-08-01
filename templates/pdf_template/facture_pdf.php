@@ -82,9 +82,9 @@ else{
 		$headers = array(
             //'#'           => '5[#]C',
             //'Réf'         => '17[#]C',
-            'DESCRIPTION DES SERVICES FACTURÉS' => '61[#]', 
+            'DESCRIPTION'						=> '61[#]', 
             'QTE'                               => '7[#]C', 
-            'P. MENSUEL'                        => '12[#]R',
+            'P. UNITAIRE'                       => '12[#]R',
             'P. TOTAL'                          => '15[#]R',
 
         );

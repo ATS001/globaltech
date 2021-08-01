@@ -33,15 +33,29 @@ if(!$devis->Get_detail_devis_pdf())
 
 }
 global $db;
+if($devis->devis_info['type_devis']=='ABN'){
+
 $headers = array(
             //'#'           => '5[#]C',
             //'Réf'         => '17[#]C',
             'DESCRIPTION DES SERVICES FACTURÉS' => '61[#]',
-            'Qte'         						=> '7[#]C',
+            'QTE'         						=> '7[#]C',
             'P. MENSUEL'  						=> '12[#]R',
             'P. TOTAL'    						=> '15[#]R',
 
         );
+}
+else{
+$headers = array(
+            //'#'           => '5[#]C',
+            //'Réf'         => '17[#]C',
+            'DESCRIPTION'						=> '61[#]', 
+            'QTE'                               => '7[#]C', 
+            'P. UNITAIRE'                        => '12[#]R',
+            'P. TOTAL'                          => '15[#]R',
+
+        );	
+}
 $devis_info   = $devis->devis_info;
 $tableau_head = MySQL::make_table_head($headers);
 $tableau_body = $db->GetMTable_pdf($headers);
@@ -239,7 +253,7 @@ class MYPDF extends TCPDF {
 		// <h1 style="letter-spacing: 2px;color;#A1A0A0;font-size: 20pt;">D E V I S</h1>';
 		// $this->writeHTMLCell(0, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true, 2);
 		// $this->SetTextColor(0, 0, 0);
-		// $this->SetFont('gotham-book', '', 9);
+		$this->SetFont('gotham-book', '', 9);
 		// $detail_devis = '<table cellspacing="3" cellpadding="2" border="0">
 		// <tr>
 		// <td style="width:35%; color:#A1A0A0;"><strong>Réf Devis</strong></td>
@@ -439,7 +453,6 @@ $pdf->SetFont('gotham-book', '', 9);
 // This method has several options, check the source code documentation for more information.
 $pdf->AddPage();
 //If is generated to stored the QR is need
-
 // Print text using writeHTMLCell()
 $pdf->Table_body = $tableau_body;
 $html = $pdf->Table_body;
@@ -582,7 +595,24 @@ p {
 // </tr>
 // </table>';
 //$pdf->lastPage();
-$block_sum .= '</table>';
+$block_sum .= '
+ <tr><td><br><br><br></td></tr>
+ <tr align="center">
+ <td style="font: underline; width: 200px;" > </td>
+ <td style="font: underline; width: 200px;" > </td>
+     <td style="font: underline;">
+                 <strong>'.$signature.'</strong>
+     </td>
+ </tr>
+ <tr align="center">
+ <td style="font: underline; width: 200px;" > </td>
+ <td style="font: underline; width: 200px;"> </td>
+     <td style="font: underline;">
+
+         <strong>'.$creusr.'</strong>
+     </td>
+ </tr>
+ </table>';
 
 //Problème d'affichage devis sur 2 page 
 //FZ le 22/10/2020
