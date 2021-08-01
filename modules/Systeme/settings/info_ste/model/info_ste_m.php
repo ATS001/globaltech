@@ -222,7 +222,9 @@ class MSte_info
     			$footer = '<style>.div-1 {background-color: #173C5A;color: #fff;}</style><table><tr class="div-1"><td>Règlement à effectuer par virement à l’ordre de GLOBALTEL au compte '.$this->banque_info['banque'].' : '.$this->banque_info['rib']. '<br/>RC : '.$this->ste_info['ste_rc'].'- NIF : '.$this->ste_info['ste_if'].'</td></tr></table>';  
   
     		}else{
-    			$footer = '</br><p>Email: '.$this->ste_info['ste_email'].'<br>Site web :'.$this->ste_info['ste_website'].'</p>';
+    		    //Modification du footer FZ HANOUNOU le 24/07/2021    			
+    			//$footer = '</br><p>Email: '.$this->ste_info['ste_email'].'<br>Site web :'.$this->ste_info['ste_website'].'</p>';
+    			$footer = '<style>.div-1 {background-color: #173C5A;color: #fff;}</style><table><tr class="div-1"><td>Email: '.$this->ste_info['ste_email'].'<br>Site web :'.$this->ste_info['ste_website'].'</td></tr></table>';
     		}
     	}
     	    	
