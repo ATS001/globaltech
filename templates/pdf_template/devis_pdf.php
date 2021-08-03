@@ -198,7 +198,7 @@ class MYPDF extends TCPDF {
 		<td style="width: 50%;color:#00D7B9;">'.$this->info_devis['reference'].'</td>
 		</tr>
                 
-              <tr style= "font-size:9; color:black;" >
+        <tr style= "font-size:9; color:black;" >
 		<td style="width: 38%; font-weight: bold;color:#173C5A;">Date devis</td>
 		<td style="width: 5%; font-weight: bold;">:</td>
 		<td style="width: 50%;color:#00D7B9;">'.date('d/m/Y', strtotime($this->info_devis['date_devis'])).'</td>
@@ -214,12 +214,6 @@ class MYPDF extends TCPDF {
     <tr style="; font-size:9; font-weight:bold; color:#fff;">
        <td><strong>........................................................</strong></td>
 	 </tr>
-	
-		<tr style= "font-size:9; color:black;" >
-		<td style="width: 50%; font-weight: bold;">N° Compte facturation</td>
-		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 55%;"> 000000000000 </td>
-		</tr>
                 
               <tr style= "font-size:9; color:black;" >
 		<td style="width: 50%; font-weight: bold;">N° Compte client</td>
