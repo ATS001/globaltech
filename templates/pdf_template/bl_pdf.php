@@ -136,7 +136,7 @@ class MYPDF extends TCPDF {
 	<td>
 	<table cellpadding="2" border="0">
     <tr>
-       <td style="width:90%; background-color:#173C5A; font-size:9; font-weight:bold; color:#fff;"><strong>DEVIS</strong></td>
+       <td style="width:90%; background-color:#173C5A; font-size:9; font-weight:bold; color:#fff;"><strong>BL</strong></td>
 	</tr>
 	<tr>
         <td>'.$ste.'</td>
@@ -171,13 +171,13 @@ class MYPDF extends TCPDF {
 	 </tr>
 	
 		<tr style= "font-size:9; color:black;" >
-		<td style="width: 38%; font-weight: bold;color:#173C5A;">DEVIS N°</td>
+		<td style="width: 38%; font-weight: bold;color:#173C5A;">BL N°</td>
 		<td style="width: 5%; font-weight: bold;">:</td>
 		<td style="width: 50%;color:#00D7B9;">'.$this->info_bl['reference'].'</td>
 		</tr>
                 
               <tr style= "font-size:9; color:black;" >
-		<td style="width: 38%; font-weight: bold;color:#173C5A;">Date devis</td>
+		<td style="width: 38%; font-weight: bold;color:#173C5A;">Date BL</td>
 		<td style="width: 5%; font-weight: bold;">:</td>
 		<td style="width: 50%;color:#00D7B9;">'.date('d/m/Y', strtotime($this->info_bl['date_bl'])).'</td>
 		</tr>
