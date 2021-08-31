@@ -63,13 +63,13 @@ class MYPDF extends TCPDF {
       // Logo 1
       $image_file = MPATH_IMG.MCfg::get('logo');
       $this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
-        $this->Image($image_file, 14, 10, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
+    	 $this->Image($image_file, 14, 10, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
 
   }else{
       // Logo 2
       $image_file = MPATH_IMG.MCfg::get('logo2');
       $this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
-      $this->Image($image_file, 13, 13, 50, 20, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
+      $this->Image($image_file, 14, 11, 80, 20, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
   }
   
 		//Get info ste from DB
