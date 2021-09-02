@@ -721,7 +721,7 @@ p {
                     <td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;border-bottom:1px white;"><strong>'.$titl_ht.'</strong></td>';
 //Eliminer les : FZ HANOUNOU le 28/06/2021
 //'<td style="width:5%;color: #fff;font-weight: bold;font-size: 9pt;">:</td>'
-$block_sum .=       '<td class="alignRight" style="width:45%; background-color: #fff;border-bottom:1px white;"><strong>'.$pdf->info_facture['total_ht'].' '.$pdf->info_facture['devise'].'</strong></td>
+$block_sum .=       '<td class="alignRight" style="width:45%; background-color: #fff;border-bottom:1px white;"><strong>'.$pdf->info_facture['total_ttc'].' '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>
 
                 '.$block_ttc.'
