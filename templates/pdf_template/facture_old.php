@@ -497,7 +497,7 @@ p {
                 <tr>
                     <td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;"><strong>'.$titl_ht.'</strong></td>
                     <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_ttc'].' '.$pdf->info_facture['devise'].'</strong></td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_ht'].' '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>
 
                 '.$block_ttc.'

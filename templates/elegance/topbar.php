@@ -29,7 +29,7 @@ global $db;
 			<!-- #section:basics/navbar.layout.brand -->
 			<a href="#" class="navbar-brand">
 				<small>
-					<img  src="img/<?php echo MCfg::get('logo') ?>" alt="SYS" title="<?php echo SYS_TITRE.' | '.MCfg::get('sys_desc').' | '.CLIENT_TITRE ?>" height="25" width="100" />
+					<img  src="img/<?php echo MCfg::get('logo2') ?>" alt="SYS" title="<?php echo SYS_TITRE.' | '.MCfg::get('sys_desc').' | '.CLIENT_TITRE ?>" height="25" width="100" />
 					<?php echo SYS_TITRE;?>
 				</small>
 			</a>

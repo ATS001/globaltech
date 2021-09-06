@@ -50,7 +50,7 @@ $photo = Minit::get_file_archive($site->sites_info['photo']);
                                 <i class="green ace-icon fa fa-installer bigger-120"></i>
                                 Site
                             </a>
-                        </li>                        
+                        </li>
                     </ul>
 
                     <div class="tab-content no-border padding-24">
@@ -75,7 +75,11 @@ $photo = Minit::get_file_archive($site->sites_info['photo']);
                                             ?>
                                         </h3>
                                         <ul class="list-unstyled spaced">
-
+                                                                          <li>
+                                                                            <i class="ace-icon fa fa-caret-right green"></i>Non site :
+                                                                            <b style="color:green"><?php $site->s("site_name") ?></b>
+                                                                          </li>
+                                                                          <li>
                                             <li>
                                                 <i class="ace-icon fa fa-caret-right green"></i>Référence :
                                                 <b style="color:green"><?php $site->s("reference") ?></b>
@@ -93,7 +97,7 @@ $photo = Minit::get_file_archive($site->sites_info['photo']);
                                                 <i class="ace-icon fa fa-caret-right green"></i>Date mise en service :
                                                 <b style="color:green"><?php $site->s("date_mes") ?></b>
                                             </li>
-                                            
+
                                             <?php if ($site->sites_info["basestation"] != null) {
                                                 ?>
                                                 <li>
@@ -103,7 +107,7 @@ $photo = Minit::get_file_archive($site->sites_info['photo']);
                                             <?php } ?>
 
                                             <?php if ($site->sites_info["secteur"] != null) {
-                                                ?>                                            
+                                                ?>
                                                 <li>
                                                     <i class="ace-icon fa fa-caret-right green"></i>Secteur :
                                                     <b style="color:green"><?php $site->s("secteur") ?></b>
@@ -111,50 +115,73 @@ $photo = Minit::get_file_archive($site->sites_info['photo']);
                                             <?php } ?>
 
                                             <?php if ($site->sites_info["antenne"] != null) {
-                                                ?>   
+                                                ?>
                                                 <li>
                                                     <i class="ace-icon fa fa-caret-right green"></i>Antenne :
                                                     <b style="color:green"><?php $site->s("antenne") ?></b>
                                                 </li>
                                             <?php } ?>
 
+                                            <?php if ($site->sites_info["radio"] != null) {
+                                                ?>
+                                                <li>
+                                                    <i class="ace-icon fa fa-caret-right green"></i>Radio :
+                                                    <b style="color:green"><?php $site->s("radio") ?></b>
+                                                </li>
+                                            <?php } ?>
+
+                                            <?php if ($site->sites_info["addr_mac_radio"] != null) {
+                                                ?>
+                                                <li>
+                                                    <i class="ace-icon fa fa-caret-right green"></i>Adresse mac Radio :
+                                                    <b style="color:green"><?php $site->s("addr_mac_radio") ?></b>
+                                                </li>
+                                            <?php } ?>
                                             <?php if ($site->sites_info["modem"] != null) {
-                                                ?> 
+                                                ?>
                                                 <li>
                                                     <i class="ace-icon fa fa-caret-right green"></i>Modem :
                                                     <b style="color:green"><?php $site->s("modem") ?></b>
                                                 </li>
                                             <?php } ?>
 
+                                            <?php if ($site->sites_info["routeur"] != null) {
+                                                ?>
+                                                <li>
+                                                    <i class="ace-icon fa fa-caret-right green"></i>Routeur :
+                                                    <b style="color:green"><?php $site->s("routeur") ?></b>
+                                                </li>
+                                            <?php } ?>
+
+                                            <?php if ($site->sites_info["addr_mac_router"] != null) {
+                                                ?>
+                                                <li>
+                                                    <i class="ace-icon fa fa-caret-right green"></i>Adresse mac Routeur :
+                                                    <b style="color:green"><?php $site->s("addr_mac_router") ?></b>
+                                                </li>
+                                            <?php } ?>
+
+
+
 
                                             <?php if ($site->sites_info["sn_modem"] != null) {
-                                                ?> 
+                                                ?>
                                                 <li>
                                                     <i class="ace-icon fa fa-caret-right green"></i>SN Modem :
                                                     <b style="color:green"><?php $site->s("sn_modem") ?></b>
                                                 </li>
                                             <?php } ?>
 
-
-                                            <?php if ($site->sites_info["bande"] != null) {
-                                                ?> 
-                                                <li>
-                                                    <i class="ace-icon fa fa-caret-right green"></i>Bande :
-                                                    <b style="color:green"><?php $site->s("bande") ?></b>
-                                                </li>
-                                            <?php } ?>
-
-
                                             <?php if ($site->sites_info["satellite"] != null) {
-                                                ?> 
+                                                ?>
                                                 <li>
                                                     <i class="ace-icon fa fa-caret-right green"></i>Satellite :
                                                     <b style="color:green"><?php $site->s("satellite") ?></b>
-                                                </li>                                            
+                                                </li>
                                             <?php } ?>
 
                                             <?php if ($site->sites_info["lnb"] != null) {
-                                                ?> 
+                                                ?>
                                                 <li>
                                                     <i class="ace-icon fa fa-caret-right green"></i>LNB :
                                                     <b style="color:green"><?php $site->s("lnb") ?></b>
@@ -162,13 +189,30 @@ $photo = Minit::get_file_archive($site->sites_info['photo']);
                                             <?php } ?>
 
                                             <?php if ($site->sites_info["buc"] != null) {
-                                                ?> 
+                                                ?>
                                                 <li>
                                                     <i class="ace-icon fa fa-caret-right green"></i>BUC :
                                                     <b style="color:green"><?php $site->s("buc") ?></b>
                                                 </li>
                                             <?php } ?>
 
+                                            <?php if ($site->sites_info["cable"] != null) {
+                                                ?>
+                                                <li>
+                                                    <i class="ace-icon fa fa-caret-right green"></i>cable :
+                                                    <b style="color:green"><?php $site->s("cable") ?></b>
+                                                </li>
+                                            <?php } ?>
+
+                                            <?php if ($site->sites_info["bande"] != null) {
+                                                ?>
+                                                <li>
+                                                    <i class="ace-icon fa fa-caret-right green"></i>Bande Passante:
+                                                    <b style="color:green"><?php $site->s("bande") ?></b>
+                                                </li>
+                                            <?php } ?>
+
+                                            
                                         </ul>
                                     </div>
 
@@ -194,4 +238,3 @@ $photo = Minit::get_file_archive($site->sites_info['photo']);
 
 
 </div><!-- /.-profile -->
-

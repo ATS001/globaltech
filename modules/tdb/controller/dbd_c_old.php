@@ -2,13 +2,10 @@
 <?php 
 view::load_view('indicators');
 
-if(session::get('service') == 3 OR session::get('service') == 1){
 $chart = new MHighchart();
 $chart->call_chart('recette_per_month');
-
 $chart = new MHighchart();
 $chart->call_chart('partition_recette_by_type_produit');
-}
 
 /*$chart = new MHighchart();
 $chart->titre = 'Evolution des recettes par mois';

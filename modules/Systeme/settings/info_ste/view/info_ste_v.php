@@ -3,7 +3,7 @@ defined('_MEXEC') or die;
 //Get all compte info 
  $info_ste = new MSte_info();
 //Set ID of Module with POST id
- $info_ste->id_ste = 1;
+ $info_ste->id_ste = 2;
 
 //Check if Post ID <==> Post idc or get_modul return false. 
  if(!$info_ste->get_ste_info())

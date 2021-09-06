@@ -1,7 +1,7 @@
 <div class="login-box visible widget-box no-border">
 	<div class="widget-body">
 	<h1>
-		<img src="img/<?php echo Mcfg::get('logo')?>" width="149" height="40" />
+		<img src="img/<?php echo Mcfg::get('logo2')?>" width="149" height="40" />
 
 		<span class="white"><?php //echo SYS_TITRE?></span>
 	</h1>

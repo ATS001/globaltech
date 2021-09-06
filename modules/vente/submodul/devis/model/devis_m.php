@@ -1252,7 +1252,7 @@ class Mdevis {
         $year = date('Y', strtotime($this->_data['date_valid_client']));
         $month = date('m', strtotime($this->_data['date_valid_client']));    
         foreach ($commercials_array as $id_commercial) {
-        //Début FZ pour éliminer la vérification de l'objectif mensuel s'il s'agit de la DG ou Admin le 27/03/2020
+        //Début FZ pour éliminer la vérification de l'objectif mensuel s'il s'agit de la DG ou Admin le 27/03/2020  
         $commercial = new Mcommerciale();
         $commercial->id_commerciale= $id_commercial;
         $commercial->get_commerciale();
@@ -1264,7 +1264,7 @@ class Mdevis {
         $commercial_d->get_user();
         $service_comm = $commercial_d->g('service');
         //var_dump($service_comm);
-
+        
         if (in_array($service_comm, array(1, 3))) {
                 null;
         } 
