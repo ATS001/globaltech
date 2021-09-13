@@ -453,6 +453,12 @@ $block_tt_no_remise = $pdf->info_facture['valeur_remise'] == 0 ? null : $block_t
 $block_ttc    = $pdf->info_facture['total_tva'] == 0 ? null : $block_ttc;
 $titl_ht = $pdf->info_facture['total_tva'] == 0 ? 'Total à payer' : 'Total HT';
 
+if($pdf->info_facture['total_tva'] == 0 and ($pdf->info_facture['total_ttc_initial'] != $pdf->info_facture['total_ttc']){
+    	$total_f = $pdf->info_facture['total_ttc'];
+}else{
+		$total_f = $pdf->info_facture['total_ht'];
+}
+
 if((date('Y-m-d', strtotime($pdf->info_facture['date_facture']))) < (date('Y-m-d', strtotime('16-04-2020')))){
 	$signature = 'La Direction';
 }else{
@@ -497,7 +503,7 @@ p {
                 <tr>
                     <td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;"><strong>'.$titl_ht.'</strong></td>
                     <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
-                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_ttc'].' '.$pdf->info_facture['devise'].'</strong></td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$total_f.' '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>
 
                 '.$block_ttc.'
