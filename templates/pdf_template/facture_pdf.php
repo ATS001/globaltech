@@ -453,7 +453,7 @@ $block_tt_no_remise = $pdf->info_facture['valeur_remise'] == 0 ? null : $block_t
 $block_ttc    = $pdf->info_facture['total_tva'] == 0 ? null : $block_ttc;
 $titl_ht = $pdf->info_facture['total_tva'] == 0 ? 'Total à payer' : 'Total HT';
 
-if($pdf->info_facture['total_tva'] == 0 and ($pdf->info_facture['total_ttc_initial'] != $pdf->info_facture['total_ttc']){
+if($pdf->info_facture['total_tva'] == 0 and ($pdf->info_facture['total_ttc_initial'] != $pdf->info_facture['total_ttc'])){
     	$total_f = $pdf->info_facture['total_ttc'];
 }else{
 		$total_f = $pdf->info_facture['total_ht'];
