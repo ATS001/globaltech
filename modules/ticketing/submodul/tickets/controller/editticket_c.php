@@ -9,7 +9,7 @@ if (!defined('_MEXEC'))
 //Controller EDIT Form
 if (MInit::form_verif('editticket', false)) {
     if (!MInit::crypt_tp('id', null, 'D')) {
-        // returne message error red to client 
+        // returne message error red to client
         exit('0#<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
     }
     $posted_data = array(
@@ -22,7 +22,8 @@ if (MInit::form_verif('editticket', false)) {
         'categorie_produit' => Mreq::tp('categorie_produit'),
         'id_produit'=> Mreq::tp('id_produit'),
         'serial_number'=>Mreq::tp('serial_number'),
-      
+          'contact'=>Mreq::tp('contact')
+
     );
 
 
@@ -35,23 +36,13 @@ if (MInit::form_verif('editticket', false)) {
         $empty_list .= "<li>Client</li>";
         $checker = 1;
     }
-    
+
     if ($posted_data["message"] == NULL) {
         $empty_list .= "<li>Message</li>";
         $checker = 1;
     }
     if ($posted_data["date_previs"] == NULL) {
         $empty_list .= "<li>Date prévisionnelle</li>";
-        $checker = 1;
-    }
-/*
-    if (date('Y-m-d', strtotime($posted_data['date_previs'])) < date('Y-m-d')) {
-        $control_date = "<li>Date prévisionnelle doit être supérieur ou égale à la date d'aujourd'hui</li>";
-        $checker = 2;
-    }
-*/
-    if ($posted_data["type_produit"] == NULL) {
-        $empty_list .= "<li>Type produit</li>";
         $checker = 1;
     }
 

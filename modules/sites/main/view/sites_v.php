@@ -1,4 +1,4 @@
-<?php 
+<?php
 //First check target no Hack
 if(!defined('_MEXEC'))die();
 //SYS GLOBAL TECH
@@ -11,7 +11,7 @@ $array_column = array(
         'column' => 'sites.id',
         'type'   => '',
         'alias'  => 'id',
-        'width'  => '5',
+        'width'  => '2',
         'header' => 'ID',
         'align'  => 'C'
     ),
@@ -19,15 +19,25 @@ $array_column = array(
         'column' => 'sites.reference',
         'type'   => '',
         'alias'  => 'reference',
-        'width'  => '12',
+        'width'  => '4',
         'header' => 'Reference',
+        'align'  => 'C'
+    ),
+
+		array(
+        'column' => 'sites.site_name',
+        'type'   => '',
+        'alias'  => 'site_name',
+        'width'  => '13',
+        'header' => 'Nom site',
         'align'  => 'L'
     ),
+
     array(
         'column' => 'sites.type_site',
         'type'   => '',
         'alias'  => 'type_site',
-        'width'  => '6',
+        'width'  => '3',
         'header' => 'Type',
         'align'  => 'C'
     ),
@@ -35,7 +45,7 @@ $array_column = array(
         'column' => 'clients.denomination',
         'type'   => '',
         'alias'  => 'client',
-        'width'  => '15',
+        'width'  => '20',
         'header' => 'Client',
         'align'  => 'C'
     ),
@@ -43,36 +53,19 @@ $array_column = array(
         'column' => 'sites.date_mes',
         'type'   => 'date',
         'alias'  => 'date_mes',
-        'width'  => '10',
+        'width'  => '4',
         'header' => 'Date MES',
         'align'  => 'C'
     ),
     array(
-        'column' => 'sites.modem',
-        'type'   => '',
-        'alias'  => 'modem',
-        'width'  => '10',
-        'header' => 'Modem',
-        'align'  => 'L'
-    ),
-    array(
-        'column' => 'sites.sn_modem',
-        'type'   => '',
-        'alias'  => 'sn_modem',
-        'width'  => '10',
-        'header' => 'SN Modem',
-        'align'  => 'L'
-    ),
-       
-    array(
         'column' => 'statut',
         'type'   => '',
         'alias'  => 'statut',
-        'width'  => '12',
+        'width'  => '4',
         'header' => 'Statut',
         'align'  => 'C'
     ),
-    
+
  );
 //Creat new instance
 $html_data_table = new Mdatatable();
@@ -86,53 +79,3 @@ if(!$data = $html_data_table->table_html())
 }else{
     echo $data;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

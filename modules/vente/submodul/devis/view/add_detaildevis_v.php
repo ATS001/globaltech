@@ -1,7 +1,7 @@
 <?php 
 //Get Ste Devise 
 $info_ste = new MSte_info();
-$info_ste->id_ste = 1;
+$info_ste->id_ste = 2;
 $info_ste->get_ste_info();
 $ste_devise = $info_ste->ste_info['ste_id_devise'];
 //var_dump($ste_devise);
@@ -16,7 +16,7 @@ $client_devise = $info_client->client_info['id_devise'];
 if($ste_devise != $client_devise)
 {
     $taux_change = new Mtaux_change();
-    $taux_change->id_ste = 1;
+    $taux_change->id_ste = 2;
     $taux_change->get_taux_change_by_devise($client_devise);
     $taux_devise= $taux_change->taux_change_devise['conversion'];
     //var_dump($taux_devise);          

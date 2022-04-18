@@ -5,14 +5,14 @@ if(!defined('_MEXEC'))die();
 // Modul: tickets
 //Created : 21-04-2018
 //View
-//Get all tickets info 
+//Get all tickets info
  $info_tickets = new Mtickets();
 //Set ID of Module with POST id
  $info_tickets->id_action_ticket = Mreq::tp('id');
-//Check if Post ID <==> Post idc or get_modul return false. 
+//Check if Post ID <==> Post idc or get_modul return false.
  if(!MInit::crypt_tp('id', null, 'D') or !$info_tickets->get_ticket_action())
- { 	
- 	// returne message error red to client 
+ {
+ 	// returne message error red to client
  	exit('3#'.$info_tickets->log .'<br>Les informations pour cette ligne sont erronées contactez l\'administrateur');
  }
 $id_ticket = $info_tickets->ticket_action_info["id_ticket"];
@@ -23,7 +23,7 @@ $id_ticket = $info_tickets->ticket_action_info["id_ticket"];
 		 <?php
         TableTools::btn_add('detailsticket', 'Retour', MInit::crypt_tp('id', $id_ticket), $exec = NULL, 'reply');
         ?>
-					
+
 	</div>
 </div>
 <div class="page-header">
@@ -38,14 +38,14 @@ $id_ticket = $info_tickets->ticket_action_info["id_ticket"];
 <div class="row">
 	<div class="col-xs-12">
 		<div class="clearfix">
-			
+
 		</div>
 		<div class="table-header">
 			Formulaire: "<?php echo ACTIV_APP; ?>"
 		</div>
 		<div class="widget-content">
 			<div class="widget-box">
-				
+
 <?php
 $id_ticket = $info_tickets->ga('id_ticket');
 $form = new Mform('editaction', 'editaction', '1', 'detailsticket&'.MInit::crypt_tp('id', $id_ticket), '0', null);
@@ -53,7 +53,7 @@ $form->input_hidden('id', $info_tickets->ga('id'));
 $form->input_hidden('idc', Mreq::tp('idc'));
 $form->input_hidden('idh', Mreq::tp('idh'));
 $form->input_hidden('id_ticket', $info_tickets->ga('id_ticket'));
-//Date action ==> 
+//Date action ==>
                 $date_act[] = array('required', 'true', 'Insérer une date ');
                 $form->input_date('Date', 'date_action', 2, $info_tickets->ga('date_action'), $date_act);
 
@@ -77,20 +77,18 @@ $form->input_hidden('id_ticket', $info_tickets->ga('id_ticket'));
                 $form->button('Enregistrer');
 //Form render
                 $form->render();
-              
+
 ?>
 			</div>
 		</div>
 	</div>
 </div>
 <!-- End Add devis bloc -->
-		
+
 <script type="text/javascript">
 $(document).ready(function() {
-    
-//JS Bloc    
+
+//JS Bloc
 
 });
-</script>	
-
-		
+</script>

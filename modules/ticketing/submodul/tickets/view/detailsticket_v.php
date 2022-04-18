@@ -37,7 +37,7 @@ if ($ticket->get_action_ticket()) {
 <div class="page-header">
     <h1>
         Détails du ticket: <?php $ticket->s('id'); ?>
-        
+
 
         <small>
             <i class="ace-icon fa fa-angle-double-right"></i>
@@ -58,13 +58,15 @@ if ($ticket->get_action_ticket()) {
                                 Ticket
                             </a>
                         </li>
+                        <!--
                         <?php if($ticket->g("etat") == "3") { ?>
                         <div class="widget-toolbar hidden-480">
-                                    <a href="#" class="report_tplt" rel="<?php echo MInit::crypt_tp('tplt', 'ticket') ?>" data="<?php echo MInit::crypt_tp('id', $ticket->id_tickets) ?>">
+                                    <a href="#" class="report_tplt" rel="<?php /* echo MInit::crypt_tp('tplt', 'ticket')*/ ?>" data="<?php /* echo MInit::crypt_tp('id', $ticket->id_tickets) */ ?>">
                                         <i class="ace-icon fa fa-print"></i>
                                     </a>
-                                </div> 
+                                </div>
                         <?php }?>
+                      -->
                     </ul>
 
                     <div class="tab-content no-border padding-24">
@@ -79,6 +81,17 @@ if ($ticket->get_action_ticket()) {
                                                 <i class="ace-icon fa fa-caret-right green"></i>Client :
                                                 <b style="color:green"><?php $ticket->s("client") ?></b>
                                             </li>
+
+
+                                            <?php if ($ticket->g("contact") != NULL) { ?>
+                                                <li>
+                                                    <i class="ace-icon fa fa-caret-right green"></i>Contact :
+                                                    <b style="color:green"><?php $ticket->s("contact") ?></b>
+                                                </li>
+                                            <?php } ?>
+
+
+
                                             <?php if ($ticket->g("projet") != NULL) { ?>
                                                 <li>
                                                     <i class="ace-icon fa fa-caret-right green"></i>Site :
@@ -126,7 +139,7 @@ if ($ticket->get_action_ticket()) {
                                                 <li>
                                                     <i class="ace-icon fa fa-caret-right green"></i>Technicien :
                                                     <b style="color:green"><?php $ticket->s("technicien") ?></b>
-                                                </li>                                            
+                                                </li>
                                                 <li>
                                                     <i class="ace-icon fa fa-caret-right green"></i>Date affectation :
                                                     <b style="color:green"><?php $ticket->s("date_affectation") ?></b>
@@ -150,8 +163,8 @@ if ($ticket->get_action_ticket()) {
                                 </div><!-- /.col -->
 
 
-                               <?php if($ticket->s("message") { ?>
-                                <div class="col-sm-8">
+                               <?php /* if($ticket->s("message") != NULL) { */ ?>
+                                <div class="col-sm-12">
                                     <div>
                                         <div class="space-6"></div>
                                         <div class="sab">
@@ -159,7 +172,7 @@ if ($ticket->get_action_ticket()) {
                                         </div>
                                     </div>
                                 </div><!-- /.col -->
-								<?php } ?>
+                              <?php /* } */ ?>
                             </div>
 
                         </div><!-- /#home -->
@@ -243,7 +256,7 @@ if ($ticket->get_action_ticket()) {
                                                     </div><!-- /.timeline-items -->
         <?php
     }//foreach
-}//End IF 
+}//End IF
 
 if ($ticket->g("etat") == 1) {
     TableTools::btn_add('addaction', 'Ajouter une action', MInit::crypt_tp('id', Mreq::tp('id')));
@@ -284,7 +297,7 @@ if ($ticket->g("etat") == 1) {
 </div>
 
 <?php
-if ($ticket->g("etat") == 0) {
+if ($ticket->g("etat") == 1) {
     $form = new Mform('resolution', 'resolution', '', 'tickets', '0', null);
     $form->input_hidden('id', $ticket->g("id"));
     $form->input_hidden('idc', Mreq::tp('idc'));
@@ -311,11 +324,11 @@ if ($ticket->g("etat") == 0) {
 
 <script type="text/javascript">
     /*$('body').on('click', '.cn_rmv', function() {
-     
+
      var $cosutm_noeud = $(this).attr('cn_rmv') != "" ? 'cn_rmv'+$(this).attr('cn_rmv') : "";
-     
+
      $('.')
-     
+
      });*/
 </script>
 <style>

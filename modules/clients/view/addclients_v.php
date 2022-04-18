@@ -149,7 +149,7 @@ $form->select_table('Pays', 'id_pays', 6, 'ref_pays', 'id', 'pays' , 'pays', $in
 $form->select_table('Ville', 'id_ville', 6, 'ref_ville', 'id', 'ville' , 'ville', $indx = '------' ,$selected=43,$multi=NULL, $where='etat=1', null);
 
 // Tél
-$tel_array[]  = array('required', 'true', 'Insérer N° de téléphone' );
+//$tel_array[]  = array('required', 'true', 'Insérer N° de téléphone' );
 $tel_array[]  = array('minlength', '8', 'Le N° de téléphone doit contenir au moins 8 chiffres' );
 //$tel_array[]  = array('remote', 'tel#clients#tel', 'Ce contact existe déja');
 $tel_array[]  = array('number', 'true', 'Entrez un N° Téléphone Valid' );
@@ -166,7 +166,7 @@ $form->input('Fax', 'fax', 'text', 6, null, $fax_array);
 $form->input('Boite Postale', 'bp', 'text', 6, null, '');
 
 // email
-$mail_array[]  = array('required', 'true', 'Insérer Email ' );
+//$mail_array[]  = array('required', 'true', 'Insérer Email ' );
 //$mail_array[]  = array('remote', 'email#clients#email', 'Ce contact existe déja');
 $mail_array[]  = array('email', 'true', 'Adresse Email non valide' );
 $form->input('Email ', 'email', 'text', 6, null, $mail_array);
@@ -178,7 +178,7 @@ $form->step_end();
 $form->step_start(3, 'Complément Informations');
 
 //Banque
-$form->select_table('Banque', 'id_banque', 6, 'ste_info_banque', 'id', 'banque' , 'banque', $indx = '------' ,$selected=1,$multi=NULL, $where='etat=1', null);
+$form->select_table('Banque', 'id_banque', 6, 'ste_info_banque', 'id', 'banque' , 'banque', $indx = '------' ,$selected=4,$multi=NULL, $where='etat=1 and id_ste=2', null);
 
 // devise
 $form->select_table('Devise', 'id_devise', 6, 'ref_devise', 'id', 'devise' , 'devise', $indx = '------' ,

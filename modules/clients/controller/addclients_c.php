@@ -81,11 +81,11 @@ if(MInit::form_verif('addclients',false))
     $empty_list .= "<li>Adresse</li>";
     $checker = 1;
   }*/
-  if($posted_data['tel'] == NULL){
+  /*if($posted_data['tel'] == NULL){
 
     $empty_list .= "<li>Tél</li>";
     $checker = 1;
-  }
+  }*/
 
   /*if($posted_data['bp'] == NULL){
 
@@ -102,11 +102,11 @@ if(MInit::form_verif('addclients',false))
 
     $posted_data['id_ville']=NULL;
   }
-  if($posted_data['email'] == NULL){
+  /*if($posted_data['email'] == NULL){
 
     $empty_list .= "<li>Email</li>";
     $checker = 1;
-  }
+  }*/
   if($posted_data['id_banque'] == NULL){
 
     $empty_list .= "<li>Banque</li>";

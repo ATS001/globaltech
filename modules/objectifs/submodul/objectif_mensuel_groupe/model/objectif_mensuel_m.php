@@ -1,4 +1,4 @@
-<?php 
+<?php
 //First check target no Hack
 if(!defined('_MEXEC'))die();
 //SYS GLOBAL TECH
@@ -6,13 +6,13 @@ if(!defined('_MEXEC'))die();
 //Created : 01-11-2018
 //Model
 /**
-* M%modul% 
+* M%modul%
 * Version 1.0
-* 
+*
 */
 
 class Mobjectif_mensuel {
-    
+
     private $_data;                      //data receive from form
     var $table                    = 'objectif_mensuels';   //Main table of module
     var $last_id                  = null;        //return last ID after insert command
@@ -21,7 +21,7 @@ class Mobjectif_mensuel {
     var $id_objectif_mensuel      = null;        // objectif_commercial ID append when request
     var $token                    = null;        //user for recovery function
     var $objectif_mensuel_info    = array();     //Array stock all objectif_commercial info
-    
+
 
     public function __construct($properties = array()){
         $this->_data = $properties;
@@ -45,9 +45,9 @@ class Mobjectif_mensuel {
 
         $table = $this->table;
 
-        $sql = "SELECT $table.*, CONCAT(commerciaux.nom,' ',commerciaux.prenom) AS commercial, commerciaux.taux_commission FROM 
+        $sql = "SELECT $table.*, CONCAT(commerciaux.nom,' ',commerciaux.prenom) AS commercial, commerciaux.taux_commission FROM
         $table, commerciaux WHERE commerciaux.id = $table.id_commercial AND  $table.id = ".$this->id_objectif_mensuel;
-        //exit($sql);
+
         if(!$db->Query($sql))
         {
             $this->error = false;
@@ -60,8 +60,8 @@ class Mobjectif_mensuel {
                 $this->objectif_mensuel_info = $db->RowArray();
                 $this->error = true;
             }
-            
-            
+
+
         }
         //return Array user_info
         if($this->error == false)
@@ -70,7 +70,7 @@ class Mobjectif_mensuel {
         }else{
             return true ;
         }
-        
+
     }
 
     /**
@@ -89,7 +89,7 @@ class Mobjectif_mensuel {
                    $table.objectif AS objectif_int,
                    $table.realise AS realise_int,
                    $table.objectif - $table.realise AS reste_int,
-                   CONCAT(commerciaux.nom,' ',commerciaux.prenom) AS commercial FROM 
+                   CONCAT(commerciaux.nom,' ',commerciaux.prenom) AS commercial FROM
                    $table, commerciaux WHERE commerciaux.id = $table.id_commercial AND  $table.id = ".$this->id_objectif_mensuel;
         if(!$db->Query($req_sql))
         {
@@ -117,7 +117,7 @@ class Mobjectif_mensuel {
      * @return [type] [description]
      */
     public function start_objectifs_first_of_month()
-    {        
+    {
         global $db;
         //Get Etats Objectif to validate
         $new_etat_wait    =  Msetting::get_set('etat_objectif_mensuel', 'objectif_wait');
@@ -137,7 +137,7 @@ class Mobjectif_mensuel {
         $sql_start        = "UPDATE $table o SET etat = $new_etat_start  WHERE NOW() BETWEEN o.`date_s` AND o.`date_e` ";
 
         $sql_stop         = "UPDATE $table o SET etat = $new_etat_stop WHERE NOW() >  o.`date_e` ";
-        
+
         $sql_etat_atteint = "UPDATE $table o SET etat = $new_etat_atteint WHERE ((o.`realise` * 100) / o.objectif) >= o.seuil AND etat = $new_etat_stop ";
 
         $sql_etat_non     = "UPDATE $table o SET etat = $new_etat_non WHERE ((o.`realise` * 100) / o.objectif) < o.seuil AND etat = $new_etat_stop ";
@@ -162,9 +162,9 @@ class Mobjectif_mensuel {
             $this->log   .= 'Erreur update Objectif faild';
             return false;
         }
-         
-        return true;      
-    }  
+
+        return true;
+    }
 
     /**
      * [save_objectifs_all_year description]
@@ -179,7 +179,7 @@ class Mobjectif_mensuel {
             {
                 return false;
 
-            }            
+            }
         }
         return true;
     }
@@ -189,13 +189,13 @@ class Mobjectif_mensuel {
      * @return [bol] [bol value send to controller]
      */
     public function save_new_objectif_mensuel(){
-    
+
         $this->_data['date_s'] = $this->_data['annee'].'-'.$this->_data['mois'].'-'.'1';
         $this->_data['date_e'] = date("Y-m-t", strtotime($this->_data['date_s']));
-        
+
         setlocale(LC_TIME,'fr_FR','french','French_France.1252','fr_FR.ISO8859-1','fra');
         $designation  = 'Objectif : '.utf8_encode(strftime('%B', strtotime($this->_data['date_s']))).' - '.$this->_data['annee'];
-        
+
 
         $this->check_objectif_in_interval($this->_data['date_s'], $this->_data['date_e'], $this->_data['id_commercial']);
 
@@ -216,12 +216,12 @@ class Mobjectif_mensuel {
 
             $values["creusr"]       = MySQL::SQLValue(session::get('userid'));
 
-            if(!$result = $db->InsertRow($this->table, $values)) 
+            if(!$result = $db->InsertRow($this->table, $values))
             {
 
                 $this->log  .= $db->Error();
                 $this->error = false;
-                $this->log  .='</br>Enregistrement BD non réussie'; 
+                $this->log  .='</br>Enregistrement BD non réussie';
 
             }else{
 
@@ -256,7 +256,7 @@ class Mobjectif_mensuel {
     public function edit_objectif_mensuel(){
         $this->_data['date_s'] = $this->_data['annee'].'-'.$this->_data['mois'].'-'.'1';
         $this->_data['date_e'] = date("Y-m-t", strtotime($this->_data['date_s']));
-        
+
         setlocale(LC_TIME,'fr_FR','french','French_France.1252','fr_FR.ISO8859-1','fra');
         $designation  = 'Objectif : '.utf8_encode(strftime('%B', strtotime($this->_data['date_s']))).' - '.$this->_data['annee'];
 
@@ -277,22 +277,22 @@ class Mobjectif_mensuel {
             $values["id_commercial"] = MySQL::SQLValue($this->_data["id_commercial"]);
             $values["date_s"]        = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_s'])));
             $values["date_e"]        = MySQL::SQLValue(date('Y-m-d',strtotime($this->_data['date_e'])));
-            
-            
+
+
             $values["updusr"]        = MySQL::SQLValue(session::get('userid'));
             $values["upddat"]        = MySQL::SQLValue(date("Y-m-d H:i:s"));
             $wheres["id"]            = $this->id_objectif_mensuel;
-            
+
             if (!$result = $db->UpdateRows($this->table, $values, $wheres))
             {
-                
+
                 $this->log .= $db->Error();
                 $this->error == false;
-                $this->log .='</br>Enregistrement BD non réussie'; 
+                $this->log .='</br>Enregistrement BD non réussie';
 
             }else{
 
-                
+
                 $this->log .='</br>Modification  réussie Objectif :('. $designation .') - '.$this->last_id.' -';
                 if(!Mlog::log_exec($this->table, $this->last_id, 'Modification objectif_mensuel', 'Update'))
                 {
@@ -302,7 +302,7 @@ class Mobjectif_mensuel {
                     //Esspionage
                 if(!$db->After_update($this->table, $this->id_objectif_mensuel, $values, $this->objectif_mensuel_info)){
                     $this->log .= '</br>Problème Espionnage';
-                    $this->error = false;   
+                    $this->error = false;
                 }
             }
 
@@ -333,27 +333,28 @@ class Mobjectif_mensuel {
         $new_etat_atteint =  Msetting::get_set('etat_objectif_mensuel', 'objectif_atteint');
         $new_etat_paye =  Msetting::get_set('etat_objectif_mensuel', 'objectif_paye');
         $sql_get_atteint = "SELECT id FROM $table WHERE etat = $new_etat_atteint ";
+        //var_dump($sql_get_atteint);
         if(!$db->Query($sql_get_atteint))
         {
             $this->log   .= 'Erreur Get All Objectifs succes ';
             return false;
         }
         if(!$db->RowCount()){
-            return false; 
+            return false;
         }
         $objectif_atteint = $db->RecordsArray();
-        
-        foreach ($objectif_atteint as $key => $value) 
+
+        foreach ($objectif_atteint as $key => $value)
         {
             if(!$this->save_commission_objectif_atteint($value['id']))
             {
                 $this->log   .= 'Erreur Save commission ' .$value['id'];
                 return false;
             }
-        }  
+        }
         $this->log   .= 'Save All commission ';
-        return true;   
-    } 
+        return true;
+    }
     /**
      * [force_commission_objectif_mensuel description]
      * @return [type] [description]
@@ -363,10 +364,10 @@ class Mobjectif_mensuel {
         $this->id_objectif_mensuel = $id_objectif;
         if(!$this->get_objectif_mensuel())
         {
-            $this->log   .= '</br>Objictif introuvable';            
+            $this->log   .= '</br>Objictif introuvable';
             return false;
         }
-        
+
         global $db;
         //Get Etat Objectif to validate
         $objectif_atteint =  Msetting::get_set('etat_objectif_mensuel', 'objectif_atteint');
@@ -395,8 +396,8 @@ class Mobjectif_mensuel {
             return false;
         }
         //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
-        
-        
+
+
         $values["etat"]          = MySQL::SQLValue($objectif_paye);
         $values["updusr"]        = MySQL::SQLValue(session::get('userid'));
         $values["upddat"]        = MySQL::SQLValue(date("Y-m-d H:i:s"));
@@ -422,7 +423,7 @@ class Mobjectif_mensuel {
             if(!$db->After_update($this->table, $this->id_objectif_mensuel, $values, $this->objectif_mensuel_info))
             {
                 $this->log .= '</br>Problème Espionnage';
-                return false;   
+                return false;
             }
 
         }
@@ -436,10 +437,10 @@ class Mobjectif_mensuel {
     {
         if(!$this->get_objectif_mensuel())
         {
-            $this->log   .= '</br>Objictif introuvable';            
+            $this->log   .= '</br>Objictif introuvable';
             return false;
         }
-        
+
         global $db;
         //Get Etat Objectif to validate
         $objectif_non     =  Msetting::get_set('etat_objectif_mensuel', 'objectif_non');
@@ -468,8 +469,8 @@ class Mobjectif_mensuel {
             return false;
         }
         //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
-        
-        
+
+
         $values["etat"]          = MySQL::SQLValue($objectif_force);
         $values["updusr"]        = MySQL::SQLValue(session::get('userid'));
         $values["upddat"]        = MySQL::SQLValue(date("Y-m-d H:i:s"));
@@ -495,7 +496,7 @@ class Mobjectif_mensuel {
             if(!$db->After_update($this->table, $this->id_objectif_mensuel, $values, $this->objectif_mensuel_info))
             {
                 $this->log .= '</br>Problème Espionnage';
-                return false;   
+                return false;
             }
 
         }
@@ -512,7 +513,7 @@ class Mobjectif_mensuel {
         //{"objectif_wait":"0", "objectif_encour":"1", "objectif_stop":"2", "objectif_atteint":"3", "objectif_non":"4", "objectif_force":"5", "objectif_suspendu":"6"}
         if(!$this->get_objectif_mensuel())
         {
-            $this->log   .= '</br>Objictif introuvable';            
+            $this->log   .= '</br>Objictif introuvable';
             return false;
         }
         global $db;
@@ -534,7 +535,7 @@ class Mobjectif_mensuel {
             return false;
         }
         //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
-        
+
 
         $values["etat"]        = MySQL::SQLValue($objectif_suspendu);
         $values["updusr"]      = MySQL::SQLValue(session::get('userid'));
@@ -561,7 +562,7 @@ class Mobjectif_mensuel {
             if(!$db->After_update($this->table, $this->id_objectif_mensuel, $values, $this->objectif_mensuel_info))
             {
                 $this->log .= '</br>Problème Espionnage';
-                return false;   
+                return false;
             }
 
         }
@@ -575,7 +576,7 @@ class Mobjectif_mensuel {
     {
         //Get existing data for row
         $this->get_objectif_mensuel();
-        
+
         $this->last_id = $this->id_objectif_mensuel;
         global $db;
         //Get Etat Objectif to validate
@@ -596,7 +597,7 @@ class Mobjectif_mensuel {
             return false;
         }
         //Format etat (if 0 ==> 1 activation else 1 ==> 0 Désactivation)
-        
+
 
         $values["etat"]        = MySQL::SQLValue($etat_creat);
         $values["updusr"]      = MySQL::SQLValue(session::get('userid'));
@@ -622,7 +623,7 @@ class Mobjectif_mensuel {
                //Esspionage
             if(!$db->After_update($this->table, $this->id_objectif_mensuel, $values, $this->objectif_mensuel_info)){
                 $this->log .= '</br>Problème Espionnage';
-                $this->error = false;   
+                $this->error = false;
             }
 
         }
@@ -657,13 +658,13 @@ class Mobjectif_mensuel {
             return false;
 
         }else{
-            
+
             if(!Mlog::log_exec($this->table, $id_objectif, 'Ajout réalisation à l\'objectif ('.$realise.') #'.$id_devis, 'Update'))
             {
                 $this->log .= '</br>Un problème de log ';
                 return false;
             }
-            return true;            
+            return true;
         }
     }
 
@@ -680,26 +681,26 @@ class Mobjectif_mensuel {
             return false;
         }
         //Get existing data for row
-        $this->get_objectif_mensuel(); 
-        //Check if Objectif not finichied 
+        $this->get_objectif_mensuel();
+        //Check if Objectif not finichied
         if(strtotime($this->objectif_mensuel_info['date_e']) >= strtotime(date('Y-m-d')) )
         {
             $this->log .="</br>l'Objectif est toujours ouvert";
             return false;
-        }      
-       
-        
+        }
+
+
         //Get Etat Objectif to validate
         $etat_ok  =  Msetting::get_set('etat_objectif_mensuel', 'objectif_atteint');
         $etat_nok =  Msetting::get_set('etat_objectif_mensuel', 'objectif_non');
         //Calculate realise and seuil
-        $percentage_realise =  (intval($this->objectif_mensuel_info['realise']) *  100 ) / intval($this->objectif_mensuel_info['objectif']); 
+        $percentage_realise =  (intval($this->objectif_mensuel_info['realise']) *  100 ) / intval($this->objectif_mensuel_info['objectif']);
 
         if($percentage_realise >=  intval($this->objectif_mensuel_info['seuil'])){
             $new_etat = $etat_ok;
         }else{
             $new_etat = $etat_nok;
-        }     
+        }
         $values["montant_benif"] = MySQL::SQLValue($montant_benif);
         $values["etat"]          = MySQL::SQLValue($new_etat);
         $values["updusr"]        = MySQL::SQLValue(session::get('userid'));
@@ -725,7 +726,7 @@ class Mobjectif_mensuel {
                //Esspionage
             if(!$db->After_update($this->table, $this->id_objectif_mensuel, $values, $this->objectif_mensuel_info)){
                 $this->log .= '</br>Problème Espionnage';
-                $this->error = false;   
+                $this->error = false;
             }
 
         }
@@ -747,12 +748,12 @@ class Mobjectif_mensuel {
     private function check_non_exist($table, $column, $value, $message)
     {
         global $db;
-        $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
+        $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table
             WHERE $table.$column = ". MySQL::SQLValue($value));
         if ($result == "0") {
             $this->error = false;
             $this->log .='</br>'.$message.' n\'exist pas';
-            
+
         }
     }
 
@@ -769,7 +770,7 @@ class Mobjectif_mensuel {
         global $db;
         $table = $this->table;
         $sql_edit = $edit == null ? null: " AND  <> $edit";
-        $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table 
+        $result = $db->QuerySingleValue0("SELECT $table.$column FROM $table
             WHERE $table.$column = ". MySQL::SQLValue($value) ." $sql_edit ");
 
         if ($result != "0") {
@@ -800,12 +801,12 @@ class Mobjectif_mensuel {
         //execute Delete Query
         if(!$db->DeleteRows($this->table, $where))
         {
-            
+
             $this->error = false;
             $this->log .='</br>Suppression non réussie';
 
         }else{
-            
+
             $this->error = true;
             $this->log .='</br>Suppression réussie ';
         }
@@ -850,7 +851,7 @@ class Mobjectif_mensuel {
 
     private function check_objectif_in_interval($date_s, $date_e, $commercial_id,  $edit = false)
     {
-       
+
         $date_s  = MySQL::SQLValue(date('Y-m-d',strtotime($date_s)));
         $date_e  = MySQL::SQLValue(date('Y-m-d',strtotime($date_e)));
         $is_edit = null;
@@ -860,12 +861,12 @@ class Mobjectif_mensuel {
           $this_id = $this->objectifs_info['id'];
           $is_edit = " AND id <> $this_id";
         }
-        
+
         $table  = $this->table;
         global $db;
         $sql = " SELECT COUNT(id) FROM $table WHERE (date_s BETWEEN $date_s AND $date_e OR date_e BETWEEN $date_s AND $date_e) AND id_commercial = $commercial_id $is_edit";
         $nbr_obj = $db->QuerySingleValue0($sql);
-        
+
         if($nbr_obj > 0)
         {
             $this->log .= "</br>Il existe $nbr_obj des Objectifs dans la même période";
@@ -874,7 +875,7 @@ class Mobjectif_mensuel {
         }
 
     }
-    
+
     /**
      * [get_list_factures description]
      * @return [type] [description]
@@ -882,62 +883,62 @@ class Mobjectif_mensuel {
     public function get_list_factures_for_objectif()
     {
         global $db;
-        
+
         $add_set       = array('return' => '<a href="#" class="report_tplt" rel="'.MInit::crypt_tp('tplt', 'devis').'" data="%crypt%"> <i class="ace-icon fa fa-print"></i></a>', 'data' => 'id');
         $id_objectif   = $this->id_objectif_mensuel;
         $date_s        = date('Y-m-d', strtotime($this->g('date_s')));
         $date_e        = date('Y-m-d', strtotime($this->g('date_e')));
         $id_commercial = $this->g('id_commercial');
 
-        
-        $req_sql = " SELECT  factures.id, factures.reference, 
+
+        $req_sql = " SELECT  factures.id, factures.reference,
         DATE_FORMAT(factures.date_facture,'%d-%m-%Y') AS datfact,
         REPLACE(FORMAT(factures.total_ht,0),',',' ') total_ht,
         REPLACE(FORMAT(factures.total_ttc,0),',',' ') total_ttc,
-        REPLACE(FORMAT(factures.total_tva,0),',',' ') AS total_tva, 
-        REPLACE(FORMAT(factures.total_paye,0),',',' ') AS total_paye, 
+        REPLACE(FORMAT(factures.total_tva,0),',',' ') AS total_tva,
+        REPLACE(FORMAT(factures.total_paye,0),',',' ') AS total_paye,
         REPLACE(FORMAT(factures.reste,0),',',' ') AS total_reste, '#'
         FROM `factures`
-        INNER JOIN `devis` 
-        ON (`devis`.`id` = IF(factures.`base_fact`='C',(SELECT ctr.iddevis FROM contrats ctr WHERE ctr.id=factures.`idcontrat`),`factures`.`iddevis` )) 
-        INNER JOIN `encaissements` 
+        INNER JOIN `devis`
+        ON (`devis`.`id` = IF(factures.`base_fact`='C',(SELECT ctr.iddevis FROM contrats ctr WHERE ctr.id=factures.`idcontrat`),`factures`.`iddevis` ))
+        INNER JOIN `encaissements`
         ON (`encaissements`.`idfacture` = `factures`.`id`)
-        INNER JOIN `commerciaux` 
+        INNER JOIN `commerciaux`
         ON (`commerciaux`.`id` = `devis`.`id_commercial`)
-        
+
         WHERE encaissements.etat IN(1, 0) AND encaissements.`date_encaissement` BETWEEN '$date_s' AND '$date_e' AND factures.etat <> 200
         AND commerciaux.id = $id_commercial GROUP BY factures.id;";
-        
+
 
         if(!$db->Query($req_sql))
         {
             $this->error = false;
             $this->log  .= $db->Error().' '.$req_sql;
-            
+
         }
         if(!$db->RowCount())
         {
-             $output = '<div class="alert alert-danger">Pas de Facture enregistrés pour cet Objectif</div>'; 
+             $output = '<div class="alert alert-danger">Pas de Facture enregistrés pour cet Objectif</div>';
              return $output;
         }
-        
-        
+
+
         $headers = array(
             'ID'            => '5[#]center',
             'Référence'     => '10[#]center',
-            'Date création' => '10[#]center', 
-            'Total HT'      => '10[#]alignRight', 
-            'Total TTC'     => '10[#]alignRight', 
-            'Total TVA'     => '10[#]alignRight', 
-            'Payé'          => '10[#]alignRight', 
-            'Rest'          => '10[#]alignRight', 
-            '#'             => '5[#]center[#]crypt', 
-            
-            
-            
+            'Date création' => '10[#]center',
+            'Total HT'      => '10[#]alignRight',
+            'Total TTC'     => '10[#]alignRight',
+            'Total TVA'     => '10[#]alignRight',
+            'Payé'          => '10[#]alignRight',
+            'Rest'          => '10[#]alignRight',
+            '#'             => '5[#]center[#]crypt',
+
+
+
         );
-                 
-                
+
+
         $tableau = $db->GetMTable($headers, $add_set);
         return $tableau;
     }
@@ -945,57 +946,57 @@ class Mobjectif_mensuel {
     public function get_list_encaissemen_for_objectif()
     {
         global $db;
-        
+
         $add_set       = array('return' => '<a href="#" class="this_url" rel="detailsencaissement" data="%crypt%"> <i class="ace-icon fa fa-eye blue bigger-100"></i></a>', 'data' => 'id');
         $id_objectif   = $this->id_objectif_mensuel;
         $date_s        = date('Y-m-d', strtotime($this->g('date_s')));
         $date_e        = date('Y-m-d', strtotime($this->g('date_e')));
         $id_commercial = $this->g('id_commercial');
-        
+
         $req_sql = "SELECT
         `encaissements`.`id`
         , `encaissements`.`reference`
         , `encaissements`.`designation`
         , REPLACE(FORMAT(`encaissements`.`montant`,0),',',' ') montant
-        , DATE_FORMAT(`encaissements`.`date_encaissement`,'%d-%m-%Y') AS date_ncaissement, '#'    
+        , DATE_FORMAT(`encaissements`.`date_encaissement`,'%d-%m-%Y') AS date_ncaissement, '#'
         FROM
         `encaissements`
-        INNER JOIN `factures` 
+        INNER JOIN `factures`
         ON (`encaissements`.`idfacture` = `factures`.`id`)
-        INNER JOIN `devis` 
-        ON (`devis`.`id` = IF(factures.`base_fact`='C',(SELECT ctr.iddevis FROM contrats ctr WHERE ctr.id=factures.`idcontrat`),`factures`.`iddevis` )) 
-        INNER JOIN `commerciaux` 
+        INNER JOIN `devis`
+        ON (`devis`.`id` = IF(factures.`base_fact`='C',(SELECT ctr.iddevis FROM contrats ctr WHERE ctr.id=factures.`idcontrat`),`factures`.`iddevis` ))
+        INNER JOIN `commerciaux`
         ON (`devis`.`id_commercial` = `commerciaux`.`id`)
-        WHERE encaissements.etat IN(1, 0) 
-        AND encaissements.`date_encaissement` BETWEEN '$date_s' AND '$date_e' 
+        WHERE encaissements.etat IN(1, 0)
+        AND encaissements.`date_encaissement` BETWEEN '$date_s' AND '$date_e'
         AND encaissements.etat <> 200 AND commerciaux.id = $id_commercial";
-        
+
         if(!$db->Query($req_sql))
         {
             $this->error = false;
             $this->log  .= $db->Error().' '.$req_sql;
-            
+
         }
         if(!$db->RowCount())
         {
-             $output = '<div class="alert alert-danger">Pas d\'Encaissement enregistrés pour cet Objectif</div>'; 
+             $output = '<div class="alert alert-danger">Pas d\'Encaissement enregistrés pour cet Objectif</div>';
              return $output;
         }
-        
-        
+
+
         $headers = array(
             'ID'           => '5[#]center',
             'Référence'    => '10[#]center',
             'Designation'  => '15[#]center',
             'Montant'      => '10[#]center',
-            'Date'         => '5[#]',     
-            '#'            => '3[#]center[#]crypt', 
-            
-            
-            
+            'Date'         => '5[#]',
+            '#'            => '3[#]center[#]crypt',
+
+
+
         );
-                 
-                
+
+
         $tableau = $db->GetMTable($headers, $add_set);
         return $tableau;
     }
@@ -1010,57 +1011,57 @@ class Mobjectif_mensuel {
         $date_s        = date('Y-m-d', strtotime($this->g('date_s')));
         $date_e        = date('Y-m-d', strtotime($this->g('date_e')));
         $id_commercial = $this->g('id_commercial');
-        
-        $req_sql = "SELECT devis.`id` id,devis.`reference`, clients.denomination,        
+
+        $req_sql = "SELECT devis.`id` id,devis.`reference`, clients.denomination,
         REPLACE(FORMAT(devis.`totalttc`,0),',',' ') total_ttc,
-        DATE_FORMAT(devis.`date_valid_client`,'%d-%m-%Y') AS date_valid_client, '#' 
-        FROM `devis`  
-        INNER JOIN `clients` 
+        DATE_FORMAT(devis.`date_valid_client`,'%d-%m-%Y') AS date_valid_client, '#'
+        FROM `devis`
+        INNER JOIN `clients`
         ON (`devis`.`id_client` = `clients`.`id`)
-        WHERE devis.`date_valid_client` BETWEEN '$date_s' AND '$date_e' 
+        WHERE devis.`date_valid_client` BETWEEN '$date_s' AND '$date_e'
         AND devis.id_commercial LIKE '%\"$id_commercial\"%' AND devis.etat IN( $etat_devis )";
         //exit($req_sql);
-        
+
         if(!$db->Query($req_sql))
         {
             $this->error = false;
             $this->log  .= $db->Error().' '.$req_sql;
-            
+
         }
         if(!$db->RowCount())
         {
-             $output = '<div class="alert alert-danger">Pas de Devis enregistrés pour cet Objectif</div>'; 
+             $output = '<div class="alert alert-danger">Pas de Devis enregistrés pour cet Objectif</div>';
              return $output;
         }
-        
-        
+
+
         $headers = array(
             'ID'           => '5[#]center',
             'Référence'    => '10[#]center',
             'Client'       => '25[#]',
             'Montant'      => '10[#]center',
-            'Date'         => '5[#]',     
-            '#'            => '3[#]center[#]crypt', 
-            
-            
-            
+            'Date'         => '5[#]',
+            '#'            => '3[#]center[#]crypt',
+
+
+
         );
-                 
-                
+
+
         $tableau = $db->GetMTable($headers, $add_set);
         return $tableau;
     }
 
     static public function indicator_objectif_mensuel()
     {
-        
+
         global $db;
         $table = 'objectif_mensuels';
         $id_user = session::get('userid');
         $req_sql ="SELECT $table.id, REPLACE(FORMAT($table.objectif,0),',',' ') AS objectif,
                    REPLACE(FORMAT($table.realise,0),',',' ') AS realise,
                    ROUND($table.realise * 100 / $table.objectif, 2) AS percent,
-                   $table.objectif - $table.realise AS reste_int FROM  $table, commerciaux 
+                   $table.objectif - $table.realise AS reste_int FROM  $table, commerciaux
                    WHERE commerciaux.id = $table.id_commercial AND  commerciaux.id_user_sys = $id_user
                    AND $table.annee = YEAR(CURDATE()) AND $table.mois = MONTH(CURDATE())";
 
@@ -1074,13 +1075,13 @@ class Mobjectif_mensuel {
                 //var_dump($req_sql);
                 return false;
             } else {
-                $arr_result = $db->RowArray();                
+                $arr_result = $db->RowArray();
             }
         }
         $idc = MInit::crypt_tp('id', $arr_result['id']);
         $output =  '<div class="col-lg-3 col-6">
-                        <div class="small-box btn-info">                        
-                            <div class="inner">                               
+                        <div class="small-box btn-info">
+                            <div class="inner">
                                 <h3>'.$arr_result['percent'].'<sup style="font-size: 20px">%</sup></h3>
                                 <p class="info-box-text">CA personnel du mois: '.$arr_result['realise'].'</p>
                             </div>
@@ -1090,9 +1091,9 @@ class Mobjectif_mensuel {
                             <a href="#" rel="details_objectif_mensuel" data="'.$idc.'"  class="small-box-footer this_url">Voir détails <i class="fa fa-arrow-circle-right"></i></a>
                         </div>
                     </div>';
-        return print($output);            
+        return print($output);
     }
-    
+
 
 
 

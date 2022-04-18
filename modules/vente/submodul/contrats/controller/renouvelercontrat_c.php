@@ -3,7 +3,7 @@
 defined('_MEXEC') or die;
 if (MInit::form_verif('renouvelercontrats', false)) {
     $posted_data = array(
-    	'id'   		  => Mreq::tp('id') ,
+    	'id'   		      => Mreq::tp('id') ,
         'tkn_frm'         => Mreq::tp('tkn_frm'),
         'iddevis'         => Mreq::tp('iddevis'),
         'date_effet'      => Mreq::tp('date_effet'),
@@ -13,7 +13,9 @@ if (MInit::form_verif('renouvelercontrats', false)) {
         'periode_fact'    => Mreq::tp('periode_fact'),
         'date_notif'      => Mreq::tp('date_notif') ,
         'pj_id'           => Mreq::tp('pj-id'),
-        'pj_photo_id'     => Mreq::tp('pj_photo-id')
+        'pj_photo_id'     => Mreq::tp('pj_photo-id'),
+        'abn_base'        => NULL,
+        'date_up'         => NULL
     );
 
 
