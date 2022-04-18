@@ -69,18 +69,18 @@ if($liste_sub_group){
     	<table class="table" cellspacing="2" cellpadding="2"  style="width: 300px; border:1pt solid black;" >
             <tbody>
                 <tr>
-                    <td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;">Total HT</td>
-                    <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
+                    <td style="width:35%;color: #00D7B9;font-weight: bold;font-size: 9pt;">Total HT</td>
+                    <td style="width:5%;color: #00D7B9;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;">'.$liste_sum[0]['sum_tt_ht'].' '.$proforma->g('devise').'</td>
                 </tr>
                 <tr>
-                    <td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;">Total TVA</td>
-                    <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
+                    <td style="width:35%;color: #00D7B9;font-weight: bold;font-size: 9pt;">Total TVA</td>
+                    <td style="width:5%;color: #00D7B9;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;">'.$liste_sum[0]['sum_tt_tva'].' '.$proforma->g('devise').'</td>
                 </tr>
                 <tr>
-                    <td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;">Total TTC</td>
-                    <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
+                    <td style="width:35%;color: #00D7B9;font-weight: bold;font-size: 9pt;">Total TTC</td>
+                    <td style="width:5%;color: #00D7B9;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;">'.$liste_sum[0]['sum_tt_ttc'].' '.$proforma->g('devise').'</td>
                 </tr>
             </tbody>
@@ -138,7 +138,7 @@ class MYPDF extends TCPDF {
 		//Ste
 
 		// Title
-		$titre_doc = '<h1 style="letter-spacing: 2px;color;#495375;font-size: 14pt;">PROFORMA</h1>';
+		$titre_doc = '<h1 style="letter-spacing: 2px;color;#173C5A;font-size: 14pt;">PROFORMA</h1>';
 		$this->writeHTMLCell(0, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true);
 		$this->SetTextColor(0, 0, 0);
 		$this->SetFont('kameron', '', 9);
@@ -160,8 +160,8 @@ class MYPDF extends TCPDF {
 	    if($this->info_proforma['nif'] != null)
 	    {
 	    	$nif = '<tr>
-		<td align="right" style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">NIF</td>
-		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
+		<td align="right" style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">NIF</td>
+		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$this->info_proforma['nif'].'</td>
 		</tr>';
 	    }
@@ -174,24 +174,24 @@ class MYPDF extends TCPDF {
 	    $pays = $this->info_proforma['pays'] != null ? $this->info_proforma['pays'] : null;
 		$detail_client = '<table cellspacing="3" cellpadding="2" border="0">
 		<tbody>
-		<tr style="background-color:#495375; font-size:14; font-weight:bold; color:#fff;">
+		<tr style="background-color:#173C5A; font-size:14; font-weight:bold; color:#fff;">
 		<td colspan="3"><strong>Informations du client</strong></td>
 		</tr>
 		<tr>
-		<td align="right" style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Réf Client</td>
-		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
+		<td align="right" style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">Réf Client</td>
+		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;"><strong>'.$ref_client.'</strong></td>
 		</tr>
 		<tr>
-		<td align="right" style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Dénomination</td>
-		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
+		<td align="right" style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">Dénomination</td>
+		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;"><strong>'.$this->info_proforma['denomination'].'</strong></td>
 		</tr>';
 
 		if($adresse.$bp.$ville.$pays != null){
 			$detail_client .= '<tr>
-	    <td align="right" style="width: 30%;color: #E99222;font-weight: bold;font-size: 9pt;">Adresse</td>
-		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
+	    <td align="right" style="width: 30%;color: #00D7B9;font-weight: bold;font-size: 9pt;">Adresse</td>
+		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$adresse.' '.$bp.' '.$ville.' '.$pays.'</td>
 		</tr>';
 
@@ -200,8 +200,8 @@ class MYPDF extends TCPDF {
 
 		if($tel != null && $email != null){
 			$detail_client .= '<tr>
-		<td align="right" style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Contact</td>
-		<td style="width: 5%; color: #E99222; font-weight: bold;">:</td>
+		<td align="right" style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">Contact</td>
+		<td style="width: 5%; color: #00D7B9; font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$tel.' '.$email.'</td>
 		</tr>
 		';
@@ -366,7 +366,7 @@ $block_sum = '<div></div>
 <table style="width: 685px;" cellpadding="2">
 
 <tr>
-    <td colspan="2" style="color: #E99222;font-weight: bold;">
+    <td colspan="2" style="color: #00D7B9;font-weight: bold;">
 
         <strong>Conditions générales:</strong>
 
