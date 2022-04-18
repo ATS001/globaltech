@@ -501,8 +501,8 @@ p {
                 '.$block_tt_no_remise.'
                 '.$block_remise.'
                 <tr>
-                    <td style="width:35%;color: #00D7B9;font-weight: bold;font-size: 9pt;"><strong>'.$titl_ht.'</strong></td>
-                    <td style="width:5%;color: #00D7B9;font-weight: bold;font-size: 9pt;">:</td>
+                    <td style="width:35%;color: #E99222;font-weight: bold;font-size: 9pt;"><strong>'.$titl_ht.'</strong></td>
+                    <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$total_f.' '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>
 
