@@ -852,9 +852,9 @@ class MySQL
 				</style>';
 			$html = "";
 			$html .= $style;
-			$html .= "<table cellspacing=\"0\" cellpadding=\"2\"  style=\"width: 685px;\">\n";
+			$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px;\">\n";
 
-			$html .= "\t<tr style=\"background-color: #00D7B9; color: #fff; font-weight: bold;  padding:15px; \">\n";
+			$html .= "\t<tr style=\"background-color: #173C5A; color: #fff; font-weight: bold;  padding:15px; \">\n";
 
 			foreach ($headers as $key => $value) {
 
@@ -879,12 +879,9 @@ class MySQL
 				    }
 
 				}
-                //Début FZ HANOUNOU le 22/06/2021
-				//Aligner désignation à gauche
 
-				//$html .= "\t\t<td $width class=\"center\">" . htmlspecialchars($key) . "</td>\n";
-				$html .= "\t\t<td $width $align>" . htmlspecialchars($key) . "</td>\n";
-				//Fin FZ HANOUNOU le 22/06/2021
+
+				$html .= "\t\t<td $width class=\"center\">" . htmlspecialchars($key) . "</td>\n";
 			}
 			$html .= "\t</tr>\n";
 			$html .= "</table>";
@@ -950,12 +947,9 @@ class MySQL
 				$html = "";
 				$style = '<style type="text/css">
 				.row0
-				{'
-			    // Pour avoir l'arrière plan des lignes du tableau en blan
-                //Désactivation du backgroud depuis .row0
-	            // background-color: #eaebed;
-
-				.'	border:1pt solid black;
+				{
+					background-color: #eaebed;
+					border:1pt solid black;
 				}
 				.row1{
 					border:1px solid black;
@@ -964,7 +958,7 @@ class MySQL
 				.center{ text-align: center; }
 				</style>';
 				$html .= $style;
-				$html .= "<table cellspacing=\"0\" cellpadding=\"2\"  style=\"width: 685px;\">\n";
+				$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px;\">\n";
 				$this->MoveFirst();
 
                 //$html .= $this->make_table_head($headers, $styleData);
@@ -974,67 +968,7 @@ class MySQL
 					$html .= "\t<tr nobr=\"true\" class=\"row".($i++ & 1)."\">\n";
 					$html .= $this->make_table_body($member, $headers);
 					$html .= "\t</tr>\n";
-					//Début FZ HANOUNOU le 22/06/2021
-					//Rajout des ... après chaque ligne du tableau
-					$html .= "</table>";
-					$html .= "<table cellspacing=\"0\" cellpadding=\"2\"  style=\"width: 685px;\">\n";
-					$html .= '<tr><td style="font-size:5;">.......................................................................................................................................................................................................................................................................................................................................................................................................................................</td></tr>';
-					$html .= "</table>";
-					$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px;\">\n";
-					//FZ HANOUNOU le 22/06/2021
-				}
-				$this->MoveFirst();
-				$html .= "</table>";
-			} else {
-				$html = "Pas de lignes.";
-			}
-		} else {
-			$this->active_row = -1;
-			$html = false;
-		}
 
-		return $html;
-	}
-    //par FZ le 04/07/2021 pour differencier les ... du tab princi avec complm
-	public function GetMTable_pdf_compl($headers) {
-
-		if ($this->last_result) {
-			if ($this->RowCount() > 0) {
-				$html = "";
-				$style = '<style type="text/css">
-				.row0
-				{'
-			    // Pour avoir l'arrière plan des lignes du tableau en blan
-                //Désactivation du backgroud depuis .row0
-	            // background-color: #eaebed;
-
-				.'	border:1pt solid black;
-				}
-				.row1{
-					border:1px solid black;
-				}
-				.alignRight { text-align: right; }
-				.center{ text-align: center; }
-				</style>';
-				$html .= $style;
-				$html .= "<table cellspacing=\"0\" cellpadding=\"2\"  style=\"width: 685px;\">\n";
-				$this->MoveFirst();
-
-                //$html .= $this->make_table_head($headers, $styleData);
-				$i = 0;
-				while ($member = mysql_fetch_object($this->last_result))
-				{
-					$html .= "\t<tr nobr=\"true\" class=\"row".($i++ & 1)."\">\n";
-					$html .= $this->make_table_body($member, $headers);
-					$html .= "\t</tr>\n";
-					//Début FZ HANOUNOU le 22/06/2021
-					//Rajout des ... après chaque ligne du tableau
-					$html .= "</table>";
-					$html .= "<table cellspacing=\"0\" cellpadding=\"2\"  style=\"width: 685px;\">\n";
-					$html .= '<tr><td style="font-size:5;">....................................................................................................................................................................................................................................................</td></tr>';
-					$html .= "</table>";
-					$html .= "<table cellspacing=\"2\" cellpadding=\"2\"  style=\"width: 685px;\">\n";
-					//FZ HANOUNOU le 22/06/2021
 				}
 				$this->MoveFirst();
 				$html .= "</table>";

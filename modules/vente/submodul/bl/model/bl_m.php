@@ -754,13 +754,13 @@ public function Gettable_d_bl()
         $this->Get_detail_bl_show();
         $bl_info = $this->bl_info;
         $colms  = null;
-        //$colms .= " $table.order item, ";
-        //$colms .= " $table.ref_produit, ";
+        $colms .= " $table.order item, ";
+        $colms .= " $table.ref_produit, ";
         $colms .= " $table.designation, ";
         $colms .= " REPLACE(FORMAT($table.qte,0),',',' ') ";
         
         
-        $req_sql  = " SELECT $colms FROM $table WHERE id_bl = $id_bl order by $table.order";
+        $req_sql  = " SELECT $colms FROM $table WHERE id_bl = $id_bl order by item";
         if(!$db->Query($req_sql))
         {
             $this->error = false;

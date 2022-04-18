@@ -35,9 +35,11 @@ if(!$proforma->Get_detail_proforma_pdf())
 global $db;
 $tableau_body = null;
 $headers = array(
-            'Description' => '61[#]',
-            'Qte'         => '7[#]C',
-            'P.Unitaire'  => '12[#]R',
+            '#'           => '5[#]C',
+            'Réf'         => '17[#]C',
+            'Description' => '43[#]',
+            'Qte'         => '5[#]C',
+            'P.Unitaire'  => '10[#]R',
             'P.Total'       => '15[#]R',
 
         );
@@ -64,22 +66,22 @@ if($liste_sub_group){
 
         </td>
         <td width="50%">
-    	<table class="table" cellspacing="2" cellpadding="2"  style="width: 300px;" >
+    	<table class="table" cellspacing="2" cellpadding="2"  style="width: 300px; border:1pt solid black;" >
             <tbody>
                 <tr>
-                    <td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;border-bottom:1px white;"><strong>Total</strong></td>
-                    <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
-                    <td class="alignRight" style="width:45%;background-color: #fff;"><strong>'.$liste_sum[0]['sum_tt_ht'].' '.$proforma->g('devise').'</strong></td>
+                    <td style="width:35%;color: #00D7B9;font-weight: bold;font-size: 9pt;">Total HT</td>
+                    <td style="width:5%;color: #00D7B9;font-weight: bold;font-size: 9pt;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;">'.$liste_sum[0]['sum_tt_ht'].' '.$proforma->g('devise').'</td>
                 </tr>
                 <tr>
-                    <td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;border-bottom:1px white;"><strong>TVA</strong></td>
-                    <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
-                    <td class="alignRight" style="width:45%;background-color: #fff;"><strong>'.$liste_sum[0]['sum_tt_tva'].' '.$proforma->g('devise').'</strong></td>
+                    <td style="width:35%;color: #00D7B9;font-weight: bold;font-size: 9pt;">Total TVA</td>
+                    <td style="width:5%;color: #00D7B9;font-weight: bold;font-size: 9pt;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;">'.$liste_sum[0]['sum_tt_tva'].' '.$proforma->g('devise').'</td>
                 </tr>
                 <tr>
-                   <td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;border-bottom:1px white;"><strong>Total à payer</strong></td>
-                    <td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
-                    <td class="alignRight" style="width:45%;color: #00D7B9;background-color: #fff;"><strong>'.$liste_sum[0]['sum_tt_ttc'].' '.$proforma->g('devise').'</strong></td>
+                    <td style="width:35%;color: #00D7B9;font-weight: bold;font-size: 9pt;">Total TTC</td>
+                    <td style="width:5%;color: #00D7B9;font-weight: bold;font-size: 9pt;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;">'.$liste_sum[0]['sum_tt_ttc'].' '.$proforma->g('devise').'</td>
                 </tr>
             </tbody>
         </table>
@@ -107,19 +109,18 @@ class MYPDF extends TCPDF {
 		//writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
 
 
-       // Logo
-		if (date('Y-m-d', strtotime($this->info_proforma['date_proforma'])) < date('Y-m-d', strtotime('2020-04-16'))) {
-		// Logo 1
-		$image_file = MPATH_IMG.MCfg::get('logo');
-		$this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
-    	 $this->Image($image_file, 14, 10, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
+        if (date('Y-m-d', strtotime($this->info_proforma['date_proforma'])) < date('Y-m-d', strtotime('2020-04-16'))) {
+      		// Logo 1
+      		$image_file = MPATH_IMG.MCfg::get('logo');
+      		$this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
+          	 $this->Image($image_file, 14, 10, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
 
-		}else{
-      // Logo 2
-      $image_file = MPATH_IMG.MCfg::get('logo2');
-      $this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
-      $this->Image($image_file, 14, 11, 80, 20, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
-		}
+      }else{
+        // Logo 2
+        $image_file = MPATH_IMG.MCfg::get('logo2');
+        $this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
+        $this->Image($image_file, 13, 13, 50, 20, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
+       }
 
 		//Get info ste from DB
 		$ste_c = new MSte_info();
@@ -130,20 +131,37 @@ class MYPDF extends TCPDF {
 		$ste = $ste_c->get_ste_info_report_head(2,$this->info_proforma['date_proforma'],'Proforma');
 	    }
 
-		//$this->writeHTMLCell(0, 0, '', 30, $ste , '', 0, 0, true, 'L', true);
+		$this->writeHTMLCell(0, 0, '', 30, $ste , '', 0, 0, true, 'L', true);
 		$this->SetTextColor(0, 50, 127);
 		// Set font
-		$this->SetFont('gotham-book', 'B', 22);
+		$this->SetFont('kameron', 'B', 22);
 		//Ste
 
-	
+		// Title
+		$titre_doc = '<h1 style="letter-spacing: 2px;color;#173C5A;font-size: 14pt;">PROFORMA</h1>';
+		$this->writeHTMLCell(0, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true);
+		$this->SetTextColor(0, 0, 0);
+		$this->SetFont('kameron', '', 9);
+		$detail_proforma = '<table cellspacing="3" cellpadding="2" border="0">
+		<tr>
+		<td style="width:45%; color:#A1A0A0"><strong>Réf proforma</strong></td>
+		<td style="width:5%;">:</td>
+		<td style="width:50%; background-color: #eeecec;">'.$this->info_proforma['reference'].'</td>
+		</tr>
+		<tr>
+		<td style="width:45%; color:#A1A0A0"><strong>Date</strong></td>
+		<td style="width:5%;">:</td>
+		<td style="width:50%; background-color: #eeecec; ">'.$this->info_proforma['date_proforma'].'</td>
+		</tr>
+		</table>';
+		$this->writeHTMLCell(70, 0, 129, 23, $detail_proforma, '', 0, 0, true, 'L', true);
 	    //Info Client
 	    $nif = null;
 	    if($this->info_proforma['nif'] != null)
 	    {
 	    	$nif = '<tr>
-		<td align="right" style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">NIF</td>
-		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
+		<td align="right" style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">NIF</td>
+		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$this->info_proforma['nif'].'</td>
 		</tr>';
 	    }
@@ -154,145 +172,44 @@ class MYPDF extends TCPDF {
 	    $bp = $this->info_proforma['bp'] != null ? $this->info_proforma['bp'] : null;
 	    $ville = $this->info_proforma['ville'] != null ? $this->info_proforma['ville'] : null;
 	    $pays = $this->info_proforma['pays'] != null ? $this->info_proforma['pays'] : null;
-		
+		$detail_client = '<table cellspacing="3" cellpadding="2" border="0">
+		<tbody>
+		<tr style="background-color:#173C5A; font-size:14; font-weight:bold; color:#fff;">
+		<td colspan="3"><strong>Informations du client</strong></td>
+		</tr>
+		<tr>
+		<td align="right" style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">Réf Client</td>
+		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
+		<td style="width: 65%; background-color: #eeecec;"><strong>'.$ref_client.'</strong></td>
+		</tr>
+		<tr>
+		<td align="right" style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">Dénomination</td>
+		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
+		<td style="width: 65%; background-color: #eeecec;"><strong>'.$this->info_proforma['denomination'].'</strong></td>
+		</tr>';
 
-		
-            
-            /**  *************************************************************************** */
-            
-             //Adresse Client
-        $adresseClient = null;
-        if($adresse.$bp.$ville.$pays != null){
-			$adresseClient =   ' <tr style= "font-size:9; color:black;" >
-		<td style="width: 30%; font-weight: bold;">Adresse</td>
-		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 63%;">'.$adresse.' '.$bp.' '.$ville.' '.$pays.'</td>
+		if($adresse.$bp.$ville.$pays != null){
+			$detail_client .= '<tr>
+	    <td align="right" style="width: 30%;color: #00D7B9;font-weight: bold;font-size: 9pt;">Adresse</td>
+		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
+		<td style="width: 65%; background-color: #eeecec;">'.$adresse.' '.$bp.' '.$ville.' '.$pays.'</td>
 		</tr>';
 
 		}
-                
-          //Tél Client
-          $telClient = null;
-          if($tel != null){
-			$telClient = '<tr style= "font-size:9; color:black;" >
-		<td style="width: 30%; font-weight: bold;">Téléphone</td>
-		<td style="width: 5%;  font-weight: bold;">:</td>
-		<td style="width: 63%; ">'.$tel.'</td>
+
+
+		if($tel != null && $email != null){
+			$detail_client .= '<tr>
+		<td align="right" style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">Contact</td>
+		<td style="width: 5%; color: #00D7B9; font-weight: bold;">:</td>
+		<td style="width: 65%; background-color: #eeecec;">'.$tel.' '.$email.'</td>
 		</tr>
 		';
 		}
-                
-                
-             //Mail Client
-          $mailClient = null;
-          if($email != null){
-			$mailClient = '<tr style= "font-size:9; color:black;" >
-		<td style="width: 30%;font-weight: bold;">Email</td>
-		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 63%;">'.$email.'</td>
-		</tr>
-		';
-		}
-            
-                
-                
-                $detail_facturex = '<br><br>
-                    <table style = "width:650px;">
-    <tr>
-	<td>
-	<table cellpadding="2" border="0">
-    <tr>
-       <td style="width:90%; background-color:#173C5A; font-size:9; font-weight:bold; color:#fff;"><strong>PROFORMA</strong></td>
-	</tr>
-	<tr>
-        <td>'.$ste.'</td>
-	</tr> 
-	</table>
-	</td>
-	
-	<td>
-	
-<table   cellpadding="2" border="0">
-    <tr style="background-color:#00D7B9; font-size:9; font-weight:bold; color:#fff;">
-       <td><strong>INFORMATIONS CLIENT</strong></td>
-	 </tr>
-	
-		<tr style= "font-size:9; color:black;" >
-		<td style="width: 30%; font-weight: bold;">Dénomination</td>
-		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 63%;">  '.$this->info_proforma['denomination'].'</td>
-		</tr>'
-                
-        . $adresseClient.''.$telClient.''.$mailClient.
-                
-	'</table>
-	</td>
-        </tr>
-        
-<tr>
-<td>	
-<table   cellpadding="2" border="0">
-    <tr style=" font-size:9; font-weight:bold; color:black;">
-       <td><strong>.....................................................................................................</strong></td>
-	 </tr>
-	
-		<tr style= "font-size:9; color:black;" >
-		<td style="width: 38%; font-weight: bold;color:#173C5A;">Proforma N°</td>
-		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 50%;color:#00D7B9;">'.$this->info_proforma['reference'].'</td>
-		</tr>
-                
-              <tr style= "font-size:9; color:black;" >
-		<td style="width: 38%; font-weight: bold;color:#173C5A;">Date de facturation</td>
-		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 50%;color:#00D7B9;">'.date('d/m/Y', strtotime($this->info_proforma['date_proforma'])).'</td>
-		</tr>
-                
-                                
-	</table>
-
-
-	</td>
-	
-	<td>	
-<table   cellpadding="2" border="0">
-    <tr style="; font-size:9; font-weight:bold; color:#fff;">
-       <td><strong>........................................................</strong></td>
-	 </tr>
-         
- <tr style= "font-size:9; color:black;" >
-		<td style="width: 50%; font-weight: bold;">N° Compte client</td>
-		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 55%;">'.$ref_client.'</td>
-		</tr>
-	
-		<tr style= "font-size:9; color:black;" >
-		<td style="width: 50%; font-weight: bold;"></td>
-		<td style="width: 5%; font-weight: bold;"></td>
-		<td style="width: 55%;"></td>
-		</tr>
-                
-             
-                                                
-	</table>
-
-
-	</td>
-
-</tr>
-	
-</table>
-<br><br>';
-        
-
-	
-                $this->Ln();
-                $this->writeHTMLCell(0,0,10, 30, $detail_facturex , '', 0, 0, true, 'L', true);          
-            
-             
-            
-                   /**  *************************************************************************** */
-
+		$detail_client .= $nif.'
+		</tbody>
+		</table>';
+		$this->writeHTMLCell(100, 0, 99, 40, $detail_client, 0, 0, 0, true, 'L', true);
 
 		$this->Ln();
 		$this->setCellPadding(0);
@@ -338,7 +255,7 @@ class MYPDF extends TCPDF {
 		// Position at 15 mm from bottom
 		$this->SetY(-15);
 		// Set font
-		$this->SetFont('gotham-book', 'I', 8);
+		$this->SetFont('kameron', 'I', 8);
 		// Page number
 		$this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
 	}
@@ -409,7 +326,7 @@ $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 // kameron or times to reduce file size.
 // set font
 //$pdf->SetFont('kameron', '', 9);
-$pdf->SetFont('gotham-book', '', 9, '', false);
+$pdf->SetFont('kameron', '', 9, '', false);
 
 // Add a page
 // This method has several options, check the source code documentation for more information.
@@ -448,7 +365,20 @@ $creusr = 'Le Service Commercial';
 $block_sum = '<div></div>
 <table style="width: 685px;" cellpadding="2">
 
+<tr>
+    <td colspan="2" style="color: #00D7B9;font-weight: bold;">
 
+        <strong>Conditions générales:</strong>
+
+    </td>
+</tr>
+<tr>
+    <td colspan="2" style="color:#6B6868; width: 650px; border:1pt solid black; background-color: #eeecec;">
+        '.$pdf->info_proforma['claus_comercial'].'
+     <br>
+     Merci de nous avoir consulté.
+ </td>
+</tr>
 <tr><td><br><br><br></td></tr>
 <tr align="center">
 <td style="font: underline; width: 200px;" > </td>

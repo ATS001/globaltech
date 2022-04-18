@@ -46,9 +46,9 @@ if($facture->facture_info['base_fact']=='C'){
 			}
 
 		$headers = array(
-            //'#'           => '5[#]C',
-            //'Réf'         => '17[#]C',
-            'DESCRIPTION DES SERVICES FACTURÉS' => '95[#]', 
+            '#'           => '5[#]C',
+            'Réf'         => '17[#]C',
+            'Description' => '73[#]', 
 
         );
 	}else
@@ -60,12 +60,12 @@ if($facture->facture_info['base_fact']=='C'){
 		}
 
 		$headers = array(
-            //'#'           => '5[#]C',
-            //'Réf'         => '17[#]C',
-            'DESCRIPTION DES SERVICES FACTURÉS' => '61[#]', 
-            'QTE'                               => '7[#]C', 
-            'P. MENSUEL'                        => '12[#]R',
-            'P. TOTAL'                          => '15[#]R',
+            '#'           => '5[#]C',
+            'Réf'         => '17[#]C',
+            'Description' => '43[#]', 
+            'Qte'         => '5[#]C', 
+            'P.Unitaire'  => '10[#]R',
+            'P.Total'     => '15[#]R',
 
         );
 	}
@@ -80,12 +80,12 @@ else{
 		}
 
 		$headers = array(
-            //'#'           => '5[#]C',
-            //'Réf'         => '17[#]C',
-            'DESCRIPTION'						=> '61[#]', 
-            'QTE'                               => '7[#]C', 
-            'P. UNITAIRE'                       => '12[#]R',
-            'P. TOTAL'                          => '15[#]R',
+            '#'           => '5[#]C',
+            'Réf'         => '17[#]C',
+            'Description' => '43[#]', 
+            'Qte'         => '5[#]C', 
+            'P.Unitaire'  => '10[#]R',
+            'P.Total'     => '15[#]R',
 
         );
 }
@@ -113,7 +113,7 @@ $tableau_body_product = $db->GetMTable_pdf($headers);
 $facture->get_complement_by_facture();
 $complement_info = $facture->complement_info;
 $tableau_head_complement = MySQL::make_table_head($headers2);
-$tableau_body_complement = $db->GetMTable_pdf_compl($headers2);
+$tableau_body_complement = $db->GetMTable_pdf($headers2);
 
 
 
@@ -149,247 +149,31 @@ class MYPDF extends TCPDF {
       // Logo 2
       $image_file = MPATH_IMG.MCfg::get('logo2');
       $this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
-      $this->Image($image_file, 14, 11, 80, 20, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
+      $this->Image($image_file, 13, 13, 50, 20, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
 		}
 		
-                
-                             //Get info ste from DB
+
+		//Get info ste from DB
 		$ste_c = new MSte_info();
-	
 
         if((date('Y-m-d', strtotime($this->info_facture['date_facture']))) < (date('Y-m-d', strtotime('16-04-2020')))){
 		$ste = $ste_c->get_ste_info_report_head(1,$this->info_facture['date_facture'],'Facture');
 	    }else{
 		$ste = $ste_c->get_ste_info_report_head(2,$this->info_facture['date_facture'],'Facture');
 		}
-		//$this->writeHTMLCell(0, 0, '', 30, $ste , '', 0, 0, true, 'L', true);
+		$this->writeHTMLCell(0, 0, '', 30, $ste , '', 0, 0, true, 'L', true);
 		$this->SetTextColor(0, 50, 127);
 		// Set font
-		$this->SetFont('gotham-book', 'B', 22);
-                
-                
-                $type_echeance = new Mfacture();
-                $type_echeance->id_facture = Mreq::tp('id');
-                $type_echeance->get_facture_type_echeance();
-                $dateLimiteReglement = null;
-                	if ($type_echeance->type_echeance_info['periode_fact'] == 'D'){                           
-                            
-                        $dateLimiteReglement ='<tr style= "font-size:9; color:black;" >
-                        <td style="width: 50%; font-weight: bold;">Date limite de règlement </td>
-                        <td style="width: 5%;  font-weight: bold;">:</td>
-                        <td style="width: 55%; ">'.date('d/m/Y', strtotime($this->info_facture['du']. ' + 14 days')).'</td>
-                        </tr>';
-                            
-                           
-                        }else 	if ($type_echeance->type_echeance_info['periode_fact'] == 'F'){
-                            $dateLimiteReglement ='<tr style= "font-size:9; color:black;" >
-                        <td style="width: 50%; font-weight: bold;">Date limite de règlement </td>
-                        <td style="width: 5%;  font-weight: bold;">:</td>
-                        <td style="width: 55%; ">'.date('d/m/Y', strtotime($this->info_facture['au']. ' + 7 days')).'</td>
-                        </tr>';
-
-                        }
-
-                
-                 $ref_client = $this->info_devis['reference_client'] != null ? $this->info_devis['reference_client'] : null;
-	    $tel = $this->info_devis['tel'] != null ? $this->info_devis['tel'] : null;
-	    $email = $this->info_devis['email'] != null ? $this->info_devis['email'] : null;
-	    $adresse = $this->info_devis['adresse'] != null ? $this->info_devis['adresse'] : null;
-	    $bp = $this->info_devis['bp'] != null ? 'BP. '.$this->info_devis['bp'] : null;
-	    $ville = $this->info_devis['ville'] != null ? $this->info_devis['ville'] : null;
-	    $pays = $this->info_devis['pays'] != null ? $this->info_devis['pays'] : null;
-            
-            
-         //Période factuée
-         $per = NULL;
-        if ($this->info_facture['periode'] != NULL) {
-            $per = ' <tr style= "font-size:9; color:black;" >
-		<td style="width: 38%; font-weight: bold;color:#173C5A;">Période facturée</td>
-		<td style="width: 5%;  font-weight: bold;">:</td>
-		<td style="width: 55%;color:#00D7B9;">'.date('d/m/Y', strtotime($this->info_facture['du'])).' Au '.date('d/m/Y', strtotime($this->info_facture['au'])).'</td>
-                </tr>';
-        }
-         
-        
-        //Adresse Client
-        $adresseClient = null;
-        if($adresse.$bp.$ville.$pays != null){
-			$adresseClient =   ' <tr style= "font-size:9; color:black;" >
-		<td style="width: 30%; font-weight: bold;">Adresse</td>
-		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 63%;">'.$adresse.' '.$bp.' '.$ville.' '.$pays.'</td>
-		</tr>';
-
-		}
-                
-          //Tél Client
-          $telClient = null;
-          if($tel != null){
-			$telClient = '<tr style= "font-size:9; color:black;" >
-		<td style="width: 30%; font-weight: bold;">Téléphone</td>
-		<td style="width: 5%;  font-weight: bold;">:</td>
-		<td style="width: 63%; ">'.$tel.'</td>
-		</tr>
-		';
-		}
-                
-                
-             //Mail Client
-          $mailClient = null;
-          if($email != null){
-			$mailClient = '<tr style= "font-size:9; color:black;" >
-		<td style="width: 30%;font-weight: bold;">Email</td>
-		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 63%;">'.$email.'</td>
-		</tr>
-		';
-		}
-            
-         // ------------------------------ Début Tableau 1 --------------------------------------------------------------------     
-
-            
-                
-                $detail_facturex = '<br><br>
-                    <table style = "width:650px;">
-    <tr>
-	<td>
-	<table cellpadding="2" border="0">
-    <tr>
-       <td style="width:90%; background-color:#173C5A; font-size:9; font-weight:bold; color:#fff;"><strong>FACTURE</strong></td>
-	</tr>
-	<tr>
-        <td>'.$ste.'</td>
-	</tr> 
-	</table>
-	</td>
-	
-	<td>
-	
-<table   cellpadding="2" border="0">
-    <tr style="background-color:#00D7B9; font-size:9; font-weight:bold; color:#fff;">
-       <td><strong>INFORMATIONS CLIENT</strong></td>
-	 </tr>
-	
-		<tr style= "font-size:9; color:black;" >
-		<td style="width: 30%; font-weight: bold;">Dénomination</td>
-		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 63%;">'.$this->info_devis['denomination'].'</td>
-		</tr>'
-                
-        . $adresseClient.''.$telClient.''.$mailClient.
-                
-	'</table>
-	</td>
-        </tr>
-        
-<tr>
-<td>	
-<table   cellpadding="2" border="0">
-    <tr style=" font-size:9; font-weight:bold; color:black;">
-       <td><strong>.....................................................................................................</strong><br></td>
-	 </tr>
-	
-		<tr style= "font-size:9; color:black;" >
-		<td style="width: 38%; font-weight: bold;color:#173C5A;">FACTURE N°</td>
-		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 50%;color:#00D7B9;">'.$this->info_facture['reference'].'</td>
-		</tr>
-                
-              <tr style= "font-size:9; color:black;" >
-		<td style="width: 38%; font-weight: bold;color:#173C5A;">Date de facturation</td>
-		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 50%;color:#00D7B9;">'.date('d/m/Y', strtotime($this->info_facture['date_facture'])).'</td>
-		</tr>
-                
-               '.$per.'
-                                
-	</table>
-
-
-	</td>
-	
-	<td>	
-<table   cellpadding="2" border="0">
-    <tr style="; font-size:9; font-weight:bold; color:#fff;">
-       <td><strong>........................................................</strong><br></td>
-	 </tr>
-         
-  <tr style= "font-size:9; color:black;" >
-		<td style="width: 50%; font-weight: bold;">N° Compte client</td>
-		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 55%;">'.$ref_client.'</td>
-		</tr>
-	                    
-                
-               '.$dateLimiteReglement.'
-                   
-<tr style= "font-size:9; color:black;" >
-		<td style="width: 50%; font-weight: bold;"></td>
-		<td style="width: 5%; font-weight: bold;"></td>
-		<td style="width: 55%;"></td>
-		</tr>
-                                
-	</table>
-
-
-	</td>
-
-</tr>
-	
-</table>
-<br><br><br>';
-        
-
-	
-                $this->Ln();
-                $this->writeHTMLCell(0,0,10, 30, $detail_facturex , '', 0, 0, true, 'L', true);
-                
-		
-           // ------------------------ Fin Tableau 1 --------------------------------------------------------------------     
-                
-                
-     
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
+		$this->SetFont('kameron', 'B', 22);
 		//Ste
 		
 
 		// Title
-        /*$titre_doc = '<h1 style="letter-spacing: 2px;color;#495375;font-size: 20pt;">FACTURE</h1>';
+        $titre_doc = '<h1 style="letter-spacing: 2px;color;#173C5A;font-size: 20pt;">FACTURE</h1>';
 		$this->writeHTMLCell(58, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true, 2);
 		$this->writeHTMLCell(58, 0, 140, 10, $titre_doc , 'B', 0, 0, true, 'R', true);
-         * 
-         */
-                            
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
-                
 		$this->SetTextColor(0, 0, 0);
-		$this->SetFont('gotham-book', '', 9);
+		$this->SetFont('kameron', '', 9);
         $per = NULL;
         if ($this->info_facture['periode'] != NULL) {
             $per = ' <tr>
@@ -399,7 +183,6 @@ class MYPDF extends TCPDF {
         <td style="width:68%; background-color: #eeecec; ">' . $this->info_facture['periode'] . '</td>
         </tr>';
         }
-        /*
 		$detail_facture = '<table cellspacing="3" cellpadding="2" border="0">
 		<tr>
 		<td style="width:31%; color:#A1A0A0;"><strong>Réf Facture</strong></td>
@@ -416,50 +199,57 @@ class MYPDF extends TCPDF {
 		'</table>';
 
 		$this->writeHTMLCell(0, 0, 99, 23, $detail_facture, '', 0, 0, true, 'L', true);
-         * 
-         */
-        
 	    //Info Client
 	    $nif = null;
 	    if($this->info_devis['nif'] != null)
 	    {
 	    	$nif = '<tr>
-		<td align="right" style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">NIF</td>
-		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
+		<td align="right" style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">NIF</td>
+		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$this->info_devis['nif'].'</td>
 		</tr>';
 	    }
-	   
-            
+	    $ref_client = $this->info_devis['reference_client'] != null ? $this->info_devis['reference_client'] : null;
+	    $tel = $this->info_devis['tel'] != null ? 'Tél.'.$this->info_devis['tel'] : null;
+	    $email = $this->info_devis['email'] != null ? 'Email.'.$this->info_devis['email'] : null;
+	    $adresse = $this->info_devis['adresse'] != null ? $this->info_devis['adresse'] : null;
+	    $bp = $this->info_devis['bp'] != null ? 'BP. '.$this->info_devis['bp'] : null;
+	    $ville = $this->info_devis['ville'] != null ? $this->info_devis['ville'] : null;
+	    $pays = $this->info_devis['pays'] != null ? $this->info_devis['pays'] : null;
 		$detail_client = '<table cellspacing="3" cellpadding="2" border="0">
 		<tbody>
-		<tr style="background-color:#495375; font-size:11; font-weight:bold; color:#fff;">
+		<tr style="background-color:#173C5A; font-size:11; font-weight:bold; color:#fff;">
 		<td colspan="3"><strong>Informations du client</strong></td>
 		</tr>
 		<tr>
-		<td style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Réf Client</td>
-		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
+		<td style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">Réf Client</td>
+		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;"><strong>'.$ref_client.'</strong></td>
 		</tr>
 		<tr>
-		<td style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Dénomination</td>
-		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
+		<td style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">Dénomination</td>
+		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;"><strong>'.$this->info_devis['denomination'].'</strong></td>
 		</tr>';
 
 		if($adresse.$bp.$ville.$pays != null){
 			$detail_client .= '<tr>
-	    <td style="width: 30%;color: #E99222;font-weight: bold;font-size: 9pt;">Adresse</td>
-		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
+	    <td style="width: 30%;color: #00D7B9;font-weight: bold;font-size: 9pt;">Adresse</td>
+		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$adresse.' '.$bp.' '.$ville.' '.$pays.'</td>
 		</tr>';
 
 		}
-	
+			
+		
+		
+
+
+
 		if($tel != null && $email != null){
 			$detail_client .= '<tr>
-		<td style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Contact</td>
-		<td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
+		<td style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">Contact</td>
+		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$tel.' '.$email.'</td>
 		</tr>
 		';
@@ -468,19 +258,19 @@ class MYPDF extends TCPDF {
 		</tbody>
 		</table>';
 		//$marge_after_detail_client = 
-                // $this->Ln();
-		//$this->writeHTMLCell(100, 0, 99, null, $detail_client, 0, 0, 0, true, 'L', true);
-		// if($this->info_facture['projet'] != null){
+        $this->Ln();
+		$this->writeHTMLCell(100, 0, 99, null, $detail_client, 0, 0, 0, true, 'L', true);
+		if($this->info_facture['projet'] != null){
 
-		// 	$projet = '<span style="width: 65%;ont-weight: bold;font-size: 10pt;"><strong>'.$this->info_facture['projet'].'</strong></span>';
+			$projet = '<span style="width: 65%;ont-weight: bold;font-size: 10pt;"><strong>'.$this->info_facture['projet'].'</strong></span>';
 
 
-		//     $height = $this->getLastH();
-		//     $this->SetTopMargin($height + $this->GetY() + 5);
-		//     //writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
-		//     $this->setCellPadding(1);
-		//     $this->writeHTMLCell(182.6, '', 15.5, '', $projet, 1, 0, 0, true, 'L', true);
-		// }
+		    $height = $this->getLastH();
+		    $this->SetTopMargin($height + $this->GetY() + 5);
+		    //writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
+		    $this->setCellPadding(1);
+		    $this->writeHTMLCell(182.6, '', 15.5, '', $projet, 1, 0, 0, true, 'L', true);
+		}
 		//$this->Ln();
 		//Comment fati 04/03 pour probleme tableau complement
 		$this->setCellPadding(0);
@@ -505,34 +295,32 @@ class MYPDF extends TCPDF {
 // QRCODE,H : QR-CODE Best error correction
 			$qr_content = $this->info_facture['reference']."\n".$this->info_devis['denomination']."\n".$this->info_facture['date_facture'];
 			$style = array(
-				'border' => 0,
+				'border' => 1,
 				'vpadding' => 'auto',
 				'hpadding' => 'auto',
 				'fgcolor' => array(0,0,0),
 	            'bgcolor' => false, //array(260,255,255)
-	            'module_width' => 0, // width of a single module in points
-	            'module_height' => 0 // height of a single module in points
+	            'module_width' => 1, // width of a single module in points
+	            'module_height' => 1 // height of a single module in points
             );
 	//write2DBarcode($code, $type, $x='', $y='', $w='', $h='', $style='', $align='', $distort=false)
-	        $this->SetY(-15);
-	         //Supprimer le code à barre FZ HANOUNOU le 03/07/2021
-			//$this->write2DBarcode($qr_content, 'QRCODE,H', 15, '', 25, 25, $style, 'N');
+	        $this->SetY(-30);
+			$this->write2DBarcode($qr_content, 'QRCODE,H', 15, '', 25, 25, $style, 'N');
 		//}
 		$ste_c = new MSte_info();
-        $this->SetY(-15);
+        $this->SetY(-30);
         if((date('Y-m-d', strtotime($this->info_facture['date_facture']))) < (date('Y-m-d', strtotime('16-04-2020')))){
 		$ste = $ste_c->get_ste_info_report_footer(1,$this->info_facture['id_banque'],$this->info_facture['date_facture'],'Facture');
 	    }else{
 	    $ste = $ste_c->get_ste_info_report_footer(2,$this->info_facture['id_banque'],$this->info_facture['date_facture'],'Facture');	
 	    }
-	    $this->SetFont('gotham-book', '', 9);
 		$this->writeHTMLCell(0, 0, '', '', $ste , '', 0, 0, true, 'C', true);
 		// Position at 15 mm from bottom
 		$this->SetY(-15);
 		// Set font
-		$this->SetFont('gotham-book', 'I', 8);
+		$this->SetFont('kameron', 'I', 8);
 		// Page number
-		//$this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
+		$this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
 	}
 	public function writeHTMLTogether($html, $ln=true, $fill=false, $reseth=false, $cell=false, $align='') {
     $cp =  $this->getPage();
@@ -605,7 +393,7 @@ $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 // print standard ASCII chars, you can use core fonts like
 // helvetica or times to reduce file size.
 // set font
-$pdf->SetFont('gotham-book', '', 9);
+$pdf->SetFont('kameron', '', 9);
 
 // Add a page
 // This method has several options, check the source code documentation for more information.
@@ -623,49 +411,38 @@ $html2 = $pdf->Table_body2;
 $obj = new nuts($pdf->info_facture['total_ttc'], $pdf->info_facture['devise']);//FZ
 $ttc_lettre = $obj->convert("fr-FR");
 $total_no_remise = $pdf->info_facture['total_sans_remise'];
-$block_tt_no_remise = '<tr><td style="background-color: #fff;"></td>
-					 	   <td style="background-color: #fff;"></td>
-			     	   </tr>
-				 <tr>
-                    <td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;border-bottom:1px white;"><strong>Total</strong></td>';
-                    //Eliminer les : FZ HANOUNOU le 28/06/2021
-                    //<td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
-$block_tt_no_remise .= '<td class="alignRight" style="width:45%; background-color: #fff;"><strong>'.$total_no_remise .'  '.$pdf->info_facture['devise'].'</strong></td>
+$block_tt_no_remise = '<tr>
+                    <td style="width:35%;color: #00D7B9;font-weight: bold;font-size: 9pt;"><strong>Total</strong></td>
+                    <td style="width:5%;color: #00D7B9;font-weight: bold;font-size: 9pt;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$total_no_remise .'  '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>';
-$block_remise = '
-				 <tr>
-                    <td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;border-bottom:1px white;"><strong>Remise '.$pdf->info_facture['valeur_remise'].' %</strong></td>';
-                    //Eliminer les : FZ HANOUNOU le 28/06/2021
-                    //<td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
-$block_remise .= '<td class="alignRight" style="width:45%; background-color: #fff;"><strong>'.$pdf->info_facture['total_remise'].'  '.$pdf->info_facture['devise'].'</strong></td>
+$block_remise = '<tr>
+                    <td style="width:35%;color: #00D7B9;font-weight: bold;font-size: 9pt;"><strong>Remise '.$pdf->info_facture['valeur_remise'].' %</strong></td>
+                    <td style="width:5%;color: #00D7B9;font-weight: bold;font-size: 9pt;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_remise'].'  '.$pdf->info_facture['devise'].'</strong></td>
+                </tr>';
+$block_ttc = '<tr>
+                    <td style="width:35%;color: #00D7B9;font-weight: bold;font-size: 9pt;"><strong>TVA 18%</strong></td>
+                    <td style="width:5%;color: #00D7B9;font-weight: bold;font-size: 9pt;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_tva'].'  '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>
-               ';
-$block_ttc = '
-			  <tr>
-                    <td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;border-bottom:1px white;"><strong>TVA</strong></td>';
-                    //Eliminer les : FZ HANOUNOU le 28/06/2021
-                    //<td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
-$block_ttc .='<td class="alignRight" style="width:45%; background-color: #fff;"><strong>'.$pdf->info_facture['total_tva'].'  '.$pdf->info_facture['devise'].'</strong></td>
-                </tr>
-               
                 <tr>
-                    <td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;border-bottom:1px white;"><strong>Total à payer</strong></td>';
-                    //Eliminer les : FZ HANOUNOU le 28/06/2021
-                    //<td style="width:5%;color: #E99222;font-weight: bold;font-size: 9pt;">:</td>
-$block_ttc .='<td class="alignRight" style="width:45%;color: #00D7B9;background-color: #fff;"><strong>'.$pdf->info_facture['total_ttc'].' '.$pdf->info_facture['devise'].'</strong></td>
+                    <td style="width:35%;color: #00D7B9;font-weight: bold;font-size: 9pt;"><strong>Total TTC</strong></td>
+                    <td style="width:5%;color: #00D7B9;font-weight: bold;font-size: 9pt;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_ttc'].' '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>';  
 
 if($pdf->info_facture['total_paye'] > 0 and $pdf->info_facture['reste'] > 0) {
 
-$reste_a_payer = '  
-					<tr>
-                    	<td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;border-bottom:1px white;"><strong>Total payé </strong></td>
-                    	<td class="alignRight" style="width:45%; background-color: #fff;"><strong>'.$pdf->info_facture['total_paye'].'  '.$pdf->info_facture['devise'].'</strong></td>
+$reste_a_payer = ' <tr>
+                    	<td style="width:35%;color: #00D7B9;font-weight: bold;font-size: 9pt;"><strong>Total payé </strong></td>
+                   		<td style="width:5%;color: #00D7B9;font-weight: bold;font-size: 9pt;">:</td>
+                    	<td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_paye'].'  '.$pdf->info_facture['devise'].'</strong></td>
                 	</tr>
-                	
                  	<tr>
-                    	<td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>Reste à payer </strong></td>
-                    	<td class="alignRight" style="width:45%; color: #00D7B9;background-color: #fff;"><strong>'.$pdf->info_facture['reste'].'  '.$pdf->info_facture['devise'].'</strong></td>
+                    	<td style="width:35%;color: #00D7B9;font-weight: bold;font-size: 9pt;"><strong>Reste à payer </strong></td>
+                    	<td style="width:5%;color: #00D7B9;font-weight: bold;font-size: 9pt;">:</td>
+                    	<td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['reste'].'  '.$pdf->info_facture['devise'].'</strong></td>
                 	</tr>'; 
 }else{
 $reste_a_payer = null;	
@@ -674,7 +451,13 @@ $reste_a_payer = null;
 $block_remise = $pdf->info_facture['valeur_remise'] == 0 ? null : $block_remise; 
 $block_tt_no_remise = $pdf->info_facture['valeur_remise'] == 0 ? null : $block_tt_no_remise;  
 $block_ttc    = $pdf->info_facture['total_tva'] == 0 ? null : $block_ttc;
-$titl_ht = $pdf->info_facture['total_tva'] == 0 ? 'Total à payer' : 'Total Net';
+$titl_ht = $pdf->info_facture['total_tva'] == 0 ? 'Total à payer' : 'Total HT';
+
+if($pdf->info_facture['total_tva'] == 0 and ($pdf->info_facture['total_ttc_initial'] != $pdf->info_facture['total_ttc'])){
+    	$total_f = $pdf->info_facture['total_ttc'];
+}else{
+		$total_f = $pdf->info_facture['total_ht'];
+}
 
 if((date('Y-m-d', strtotime($pdf->info_facture['date_facture']))) < (date('Y-m-d', strtotime('16-04-2020')))){
 	$signature = 'La Direction';
@@ -708,20 +491,19 @@ p {
 </style>
 <table style="width: 685px;" cellpadding="2">
     <tr>
-        <td width="60%" align="left">
+        <td width="50%" align="left">
             
 
         </td>
-        <td width="40%" style="background-color: #fff;">
-           <table class="table" cellspacing="0" cellpadding="2"  style="width: 300px;" >
+        <td width="50%">
+           <table class="table" cellspacing="2" cellpadding="2"  style="width: 300px; border:1pt solid black;" >
             <tbody>
                 '.$block_tt_no_remise.'
                 '.$block_remise.'
                 <tr>
-                    <td style="width:30%;color: #fff;background-color: #173C5A;font-weight: bold;font-size: 9pt;border-bottom:1px white;"><strong>'.$titl_ht.'</strong></td>';
-//Eliminer les : FZ HANOUNOU le 28/06/2021
-//'<td style="width:5%;color: #fff;font-weight: bold;font-size: 9pt;">:</td>'
-$block_sum .=       '<td class="alignRight" style="width:45%; background-color: #fff;border-bottom:1px white;"><strong>'.$pdf->info_facture['total_ttc'].' '.$pdf->info_facture['devise'].'</strong></td>
+                    <td style="width:35%;color: #00D7B9;font-weight: bold;font-size: 9pt;"><strong>'.$titl_ht.'</strong></td>
+                    <td style="width:5%;color: #00D7B9;font-weight: bold;font-size: 9pt;">:</td>
+                    <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$total_f.' '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>
 
                 '.$block_ttc.'
@@ -729,10 +511,9 @@ $block_sum .=       '<td class="alignRight" style="width:45%; background-color: 
             </tbody>
         </table> 
     </td>
-</tr>';
-
-/*<tr>
-    <td colspan="2" style="color: #E99222;font-weight: bold;">
+</tr>
+<tr>
+    <td colspan="2" style="color: #00D7B9;font-weight: bold;">
         Arrêté la présente Facture à la somme de :
     </td>
 </tr>
@@ -742,7 +523,7 @@ $block_sum .=       '<td class="alignRight" style="width:45%; background-color: 
     </td>
 </tr>
 <tr>
-    <td colspan="2" style="color: #E99222;font-weight: bold;">       
+    <td colspan="2" style="color: #00D7B9;font-weight: bold;">       
         <strong>Conditions générales:</strong>        
     </td>
 </tr>
@@ -752,8 +533,7 @@ $block_sum .=       '<td class="alignRight" style="width:45%; background-color: 
         '.$pdf->info_devis['claus_comercial'].'
     </td>
 </tr>
-*/
-$block_sum .= '
+
 <tr>
     <td colspan="2" align="right" style="font: underline; width: 550px;  padding-right: 200px;">
         <br><br><br><br><br>

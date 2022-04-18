@@ -224,8 +224,8 @@ class Mproforma
         $this->Get_detail_proforma_show();
         $proforma_info = $this->proforma_info;
         $colms  = null;
-        //$colms .= " $table.order item, ";
-        //$colms .= " $table.ref_produit, ";
+        $colms .= " $table.order item, ";
+        $colms .= " $table.ref_produit, ";
         $colms .= " $table.designation, ";
         $colms .= " REPLACE(FORMAT($table.qte,0),',',' '), ";
         $colms .= " REPLACE(FORMAT($table.prix_ht,0),',',' '), ";

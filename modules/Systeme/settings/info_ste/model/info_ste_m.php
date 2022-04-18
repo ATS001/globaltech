@@ -190,12 +190,12 @@ class MSte_info
 
     	if((date('Y-m-d', strtotime($date))) < (date('Y-m-d', strtotime('16-04-2020')))){
 
-	    	$head = '<div style="color:#4A5375;font-size: 9pt;"><address><br>'.$this->ste_info['ste_adresse'].'<br>'.$this->ste_info['ste_ville'].' '.$this->ste_info['ste_pays'].'<br><abbr title="Phone">Tél: </abbr>'.$this->ste_info['ste_tel'].'<br>BP: </abbr>'.$this->ste_info['ste_bp'].' N\'Djamena<br>Email: '.$this->ste_info['ste_email'].'<br>Site web: '.$this->ste_info['ste_website'].'</address></div>';
+	    	$head = '<div style="color:#173C5A;font-size: 9pt;font-family: sans-serif;"><address><br>'.$this->ste_info['ste_adresse'].'<br>'.$this->ste_info['ste_ville'].' '.$this->ste_info['ste_pays'].'<br><abbr title="Phone">Tél: </abbr>'.$this->ste_info['ste_tel'].'<br>BP: </abbr>'.$this->ste_info['ste_bp'].' N\'Djamena<br>Email: '.$this->ste_info['ste_email'].'<br>Site web: '.$this->ste_info['ste_website'].'</address></div>';
 	    }else{
 	    	if($object == 'Facture'){
-	        	$head = '<div style="color:black;font-size: 9pt;"><address><br>'.$this->ste_info['ste_adresse'].'<br>BP: </abbr>'.$this->ste_info['ste_bp'].' '.$this->ste_info['ste_ville'].'-'.$this->ste_info['ste_pays'].'<br><abbr title="Phone">Tél: </abbr>'.$this->ste_info['ste_tel_fact'].'<br><abbr title="email">Email: </abbr>admin.finance@globaltelnetworks.net<br><abbr title="siteweb">https://www.globaltelnetworks.net</abbr>  </address></div>';
+	        	$head = '<div style="color:#173C5A;font-size: 9pt;font-family: sans-serif;"><address><br>'.$this->ste_info['ste_adresse'].'<br>BP: </abbr>'.$this->ste_info['ste_bp'].' '.$this->ste_info['ste_ville'].'-'.$this->ste_info['ste_pays'].'<br><abbr title="Phone">Tél: </abbr>'.$this->ste_info['ste_tel_fact'].'</address></div>';
 	        }else{
-	        	$head = '<div style="color:black;font-size: 9pt;"><address><br>'.$this->ste_info['ste_adresse'].'<br>BP: </abbr>'.$this->ste_info['ste_bp'].' '.$this->ste_info['ste_ville'].'-'.$this->ste_info['ste_pays'].'<br><abbr title="Phone">Tél: </abbr>'.$this->ste_info['ste_tel'].'<br><abbr title="email">Email: </abbr>admin.finance@globaltelnetworks.net<br><abbr title="siteweb">https://www.globaltelnetworks.net</abbr>  </address></div>';  		
+	        	$head = '<div style="color:#173C5A;font-size: 9pt;font-family: sans-serif;"><address><br>'.$this->ste_info['ste_adresse'].'<br>BP: </abbr>'.$this->ste_info['ste_bp'].' '.$this->ste_info['ste_ville'].'-'.$this->ste_info['ste_pays'].'<br><abbr title="Phone">Tél: </abbr>'.$this->ste_info['ste_tel'].'</address></div>';    		
     	    }
 	    }
 
@@ -210,21 +210,14 @@ class MSte_info
 
 
     	/*$footer = '<h1>'.$this->ste_info['ste_name'].'</h1><p>Télécommunications – Réseaux - Sécurité électronique - Prestation de Services<br/> Numéro d’Identification Fiscale : '.$this->ste_info['ste_if'].'<br/>Compte Orabank n°20403500201</p>';
-*/	
+*/		
     	if((date('Y-m-d', strtotime($date))) < (date('Y-m-d', strtotime('16-04-2020')))){
     		$footer = '</br><p>Télécommunications – Réseaux - Sécurité électronique - Prestation de Services<br/> Numéro d’Identification Fiscale : '.$this->ste_info['ste_if'].'<br/>Compte '.$this->banque_info['banque'].' N° '.$this->banque_info['rib'].'</p>';
-   		
     	}else{
     		if($object == 'Facture'){
-    		      //Modification du footer FZ HANOUNOU le 03/07/2021
-    			 //$footer = '</br><p>NIF : '.$this->ste_info['ste_if'].'<br/>Compte '.$this->banque_info['banque'].' N° :'.$this->banque_info['rib'].'<br>Email: '.$this->ste_info['ste_email_fact'].'<br>Site web :'.$this->ste_info['ste_website'].'</p>';
-    			//$footer = '<style>.div-1 {background-color: #173C5A;color: #fff; height: 50px;}</style><div class="div-1"><p>Règlement à effectuer par virement à l’ordre de GLOBALTEL au compte '.$this->banque_info['banque'].' : '.$this->banque_info['rib']. '<br/>RCC : '.$this->ste_info['ste_rc'].'- NIF : '.$this->ste_info['ste_if'].'</p></div>';  
-    			$footer = '<style>.div-1 {background-color: #173C5A;color: #fff;}</style><table><tr class="div-1"><td>Règlement à effectuer par virement à l’ordre de GLOBALTEL au compte '.$this->banque_info['banque'].' : '.$this->banque_info['rib']. '<br/>RC : '.$this->ste_info['ste_rc'].'- NIF : '.$this->ste_info['ste_if'].'</td></tr></table>';  
-  
+    			$footer = '</br><p>NIF : '.$this->ste_info['ste_if'].'<br/>Compte '.$this->banque_info['banque'].' N° :'.$this->banque_info['rib'].'<br>Email: '.$this->ste_info['ste_email_fact'].'<br>Site web :'.$this->ste_info['ste_website'].'</p>';
     		}else{
-    		    //Modification du footer FZ HANOUNOU le 24/07/2021    			
-    			//$footer = '</br><p>Email: '.$this->ste_info['ste_email'].'<br>Site web :'.$this->ste_info['ste_website'].'</p>';
-    			$footer = '<style>.div-1 {background-color: #173C5A;color: #fff;}</style><table><tr class="div-1"><td>Email: '.$this->ste_info['ste_email'].'<br>Site web :'.$this->ste_info['ste_website'].'</td></tr></table>';
+    			$footer = '</br><p>Email: '.$this->ste_info['ste_email'].'<br>Site web :'.$this->ste_info['ste_website'].'</p>';
     		}
     	}
     	    	

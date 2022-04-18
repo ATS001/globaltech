@@ -31,14 +31,15 @@ if(!$bl->Get_detail_bl_pdf())
 
 }
 global $db;
-
 $headers = array(
-            //'#'           => '5[#]C',
-            //'Réf'         => '17[#]C',
-            'DESCRIPTION'						=> '70[#]', 
-            'QTE'                               => '25[#]C',
-        );	
+            '#'           => '5[#]C',
+            'Réf'         => '15[#]C',
+            'Description' => '55[#]', 
+            'Quantité'    => '20[#]C', 
+            
+            
 
+        );
 $bl_info   = $bl->bl_info;
 $tableau_head = MySQL::make_table_head($headers);
 $tableau_body = $db->GetMTable_pdf($headers);
@@ -63,13 +64,13 @@ class MYPDF extends TCPDF {
       // Logo 1
       $image_file = MPATH_IMG.MCfg::get('logo');
       $this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
-    	 $this->Image($image_file, 14, 10, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
+        $this->Image($image_file, 14, 10, 30, 23, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
 
   }else{
       // Logo 2
       $image_file = MPATH_IMG.MCfg::get('logo2');
       $this->writeHTMLCell(50, 25, '', '', '' , 0, 0, 0, true, 'C', true);
-      $this->Image($image_file, 14, 11, 80, 20, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
+      $this->Image($image_file, 13, 13, 50, 20, 'png', '', 'T', false, 300, '', false, false, 0, false, false, false);
   }
   
 		//Get info ste from DB
@@ -81,230 +82,96 @@ class MYPDF extends TCPDF {
 		$ste = $ste_c->get_ste_info_report_head(2,$this->info_bl['date_bl'],'BL');
 		}
 
-		//$this->writeHTMLCell(0, 0, '', 30, $ste , '', 0, 0, true, 'L', true);
+		$this->writeHTMLCell(0, 0, '', 30, $ste , '', 0, 0, true, 'L', true);
 		$this->SetTextColor(0, 50, 127);
 		// Set font
-		$this->SetFont('gotham-book', 'B', 22);
-
-		//Début FZ HANOUNOU le 02/08/2021 => Nouvelle template
-
-		$ref_client = $this->info_bl['reference_client'] != null ? $this->info_bl['reference_client'] : null;
-	    $tel = $this->info_bl['tel'] != null ? $this->info_bl['tel'] : null;
-	    $email = $this->info_bl['email'] != null ? $this->info_bl['email'] : null;
+		$this->SetFont('kameron', 'B', 22);
+		//Ste
+		
+		// Title
+		$titre_doc = '<h1 style="letter-spacing: 2px;color;#173C5A;font-size: 20pt;">Bon de Livraison</h1>';
+		$this->writeHTMLCell(0, 0, 128, 10, $titre_doc , 'B', 0, 0, true, 'R', true);
+		$this->SetTextColor(0, 0, 0);
+		$this->SetFont('kameron', '', 9);
+		$detail_bl = '<table cellspacing="3" cellpadding="2" border="0">
+		<tr>
+		<td style="width:35%; color:#A1A0A0;"><strong>Réf BL</strong></td>
+		<td style="width:5%;">:</td>
+		<td style="width:60%; background-color: #eeecec;">'.$this->info_bl['reference'].'</td>
+		</tr> 
+		<tr>
+		<td style="width:35%; color:#A1A0A0;"><strong>Date</strong></td>
+		<td style="width:5%;">:</td>
+		<td style="width:60%; background-color: #eeecec; ">'.$this->info_bl['date_bl'].'</td>
+		</tr>
+		</table>';
+		$this->writeHTMLCell(0, 0, 140, 23, $detail_bl, '', 0, 0, true, 'L', true);
+	    //Info Client
+	    $nif = null;
+	    if($this->info_bl['nif'] != null)
+	    {
+	    	$nif = '<tr>
+		<td align="right" style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">NIF</td>
+		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
+		<td style="width: 65%; background-color: #eeecec;">'.$this->info_bl['nif'].'</td>
+		</tr>';
+	    }
+	    $ref_client = $this->info_bl['reference_client'] != null ? $this->info_bl['reference_client'] : null;
+	    $tel = $this->info_bl['tel'] != null ? 'Tél.'.$this->info_bl['tel'] : null;
+	    $email = $this->info_bl['email'] != null ? 'Email.'.$this->info_bl['email'] : null;
 	    $adresse = $this->info_bl['adresse'] != null ? $this->info_bl['adresse'] : null;
 	    $bp = $this->info_bl['bp'] != null ? 'BP. '.$this->info_bl['bp'] : null;
 	    $ville = $this->info_bl['ville'] != null ? $this->info_bl['ville'] : null;
 	    $pays = $this->info_bl['pays'] != null ? $this->info_bl['pays'] : null;
+		$detail_client = '<table cellspacing="3" cellpadding="2" border="0">
+		<tbody>
+		<tr style="background-color:#173C5A; font-size:14; font-weight:bold; color:#fff;">
+		<td colspan="3"><strong>Informations client</strong></td>
+		</tr>
+		<tr>
+		<td align="right" style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">Réf Client</td>
+		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
+		<td style="width: 65%; background-color: #eeecec;"><strong>'.$ref_client.'</strong></td>
+		</tr>
+		<tr>
+		<td align="right" style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">Dénomination</td>
+		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
+		<td style="width: 65%; background-color: #eeecec;"><strong>'.$this->info_bl['denomination'].'</strong></td>
+		</tr>';
 
-		//Adresse Client
-        $adresseClient = null;
-        if($adresse.$bp.$ville.$pays != null){
-			$adresseClient =   ' <tr style= "font-size:9; color:black;" >
-		<td style="width: 30%; font-weight: bold;">Adresse</td>
-		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 63%;">'.$adresse.' '.$bp.' '.$ville.' '.$pays.'</td>
+		if($adresse.$bp.$ville.$pays != null){
+			$detail_client .= '<tr>
+	    <td align="right" style="width: 30%;color: #00D7B9;font-weight: bold;font-size: 9pt;">Adresse</td>
+		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
+		<td style="width: 65%; background-color: #eeecec;">'.$adresse.' '.$bp.' '.$ville.' '.$pays.'</td>
 		</tr>';
 
 		}
-                
-        //Tél Client
-        $telClient = null;
-        if($tel != null){
-			$telClient = '<tr style= "font-size:9; color:black;" >
-		<td style="width: 30%; font-weight: bold;">Téléphone</td>
-		<td style="width: 5%;  font-weight: bold;">:</td>
-		<td style="width: 63%; ">'.$tel.'</td>
-		</tr>
-		';
-		}
-                
-                
-             //Mail Client
-          $mailClient = null;
-          if($email != null){
-			$mailClient = '<tr style= "font-size:9; color:black;" >
-		<td style="width: 30%;font-weight: bold;">Email</td>
-		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 63%;">'.$email.'</td>
-		</tr>
-		';
-		}
-    //Tableau d'entête
-	$entete_devis = '<br><br>
-    <table style = "width:650px;">
-    <tr>
-	<td>
-	<table cellpadding="2" border="0">
-    <tr>
-       <td style="width:90%; background-color:#173C5A; font-size:9; font-weight:bold; color:#fff;"><strong>BL</strong></td>
-	</tr>
-	<tr>
-        <td>'.$ste.'</td>
-	</tr> 
-	</table>
-	</td>
-	
-	<td>
-	
-<table   cellpadding="2" border="0">
-    <tr style="background-color:#00D7B9; font-size:9; font-weight:bold; color:#fff;">
-       <td><strong>INFORMATIONS CLIENT</strong></td>
-	 </tr>
-	
-		<tr style= "font-size:9; color:black;" >
-		<td style="width: 30%; font-weight: bold;">Dénomination</td>
-		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 63%;">'.$this->info_bl['denomination'].'</td>
-		</tr>'
-                
-        . $adresseClient.''.$telClient.''.$mailClient.
-                
-	'</table>
-	</td>
-        </tr>
-        
-<tr>
-<td>	
-<table   cellpadding="2" border="0">
-    <tr style=" font-size:9; font-weight:bold; color:black;">
-       <td><strong>.....................................................................................................</strong></td>
-	 </tr>
-	
-		<tr style= "font-size:9; color:black;" >
-		<td style="width: 38%; font-weight: bold;color:#173C5A;">BL N°</td>
-		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 50%;color:#00D7B9;">'.$this->info_bl['reference'].'</td>
-		</tr>
-                
-              <tr style= "font-size:9; color:black;" >
-		<td style="width: 38%; font-weight: bold;color:#173C5A;">Date BL</td>
-		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 50%;color:#00D7B9;">'.date('d/m/Y', strtotime($this->info_bl['date_bl'])).'</td>
-		</tr>
-                                
-	</table>
-
-
-	</td>
-	
-	<td>	
-<table   cellpadding="2" border="0">
-    <tr style="; font-size:9; font-weight:bold; color:#fff;">
-       <td><strong>........................................................</strong></td>
-	 </tr>
-	
-                
-        <tr style= "font-size:9; color:black;" >
-		<td style="width: 50%; font-weight: bold;">N° Compte client</td>
-		<td style="width: 5%; font-weight: bold;">:</td>
-		<td style="width: 55%;">'.$ref_client.'</td>
-		</tr>
-                                
-	</table>
-
-
-	</td>
-
-</tr>
-	
-</table>
-<br><br>';
-
-    	$this->Ln();
-    	$this->writeHTMLCell(0,0,10, 30, $entete_devis , '', 0, 0, true, 'L', true);
-                
-		
-    	// ------------------------ Fin Tableau entête ----------------------
-
-		//Fin FZ HANOUNOU le O2/08/2021
-
-
-		//Ste
-		
-		// Title
-		// $titre_doc = '<h1 style="letter-spacing: 2px;color;#495375;font-size: 20pt;">Bon de Livraison</h1>';
-		// $this->writeHTMLCell(0, 0, 128, 10, $titre_doc , 'B', 0, 0, true, 'R', true);
-		// $this->SetTextColor(0, 0, 0);
-		$this->SetFont('gotham-book', '', 9);
-		// $detail_bl = '<table cellspacing="3" cellpadding="2" border="0">
-		// <tr>
-		// <td style="width:35%; color:#A1A0A0;"><strong>Réf BL</strong></td>
-		// <td style="width:5%;">:</td>
-		// <td style="width:60%; background-color: #eeecec;">'.$this->info_bl['reference'].'</td>
-		// </tr> 
-		// <tr>
-		// <td style="width:35%; color:#A1A0A0;"><strong>Date</strong></td>
-		// <td style="width:5%;">:</td>
-		// <td style="width:60%; background-color: #eeecec; ">'.$this->info_bl['date_bl'].'</td>
-		// </tr>
-		// </table>';
-		// $this->writeHTMLCell(0, 0, 140, 23, $detail_bl, '', 0, 0, true, 'L', true);
-	    //Info Client
-	 //    $nif = null;
-	 //    if($this->info_bl['nif'] != null)
-	 //    {
-	 //    	$nif = '<tr>
-		// <td align="right" style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">NIF</td>
-		// <td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
-		// <td style="width: 65%; background-color: #eeecec;">'.$this->info_bl['nif'].'</td>
-		// </tr>';
-	 //    }
-	 //    $ref_client = $this->info_bl['reference_client'] != null ? $this->info_bl['reference_client'] : null;
-	 //    $tel = $this->info_bl['tel'] != null ? 'Tél.'.$this->info_bl['tel'] : null;
-	 //    $email = $this->info_bl['email'] != null ? 'Email.'.$this->info_bl['email'] : null;
-	 //    $adresse = $this->info_bl['adresse'] != null ? $this->info_bl['adresse'] : null;
-	 //    $bp = $this->info_bl['bp'] != null ? 'BP. '.$this->info_bl['bp'] : null;
-	 //    $ville = $this->info_bl['ville'] != null ? $this->info_bl['ville'] : null;
-	 //    $pays = $this->info_bl['pays'] != null ? $this->info_bl['pays'] : null;
-		// $detail_client = '<table cellspacing="3" cellpadding="2" border="0">
-		// <tbody>
-		// <tr style="background-color:#495375; font-size:14; font-weight:bold; color:#fff;">
-		// <td colspan="3"><strong>Informations client</strong></td>
-		// </tr>
-		// <tr>
-		// <td align="right" style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Réf Client</td>
-		// <td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
-		// <td style="width: 65%; background-color: #eeecec;"><strong>'.$ref_client.'</strong></td>
-		// </tr>
-		// <tr>
-		// <td align="right" style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Dénomination</td>
-		// <td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
-		// <td style="width: 65%; background-color: #eeecec;"><strong>'.$this->info_bl['denomination'].'</strong></td>
-		// </tr>';
-
-		// if($adresse.$bp.$ville.$pays != null){
-		// 	$detail_client .= '<tr>
-	 //    <td align="right" style="width: 30%;color: #E99222;font-weight: bold;font-size: 9pt;">Adresse</td>
-		// <td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
-		// <td style="width: 65%; background-color: #eeecec;">'.$adresse.' '.$bp.' '.$ville.' '.$pays.'</td>
-		// </tr>';
-
-		// }
 			
 		
 		
-		// if($tel != null && $email != null){
-		// 	$detail_client .= '<tr>
-		// <td align="right" style="width: 30%; color: #E99222;font-weight: bold;font-size: 9pt;">Contact</td>
-		// <td style="width: 5%; color: #E99222;font-weight: bold;">:</td>
-		// <td style="width: 65%; background-color: #eeecec;">'.$tel.' '.$email.'</td>
-		// </tr>
-		// ';
-		// }
-		// $detail_client .= $nif.'
-		// </tbody>
-		// </table>';
-		// //$marge_after_detail_client = 
-		// $this->writeHTMLCell(100, 0, 99, 40, $detail_client, 0, 0, 0, true, 'L', true);
-		// if($this->info_bl['projet'] != null){
-		// 	$projet = '<span style="width: 65%;font-family: sans-serif;ont-weight: bold;font-size: 10pt;"><strong>'.$this->info_bl['projet'].'</span>';
-		//     $height = $this->getLastH();
-		//     $this->SetTopMargin($height + $this->GetY() + 5);
-		//     //writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
-		//     $this->setCellPadding(1);
-		//     $this->writeHTMLCell(183, '', 15.6, '', $projet, 1, 0, 0, true, 'L', true);
-		// }
-		// $this->Ln();
+		if($tel != null && $email != null){
+			$detail_client .= '<tr>
+		<td align="right" style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">Contact</td>
+		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
+		<td style="width: 65%; background-color: #eeecec;">'.$tel.' '.$email.'</td>
+		</tr>
+		';
+		}
+		$detail_client .= $nif.'
+		</tbody>
+		</table>';
+		//$marge_after_detail_client = 
+		$this->writeHTMLCell(100, 0, 99, 40, $detail_client, 0, 0, 0, true, 'L', true);
+		if($this->info_bl['projet'] != null){
+			$projet = '<span style="width: 65%;font-family: sans-serif;ont-weight: bold;font-size: 10pt;"><strong>'.$this->info_bl['projet'].'</span>';
+		    $height = $this->getLastH();
+		    $this->SetTopMargin($height + $this->GetY() + 5);
+		    //writeHTMLCell($w, $h, $x, $y, $html='', $border=0, $ln=0, $fill=false, $reseth=true, $align='', $autopadding=true) {
+		    $this->setCellPadding(1);
+		    $this->writeHTMLCell(183, '', 15.6, '', $projet, 1, 0, 0, true, 'L', true);
+		}
+		$this->Ln();
 		$this->setCellPadding(0);
 		$height = $this->getLastH() + $this->GetY();
 		//$this->SetTopMargin(10 + $this->GetY());
@@ -333,11 +200,11 @@ class MYPDF extends TCPDF {
 	            'module_height' => 1 // height of a single module in points
            );
 	//write2DBarcode($code, $type, $x='', $y='', $w='', $h='', $style='', $align='', $distort=false)
-	        $this->SetY(-15);
+	        $this->SetY(-30);
 			//$this->write2DBarcode($qr_content, 'QRCODE,H', 15, '', 25, 25, $style, 'N');
 		//}
 		$ste_c = new MSte_info();
-        $this->SetY(-15);
+        $this->SetY(-30);
 
 	    if((date('Y-m-d', strtotime($this->info_bl['date_bl']))) < (date('Y-m-d', strtotime('16-04-2020')))){
 		$ste = $ste_c->get_ste_info_report_footer(1,$this->info_bl['banque'],$this->info_bl['date_bl'],'BL');
@@ -345,14 +212,13 @@ class MYPDF extends TCPDF {
 	    $ste = $ste_c->get_ste_info_report_footer(2,$this->info_bl['banque'],$this->info_bl['date_bl'],'BL');	
 	    }
 
-	    $this->SetFont('gotham-book', '', 9);
 		$this->writeHTMLCell(0, 0, '', '', $ste , '', 0, 0, true, 'C', true);
 		// Position at 15 mm from bottom
 		$this->SetY(-15);
 		// Set font
-		$this->SetFont('gotham-book', 'I', 8);
+		$this->SetFont('kameron', 'I', 8);
 		// Page number
-		//$this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
+		$this->Cell(0, 10, 'Page '.$this->getAliasNumPage().'/'.$this->getAliasNbPages(), 0, false, 'R', 0, '', 0, false, 'T', 'M');
 	}
 	public function writeHTMLTogether($html, $ln=true, $fill=false, $reseth=false, $cell=false, $align='') {
     $cp =  $this->getPage();
@@ -416,9 +282,9 @@ $pdf->setImageScale(PDF_IMAGE_SCALE_RATIO);
 // Set font
 // dejavusans is a UTF-8 Unicode font, if you only need to
 // print standard ASCII chars, you can use core fonts like
-// gotham-book or times to reduce file size.
+// kameron or times to reduce file size.
 // set font
-$pdf->SetFont('gotham-book', '', 9, '', false);
+$pdf->SetFont('kameron', '', 9, '', false);
 
 // Add a page
 // This method has several options, check the source code documentation for more information.
@@ -456,6 +322,12 @@ p {
 
 </style>
 <table style="width: 685px;" cellpadding="2">
+ <tr>
+    <td colspan="2" style="color:#6B6868; width: 650px; border:1pt solid black; padding: 5px;">
+        Remarques:
+        <br><br><br><br><br>
+    </td>
+</tr>
 
 <tr>
     <td  style="font: underline; width: 550px; padding-right: 200px;">
