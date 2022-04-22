@@ -111,8 +111,8 @@ class MYPDF extends TCPDF {
 	    if($this->info_bl['nif'] != null)
 	    {
 	    	$nif = '<tr>
-		<td align="right" style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">NIF</td>
-		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
+		<td align="right" style="width: 30%; color: #173C5A;font-weight: bold;font-size: 9pt;">NIF</td>
+		<td style="width: 5%; color: #173C5A;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$this->info_bl['nif'].'</td>
 		</tr>';
 	    }
@@ -129,20 +129,20 @@ class MYPDF extends TCPDF {
 		<td colspan="3"><strong>Informations client</strong></td>
 		</tr>
 		<tr>
-		<td align="right" style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">Réf Client</td>
-		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
+		<td align="right" style="width: 30%; color: #173C5A;font-weight: bold;font-size: 9pt;">Réf Client</td>
+		<td style="width: 5%; color: #173C5A;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;"><strong>'.$ref_client.'</strong></td>
 		</tr>
 		<tr>
-		<td align="right" style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">Dénomination</td>
-		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
+		<td align="right" style="width: 30%; color: #173C5A;font-weight: bold;font-size: 9pt;">Dénomination</td>
+		<td style="width: 5%; color: #173C5A;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;"><strong>'.$this->info_bl['denomination'].'</strong></td>
 		</tr>';
 
 		if($adresse.$bp.$ville.$pays != null){
 			$detail_client .= '<tr>
-	    <td align="right" style="width: 30%;color: #00D7B9;font-weight: bold;font-size: 9pt;">Adresse</td>
-		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
+	    <td align="right" style="width: 30%;color: #173C5A;font-weight: bold;font-size: 9pt;">Adresse</td>
+		<td style="width: 5%; color: #173C5A;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$adresse.' '.$bp.' '.$ville.' '.$pays.'</td>
 		</tr>';
 
@@ -152,8 +152,8 @@ class MYPDF extends TCPDF {
 		
 		if($tel != null && $email != null){
 			$detail_client .= '<tr>
-		<td align="right" style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">Contact</td>
-		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
+		<td align="right" style="width: 30%; color: #173C5A;font-weight: bold;font-size: 9pt;">Contact</td>
+		<td style="width: 5%; color: #173C5A;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$tel.' '.$email.'</td>
 		</tr>
 		';
