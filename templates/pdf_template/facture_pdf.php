@@ -204,8 +204,8 @@ class MYPDF extends TCPDF {
 	    if($this->info_devis['nif'] != null)
 	    {
 	    	$nif = '<tr>
-		<td align="right" style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">NIF</td>
-		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
+		<td align="right" style="width: 30%; color: #173C5A;font-weight: bold;font-size: 9pt;">NIF</td>
+		<td style="width: 5%; color: #173C5A;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$this->info_devis['nif'].'</td>
 		</tr>';
 	    }
@@ -222,20 +222,20 @@ class MYPDF extends TCPDF {
 		<td colspan="3"><strong>Informations du client</strong></td>
 		</tr>
 		<tr>
-		<td style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">Réf Client</td>
-		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
+		<td style="width: 30%; color: #173C5A;font-weight: bold;font-size: 9pt;">Réf Client</td>
+		<td style="width: 5%; color: #173C5A;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;"><strong>'.$ref_client.'</strong></td>
 		</tr>
 		<tr>
-		<td style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">Dénomination</td>
-		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
+		<td style="width: 30%; color: #173C5A;font-weight: bold;font-size: 9pt;">Dénomination</td>
+		<td style="width: 5%; color: #173C5A;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;"><strong>'.$this->info_devis['denomination'].'</strong></td>
 		</tr>';
 
 		if($adresse.$bp.$ville.$pays != null){
 			$detail_client .= '<tr>
-	    <td style="width: 30%;color: #00D7B9;font-weight: bold;font-size: 9pt;">Adresse</td>
-		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
+	    <td style="width: 30%;color: #173C5A;font-weight: bold;font-size: 9pt;">Adresse</td>
+		<td style="width: 5%; color: #173C5A;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$adresse.' '.$bp.' '.$ville.' '.$pays.'</td>
 		</tr>';
 
@@ -248,8 +248,8 @@ class MYPDF extends TCPDF {
 
 		if($tel != null && $email != null){
 			$detail_client .= '<tr>
-		<td style="width: 30%; color: #00D7B9;font-weight: bold;font-size: 9pt;">Contact</td>
-		<td style="width: 5%; color: #00D7B9;font-weight: bold;">:</td>
+		<td style="width: 30%; color: #173C5A;font-weight: bold;font-size: 9pt;">Contact</td>
+		<td style="width: 5%; color: #173C5A;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$tel.' '.$email.'</td>
 		</tr>
 		';
@@ -412,36 +412,36 @@ $obj = new nuts($pdf->info_facture['total_ttc'], $pdf->info_facture['devise']);/
 $ttc_lettre = $obj->convert("fr-FR");
 $total_no_remise = $pdf->info_facture['total_sans_remise'];
 $block_tt_no_remise = '<tr>
-                    <td style="width:35%;color: #00D7B9;font-weight: bold;font-size: 9pt;"><strong>Total</strong></td>
-                    <td style="width:5%;color: #00D7B9;font-weight: bold;font-size: 9pt;">:</td>
+                    <td style="width:35%;color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>Total</strong></td>
+                    <td style="width:5%;color: #173C5A;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$total_no_remise .'  '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>';
 $block_remise = '<tr>
-                    <td style="width:35%;color: #00D7B9;font-weight: bold;font-size: 9pt;"><strong>Remise '.$pdf->info_facture['valeur_remise'].' %</strong></td>
-                    <td style="width:5%;color: #00D7B9;font-weight: bold;font-size: 9pt;">:</td>
+                    <td style="width:35%;color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>Remise '.$pdf->info_facture['valeur_remise'].' %</strong></td>
+                    <td style="width:5%;color: #173C5A;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_remise'].'  '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>';
 $block_ttc = '<tr>
-                    <td style="width:35%;color: #00D7B9;font-weight: bold;font-size: 9pt;"><strong>TVA 18%</strong></td>
-                    <td style="width:5%;color: #00D7B9;font-weight: bold;font-size: 9pt;">:</td>
+                    <td style="width:35%;color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>TVA 18%</strong></td>
+                    <td style="width:5%;color: #173C5A;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_tva'].'  '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>
                 <tr>
-                    <td style="width:35%;color: #00D7B9;font-weight: bold;font-size: 9pt;"><strong>Total TTC</strong></td>
-                    <td style="width:5%;color: #00D7B9;font-weight: bold;font-size: 9pt;">:</td>
+                    <td style="width:35%;color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>Total TTC</strong></td>
+                    <td style="width:5%;color: #173C5A;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_ttc'].' '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>';  
 
 if($pdf->info_facture['total_paye'] > 0 and $pdf->info_facture['reste'] > 0) {
 
 $reste_a_payer = ' <tr>
-                    	<td style="width:35%;color: #00D7B9;font-weight: bold;font-size: 9pt;"><strong>Total payé </strong></td>
-                   		<td style="width:5%;color: #00D7B9;font-weight: bold;font-size: 9pt;">:</td>
+                    	<td style="width:35%;color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>Total payé </strong></td>
+                   		<td style="width:5%;color: #173C5A;font-weight: bold;font-size: 9pt;">:</td>
                     	<td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['total_paye'].'  '.$pdf->info_facture['devise'].'</strong></td>
                 	</tr>
                  	<tr>
-                    	<td style="width:35%;color: #00D7B9;font-weight: bold;font-size: 9pt;"><strong>Reste à payer </strong></td>
-                    	<td style="width:5%;color: #00D7B9;font-weight: bold;font-size: 9pt;">:</td>
+                    	<td style="width:35%;color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>Reste à payer </strong></td>
+                    	<td style="width:5%;color: #173C5A;font-weight: bold;font-size: 9pt;">:</td>
                     	<td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$pdf->info_facture['reste'].'  '.$pdf->info_facture['devise'].'</strong></td>
                 	</tr>'; 
 }else{
@@ -468,7 +468,7 @@ if((date('Y-m-d', strtotime($pdf->info_facture['date_facture']))) < (date('Y-m-d
 $table_complement = null;
 if ($pdf->info_complement != null)
 {
-	$table_complement =  '<strong>Tableau des compléments</strong><br>'.$tableau_head_complement.$html2;
+	$table_complement =  '<strong style="color: #173C5A;">Tableau des compléments</strong><br>'.$tableau_head_complement.$html2;
 }
 
 $block_sum = $table_complement;
@@ -501,8 +501,8 @@ p {
                 '.$block_tt_no_remise.'
                 '.$block_remise.'
                 <tr>
-                    <td style="width:35%;color: #00D7B9;font-weight: bold;font-size: 9pt;"><strong>'.$titl_ht.'</strong></td>
-                    <td style="width:5%;color: #00D7B9;font-weight: bold;font-size: 9pt;">:</td>
+                    <td style="width:35%;color: #173C5A;font-weight: bold;font-size: 9pt;"><strong>'.$titl_ht.'</strong></td>
+                    <td style="width:5%;color: #173C5A;font-weight: bold;font-size: 9pt;">:</td>
                     <td class="alignRight" style="width:60%; background-color: #eeecec;"><strong>'.$total_f.' '.$pdf->info_facture['devise'].'</strong></td>
                 </tr>
 
@@ -513,7 +513,7 @@ p {
     </td>
 </tr>
 <tr>
-    <td colspan="2" style="color: #00D7B9;font-weight: bold;">
+    <td colspan="2" style="color: #173C5A;font-weight: bold;">
         Arrêté la présente Facture à la somme de :
     </td>
 </tr>
@@ -523,7 +523,7 @@ p {
     </td>
 </tr>
 <tr>
-    <td colspan="2" style="color: #00D7B9;font-weight: bold;">       
+    <td colspan="2" style="color: #173C5A;font-weight: bold;">       
         <strong>Conditions générales:</strong>        
     </td>
 </tr>
