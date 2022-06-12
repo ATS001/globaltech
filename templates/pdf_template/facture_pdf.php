@@ -204,7 +204,11 @@ class MYPDF extends TCPDF {
 	    if($this->info_devis['nif'] != null)
 	    {
 	    	$nif = '<tr>
+<<<<<<< HEAD
 		<td style="width: 30%; color: #173C5A;font-weight: bold;font-size: 9pt;">NIF</td>
+=======
+		<td align="right" style="width: 30%; color: #173C5A;font-weight: bold;font-size: 9pt;">NIF</td>
+>>>>>>> refs/remotes/origin/proud
 		<td style="width: 5%; color: #173C5A;font-weight: bold;">:</td>
 		<td style="width: 65%; background-color: #eeecec;">'.$this->info_devis['nif'].'</td>
 		</tr>';
